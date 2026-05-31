@@ -4,6 +4,11 @@ export type AgentDefinitionOwnershipScope = "shared" | "team_local" | "applicati
 
 export type AgentDefinitionDefaultLaunchConfig = DefaultLaunchConfig;
 
+export type AgentDefinitionSourceInfo = {
+  agentDirPath: string;
+  teamDirPath?: string | null;
+};
+
 export class AgentDefinition {
   id?: string | null;
   name: string;
@@ -28,6 +33,7 @@ export class AgentDefinition {
   ownerPackageId?: string | null;
   ownerLocalApplicationId?: string | null;
   defaultLaunchConfig: AgentDefinitionDefaultLaunchConfig | null;
+  sourceInfo?: AgentDefinitionSourceInfo | null;
 
   constructor(options: {
     name: string;
@@ -53,6 +59,7 @@ export class AgentDefinition {
     ownerPackageId?: string | null;
     ownerLocalApplicationId?: string | null;
     defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
+    sourceInfo?: AgentDefinitionSourceInfo | null;
   }) {
     this.name = options.name;
     this.role = options.role;
@@ -77,6 +84,7 @@ export class AgentDefinition {
     this.ownerPackageId = options.ownerPackageId ?? null;
     this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
+    this.sourceInfo = options.sourceInfo ?? null;
   }
 }
 

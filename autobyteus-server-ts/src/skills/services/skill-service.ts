@@ -4,19 +4,18 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { DirectoryTraversal } from "../../file-explorer/directory-traversal.js";
 import { TreeNode } from "../../file-explorer/tree-node.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { Skill, SkillSourceInfo } from "../domain/models.js";
 import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
 import { SkillVersioningService } from "./skill-versioning-service.js";
 import type { SkillVersion } from "../domain/skill-version.js";
 import {
-  getAllDefinitionRoots,
   getAllSkillDirectories,
-  scanBundledSkillsFromDefinitionRoot,
   scanSkillDirectory,
-  searchBundledSkillDirectory,
   searchDirectoryRecursive,
 } from "./skill-discovery.js";
+import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -27,7 +26,6 @@ const logger = {
 type AppConfigLike = {
   getSkillsDir(): string;
   getAdditionalSkillsDirs(): string[];
-  getAdditionalAgentPackageRoots(): string[];
   getAppDataDir(): string;
   get(key: string, defaultValue?: string): string | undefined;
 };
@@ -69,17 +67,11 @@ export class SkillService {
     this.disabledStore = options.disabledStore ?? new DisabledSkillsStore(disabledSkillsPath);
   }
 
-  private findSkillLocation(name: string): string | null {
+  private findGlobalSkillLocation(name: string): string | null {
     for (const directory of getAllSkillDirectories(this.config)) {
       const match = searchDirectoryRecursive(directory, name);
       if (match) {
         return match;
-      }
-    }
-    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
-      const bundledMatch = searchBundledSkillDirectory(definitionRoot, name);
-      if (bundledMatch) {
-        return bundledMatch;
       }
     }
     return null;
@@ -119,25 +111,11 @@ export class SkillService {
       }
     }
 
-    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
-      for (const skill of scanBundledSkillsFromDefinitionRoot(
-        definitionRoot,
-        this.getDiscoveryDependencies(),
-      )) {
-        if (seen.has(skill.name)) {
-          continue;
-        }
-        skill.isDisabled = this.disabledStore.isDisabled(skill.name);
-        skills.push(skill);
-        seen.add(skill.name);
-      }
-    }
-
     return skills.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   getSkill(name: string): Skill | null {
-    const skillPath = this.findSkillLocation(name);
+    const skillPath = this.findGlobalSkillLocation(name);
     if (!skillPath) {
       return null;
     }
@@ -168,6 +146,17 @@ export class SkillService {
     }
 
     return skills;
+  }
+
+  resolveConfiguredSkillsForAgent(agentDefinition: AgentDefinition | null | undefined): Skill[] {
+    const resolver = new ConfiguredAgentSkillResolver({
+      loader: this.loader,
+      isReadonlyPath: this.isReadonlyPath.bind(this),
+      resolveGlobalSkill: this.getSkill.bind(this),
+      isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
+      logger,
+    });
+    return resolver.resolveForAgent(agentDefinition);
   }
 
   createSkill(name: string, description: string, content: string): Skill {

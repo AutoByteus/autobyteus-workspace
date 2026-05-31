@@ -178,7 +178,7 @@ const buildBootstrapper = (
       }),
     } as any,
     {
-      getSkills: () => [],
+      resolveConfiguredSkillsForAgent: () => [],
     } as any,
   );
 

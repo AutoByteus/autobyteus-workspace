@@ -164,6 +164,9 @@ describe("md-centric provider integration", () => {
     const provider = new FileAgentDefinitionProvider();
     const imported = await provider.getById(agentId);
     expect(imported?.skillNames).toEqual([]);
+    expect(imported?.sourceInfo).toEqual({
+      agentDirPath: agentDir,
+    });
 
     await provider.update(
       new AgentDefinition({
@@ -227,6 +230,9 @@ describe("md-centric provider integration", () => {
     const provider = new FileAgentDefinitionProvider();
     const imported = await provider.getById(agentId);
     expect(imported?.skillNames).toEqual(["shared-skill"]);
+    expect(imported?.sourceInfo).toEqual({
+      agentDirPath: agentDir,
+    });
   });
 
   it("does not silently skip malformed application-owned agents during catalog reads", async () => {
