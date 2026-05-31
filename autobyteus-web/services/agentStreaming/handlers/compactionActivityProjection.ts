@@ -60,6 +60,28 @@ const getTurnId = (payload: CompactionStatusPayload): string | null =>
 const isActiveCompactionPhase = (phase: CompactionStatusPhase | null | undefined): boolean =>
   phase === 'requested' || phase === 'started';
 
+const isProviderCompactionPayload = (payload: CompactionStatusPayload): boolean =>
+  payload.kind === 'provider_compaction_boundary' ||
+  Boolean(
+    normalizeText(payload.provider) ||
+    normalizeText(payload.source_surface) ||
+    normalizeText(payload.boundary_key) ||
+    normalizeText(payload.provider_event_id) ||
+    normalizeText(payload.provider_session_id) ||
+    normalizeText(payload.provider_thread_id),
+  );
+
+const isProviderCompactionStatus = (status: AgentCompactionStatus | null): boolean =>
+  Boolean(
+    status?.provider ||
+    status?.sourceSurface ||
+    status?.boundaryKey ||
+    status?.providerEventId ||
+    status?.providerSessionId ||
+    status?.activityId?.startsWith('compaction:provider:') ||
+    status?.activityId?.startsWith('compaction:boundary:'),
+  );
+
 const getProviderSessionId = (payload: CompactionStatusPayload): string | null =>
   normalizeText(payload.provider_session_id) ?? normalizeText(payload.provider_thread_id);
 
@@ -84,6 +106,9 @@ const matchesPreviousActiveProviderLifecycle = (
   if (!previousStatus?.activityId || !isActiveCompactionPhase(previousStatus.phase)) {
     return false;
   }
+  if (!isProviderCompactionStatus(previousStatus)) {
+    return false;
+  }
 
   const provider = normalizeText(payload.provider);
   const previousProvider = normalizeText(previousStatus.provider);
@@ -105,37 +130,57 @@ const matchesPreviousActiveProviderLifecycle = (
   return Boolean(provider || previousProvider || payload.kind === 'provider_compaction_boundary');
 };
 
+const matchesPreviousActiveSemanticLifecycle = (
+  previousStatus: AgentCompactionStatus | null,
+): boolean =>
+  Boolean(
+    previousStatus?.activityId &&
+    isActiveCompactionPhase(previousStatus.phase) &&
+    !isProviderCompactionStatus(previousStatus),
+  );
+
 const resolveCompactionActivityId = (
   runId: string,
   payload: CompactionStatusPayload,
   previousStatus: AgentCompactionStatus | null,
   now: Date,
 ): string => {
-  const compactionTaskId = normalizeText(payload.compaction_task_id);
-  if (compactionTaskId) {
-    return `compaction:task:${compactionTaskId}`;
+  const isProviderPayload = isProviderCompactionPayload(payload);
+  const compactionOperationId = normalizeText(payload.compaction_operation_id);
+  if (!isProviderPayload && compactionOperationId) {
+    return `compaction:operation:${compactionOperationId}`;
   }
-  const compactionRunId = normalizeText(payload.compaction_run_id);
-  if (compactionRunId) {
-    return `compaction:run:${compactionRunId}`;
+
+  if (isProviderPayload) {
+    const providerOperationActivityId = getProviderOperationActivityId(runId, payload);
+    if (providerOperationActivityId) {
+      return providerOperationActivityId;
+    }
+    if (matchesPreviousActiveProviderLifecycle(payload, previousStatus)) {
+      return previousStatus!.activityId!;
+    }
+    const boundaryKey = normalizeText(payload.boundary_key);
+    if (boundaryKey) {
+      return `compaction:boundary:${boundaryKey}`;
+    }
+    const turnId = getTurnId(payload);
+    if (turnId) {
+      return `compaction:provider-turn:${runId}:${turnId}`;
+    }
+    return `compaction:provider-event:${runId}:${now.getTime()}`;
   }
-  const providerOperationActivityId = getProviderOperationActivityId(runId, payload);
-  if (providerOperationActivityId) {
-    return providerOperationActivityId;
-  }
-  if (matchesPreviousActiveProviderLifecycle(payload, previousStatus)) {
+
+  if (matchesPreviousActiveSemanticLifecycle(previousStatus)) {
     return previousStatus!.activityId!;
   }
-  const boundaryKey = normalizeText(payload.boundary_key);
-  if (boundaryKey) {
-    return `compaction:boundary:${boundaryKey}`;
+
+  const requestedTurnId = normalizeText(payload.requested_turn_id);
+  if (requestedTurnId) {
+    return `compaction:turn:${runId}:${requestedTurnId}`;
   }
   const turnId = getTurnId(payload);
   if (turnId) {
     return `compaction:turn:${runId}:${turnId}`;
-  }
-  if (previousStatus?.activityId && isActiveCompactionPhase(previousStatus.phase)) {
-    return previousStatus.activityId;
   }
   return `compaction:event:${runId}:${now.getTime()}`;
 };
@@ -151,10 +196,13 @@ export const projectCompactionStatusToActivity = (
   const phase = normalizeCompactionPhase(payload);
   const now = input.now ?? normalizeProviderTimestamp(payload.provider_timestamp) ?? new Date();
   const activityId = resolveCompactionActivityId(input.runId, payload, input.previousStatus, now);
-  const isProviderBoundary = payload.kind === 'provider_compaction_boundary' || Boolean(payload.boundary_key);
+  const isProviderBoundary = isProviderCompactionPayload(payload);
   const errorMessage = normalizeText(payload.error_message);
   const message = getCompactionMessage({ phase, errorMessage, isProviderBoundary });
   const turnId = getTurnId(payload);
+  const compactionOperationId = normalizeText(payload.compaction_operation_id);
+  const requestedTurnId = normalizeText(payload.requested_turn_id);
+  const executionTurnId = normalizeText(payload.execution_turn_id);
   const compactionRuntimeKind = normalizeText(payload.compaction_runtime_kind) ?? normalizeText(payload.runtime_kind);
   const provider = normalizeText(payload.provider);
   const sourceSurface = normalizeText(payload.source_surface);
@@ -167,6 +215,9 @@ export const projectCompactionStatusToActivity = (
     phase,
     message,
     turnId,
+    compactionOperationId,
+    requestedTurnId,
+    executionTurnId,
     selectedBlockCount: normalizeNumber(payload.selected_block_count),
     compactedBlockCount: normalizeNumber(payload.compacted_block_count),
     rawTraceCount: normalizeNumber(payload.raw_trace_count),
@@ -193,6 +244,9 @@ export const projectCompactionStatusToActivity = (
       phase,
       message,
       turnId,
+      compactionOperationId,
+      requestedTurnId,
+      executionTurnId,
       selectedBlockCount: status.selectedBlockCount,
       compactedBlockCount: status.compactedBlockCount,
       rawTraceCount: status.rawTraceCount,

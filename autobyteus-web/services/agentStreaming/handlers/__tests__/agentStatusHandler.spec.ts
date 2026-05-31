@@ -128,6 +128,9 @@ describe('agentStatusHandler', () => {
         compacted_block_count: 2,
         raw_trace_count: 4,
         semantic_fact_count: 1,
+        compaction_operation_id: 'operation-1',
+        requested_turn_id: 'turn-requested',
+        execution_turn_id: 'turn-1',
         compaction_agent_definition_id: 'memory-compactor',
         compaction_agent_name: 'Memory Compactor',
         compaction_runtime_kind: 'codex_app_server',
@@ -139,10 +142,13 @@ describe('agentStatusHandler', () => {
       handleCompactionStatus(payload, mockContext);
 
       expect(mockContext.state.compactionStatus).toEqual({
-        activityId: 'compaction:task:compaction-task-1',
+        activityId: 'compaction:operation:operation-1',
         phase: 'started',
         message: 'Compacting memory…',
         turnId: 'turn-1',
+        compactionOperationId: 'operation-1',
+        requestedTurnId: 'turn-requested',
+        executionTurnId: 'turn-1',
         selectedBlockCount: 3,
         compactedBlockCount: 2,
         rawTraceCount: 4,
@@ -159,8 +165,10 @@ describe('agentStatusHandler', () => {
         mockContext.state.runId,
         expect.objectContaining({
           kind: 'compaction',
-          activityId: 'compaction:task:compaction-task-1',
+          activityId: 'compaction:operation:operation-1',
           phase: 'started',
+          compactionRunId: 'compaction-run-1',
+          compactionTaskId: 'compaction-task-1',
         }),
       );
     });
@@ -294,6 +302,46 @@ describe('agentStatusHandler', () => {
           activityId: 'compaction:boundary:status-boundary',
           phase: 'completed',
           boundaryKey: 'completed-boundary',
+        }),
+      );
+    });
+
+    it('does not merge provider boundaries into an active semantic compaction row', () => {
+      handleCompactionStatus({
+        phase: 'requested',
+        turn_id: 'turn-shared',
+        compaction_operation_id: 'semantic-operation-1',
+        requested_turn_id: 'turn-shared',
+      }, mockContext);
+
+      handleCompactionStatus({
+        kind: 'provider_compaction_boundary',
+        status: 'compacted',
+        turn_id: 'turn-shared',
+        provider: 'claude',
+        source_surface: 'claude.compact_boundary',
+        boundary_key: 'provider-boundary-1',
+      }, mockContext);
+
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        activityId: 'compaction:boundary:provider-boundary-1',
+        phase: 'completed',
+        provider: 'claude',
+      });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        1,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: 'compaction:operation:semantic-operation-1',
+          phase: 'requested',
+        }),
+      );
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: 'compaction:boundary:provider-boundary-1',
+          phase: 'completed',
         }),
       );
     });

@@ -12,6 +12,8 @@ The right-side Activity area is currently tool-only. `agentActivityStore.ts` sto
 
 Historical/reopen hydration uses `getRunProjection`, `runProjectionActivityHydration.ts`, and server run-projection transformers. Server projection activity types are tool-only today, and `raw-trace-to-historical-replay-events.ts` ignores `provider_compaction_boundary` traces. Provider-native Codex/Claude compaction status payloads may carry `kind: provider_compaction_boundary` and `status: compacting/compacted` without the agent-based `phase` field, so frontend normalization must not assume `phase` is always present at runtime.
 
+Round 2 API/E2E validation added a design-impact finding: a live LM Studio / AutoByteus native-runtime browser run emitted one deferred semantic compaction lifecycle as `requested` on `turn_0002`, `started` on `turn_0003`, and `failed` on `turn_0003` with child `compaction_run_id` / `compaction_task_id`; the UI rendered three rows. The target design must make that lifecycle update one compaction activity, analogous to one tool invocation updating in place.
+
 Constraints for the target design:
 
 - The top banner path must be removed as the primary UI.
@@ -19,6 +21,7 @@ Constraints for the target design:
 - Compaction must appear inside the existing Activity area/feed as a non-tool run activity row.
 - Compaction must not be faked as a `tool_call` or placed in a separate compaction-only Activity section.
 - Single-agent, focused team-member, and mobile monitor surfaces must keep using the shared monitor behavior.
+- One AutoByteus deferred semantic compaction operation must keep one parent activity identity from request scheduling through terminal outcome, even when later phases occur on another turn or gain child compactor run/task metadata.
 
 ## Intended Change
 
@@ -58,6 +61,7 @@ Target UX:
 - `ToolActivity`: a `RunActivity` with `kind: 'tool'`, backed by tool segment/lifecycle events.
 - `CompactionActivity`: a `RunActivity` with `kind: 'compaction'`, backed by `COMPACTION_STATUS` or durable compaction projection evidence.
 - `CompactionStatusRow`: event-monitor feed row presentation for a `CompactionActivity`.
+- `CompactionOperationId`: canonical run-local identity for one AutoByteus deferred semantic compaction operation, created when compaction is requested and carried through started/completed/failed status events. Child `compactionRunId` / `compactionTaskId` identify the compactor execution, not the parent row.
 
 ## Design Reading Order
 
@@ -82,11 +86,15 @@ Target UX:
 | DS-CUI-003 | Primary End-to-End | Run reopen / `getRunProjection` hydration | Rehydrated run activities and monitor rows | Run projection hydration | Prevents reload/history regressions and synthetic compaction rows. |
 | DS-CUI-004 | Primary End-to-End | Shared monitor render in single/team/mobile shell | Scoped focused-run compaction row | `AgentEventMonitor` / focused run id | Preserves single-agent, team focused member, and mobile parity. |
 | DS-CUI-005 | Bounded Local | Tool lifecycle update method call | Matching tool activity mutation only | Agent activity store | Ensures new compaction rows do not get mutated by tool-only updates. |
+| DS-CUI-006 | Primary End-to-End | AutoByteus threshold-crossing after one turn | Same compaction Activity row terminal update after next-turn execution | Compaction operation identity owner | Prevents deferred semantic compaction lifecycle fan-out across request turn, execution turn, and child task metadata. |
 
 ## Primary Execution Spine(s)
 
 - Live compaction projection:
   `Backend/runtime COMPACTION_STATUS -> AgentStreamingService/TeamStreamingService -> handleCompactionStatus -> compactionActivityProjection -> agentActivityStore.upsertCompactionActivity -> AgentEventMonitor/AgentConversationFeed + ActivityFeed/MobileRunActivityList`
+
+- AutoByteus deferred semantic compaction identity:
+  `Token threshold crossed -> MemoryManager.requestCompaction creates/returns CompactionOperationId -> requested status with operation id -> PendingCompactionExecutor executes same pending operation on later turn -> started/completed/failed status with same operation id + child compactor metadata -> one activity row updates in place`
 
 - Activity render:
   `agentActivityStore.getActivities(runId) -> ActivityFeed -> ToolActivityItem OR CompactionActivityItem`
@@ -103,6 +111,7 @@ Target UX:
 | DS-CUI-003 | Reopen hydration accepts persisted projection activity entries. Tool entries hydrate as before; compaction entries hydrate only when durable projection evidence exists. | GraphQL projection, hydration adapter, activity store | Run projection hydration | Server historical replay conversion, no synthetic rows |
 | DS-CUI-004 | Shared monitor shells identify the same focused run as today. `AgentEventMonitor` reads compaction activities for `conversation.id` and passes them into the feed, so single/team/mobile surfaces share placement. | Shell, AgentEventMonitor, AgentConversationFeed | AgentEventMonitor | Focused member selection, mobile reuse |
 | DS-CUI-005 | Tool-specific store methods search only `kind: 'tool'` rows by invocation id, so compaction rows cannot be accidentally terminalized or assigned tool results/logs. | Store action, tool activity list | AgentActivityStore | Type guards, method rename/update |
+| DS-CUI-006 | AutoByteus semantic compaction is deferred: a response turn can schedule compaction, then the next input turn executes it before dispatch. Those phases are one parent operation. The stable operation id is created by the compaction owner and carried through every status event; turn ids and child compactor run/task ids remain metadata. | token-budget evaluator, MemoryManager, PendingCompactionExecutor, reporter, compaction projection, activity store | MemoryManager / compaction operation identity owner | requested turn, execution turn, child compactor metadata |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -121,6 +130,7 @@ Target UX:
 | `AgentStreamingService` / `TeamStreamingService` | Transport routing to the correct focused/single member context; no presentation policy. |
 | `handleCompactionStatus` | Status-handler entrypoint, latest `AgentRunState.compactionStatus` update, delegation to compaction projection. |
 | `compactionActivityProjection` | Compaction payload normalization, phase mapping, row identity selection, created/updated timestamp policy, projection into `CompactionActivity`. |
+| `MemoryManager` / compaction pending state | AutoByteus semantic compaction operation identity, pending/active lifecycle state, requested-turn association, clear-on-success and preserve-on-failure semantics. |
 | `AgentActivityStore` | Ordered run activity state, discriminated `RunActivity` model, tool-only mutation isolation, compaction activity upsert. |
 | `AgentEventMonitor` | Shared monitor shell and run-id bridge from conversation to activity store; no banner-specific policy. |
 | `AgentConversationFeed` | In-flow feed item composition and rendering of messages plus compaction rows. |
@@ -297,6 +307,7 @@ Forbidden:
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
 | `handleCompactionStatus(payload, context)` | live compaction status | Entry handler, latest status update, projection delegation | `CompactionStatusPayload`, `AgentContext` | No UI placement logic. |
+| `CompactionStatusPayload.compaction_operation_id` | AutoByteus semantic compaction parent operation | Stable identity from request through terminal phase | opaque run-local operation id string | Required for AutoByteus deferred semantic compaction. |
 | `projectCompactionStatusToActivity(...)` or equivalent | compaction activity | Normalize payload and produce/upsert activity | run id + previous status + payload | Must handle `phase` and provider `status`. |
 | `agentActivityStore.getActivities(runId)` | run activity list | Return mixed run activities in order | run id | General Activity UI uses this. |
 | `agentActivityStore.getToolActivities(runId)` | tool activity list | Return only tool rows | run id | Tool projection/tests use this when they need tool shape. |
@@ -310,7 +321,7 @@ Forbidden:
 
 | Interface | Responsibility Is Singular? (`Yes`/`No`) | Identity Shape Is Explicit? (`Yes`/`No`) | Ambiguous Selector Risk (`Low`/`Medium`/`High`) | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `projectCompactionStatusToActivity` | Yes | Yes | Medium | Define explicit activity id precedence and previous-active reuse. |
+| `projectCompactionStatusToActivity` | Yes | Yes | Medium | Identity precedence: `compaction_operation_id` first for semantic compaction; otherwise reuse active semantic lifecycle before treating child `compaction_run_id` / `compaction_task_id` as identity; provider-native boundary identity remains separate. |
 | `getActivities` | Yes | Yes | Low | Return `RunActivity[]`; callers branch by `kind`. |
 | Tool-specific store actions | Yes | Yes | Low | Rename or constrain to `ToolActivity`. |
 | `AgentConversationFeed` props | Yes | Yes | Low | Accept already-projected compaction activities only. |
@@ -376,6 +387,8 @@ Forbidden:
 | Add separate compaction-only Activity section | Could avoid broadening Activity item union | Rejected | Keep compaction in general Activity feed with discriminated activity type. |
 | Historical frontend fabrication from latest status | Would make rows appear without server projection | Rejected | Hydrate only durable projection entries. |
 | Leave tool-only method names ambiguous | Fewer callsite changes | Rejected where ambiguity affects boundaries | Split generic reads from tool-specific mutations. |
+| Use child `compaction_task_id` or `compaction_run_id` as the row identity for terminal semantic compaction | Those ids arrive on failure/completion and are stable for child execution | Rejected | They are child compactor execution metadata; parent row identity is `compaction_operation_id` from the requested/pending semantic compaction operation. |
+| Use `turn_id` as semantic compaction row identity | It is available in every current status payload | Rejected | Request turn and execution turn can differ; `turn_id` is lifecycle metadata, not parent operation identity. |
 
 ## Derived Layering (If Useful)
 
@@ -391,11 +404,17 @@ Layering follows ownership; presentation does not parse transport payloads or ow
    - Define `RunActivity`, `ToolActivity`, and `CompactionActivity` with `kind` discriminants and `activityId`.
    - Add `getActivities`, `getToolActivities`, `getCompactionActivities`, `addActivity`, `addToolActivity`, tool-specific update helpers, and `upsertCompactionActivity`.
    - Update existing tool projection/lifecycle callsites to use tool-specific helpers.
-2. Add `compactionActivityProjection.ts`:
+2. Add/refine `compactionActivityProjection.ts`:
    - Normalize agent-based `phase` and provider-native `status` into compaction phase.
-   - Resolve stable `activityId` using explicit task/run/boundary/turn identity and previous active status where needed.
+   - Resolve stable `activityId` with this precedence: semantic `compaction_operation_id`; active semantic lifecycle reuse; provider operation/boundary identity; only then defensive event fallback. Do not switch a queued/active semantic row to child `compaction_run_id` / `compaction_task_id` identity.
    - Preserve `createdAt` through store upsert; update `updatedAt` per event.
    - Return/update latest `AgentCompactionStatus` with activity identity if needed.
+2a. Add backend semantic compaction operation identity:
+   - Extend `MemoryManager` pending compaction state to create/retain an opaque `compaction_operation_id` when `requestCompaction()` first transitions into pending.
+   - Make repeated request evaluation while pending return the existing operation id rather than creating another operation.
+   - Include the same operation id on `requested`, `started`, `completed`, and `failed` status payloads.
+   - Keep `requested_turn_id` and `execution_turn_id` or equivalent metadata if useful; keep existing `turn_id` as event/current turn metadata.
+   - Clear the operation id only when compaction succeeds and the pending request is cleared; preserve it across failure while the pending compaction gate remains active.
 3. Update `handleCompactionStatus` to call the compaction projection and stop being a presentation-only status mapper.
 4. Replace monitor banner path:
    - Remove `CompactionStatusBanner` render/import from `AgentEventMonitor`.
@@ -429,7 +448,7 @@ Layering follows ownership; presentation does not parse transport payloads or ow
 - Type churn in tests and consumers that assumed `getActivities()` returned `ToolActivity[]`.
   - Mitigation: provide `getToolActivities()` and update tool-specific callsites first.
 - Duplicate compaction rows if identity resolution changes between requested/started/completed payloads.
-  - Mitigation: projection helper must reuse prior active activity when explicit identity is missing or arrives late.
+  - Mitigation: backend emits stable `compaction_operation_id`; projection treats child compactor run/task ids as metadata for active semantic operations and reuses prior active semantic lifecycle defensively.
 - Provider-native payloads without `phase` may render as generic updates if not normalized.
   - Mitigation: map provider `status` values to compaction phases.
 - Mobile labels may remain tool-only after mixed activity rows.
@@ -443,7 +462,7 @@ Layering follows ownership; presentation does not parse transport payloads or ow
 - Use existing autoscroll behavior in `AgentConversationFeed`; ensure compaction row insertion triggers the same pinned-scroll behavior as new messages.
 - Add/adjust tests at minimum:
   - `agentActivityStore` mixed activity and tool-only mutation isolation.
-  - `agentStatusHandler` / compaction projection: started/completed/failed, late identity reuse, provider `status` normalization.
+  - `agentStatusHandler` / compaction projection: requested -> started -> failed/completed for one native deferred lifecycle across different turns, terminal metadata enrichment without new row, provider `status` normalization.
   - `AgentEventMonitor` / `AgentConversationFeed`: no banner, row inside feed, single/team/mobile scope through shared monitor.
   - `ActivityFeed`: tool and compaction rows render in one feed, no separate section.
   - Mobile Activity list/digest: compaction row appears in existing Activity area with non-tool label.

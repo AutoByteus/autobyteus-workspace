@@ -9,6 +9,9 @@ export interface AgentCompactionStatus {
   message: string;
   activityId?: string | null;
   turnId?: string | null;
+  compactionOperationId?: string | null;
+  requestedTurnId?: string | null;
+  executionTurnId?: string | null;
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;

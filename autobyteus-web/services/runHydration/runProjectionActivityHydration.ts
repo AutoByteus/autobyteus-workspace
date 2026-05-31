@@ -24,6 +24,9 @@ export interface RunProjectionCompactionActivityEntry {
   phase?: CompactionStatusPhase | null;
   message?: string | null;
   turnId?: string | null;
+  compactionOperationId?: string | null;
+  requestedTurnId?: string | null;
+  executionTurnId?: string | null;
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
@@ -189,6 +192,9 @@ const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): Comp
     phase,
     message,
     turnId: entry.turnId ?? null,
+    compactionOperationId: entry.compactionOperationId ?? null,
+    requestedTurnId: entry.requestedTurnId ?? null,
+    executionTurnId: entry.executionTurnId ?? null,
     selectedBlockCount: entry.selectedBlockCount ?? null,
     compactedBlockCount: entry.compactedBlockCount ?? null,
     rawTraceCount: entry.rawTraceCount ?? null,

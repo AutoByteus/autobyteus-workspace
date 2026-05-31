@@ -22,7 +22,7 @@ User reports the compacting UI feels not nice because it is shown at the top of 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row`
 - Current Branch: `codex/compacting-ui-event-monitor-row`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`
 - Bootstrap Base Branch: `origin/personal`
@@ -58,6 +58,7 @@ User reports the compacting UI feels not nice because it is shown at the top of 
 | 2026-05-31 | Code | `autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts`; `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts`; `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts` | Inspect agent-based compaction status payloads | Semantic/agent-based compaction emits `phase: requested/started/completed/failed` plus counts and compactor identity metadata. | No |
 | 2026-05-31 | Test | `autobyteus-web/components/workspace/agent/__tests__/AgentEventMonitor.spec.ts`; `autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts` | Inspect current test anchors | Tests currently assert banner forwarding and status handler latest-state mapping; these need updates for row projection/rendering. | Yes |
 | 2026-05-31 | Other | User approval in conversation after requirements refinement | Confirm final scope before design | User agreed compacting should appear inside Activity, but definitely not as tool activity; no separate compaction-only section. | No |
+| 2026-05-31 | Trace | `validation-report.md`; `browser-e2e-evidence/20260531-101302/browser-compaction-finding.md`; screenshots `05-queued-activity-row.png`, `06-compacting-duplicate-row.png`, `07-final-duplicate-failed-rows.png`, `08-user-observed-duplicate-rows.png`; `backend-live.log` | Investigate API/E2E design-impact reroute | Live LM Studio / AutoByteus native-runtime browser validation showed one deferred semantic compaction lifecycle emitted `requested` on `turn_0002`, `started` on `turn_0003`, and `failed` on `turn_0003`, but UI rendered separate queued/compacting/failed rows. Classified as CUI-E2E-009 Fail / Design Impact. | Yes: refine lifecycle identity design |
 
 ## Current Behavior / Current Flow
 
@@ -153,4 +154,13 @@ User reports the compacting UI feels not nice because it is shown at the top of 
 
 ## Notes For Architect Reviewer
 
-Requirements are approved with Activity side in scope. Design must explicitly broaden the Activity model with typed non-tool rows, keep compaction inside the existing Activity area/feed, avoid a separate compaction-only section, and avoid fake tool rows.
+Requirements are approved with Activity side in scope. Design-impact refinement is required after CUI-E2E-009: one AutoByteus deferred semantic compaction operation must keep a stable parent activity identity across requested -> started -> completed/failed, even when request/execution turns and child compactor run/task ids differ. Design must explicitly broaden the Activity model with typed non-tool rows, keep compaction inside the existing Activity area/feed, avoid a separate compaction-only section, avoid fake tool rows, and prevent lifecycle fan-out.
+
+
+## Design-impact evidence from Round 2 validation
+
+- Scenario: real browser test using local backend/frontend, LM Studio through AutoByteus native runtime, and lowered frontend server settings (`AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.01`, `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=4000`).
+- Observed lifecycle: `turn_0002` emitted `phase: requested`; `turn_0003` emitted `phase: started`; the same pending compaction execution timed out and emitted `phase: failed` with `compaction_run_id` and `compaction_task_id`.
+- Observed UI failure: three separate compaction rows/cards (`queued`, `compacting`, `failed`) appeared for one deferred semantic compaction lifecycle.
+- Design implication: `turn_id`, later `compaction_run_id`, and later `compaction_task_id` cannot be the canonical parent activity identity for AutoByteus deferred semantic compaction. They are lifecycle metadata. The parent operation needs a stable identity spanning request and execution turns.
+- Evidence artifacts: `validation-report.md`, `browser-e2e-evidence/20260531-101302/browser-compaction-finding.md`, `backend-live.log`, and screenshots under `browser-e2e-evidence/20260531-101302/screenshots/`.

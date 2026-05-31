@@ -72,6 +72,8 @@ Medium
 - REQ-CUI-007: The Activity model must represent compaction as an explicit non-tool run activity type instead of a fake tool call.
 - REQ-CUI-008: Desktop Activity feed and mobile Activity surfaces must render compaction rows inside the existing Activity area with labels/icons/statuses appropriate to compaction, while keeping existing tool rows unchanged.
 - REQ-CUI-012: The UI must not introduce a separate compaction-only Activity section for this change; compaction should appear as part of the general run activity feed.
+- REQ-CUI-013: One AutoByteus deferred semantic compaction lifecycle must update one compaction activity row from `requested`/queued through `started`/compacting to terminal `completed` or `failed`, even when the request turn and execution turn differ.
+- REQ-CUI-014: For AutoByteus deferred semantic compaction, `compaction_run_id` and `compaction_task_id` are child execution metadata and must not replace the parent compaction activity identity after a row is already queued/active.
 - REQ-CUI-009: Historical/reloaded runs must show compaction rows only when durable projection data provides compaction evidence; current non-compaction history hydration must remain unchanged.
 - REQ-CUI-010: Existing conversation message rendering, tool call indicators, token cost display, autoscroll behavior, composer placement, and focused-member routing must not regress.
 - REQ-CUI-011: Documentation that describes compaction as a top banner must be updated or explicitly recorded as no longer accurate after implementation.
@@ -87,6 +89,8 @@ Medium
 - AC-CUI-007: Desktop Activity feed count includes compaction rows as run activity events and renders them distinctly from tool rows.
 - AC-CUI-008: Mobile Activity count/list includes compaction rows and is labeled to avoid implying the list is tool-only.
 - AC-CUI-012: No new separate compaction-only Activity section is rendered; compaction appears in the existing Activity area/feed.
+- AC-CUI-013: In a live AutoByteus native-runtime flow where `turn_N` emits `requested` and `turn_N+1` emits `started` then `failed` or `completed`, the event monitor and Activity area show one compaction row/card whose state updates rather than separate queued/running/terminal rows.
+- AC-CUI-014: When terminal compaction metadata includes `compaction_run_id` and `compaction_task_id`, the existing queued/active compaction row is updated with those metadata fields instead of creating a new row keyed by the child compactor run/task.
 - AC-CUI-009: Existing `ToolActivity` rows still render tool name, context text, status chip, details, result, error, highlighting, and scroll-to-highlight behavior as before.
 - AC-CUI-010: Reopened historical runs do not show synthetic compaction rows unless the run projection contains a compaction-derived entry.
 - AC-CUI-011: Focused tests cover the streaming handler/projection, monitor row rendering, single-agent/team prop path, and Activity rendering if Activity side visibility is in scope.
@@ -109,6 +113,8 @@ Medium
 
 ## Risks / Open Questions
 
+- 2026-05-31 API/E2E design-impact update: live LM Studio / AutoByteus native runtime validation proved that deferred semantic compaction may emit `requested` on one turn and `started`/terminal status on the next turn. This is one lifecycle and must update one row.
+
 - OQ-CUI-001: Should completed compaction rows remain visible indefinitely in live conversation, or should only requested/started/failed stay prominent while completed is compact/minimized?
 - OQ-CUI-003: For provider-native compaction payloads that contain `status: compacting/compacted` but no `phase`, should the frontend normalizer map them into the same row model in this change?
 - OQ-CUI-004: Should a row link to `compactionRunId` when present, and if so which existing run-history navigation API should own that action?
@@ -125,6 +131,8 @@ Medium
 - REQ-CUI-008: UC-005
 - REQ-CUI-009: UC-006
 - REQ-CUI-012: UC-005
+- REQ-CUI-013: UC-001, UC-002, UC-005
+- REQ-CUI-014: UC-001, UC-002, UC-005
 - REQ-CUI-010: UC-001, UC-003, UC-004, UC-005
 - REQ-CUI-011: UC-001 through UC-006
 
@@ -132,9 +140,10 @@ Medium
 
 - AC-CUI-001 through AC-CUI-006: Active/focused monitor-row behavior for single, team, and mobile surfaces.
 - AC-CUI-007 through AC-CUI-009, AC-CUI-012: Activity side integration and tool-row regression protection.
+- AC-CUI-013 through AC-CUI-014: Stable deferred semantic compaction lifecycle identity and metadata update behavior.
 - AC-CUI-010: Historical/reload behavior.
 - AC-CUI-011: Validation coverage.
 
 ## Approval Status
 
-Approved by user on 2026-05-31 in conversation. Approved scope: **include the in-monitor row as mandatory; include Activity side representation inside the existing general Activity area through a typed non-tool activity model; do not add a separate compaction-only section; do not fake compaction as a tool row.**
+Approved by user on 2026-05-31 in conversation. Design-impact refinement on 2026-05-31 adds stable deferred semantic compaction lifecycle identity after live LM Studio/browser validation. Approved scope: **include the in-monitor row as mandatory; include Activity side representation inside the existing general Activity area through a typed non-tool activity model; do not add a separate compaction-only section; do not fake compaction as a tool row.**

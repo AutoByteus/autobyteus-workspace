@@ -4,6 +4,9 @@ export interface CompactionStatusPayload {
   status?: string | null;
   turn_id?: string | null;
   turnId?: string | null;
+  compaction_operation_id?: string | null;
+  requested_turn_id?: string | null;
+  execution_turn_id?: string | null;
   selected_block_count?: number | null;
   compacted_block_count?: number | null;
   raw_trace_count?: number | null;

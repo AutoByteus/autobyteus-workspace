@@ -22,6 +22,10 @@ import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
 
 type CompactionEventPayload = {
   phase: string;
+  turn_id?: string | null;
+  compaction_operation_id?: string | null;
+  requested_turn_id?: string | null;
+  execution_turn_id?: string | null;
   compaction_agent_definition_id?: string | null;
   compaction_agent_name?: string | null;
   compaction_runtime_kind?: string | null;
@@ -194,6 +198,16 @@ describe('Agent runtime compaction integration', () => {
       expect(compactionEvents.map((event) => event.phase)).toEqual(['requested']);
 
       const memoryManager = agent.context.state.memoryManager;
+      const requestedOperationId = compactionEvents[0]?.compaction_operation_id;
+      expect(typeof requestedOperationId).toBe('string');
+      expect(memoryManager?.getPendingCompactionRequest()).toMatchObject({
+        operationId: requestedOperationId,
+        requestedTurnId: compactionEvents[0]?.turn_id,
+      });
+      expect(compactionEvents[0]).toMatchObject({
+        requested_turn_id: compactionEvents[0]?.turn_id,
+        execution_turn_id: null,
+      });
       const epochBeforeCompaction = memoryManager?.workingContextSnapshot.epochId ?? 0;
 
       await agent.postUserMessage(new AgentInputUserMessage('What should you do next?'));
@@ -203,8 +217,19 @@ describe('Agent runtime compaction integration', () => {
       )).toBe(true);
 
       expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'completed']);
+      expect(compactionEvents.map((event) => event.compaction_operation_id)).toEqual([
+        requestedOperationId,
+        requestedOperationId,
+        requestedOperationId,
+      ]);
+      expect(compactionEvents[1]).toMatchObject({
+        requested_turn_id: compactionEvents[0]?.turn_id,
+        execution_turn_id: compactionEvents[1]?.turn_id,
+      });
       expect(compactionEvents[2]).toMatchObject({
         phase: 'completed',
+        requested_turn_id: compactionEvents[0]?.turn_id,
+        execution_turn_id: compactionEvents[1]?.turn_id,
         compaction_agent_definition_id: 'memory-compactor',
         compaction_agent_name: 'Memory Compactor',
         compaction_runtime_kind: 'codex_app_server',
@@ -213,6 +238,7 @@ describe('Agent runtime compaction integration', () => {
       });
       expect(compactionEvents[2]?.raw_trace_count).toBeGreaterThan(0);
       expect(compactionEvents[2]?.semantic_fact_count).toBe(1);
+      expect(memoryManager?.getPendingCompactionRequest()).toBeNull();
 
       expect(compactionRunner.tasks).toHaveLength(1);
       expect(compactionRunner.tasks[0]?.prompt).toContain('[SETTLED_BLOCKS]');
@@ -300,13 +326,27 @@ describe('Agent runtime compaction integration', () => {
       expect(mainLLM.requests).toHaveLength(4);
       expect(compactionRunner.tasks).toHaveLength(1);
       expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'failed']);
+      const failedOperationId = compactionEvents[0]?.compaction_operation_id;
+      expect(typeof failedOperationId).toBe('string');
+      expect(compactionEvents.map((event) => event.compaction_operation_id)).toEqual([
+        failedOperationId,
+        failedOperationId,
+        failedOperationId,
+      ]);
+      expect(compactionEvents[1]).toMatchObject({
+        requested_turn_id: compactionEvents[0]?.turn_id,
+        execution_turn_id: compactionEvents[1]?.turn_id,
+      });
       expect(compactionEvents[2]).toMatchObject({
+        requested_turn_id: compactionEvents[0]?.turn_id,
+        execution_turn_id: compactionEvents[1]?.turn_id,
         compaction_agent_definition_id: 'memory-compactor',
         compaction_model_identifier: 'gpt-5.4-codex',
         compaction_run_id: 'compaction-run-1',
       });
       expect(compactionEvents[2]?.error_message).toContain('Memory compaction failed before dispatch');
       expect(agent.context.state.memoryManager?.compactionRequired).toBe(true);
+      expect(agent.context.state.memoryManager?.getPendingCompactionRequest()?.operationId).toBe(failedOperationId);
       expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
       expect(store.readArchiveRawTraces()).toHaveLength(0);
 

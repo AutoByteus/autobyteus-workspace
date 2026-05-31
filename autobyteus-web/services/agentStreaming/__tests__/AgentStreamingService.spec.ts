@@ -271,6 +271,9 @@ describe('AgentStreamingService', () => {
                     compacted_block_count: 2,
                     raw_trace_count: 4,
                     semantic_fact_count: 1,
+                    compaction_operation_id: 'operation-1',
+                    requested_turn_id: 'turn-requested',
+                    execution_turn_id: 'turn-1',
                     compaction_agent_definition_id: 'memory-compactor',
                     compaction_agent_name: 'Memory Compactor',
                     compaction_runtime_kind: 'codex_app_server',
@@ -283,10 +286,13 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.compactionStatus).toEqual({
-            activityId: 'compaction:task:compaction-task-1',
+            activityId: 'compaction:operation:operation-1',
             phase: 'started',
             message: 'Compacting memory…',
             turnId: 'turn-1',
+            compactionOperationId: 'operation-1',
+            requestedTurnId: 'turn-requested',
+            executionTurnId: 'turn-1',
             selectedBlockCount: 3,
             compactedBlockCount: 2,
             rawTraceCount: 4,

@@ -43,6 +43,9 @@ export interface HistoricalReplayCompactionEvent {
   phase: RunProjectionCompactionPhase;
   message: string;
   turnId: string | null;
+  compactionOperationId: string | null;
+  requestedTurnId: string | null;
+  executionTurnId: string | null;
   provider: string | null;
   sourceSurface: string | null;
   boundaryKey: string | null;
