@@ -13,7 +13,7 @@
         <button
           type="button"
           :class="saveButtonClass"
-          :disabled="isSaving"
+          :disabled="!canSave || isSaving"
           data-testid="compaction-config-save"
           @click="save"
         >
@@ -95,11 +95,46 @@ const activeContextTokensOverride = ref('')
 const detailedLogsEnabled = ref(false)
 const isSaving = ref(false)
 
+const normalizeTextSetting = (value: unknown): string => (typeof value === 'string' ? value.trim() : '')
+
+const parseDetailedLogsValue = (value: unknown): boolean => {
+  const normalizedValue = normalizeTextSetting(value).toLowerCase()
+  return ['1', 'true', 'yes', 'on'].includes(normalizedValue)
+}
+
+const triggerRatioPercentFromSetting = (value: unknown): string => {
+  const ratio = Number(normalizeTextSetting(value))
+  return Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
+}
+
+const currentTriggerRatioPercent = computed(() =>
+  triggerRatioPercentFromSetting(store.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value),
+)
+const currentCompactionAgentDefinitionId = computed(() =>
+  normalizeTextSetting(store.getSettingByKey(COMPACTION_AGENT_DEFINITION_ID_KEY)?.value),
+)
+const currentActiveContextTokensOverride = computed(() =>
+  normalizeTextSetting(store.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value),
+)
+const currentDetailedLogsEnabled = computed(() =>
+  parseDetailedLogsValue(store.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value),
+)
+
+const isDirty = computed(() =>
+  normalizeTextSetting(triggerRatioPercent.value) !== currentTriggerRatioPercent.value ||
+  normalizeTextSetting(compactionAgentDefinitionId.value) !== currentCompactionAgentDefinitionId.value ||
+  normalizeTextSetting(activeContextTokensOverride.value) !== currentActiveContextTokensOverride.value ||
+  detailedLogsEnabled.value !== currentDetailedLogsEnabled.value,
+)
+
+const canSave = computed(() => isDirty.value && !isSaving.value)
+
+const saveButtonBaseClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0'
+const saveButtonIdleClass = 'border-slate-200 bg-white text-slate-400 hover:border-slate-200 hover:bg-white'
+const saveButtonReadyClass = 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-200 hover:border-blue-700 hover:bg-blue-700'
 const saveButtonClass = computed(() => [
-  'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0',
-  isSaving.value
-    ? 'border-slate-200 bg-white text-slate-400'
-    : 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-200 hover:border-blue-700 hover:bg-blue-700',
+  saveButtonBaseClass,
+  canSave.value ? saveButtonReadyClass : saveButtonIdleClass,
 ])
 
 const agentOptions = computed(() => agentDefinitionStore.agentDefinitions
@@ -126,14 +161,10 @@ const selectedAgentSummary = computed(() => {
 })
 
 const syncFromStore = (): void => {
-  const ratioRaw = store.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value?.trim() ?? ''
-  const ratio = Number(ratioRaw)
-  triggerRatioPercent.value = Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
-
-  compactionAgentDefinitionId.value = store.getSettingByKey(COMPACTION_AGENT_DEFINITION_ID_KEY)?.value ?? ''
-  activeContextTokensOverride.value = store.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value ?? ''
-  const debugValue = store.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value?.trim().toLowerCase() ?? ''
-  detailedLogsEnabled.value = ['1', 'true', 'yes', 'on'].includes(debugValue)
+  triggerRatioPercent.value = currentTriggerRatioPercent.value
+  compactionAgentDefinitionId.value = currentCompactionAgentDefinitionId.value
+  activeContextTokensOverride.value = currentActiveContextTokensOverride.value
+  detailedLogsEnabled.value = currentDetailedLogsEnabled.value
 }
 
 watch(() => store.settings, syncFromStore, { deep: true, immediate: true })
@@ -147,6 +178,8 @@ onMounted(async () => {
 })
 
 const save = async (): Promise<void> => {
+  if (!canSave.value || isSaving.value) return
+
   isSaving.value = true
   try {
     const ratioPercent = Number(triggerRatioPercent.value)
