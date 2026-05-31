@@ -284,6 +284,63 @@ describe('openTeamRun', () => {
     });
   });
 
+  it('normalizes stale member focus against existing active execution before hydration', async () => {
+    const existingContext = {
+      teamRunId: 'team-1',
+      config: {},
+      memberTree,
+      memberNodesByRouteKey,
+      leafAgentContextsByRouteKey: new Map([
+        ['member-a', {
+          config: { isLocked: true },
+          state: {
+            runId: 'run-a',
+            conversation: { id: 'live-a', messages: [{ type: 'user', text: 'delegate' }] },
+            currentStatus: 'running',
+          },
+        }],
+        ['member-b', {
+          config: { isLocked: true },
+          state: {
+            runId: 'run-b',
+            conversation: { id: 'live-b', messages: [] },
+            currentStatus: 'initializing',
+          },
+        }],
+      ]),
+      coordinatorMemberRouteKey: 'member-a',
+      historicalHydration: null,
+      focusedMemberRouteKey: 'member-a',
+      currentStatus: 'running',
+      isSubscribed: true,
+      taskPlan: null,
+      taskStatuses: null,
+    };
+    const projectedMembers = new Map([
+      ['member-a', createMemberContext('run-a', 'projected-a')],
+      ['member-b', createMemberContext('run-b', 'projected-b')],
+    ]);
+    getTeamContextByIdMock.mockReturnValue(existingContext);
+    loadTeamRunContextHydrationPayloadMock.mockResolvedValue(
+      createPayload(projectedMembers, new Map()),
+    );
+
+    await openTeamRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'member-b',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    });
+
+    expect(loadTeamRunContextHydrationPayloadMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberRouteKey: 'member-a',
+      }),
+    );
+    expect(existingContext.focusedMemberRouteKey).toBe('member-a');
+  });
+
   it('preserves existing member-scoped statuses when reopening an active unsubscribed team', async () => {
     const existingContext = {
       teamRunId: 'team-1',

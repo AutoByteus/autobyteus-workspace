@@ -10,6 +10,8 @@ The current repository has two different levels of tool ownership:
 - Server-managed team backends expose `postMessage`, `deliverInterAgentMessage`, approvals, `interruptMember`, and whole-team `terminate`, but they do not expose a clean per-member “settle/terminate after task completion” boundary.
 - Mixed AutoByteus standalone members currently filter out task-management tools (`autobyteus-mixed-tool-exposure.ts`), which is direct evidence that the current task tool surface is not safe as a cross-runtime team mechanism.
 - Current server-managed team managers also assume one active runtime per logical member route key. Codex/Claude managers store active runs as `Map<memberRouteKey, AgentRun>`, mixed stores one handle per route key, and the implemented task-delegation activation coordinator groups runnable work by assignee route key. That shape is not sufficient for the refined model where two independent tasks assigned to the same logical member can run as two task-agent instances in parallel.
+- Downstream Round 6 browser validation found that the backend now emits task-agent identity and settlement behavior, but the frontend still projects task-agent work into the logical worker row/conversation. The UI kept the logical `worker` row visible/offline after completion, showed the task work packet inside that logical member conversation, and had no separate task-agent row/card to appear and disappear. That does not satisfy the user's sub-agent lifecycle expectation.
+- User follow-up on 2026-05-31 challenged the interpretation that the remaining `worker` row is merely a logical member/template. In the task-delegation model, the internal logical-member/template distinction is valid, but default active run UI must not keep task-delegation-only assignees as visible offline execution participants after their final task-agent instance settles.
 
 The user-refined target is not task-plan polling. It is delegation:
 
@@ -31,6 +33,8 @@ Replace the model-facing task-management surface with a server-owned task-delega
 - Notify the coordinator/delegator when a delegated task reaches a terminal status.
 - Settle/exit the task-agent instance after terminal status is safely processed and that instance's current turn is idle. For every supported runtime/backend path, this is mandatory sub-agent lifecycle behavior, not an optional optimization.
 - Introduce a task-agent instance identity below the logical member route. `member_name` selects the logical member/template; activation creates one task-agent instance per runnable task by default, subject to concurrency policy.
+- Project the same concrete task-agent instance lifecycle to the frontend: a task-agent instance appears as a transient sub-agent entity while active and disappears from active team/member UI after settlement. A static logical member/template row may remain only in an explicitly labeled non-execution roster/config/available-member surface, not as an active/offline execution participant.
+- Tighten active-run UI semantics: after task-delegation-only work completes, any visible worker execution entity for that work disappears. Logical members/templates may remain only in explicit roster/config/available-member surfaces or separate non-task conversation surfaces, never as a lingering `worker • Offline` execution row.
 
 ## Downstream Requirement Clarification: Mandatory Sub-Agent Settlement
 
@@ -56,6 +60,27 @@ Design decision:
 5. **Settlement:** settlement targets the task-agent instance, not the logical member template. Exiting one completed task-agent instance must not terminate another running instance of the same logical member.
 6. **Status/UI/history:** events and status snapshots should carry both logical member identity and task-agent instance identity so parallel workers are distinguishable.
 
+## Downstream Requirement Clarification: Frontend Task-Agent Lifecycle UX
+
+API/E2E browser validation routed a frontend UX gap on 2026-05-30. The user expects delegated workers to feel like sub-agents: the task-agent instance becomes visible when work starts, and that task-agent instance disappears after it finishes/exits/settles. The observed frontend behavior kept only the logical `worker` member row visible/offline and embedded the task-agent work packet into the logical worker conversation; that is not the intended UX.
+
+User follow-up on 2026-05-31 clarified the ambiguity further: if the visible row says `worker • Offline` in the active run UI after terminal `update_task_status`, users reasonably interpret that as the task-model worker still being present. Therefore the design distinction is:
+
+- **Domain/internal truth:** `worker` as a logical team member/template still exists in the team definition and remains available for future delegation.
+- **Active execution UX:** a task-delegation-only `worker` must not remain visible as an active/offline execution participant after its final concrete task-agent instance settles.
+- **Roster/config exception:** the logical member may be shown only in a clearly labeled non-execution surface such as "Team members", "Available assignees", or "Team definition", without task-agent activity attached as its normal conversation.
+
+Design decision:
+
+1. **Separate visible subjects:** the frontend must represent a concrete task-agent instance as a transient active entity distinct from the logical member/template. The logical member is the reusable team-definition member selected by `member_name`; the task-agent instance is the concrete runtime doing one delegated task.
+2. **Appear condition:** the task-agent entity appears when the frontend observes task-agent activation/status/stream payload containing concrete task-agent identity (`task_agent_instance_id` and/or `task_agent_run_id`) for the team run.
+3. **Active lifetime:** the task-agent entity remains visible while the concrete run is initializing/running/idle-before-settlement. It carries the task-agent conversation/activity/tool lifecycle stream.
+4. **Disappear condition:** after terminal task status plus backend settlement/offline cleanup, the task-agent entity is removed from active team/member/running-agent UI. If that worker existed only as a delegated task-agent execution, no `worker`, `worker • Offline`, or equivalent worker execution row/card/header remains in the active run UI. The terminal result remains visible through task-delegation activity/history/coordinator notification, not as a lingering active/offline task-agent or worker row.
+5. **Logical member row behavior:** a static logical member row/card may remain only in an explicitly labeled roster/config/available-member view. It must be visually/structurally distinct from active execution, must not be selected as the completed task-agent's conversation, and must not use plain `Offline` status as the task-agent exit presentation.
+6. **Parallel same-member behavior:** if two task-agent instances for the same logical member run concurrently, the frontend shows two distinguishable transient entities and removes only the one whose concrete run settles.
+
+This is now an acceptance criterion in addition to backend settlement. Backend proof that a run is offline/settled is necessary but not sufficient if the frontend still collapses that task-agent into the logical member row.
+
 ## Achievability Assessment From Current Code
 
 The user model is achievable, but not by only changing the settlement coordinator. The current implementation has a reusable lower-level `AgentRunManager`, but the team layer above it currently collapses one logical member to one active runtime.
@@ -70,6 +95,8 @@ The user model is achievable, but not by only changing the settlement coordinato
 | `TaskDelegationRecord` | Stores `assignee: TaskDelegationMemberIdentity` only. | Not sufficient: no bound task-agent instance identity. | Add optional/required `taskAgentInstance` after activation. |
 | `updateTaskStatus` authorization | Checks `existing.assignee.memberRouteKey === context.caller.memberRouteKey`. | Unsafe for parallel same-member agents. | Resolve the bound task from caller task-agent instance/run ID; reject contexts with zero or multiple active bound tasks. |
 | Team events/status | Agent events carry logical `memberPath`/`memberRouteKey` and `memberRunId`; status snapshots assume one row per member. | Ambiguous for parallel instances. | Include both logical member identity and task-agent instance identity; allow multiple status rows for one logical member. |
+| Frontend team-run projection | `AgentTeamContext`/team views derive rows and message routing from `memberRouteKey`/`leafAgentContextsByRouteKey`. | Not sufficient: task-agent payloads with the same logical route are routed into the logical member conversation and no transient task-agent row can disappear. | Add a frontend task-agent instance projection keyed by `task_agent_run_id`/`task_agent_instance_id`; route task-agent streams to that projection and remove it from active UI after settlement. |
+| Frontend active member/tree views | Team views and workspace tree render logical `memberTree` rows even when no normal conversation/task-agent execution is active. | Misleading for task-only workers: a lingering `worker • Offline` row looks like the sub-agent failed to exit. | Split active execution projection from roster/topology projection; hide task-delegation-only logical workers from active execution after settlement or show them only in explicitly labeled roster/config surfaces. |
 
 ## Target Task-Agent Instance Architecture
 
@@ -190,6 +217,42 @@ Team events and status snapshots should expose both subjects:
 
 It is valid for `getMemberStatusSnapshots()` to return multiple active rows with the same `member_route_key` as long as `agent_id`/`task_agent_instance_id` differ. The team status aggregator should treat those rows as independent active runtimes.
 
+### Frontend Active Entity Projection
+
+The frontend needs the same identity split as the backend:
+
+```ts
+type TaskAgentFrontendEntity = {
+  taskAgentInstanceId: string;
+  taskAgentRunId: string;
+  taskId: string;
+  logicalMemberRouteKey: string;
+  logicalMemberName: string;
+  displayName: string; // e.g. "worker · task_0001"
+  conversation: Conversation;
+  currentStatus: AgentStatus;
+};
+```
+
+Frontend rules:
+
+- Team topology/logical member state remains keyed by `memberRouteKey`.
+- Task-agent active state is keyed by `taskAgentRunId` (fallback `taskAgentInstanceId` only when run ID is unavailable).
+- WebSocket payloads with `task_agent_run_id` or `task_agent_instance_id` are routed to the task-agent frontend entity, not to the logical member's normal conversation.
+- `AGENT_STATUS`/stream snapshots that contain task-agent identity create/update the task-agent entity while status is `initializing`, `running`, or `idle`.
+- Settlement/offline cleanup removes the task-agent entity from active team/member/running-agent UI. If the logical member has no separate normal conversation/run active, active execution UI must also remove or hide that worker as an execution participant; it must not leave `worker • Offline` as the visible representation of the completed task-agent.
+- The final task-agent conversation/activity is archived under completed task/task-agent history. It must not be moved into the logical member's normal conversation after active cleanup.
+- Logical member roster rows can remain only if the UI mode/surface is explicitly a roster/topology/config/available-assignee view. Those rows must not display the task-agent work packet as if it were the logical member's own normal conversation and should be labeled as member templates/available assignees, not active/offline sub-agents.
+
+### Active Execution Vs Team Roster Projection
+
+The frontend should maintain two projections:
+
+1. **Active execution projection:** coordinator/root run, normal member conversations that have been explicitly activated through direct messages/user messages, and active task-agent entities. Task-delegation-only workers disappear from this projection when their final task-agent settles.
+2. **Team roster/topology projection:** logical members from the team definition, used for configuration, future delegation targets, and optional available-member display. This projection can include `worker` after completion, but only outside active execution semantics and without task-agent conversation/activity attached as normal member state.
+
+Default task-delegation validation targets the active execution projection. Showing `worker • Offline` there after final settlement is a failure. Showing `worker` in a clearly labeled "Available member/template" roster is acceptable only if it is not selected as the completed task-agent and has no task-agent work packet/history attached as normal conversation.
+
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature + behavior change + refactor.
@@ -203,16 +266,22 @@ It is valid for `getMemberStatusSnapshots()` to return multiple active rows with
   - Team managers have member interrupt and whole-team terminate but not safe task-agent instance settlement.
   - Current server-managed team managers key active member runtimes by logical `memberRouteKey`, so two independent tasks assigned to the same logical member collapse into one runtime/session.
   - Current task activation groups runnable records by assignee route, which is batching, not task-agent instance creation.
+  - Current frontend team-run projection routes task-agent work into logical member rows/conversations, so users see a lingering offline `worker` row instead of a transient task-agent entity that appears and disappears.
+  - User-observed browser screenshots show terminal `update_task_status` with `settlement_requested: true` while the active run UI still contains a `worker • Offline` execution row, which contradicts the task-agent/sub-agent mental model.
 - Design response:
   - Introduce a server-owned `TaskDelegationService` as the authoritative boundary.
   - Hide the internal task/delegation ledger from model-facing tools.
   - Replace polling/query tools with push activation and push completion notification.
   - Add task-agent instance identity below logical member identity.
   - Add safe task-agent settlement after terminal status and idle.
+  - Add frontend task-agent active entity projection keyed by concrete task-agent identity.
+  - Split frontend active execution projection from team roster/topology projection so task-only worker execution rows disappear after settlement.
 - Refactor rationale:
   - Directly adding more runtime-specific `create_tasks`/`get_my_tasks` variants would preserve the current boundary problem.
   - A task-plan polling surface contradicts the intended delegation semantics and wastes model/tool calls.
   - Keeping one active runtime per logical member would make same-member parallel delegation impossible and would blur the subject identity of `update_task_status`.
+  - Keeping frontend state keyed only by logical member route would hide the task-agent lifecycle even when backend settlement is correct.
+  - Presenting logical member templates as offline active-run participants causes users to perceive settled task agents as still present.
 - Intentional deferrals and residual risk, if any:
   - General streamable HTTP/stdio MCP exposure is deferred. This ticket creates the canonical service that future MCP can adapt.
   - Durable persistence of the delegation ledger can be deferred if the current team-run lifetime model is in-memory; the design keeps the ledger behind one owner so persistence can be added later without changing model tools.
@@ -226,6 +295,9 @@ It is valid for `getMemberStatusSnapshots()` to return multiple active rows with
 - `Work packet`: the activation message content sent to a task-agent instance for one delegated task.
 - `Terminal status`: `completed` or `failed` for the first simplified model-facing protocol.
 - `Settling/exiting task agent`: stopping/terminating the task-agent instance after the delegated work turn is safely idle, without terminating the whole team or the reusable logical member template.
+- `Frontend task-agent entity`: the transient UI/session projection of one concrete task-agent instance, keyed by task-agent run/instance identity and removed from active UI after settlement.
+- `Active execution projection`: the frontend list/cards/header/conversation surfaces for currently active or explicitly normal-conversation participants. Task-delegation-only assignees leave this projection when their final task-agent settles.
+- `Team roster/topology projection`: the non-execution display of logical member templates/available assignees from the team definition.
 
 ## Design Reading Order
 
@@ -236,7 +308,8 @@ Read this design in this order:
 3. model-facing tool surface;
 4. internal ledger and event/notification behavior;
 5. runtime projection and lifecycle mapping;
-6. removal/decommission plan.
+6. frontend task-agent lifecycle projection;
+7. removal/decommission plan.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -261,6 +334,7 @@ Read this design in this order:
 | DS-004 | Return/Event | Terminal status update + task-agent idle event | Task-agent instance runtime settled/exited | `TaskDelegationSettlementCoordinator` + `TeamRun` lifecycle boundary | Prevents task agents from staying alive after bounded work. |
 | DS-005 | Bounded Local | Runtime bootstrap for a team member | Delegation protocol and tools become available | Runtime-specific task-delegation projection builders | Ensures current runtimes see the same canonical tool semantics. |
 | DS-006 | Primary/Concurrency | Multiple runnable tasks assigned to one logical member | Multiple task-agent instances running under that logical member | `TaskDelegationActivationCoordinator` + backend instance registry | Enables parallel same-member task delegation. |
+| DS-007 | Frontend Projection | Task-agent activation/status stream with concrete task-agent identity | Transient task-agent entity appears, then disappears from active UI after settlement | Frontend team-run projection store/components | Makes the backend task-agent lifecycle visible as sub-agent UX instead of a lingering logical member row. |
 
 ## Primary Execution Spine(s)
 
@@ -268,6 +342,7 @@ Read this design in this order:
 - DS-002: `update_task_status tool call -> runtime projection -> TaskDelegationToolService -> TaskDelegationService -> DelegationLedger terminal transition -> TaskDelegationCompletionNotifier -> TeamRun.postMessage(coordinator/delegator)`
 - DS-004: `terminal transition -> TaskDelegationSettlementCoordinator pending-settlement -> task-agent idle team event -> TeamRun.settleTaskAgentInstance/settleMemberInstance -> backend runtime termination`
 - DS-006: `same logical member has N runnable tasks -> activation coordinator applies concurrency policy -> creates N task-agent instance identities -> backend runs N independent task agents -> each settles independently`
+- DS-007: `backend task-agent AGENT_STATUS/stream payload with task_agent_run_id -> TeamStreamingService/frontend projection -> task-agent frontend entity row/card + scoped conversation -> terminal/offline/settlement cleanup -> remove transient entity from active UI, keep history/activity`
 
 ## Spine Narratives (Mandatory)
 
@@ -279,6 +354,7 @@ Read this design in this order:
 | DS-004 | Terminal updates do not stop the task agent inline. The settlement coordinator records pending settlement and waits for the task-agent instance to become idle, then asks the team runtime lifecycle boundary to settle only that instance. | Settlement coordinator, team run, backend team manager/member instance handle. | `TaskDelegationSettlementCoordinator` + `TeamRun` | Safe idle detection, coordinator/root protection, no whole-team termination, no sibling-instance termination. |
 | DS-005 | Runtime bootstrap injects general delegation protocol instructions and exposes the same canonical tools through Codex dynamic tools, Claude in-process MCP tools, and native wrappers if needed. | Projection builders, instruction composer, model runtime. | Runtime projection builders served by `TaskDelegationToolService` | Tool schema conversion, runtime approval behavior, tool-name normalization. |
 | DS-006 | If multiple runnable tasks target the same logical member, the activation coordinator starts separate task-agent instances up to that member's concurrency limit. Each instance receives one task packet and exits independently. | Ledger, activation coordinator, backend instance registry, task-agent runtime. | `TaskDelegationActivationCoordinator` + backend manager | Concurrency policy, instance identity generation, status disambiguation. |
+| DS-007 | The frontend consumes task-agent-identified stream/status payloads, creates a transient task-agent entity under/near the logical member, routes task-agent conversation/activity to that entity, and removes the entity after settlement/offline cleanup while preserving durable completion history. | Stream handler, frontend team-run projection store, team member/running-agent views. | Frontend team-run projection owner | Task-agent identity extraction, active entity cleanup, logical member roster distinction, archived activity/history. |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -291,6 +367,7 @@ Read this design in this order:
 - `TaskDelegationCompletionNotifier`: owns coordinator/delegator notification payloads and delivery.
 - `TaskDelegationSettlementCoordinator`: owns delayed safe task-agent instance settlement.
 - `TeamRun` / backend `TeamManager`: owns logical member messaging and task-agent runtime lifecycle.
+- Frontend team-run projection store/components: own visible active task-agent entity creation, routing, and cleanup for browser UX.
 
 ## Ownership Map
 
@@ -303,6 +380,7 @@ Read this design in this order:
 - `TaskDelegationCompletionNotifier` owns completion/failure message rendering and coordinator/delegator notification delivery.
 - `TaskDelegationSettlementCoordinator` owns safe-exit scheduling and waits for task-agent runtime idle before calling lifecycle APIs.
 - `TeamRun`/backend managers own actual runtime post/settle operations.
+- Frontend team-run projection owns only visual/session projection of logical members and concrete task-agent instances. It does not own delegation state, activation, or settlement decisions, but it must not collapse task-agent streams into `memberRouteKey`-only logical member rows.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -331,12 +409,14 @@ Read this design in this order:
 | Grouping independent runnable tasks by assignee into one activation packet | Collapses several parallel task-agent instances into one long-lived/member-level runtime. | One task-agent instance per runnable task selected by `TaskDelegationActivationCoordinator`. | In This Change If Parallel Task Agents Are In Scope | A later explicit batching policy may reintroduce batching with separate semantics. |
 | Direct `context.customData.teamContext.state.taskPlan` mutation by tools | Runtime-local and unsafe for server-managed/mixed teams. | `TaskDelegationService`/ledger boundary. | In This Change | Authoritative Boundary Rule applies. |
 | Active runtime maps keyed only by logical `memberRouteKey` for delegated task workers | Prevents multiple instances of the same logical member and makes settlement ambiguous. | Backend task-agent instance registry keyed by `taskAgentRunId`. | In This Change If Parallel Task Agents Are In Scope | The conversation/member route map may remain for `postMessage`/`send_message_to`. |
+| Frontend projection of task-agent work into the logical member row/conversation only | Hides the transient sub-agent lifecycle and leaves users with an offline logical worker row rather than a task-agent instance that appears and disappears. | Frontend task-agent active entity projection keyed by `task_agent_run_id`/`task_agent_instance_id`. | In This Change For Supported Frontend UX | Logical member roster rows may remain, but task-agent streams/conversations must be scoped to transient task-agent entities. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
 - Terminal notification: `Ledger terminal transition -> TaskDelegationCompletionNotifier -> TeamRun event TASK_DELEGATION -> TeamRun.postMessage(coordinator/delegator)`.
 - Multi-task activation: `delegate_tasks records created -> runnable records -> ActivationCoordinator -> task-agent instance start`.
 - Settlement: `Ledger terminal transition -> pending settlement keyed by taskAgentRunId -> AGENT idle/status event for that run -> TeamRun.settleTaskAgentInstance`.
+- Frontend task-agent lifecycle: `task-agent status/stream event -> frontend active task-agent entity -> scoped conversation/activity -> settlement/offline cleanup -> active entity removed`.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -365,6 +445,7 @@ Read this design in this order:
 | Team event projection | DS-002, DS-003 | UI/history/event pipeline | Emit visible task-delegation events. | Provides durable UI/history visibility. | Model-facing status polling returns. |
 | Safe idle detection | DS-004 | Settlement coordinator | Wait for current task-agent turn to complete before instance settlement. | Avoids interrupting tool result delivery. | Worker can be killed mid-tool-call. |
 | Backend task-agent instance registry | DS-001, DS-004, DS-006 | Team backend manager | Store active task-agent handles by concrete run ID and project their events/status. | Current route-key maps cannot represent parallel same-member workers. | TeamRun or TaskDelegationService could reach into backend internals. |
+| Frontend task-agent active entity projection | DS-007 | Frontend team-run projection store/components | Create/update/remove task-agent UI entities keyed by concrete task-agent identity, and route task-agent conversations to those entities. | Keeps sub-agent UX aligned with backend lifecycle. | Active UI would continue treating settled task agents as offline logical members. |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -376,6 +457,7 @@ Read this design in this order:
 | Task state primitives | `autobyteus-ts/src/task-management/*` | Reuse behind boundary or migrate | Current TaskPlan has status events and legacy dependency support. Status/event mechanics may be useful behind the boundary; dependency authoring/activation is deferred out of the first-ticket model-facing surface. | New service needed to own delegation semantics and safe settlement. |
 | Task-agent runtime instances | `AgentRunManager` plus team backend managers | Extend | `AgentRunManager` can create multiple concrete runs with unique IDs; team backends must add dynamic task-agent instance registries. | Existing `memberRuns`/`handles` maps are keyed only by logical member route. |
 | Member lifecycle | Team backend managers and mixed member handles | Extend/gate by backend | Need mandatory per-instance settlement for every supported task-delegation path; current whole-team terminate is too broad, and unsupported pure-team settlement cannot be exposed as supported delegation. | N/A |
+| Frontend team-run projection | `autobyteus-web` team context store, streaming handlers, and team views | Extend | Existing team views already know logical member topology and statuses. They should be extended to add task-agent instance entities rather than replaced wholesale. | Current state keys visible members/conversations by logical `memberRouteKey`; task-agent entities need concrete run identity. |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -385,7 +467,7 @@ Read this design in this order:
 | `agent-team-execution/task-delegation` | Delegation ledger, service, activation, task-agent identity allocation, completion notification, settlement. | DS-001..DS-004, DS-006 | `TaskDelegationService` | Create/Extend | Owns business semantics. |
 | Team run backend layer | Task-agent start/settle lifecycle and active instance registry. | DS-001, DS-004, DS-006 | `TeamRun`/`TeamManager` | Extend/gate | Add task-agent instance lifecycle boundary; a backend that cannot start/settle instances must not expose parallel task delegation as supported. |
 | Runtime projections | Codex/Claude/native tool exposure and protocol instructions. | DS-005 | Projection builders | Extend | No business logic. |
-| UI/history/event streaming | Task-delegation event display. | DS-002, DS-003 | Event pipeline | Extend | Replace task-plan polling surface with event visibility. |
+| UI/history/event streaming | Task-delegation event display plus task-agent active entity projection. | DS-002, DS-003, DS-007 | Event pipeline + frontend team-run projection | Extend | Replace task-plan polling surface with event visibility and project transient task-agent rows/cards from task-agent identity. |
 
 ## Draft File Responsibility Mapping
 
@@ -405,6 +487,10 @@ Read this design in this order:
 | `agent-team-execution/task-delegation/task-delegation-completion-notifier.ts` | Delegation domain | Notifier | Emit team events and notify coordinator/delegator. | Separates notification from status transition. | Yes |
 | `agent-team-execution/task-delegation/task-delegation-settlement-coordinator.ts` | Delegation domain | Settlement coordinator | Track pending settlement and settle when task-agent instance is idle/no bound work remains. | Prevents unsafe inline stop. | Yes |
 | `agent-team-execution/task-delegation/task-delegation-run-registry.ts` | Delegation domain | Runtime binding registry | Bind active `TeamRun` to ledger/service/unsubscribers. | Avoids adding ad hoc fields to every runtime context. | Yes |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | Frontend team projection | UI state model | Add task-agent active entity map keyed by task-agent run/instance identity while preserving logical member topology. | Keeps frontend identity model explicit. | Yes |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | Frontend streaming projection | Message routing | Route payloads with `task_agent_run_id`/`task_agent_instance_id` to task-agent entities instead of logical member conversations. | Existing router is the boundary where stream payload identity becomes UI state. | Yes |
+| `autobyteus-web/services/runHydration/teamRunStatusHydration.ts` | Frontend hydration | Status snapshot projection | Hydrate/update/remove task-agent entities from live status snapshots and settlement/offline cleanup. | Centralizes live status merge. | Yes |
+| `autobyteus-web/components/workspace/team/*` and `autobyteus-web/components/workspace/running/*` | Frontend views | Visible task-agent lifecycle | Render task-agent rows/cards distinctly and remove them after settlement while retaining logical member roster display when appropriate. | Keeps visual UX near existing team views. | Yes |
 
 ## Reusable Owned Structures Check
 
@@ -415,6 +501,7 @@ Read this design in this order:
 | Completion notification payload | `task-delegation-record.ts` | Task delegation | Event and coordinator message share source payload. | Yes | Yes | Duplicate event vs message shapes. |
 | Tool parameter specs | `task-delegation-tool-contract.ts` | Tool surface | Codex/Claude/native projections convert from same contract. | Yes | Yes | Runtime-specific schemas as source of truth. |
 | Logical member vs task-agent identity | `task-agent-instance-identity.ts` | Task delegation | Used by ledger, activation, runtime context builders, status/events, and settlement. | Yes | Yes | Overloading `memberRunId` without preserving logical template identity. |
+| Frontend task-agent entity identity | `AgentTeamContext.ts` / frontend task-agent projection type | Frontend team projection | Used by streaming routing, status hydration, team member views, running tree, and activity/history links. | Yes | Yes | A route-key-only member row with optional task-agent fields. |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -422,6 +509,7 @@ Read this design in this order:
 | --- | --- | --- | --- | --- |
 | `TaskDelegationRecord` | Yes | Yes | Medium | Store logical member/delegator identities and, after activation, exactly one bound task-agent instance identity for default one-task-per-instance mode. |
 | `TaskAgentInstanceIdentity` | Yes | Yes | Low | Keep `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and logical member identity distinct; do not use one generic `memberRunId` for both template and instance. |
+| `TaskAgentFrontendEntity` | Yes | Yes | Medium | Keep concrete task-agent run/instance ID, logical member reference, conversation/activity state, and status explicit. Do not mutate the logical member context's `runId` to represent a task-agent instance. |
 | `DelegateTasksInput` | Yes | Yes | Low | Keep the model-facing envelope minimal: `member_name`, rich `description`, optional `reference_files`. Do not add separate `task_name`, `completion_criteria`, `expected_deliverables`, or dependency fields in the first-ticket tool schema. Use `member_name` consistently and resolve to logical route key internally. |
 | `UpdateTaskStatusInput` | Yes | Yes | Low | Keep the model-facing envelope minimal: `status`, optional `message`, optional `reference_files`. Do not accept `task_id`, `task_name`, or other task selector fields; resolve the task from caller task-agent instance context. |
 | `TaskDelegationCompletionPayload` | Yes | Yes | Low | Use one payload for team event and coordinator message rendering. |
@@ -452,12 +540,20 @@ Read this design in this order:
 | `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-task-agent-instance-registry.ts` | Claude backend | Claude task-agent instances | Create/restore/settle Claude task-agent AgentRuns by taskAgentRunId. | Keeps Claude-specific runtime setup out of core service. | Yes |
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts` | Mixed backend | Mixed task-agent instances | Multiple same-logical-member handles keyed by taskAgentRunId. | Current mixed registry is route-key only. | Yes |
 | `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | Native team backend | Native task-agent/per-member lifecycle support or exposure gate | Either implement settlement or ensure new task delegation is not exposed as supported for pure native teams. | Prevents `UNSUPPORTED_RUNTIME_COMMAND` from violating sub-agent semantics. | Yes |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | Frontend team projection | UI state model | Add/own `taskAgentContextsByRunId` or equivalent typed task-agent active entity map; keep logical `memberNodesByRouteKey` as topology. | The identity split must exist in frontend state, not only backend events. | Yes |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | Frontend protocol | Payload types | Include task-agent identity fields on relevant stream/status/tool payloads. | Prevents ad hoc `any` parsing of task-agent identity. | Yes |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | Frontend streaming projection | Message routing | Resolve task-agent payloads by `task_agent_run_id`/`task_agent_instance_id`, create/update the task-agent frontend entity, and route conversation/tool segments there. | Current routing falls back to `member_route_key` and mutates logical member context. | Yes |
+| `autobyteus-web/services/runHydration/teamRunStatusHydration.ts` | Frontend hydration | Live status merge | Merge task-agent status snapshots into the task-agent active entity map; remove settled/offline task-agent entities from active UI projection. | Keeps snapshot and live event behavior consistent. | Yes |
+| `autobyteus-web/components/workspace/team/TeamMembersPanel.vue` and grid/spotlight tiles | Frontend team views | Visible task-agent lifecycle | Render logical member template/roster rows distinctly from transient task-agent rows/cards. | Existing views show only logical rows. | Yes |
+| `autobyteus-web/components/workspace/running/*` | Frontend running tree | Active run list projection | Show active task-agent instances while running and remove them after settlement, without treating logical templates as active task agents. | User-visible run tree is where lingering offline rows were observed. | Yes |
 
 ## Ownership Boundaries
 
 The authoritative boundary for model-facing task work is `TaskDelegationService`, not `TaskPlan`, not runtime projections, and not MCP transport. Any caller above the task-delegation subsystem must call `delegateTasks` or `updateTaskStatus` on the service/tool service, not directly mutate ledger records.
 
 The authoritative boundary for runtime lifecycle remains `TeamRun`/backend `TeamManager`. The activation and settlement coordinators decide that a task-agent instance should start or settle, but they must request that through explicit `TeamRun` APIs, not by reaching into backend runtime maps. Logical member conversations and task-agent instances are different subjects under this boundary.
+
+The authoritative boundary for frontend active task-agent presentation is the frontend team-run projection state, not individual display components. Streaming and hydration code should create/update/remove task-agent entities in one projection model; team member panels, grid/spotlight views, and running-tree rows should render that projection instead of independently inferring task-agent lifecycle from logical member route keys.
 
 ## Boundary Encapsulation Map
 
@@ -469,6 +565,7 @@ The authoritative boundary for runtime lifecycle remains `TeamRun`/backend `Team
 | Backend task-agent instance registry | Concrete `AgentRun`s/handles and event subscriptions by `taskAgentRunId`. | Backend manager. | One route-key map stores both conversation runs and task-agent runs. | Split conversation route registry from task-agent run registry. |
 | `TaskDelegationWorkPacketRenderer` | Prompt/message content format. | Activation coordinator. | Hand-building activation prompts in multiple backends. | Add renderer options/sections. |
 | Runtime task-delegation exposure gate | Backend task-agent settlement capability. | Runtime projection builders/tool exposure composition. | Exposing `delegate_tasks` for a backend whose task-agent settlement returns unsupported. | Implement backend settlement or hide/gate task-delegation tools for that backend. |
+| Frontend task-agent projection | Task-agent active entity map, stream routing, status cleanup. | Team views/running tree/activity links. | Components infer task-agent lifecycle from `memberRouteKey` or logical member contexts directly. | Add/extend frontend projection APIs keyed by concrete task-agent identity. |
 
 ## Dependency Rules
 
@@ -480,6 +577,7 @@ Allowed:
 - Task-delegation coordinators -> `TeamRun` public APIs.
 - Backend task-agent instance registries -> `AgentRunManager`.
 - UI/history/event pipeline -> task-delegation event payloads.
+- Frontend team views/running tree -> frontend team-run projection, not raw route-key-only snapshots.
 
 Forbidden:
 
@@ -493,6 +591,8 @@ Forbidden:
 - Keying delegated-task worker lifecycle only by logical `memberRouteKey` when multiple task-agent instances can exist for that member.
 - Preserving stale model-facing `delegate_tasks` fields `task_name`, `dependencies`, `completion_criteria`, or `expected_deliverables`.
 - Allowing `update_task_status` to select work by model-facing fields such as `task_id`, `task_name`, or title; task-agent instance context is the selector.
+- Frontend stream routing that ignores `task_agent_run_id`/`task_agent_instance_id` and attaches task-agent packets, tool calls, or status to the logical member's normal conversation.
+- Treating a lingering offline logical member row as sufficient evidence or presentation of task-agent exit.
 
 ## Interface Boundary Mapping
 
@@ -505,6 +605,7 @@ Forbidden:
 | `settleMember(target, reason)` or `terminateMember(target, reason)` | One logical conversation/member runtime | Safely stop one normal member runtime where applicable. | Explicit member route key and optional run ID. | Separate from task-agent instance settlement. |
 | `renderWorkPacket(record)` | Activation message | Render one task's details, task-agent identity, and lifecycle instruction. | One structured task record plus bound task-agent instance identity. | Default output is single-task, not a batch. |
 | `notifyTerminalStatus(payload)` | Coordinator/delegator notification | Emit event and optionally post message to coordinator/delegator. | Stored delegator identity, coordinator fallback. | No coordinator polling. |
+| `projectTaskAgentStatus/message(payload)` (frontend projection API shape) | One frontend task-agent entity | Create/update/remove the visible task-agent entity and route task-agent stream content. | `teamRunId + taskAgentRunId/taskAgentInstanceId + logicalMemberRouteKey`. | Components consume projection state; they do not infer lifecycle from logical member route alone. |
 
 ## Interface Boundary Check
 
@@ -516,6 +617,7 @@ Forbidden:
 | `settleTaskAgentInstance` | Yes | Yes | Low | Require logical route and concrete task-agent run ID; run ID protects sibling instances. |
 | `settleMember` | Yes | Yes | Low | Keep for normal member/conversation runtime or legacy backend lifecycle; do not use as the only task-agent identity. |
 | `notifyTerminalStatus` | Yes | Yes | Medium | Store delegator identity at delegation time; fallback to coordinator route. |
+| Frontend task-agent projection API | Yes | Yes | Low | Concrete task-agent run/instance identity is required; `memberRouteKey` alone is not an accepted selector for a task-agent entity. |
 
 ## Main Domain Subject Naming Check
 
@@ -528,12 +630,14 @@ Forbidden:
 | Team template | `LogicalMember` | Yes | Low | Use for team-definition member selected by `member_name`. |
 | Activation content | `TaskDelegationWorkPacket` | Yes | Low | Render from structured record. |
 | Completion push | `TaskDelegationCompletionNotification` | Yes | Low | Use one payload for event/message. |
+| Frontend transient worker | `TaskAgentFrontendEntity` / task-agent row/card | Yes | Medium | Name and render as a task-agent instance, not as the logical member itself. |
 
 ## Applied Patterns (If Any)
 
 - Browser tool manifest/service/projection pattern: reused for `agent-tools/task-delegation` so schemas and execution logic are runtime-neutral.
 - Event-driven orchestration: terminal status updates drive coordinator notification and delayed settlement.
 - Runtime instance registry: backend-owned dynamic task-agent registries allow several concrete `AgentRun`s under one logical member.
+- Frontend projection: task-agent stream/status identity creates transient active UI entities, while logical member topology remains a separate roster/template projection.
 - Authoritative boundary rule: runtime adapters call the task-delegation boundary, not ledger internals.
 
 ## Target Subsystem / Folder / File Mapping
@@ -676,6 +780,41 @@ task_0008 -> logical member implementation_engineer -> task_agent_task_0008 -> r
 
 Both task agents can run concurrently if concurrency policy allows. When `task_0007` completes, only `task_agent_task_0007` settles; `task_agent_task_0008` keeps running.
 
+### Frontend task-agent lifecycle shape
+
+When `worker` receives a delegated task, the active frontend projection should look conceptually like this while work is running:
+
+```text
+Team roster/template:
+- coordinator
+- worker                    (logical member/template)
+
+Active task agents:
+- worker · task_0001        (task_agent_task_0001 / run ...__worker__task_0001, Running)
+```
+
+The task-agent work packet, tool calls, and streamed answer belong to `worker · task_0001`, not to the logical `worker` template conversation. After `task_0001` completes and the backend settles that concrete run:
+
+```text
+Team roster/template:
+- coordinator
+- worker                    (logical member/template, may remain offline/available)
+
+Active task agents:
+  <empty>
+
+Task/activity history:
+- task_0001 completed, message/reference_files...
+```
+
+Bad shape:
+
+```text
+- worker Offline            (same row contains the task-agent work packet)
+```
+
+That bad shape makes the task-agent look like a lingering offline logical member and does not show the requested sub-agent appear/disappear lifecycle.
+
 ### Terminal completion notification to coordinator/delegator
 
 ```text
@@ -706,7 +845,9 @@ Reference files:
 12. Add Codex/Claude/native projections and general delegation protocol instruction injection; static protocol text must say the framework `will`/`must` settle the final task-agent, not `may`.
 13. Remove/decommission legacy model-facing local task tools from registration/configured exposure.
 14. Update tests for mixed teams so task delegation tools are available through server-owned projections instead of filtered local `ToolCategory.TASK_MANAGEMENT` tools.
-15. Update docs/UI labels from task-plan polling toward delegation lifecycle and task-agent instances where in scope.
+15. Extend frontend team-run projection and streaming/hydration handlers so task-agent-identified payloads create scoped task-agent entities and settlement/offline cleanup removes them from active UI.
+16. Update team/running views so active execution UI renders concrete task-agent/normal-conversation entities and does not leave task-delegation-only logical assignees as `worker • Offline` execution rows after settlement. Keep logical member roster/template rows only in explicitly labeled non-execution roster/config/available-member surfaces, and do not store task-agent conversations in logical member rows.
+17. Update docs/UI labels from task-plan polling toward delegation lifecycle and task-agent instances where in scope.
 
 ## Validation Strategy
 
@@ -738,7 +879,14 @@ Reference files:
   - Codex task-agent worker receives the work packet and calls `update_task_status`;
   - coordinator receives terminal notification;
   - Codex task-agent worker is observed as offline/settled/inactive after the terminal update and idle settlement.
+  - Browser/frontend state shows a distinct transient Codex task-agent entity while active, not only the logical `worker` row.
+  - After settlement/offline cleanup, that transient task-agent entity and any task-delegation-only `worker • Offline`/worker execution row disappear from active member/agent UI while the completion remains visible through activity/history/notification.
+  - The task-agent work packet/conversation is scoped to the task-agent entity and is not embedded as the logical worker's normal conversation.
   - if live cost/runtime permits, two independent tasks delegated to the same Codex logical member produce two distinct task-agent run IDs and settle independently.
+- Frontend deterministic/unit coverage:
+  - stream/status payloads with `task_agent_run_id` create/update a task-agent frontend entity keyed by run identity;
+  - task-agent stream/tool/segment events route to the task-agent entity even when `member_route_key` equals a logical member;
+  - offline/settlement cleanup removes only the settled task-agent entity, not the logical member template or sibling task-agent entities.
 - Backend exposure validation:
   - a backend with unsupported task-agent/per-member settlement does not expose the new task-delegation tools as a supported path;
   - if native AutoByteus pure-team exposure is enabled, its settlement path is implemented and covered.

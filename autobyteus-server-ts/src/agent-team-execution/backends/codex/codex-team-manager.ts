@@ -224,6 +224,7 @@ export class CodexTeamManager implements TeamManager {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -231,6 +232,10 @@ export class CodexTeamManager implements TeamManager {
     const memberContext = this.resolveTargetMemberContext(target);
     if ("accepted" in memberContext) {
       return memberContext;
+    }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) {
+      return this.taskAgentRegistry.approveToolInvocation(memberContext.memberRouteKey, taskAgentRunId, invocationId, approved, reason ?? null);
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     return memberRun.approveToolInvocation(invocationId, approved, reason ?? null);

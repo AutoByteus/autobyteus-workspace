@@ -178,6 +178,7 @@ describe("MixedTeamRunBackend integration", () => {
       "inv-1",
       true,
       "approved",
+      null,
     );
 
     await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toEqual({ accepted: true });

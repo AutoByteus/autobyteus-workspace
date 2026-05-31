@@ -63,25 +63,26 @@ defineProps<{
 }>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const focusedMember = computed(() => teamContextsStore.focusedMemberContext);
-const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
+const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
+const focusedMember = computed(() => teamContextsStore.activeExecutionFocusedMemberContext);
+const focusedMemberNode = computed(() => teamContextsStore.activeExecutionFocusedMemberNode);
 const conversationOfFocusedMember = computed(() => focusedMember.value?.state.conversation);
 
 const focusedMemberDisplayName = computed(() => {
-  const team = activeTeam.value;
-  if (!team?.focusedMemberRouteKey) {
+  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!routeKey) {
     return '';
   }
   return focusedMemberNode.value?.displayName
-    || getMemberDisplayName(team.focusedMemberRouteKey, focusedMember.value);
+    || getMemberDisplayName(routeKey, focusedMember.value);
 });
 
 const focusedMemberAvatarUrl = computed(() => {
-  const team = activeTeam.value;
-  if (!team?.focusedMemberRouteKey || !focusedMember.value) {
+  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!routeKey || !focusedMember.value) {
     return null;
   }
-  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMember.value) || null;
+  return getMemberAvatarUrl(routeKey, focusedMember.value) || null;
 });
 
 const interAgentSenderNameById = computed<Record<string, string>>(() => {

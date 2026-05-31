@@ -53,7 +53,10 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - Tool approval targets must resolve to an agent member. A request aimed only
   at a subteam member is rejected; approval clients must use the
   `source_path` / `source_route_key` or member path/route emitted with the
-  approval request event.
+  approval request event. For delegated task-agent tool calls, approval
+  clients must also preserve the emitted concrete `task_agent_run_id` so the
+  approval/denial command routes to the active task-agent runtime rather than
+  the logical member template.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
   transport metadata only and are not accepted as command target inputs.
 
@@ -173,6 +176,10 @@ domain stream and are flattened to WebSocket `TASK_PLAN_EVENT` messages with
 payloads carry `teamRunId`, internal task identity, member/delegator identity,
 task-agent instance identity, status, optional message/reference files, and
 canonical `source_path` / `source_route_key` metadata from the logical member.
+Member-scoped stream/status/tool-approval payloads for task-agent activity also
+carry concrete task-agent identity, including `task_agent_run_id`, so clients can
+project transient task-agent UI entities and route approvals to the task-scoped
+runtime.
 
 Current settlement support is backend-specific. Codex and Claude team managers
 use the server-managed task-agent registry for task-agent instance start/settle

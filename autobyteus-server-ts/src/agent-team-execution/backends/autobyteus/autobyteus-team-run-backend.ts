@@ -139,6 +139,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    _targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.team.postToolExecutionApproval || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);

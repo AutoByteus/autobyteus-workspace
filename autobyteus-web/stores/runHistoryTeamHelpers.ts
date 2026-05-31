@@ -202,6 +202,7 @@ export const buildTeamNodes = (params: {
       params.resolveWorkspaceRootPath,
     );
     const members = flattenTeamRows(memberTree);
+    const focusedMemberRouteKey = members.find((member) => member.memberRouteKey === teamContext.focusedMemberRouteKey)?.memberRouteKey || members[0]?.memberRouteKey || '';
     const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
     const teamDefinitionId =
       existing?.teamDefinitionId ||
@@ -219,7 +220,7 @@ export const buildTeamNodes = (params: {
       isActive,
       currentStatus,
       deleteLifecycle,
-      focusedMemberRouteKey: teamContext.focusedMemberRouteKey,
+      focusedMemberRouteKey,
       members,
       memberTree,
     });

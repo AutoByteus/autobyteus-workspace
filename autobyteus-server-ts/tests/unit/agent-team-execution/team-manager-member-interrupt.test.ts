@@ -69,6 +69,7 @@ const createTeamRunConfig = (teamBackendKind: TeamBackendKind) =>
 
 const createFakeAgentRun = () => ({
   isActive: vi.fn(() => true),
+  approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
   getStatusSnapshot: vi.fn(() => ({ status: "running", can_interrupt: true })),
@@ -125,6 +126,77 @@ const attachMemberRuns = (manager: unknown) => {
   );
 
   return { solutionDesignerRun, codeReviewerRun };
+};
+
+const attachTaskAgentRun = (manager: unknown) => {
+  const taskAgentRun = createFakeAgentRun();
+  const logicalRouteKey = "code_reviewer";
+  const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
+
+  const serverManagedRegistry = (manager as {
+    taskAgentRegistry?: {
+      activeByRunId?: Map<string, unknown>;
+    };
+    teamContext?: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext | MixedTeamRunContext>;
+  }).taskAgentRegistry;
+
+  if (serverManagedRegistry?.activeByRunId) {
+    const logicalMember = (manager as {
+      teamContext: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext>;
+    }).teamContext.runtimeContext.memberContexts.find(
+      (context) => context.memberRouteKey === logicalRouteKey,
+    );
+    serverManagedRegistry.activeByRunId.set(taskAgentRunId, {
+      logicalMember,
+      identity: {
+        teamRunId,
+        taskAgentInstanceId: "task-agent-instance-1",
+        taskAgentRunId,
+        taskId: "task-1",
+        logicalMember: {
+          memberName: "Code Reviewer",
+          memberPath: ["code_reviewer"],
+          memberRouteKey: logicalRouteKey,
+        },
+      },
+      run: taskAgentRun,
+      unsubscribe: vi.fn(),
+    });
+    return { taskAgentRun, taskAgentRunId, logicalRouteKey };
+  }
+
+  const mixed = manager as {
+    teamContext: TeamRunContext<MixedTeamRunContext>;
+    memberRegistry: {
+      taskAgentHandles: Map<string, unknown>;
+    };
+  };
+  const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
+    (context) => context.memberRouteKey === logicalRouteKey,
+  ) as MixedAgentMemberContext;
+  mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
+    context: {
+      ...logicalContext,
+      memberRunId: taskAgentRunId,
+      getPlatformAgentRunId: () => null,
+    },
+    isActive: () => true,
+    getStatusSnapshot: taskAgentRun.getStatusSnapshot,
+    postMessage: vi.fn(),
+    deliverInterMemberMessage: vi.fn(),
+    approveToolInvocation: vi.fn(async (
+      _target: unknown,
+      invocationId: string,
+      approved: boolean,
+      reason: string | null,
+    ) =>
+      taskAgentRun.approveToolInvocation(invocationId, approved, reason),
+    ),
+    interrupt: vi.fn(),
+    terminate: vi.fn(),
+    dispose: vi.fn(),
+  });
+  return { taskAgentRun, taskAgentRunId, logicalRouteKey };
 };
 
 const createCodexManager = () => {
@@ -279,5 +351,34 @@ describe.each([
 
     expect(codeReviewerRun.terminate).not.toHaveBeenCalled();
     expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s task-agent approval routing", (_managerName, createManager) => {
+  it("routes approval to the concrete task-agent run instead of the logical member run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+
+    await expect(
+      manager.approveToolInvocation(
+        { kind: "route_key", memberRouteKey: logicalRouteKey },
+        "inv-task-agent",
+        true,
+        "approved",
+        taskAgentRunId,
+      ),
+    ).resolves.toEqual({ accepted: true });
+
+    expect(taskAgentRun.approveToolInvocation).toHaveBeenCalledWith(
+      "inv-task-agent",
+      true,
+      "approved",
+    );
+    expect(codeReviewerRun.approveToolInvocation).not.toHaveBeenCalled();
   });
 });

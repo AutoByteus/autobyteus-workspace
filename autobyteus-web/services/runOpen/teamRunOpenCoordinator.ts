@@ -18,6 +18,7 @@ import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRu
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
@@ -93,6 +94,12 @@ const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
 export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
+  const teamContextsStore = useAgentTeamContextsStore();
+  const preExistingTeamContext = teamContextsStore.getTeamContextById(input.teamRunId);
+  const requestedMemberRouteKey = preExistingTeamContext?.isSubscribed
+    ? resolveActiveExecutionFocusedMemberRouteKey(preExistingTeamContext, input.memberRouteKey)
+      || input.memberRouteKey
+    : input.memberRouteKey;
   const {
     resumeConfig,
     metadata,
@@ -101,12 +108,14 @@ export const openTeamRun = async (
     focusedMemberRouteKey,
     historicalHydration,
     projectionByMemberRouteKey,
-  } = await loadTeamRunContextHydrationPayload(input);
+  } = await loadTeamRunContextHydrationPayload({
+    ...input,
+    memberRouteKey: requestedMemberRouteKey,
+  });
 
   const shouldTreatAsLive = resumeConfig.isActive;
   const memberTree = teamMemberNodesFromMetadata(metadata.memberTree);
 
-  const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
     teamRunId: metadata.teamRunId,
     config: reconstructTeamRunConfigFromMetadata({
@@ -128,7 +137,12 @@ export const openTeamRun = async (
     taskStatuses: null,
   };
   (hydratedContext as any).members = members;
-  (hydratedContext as any).focusedMemberName = focusedMemberRouteKey;
+  const resolvedFocusedMemberRouteKey = shouldTreatAsLive
+    ? resolveActiveExecutionFocusedMemberRouteKey(hydratedContext, focusedMemberRouteKey)
+      || focusedMemberRouteKey
+    : focusedMemberRouteKey;
+  hydratedContext.focusedMemberRouteKey = resolvedFocusedMemberRouteKey;
+  (hydratedContext as any).focusedMemberName = resolvedFocusedMemberRouteKey;
 
   const existingTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId);
   const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
@@ -144,8 +158,8 @@ export const openTeamRun = async (
     existingTeamContext.historicalHydration = historicalHydration;
     existingTeamContext.memberTree = memberTree;
     existingTeamContext.memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
-    existingTeamContext.focusedMemberRouteKey = focusedMemberRouteKey;
-    (existingTeamContext as any).focusedMemberName = focusedMemberRouteKey;
+    existingTeamContext.focusedMemberRouteKey = resolvedFocusedMemberRouteKey;
+    (existingTeamContext as any).focusedMemberName = resolvedFocusedMemberRouteKey;
     const existingLeafAgentContextsByRouteKey = getLeafAgentContextsByRouteKey(existingTeamContext);
 
     if (shouldKeepLiveContext) {
@@ -205,7 +219,7 @@ export const openTeamRun = async (
 
   return {
     teamRunId: metadata.teamRunId,
-    focusedMemberRouteKey,
+    focusedMemberRouteKey: resolvedFocusedMemberRouteKey,
     resumeConfig,
   };
 };

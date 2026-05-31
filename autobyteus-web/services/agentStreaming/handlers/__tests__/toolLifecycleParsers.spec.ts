@@ -154,4 +154,25 @@ describe('toolLifecycleParsers', () => {
       },
     });
   });
+
+  it('parses task-agent run identity from approval payloads', () => {
+    expect(
+      parseToolApprovalRequestedPayload({
+        invocation_id: 'inv-task-agent',
+        tool_name: 'run_bash',
+        turn_id: null,
+        arguments: { command: 'pwd' },
+        member_route_key: 'worker',
+        source_route_key: 'worker',
+        task_agent_run_id: 'task-agent-run-1',
+      }),
+    )?.toMatchObject({
+      invocationId: 'inv-task-agent',
+      approvalTarget: {
+        memberRouteKey: 'worker',
+        sourceRouteKey: 'worker',
+        taskAgentRunId: 'task-agent-run-1',
+      },
+    });
+  });
 });

@@ -162,6 +162,34 @@ export class ServerManagedTaskAgentInstanceRegistry<
     return result;
   }
 
+  async approveToolInvocation(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    invocationId: string,
+    approved: boolean,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.options.isTeamActive()) {
+      return this.runNotFound();
+    }
+    const active = this.activeByRunId.get(taskAgentRunId) ?? null;
+    if (!active) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_RUN_NOT_FOUND",
+        message: `Task-agent run '${taskAgentRunId}' was not found.`,
+      };
+    }
+    if (active.logicalMember.memberRouteKey !== logicalMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_ROUTE_MISMATCH",
+        message: `Task-agent run '${taskAgentRunId}' is not for logical member '${logicalMemberRouteKey}'.`,
+      };
+    }
+    return active.run.approveToolInvocation(invocationId, approved, reason ?? null);
+  }
+
   resolveLogicalMemberForRunId(runId: string): TMember | null {
     for (const active of this.activeByRunId.values()) {
       if (

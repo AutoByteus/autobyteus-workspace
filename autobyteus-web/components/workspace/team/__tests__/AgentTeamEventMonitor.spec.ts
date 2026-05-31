@@ -7,6 +7,7 @@ const { state, teamContextsStoreMock } = vi.hoisted(() => {
     activeTeamContext: null as any,
     focusedMemberContext: null as any,
     focusedMemberNode: null as any,
+    activeExecutionFocusedMemberRouteKey: '' as string,
   };
 
   return {
@@ -14,6 +15,21 @@ const { state, teamContextsStoreMock } = vi.hoisted(() => {
     teamContextsStoreMock: {
       get activeTeamContext() {
         return localState.activeTeamContext;
+      },
+      get activeExecutionFocusedMemberRouteKey() {
+        return localState.activeExecutionFocusedMemberRouteKey;
+      },
+      get activeExecutionFocusedMemberContext() {
+        const routeKey = localState.activeExecutionFocusedMemberRouteKey;
+        return routeKey
+          ? localState.activeTeamContext?.leafAgentContextsByRouteKey.get(routeKey) ?? null
+          : null;
+      },
+      get activeExecutionFocusedMemberNode() {
+        const routeKey = localState.activeExecutionFocusedMemberRouteKey;
+        return routeKey
+          ? localState.activeTeamContext?.memberNodesByRouteKey.get(routeKey) ?? null
+          : null;
       },
       get focusedMemberContext() {
         return localState.focusedMemberContext;
@@ -129,6 +145,7 @@ describe('AgentTeamEventMonitor.vue', () => {
     };
     state.focusedMemberContext = professorContext;
     state.focusedMemberNode = professorNode;
+    state.activeExecutionFocusedMemberRouteKey = 'Professor';
   });
 
   it('passes sender-id to member-name mapping to AgentEventMonitor', () => {
@@ -198,5 +215,29 @@ describe('AgentTeamEventMonitor.vue', () => {
       message: 'Compaction queued',
       turnId: 'turn-1',
     });
+  });
+
+  it('uses active-execution focus instead of stale raw logical focus', () => {
+    state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
+    state.focusedMemberContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
+    state.focusedMemberNode = state.activeTeamContext.memberNodesByRouteKey.get('sub-team/Student');
+    state.activeExecutionFocusedMemberRouteKey = 'Professor';
+
+    const wrapper = shallowMount(AgentTeamEventMonitor, {
+      global: {
+        stubs: {
+          AgentEventMonitor: {
+            name: 'AgentEventMonitor',
+            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            template: '<div class="agent-event-monitor-stub" />',
+          },
+        },
+      },
+    });
+
+    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
+    expect(monitor.exists()).toBe(true);
+    expect(monitor.props('agentName')).toBe('Professor');
+    expect((monitor.props('conversation') as any).id).toBe('team-1::professor');
   });
 });

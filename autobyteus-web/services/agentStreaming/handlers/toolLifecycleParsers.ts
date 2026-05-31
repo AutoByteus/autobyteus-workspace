@@ -111,13 +111,22 @@ export const parseToolApprovalTarget = (payload: {
   member_path?: unknown;
   source_route_key?: unknown;
   source_path?: unknown;
+  task_agent_run_id?: unknown;
+  taskAgentRunId?: unknown;
+  target_member_run_id?: unknown;
+  targetMemberRunId?: unknown;
 }): ToolApprovalTarget | null => {
   const memberPath = normalizePathSegments(payload.member_path);
   const sourcePath = normalizePathSegments(payload.source_path);
   const memberRouteKey = normalizeOptionalString(payload.member_route_key) ?? routeKeyFromPath(memberPath);
   const sourceRouteKey = normalizeOptionalString(payload.source_route_key) ?? routeKeyFromPath(sourcePath);
+  const taskAgentRunId =
+    normalizeOptionalString(payload.task_agent_run_id) ??
+    normalizeOptionalString(payload.taskAgentRunId) ??
+    normalizeOptionalString(payload.target_member_run_id) ??
+    normalizeOptionalString(payload.targetMemberRunId);
 
-  if (!memberRouteKey && !sourceRouteKey && !memberPath && !sourcePath) {
+  if (!memberRouteKey && !sourceRouteKey && !memberPath && !sourcePath && !taskAgentRunId) {
     return null;
   }
 
@@ -126,6 +135,7 @@ export const parseToolApprovalTarget = (payload: {
     memberPath,
     sourceRouteKey,
     sourcePath,
+    taskAgentRunId,
   };
 };
 

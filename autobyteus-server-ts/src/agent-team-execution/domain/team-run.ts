@@ -102,12 +102,14 @@ export class TeamRun {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
       target,
       invocationId,
       approved,
       reason,
+      targetMemberRunId,
     );
   }
 

@@ -10,7 +10,9 @@ Analyze the first implementation ticket for simplifying and migrating task-manag
 
 The desired orchestration behavior is: a coordinator delegates one or more tasks through `delegate_tasks`; the internal delegation ledger/orchestrator activates a task-agent instance from the target logical member when the member has runnable work; the activation message itself carries the task work packet so the task agent never needs a `get_my_tasks` tool in the normal framework model; the task agent updates task status as it works; when the task agent completes/fails the task, the framework records the status message and reference files when provided, notifies the coordinator with the completion result, and then automatically settles/exits that task-agent instance after its current turn is idle without terminating the whole team or the reusable logical member.
 
-Refined concurrency model: a team member name in `delegate_tasks` identifies a logical member/template, not necessarily one long-lived runtime instance. Runnable delegated tasks should start task-scoped agent instances of that logical member. If multiple independent runnable tasks are delegated to the same logical member, the framework may start multiple task-agent instances of that member in parallel, subject to configured concurrency limits. Each task-agent instance receives its own work packet, reports status for its own task identity, and exits after its terminal task is accepted and its own turn is idle. The logical team member remains available for future task-agent instances.
+Refined concurrency model: a team member name in `delegate_tasks` identifies a logical member/template, not necessarily one long-lived runtime instance. Runnable delegated tasks should start task-scoped agent instances of that logical member. If multiple independent runnable tasks are delegated to the same logical member, the framework may start multiple task-agent instances of that member in parallel, subject to configured concurrency limits. Each task-agent instance receives its own work packet, reports status for its own task identity, and exits after its terminal task is accepted and its own turn is idle. The logical team member remains available internally and in explicitly labeled team-definition/available-member surfaces for future task-agent instances, but a task-delegation-only worker must not remain as an offline execution row in the active run UI after its final task-agent instance settles.
+
+Frontend lifecycle refinement: in supported browser/frontend team-run UX, concrete task-agent instances must be visible as transient sub-agent entities while active and must disappear from active UI after settlement. For task-delegation-only work, any visible worker execution entity for that task must disappear after settlement. The logical member/template may exist only as an explicitly labeled team-definition/available-member roster item, separate from active execution; a lingering `worker • Offline` row in the active run UI is not acceptable task-agent exit presentation.
 
 ## Investigation Findings
 
@@ -23,6 +25,7 @@ Current-code investigation shows a split architecture:
 - Current team-manager abstractions have `interruptMember` and team-level `terminate`, but no explicit cross-runtime `terminateMember`/`settleMemberWhenIdle` boundary. Auto-exit should not be performed inline inside `update_task_status`, because doing so could kill the active tool-call turn before the tool result and status events are delivered.
 - Downstream implementation/validation inspection on 2026-05-29 found that server-managed Codex/Claude/Mixed paths now have a per-member settlement boundary, while native AutoByteus pure-team settlement currently returns `UNSUPPORTED_RUNTIME_COMMAND`. The requirement decision is that unsupported task-agent/per-member settlement is acceptable only for a backend where task delegation is not exposed/claimed as supported; no supported delegation path may leave a task-agent instance alive after its terminal delegated task.
 - Additional code inspection shows the current implementation is still mostly one active runtime per member route key: server-managed managers store member runs in `Map<memberRouteKey, AgentRun>`, and the current activation coordinator groups runnable records by assignee route. The refined task-agent model requires a separate instance identity below the logical member route key so parallel tasks for the same logical member do not collapse into one runtime/session.
+- API/E2E browser validation on 2026-05-30 and user follow-up on 2026-05-31 found a frontend projection/semantics gap: backend task-agent identity and settlement can be present while the UI still shows a `worker • Offline` row in the active run UI and/or embeds task-agent activity in the logical worker conversation. Supported frontend UX must consume task-agent identity, render/remove transient task-agent execution entities, and avoid presenting task-delegation-only workers as lingering offline execution participants after settlement.
 
 ## Design Health Assessment (Mandatory)
 
@@ -53,6 +56,7 @@ Large
 - UC-006: Multiple independent task items in one `delegate_tasks` call are recorded separately and activated according to task-agent concurrency policy.
 - UC-007: Coordinator receives a framework-generated notification when a delegated task reaches a terminal status, including task identity, target member, status, optional message, and reference files.
 - UC-008: Multiple independent runnable tasks delegated to the same logical member can run as separate task-agent instances, so each task can progress and exit independently.
+- UC-009: Frontend users can see delegated task-agent instances as transient sub-agent entities while active, distinct from logical team member templates, and all task-delegation-only worker execution entities disappear from active UI after settlement while durable completed-task/task-agent history remains available.
 
 ## Out of Scope
 
@@ -64,6 +68,7 @@ Large
 - Model-facing dependency authoring or dependent-task activation. A later ticket may design dependency semantics intentionally, but the first simplified schema does not expose `dependencies`.
 - Model-facing task selectors on `update_task_status`; the caller's bound task-agent instance context identifies the task.
 - Model-facing task names/titles as separate `delegate_tasks` fields. The server generates internal task identity and may derive a display label from the description when needed.
+- Redesigning unrelated frontend team-layout modes beyond the task-agent lifecycle projection needed to avoid representing a settled task-agent as a lingering active/offline worker row.
 
 ## Functional Requirements
 
@@ -88,6 +93,12 @@ Large
 - REQ-019: The team runtime must support, or explicitly gate off, multiple concurrent task-agent instances for the same logical member in supported delegation paths. Instance status, tool context, events, settlement, and cleanup must be keyed by task-agent instance identity, not only by logical member route key.
 - REQ-020: `update_task_status` must validate that the calling task-agent instance is bound to the task being updated, so parallel instances of the same logical member cannot accidentally complete each other's tasks.
 - REQ-021: Each `delegate_tasks` task item must keep the model-facing schema intentionally small. The only task-definition fields are `member_name`, required rich `description`, and optional `reference_files`. Each task item represents ready-to-run work for the target member; dependency/ordering semantics are not accepted in the schema. The server generates internal task identity and may derive any display label from the description; all detailed instructions, done conditions, expected output guidance, constraints, and context belong inside `description`.
+- REQ-022: Frontend team-run presentation for supported task-delegation paths must distinguish team-definition member templates from concrete execution entities. A task-agent instance must have its own transient frontend execution entity keyed by concrete task-agent identity (`task_agent_run_id`/`task_agent_instance_id`) and associated with the selected logical `member_name`/route.
+- REQ-023: A frontend task-agent entity must appear in the active team/member presentation when the task-agent activation/status projection is observed, remain visible while the concrete instance is active/running/idle-before-settlement, and be removed from active member/agent lists after terminal status plus backend settlement/offline cleanup.
+- REQ-024: After the final task-agent instance for task-delegation-only work settles, the active run UI must not keep a `worker`, `worker • Offline`, or equivalent assignee execution row/card/header for that completed task. A logical member/template may remain only in an explicitly labeled non-execution roster/config/available-member surface; it must not be mixed into active execution rows and must not use plain offline status as the task-agent exit presentation.
+- REQ-025: Task-agent work packets, streaming segments, tool calls, status updates, and completed-task history must be scoped in the frontend to the task-agent instance/completed task-agent history entity when task-agent identity is present. They must not be embedded into the logical member's normal conversation in a way that implies the sub-agent is still alive or that the logical worker row is the completed task-agent.
+- REQ-026: Multiple concurrent task-agent instances for the same logical member must render as distinguishable transient frontend execution entities, and settling/removing one instance must not remove sibling active task-agent instances.
+- REQ-027: A logical member may still appear as a normal conversation participant when it has been activated through user/direct messaging (`send_message_to` or equivalent non-task conversation). That normal conversation surface must be labeled separately from task-agent execution and must not inherit task-agent work packets/history unless the task-agent itself is being viewed through completed task-agent history.
 
 ## Acceptance Criteria
 
@@ -113,6 +124,11 @@ Large
 - AC-020: If a backend cannot support multiple same-member task-agent instances, that backend must expose a clear concurrency limit or gate the parallel task-agent feature rather than silently serializing/merging tasks in a way that violates the task-agent model.
 - AC-021: `delegate_tasks` rejects any task item that lacks a non-empty rich `description`; a task with only `member_name` is invalid. Schemas/projections do not expose superseded fields such as `task_name`, `dependencies`, `completion_criteria`, and `expected_deliverables`, and the parser rejects stale calls that include them.
 - AC-022: The task-agent activation packet preserves the delegated task's rich description and optional reference file details so the worker does not need to query another task plan before starting. Separate `dependencies`, `completion_criteria`, and `expected_deliverables` fields are not part of the model-facing schema; dependent follow-up work is delegated later after completion notification.
+- AC-023: Browser/frontend validation for a supported task-delegation run shows a separate transient task-agent row/card/entity for the delegated worker while the task-agent instance is active, distinct from the logical member template/roster row.
+- AC-024: After terminal `update_task_status` and backend settlement/offline cleanup, the task-agent row/card/entity and any task-delegation-only worker execution row/card/header disappear from active team/member/running-agent UI. The completion result remains available through task-delegation activity/history/notification rather than as a lingering `worker • Offline` or active/offline task-agent row.
+- AC-025: Browser/frontend validation must not show `worker • Offline` or an equivalent task-assignee row as an active execution participant after a task-delegation-only worker settles. If an explicit roster/config/available-member surface is opened, its logical worker entry is labeled as a member template/available assignee and does not contain the task-agent activation packet, tool activity, or completed-task conversation as a normal member conversation.
+- AC-026: With two concurrent delegated tasks for the same logical member, frontend validation can distinguish two task-agent execution entities and observes that settling one removes only that entity while the sibling remains if still active.
+- AC-027: If a logical worker also has a separate direct-message/member conversation, frontend validation labels that conversation separately from task-agent execution and preserves task-agent activity under task-agent/completed-task history rather than under the normal member conversation.
 
 ## Constraints / Dependencies
 
@@ -122,6 +138,7 @@ Large
 - Must account for active tool-call/turn lifecycle so auto-exit does not interrupt the member while it is reporting completion.
 - Must not expose the new model-facing delegation tools through a runtime/backend path that cannot satisfy the mandatory final-worker settlement lifecycle.
 - Must avoid using logical `memberRouteKey` as the sole active-run key for task-agent runtimes once parallel same-member task instances are supported.
+- Frontend active-run projection must avoid using logical `memberRouteKey` as the sole key for task-agent UI state; task-agent rows/cards and routed conversations must use concrete task-agent identity.
 
 ## Assumptions
 
@@ -131,6 +148,7 @@ Large
 - The native AutoByteus pure-team backend may remain outside the supported delegation-surface set for this ticket only if the implementation gates/hides task delegation there; if it is exposed, pure-team task-agent/per-member settlement becomes in scope.
 - Logical team members are reusable worker templates. A task-agent instance is the short-lived runtime/session created to execute one delegated task for that template.
 - Parallel same-member task-agent instances may be constrained by a configurable concurrency limit, but the design must not collapse the identity model back to one active runtime per logical member.
+- The frontend can still expose a static team roster/logical member list in a clearly labeled non-execution surface, but default active run views must present task-delegation-only workers through task-agent execution entities that disappear after settlement.
 
 ## Risks / Open Questions
 
@@ -142,6 +160,8 @@ Large
 - Whether `assign_task_to` should be shipped in the first task-tool migration or deferred because it composes task creation plus messaging. Default recommendation: omit/defer it for the simplified surface.
 - Resolved 2026-05-29 clarification: worker settlement is a hard sub-agent lifecycle invariant for supported delegation paths, not an optional optimization. API/E2E should treat missing final-worker offline/settled proof as a failing acceptance criterion.
 - Resolved 2026-05-29 clarification: same-member parallel delegation should be represented as multiple task-agent instances of the same logical member/template. The open implementation question is the initial per-member concurrency default/limit, not whether instance identity exists.
+- Resolved 2026-05-30 frontend clarification: the user-visible task-agent lifecycle must be sub-agent-like. A delegated task-agent instance must be rendered as a separate transient entity while active and disappear from active frontend member/agent UI after settlement; leaving only the logical worker row offline is not sufficient proof of task-agent exit.
+- Resolved 2026-05-31 worker-row semantics clarification: the internal logical-member/template distinction is valid for team definition and future delegation, but active run UI must not display a task-delegation-only assignee as a lingering offline execution row after the final task-agent settles.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -151,7 +171,9 @@ Large
 - UC-004: REQ-001, REQ-004, REQ-008
 - UC-005: REQ-011, REQ-012, REQ-015, REQ-016
 - UC-006: REQ-002, REQ-009
+- UC-007: REQ-010
 - UC-008: REQ-017, REQ-018, REQ-019, REQ-020
+- UC-009: REQ-022, REQ-023, REQ-024, REQ-025, REQ-026, REQ-027
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -171,7 +193,8 @@ Large
 - AC-016 validates mandatory worker-exit wording in runtime/docs instructions.
 - AC-017 through AC-020 validate task-agent instance identity and parallel same-member delegation behavior.
 - AC-021 and AC-022 validate that delegated tasks are real work packets, not name-only records, while keeping the model-facing schema minimal.
+- AC-023 through AC-027 validate the frontend sub-agent lifecycle projection: task-agent execution entities appear while active, all task-delegation-only worker execution rows disappear after settlement, and any logical member/template or normal conversation surfaces stay distinct from task-agent history.
 
 ## Approval Status
 
-Approved by user for architecture review on 2026-05-29. Revised scope: server-owned task-delegation tools (`delegate_tasks`, `update_task_status`), coordinator completion notification, internal delegation ledger, work-packet activation, and safe task-agent auto-exit first; general MCP exposure later. Downstream clarification on 2026-05-29: final task-agent settlement is mandatory for every supported delegation runtime path; unsupported native pure-team settlement must be gated or implemented before native pure-team delegation is claimed supported. Additional user refinement on 2026-05-29: logical members should behave as reusable task-agent templates, allowing multiple task-agent instances of the same member for parallel delegated tasks. Schema refinement on 2026-05-29: the `delegate_tasks` model-facing schema must remain minimal: `member_name`, rich `description`, and optional `reference_files`; no separate `task_name`, `dependencies`, `completion_criteria`, or `expected_deliverables` fields. `update_task_status` exposes no task selector and records only `status`, optional `message`, and optional `reference_files`; the current task is inferred from caller task-agent instance context. Dependent-task authoring/activation is deferred out of this first ticket.
+Approved by user for architecture review on 2026-05-29. Revised scope: server-owned task-delegation tools (`delegate_tasks`, `update_task_status`), coordinator completion notification, internal delegation ledger, work-packet activation, and safe task-agent auto-exit first; general MCP exposure later. Downstream clarification on 2026-05-29: final task-agent settlement is mandatory for every supported delegation runtime path; unsupported native pure-team settlement must be gated or implemented before native pure-team delegation is claimed supported. Additional user refinement on 2026-05-29: logical members should behave as reusable task-agent templates, allowing multiple task-agent instances of the same member for parallel delegated tasks. Schema refinement on 2026-05-29: the `delegate_tasks` model-facing schema must remain minimal: `member_name`, rich `description`, and optional `reference_files`; no separate `task_name`, `dependencies`, `completion_criteria`, or `expected_deliverables` fields. `update_task_status` exposes no task selector and records only `status`, optional `message`, and optional `reference_files`; the current task is inferred from caller task-agent instance context. Dependent-task authoring/activation is deferred out of this first ticket. Frontend UX clarification on 2026-05-30: supported task delegation must show concrete task-agent instances as transient sub-agent entities while active and remove those entities from active frontend UI after settlement; a persistent/offline logical worker row alone is not acceptable as the task-agent lifecycle representation. Worker-row semantics clarification on 2026-05-31: for task-delegation-only work, active run UI must not show the logical assignee as a lingering offline execution participant after final task-agent settlement; logical members may appear only in clearly labeled roster/template or separate normal-conversation surfaces.

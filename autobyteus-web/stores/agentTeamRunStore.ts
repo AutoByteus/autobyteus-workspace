@@ -264,14 +264,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const runHistoryStore = useRunHistoryStore();
       const contextFileUploadStore = useContextFileUploadStore();
       const activeTeam = teamContextsStore.activeTeamContext;
-      const focusedMember = teamContextsStore.focusedMemberContext;
-      const focusedNode = teamContextsStore.focusedMemberNode;
+      const focusedMember = teamContextsStore.activeExecutionFocusedMemberContext;
+      const focusedNode = teamContextsStore.activeExecutionFocusedMemberNode;
 
       if (!activeTeam || !focusedNode) throw new Error('No active team context.');
 
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey;
+      const targetMemberRouteKey = teamContextsStore.activeExecutionFocusedMemberRouteKey;
+      if (!targetMemberRouteKey) {
+        throw new Error('No active team execution target.');
+      }
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;

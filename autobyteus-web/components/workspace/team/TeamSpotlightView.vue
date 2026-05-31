@@ -30,7 +30,7 @@
 import { computed } from 'vue';
 import TeamMemberMonitorTile from '~/components/workspace/team/TeamMemberMonitorTile.vue';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
+import { flattenActiveExecutionMemberNodesForDisplay } from '~/utils/teamActiveExecutionMembers';
 
 const props = defineProps<{
   teamContext: AgentTeamContext;
@@ -42,7 +42,7 @@ defineEmits<{
 }>();
 
 const displayEntries = computed<TeamMemberNode[]>(() =>
-  flattenTeamMemberNodesForDisplay(props.teamContext.memberTree).map((entry) => entry.node),
+  flattenActiveExecutionMemberNodesForDisplay(props.teamContext).map((entry) => entry.node),
 );
 
 const orderedEntries = computed<TeamMemberNode[]>(() => {

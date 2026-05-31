@@ -10,6 +10,10 @@ The first ticket should not be "MCP server for task tools." It should be "server
 
 2026-05-29 parallelism refinement: a logical team member should be treated as a reusable worker template. A delegated task should be able to start a task-scoped agent instance of that member. If two independent runnable tasks target the same logical member, the framework should be able to run two task-agent instances in parallel, subject to concurrency policy. Each task-agent instance exits independently after its own terminal task.
 
+2026-05-30 frontend UX refinement: the same task-agent instance lifecycle must be visible in the frontend. A delegated task-agent should appear as a separate transient sub-agent entity while active and disappear from active team/member UI after settlement. A logical member/template row may remain only if it is clearly a roster/template representation; keeping only the logical worker row offline and storing the task-agent packet in that row's conversation does not satisfy the sub-agent UX.
+
+2026-05-31 worker-row semantics refinement: the logical team member/template distinction is valid internally, but active run UI must not show a task-delegation-only assignee as `worker • Offline` or an equivalent lingering execution row after the final task-agent instance settles. If the logical member is visible after completion, it must be in an explicitly labeled non-execution roster/config/available-member surface, and task-agent packets/tool activity/completed history must belong to a task-agent/completed-task history entity rather than the logical member's normal conversation.
+
 ## Current State
 
 ### Existing local task tools
@@ -46,6 +50,8 @@ Server-managed team backends already have `TeamRun`, `TeamManager`, member run c
 Mixed teams also intentionally filter local task-management tools from standalone AutoByteus members (`autobyteus-mixed-tool-exposure.ts`) because those tools are not cross-runtime-safe today.
 
 There is also a deeper identity constraint: Codex/Claude managers currently keep active member runtimes in maps keyed by logical `memberRouteKey`, Mixed keeps one handle per route key, and the current task-delegation activation coordinator groups runnable tasks by assignee route. That design can run one logical member, but it cannot represent two task-agent instances of the same logical member. Parallel task agents require a concrete instance identity below the logical member route.
+
+Round 6 browser validation found the corresponding frontend identity constraint: current frontend team-run state and views are primarily keyed by logical member route, so task-agent packets and status are shown in the logical worker conversation/row. Backend task-agent settlement can succeed while the UI still looks like an offline logical worker remains. Round 14/2026-05-31 browser/user evidence sharpened that interpretation: even if a transient task-agent card disappears, leaving a `worker • Offline` row in the active run UI still violates the sub-agent mental model because users see it as the delegated worker still present. The frontend therefore needs a task-agent active entity projection keyed by concrete task-agent identity plus a separate, explicitly labeled roster/topology projection for logical member templates.
 
 ## Target Shape For First Ticket
 
@@ -234,6 +240,17 @@ Implementation-wise, auto-exit should be a delayed/safe lifecycle decision, not 
 
 Validation-wise, a live mixed-runtime E2E should prove this lifecycle end state, not merely the task terminal event. The expected proof is: coordinator delegates; task-agent worker updates terminal status; coordinator receives terminal notification; task-agent worker reaches offline/settled/inactive after the idle settlement coordinator runs.
 
+## Frontend Task-Agent Lifecycle Presentation
+
+For supported frontend/browser UX, backend settlement is necessary but not sufficient. The UI should project task-agent instances as task-scoped sub-agent entities:
+
+- When a backend stream/status/event payload contains `task_agent_instance_id` or `task_agent_run_id`, the frontend creates or updates a task-agent entity associated with the logical member.
+- That entity owns the task-agent conversation/activity stream while active; the task work packet should not be stored as the normal logical member conversation.
+- The entity is rendered distinctly in active team/member/running-agent UI, for example as `worker · task_0001`.
+- After terminal status plus settlement/offline cleanup, the entity disappears from active UI. Completion details remain in notification/activity/history.
+- A logical member row can remain only as team topology/template/available-assignee context in an explicitly labeled non-execution surface. It must not remain as `worker • Offline` in active execution UI and must not contain the task-agent work packet/tool activity as its normal conversation.
+- If two tasks run for the same logical member, the frontend shows two task-agent entities and removes only the settled one.
+
 ## Suggested Flow
 
 1. Coordinator calls `delegate_tasks`.
@@ -249,6 +266,7 @@ Validation-wise, a live mixed-runtime E2E should prove this lifecycle end state,
 11. Activation coordinator may activate other independent task records from the same delegation batch according to task-agent concurrency policy; dependent-task activation is deferred out of this simplified first ticket.
 12. Lifecycle coordinator records a pending auto-settlement for the completed task-agent instance.
 13. When that task-agent run reports idle/current turn settled, lifecycle coordinator terminates/settles that task-agent instance only.
+14. Frontend removes the concrete task-agent entity and any task-delegation-only worker execution row/header from active UI after settlement/offline cleanup while preserving completion history/notification under task-agent/completed-task history.
 
 There should be no model-facing `get_my_tasks` in the simplified surface. If recovery needs member-task lookup, keep it as an internal service query used by the framework to resend an activation packet.
 
@@ -269,6 +287,7 @@ If server-owned task tools are built first, future MCP support is simple:
 2. **Context-binding risk:** task tools must never mutate an arbitrary team run; they must be bound to the caller's member context.
 3. **Backend capability risk:** a backend that cannot settle one member/task-agent instance must not expose supported task delegation, otherwise completed workers remain alive and violate the user's sub-agent model.
 4. **Instance identity risk:** keeping runtime registries keyed only by logical `memberRouteKey` prevents parallel same-member task agents and makes settlement ambiguous.
-5. **Policy risk:** coordinator auto-exit may be undesirable; make it policy-controlled.
-6. **State-placement risk:** live in-memory task plan is enough for first ticket, but future external MCP/restoration may require persistence.
-7. **Composite-tool risk:** `assign_task_to` can blur task-plan and messaging ownership if added too early without a clean orchestration boundary.
+5. **Frontend projection risk:** keeping UI state keyed only by logical `memberRouteKey`, or falling back from a removed task-agent context to the logical worker in active execution UI, hides the sub-agent lifecycle and leaves completed task agents looking like lingering offline workers.
+6. **Policy risk:** coordinator auto-exit may be undesirable; make it policy-controlled.
+7. **State-placement risk:** live in-memory task plan is enough for first ticket, but future external MCP/restoration may require persistence.
+8. **Composite-tool risk:** `assign_task_to` can blur task-plan and messaging ownership if added too early without a clean orchestration boundary.

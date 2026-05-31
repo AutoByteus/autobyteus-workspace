@@ -45,6 +45,13 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import {
+  ensureTaskAgentContext,
+  extractTaskAgentIdentity,
+  getTaskAgentContextByRunId,
+  removeTaskAgentContext,
+  shouldRemoveTaskAgentAfterMessage,
+} from './teamTaskAgentContextProjection';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
@@ -281,6 +288,8 @@ export class TeamStreamingService {
       member_path?: string[];
       source_route_key?: string;
       source_path?: string[];
+      task_agent_run_id?: string;
+      taskAgentRunId?: string;
     };
     if (!payload?.invocation_id) return;
     if (payload.approval_token) {
@@ -292,6 +301,7 @@ export class TeamStreamingService {
       memberPath: payload.member_path,
       sourceRouteKey: payload.source_route_key,
       sourcePath: payload.source_path,
+      taskAgentRunId: payload.task_agent_run_id ?? payload.taskAgentRunId,
     });
     if (approvalTarget) {
       this.approvalTargetByInvocationId.set(payload.invocation_id, approvalTarget);
@@ -319,8 +329,9 @@ export class TeamStreamingService {
       : null;
     const memberRouteKey = target.memberRouteKey?.trim() || memberPath?.join('/') || null;
     const sourceRouteKey = target.sourceRouteKey?.trim() || sourcePath?.join('/') || null;
+    const taskAgentRunId = target.taskAgentRunId?.trim() || null;
 
-    if (!memberRouteKey && !sourceRouteKey && !memberPath?.length && !sourcePath?.length) {
+    if (!memberRouteKey && !sourceRouteKey && !memberPath?.length && !sourcePath?.length && !taskAgentRunId) {
       return null;
     }
 
@@ -329,6 +340,7 @@ export class TeamStreamingService {
       memberPath: memberPath?.length ? memberPath : null,
       sourceRouteKey,
       sourcePath: sourcePath?.length ? sourcePath : null,
+      taskAgentRunId,
     };
   }
 
@@ -341,6 +353,7 @@ export class TeamStreamingService {
       member_path: target.memberPath || undefined,
       source_route_key: target.sourceRouteKey || undefined,
       source_path: target.sourcePath || undefined,
+      task_agent_run_id: target.taskAgentRunId || undefined,
     };
   }
 
@@ -351,6 +364,13 @@ export class TeamStreamingService {
     if (!this.teamContext) return null;
 
     // Use type assertion since route/source metadata is present only on team-scoped payloads.
+    const taskAgentIdentity = extractTaskAgentIdentity(message);
+    if (taskAgentIdentity) {
+      return {
+        context: ensureTaskAgentContext(this.teamContext, taskAgentIdentity),
+      };
+    }
+
     const payload = 'payload' in message ? message.payload as {
       agent_id?: string;
       agent_name?: string;
@@ -367,6 +387,15 @@ export class TeamStreamingService {
         : null;
     const routeKeyFromPath = sourcePath?.map((segment) => String(segment).trim()).filter(Boolean).join('/') || '';
     const memberRunId = payload?.agent_id;
+
+    if (memberRunId) {
+      const taskAgentContext = getTaskAgentContextByRunId(this.teamContext, memberRunId);
+      if (taskAgentContext) {
+        return {
+          context: taskAgentContext,
+        };
+      }
+    }
 
     const canonicalRouteKey = String(sourceRouteKey || routeKeyFromPath || '').trim();
     const routedMatch = canonicalRouteKey
@@ -410,6 +439,8 @@ export class TeamStreamingService {
       return;
     }
 
+    const taskAgentIdentity = extractTaskAgentIdentity(message);
+    const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
     const memberResolution = this.getMemberContextResolution(message);
 
     if (!memberResolution) {
@@ -526,6 +557,10 @@ export class TeamStreamingService {
 
       default:
         console.warn('Unhandled team message type:', (message as any).type);
+    }
+
+    if (removeTaskAgentAfterMessage && taskAgentIdentity) {
+      removeTaskAgentContext(teamContext, taskAgentIdentity);
     }
   }
 }

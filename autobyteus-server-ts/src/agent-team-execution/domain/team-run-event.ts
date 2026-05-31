@@ -96,6 +96,7 @@ export type TeamRunMemberInputEventPayload = {
   senderMemberPath?: string[] | null;
   senderMemberRouteKey?: string | null;
   parentCommunicationMessageId?: string | null;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 };
 
 export type TeamRunEventData =

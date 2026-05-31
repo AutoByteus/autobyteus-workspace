@@ -22,5 +22,12 @@ export const buildTeamMemberInputMessagePayload = (input: {
     sender_member_route_key: eventPayload.senderMemberRouteKey ?? undefined,
     sender_member_path: eventPayload.senderMemberPath ?? undefined,
     parent_communication_message_id: eventPayload.parentCommunicationMessageId ?? undefined,
+    ...(eventPayload.taskAgentInstance
+      ? {
+          task_agent_instance_id: eventPayload.taskAgentInstance.taskAgentInstanceId,
+          task_agent_run_id: eventPayload.taskAgentInstance.taskAgentRunId,
+          task_id: eventPayload.taskAgentInstance.taskId,
+        }
+      : {}),
   };
 };

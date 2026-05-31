@@ -184,6 +184,38 @@ export class MixedTeamMemberRegistry {
     return result;
   }
 
+  async approveTaskAgentToolInvocation(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    invocationId: string,
+    approved: boolean,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const handle = this.taskAgentHandles.get(taskAgentRunId) ?? null;
+    if (!handle) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_RUN_NOT_FOUND",
+        message: `Task-agent run '${taskAgentRunId}' was not found.`,
+      };
+    }
+    if (handle.context.memberRouteKey !== logicalMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_ROUTE_MISMATCH",
+        message: `Task-agent run '${taskAgentRunId}' is not for logical member '${logicalMemberRouteKey}'.`,
+      };
+    }
+    if (!handle.isActive()) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_INACTIVE",
+        message: `Task-agent run '${taskAgentRunId}' is not active.`,
+      };
+    }
+    return handle.approveToolInvocation(null, invocationId, approved, reason ?? null);
+  }
+
   resolveTaskAgentLogicalContext(runId: string): MixedTeamMemberContext | null {
     for (const handle of this.taskAgentHandles.values()) {
       if (

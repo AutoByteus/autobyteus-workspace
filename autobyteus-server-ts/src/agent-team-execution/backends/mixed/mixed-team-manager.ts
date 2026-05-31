@@ -197,6 +197,7 @@ export class MixedTeamManager implements TeamManager {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -204,6 +205,10 @@ export class MixedTeamManager implements TeamManager {
     const resolved = this.memberRegistry.resolveContext(target);
     if (isOperationResult(resolved)) {
       return resolved;
+    }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) {
+      return this.memberRegistry.approveTaskAgentToolInvocation(resolved.memberRouteKey, taskAgentRunId, invocationId, approved, reason ?? null);
     }
     return this.memberRegistry.getOrCreate(resolved).approveToolInvocation(target, invocationId, approved, reason ?? null);
   }

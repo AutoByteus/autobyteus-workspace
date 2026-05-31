@@ -5,6 +5,9 @@
       <div>
         <h3 class="text-base font-semibold text-gray-900">{{ $t('workspace.components.workspace.team.TeamMembersPanel.team_members') }}</h3>
         <p v-if="teamName" class="text-sm text-gray-500 truncate" :title="teamName">{{ teamName }}</p>
+        <p class="mt-1 text-xs text-gray-500">
+          {{ $t('workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note') }}
+        </p>
       </div>
       <button
         @click="promptTerminateTeam"

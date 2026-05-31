@@ -47,7 +47,7 @@
         :member-context="member.context"
         :member-status="member.node.currentStatus"
         :style="{ marginLeft: `${member.depth * 12}px` }"
-        :is-focused="teamRun.focusedMemberRouteKey === member.node.memberRouteKey"
+        :is-focused="activeExecutionFocusedMemberRouteKey === member.node.memberRouteKey"
         :is-coordinator="member.node.memberRouteKey === coordinatorRouteKey"
         @select="handleMemberSelect"
       />
@@ -61,7 +61,10 @@ import { ref, computed, watch } from 'vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import TeamMemberRow from './TeamMemberRow.vue';
-import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
+import {
+  flattenActiveExecutionMemberNodesForDisplay,
+  resolveActiveExecutionFocusedMemberRouteKey,
+} from '~/utils/teamActiveExecutionMembers';
 
 const props = defineProps<{
   teamRun: AgentTeamContext;
@@ -89,10 +92,14 @@ watch(() => props.isSelected, (selected) => {
 }, { immediate: true });
 
 const displayMembers = computed(() =>
-  flattenTeamMemberNodesForDisplay(props.teamRun.memberTree).map((entry) => ({
+  flattenActiveExecutionMemberNodesForDisplay(props.teamRun).map((entry) => ({
     ...entry,
     context: props.teamRun.leafAgentContextsByRouteKey.get(entry.node.memberRouteKey) || null,
   })),
+);
+
+const activeExecutionFocusedMemberRouteKey = computed(() =>
+  resolveActiveExecutionFocusedMemberRouteKey(props.teamRun),
 );
 
 const handleTeamClick = () => {

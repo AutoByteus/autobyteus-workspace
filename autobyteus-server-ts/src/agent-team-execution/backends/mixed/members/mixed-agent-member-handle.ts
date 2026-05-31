@@ -150,6 +150,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
         teamRunId: this.options.teamContext.runId,
         memberContext: this.context,
         message,
+        taskAgentInstance: this.options.taskAgentInstance ?? null,
       }) satisfies TeamRunMemberInputEventPayload,
     });
   }

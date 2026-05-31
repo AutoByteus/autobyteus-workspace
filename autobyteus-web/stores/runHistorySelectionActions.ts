@@ -10,6 +10,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -78,10 +79,13 @@ export const selectTreeRunFromHistory = async (
     const shouldReuseLocalTeamContext = Boolean(
       localTeamContext && memberNodesByRouteKey?.has(row.memberRouteKey),
     );
+    const localTargetMemberRouteKey = localTeamContext
+      ? resolveActiveExecutionFocusedMemberRouteKey(localTeamContext, row.memberRouteKey) || row.memberRouteKey
+      : row.memberRouteKey;
     const localMemberProjectionLoadState =
-      localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[row.memberRouteKey]
+      localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[localTargetMemberRouteKey]
       ?? null;
-    const memberNode = memberNodesByRouteKey?.get(row.memberRouteKey);
+    const memberNode = memberNodesByRouteKey?.get(localTargetMemberRouteKey);
     const isLeafAgent = memberNode?.memberKind === 'agent' || legacyMembers instanceof Map;
     const shouldShowOpeningIndicator = Boolean(localTeamContext?.historicalHydration && isLeafAgent)
       && localMemberProjectionLoadState !== 'loaded';
@@ -94,9 +98,9 @@ export const selectTreeRunFromHistory = async (
 
       try {
         selectionStore.selectRun(row.teamRunId, 'team');
-        await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, row.memberRouteKey);
+        await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, localTargetMemberRouteKey);
         store.selectedTeamRunId = row.teamRunId;
-        store.selectedTeamMemberRouteKey = row.memberRouteKey;
+        store.selectedTeamMemberRouteKey = localTargetMemberRouteKey;
         store.selectedRunId = null;
         useTeamRunConfigStore().clearConfig();
         useAgentRunConfigStore().clearConfig();

@@ -23,6 +23,7 @@ export interface TeamManager {
     invocationId: string,
     approved: boolean,
     reason?: string | null,
+    targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
   interruptMember(
     targetMemberRouteKey: string,

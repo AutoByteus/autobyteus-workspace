@@ -1,0 +1,28 @@
+# Electron rebuild success after CR-008 localization fix
+
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web
+Command:
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+
+Result: Pass
+
+Validated pipeline highlights:
+- guard:web-boundary: Pass
+- guard:localization-boundary: Pass
+- audit:localization-literals: Pass with zero unresolved findings
+- prepare-server: Pass, including shared/server build, Prisma generation, managed messaging asset copy, built-in agents bootstrap smoke check, mobile web assets, server deploy, native rebuild
+- generate:electron: Pass
+- transpile-electron: Pass
+- electron-builder mac arm64 DMG/ZIP packaging: Pass
+- macOS code signing/notarization: intentionally skipped via documented local no-notarization environment (`NO_TIMESTAMP=1`, blank `APPLE_TEAM_ID`, identity null)
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.34.dmg (379,772,251 bytes)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.34.dmg.blockmap (396,754 bytes)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.34.zip (377,273,666 bytes)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.34.zip.blockmap (387,839 bytes)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/latest-mac.yml (version 1.3.34)
+
+latest-mac.yml hashes:
+- zip sha512: ID6c+ezkYh+8/6DyE92R1hdSQPoO7HfagnMPQX1e7iOJ0rSp0S37iW2Yq0O2a8BakhltbOnTijuhngQ3/8LXAg==
+- dmg sha512: 3OerIQkSyk9qU/5GQcxzP8TgZlr3vw2y7t9cEXZ4rqtSpj7cTaryLRbJ/+DOHMwlfDeNombwzj9X9D0HPugk0A==

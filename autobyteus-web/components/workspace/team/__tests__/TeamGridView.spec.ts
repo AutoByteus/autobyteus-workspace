@@ -99,6 +99,100 @@ describe('TeamGridView', () => {
     expect(wrapper.emitted('select-member')).toEqual([['student']]);
   });
 
+  it('hides offline task-only logical members from the active execution grid', () => {
+    const wrapper = mount(TeamGridView, {
+      props: {
+        teamContext: {
+          coordinatorMemberRouteKey: 'coordinator',
+          memberTree: [
+            buildMemberNode('coordinator', 'Coordinator'),
+            buildMemberNode('worker', 'Worker'),
+          ],
+          leafAgentContextsByRouteKey: new Map([
+            ['coordinator', buildMember('Coordinator', AgentStatus.Running)],
+            ['worker', buildMember('Worker', AgentStatus.Offline)],
+          ]),
+        } as any,
+        focusedMemberRouteKey: 'coordinator',
+      },
+      global: {
+        stubs: {
+          TeamMemberMonitorTile: {
+            props: ['memberNode'],
+            template: '<div class="tile">{{ memberNode.memberRouteKey }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator']);
+  });
+
+  it('hides initializing task-only logical members from the active execution grid', () => {
+    const wrapper = mount(TeamGridView, {
+      props: {
+        teamContext: {
+          coordinatorMemberRouteKey: 'coordinator',
+          memberTree: [
+            buildMemberNode('coordinator', 'Coordinator'),
+            buildMemberNode('worker', 'Worker'),
+          ],
+          leafAgentContextsByRouteKey: new Map([
+            ['coordinator', buildMember('Coordinator', AgentStatus.Running)],
+            ['worker', buildMember('Worker', AgentStatus.Initializing)],
+          ]),
+        } as any,
+        focusedMemberRouteKey: 'worker',
+      },
+      global: {
+        stubs: {
+          TeamMemberMonitorTile: {
+            props: ['memberNode'],
+            template: '<div class="tile">{{ memberNode.memberRouteKey }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator']);
+  });
+
+  it('keeps a direct logical member conversation visible even when the member is offline', () => {
+    const worker = buildMember('Worker', AgentStatus.Offline);
+    worker.state.conversation.messages.push({
+      type: 'user',
+      text: 'direct follow-up',
+      timestamp: new Date('2026-05-31T00:00:00.000Z'),
+    } as any);
+
+    const wrapper = mount(TeamGridView, {
+      props: {
+        teamContext: {
+          coordinatorMemberRouteKey: 'coordinator',
+          memberTree: [
+            buildMemberNode('coordinator', 'Coordinator'),
+            buildMemberNode('worker', 'Worker'),
+          ],
+          leafAgentContextsByRouteKey: new Map([
+            ['coordinator', buildMember('Coordinator', AgentStatus.Running)],
+            ['worker', worker],
+          ]),
+        } as any,
+        focusedMemberRouteKey: 'coordinator',
+      },
+      global: {
+        stubs: {
+          TeamMemberMonitorTile: {
+            props: ['memberNode'],
+            template: '<div class="tile">{{ memberNode.memberRouteKey }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator', 'worker']);
+  });
+
   it('renders recursive subteam and nested leaf route keys as selectable grid tiles', async () => {
     const wrapper = mount(TeamGridView, {
       props: {

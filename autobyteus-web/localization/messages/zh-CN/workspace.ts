@@ -84,6 +84,20 @@ const messages = {
     "当前聚焦的子团队",
   "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
     "子团队成员",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
+    "任务智能体",
+  "workspace.components.workspace.team.TeamMembersPanel.team_members":
+    "团队名册",
+  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
+    "没有团队名册成员。",
+  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
+    "逻辑成员名册，不代表活跃任务执行。",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
+    "活跃任务智能体",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
+    "任务智能体",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
+    "需要审批",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

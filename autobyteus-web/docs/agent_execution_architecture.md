@@ -84,8 +84,12 @@ shown only for `awaiting-approval` rows, and backend rejection remains
 authoritative when a stale client attempts to approve an active-but-not-pending
 tool invocation. For team streams, approval dispatch must use the structured
 `ToolApprovalTarget` captured from the backend approval event, such as a member
-route key/path. The frontend must not rebuild approval targets from the current
-focused member, scalar aliases, or invocation-id fallbacks after focus changes.
+route key/path. When the pending approval belongs to a delegated task-agent run,
+the target must also carry the concrete `task_agent_run_id` emitted by the
+backend so approval/denial routes to that task-scoped runtime rather than the
+logical member template. The frontend must not rebuild approval targets from the
+current focused member, scalar aliases, or invocation-id fallbacks after focus
+changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
@@ -150,6 +154,16 @@ member-scoped active history/snapshot/event, the other members must stay at
 their own member-scoped status, or default to `offline/canInterrupt=false`
 until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
 out aggregate team `running` or `initializing` state to every member row.
+Delegated task-agent instances are task-scoped transient entities. When team
+stream payloads carry `task_agent_run_id` plus logical member metadata,
+`TeamStreamingService` creates a temporary task-agent context/node keyed by the
+task-agent run id. `TeamTaskAgentActivityBar` renders these nodes in an
+**Active task agents** strip, distinct from the logical member row/template, and
+shows pending approvals on the task-agent card when the task-agent runtime is
+waiting for tool approval. When the task-agent emits terminal `offline` status,
+the frontend removes that transient task-agent node/card while preserving the
+logical member row and the coordinator/member history that records the delegated
+task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -341,13 +355,13 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with task-agent identity update the transient task-agent context and remove its card after terminal `offline`. |
 | `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
 | `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
-| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`.                     |
+| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id for card-level approve/deny routing. |
 | `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
 | `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
 | `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |

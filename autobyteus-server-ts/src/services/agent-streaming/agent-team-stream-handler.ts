@@ -35,6 +35,7 @@ import {
   resolveInterruptGenerationTargetRunId,
   resolveInterruptGenerationTargetSelector,
   resolveSendMessageTargetSelector,
+  resolveToolApprovalTargetRunId,
   resolveToolApprovalTargetSelector,
 } from "./team-command-selector-parser.js";
 import {
@@ -435,6 +436,7 @@ export class AgentTeamStreamHandler {
       invocationId,
       approved,
       reason,
+      resolveToolApprovalTargetRunId(payload),
     );
     if (!result.accepted) {
       logger.warn(

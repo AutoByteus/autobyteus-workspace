@@ -152,6 +152,7 @@ describe("CodexTeamRunBackend integration", () => {
       "inv-1",
       true,
       "approved",
+      null,
     );
 
     await expect(backend.interruptMember("coord-route", "coord-run")).resolves.toEqual({ accepted: true });

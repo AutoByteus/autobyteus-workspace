@@ -36,6 +36,12 @@
               variant="compact"
             />
             <span
+              v-if="memberNode?.isTaskAgentInstance"
+              class="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-indigo-600"
+            >
+              {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge') }}
+            </span>
+            <span
               v-if="memberNode?.memberKind === 'agent_team'"
               class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
             >

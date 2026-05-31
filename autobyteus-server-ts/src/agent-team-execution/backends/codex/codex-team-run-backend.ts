@@ -120,6 +120,7 @@ export class CodexTeamRunBackend implements TeamRunBackend {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -131,6 +132,7 @@ export class CodexTeamRunBackend implements TeamRunBackend {
         invocationId,
         approved,
         reason,
+        targetMemberRunId,
       );
     } catch (error) {
       return buildCommandFailure("approve team tool", error);
