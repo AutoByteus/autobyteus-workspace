@@ -114,6 +114,22 @@ describe('sanitizeModelConfigAgainstSchema', () => {
     })).toBeNull();
   });
 
+  it('drops stale DeepSeek raw thinking objects after the schema moves to thinking_type', () => {
+    const schema = {
+      reasoning_effort: { type: 'string', enum: ['high', 'max'] },
+      thinking_type: { type: 'string', enum: ['enabled', 'disabled'] },
+    };
+
+    expect(sanitizeModelConfigAgainstSchema(schema, {
+      reasoning_effort: 'high',
+      thinking_type: 'enabled',
+      thinking: { type: 'disabled' },
+    })).toEqual({
+      reasoning_effort: 'high',
+      thinking_type: 'enabled',
+    });
+  });
+
   it('returns null when all persisted values are invalid for current schema', () => {
     const schema = {
       reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] },

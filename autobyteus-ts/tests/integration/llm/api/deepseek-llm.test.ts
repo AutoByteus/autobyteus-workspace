@@ -10,6 +10,7 @@ import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/strea
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
@@ -141,7 +142,15 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
     let llm: DeepSeekLLM | null = null;
 
     try {
-      llm = new DeepSeekLLM(buildThinkingModel());
+      llm = new DeepSeekLLM(
+        buildThinkingModel(),
+        new LLMConfig({
+          extraParams: {
+            reasoning_effort: 'high',
+            thinking_type: 'enabled'
+          }
+        })
+      );
       (llm as any).client = {
         chat: {
           completions: {
@@ -182,9 +191,7 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
       const request = await assembler.prepareToolContinuationRequest(turnId);
 
       await llm.sendMessages(request.messages, request.renderedPayload, {
-        tools: [WEATHER_TOOL_SCHEMA],
-        reasoning_effort: 'high',
-        extra_body: { thinking: { type: 'enabled' } }
+        tools: [WEATHER_TOOL_SCHEMA]
       });
 
       expect(createMock).toHaveBeenCalledTimes(1);

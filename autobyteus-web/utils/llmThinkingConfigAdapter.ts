@@ -1,6 +1,6 @@
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema';
 
-type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'glm';
+type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'glm' | 'deepseek';
 
 type ThinkingConfig = Record<string, unknown>;
 
@@ -9,10 +9,20 @@ const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   claude: ['thinking_enabled', 'thinking_budget_tokens'],
   gemini: ['thinking_level', 'include_thoughts'],
   glm: ['thinking_type'],
+  deepseek: ['thinking_type', 'reasoning_effort'],
+};
+
+const TOGGLE_OWNED_KEYS: Record<ThinkingProvider, string[]> = {
+  openai: [],
+  claude: [],
+  gemini: [],
+  glm: [],
+  deepseek: ['thinking_type'],
 };
 
 export const detectThinkingProvider = (schema: UiModelConfigSchema | null): ThinkingProvider | null => {
   if (!schema) return null;
+  if ('thinking_type' in schema && 'reasoning_effort' in schema) return 'deepseek';
   if ('reasoning_effort' in schema || 'reasoning_summary' in schema) return 'openai';
   if ('thinking_enabled' in schema || 'thinking_budget_tokens' in schema) return 'claude';
   if ('thinking_level' in schema || 'include_thoughts' in schema) return 'gemini';
@@ -29,7 +39,13 @@ export const getThinkingToggleState = (
   config: ThinkingConfig | null | undefined,
 ): boolean => {
   const provider = detectThinkingProvider(schema);
-  if (!provider || !config) return false;
+  if (!provider) return false;
+
+  if (provider === 'deepseek') {
+    return config?.thinking_type !== 'disabled';
+  }
+
+  if (!config) return false;
 
   switch (provider) {
     case 'openai': {
@@ -116,6 +132,17 @@ export const applyThinkingToggle = (
       applyKey(next, schema, 'thinking_type', enabled ? 'enabled' : 'disabled');
       break;
     }
+    case 'deepseek': {
+      applyKey(next, schema, 'thinking_type', enabled ? 'enabled' : 'disabled');
+      if (enabled) {
+        if (next.reasoning_effort === undefined) {
+          applyKey(next, schema, 'reasoning_effort', 'high');
+        }
+      } else {
+        removeKey(next, 'reasoning_effort');
+      }
+      break;
+    }
     default:
       break;
   }
@@ -129,4 +156,12 @@ export const getThinkingParamKeys = (
   const provider = detectThinkingProvider(schema);
   if (!provider) return [];
   return PROVIDER_KEYS[provider];
+};
+
+export const getThinkingToggleOwnedParamKeys = (
+  schema: UiModelConfigSchema | null,
+): string[] => {
+  const provider = detectThinkingProvider(schema);
+  if (!provider) return [];
+  return TOGGLE_OWNED_KEYS[provider];
 };
