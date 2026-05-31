@@ -37,6 +37,8 @@ const messages = {
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":
     "New - {{name}}",
+  "workspace.components.progress.CompactionActivityItem.memory_compaction":
+    "Memory compaction",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
     "Agents",
   "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":

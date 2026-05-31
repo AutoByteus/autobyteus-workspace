@@ -7,6 +7,7 @@ VARIANT=""
 BUILD_ARGS=()
 PLATFORMS="linux/amd64,linux/arm64"
 LOAD_DEFAULT=true
+CLI_INSTALL_CACHE_BUSTER="${CLI_INSTALL_CACHE_BUSTER:-$(date -u +%Y%m%d%H%M%S)}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MONOREPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DOCKERFILE_PATH="${SCRIPT_DIR}/Dockerfile.monorepo"
@@ -27,6 +28,8 @@ if [[ -n "${VARIANT}" && "${VARIANT}" != "latest" ]]; then
     TAG="latest-${VARIANT}"
   fi
 fi
+
+BUILD_ARGS+=("--build-arg" "CLI_INSTALL_CACHE_BUSTER=${CLI_INSTALL_CACHE_BUSTER}")
 
 if [[ "${LOAD_DEFAULT}" == "true" ]]; then
   BUILD_ARGS+=("--load")

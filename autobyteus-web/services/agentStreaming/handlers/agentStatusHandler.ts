@@ -17,6 +17,7 @@ import type {
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { projectCompactionStatusToActivity } from './compactionActivityProjection';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
 import {
@@ -73,42 +74,18 @@ export function handleTurnInterrupted(
 
 
 
-
-const buildCompactionMessage = (payload: CompactionStatusPayload): string => {
-  switch (payload.phase) {
-    case 'requested':
-      return 'Compaction queued';
-    case 'started':
-      return 'Compacting memory…';
-    case 'completed':
-      return 'Memory compacted';
-    case 'failed':
-      return payload.error_message || 'Compaction failed — see logs';
-    default:
-      return 'Compaction update';
-  }
-};
-
 export function handleCompactionStatus(
   payload: CompactionStatusPayload,
   context: AgentContext
 ): void {
-  context.state.compactionStatus = {
-    phase: payload.phase,
-    message: buildCompactionMessage(payload),
-    turnId: payload.turn_id ?? null,
-    selectedBlockCount: payload.selected_block_count ?? null,
-    compactedBlockCount: payload.compacted_block_count ?? null,
-    rawTraceCount: payload.raw_trace_count ?? null,
-    semanticFactCount: payload.semantic_fact_count ?? null,
-    compactionAgentDefinitionId: payload.compaction_agent_definition_id ?? null,
-    compactionAgentName: payload.compaction_agent_name ?? null,
-    compactionRuntimeKind: payload.compaction_runtime_kind ?? null,
-    compactionModelIdentifier: payload.compaction_model_identifier ?? null,
-    compactionRunId: payload.compaction_run_id ?? null,
-    compactionTaskId: payload.compaction_task_id ?? null,
-    errorMessage: payload.error_message ?? null,
-  };
+  const projection = projectCompactionStatusToActivity(payload, {
+    runId: context.state.runId,
+    previousStatus: context.state.compactionStatus,
+  });
+  context.state.compactionStatus = projection.status;
+
+  const activityStore = useAgentActivityStore();
+  activityStore.upsertCompactionActivity(context.state.runId, projection.activity);
 }
 
 /**
@@ -186,16 +163,16 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
   const activityStore = useAgentActivityStore();
   const agentRunId = context.state.runId;
   if (info.toolName) {
-    activityStore.updateActivityToolName(agentRunId, info.invocationId, info.toolName);
+    activityStore.updateToolActivityToolName(agentRunId, info.invocationId, info.toolName);
   }
-  activityStore.updateActivityStatus(agentRunId, info.invocationId, 'error');
-  activityStore.setActivityResult(agentRunId, info.invocationId, null, info.message);
+  activityStore.updateToolActivityStatus(agentRunId, info.invocationId, 'error');
+  activityStore.setToolActivityResult(agentRunId, info.invocationId, null, info.message);
 
   const activity = activityStore
-    .getActivities(agentRunId)
+    .getToolActivities(agentRunId)
     .find((item) => item.invocationId === info.invocationId);
   if (activity && !activity.logs.includes(info.message)) {
-    activityStore.addActivityLog(agentRunId, info.invocationId, info.message);
+    activityStore.addToolActivityLog(agentRunId, info.invocationId, info.message);
   }
 
   return true;
@@ -242,8 +219,8 @@ function terminalizeOpenToolSegmentsForInterruptedTurn(
       continue;
     }
 
-    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
-    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+    activityStore.updateToolActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
+    activityStore.setToolActivityResult(context.state.runId, segment.invocationId, null, segment.error);
   }
 }
 
@@ -272,7 +249,7 @@ function terminalizeOpenToolSegmentsForError(
       continue;
     }
 
-    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'error');
-    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+    activityStore.updateToolActivityStatus(context.state.runId, segment.invocationId, 'error');
+    activityStore.setToolActivityResult(context.state.runId, segment.invocationId, null, segment.error);
   }
 }

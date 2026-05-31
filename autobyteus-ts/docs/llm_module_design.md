@@ -120,7 +120,8 @@ Current examples of provider-specific model rules:
   extended thinking, and the adapter does not inject a default `temperature`
   for that model.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
-  OpenAI-compatible adapter with their V4 thinking schema.
+  OpenAI-compatible adapter with a flat user-facing V4 thinking schema; the
+  adapter maps that schema to the provider request shape.
 - `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
   thinking schema, docs-backed curated token limits, and explicit API-key /
   Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
@@ -194,7 +195,11 @@ agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
-per-request `temperature`.
+per-request `temperature`. `DeepSeekLLM` similarly owns V4 thinking request
+normalization: user-facing `thinking_type` is converted to
+`extra_body.thinking.type`, stale raw top-level `thinking` is dropped, and
+disabled thinking omits `reasoning_effort` instead of sending an OpenAI-style
+`none` effort.
 
 Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
 message-history extensions. The default `OpenAIChatRenderer` is conservative and
@@ -308,12 +313,12 @@ healthy custom providers or the built-in registry.
 
 ## 8. Provider Configuration Mapping
 
-| Provider   | Param Name         | Type    | UI Control | Sent to Backend              |
+| Provider   | Param Name         | Type    | UI Control | Runtime / Provider Request Effect |
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "high"}` |
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
 | Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking: {type: "adaptive"}}` |
 | Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
-| DeepSeek V4      | `thinking.type`    | ENUM    | Dropdown   | `{thinking: {type: "enabled"}}` |
+| DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{extra_body: {thinking: {type: "enabled"}}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM        | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking_enabled: true}`   |

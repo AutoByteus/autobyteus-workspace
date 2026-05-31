@@ -24,6 +24,22 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 | `TEAM_LOCAL` | `<owner-team>/agents/<agent-id>/`, including nested owners such as `agent-teams/<parent>/agent-teams/<child>/agents/<agent-id>/` and `applications/<application-id>/agent-teams/<team-id>/agent-teams/<child>/agents/<agent-id>/` | excluded from normal Agents browse/search; surfaced through owning-team provenance and direct known-id routes |
 | `APPLICATION_OWNED` | `applications/<application-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-application / package provenance |
 
+## Source Metadata For Runtime Skills
+
+File-backed agent providers attach non-persisted `sourceInfo` to loaded
+`AgentDefinition` instances. `sourceInfo.agentDirPath` points at the source
+folder for the current agent definition. Team-local agents also carry
+`sourceInfo.teamDirPath` for the owning team folder.
+
+Runtime bootstrap uses this metadata through
+`SkillService.resolveConfiguredSkillsForAgent(...)` to resolve
+`agent-config.json.skillNames` contextually. That boundary supports
+agent-private skills under the agent folder, owning-team shared skills for
+team-local members, and then global skill fallback. Callers should not
+reconstruct `agents/`, `agent-teams/`, or application-owned paths themselves;
+`AgentDefinitionService` and the file providers remain the authoritative source
+for both definition identity and source-path context.
+
 ## Default Launch Config
 
 Agent definitions now persist `defaultLaunchConfig` alongside the rest of the definition metadata.

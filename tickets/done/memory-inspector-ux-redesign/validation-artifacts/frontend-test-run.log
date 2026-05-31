@@ -1,0 +1,70 @@
+
+> autobyteus@1.3.35 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts components/memory/__tests__/MemoryHome.spec.ts components/memory/__tests__/AgentMemoryDetail.spec.ts components/memory/__tests__/AgentTeamMemoryDetail.spec.ts components/memory/__tests__/MemoryInspector.spec.ts pages/__tests__/memory.spec.ts components/memory/__tests__/WorkingContextTab.spec.ts components/memory/__tests__/EpisodicTab.spec.ts components/memory/__tests__/SemanticTab.spec.ts components/memory/__tests__/RawTracesTab.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-web
+
+stdout | components/memory/__tests__/RawTracesTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/MemoryInspector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/AgentMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/WorkingContextTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/memory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/SemanticTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/MemoryHome.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/EpisodicTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/SemanticTab.spec.ts (1 test) 6ms
+ ✓ components/memory/__tests__/WorkingContextTab.spec.ts (1 test) 6ms
+ ✓ components/memory/__tests__/RawTracesTab.spec.ts (1 test) 9ms
+ ✓ components/memory/__tests__/EpisodicTab.spec.ts (1 test) 6ms
+ ✓ components/memory/__tests__/AgentTeamMemoryDetail.spec.ts (1 test) 14ms
+ ✓ components/memory/__tests__/AgentMemoryDetail.spec.ts (1 test) 13ms
+ ✓ components/memory/__tests__/MemoryHome.spec.ts (2 tests) 21ms
+ ✓ components/memory/__tests__/MemoryInspector.spec.ts (3 tests) 16ms
+ ✓ pages/__tests__/memory.spec.ts (3 tests) 20ms
+stdout | tests/stores/memoryInspectorStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/memoryExplorerStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/memoryExplorerStore.test.ts (3 tests) 4ms
+ ✓ tests/stores/memoryInspectorStore.test.ts (3 tests) 4ms
+
+ Test Files  11 passed (11)
+      Tests  20 passed (20)
+   Start at  13:24:37
+   Duration  8.47s (transform 3.46s, setup 53.85s, collect 1.24s, tests 118ms, environment 3.98s, prepare 3.02s)
+

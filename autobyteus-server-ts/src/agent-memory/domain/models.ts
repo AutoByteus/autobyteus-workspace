@@ -30,9 +30,10 @@ export type AgentMemoryView = {
   rawTraces?: MemoryTraceEvent[] | null;
 };
 
-export type MemorySnapshotSummary = {
-  runId: string;
-  lastUpdatedAt?: string | null;
+export type AgentMemoryAttribution = "DEFINITION" | "UNATTRIBUTED";
+
+export type MemoryAvailabilitySummary = {
+  latestMemoryAt?: string | null;
   hasWorkingContext: boolean;
   hasEpisodic: boolean;
   hasSemantic: boolean;
@@ -40,8 +41,69 @@ export type MemorySnapshotSummary = {
   hasRawArchive: boolean;
 };
 
-export type MemorySnapshotPage = {
-  entries: MemorySnapshotSummary[];
+export type MemoryAvailabilityBuildResult = {
+  availability: MemoryAvailabilitySummary;
+  latestMemoryMtime: number;
+};
+
+export type AgentWithMemorySelector = {
+  attribution: AgentMemoryAttribution;
+  agentDefinitionId?: string | null;
+};
+
+export type AgentWithMemorySummary = {
+  attribution: AgentMemoryAttribution;
+  agentDefinitionId?: string | null;
+  displayName: string;
+  stableId: string;
+  runCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+};
+
+export type AgentRunMemorySummary = {
+  runId: string;
+  agentDefinitionId?: string | null;
+  agentName?: string | null;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+};
+
+export type AgentTeamWithMemorySummary = {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  teamRunCount: number;
+  memberMemoryCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+};
+
+export type TeamMemberMemoryTargetSummary = {
+  memberRouteKey: string;
+  memberName: string;
+  memberRunId: string;
+  agentDefinitionId?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+};
+
+export type AgentTeamRunMemorySummary = {
+  teamRunId: string;
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+  memberTargets: TeamMemberMemoryTargetSummary[];
+};
+
+export type MemoryExplorerPage<T> = {
+  entries: T[];
   total: number;
   page: number;
   pageSize: number;

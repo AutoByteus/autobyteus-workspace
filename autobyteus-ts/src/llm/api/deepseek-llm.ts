@@ -4,6 +4,58 @@ import { LLMConfig } from '../utils/llm-config.js';
 import { LLMProvider } from '../providers.js';
 import { DeepSeekChatRenderer } from '../prompt-renderers/deepseek-chat-renderer.js';
 
+type DeepSeekThinkingType = 'enabled' | 'disabled';
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const isDeepSeekThinkingType = (value: unknown): value is DeepSeekThinkingType =>
+  value === 'enabled' || value === 'disabled';
+
+function cloneExtraBody(value: unknown): unknown {
+  if (!isRecord(value)) {
+    return value;
+  }
+
+  const extraBody = { ...value };
+  if (isRecord(extraBody.thinking)) {
+    extraBody.thinking = { ...extraBody.thinking };
+  }
+  return extraBody;
+}
+
+function mergeThinkingIntoExtraBody(
+  extraBodyValue: unknown,
+  thinkingType: DeepSeekThinkingType
+): Record<string, unknown> {
+  const extraBody = isRecord(extraBodyValue) ? { ...extraBodyValue } : {};
+  const thinking = isRecord(extraBody.thinking) ? { ...extraBody.thinking } : {};
+  thinking.type = thinkingType;
+  extraBody.thinking = thinking;
+  return extraBody;
+}
+
+function normalizeDeepSeekExtraParams(extraParams?: Record<string, unknown>): Record<string, unknown> {
+  const params = { ...(extraParams ?? {}) };
+  const thinkingType = params.thinking_type;
+
+  delete params.thinking_type;
+  delete params.thinking;
+
+  if (params.extra_body !== undefined) {
+    params.extra_body = cloneExtraBody(params.extra_body);
+  }
+
+  if (isDeepSeekThinkingType(thinkingType)) {
+    params.extra_body = mergeThinkingIntoExtraBody(params.extra_body, thinkingType);
+    if (thinkingType === 'disabled') {
+      delete params.reasoning_effort;
+    }
+  }
+
+  return params;
+}
+
 export class DeepSeekLLM extends OpenAICompatibleLLM {
   constructor(model?: LLMModel, llmConfig?: LLMConfig) {
     const effectiveModel =
@@ -18,6 +70,7 @@ export class DeepSeekLLM extends OpenAICompatibleLLM {
     const config = llmConfig ?? new LLMConfig();
 
     super(effectiveModel, 'DEEPSEEK_API_KEY', 'https://api.deepseek.com', config);
+    this.config.extraParams = normalizeDeepSeekExtraParams(this.config.extraParams);
     this._renderer = new DeepSeekChatRenderer();
   }
 }

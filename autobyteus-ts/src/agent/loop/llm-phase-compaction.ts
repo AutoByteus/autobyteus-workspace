@@ -57,10 +57,13 @@ export function evaluateLlmPhaseCompaction(input: {
   }, runtimeSettings.detailedLogsEnabled);
 
   if (compactionRequired) {
-    memoryManager.requestCompaction();
+    const compactionOperationId = memoryManager.requestCompaction(activeTurnId);
     compactionReporter.emitStatus({
       phase: 'requested',
       turn_id: activeTurnId,
+      compaction_operation_id: compactionOperationId,
+      requested_turn_id: activeTurnId,
+      execution_turn_id: null,
       selected_block_count: null,
       compacted_block_count: null,
       raw_trace_count: null,

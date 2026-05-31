@@ -1454,9 +1454,13 @@ describe('TeamStreamingService', () => {
 
     expect(professorContext.state.runId).toBe('prof-run-2');
     expect(professorContext.state.compactionStatus).toEqual({
+      activityId: 'compaction:turn:prof-run-2:turn-9',
       phase: 'completed',
       message: 'Memory compacted',
       turnId: 'turn-9',
+      compactionOperationId: null,
+      requestedTurnId: null,
+      executionTurnId: null,
       selectedBlockCount: 3,
       compactedBlockCount: 2,
       rawTraceCount: null,

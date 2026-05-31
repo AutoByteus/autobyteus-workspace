@@ -3,7 +3,10 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentDefinition } from "../domain/models.js";
-import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
+import type {
+  AgentDefinitionOwnershipScope,
+  AgentDefinitionSourceInfo,
+} from "../domain/models.js";
 import { writeRawFile, writeJsonFile, readJsonFile } from "../../persistence/file/store-utils.js";
 import { parseAgentMd, serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
 import {
@@ -88,6 +91,7 @@ export class FileAgentDefinitionProvider {
       ownerApplicationName?: string | null;
       ownerPackageId?: string | null;
       ownerLocalApplicationId?: string | null;
+      sourceInfo?: AgentDefinitionSourceInfo | null;
     },
   ): Promise<AgentDefinition | null> {
     try {
@@ -120,6 +124,9 @@ export class FileAgentDefinitionProvider {
         ownerPackageId: ownership.ownerPackageId ?? null,
         ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: normalizedConfig.defaultLaunchConfig,
+        sourceInfo: ownership.sourceInfo ?? {
+          agentDirPath: path.dirname(mdPath),
+        },
       });
     } catch (error) {
       if (error instanceof AgentMdParseError) {
@@ -142,6 +149,9 @@ export class FileAgentDefinitionProvider {
       agentId,
       {
         ownershipScope: "shared",
+        sourceInfo: {
+          agentDirPath: path.join(agentRoot, agentId),
+        },
       },
     );
   }

@@ -6,11 +6,17 @@ This document describes the design and implementation of the **Skills Management
 
 The Skills module allows users to:
 
-- View available skills (file-based capabilities).
+- View available global skills (file-based capabilities from configured skill
+  directories).
 - View the content of skill files (scripts, docs) using the **generic File Explorer**.
 - Create new skills.
 - Edit skill files directly in the browser with **Monaco Editor**.
-- Assign skills to agents during agent creation.
+- Assign global skills to agents during agent creation.
+
+Package-private agent skills and owning-team shared package skills are runtime
+contextual capabilities. They are referenced by `agent-config.json.skillNames`
+inside a package, resolved by the backend when that package agent runs, and are
+not listed as standalone rows on the Skills page.
 
 ## Module Structure
 
@@ -161,12 +167,23 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 ### Agent Creation Form
 
 The `AgentDefinitionForm.vue` component includes a "Skills Configuration" section.
-It calls `skillStore.fetchAllSkills()` to populate the available skills.
+It calls `skillStore.fetchAllSkills()` to populate the available global skills.
 
 - **Component**: `GroupableTagInput`
 - **Data Field**: `skillNames` (List of strings)
 
-When an agent is created, the selected `skillNames` are sent to the backend `AgentDefinition`.
+When an agent is created, the selected `skillNames` are sent to the backend
+`AgentDefinition`.
+
+The backend treats `skillNames` as logical names at runtime. For package-authored
+agents, those names may resolve to package-private layouts such as
+`agents/<agent-id>/skills/<skill-name>/SKILL.md`, a colocated
+`agents/<agent-id>/SKILL.md`, or an owning-team shared skill under
+`agent-teams/<team-id>/skills/<skill-name>/SKILL.md` before falling back to the
+global Skills catalog. Those contextual package skills remain hidden from the
+Skills page and from `fetchAllSkills()`. Duplicate skill names across global,
+package-private, and team-shared sources are product-excluded for this ticket,
+so package authors should choose unique logical skill names.
 
 ## Skill Versioning (Frontend)
 

@@ -11,6 +11,7 @@ PLATFORMS="linux/amd64,linux/arm64"
 MODE="load"
 VARIANT=""
 EXTRA_ARGS=()
+CLI_INSTALL_CACHE_BUSTER="${CLI_INSTALL_CACHE_BUSTER:-$(date -u +%Y%m%d%H%M%S)}"
 
 if command -v jq >/dev/null 2>&1; then
   VERSION_DEFAULT="$(jq -r '.version' "${MONOREPO_ROOT}/autobyteus-server-ts/package.json")"
@@ -38,6 +39,8 @@ if [[ -n "${VARIANT}" ]]; then
 else
   TAG_LATEST="latest"
 fi
+
+EXTRA_ARGS+=("--build-arg" "CLI_INSTALL_CACHE_BUSTER=${CLI_INSTALL_CACHE_BUSTER}")
 
 if ! docker buildx version >/dev/null 2>&1; then
   echo "Error: Docker Buildx is required."

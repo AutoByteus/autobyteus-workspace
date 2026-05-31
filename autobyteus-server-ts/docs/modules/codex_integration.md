@@ -168,21 +168,47 @@ Team runtime:
 
 ## Skills
 
-Configured runtime skills are preflighted against Codex `skills/list` for the run working directory.
+Configured runtime skills are first resolved by
+`SkillService.resolveConfiguredSkillsForAgent(...)`, so Codex receives the same
+context-aware `Skill[]` shape as the other runtime bootstraps. That resolver can
+return package-private agent skills, owning-team shared skills for team-local
+members, or global catalog fallback skills.
 
-- If Codex already discovers an enabled skill with the same logical `name`, AutoByteus reuses it and does not materialize it into the workspace.
-- If the configured skill name is not discoverable, AutoByteus materializes a runtime-owned whole-directory symlink into the run workspace under:
+The resolved skills are then preflighted against Codex `skills/list` for the run
+working directory.
 
-- `.codex/skills/<skill>/...`
+- If Codex already discovers an enabled skill with the logical `name`,
+  AutoByteus reuses it and does not materialize another workspace entry.
+- If the resolved skill name is not discoverable, AutoByteus materializes a
+  runtime-owned whole-directory symlink into the run workspace at
+  `.codex/skills/<sanitized-skill-name>`.
+- The symlink target is the already-resolved `Skill.rootPath`. For imported
+  shared-agent package skills, that may be the colocated agent `SKILL.md` root or
+  an `agents/<agent-id>/skills/<skill-name>` multi-skill root.
+- If the discovery probe fails, AutoByteus falls back to the runtime-owned
+  workspace symlink path instead of blocking bootstrap.
+- The runtime-owned workspace path is an intuitive
+  `.codex/skills/<sanitized-skill-name>` directory symlink to the original source
+  root. AutoByteus does not add the old hash suffix, does not generate
+  `agents/openai.yaml`, and does not write ownership markers into the source
+  tree.
+- Team-shared relative links continue to work because Codex resolves through the
+  source root, so no mirrored `.codex/shared/...` path is created.
+- Duplicate skill names are product-excluded for this ticket. Codex has no
+  source-aware duplicate-name preflight or materializer behavior here; it uses
+  the normal resolved `Skill.rootPath` plus logical `Skill.name` path.
 
-- If the discovery probe fails, AutoByteus falls back to the runtime-owned workspace symlink path instead of blocking bootstrap.
-- The runtime-owned workspace path is an intuitive `.codex/skills/<sanitized-skill-name>` directory symlink to the original source root. AutoByteus does not add the old hash suffix, does not generate `agents/openai.yaml`, and does not write ownership markers into the source tree.
-- Team-shared relative links continue to work because Codex resolves through the source root, so no mirrored `.codex/shared/...` path is created.
+Durable E2E coverage exercises the runtime boundary with the real
+`CodexThreadBootstrapper` and `CodexWorkspaceSkillMaterializer`: imported
+shared-agent private root and multi-skill package layouts resolve into
+`.codex/skills/<skill-name>` symlinks that point at the exact package source
+roots and expose the expected `SKILL.md` content to Codex.
 
 Relevant owners:
 
 - `src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
 - `src/agent-execution/backends/codex/codex-workspace-skill-materializer.ts`
+- `src/skills/services/configured-agent-skill-resolver.ts`
 
 This keeps Codex skill loading aligned with the Codex filesystem contract instead of injecting skill content into prompts at the server boundary.
 

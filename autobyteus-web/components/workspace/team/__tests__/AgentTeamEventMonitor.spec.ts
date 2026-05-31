@@ -154,7 +154,7 @@ describe('AgentTeamEventMonitor.vue', () => {
         stubs: {
           AgentEventMonitor: {
             name: 'AgentEventMonitor',
-            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
             template: '<div class="agent-event-monitor-stub" />',
           },
         },
@@ -174,6 +174,8 @@ describe('AgentTeamEventMonitor.vue', () => {
       member_a111: 'Professor',
       member_b222: 'Student',
     });
+    expect(monitor.props('conversation')).toMatchObject({ id: 'team-1::professor' });
+    expect(monitor.props('runId')).toBe('member_a111');
   });
 
   it('passes focused member display name and avatar to AgentEventMonitor', () => {
@@ -182,7 +184,7 @@ describe('AgentTeamEventMonitor.vue', () => {
         stubs: {
           AgentEventMonitor: {
             name: 'AgentEventMonitor',
-            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
             template: '<div class="agent-event-monitor-stub" />',
           },
         },

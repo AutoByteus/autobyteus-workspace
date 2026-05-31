@@ -91,7 +91,7 @@ const buildDeepSeekFlash = () =>
       maxTokens: 700,
       extraParams: {
         reasoning_effort: 'high',
-        extra_body: { thinking: { type: 'enabled' } }
+        thinking_type: 'enabled'
       }
     })
   );

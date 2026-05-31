@@ -297,7 +297,14 @@ describe("memory layout and projection integration", () => {
     ]);
     expect(projection.summary).toBe("hello from archived user");
     expect(projection.conversation).toHaveLength(2);
-    expect(projection.activities).toEqual([]);
+    expect(projection.activities).toEqual([
+      expect.objectContaining({
+        kind: "compaction",
+        activityId: "compaction:boundary:rt-boundary",
+        phase: "completed",
+        provider: "codex",
+      }),
+    ]);
     expect(projection.conversation[0]?.content).toBe("hello from archived user");
     expect(projection.conversation[1]?.content).toBe("hello from active assistant");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:02.000Z");

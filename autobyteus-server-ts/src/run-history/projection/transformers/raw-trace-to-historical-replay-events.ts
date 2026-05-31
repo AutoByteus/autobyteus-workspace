@@ -6,6 +6,69 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
     ? (value as Record<string, unknown>)
     : null;
 
+const asString = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const asNumber = (value: unknown): number | null =>
+  typeof value === "number" && Number.isFinite(value) ? value : null;
+
+const asBoolean = (value: unknown): boolean | null =>
+  typeof value === "boolean" ? value : null;
+
+const normalizeProviderStatusToPhase = (
+  status: unknown,
+): "requested" | "started" | "completed" | "failed" => {
+  const normalized = asString(status)?.toLowerCase().replace(/[^a-z0-9]+/g, "_") ?? null;
+  if (!normalized) {
+    return "completed";
+  }
+  if (["requested", "queued", "pending", "scheduled"].includes(normalized)) {
+    return "requested";
+  }
+  if (["started", "starting", "running", "in_progress", "compacting"].includes(normalized)) {
+    return "started";
+  }
+  if (["failed", "failure", "error", "errored"].includes(normalized)) {
+    return "failed";
+  }
+  return "completed";
+};
+
+const getCompactionMessage = (phase: "requested" | "started" | "completed" | "failed"): string => {
+  switch (phase) {
+    case "failed":
+      return "Provider context compaction failed";
+    case "started":
+      return "Provider context compaction started";
+    case "requested":
+      return "Provider context compaction queued";
+    case "completed":
+    default:
+      return "Provider context compaction boundary recorded";
+  }
+};
+
+const resolveProviderSessionId = (details: Record<string, unknown> | null): string | null =>
+  asString(details?.provider_session_id) ??
+  asString(details?.providerSessionId) ??
+  asString(details?.provider_thread_id) ??
+  asString(details?.providerThreadId);
+
+const resolveCompactionActivityId = (
+  trace: MemoryTraceEvent,
+  details: Record<string, unknown> | null,
+  boundaryKey: string,
+): string => {
+  const providerEventId = asString(details?.provider_event_id) ?? asString(details?.providerEventId);
+  if (providerEventId) {
+    const provider = asString(details?.provider) ?? "provider";
+    const providerSessionId = resolveProviderSessionId(details) ?? "session";
+    const turnId = trace.turnId || "turn";
+    return `compaction:provider:${provider}:${providerSessionId}:${providerEventId}:${turnId}`;
+  }
+  return `compaction:boundary:${boundaryKey}`;
+};
+
 const inferActivityType = (
   toolName: string | null,
   toolArgs: Record<string, unknown> | null,
@@ -65,6 +128,39 @@ const createToolEvent = (trace: MemoryTraceEvent): HistoricalReplayToolEvent => 
   };
 };
 
+const createCompactionEvent = (trace: MemoryTraceEvent): HistoricalReplayEvent => {
+  const details = asRecord(trace.toolResult);
+  const boundaryKey =
+    asString(details?.boundary_key) ??
+    asString(details?.boundaryKey) ??
+    trace.id?.trim() ??
+    `${trace.turnId}:${trace.seq}`;
+  const phase = normalizeProviderStatusToPhase(details?.status);
+  const providerEventId = asString(details?.provider_event_id) ?? asString(details?.providerEventId);
+  const providerSessionId = resolveProviderSessionId(details);
+
+  return {
+    kind: "compaction",
+    activityId: resolveCompactionActivityId(trace, details, boundaryKey),
+    phase,
+    message: getCompactionMessage(phase),
+    turnId: trace.turnId || null,
+    compactionOperationId: asString(details?.compaction_operation_id) ?? asString(details?.compactionOperationId),
+    requestedTurnId: asString(details?.requested_turn_id) ?? asString(details?.requestedTurnId),
+    executionTurnId: asString(details?.execution_turn_id) ?? asString(details?.executionTurnId),
+    provider: asString(details?.provider),
+    sourceSurface: asString(details?.source_surface) ?? asString(details?.sourceSurface),
+    boundaryKey,
+    providerEventId,
+    providerSessionId,
+    trigger: asString(details?.trigger),
+    preTokens: asNumber(details?.pre_tokens) ?? asNumber(details?.preTokens),
+    rotationEligible: asBoolean(details?.rotation_eligible) ?? asBoolean(details?.rotationEligible),
+    ts: trace.ts ?? null,
+    detailLevel: "source_limited",
+  };
+};
+
 const mergeToolResult = (
   pending: HistoricalReplayToolEvent,
   trace: MemoryTraceEvent,
@@ -115,6 +211,11 @@ export const buildHistoricalReplayEvents = (
         media: trace.media ?? null,
         ts: trace.ts ?? null,
       });
+      continue;
+    }
+
+    if (trace.traceType === "provider_compaction_boundary") {
+      events.push(createCompactionEvent(trace));
       continue;
     }
 

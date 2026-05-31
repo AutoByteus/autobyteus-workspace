@@ -37,6 +37,8 @@ const messages = {
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":
     "新建 - {{name}}",
+  "workspace.components.progress.CompactionActivityItem.memory_compaction":
+    "记忆压缩",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
     "智能体",
   "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":

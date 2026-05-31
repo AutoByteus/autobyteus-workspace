@@ -76,7 +76,7 @@ export class ClaudeSessionBootstrapper {
     const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
       runContext.config.agentDefinitionId,
     );
-    const configuredSkills = this.skillService.getSkills(agentDefinition?.skillNames ?? []);
+    const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
     const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,

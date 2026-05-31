@@ -1,10 +1,10 @@
 import { nextTick, reactive, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ToolActivity } from '~/stores/agentActivityStore';
+import type { RunActivity } from '~/stores/agentActivityStore';
 
 const highlightedId = ref<string | null>(null);
-const activities = ref<ToolActivity[]>([]);
+const activities = ref<RunActivity[]>([]);
 const activeContextStoreMock = reactive({
   activeAgentContext: {
     state: {
@@ -31,6 +31,8 @@ describe('ActivityFeed', () => {
     highlightedId.value = null;
     activities.value = [
       {
+        kind: 'tool',
+        activityId: 'tool-1',
         invocationId: 'tool-1',
         toolName: 'WebSearch',
         type: 'tool_call',
@@ -43,6 +45,8 @@ describe('ActivityFeed', () => {
         timestamp: new Date('2026-03-08T00:00:00.000Z'),
       },
       {
+        kind: 'tool',
+        activityId: 'tool-2',
         invocationId: 'tool-2',
         toolName: 'WebSearch',
         type: 'tool_call',
@@ -61,8 +65,8 @@ describe('ActivityFeed', () => {
     const wrapper = mount(ActivityFeed, {
       global: {
         stubs: {
-          ActivityItem: {
-            name: 'ActivityItem',
+          ToolActivityItem: {
+            name: 'ToolActivityItem',
             props: ['activity', 'isHighlighted'],
             template: '<div class="activity-item-stub" :data-id="activity.invocationId">{{ activity.invocationId }}</div>',
           },
@@ -82,8 +86,8 @@ describe('ActivityFeed', () => {
       attachTo: document.body,
       global: {
         stubs: {
-          ActivityItem: {
-            name: 'ActivityItem',
+          ToolActivityItem: {
+            name: 'ToolActivityItem',
             props: ['activity', 'isHighlighted'],
             template: '<div class="activity-item-stub" :data-id="activity.invocationId">{{ activity.invocationId }}</div>',
           },
@@ -141,7 +145,7 @@ describe('ActivityFeed', () => {
       }),
     });
 
-    feedEl.scrollTo = scrollToSpy;
+    feedEl.scrollTo = scrollToSpy as any;
     targetEl.scrollIntoView = scrollIntoViewSpy;
 
     highlightedId.value = 'tool-2';
@@ -150,6 +154,49 @@ describe('ActivityFeed', () => {
 
     expect(scrollToSpy).toHaveBeenCalledWith({ top: 110, behavior: 'smooth' });
     expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+  });
+
+  it('renders tool and compaction activities in the same general Activity feed', () => {
+    activities.value = [
+      activities.value[0],
+      {
+        kind: 'compaction',
+        activityId: 'compaction:provider:codex:session-1:operation-1:turn-1',
+        phase: 'completed',
+        message: 'Provider context compaction boundary recorded',
+        provider: 'codex',
+        turnId: 'turn-1',
+        timestamp: new Date('2026-03-08T00:00:02.000Z'),
+        updatedAt: new Date('2026-03-08T00:00:03.000Z'),
+      },
+    ].filter(Boolean) as RunActivity[];
+
+    const wrapper = mount(ActivityFeed, {
+      global: {
+        stubs: {
+          ToolActivityItem: {
+            name: 'ToolActivityItem',
+            props: ['activity', 'isHighlighted'],
+            template: '<div data-kind="tool">{{ activity.toolName }}</div>',
+          },
+          CompactionActivityItem: {
+            name: 'CompactionActivityItem',
+            props: ['activity', 'isHighlighted'],
+            template: '<div data-kind="compaction">{{ activity.message }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('2 Events');
+    expect(wrapper.findAll('[data-kind]').map((node) => node.attributes('data-kind'))).toEqual([
+      'tool',
+      'compaction',
+    ]);
+    expect(wrapper.text()).toContain('Provider context compaction boundary recorded');
+    expect(wrapper.findAll('[data-test="activity-feed-scroll-container"]')).toHaveLength(1);
 
     wrapper.unmount();
   });

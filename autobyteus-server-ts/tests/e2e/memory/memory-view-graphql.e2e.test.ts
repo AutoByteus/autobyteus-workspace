@@ -103,7 +103,7 @@ describe("Memory view GraphQL e2e", () => {
 
     const query = `
       query MemoryView($runId: String!) {
-        getRunMemoryView(runId: $runId, includeRawTraces: true, includeArchive: true) {
+        getAgentRunMemoryView(runId: $runId, includeRawTraces: true, includeArchive: true) {
           runId
           workingContext { role content reasoning }
           episodic
@@ -113,15 +113,15 @@ describe("Memory view GraphQL e2e", () => {
       }
     `;
 
-    const data = await execGraphql<{ getRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null }> } }>(
+    const data = await execGraphql<{ getAgentRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null }> } }>(
       query,
       { runId: agentId },
     );
 
-    expect(data.getRunMemoryView.runId).toBe(agentId);
-    expect(data.getRunMemoryView.workingContext[0]?.role).toBe("user");
-    expect(data.getRunMemoryView.rawTraces.length).toBeGreaterThan(0);
-    expect(data.getRunMemoryView.rawTraces.map((trace) => [trace.id, trace.traceType, trace.sourceEvent])).toEqual([
+    expect(data.getAgentRunMemoryView.runId).toBe(agentId);
+    expect(data.getAgentRunMemoryView.workingContext[0]?.role).toBe("user");
+    expect(data.getAgentRunMemoryView.rawTraces.length).toBeGreaterThan(0);
+    expect(data.getAgentRunMemoryView.rawTraces.map((trace) => [trace.id, trace.traceType, trace.sourceEvent])).toEqual([
       ["rt-archive", "assistant", "SEGMENT_END"],
       ["rt-user", "user", "AgentRun.postUserMessage"],
       ["rt-tool-call", "tool_call", "TOOL_EXECUTION_STARTED"],

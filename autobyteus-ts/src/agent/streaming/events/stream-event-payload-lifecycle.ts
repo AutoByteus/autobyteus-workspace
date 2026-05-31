@@ -52,6 +52,9 @@ export class ErrorEventData extends BaseStreamPayload {
 export class CompactionStatusData extends BaseStreamPayload {
   phase: string;
   turn_id?: string | null;
+  compaction_operation_id?: string | null;
+  requested_turn_id?: string | null;
+  execution_turn_id?: string | null;
   selected_block_count?: number | null;
   compacted_block_count?: number | null;
   raw_trace_count?: number | null;
@@ -69,6 +72,9 @@ export class CompactionStatusData extends BaseStreamPayload {
     super(data);
     this.phase = String(data.phase ?? '');
     this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : data.turn_id ?? undefined;
+    this.compaction_operation_id = typeof data.compaction_operation_id === 'string' ? data.compaction_operation_id : data.compaction_operation_id ?? undefined;
+    this.requested_turn_id = typeof data.requested_turn_id === 'string' ? data.requested_turn_id : data.requested_turn_id ?? undefined;
+    this.execution_turn_id = typeof data.execution_turn_id === 'string' ? data.execution_turn_id : data.execution_turn_id ?? undefined;
     this.selected_block_count = typeof data.selected_block_count === 'number' ? data.selected_block_count : data.selected_block_count ?? undefined;
     this.compacted_block_count = typeof data.compacted_block_count === 'number' ? data.compacted_block_count : data.compacted_block_count ?? undefined;
     this.raw_trace_count = typeof data.raw_trace_count === 'number' ? data.raw_trace_count : data.raw_trace_count ?? undefined;

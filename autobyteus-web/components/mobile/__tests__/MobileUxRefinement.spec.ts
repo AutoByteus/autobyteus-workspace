@@ -12,6 +12,7 @@ import MobileRuns from "../MobileRuns.vue";
 import MobileRunSetup from "../MobileRunSetup.vue";
 import {
   useAgentActivityStore,
+  type CompactionActivity,
   type ToolActivity,
 } from "~/stores/agentActivityStore";
 import { useAgentContextsStore } from "~/stores/agentContextsStore";
@@ -729,6 +730,8 @@ describe("mobile Round 4 UX refinements", () => {
   it("renders Activity as a compact digest without secondary issue filters or redundant headers", async () => {
     seedAgentRun();
     const activity: ToolActivity = {
+      kind: "tool",
+      activityId: "tool-1",
       invocationId: "tool-1",
       toolName: "run_terminal_command",
       type: "terminal_command",
@@ -740,7 +743,7 @@ describe("mobile Round 4 UX refinements", () => {
       error: "ANTHROPIC_API_KEY environment variable is not set",
       timestamp: new Date("2026-05-18T16:05:00.000Z"),
     };
-    useAgentActivityStore().addActivity("run-1", activity);
+    useAgentActivityStore().addToolActivity("run-1", activity);
 
     const wrapper = mountWithPinia(MobileActivity, {
       props: { context: agentRunContext },
@@ -781,16 +784,52 @@ describe("mobile Round 4 UX refinements", () => {
     );
 
     await wrapper
-      .get('[data-testid="mobile-activity-filter-tools"]')
+      .get('[data-testid="mobile-activity-filter-activity"]')
       .trigger("click");
     await nextTick();
     expect(
-      wrapper.find('[data-testid="mobile-tool-activity-row"]').exists(),
+      wrapper.find('[data-testid="mobile-run-activity-row"]').exists(),
     ).toBe(true);
     expect(wrapper.text()).toContain("1 activity item");
     expect(wrapper.text()).toContain(
       "ANTHROPIC_API_KEY environment variable is not set",
     );
+  });
+
+  it("renders compaction rows in the mobile run Activity list and count", async () => {
+    seedAgentRun();
+    const activity: CompactionActivity = {
+      kind: "compaction",
+      activityId: "compaction:task:mobile-1",
+      phase: "failed",
+      message: "Mobile compaction failed",
+      turnId: "turn-mobile",
+      provider: "codex",
+      errorMessage: "Mobile backend compaction failed",
+      timestamp: new Date("2026-05-18T16:05:00.000Z"),
+      updatedAt: new Date("2026-05-18T16:06:00.000Z"),
+    };
+    useAgentActivityStore().upsertCompactionActivity("run-1", activity);
+
+    const wrapper = mountWithPinia(MobileActivity, {
+      props: { context: agentRunContext },
+    });
+
+    expect(
+      wrapper.get('[data-testid="mobile-activity-filter-activity"]').text(),
+    ).toContain("Activity · 1");
+
+    await wrapper
+      .get('[data-testid="mobile-activity-filter-activity"]')
+      .trigger("click");
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-run-activity-row"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain("Run activity history");
+    expect(wrapper.text()).toContain("Memory compaction");
+    expect(wrapper.text()).toContain("Mobile compaction failed");
+    expect(wrapper.text()).toContain("Mobile backend compaction failed");
+    expect(wrapper.text()).not.toContain("Tool activity history");
   });
 
   it("opens mobile Files from run root-path metadata with an empty workspace store", async () => {

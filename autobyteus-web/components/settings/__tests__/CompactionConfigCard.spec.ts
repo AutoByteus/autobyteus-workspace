@@ -138,6 +138,36 @@ describe('CompactionConfigCard', () => {
     vi.clearAllMocks()
   })
 
+  it('renders the save button idle and disabled when there are no compaction changes', async () => {
+    const { wrapper } = await mountComponent()
+
+    const saveButton = wrapper.get('[data-testid="compaction-config-save"]')
+
+    expect(saveButton.attributes('disabled')).toBeDefined()
+    expect(saveButton.classes()).toEqual(expect.arrayContaining([
+      'border-slate-200',
+      'bg-white',
+      'text-slate-400',
+    ]))
+    expect(saveButton.classes()).not.toContain('bg-blue-600')
+  })
+
+  it('renders the save button ready and enabled after a compaction draft change', async () => {
+    const { wrapper } = await mountComponent()
+
+    await wrapper.get('[data-testid="compaction-ratio-input"]').setValue('60')
+
+    const saveButton = wrapper.get('[data-testid="compaction-config-save"]')
+    expect(saveButton.attributes('disabled')).toBeUndefined()
+    expect(saveButton.classes()).toEqual(expect.arrayContaining([
+      'border-blue-600',
+      'bg-blue-600',
+      'text-white',
+      'ring-2',
+      'ring-blue-200',
+    ]))
+  })
+
   it('syncs typed inputs from the server settings store', async () => {
     const { wrapper, agentDefinitionStore } = await mountComponent()
 

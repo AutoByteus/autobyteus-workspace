@@ -203,7 +203,7 @@ describe("SkillService skill source management", () => {
     expect(nested?.description).toBe("deeply nested skill");
   });
 
-  it("counts bundled agent-local skills when a package root is added as a skill source", () => {
+  it("does not count bundled agent-local skills when a package root is added as a skill source", () => {
     const packageRoot = path.join(tempRoot, "agent_package");
     fs.mkdirSync(packageRoot, { recursive: true });
     writeBundledAgentSkill(packageRoot, "requirements-engineer", "Bundled skill", "Bundled");
@@ -212,9 +212,9 @@ describe("SkillService skill source management", () => {
     const sources = service.getSkillSources();
     const addedSource = sources.find((source) => source.path === packageRoot);
 
-    expect(addedSource?.skillCount).toBe(1);
+    expect(addedSource?.skillCount).toBe(0);
 
     const bundled = service.getSkill("requirements-engineer");
-    expect(bundled?.description).toBe("Bundled skill");
+    expect(bundled).toBeNull();
   });
 });

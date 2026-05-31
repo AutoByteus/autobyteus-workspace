@@ -7,7 +7,11 @@ export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'fai
 export interface AgentCompactionStatus {
   phase: CompactionStatusPhase;
   message: string;
+  activityId?: string | null;
   turnId?: string | null;
+  compactionOperationId?: string | null;
+  requestedTurnId?: string | null;
+  executionTurnId?: string | null;
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
@@ -18,6 +22,11 @@ export interface AgentCompactionStatus {
   compactionModelIdentifier?: string | null;
   compactionRunId?: string | null;
   compactionTaskId?: string | null;
+  provider?: string | null;
+  sourceSurface?: string | null;
+  boundaryKey?: string | null;
+  providerEventId?: string | null;
+  providerSessionId?: string | null;
   errorMessage?: string | null;
 }
 

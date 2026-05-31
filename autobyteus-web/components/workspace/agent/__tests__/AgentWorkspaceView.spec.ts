@@ -120,7 +120,7 @@ describe('AgentWorkspaceView', () => {
       stubs: {
         AgentEventMonitor: {
           name: 'AgentEventMonitor',
-          props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl'],
+          props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl'],
           template: '<div data-test="agent-event-monitor" />',
         },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
@@ -139,6 +139,8 @@ describe('AgentWorkspaceView', () => {
 
   it('uses context avatar URL in header when available', () => {
     const wrapper = mountComponent();
+    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
+    expect(monitor.props('runId')).toBe('agent-1234');
     const avatar = wrapper.find('img[alt="Story Agent avatar"]');
     expect(avatar.exists()).toBe(true);
     expect(avatar.attributes('src')).toBe('https://example.com/from-context.png');
@@ -204,14 +206,4 @@ describe('AgentWorkspaceView', () => {
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
   });
 
-  it('passes compaction status through to AgentEventMonitor', () => {
-    const wrapper = mountComponent();
-    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.exists()).toBe(true);
-    expect(monitor.props('compactionStatus')).toEqual({
-      phase: 'started',
-      message: 'Compacting memory…',
-      turnId: 'turn-1',
-    });
-  });
 });

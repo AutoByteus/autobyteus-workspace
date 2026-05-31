@@ -78,12 +78,26 @@ describe('LLMFactory metadata resolution', () => {
       max_context_tokens: 1000000,
       max_output_tokens: 128000
     });
-    expect(deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-flash')).toMatchObject({
+    const deepseekV4Flash = deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-flash');
+    expect(deepseekV4Flash).toMatchObject({
       provider_type: LLMProvider.DEEPSEEK,
       value: 'deepseek-v4-flash',
       max_context_tokens: 1000000,
       max_output_tokens: 384000
     });
+    expect(deepseekV4Flash?.config_schema).toMatchObject({
+      properties: {
+        reasoning_effort: expect.objectContaining({
+          enum: ['high', 'max']
+        }),
+        thinking_type: expect.objectContaining({
+          enum: ['enabled', 'disabled'],
+          default: 'enabled'
+        })
+      }
+    });
+    const deepseekV4FlashProperties = (deepseekV4Flash?.config_schema?.properties ?? {}) as Record<string, unknown>;
+    expect(deepseekV4FlashProperties).not.toHaveProperty('thinking');
     expect(deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-pro')).toMatchObject({
       provider_type: LLMProvider.DEEPSEEK,
       value: 'deepseek-v4-pro',
@@ -117,6 +131,7 @@ describe('LLMFactory metadata resolution', () => {
       value: 'kimi-k2.6',
       max_context_tokens: 256000
     });
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.config_schema).toBeUndefined();
     expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-chat');
     expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-reasoner');
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');

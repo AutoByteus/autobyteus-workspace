@@ -1,0 +1,12 @@
+{
+  "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-inspector-validation-data-rf4084ka",
+  "port": 18180,
+  "agentRunDirs": 505,
+  "teamRunDirs": 203,
+  "agentHistoryRows": 504,
+  "teamHistoryRows": 203,
+  "mustNotAppear": [
+    "No Memory Agent",
+    "No Memory Team"
+  ]
+}

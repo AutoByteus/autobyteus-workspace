@@ -1,6 +1,22 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useAgentActivityStore } from '../agentActivityStore';
+import { useAgentActivityStore, type ToolActivity } from '../agentActivityStore';
+
+const buildToolActivity = (overrides: Partial<ToolActivity> = {}): ToolActivity => ({
+  kind: 'tool',
+  activityId: '1',
+  invocationId: '1',
+  toolName: 'tool',
+  type: 'tool_call',
+  status: 'parsing',
+  contextText: '',
+  arguments: {},
+  logs: [],
+  result: null,
+  error: null,
+  timestamp: new Date(),
+  ...overrides,
+});
 
 describe('agentActivityStore', () => {
   beforeEach(() => {
@@ -11,45 +27,24 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'my_tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: 'foo',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity({ toolName: 'my_tool', contextText: 'foo' }));
 
-    const activities = store.getActivities(agentId);
+    const activities = store.getToolActivities(agentId);
     expect(activities).toHaveLength(1);
     expect(activities[0].toolName).toBe('my_tool');
+    expect(store.getActivities(agentId)[0]?.activityId).toBe('1');
   });
 
   it('updates status and awaiting flag', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity());
 
-    store.updateActivityStatus(agentId, '1', 'awaiting-approval');
+    store.updateToolActivityStatus(agentId, '1', 'awaiting-approval');
     expect(store.hasAwaitingApproval(agentId)).toBe(true);
 
-    store.updateActivityStatus(agentId, '1', 'executing');
+    store.updateToolActivityStatus(agentId, '1', 'executing');
     expect(store.hasAwaitingApproval(agentId)).toBe(false);
   });
 
@@ -57,23 +52,12 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity());
 
-    store.updateActivityStatus(agentId, '1', 'awaiting-approval');
-    store.updateActivityStatus(agentId, '1', 'parsed');
+    store.updateToolActivityStatus(agentId, '1', 'awaiting-approval');
+    store.updateToolActivityStatus(agentId, '1', 'parsed');
 
-    expect(store.getActivities(agentId)[0]?.status).toBe('awaiting-approval');
+    expect(store.getToolActivities(agentId)[0]?.status).toBe('awaiting-approval');
     expect(store.hasAwaitingApproval(agentId)).toBe(true);
   });
 
@@ -81,46 +65,24 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity());
 
-    store.updateActivityStatus(agentId, '1', 'success');
-    store.updateActivityStatus(agentId, '1', 'parsed');
+    store.updateToolActivityStatus(agentId, '1', 'success');
+    store.updateToolActivityStatus(agentId, '1', 'parsed');
 
-    expect(store.getActivities(agentId)[0]?.status).toBe('success');
+    expect(store.getToolActivities(agentId)[0]?.status).toBe('success');
   });
 
   it('appends logs', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'tool',
-      type: 'tool_call',
-      status: 'executing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity({ status: 'executing' }));
 
-    store.addActivityLog(agentId, '1', 'log line 1');
-    store.addActivityLog(agentId, '1', 'log line 2');
+    store.addToolActivityLog(agentId, '1', 'log line 1');
+    store.addToolActivityLog(agentId, '1', 'log line 2');
 
-    const activity = store.getActivities(agentId)[0];
+    const activity = store.getToolActivities(agentId)[0];
     expect(activity.logs).toHaveLength(2);
     expect(activity.logs[1]).toBe('log line 2');
   });
@@ -129,22 +91,11 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'MISSING_TOOL_NAME',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity({ toolName: 'MISSING_TOOL_NAME' }));
 
-    store.updateActivityToolName(agentId, '1', 'send_message_to');
+    store.updateToolActivityToolName(agentId, '1', 'send_message_to');
 
-    const activity = store.getActivities(agentId)[0];
+    const activity = store.getToolActivities(agentId)[0];
     expect(activity.toolName).toBe('send_message_to');
   });
 
@@ -152,22 +103,11 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addActivity(agentId, {
-      invocationId: '1',
-      toolName: 'unknown_tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    store.addToolActivity(agentId, buildToolActivity({ toolName: 'unknown_tool' }));
 
-    store.updateActivityToolName(agentId, '1', 'send_message_to');
+    store.updateToolActivityToolName(agentId, '1', 'send_message_to');
 
-    const activity = store.getActivities(agentId)[0];
+    const activity = store.getToolActivities(agentId)[0];
     expect(activity.toolName).toBe('send_message_to');
   });
 
@@ -177,20 +117,41 @@ describe('agentActivityStore', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    store.addActivity(agentId, {
+    store.addToolActivity(agentId, buildToolActivity({
+      activityId: '' as unknown as string,
       invocationId: '' as unknown as string,
       toolName: 'broken',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: '',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
+    }));
 
     expect(store.getActivities(agentId)).toHaveLength(0);
     expect(warnSpy).toHaveBeenCalled();
+  });
+
+  it('upserts compaction activities without changing their placement timestamp', () => {
+    const store = useAgentActivityStore();
+    const agentId = 'test-agent';
+    const firstTimestamp = new Date('2026-05-31T10:00:00.000Z');
+
+    store.upsertCompactionActivity(agentId, {
+      kind: 'compaction',
+      activityId: 'compaction:task:1',
+      phase: 'started',
+      message: 'Compacting memory…',
+      timestamp: firstTimestamp,
+      updatedAt: firstTimestamp,
+    });
+    store.upsertCompactionActivity(agentId, {
+      kind: 'compaction',
+      activityId: 'compaction:task:1',
+      phase: 'completed',
+      message: 'Memory compacted',
+      timestamp: new Date('2026-05-31T10:01:00.000Z'),
+      updatedAt: new Date('2026-05-31T10:01:00.000Z'),
+    });
+
+    const activity = store.getCompactionActivities(agentId)[0];
+    expect(activity.phase).toBe('completed');
+    expect(activity.timestamp).toBe(firstTimestamp);
+    expect(store.getToolActivities(agentId)).toHaveLength(0);
   });
 });

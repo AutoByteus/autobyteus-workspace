@@ -232,7 +232,7 @@ const createBootstrapper = (input: {
     }),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    getSkills: async () => input.configuredSkills,
+    resolveConfiguredSkillsForAgent: () => input.configuredSkills,
   } as unknown as SkillService;
   const teamStrategy = {
     appliesTo: () => false,

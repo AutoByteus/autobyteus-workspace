@@ -15,7 +15,14 @@ export type RunProjectionActivityStatus =
   | "executing"
   | "success"
   | "error"
-  | "denied";
+  | "denied"
+  | "interrupted";
+
+export type RunProjectionCompactionPhase =
+  | "requested"
+  | "started"
+  | "completed"
+  | "failed";
 
 export type RunProjectionSourceDetailLevel = "full" | "source_limited";
 
@@ -32,7 +39,8 @@ export interface RunProjectionConversationEntry {
   ts?: number | null;
 }
 
-export interface RunProjectionActivityEntry {
+export interface RunProjectionToolActivityEntry {
+  kind: "tool";
   invocationId: string;
   toolName: string;
   type: RunProjectionActivityType;
@@ -45,6 +53,43 @@ export interface RunProjectionActivityEntry {
   ts?: number | null;
   detailLevel?: RunProjectionSourceDetailLevel | null;
 }
+
+export interface RunProjectionCompactionActivityEntry {
+  kind: "compaction";
+  activityId: string;
+  phase: RunProjectionCompactionPhase;
+  message: string;
+  turnId?: string | null;
+  compactionOperationId?: string | null;
+  requestedTurnId?: string | null;
+  executionTurnId?: string | null;
+  selectedBlockCount?: number | null;
+  compactedBlockCount?: number | null;
+  rawTraceCount?: number | null;
+  semanticFactCount?: number | null;
+  compactionAgentDefinitionId?: string | null;
+  compactionAgentName?: string | null;
+  compactionRuntimeKind?: string | null;
+  compactionModelIdentifier?: string | null;
+  compactionRunId?: string | null;
+  compactionTaskId?: string | null;
+  provider?: string | null;
+  sourceSurface?: string | null;
+  boundaryKey?: string | null;
+  providerEventId?: string | null;
+  providerSessionId?: string | null;
+  trigger?: string | null;
+  preTokens?: number | null;
+  rotationEligible?: boolean | null;
+  errorMessage?: string | null;
+  ts?: number | null;
+  updatedTs?: number | null;
+  detailLevel?: RunProjectionSourceDetailLevel | null;
+}
+
+export type RunProjectionActivityEntry =
+  | RunProjectionToolActivityEntry
+  | RunProjectionCompactionActivityEntry;
 
 export interface RunProjectionSourceDescriptor {
   runId: string;

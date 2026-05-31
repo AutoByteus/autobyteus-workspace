@@ -9,9 +9,25 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BASH_LAUNCHER = REPO_ROOT / "scripts/public/docker/autobyteus-docker.sh"
 POWERSHELL_LAUNCHER = REPO_ROOT / "scripts/public/docker/autobyteus-docker.ps1"
+BASH_MODULE_DIR = REPO_ROOT / "scripts/public/docker/autobyteus-docker.d/bash"
+POWERSHELL_MODULE_DIR = REPO_ROOT / "scripts/public/docker/autobyteus-docker.d/powershell"
+BASH_LAUNCHER_SOURCES = [
+    BASH_LAUNCHER,
+    BASH_MODULE_DIR / "core.sh",
+    BASH_MODULE_DIR / "docker-runtime.sh",
+    BASH_MODULE_DIR / "commands.sh",
+]
+POWERSHELL_LAUNCHER_SOURCES = [
+    POWERSHELL_LAUNCHER,
+    POWERSHELL_MODULE_DIR / "Core.ps1",
+    POWERSHELL_MODULE_DIR / "DockerRuntime.ps1",
+    POWERSHELL_MODULE_DIR / "Commands.ps1",
+]
+PUBLIC_LAUNCHER_SOURCES = BASH_LAUNCHER_SOURCES + POWERSHELL_LAUNCHER_SOURCES
 REMOVED_NODE_PROFILE_ENV = "AUTOBYTEUS" + "_NODE_PROFILE"
 REMOVED_PROFILE_LABEL = "com.autobyteus." + "profile"
 REMOVED_STATE_FIELD = "PROFILE" + "="
+MAX_PUBLIC_LAUNCHER_SOURCE_LINES = 500
 
 
 class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
@@ -28,6 +44,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace", run_args)
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
             self.assertIn("autobyteus-server-0-root-home:/root", run_args)
+            self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)
             self.assertIn("AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace", run_args)
             self.assertIn("--cap-add", run_args)
             self.assertIn("SYS_ADMIN", run_args)
@@ -95,6 +112,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
             self.assertIn("my-node-data -> /home/autobyteus/data", storage)
             self.assertIn("my-node-root-home -> /root", storage)
+            self.assertIn("my-node-chromium-profile -> /home/vncuser/.config/chromium", storage)
             self.assertIn("my-node-workspace -> /app/autobyteus-server-ts/workspace", storage)
             self.assertIn(f"{shared_root / 'nodes' / 'my-node'} -> /home/autobyteus/workspace", storage)
             self.assertIn(f"{shared_root / 'shared'} -> /home/autobyteus/shared", storage)
@@ -113,6 +131,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("Launcher config changed for autobyteus-server-0", result.stdout)
             run_args = read_last_run_args(env)
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
+            self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)
             self.assertIn(
                 f"type=bind,source={current_shared_root / 'nodes' / 'autobyteus-server-0'},target=/home/autobyteus/workspace",
                 run_args,
@@ -124,33 +143,92 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertTrue((current_shared_root / "nodes" / "autobyteus-server-0").is_dir())
             self.assertTrue((current_shared_root / "shared").is_dir())
 
+    def test_bash_curl_pipe_mode_resolves_modules_from_source_base(self) -> None:
+        with fake_docker_environment() as env:
+            env["AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE"] = (REPO_ROOT / "scripts/public/docker").resolve().as_uri()
+
+            result = subprocess.run(
+                ["bash", "-s", "--", "storage", "--name", "Pipe Node"],
+                input=BASH_LAUNCHER.read_text(encoding="utf-8"),
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+
+            self.assertIn("AutoByteus Docker storage: pipe-node", result.stdout)
+            self.assertIn("pipe-node-chromium-profile -> /home/vncuser/.config/chromium", result.stdout)
+
+    def test_bash_install_writes_entry_and_modules_for_installed_cli(self) -> None:
+        with fake_docker_environment() as env:
+            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "install-bin"
+            env["AUTOBYTEUS_DOCKER_INSTALL_DIR"] = str(install_dir)
+            env["AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL"] = BASH_LAUNCHER.resolve().as_uri()
+
+            install = subprocess.run(
+                [str(BASH_LAUNCHER), "install"],
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+            self.assertIn("Installed AutoByteus Docker launcher", install.stdout)
+
+            installed_entry = install_dir / "autobyteus-docker"
+            installed_modules = install_dir / "autobyteus-docker.d" / "bash"
+            self.assertTrue(installed_entry.is_file())
+            for module in ("core.sh", "docker-runtime.sh", "commands.sh"):
+                self.assertTrue((installed_modules / module).is_file(), module)
+
+            result = subprocess.run(
+                [str(installed_entry), "storage", "--name", "Installed Node"],
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+            self.assertIn("AutoByteus Docker storage: installed-node", result.stdout)
+            self.assertIn("installed-node-chromium-profile -> /home/vncuser/.config/chromium", result.stdout)
+
     def test_powershell_launcher_matches_the_shared_workspace_cli_contract(self) -> None:
-        bash_text = BASH_LAUNCHER.read_text(encoding="utf-8")
-        powershell_text = POWERSHELL_LAUNCHER.read_text(encoding="utf-8")
+        bash_text = read_combined_text(BASH_LAUNCHER_SOURCES)
+        powershell_text = read_combined_text(POWERSHELL_LAUNCHER_SOURCES)
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v5", text)
+            self.assertIn("v6", text)
             self.assertNotIn(REMOVED_NODE_PROFILE_ENV, text)
             self.assertNotIn(REMOVED_PROFILE_LABEL, text)
+            self.assertIn("chromium_profile_volume", text)
+            self.assertIn("chromium_profile_target", text)
+            self.assertIn("-chromium-profile", text)
+            self.assertIn("/home/vncuser/.config/chromium", text)
             self.assertIn("/home/autobyteus/workspace", text)
             self.assertIn("/home/autobyteus/shared", text)
             self.assertIn("AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR", text)
+            self.assertIn("AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE", text)
             self.assertIn("AUTOBYTEUS_TEMP_WORKSPACE_DIR", text)
             self.assertIn("workspace paths", text)
             self.assertIn("workspace apply", text)
             self.assertIn("storage", text)
             self.assertIn("type=bind,source=", text)
 
+    def test_public_launcher_source_files_stay_within_reviewable_size_guard(self) -> None:
+        for path in PUBLIC_LAUNCHER_SOURCES:
+            with self.subTest(path=path.relative_to(REPO_ROOT)):
+                effective_lines = sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
+                self.assertLessEqual(effective_lines, MAX_PUBLIC_LAUNCHER_SOURCE_LINES)
+
     def test_powershell_launcher_parses_when_pwsh_is_available(self) -> None:
         if not shutil.which("pwsh"):
             self.skipTest("pwsh is not installed")
+        paths_literal = "@(" + ",".join(f"'{path}'" for path in POWERSHELL_LAUNCHER_SOURCES) + ")"
         subprocess.run(
             [
                 "pwsh",
                 "-NoLogo",
                 "-NoProfile",
                 "-Command",
-                f"$null=[scriptblock]::Create((Get-Content -Raw '{POWERSHELL_LAUNCHER}'))",
+                f"$paths={paths_literal}; foreach ($path in $paths) {{ $null=[scriptblock]::Create((Get-Content -Raw $path)) }}",
             ],
             check=True,
             text=True,
@@ -164,6 +242,10 @@ def read_state_value(state_text: str, key: str) -> str:
         if line.startswith(prefix):
             return line[len(prefix):]
     raise AssertionError(f"state key not found: {key}")
+
+
+def read_combined_text(paths: list[Path]) -> str:
+    return "\n".join(path.read_text(encoding="utf-8") for path in paths)
 
 
 def has_unqualified_port_mapping(args: list[str], container_port: str) -> bool:

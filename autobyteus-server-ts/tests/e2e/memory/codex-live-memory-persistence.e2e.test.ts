@@ -174,7 +174,7 @@ const createCodexFactory = (input: {
       }),
     } as never,
     {
-      getSkills: async () => [],
+      resolveConfiguredSkillsForAgent: () => [],
     } as never,
     undefined,
     undefined,

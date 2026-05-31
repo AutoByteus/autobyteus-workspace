@@ -1,0 +1,13 @@
+Starting foreground frontend at 2026-05-31T12:17:35+02:00
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 40ms
+✔ Vite server built in 601ms
+[nitro] ✔ Nuxt Nitro server built in 548ms
+ℹ Vite client warmed up in 1ms
