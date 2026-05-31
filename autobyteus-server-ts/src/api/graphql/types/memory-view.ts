@@ -87,7 +87,7 @@ export class AgentMemoryView {
 @Resolver()
 export class MemoryViewResolver {
   @Query(() => AgentMemoryView)
-  async getRunMemoryView(
+  async getAgentRunMemoryView(
     @Arg("runId", () => String) runId: string,
     @Arg("includeWorkingContext", () => Boolean, { defaultValue: true })
     includeWorkingContext = true,

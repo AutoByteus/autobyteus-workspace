@@ -2,9 +2,9 @@
 
 ## Scope
 
-`src/agent-memory` owns server-side memory indexing, inspection views, and the storage-only recorder used for non-native runtime runs. It reads and writes the same run/member memory files that the native TypeScript memory module defines in `autobyteus-ts`.
+`src/agent-memory` owns server-side memory exploration, inspection views, and the storage-only recorder used for non-native runtime runs. It reads and writes the same run/member memory files that the native TypeScript memory module defines in `autobyteus-ts`.
 
-This module is intentionally separate from run-history projection: agent-memory exposes persisted memory artifacts for inspection, while `src/run-history` converts runtime or local-memory sources into historical replay bundles.
+This module is intentionally separate from run-history projection: agent-memory exposes persisted memory artifacts for exploration and inspection, while `src/run-history` converts runtime or local-memory sources into historical replay bundles. Run-history metadata is used only to enrich memory explorer summaries and to group memory-bearing runs by stable agent/team identity.
 
 ## Storage Layout
 
@@ -38,19 +38,39 @@ Codex and Claude runs are recorded by the server as **storage-only** memory:
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
-## Provider Compaction Boundaries
+## Memory Explorer Read Model
 
-Codex and Claude provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+The memory explorer is a backend-for-frontend read model for the `/memory` UI. It is memory-derived: configured agents or teams with no persisted memory do not appear.
 
-Normalized provider-boundary handling is storage-only:
+Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
 
-- Codex `thread/compacted` and raw Responses `type = "compaction"` items normalize to one deduplicated `provider_compaction_boundary` marker per boundary window.
-- Claude `status: "compacting"` normalizes to non-rotating provenance.
-- Claude `compact_boundary` normalizes to a rotation-eligible `provider_compaction_boundary` marker.
-- `ProviderCompactionBoundaryRecorder` writes the marker as a raw trace with `semantic_compaction:false` metadata.
-- If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete segmented archive entry. The marker remains active, and active plus complete archive segments remain the complete raw-trace corpus.
+### Independent Agents
 
-Provider-boundary handling must not create Codex/Claude semantic or episodic memory, rewrite trace content, drop trace history, inject memory into external runtimes, or retrieve memory from external runtimes. It is safe active-file rotation plus provenance only.
+`AgentMemoryExplorerService` reads standalone run directories from `memory/agents/<runId>` and includes only runs with at least one memory artifact. It groups included runs as follows:
+
+- `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
+- Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
+
+Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
+
+### Agent Teams
+
+`TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
+
+Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. A team member target is inspected by `teamRunId + memberRunId`.
+
+### Explorer GraphQL Queries
+
+The explorer GraphQL surface is:
+
+- `listAgentsWithMemory(search, page, pageSize)`
+- `listAgentRunsWithMemory(selector, search, page, pageSize)`
+- `listAgentTeamsWithMemory(search, page, pageSize)`
+- `listAgentTeamRunsWithMemory(teamDefinitionId, search, page, pageSize)`
+
+All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: agent/team cards on home, selected-agent runs on agent detail, or selected-team runs/member targets on team detail.
+
+The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemorySnapshots`) were replaced by these explorer queries for the Memory UI.
 
 ## Trace Shape And GraphQL View
 
@@ -65,12 +85,12 @@ Raw traces preserve provenance needed by future analyzers:
 
 GraphQL memory-view queries:
 
-- `listRunMemorySnapshots`
-- `getRunMemoryView(runId: String!)`
-- `listTeamRunMemorySnapshots`
+- `getAgentRunMemoryView(runId: String!)`
 - `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!)`
 
-`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete archived raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending archive manifest entries and merge complete archive segments with active records, deduping by raw trace `id` with active records preferred.
+Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab or changes the trace limit.
+
+`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete archived raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending archive manifest entries and merge complete archive segments with active records when archive inclusion is requested, deduping by raw trace `id` with active records preferred.
 
 ## Archive, Rotation, And Retention Boundaries
 
@@ -91,17 +111,35 @@ Current non-goals:
 - No working-context snapshot windowing/retention.
 - No compatibility read path for historical monolithic `raw_traces_archive.jsonl` files.
 
+## Provider Compaction Boundaries
+
+Codex and Claude provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+
+Normalized provider-boundary handling is storage-only:
+
+- Codex `thread/compacted` and raw Responses `type = "compaction"` items normalize to one deduplicated `provider_compaction_boundary` marker per boundary window.
+- Claude `status: "compacting"` normalizes to non-rotating provenance.
+- Claude `compact_boundary` normalizes to a rotation-eligible `provider_compaction_boundary` marker.
+- `ProviderCompactionBoundaryRecorder` writes the marker as a raw trace with `semantic_compaction:false` metadata.
+- If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete segmented archive entry. The marker remains active, and active plus complete archive segments remain the complete raw-trace corpus.
+
+Provider-boundary handling must not create Codex/Claude semantic or episodic memory, rewrite trace content, drop trace history, inject memory into external runtimes, or retrieve memory from external runtimes. It is safe active-file rotation plus provenance only.
+
 ## Run-History Relationship
 
-Run-history remains the owner of conversation/activity replay DTOs. When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
+Run-history remains the owner of conversation/activity replay DTOs. Agent-memory may read run-history metadata/catalog rows to enrich explorer display names, summaries, workspace paths, timestamps, and grouping IDs, but stored memory remains the source of truth for inclusion in the Memory UI.
+
+When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
 
 ## Key Source Files
 
+- Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
+- Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
+- Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
+- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`
 - Event accumulator: `src/agent-memory/services/runtime-memory-event-accumulator.ts`
 - Provider boundary recorder: `src/agent-memory/services/provider-compaction-boundary-recorder.ts`
 - Writer adapter: `src/agent-memory/store/run-memory-writer.ts`
-- Memory index/view services: `src/agent-memory/services/*memory*service.ts`
-- GraphQL view types: `src/api/graphql/types/memory-view.ts`
 - Shared file store: `autobyteus-ts/src/memory/store/run-memory-file-store.ts`
 - Shared archive manager: `autobyteus-ts/src/memory/store/raw-trace-archive-manager.ts`

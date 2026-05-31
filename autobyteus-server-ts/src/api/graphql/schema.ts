@@ -15,7 +15,7 @@ import { FileExplorerResolver } from './types/file-explorer.js';
 import { LlmProviderResolver } from './types/llm-provider.js';
 import { ToolManagementResolver } from './types/tool-management.js';
 import { McpServerResolver } from './types/mcp-server.js';
-import { MemoryIndexResolver } from './types/memory-index.js';
+import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
 import { ExternalChannelSetupResolver } from './types/external-channel-setup.js';
 import { RunHistoryResolver } from './types/run-history.js';
@@ -49,7 +49,7 @@ export async function buildGraphqlSchema() {
       LlmProviderResolver,
       ToolManagementResolver,
       McpServerResolver,
-      MemoryIndexResolver,
+      MemoryExplorerResolver,
       MemoryViewResolver,
       ExternalChannelSetupResolver,
       RunHistoryResolver,

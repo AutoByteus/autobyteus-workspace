@@ -1,0 +1,2 @@
+Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+Result: passed (tsc emitted no output)

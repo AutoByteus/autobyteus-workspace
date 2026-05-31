@@ -2,85 +2,97 @@
 
 ## Overview
 
-The Memory page (`/memory`) is a dual-scope inspector with one shared layout:
+The Memory page (`/memory`) is a page-based memory browser for stored agent and agent-team memory. It is intentionally memory-derived: it lists only independent agents or agent teams that have persisted memory-bearing runs. Configured agents or teams that have never produced memory do not appear.
 
-- Left: index and selection controls
-- Right: memory inspector tabs (`Working Context`, `Episodic`, `Semantic`, `Raw Traces`)
+The current user flow is:
 
-Users can switch scope between:
+1. **Memory Home** — choose `Agents with Memory` or `Agent Teams with Memory`.
+2. **Agent Memory Detail** — after selecting an agent card, browse that agent's memory-bearing runs.
+3. **Agent Team Memory Detail** — after selecting a team card, browse that team's memory-bearing team runs and member memory targets.
+4. **Memory Inspector** — inspect one agent run or one team member run through `Working Context`, `Episodic`, `Semantic`, and `Raw Traces` tabs.
 
-- `Agent Runs`
-- `Team Runs`
+Route query state preserves deep links and refreshes for home, agent detail, team detail, agent-run inspector, and team-member inspector views.
 
-## Agent Runs Scope
+## Memory Home
 
-Agent scope uses run-scoped memory APIs:
+Memory Home has two tabs:
 
-- `listRunMemorySnapshots`
-- `getRunMemoryView(runId: String!)`
+- `Agents with Memory`
+- `Agent Teams with Memory`
 
-Storage source:
+Cards show display names, stable IDs, run counts, latest memory timestamps, and memory availability badges. Search and pagination are scoped to the selected tab and are backed by GraphQL rather than by client-side grouping.
 
-- `memory/agents/<runId>/...`
-- Native AutoByteus runs are written by the native memory manager.
-- Codex and Claude runs are written as storage-only server memory: active raw traces, optional segmented archive records, and working-context snapshots for inspection and fallback replay.
+Agent cards are grouped primarily by `agentDefinitionId` when metadata exists. Standalone memory directories without run-history or metadata remain visible under an explicit `Unattributed runs` agent group so legacy stored memory is not hidden.
 
-## Team Runs Scope
+Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A team appears only when at least one member memory target exists.
 
-Team scope uses team-member memory APIs:
+## Detail Pages
 
-- `listTeamRunMemorySnapshots`
+Agent detail pages list runs only for the selected agent group, sorted by latest memory update. The list exposes run labels, run IDs, workspace paths when available, updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
+
+Team detail pages list team runs only for the selected team definition, sorted by latest member-memory update. Each team run exposes only member targets that have inspectable memory; selecting a member target opens the Memory Inspector for `teamRunId + memberRunId`.
+
+Search on detail pages filters only within the selected agent's runs or selected team's team runs/member targets.
+
+## Frontend State Ownership
+
+Frontend memory state is split by role:
+
+- `stores/memoryExplorerStore.ts` owns Memory Home and detail-page lists, searches, pagination, selected agent/team summaries, and request-staleness guards.
+- `stores/memoryInspectorStore.ts` owns the explicit inspect target, selected inspector tab, raw-trace loading state, raw-trace limit, and request-staleness guards.
+
+The old flat `MemoryIndexPanel` and per-scope index/view stores were replaced. The page shell now renders `MemoryHome`, `AgentMemoryDetail`, `AgentTeamMemoryDetail`, or `MemoryInspector` according to `/memory` query parameters.
+
+## GraphQL Explorer Contract
+
+The Memory page uses backend-for-frontend explorer queries for lists:
+
+- `listAgentsWithMemory(search, page, pageSize)` returns memory-bearing agent groups.
+- `listAgentRunsWithMemory(selector, search, page, pageSize)` returns memory-bearing runs for a selected attributed agent or the `UNATTRIBUTED` group.
+- `listAgentTeamsWithMemory(search, page, pageSize)` returns memory-bearing agent-team groups.
+- `listAgentTeamRunsWithMemory(teamDefinitionId, search, page, pageSize)` returns memory-bearing team runs and member memory targets for one team definition.
+
+Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags for working context, episodic memory, semantic memory, active raw traces, and raw-trace archives.
+
+The previous flat run-list queries (`listRunMemorySnapshots`, `listTeamRunMemorySnapshots`) are no longer the Memory page contract.
+
+## GraphQL Inspector Contract
+
+Inspector data comes from memory-view queries:
+
+- `getAgentRunMemoryView(runId: String!)`
 - `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!)`
 
-Storage source:
+Both support include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`.
 
-- `memory/agent_teams/<teamRunId>/<memberRunId>/...`
-- Codex and Claude team members use the same member storage layout as native members; external-runtime memory may have active raw traces, segmented archive records, and a working-context snapshot even when episodic/semantic tabs are empty.
+The frontend initially loads working/episodic/semantic data without raw traces. Opening the `Raw Traces` tab flips `includeRawTraces` on and refetches the selected target. Changing the raw-trace limit refetches only when raw traces are active.
 
-## GraphQL Trace Contract
+When raw traces are requested with archive inclusion enabled, the backend can merge complete archive segments plus active traces and expose provenance fields such as persisted trace `id`, `traceType`, `sourceEvent`, `turnId`, `seq`, timestamp, media fields, and tool payload fields. The current UI displays the normalized trace type, content, sequence, tool/media details, and loading/empty states.
 
-Memory inspector data comes from the backend memory-view GraphQL surface:
+## Storage Source
 
-- `getRunMemoryView`
-- `getTeamMemberRunMemoryView`
+Storage remains unchanged:
 
-When raw traces are requested with archive inclusion enabled, the backend merges complete archive segments plus active traces and exposes provenance fields:
+- Standalone runs: `memory/agents/<runId>/...`
+- Team member runs: `memory/agent_teams/<teamRunId>/<memberRunId>/...`
 
-- `id` — persisted raw trace identifier.
-- `traceType` — normalized trace type such as `user`, `assistant`, `reasoning`, `tool_call`, `tool_result`, or `provider_compaction_boundary`.
-- `sourceEvent` — normalized runtime event or command boundary that produced the trace.
-- `turnId`, `seq`, `ts` — ordering and timestamp fields.
-- tool payload fields (`toolName`, `toolCallId`, `toolArgs`, `toolResult`, `toolError`) when relevant.
+Native AutoByteus runs are written by the native memory manager. Codex and Claude runs are written as storage-only server memory: active raw traces, optional segmented archive records, and working-context snapshots for inspection and fallback replay.
 
-The frontend does not infer memory ownership from runtime-specific thread/session ids or archive internals. It selects agent run ids or team/member run ids and lets the backend resolve the correct memory directory, complete archive segments, ordering, and de-duplication. Pending archive segments and historical monolithic archive files are not surfaced by the current backend contract.
+The frontend does not infer memory ownership from runtime-specific thread/session IDs or archive internals. It selects agent definition groups, unattributed groups, agent run IDs, or team/member run IDs and lets the backend resolve memory directories, complete archive segments, ordering, and de-duplication.
 
 ## Archive / Boundary Notes
 
-The Raw Traces tab can include both active `raw_traces.jsonl` rows and complete segmented archive rows. Provider compaction-boundary markers are storage provenance: they may appear as `provider_compaction_boundary` raw traces, but they do not mean the external runtime's memory was injected, retrieved, or semantically compacted by AutoByteus.
+The Raw Traces tab can include both active `raw_traces.jsonl` rows and complete segmented archive rows when the backend query requests archive inclusion. Provider compaction-boundary markers are storage provenance: they may appear as `provider_compaction_boundary` raw traces, but they do not mean the external runtime's memory was injected, retrieved, or semantically compacted by AutoByteus.
 
 Segmented archives are not a retention/compression feature. They preserve analyzability while keeping active raw traces smaller after native compaction or provider-boundary rotation.
 
-## UI Behavior
-
-- Default scope on page load: `Agent Runs`
-- Scope switch clears incompatible selection state.
-- Team scope index is hierarchical:
-  - Team row
-  - Expand to member rows
-  - Member selection drives inspector view
-- Inspector header is scope-aware:
-  - Agent: selected run ID
-  - Team: selected team + member + member run ID
-
 ## Error and Stale-State Guard
 
-- Agent and team view stores keep independent request IDs.
-- Late responses from stale requests are ignored.
-- On fetch error, scope-specific error state is shown and previous successful view is retained for that scope.
+Explorer and inspector stores increment request IDs for each fetch. Late responses from stale requests are ignored. On fetch error, the active list or inspector error state is shown while successful prior state is retained where possible.
 
 ## Testing
 
 Coverage includes:
 
-- Backend unit + GraphQL e2e checks for team-memory contracts, raw trace `id` / `sourceEvent` exposure, and legacy agent-memory regression.
-- Frontend store/component/page tests for scope switching, team/member selection, and inspector rendering.
+- Backend unit and GraphQL e2e checks for memory-derived agent/team inclusion, no-memory exclusion, `Unattributed runs`, selected agent/team filtering, and memory-view raw-trace lazy loading.
+- Frontend store/component/page tests for Memory Home, agent detail, team detail, inspector targets, direct route restoration, search/pagination behavior, and tab-specific raw-trace fetching.
