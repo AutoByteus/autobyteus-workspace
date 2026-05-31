@@ -142,7 +142,9 @@ Provider adapters own request-shape differences:
 
 - `AnthropicLLM` maps Opus 4.7 adaptive-thinking config without sending fixed
   thinking budgets or an adapter-injected default `temperature`.
-- `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4.
+- `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
+  maps the flat user-facing `thinking_type` config to
+  `extra_body.thinking.type` before the shared request builder runs.
 - `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
   modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
   Gemini thinking config schema.

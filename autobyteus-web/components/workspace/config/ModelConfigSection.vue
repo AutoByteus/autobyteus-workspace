@@ -24,7 +24,7 @@
     </template>
 
     <!-- Advanced Expand Button -->
-    <div v-if="thinkingSupported" class="mt-4 text-left">
+    <div v-if="thinkingSupported && hasAdvancedSchema" class="mt-4 text-left">
       <button
         type="button"
         data-testid="advanced-params-toggle"
@@ -42,9 +42,13 @@
     </div>
 
     <!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
-    <div v-show="!thinkingSupported || showAdvancedParams" :class="thinkingSupported ? 'mt-2' : ''">
+    <div
+      v-if="hasAdvancedSchema"
+      v-show="!thinkingSupported || showAdvancedParams"
+      :class="thinkingSupported ? 'mt-2' : ''"
+    >
       <ModelConfigAdvanced
-        :schema="schema ?? {}"
+        :schema="advancedSchema"
         :config="modelConfig"
         :disabled="disabled"
         :compact="compact"
@@ -61,7 +65,13 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
-import { applyThinkingToggle, getThinkingParamKeys, getThinkingToggleState, hasThinkingSupport } from '~/utils/llmThinkingConfigAdapter';
+import {
+  applyThinkingToggle,
+  getThinkingParamKeys,
+  getThinkingToggleOwnedParamKeys,
+  getThinkingToggleState,
+  hasThinkingSupport,
+} from '~/utils/llmThinkingConfigAdapter';
 import ModelConfigBasic from './ModelConfigBasic.vue';
 import ModelConfigAdvanced from './ModelConfigAdvanced.vue';
 
@@ -88,6 +98,16 @@ const showAdvancedParams = ref(props.advancedInitiallyExpanded === true);
 const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
 
 const thinkingSupported = computed(() => hasThinkingSupport(props.schema ?? null));
+
+const advancedSchema = computed<UiModelConfigSchema>(() => {
+  const schema = props.schema ?? {};
+  const toggleOwnedKeys = new Set(getThinkingToggleOwnedParamKeys(props.schema ?? null));
+  return Object.fromEntries(
+    Object.entries(schema).filter(([key]) => !toggleOwnedKeys.has(key)),
+  );
+});
+
+const hasAdvancedSchema = computed(() => Object.keys(advancedSchema.value).length > 0);
 
 const thinkingLabel = computed(() => props.thinkingLabel ?? 'Thinking');
 // Simpler default description

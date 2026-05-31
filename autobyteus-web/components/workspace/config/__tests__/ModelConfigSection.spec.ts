@@ -217,6 +217,43 @@ describe('ModelConfigSection', () => {
     expect(wrapper.get('select').text()).toContain('fast');
   });
 
+  it('renders DeepSeek thinking with the basic toggle as the sole enablement control', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: {
+          reasoning_effort: 'high',
+          thinking_type: 'enabled',
+        },
+        advancedInitiallyExpanded: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            enum: ['high', 'max'],
+            default: 'high',
+          },
+          thinking_type: {
+            type: 'string',
+            enum: ['enabled', 'disabled'],
+            default: 'enabled',
+          },
+        },
+      },
+    });
+
+    const advancedLabels = wrapper.findAll('label[for]').map((label) => label.text().trim());
+    const selects = wrapper.findAll('select');
+
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(true);
+    expect(wrapper.findAll('input[type="text"]')).toHaveLength(0);
+    expect(advancedLabels).toContain('Reasoning Effort');
+    expect(advancedLabels).not.toContain('Thinking Type');
+    expect(advancedLabels).not.toContain('Thinking');
+    expect(wrapper.find('select#config-thinking_type').exists()).toBe(false);
+    expect(selects).toHaveLength(1);
+    expect(selects[0]?.text()).toContain('high');
+    expect(selects[0]?.text()).toContain('max');
+  });
+
   it('emits Codex Fast mode through service_tier and removes it through Default', async () => {
     const wrapper = mount(ModelConfigSection, {
       props: {
