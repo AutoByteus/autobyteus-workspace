@@ -1,7 +1,10 @@
-import { useAgentActivityStore, type ToolActivity } from '~/stores/agentActivityStore';
+import { useAgentActivityStore, type CompactionActivity, type ToolActivity } from '~/stores/agentActivityStore';
+import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
 import type { ToolInvocationStatus } from '~/types/segments';
+import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 
-export interface RunProjectionActivityEntry {
+export interface RunProjectionToolActivityEntry {
+  kind?: 'tool' | null;
   invocationId: string;
   toolName?: string | null;
   type?: ToolActivity['type'] | null;
@@ -14,6 +17,40 @@ export interface RunProjectionActivityEntry {
   ts?: number | null;
   detailLevel?: 'full' | 'source_limited' | null;
 }
+
+export interface RunProjectionCompactionActivityEntry {
+  kind: 'compaction';
+  activityId: string;
+  phase?: CompactionStatusPhase | null;
+  message?: string | null;
+  turnId?: string | null;
+  selectedBlockCount?: number | null;
+  compactedBlockCount?: number | null;
+  rawTraceCount?: number | null;
+  semanticFactCount?: number | null;
+  compactionAgentDefinitionId?: string | null;
+  compactionAgentName?: string | null;
+  compactionRuntimeKind?: string | null;
+  compactionModelIdentifier?: string | null;
+  compactionRunId?: string | null;
+  compactionTaskId?: string | null;
+  provider?: string | null;
+  sourceSurface?: string | null;
+  boundaryKey?: string | null;
+  providerEventId?: string | null;
+  providerSessionId?: string | null;
+  trigger?: string | null;
+  preTokens?: number | null;
+  rotationEligible?: boolean | null;
+  errorMessage?: string | null;
+  ts?: number | null;
+  updatedTs?: number | null;
+  detailLevel?: 'full' | 'source_limited' | null;
+}
+
+export type RunProjectionActivityEntry =
+  | RunProjectionToolActivityEntry
+  | RunProjectionCompactionActivityEntry;
 
 const asRecord = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -37,7 +74,11 @@ const isToolInvocationStatus = (value: unknown): value is ToolInvocationStatus =
   value === 'executing' ||
   value === 'success' ||
   value === 'error' ||
-  value === 'denied';
+  value === 'denied' ||
+  value === 'interrupted';
+
+const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
+  value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
 
 const inferActivityType = (
   toolName: string,
@@ -80,7 +121,7 @@ const resolveContextText = (
 };
 
 const resolveStatus = (
-  entry: RunProjectionActivityEntry,
+  entry: RunProjectionToolActivityEntry,
 ): ToolInvocationStatus => {
   if (isToolInvocationStatus(entry.status)) {
     return entry.status;
@@ -99,7 +140,7 @@ const toLogs = (value: unknown): string[] =>
     ? value.filter((entry): entry is string => typeof entry === 'string')
     : [];
 
-const toToolActivity = (entry: RunProjectionActivityEntry): ToolActivity | null => {
+const toToolActivity = (entry: RunProjectionToolActivityEntry): ToolActivity | null => {
   const invocationId = typeof entry.invocationId === 'string' ? entry.invocationId.trim() : '';
   if (!invocationId) {
     return null;
@@ -111,6 +152,8 @@ const toToolActivity = (entry: RunProjectionActivityEntry): ToolActivity | null 
   const argumentsPayload = asRecord(entry.arguments);
 
   return {
+    kind: 'tool',
+    activityId: invocationId,
     invocationId,
     toolName,
     type: entry.type || inferActivityType(toolName, argumentsPayload),
@@ -124,6 +167,59 @@ const toToolActivity = (entry: RunProjectionActivityEntry): ToolActivity | null 
   };
 };
 
+const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): CompactionActivity | null => {
+  const activityId = typeof entry.activityId === 'string' ? entry.activityId.trim() : '';
+  if (!activityId) {
+    return null;
+  }
+  const phase = isCompactionPhase(entry.phase) ? entry.phase : 'completed';
+  const timestamp = toDate(entry.ts);
+  const message =
+    typeof entry.message === 'string' && entry.message.trim().length > 0
+      ? entry.message.trim()
+      : getCompactionMessage({
+          phase,
+          errorMessage: entry.errorMessage,
+          isProviderBoundary: Boolean(entry.boundaryKey || entry.provider),
+        });
+
+  return {
+    kind: 'compaction',
+    activityId,
+    phase,
+    message,
+    turnId: entry.turnId ?? null,
+    selectedBlockCount: entry.selectedBlockCount ?? null,
+    compactedBlockCount: entry.compactedBlockCount ?? null,
+    rawTraceCount: entry.rawTraceCount ?? null,
+    semanticFactCount: entry.semanticFactCount ?? null,
+    compactionAgentDefinitionId: entry.compactionAgentDefinitionId ?? null,
+    compactionAgentName: entry.compactionAgentName ?? null,
+    compactionRuntimeKind: entry.compactionRuntimeKind ?? null,
+    compactionModelIdentifier: entry.compactionModelIdentifier ?? null,
+    compactionRunId: entry.compactionRunId ?? null,
+    compactionTaskId: entry.compactionTaskId ?? null,
+    provider: entry.provider ?? null,
+    sourceSurface: entry.sourceSurface ?? null,
+    boundaryKey: entry.boundaryKey ?? null,
+    providerEventId: entry.providerEventId ?? null,
+    providerSessionId: entry.providerSessionId ?? null,
+    trigger: entry.trigger ?? null,
+    preTokens: entry.preTokens ?? null,
+    rotationEligible: entry.rotationEligible ?? null,
+    errorMessage: entry.errorMessage ?? null,
+    timestamp,
+    updatedAt: toDate(entry.updatedTs ?? entry.ts),
+  };
+};
+
+const toRunActivity = (entry: RunProjectionActivityEntry): ToolActivity | CompactionActivity | null => {
+  if (entry.kind === 'compaction') {
+    return toCompactionActivity(entry);
+  }
+  return toToolActivity(entry as RunProjectionToolActivityEntry);
+};
+
 export const hydrateActivitiesFromProjection = (
   runId: string,
   entries: RunProjectionActivityEntry[],
@@ -132,7 +228,7 @@ export const hydrateActivitiesFromProjection = (
   store.clearActivities(runId);
 
   entries.forEach((entry) => {
-    const activity = toToolActivity(entry);
+    const activity = toRunActivity(entry);
     if (!activity) {
       return;
     }

@@ -111,7 +111,7 @@ const getContextText = (
 const hasExistingActivity = (context: AgentContext, invocationId: string): boolean => {
   const activityStore = useAgentActivityStore();
   return activityStore
-    .getActivities(context.state.runId)
+    .getToolActivities(context.state.runId)
     .some((activity) => activity.invocationId === invocationId);
 };
 
@@ -129,7 +129,9 @@ export const upsertActivityFromToolSegment = (
   const activityStore = useAgentActivityStore();
   const mergedArguments = resolveArguments(segment, argumentsPayload);
   if (!hasExistingActivity(context, invocationId)) {
-    activityStore.addActivity(context.state.runId, {
+    activityStore.addToolActivity(context.state.runId, {
+      kind: 'tool',
+      activityId: invocationId,
       invocationId,
       toolName,
       type: getActivityType(segment, toolName, mergedArguments),
@@ -146,60 +148,60 @@ export const upsertActivityFromToolSegment = (
   }
 
   syncActivityToolName(context, invocationId, toolName);
-  updateActivityArguments(context, invocationId, mergedArguments);
-  updateActivityStatus(context, invocationId, segment.status);
+  updateToolActivityArguments(context, invocationId, mergedArguments);
+  updateToolActivityStatus(context, invocationId, segment.status);
   if (segment.result !== null || segment.error !== null) {
-    setActivityResult(context, invocationId, segment.result, segment.error);
+    setToolActivityResult(context, invocationId, segment.result, segment.error);
   }
 };
 
 export const syncActivityToolName = (context: AgentContext, invocationId: string, toolName: string): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.updateActivityToolName(context.state.runId, invocationId, toolName);
+  activityStore.updateToolActivityToolName(context.state.runId, invocationId, toolName);
 };
 
-export const updateActivityArguments = (
+export const updateToolActivityArguments = (
   context: AgentContext,
   invocationId: string,
   argumentsPayload: Record<string, any>,
 ): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.updateActivityArguments(
+  activityStore.updateToolActivityArguments(
     context.state.runId,
     invocationId,
     argumentsPayload,
   );
 };
 
-export const updateActivityStatus = (
+export const updateToolActivityStatus = (
   context: AgentContext,
   invocationId: string,
   status: ToolInvocationStatus,
 ): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.updateActivityStatus(context.state.runId, invocationId, status);
+  activityStore.updateToolActivityStatus(context.state.runId, invocationId, status);
 };
 
-export const updateActivityApprovalTarget = (
+export const updateToolActivityApprovalTarget = (
   context: AgentContext,
   invocationId: string,
   approvalTarget: ToolApprovalTarget | null,
 ): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.updateActivityApprovalTarget(context.state.runId, invocationId, approvalTarget);
+  activityStore.updateToolActivityApprovalTarget(context.state.runId, invocationId, approvalTarget);
 };
 
-export const setActivityResult = (
+export const setToolActivityResult = (
   context: AgentContext,
   invocationId: string,
   result: any,
   error: string | null,
 ): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.setActivityResult(context.state.runId, invocationId, result, error);
+  activityStore.setToolActivityResult(context.state.runId, invocationId, result, error);
 };
 
-export const addActivityLog = (context: AgentContext, invocationId: string, logEntry: string): void => {
+export const addToolActivityLog = (context: AgentContext, invocationId: string, logEntry: string): void => {
   const activityStore = useAgentActivityStore();
-  activityStore.addActivityLog(context.state.runId, invocationId, logEntry);
+  activityStore.addToolActivityLog(context.state.runId, invocationId, logEntry);
 };

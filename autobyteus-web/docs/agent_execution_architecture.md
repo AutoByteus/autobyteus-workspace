@@ -410,32 +410,31 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
 3.  **Activity (`AgentActivityStore`)**:
-    - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
-    - Is updated through shared tool Activity projection from both eligible live transcript segment events and lifecycle events.
-    - Segment events provide immediate pending visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration.
+    - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`.
+    - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, and through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads.
+    - Segment events provide immediate pending tool visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration. Tool mutations are constrained to `kind: 'tool'` rows.
     - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as MCP-prefixed Claude browser/team tools must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
-    - Powers the right-side Progress/Activity feed UI.
-    - Feeds two intentionally different presentation surfaces:
-      - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation. These cards keep status understanding non-textual in the header (icon/spinner, tint, context, error row) and route non-awaiting cards into the matching activity item.
-      - `components/progress/ActivityItem.vue` renders the right-side activity row, including the textual status chip and short invocation id.
-    - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual activity-status changes should stay in `ActivityItem.vue`.
+    - Powers the right-side Progress/Activity feed UI and the mobile run Activity list.
+    - Feeds intentionally different presentation surfaces:
+      - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation and routes non-awaiting cards into the matching tool activity item by `activityId`/invocation id.
+      - `components/workspace/agent/CompactionStatusRow.vue` renders compact compaction rows inside the event monitor feed.
+      - `components/progress/ToolActivityItem.vue` renders the right-side tool activity row, including the textual status chip and short invocation id.
+      - `components/progress/CompactionActivityItem.vue` renders the right-side compaction activity row without pretending it is a tool invocation.
+    - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual tool activity-status changes should stay in `ToolActivityItem.vue`; compaction row presentation should stay in the compaction row components.
 4.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
 
-### Run-Level Compaction Status
+### Run-Level Compaction Activity
 
-Compaction lifecycle state is stored directly on `AgentRunState` instead of a
-sidecar store because it is one banner-sized run status, not a growing data set.
+Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
+visible history is projected through `AgentActivityStore` as `CompactionActivity`
+rows.
 
-- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`.
-- `handleCompactionStatus` turns the streamed payload into a UI-facing message
-  and stores it on `context.state.compactionStatus`.
-- `AgentEventMonitor` renders `CompactionStatusBanner` above the conversation
-  feed for:
-  - single-agent runs (`AgentWorkspaceView`)
-  - the focused member inside team runs (`AgentTeamEventMonitor`)
-- Failure details stay visible in the banner, while detailed token-budget numbers
-  remain in server/runtime logs instead of a live frontend debug panel.
+- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
+- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
+- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
+- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces; the frontend does not fabricate rows from latest status alone.
+- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
 
 ---
 

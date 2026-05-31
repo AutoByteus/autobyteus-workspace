@@ -4,28 +4,32 @@ import type { RunProjectionConversationEntry } from "../run-projection-types.js"
 export const buildRunProjectionConversation = (
   events: HistoricalReplayEvent[],
 ): RunProjectionConversationEntry[] =>
-  events.map((event) => {
+  events.flatMap((event) => {
     if (event.kind === "message") {
-      return {
+      return [{
         kind: "message",
         role: event.role,
         content: event.content,
         media: event.media,
         ts: event.ts,
-      };
+      }];
     }
 
     if (event.kind === "reasoning") {
-      return {
+      return [{
         kind: "reasoning",
         role: null,
         content: event.content,
         media: event.media,
         ts: event.ts,
-      };
+      }];
     }
 
-    return {
+    if (event.kind === "compaction") {
+      return [];
+    }
+
+    return [{
       kind:
         event.status === "parsed" || event.status === "parsing"
           ? "tool_call_pending"
@@ -39,5 +43,5 @@ export const buildRunProjectionConversation = (
       toolError: event.toolError,
       media: event.media,
       ts: event.ts,
-    };
+    }];
   });

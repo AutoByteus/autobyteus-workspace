@@ -17,11 +17,12 @@ import type {
 } from '../../protocol/messageTypes';
 
 const mockActivityStore = {
-  updateActivityToolName: vi.fn(),
-  updateActivityStatus: vi.fn(),
-  setActivityResult: vi.fn(),
-  addActivityLog: vi.fn(),
-  getActivities: vi.fn(() => []),
+  updateToolActivityToolName: vi.fn(),
+  updateToolActivityStatus: vi.fn(),
+  setToolActivityResult: vi.fn(),
+  addToolActivityLog: vi.fn(),
+  getToolActivities: vi.fn(() => []),
+  upsertCompactionActivity: vi.fn(),
 };
 
 vi.mock('~/stores/agentActivityStore', () => ({
@@ -138,6 +139,7 @@ describe('agentStatusHandler', () => {
       handleCompactionStatus(payload, mockContext);
 
       expect(mockContext.state.compactionStatus).toEqual({
+        activityId: 'compaction:task:compaction-task-1',
         phase: 'started',
         message: 'Compacting memory…',
         turnId: 'turn-1',
@@ -153,6 +155,14 @@ describe('agentStatusHandler', () => {
         compactionTaskId: 'compaction-task-1',
         errorMessage: null,
       });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        expect.objectContaining({
+          kind: 'compaction',
+          activityId: 'compaction:task:compaction-task-1',
+          phase: 'started',
+        }),
+      );
     });
 
     it('uses the failure error message when compaction fails', () => {
@@ -170,6 +180,122 @@ describe('agentStatusHandler', () => {
         turnId: 'turn-2',
         errorMessage: 'Compaction failed hard',
       });
+    });
+
+
+    it('normalizes provider compaction boundary status into a compaction activity', () => {
+      const payload: CompactionStatusPayload = {
+        kind: 'provider_compaction_boundary',
+        status: 'compacted',
+        turn_id: 'turn-provider',
+        provider: 'codex',
+        source_surface: 'codex.thread_compacted',
+        boundary_key: 'boundary-1',
+      };
+
+      handleCompactionStatus(payload, mockContext);
+
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        activityId: 'compaction:boundary:boundary-1',
+        phase: 'completed',
+        message: 'Provider context compaction boundary recorded',
+        turnId: 'turn-provider',
+      });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        expect.objectContaining({
+          kind: 'compaction',
+          activityId: 'compaction:boundary:boundary-1',
+          phase: 'completed',
+          provider: 'codex',
+        }),
+      );
+    });
+
+    it('uses provider operation identity across compacting and compacted boundary keys', () => {
+      handleCompactionStatus({
+        kind: 'provider_compaction_boundary',
+        status: 'compacting',
+        turn_id: 'turn-claude',
+        provider: 'claude',
+        source_surface: 'claude.status_compacting',
+        boundary_key: 'claude:session-1:claude.status_compacting:operation-1:turn-claude',
+        provider_session_id: 'session-1',
+        provider_event_id: 'operation-1',
+      }, mockContext);
+
+      handleCompactionStatus({
+        kind: 'provider_compaction_boundary',
+        status: 'compacted',
+        turn_id: 'turn-claude',
+        provider: 'claude',
+        source_surface: 'claude.compact_boundary',
+        boundary_key: 'claude:session-1:claude.compact_boundary:operation-1:turn-claude',
+        provider_session_id: 'session-1',
+        provider_event_id: 'operation-1',
+        rotation_eligible: true,
+      }, mockContext);
+
+      const expectedActivityId = 'compaction:provider:claude:session-1:operation-1:turn-claude';
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        activityId: expectedActivityId,
+        phase: 'completed',
+        provider: 'claude',
+        providerEventId: 'operation-1',
+        providerSessionId: 'session-1',
+      });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        1,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: expectedActivityId,
+          phase: 'started',
+          boundaryKey: 'claude:session-1:claude.status_compacting:operation-1:turn-claude',
+        }),
+      );
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: expectedActivityId,
+          phase: 'completed',
+          boundaryKey: 'claude:session-1:claude.compact_boundary:operation-1:turn-claude',
+        }),
+      );
+    });
+
+    it('reuses a previous active provider row before falling back to a new boundary key', () => {
+      handleCompactionStatus({
+        kind: 'provider_compaction_boundary',
+        status: 'compacting',
+        turn_id: 'turn-provider-active',
+        provider: 'claude',
+        source_surface: 'claude.status_compacting',
+        boundary_key: 'status-boundary',
+      }, mockContext);
+
+      handleCompactionStatus({
+        kind: 'provider_compaction_boundary',
+        status: 'compacted',
+        turn_id: 'turn-provider-active',
+        provider: 'claude',
+        source_surface: 'claude.compact_boundary',
+        boundary_key: 'completed-boundary',
+      }, mockContext);
+
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        activityId: 'compaction:boundary:status-boundary',
+        phase: 'completed',
+      });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: 'compaction:boundary:status-boundary',
+          phase: 'completed',
+          boundaryKey: 'completed-boundary',
+        }),
+      );
     });
   });
 
@@ -210,12 +336,12 @@ describe('agentStatusHandler', () => {
       expect(toolSegment.status).toBe('interrupted');
       expect(toolSegment.error).toBe('user_interrupt');
       expect(aiMsg.isComplete).toBe(true);
-      expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
+      expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-pending',
         'interrupted',
       );
-      expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(
+      expect(mockActivityStore.setToolActivityResult).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-pending',
         null,
@@ -265,7 +391,7 @@ describe('agentStatusHandler', () => {
       expect(aiMsg.segments).toHaveLength(1);
       expect(toolSegment.status).toBe('error');
       expect(toolSegment.error).toBe(payload.message);
-      expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
+      expect(mockActivityStore.updateToolActivityToolName).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-123',
         'read_file',
@@ -305,12 +431,12 @@ describe('agentStatusHandler', () => {
         message: 'stream exploded',
       });
       expect(aiMsg.isComplete).toBe(true);
-      expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
+      expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-partial',
         'error',
       );
-      expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(
+      expect(mockActivityStore.setToolActivityResult).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-partial',
         null,

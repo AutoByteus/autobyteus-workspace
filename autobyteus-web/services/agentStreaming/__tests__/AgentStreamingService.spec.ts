@@ -283,6 +283,7 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.compactionStatus).toEqual({
+            activityId: 'compaction:task:compaction-task-1',
             phase: 'started',
             message: 'Compacting memory…',
             turnId: 'turn-1',
