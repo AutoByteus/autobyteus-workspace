@@ -141,16 +141,43 @@ export const dedupeRunProjectionConversationEntries = (
   return deduped;
 };
 
-const explicitActivityKey = (entry: RunProjectionActivityEntry): string =>
-  [
+const explicitActivityKey = (entry: RunProjectionActivityEntry): string => {
+  if (entry.kind === "compaction") {
+    return [
+      entry.kind,
+      entry.activityId,
+    ].map(normalizeText).join("\0");
+  }
+
+  return [
+    entry.kind,
     entry.invocationId,
     entry.toolName,
     entry.type,
     entry.status,
   ].map(normalizeText).join("\0");
+};
 
-const activityRichnessScore = (entry: RunProjectionActivityEntry): number =>
-  [
+const activityRichnessScore = (entry: RunProjectionActivityEntry): number => {
+  if (entry.kind === "compaction") {
+    return [
+      normalizeTs(entry.ts),
+      normalizeTs(entry.updatedTs),
+      entry.message,
+      entry.turnId,
+      entry.provider,
+      entry.sourceSurface,
+      entry.boundaryKey,
+      entry.providerEventId,
+      entry.providerSessionId,
+      entry.trigger,
+      entry.preTokens,
+      entry.rotationEligible,
+      entry.detailLevel,
+    ].filter(hasValue).length;
+  }
+
+  return [
     normalizeTs(entry.ts),
     entry.arguments,
     entry.logs,
@@ -159,11 +186,46 @@ const activityRichnessScore = (entry: RunProjectionActivityEntry): number =>
     entry.detailLevel,
     entry.contextText,
   ].filter(hasValue).length;
+};
 
 const mergeActivityEntry = (
   current: RunProjectionActivityEntry,
   incoming: RunProjectionActivityEntry,
 ): RunProjectionActivityEntry => {
+  if (current.kind === "compaction" && incoming.kind === "compaction") {
+    const currentTs = normalizeTs(current.ts);
+    const incomingTs = normalizeTs(incoming.ts);
+    const currentUpdatedTs = normalizeTs(current.updatedTs) ?? currentTs;
+    const incomingUpdatedTs = normalizeTs(incoming.updatedTs) ?? incomingTs;
+    const incomingIsLatest =
+      currentUpdatedTs === null ||
+      (incomingUpdatedTs !== null && incomingUpdatedTs >= currentUpdatedTs);
+    const latest = incomingIsLatest ? incoming : current;
+    const earliestTs =
+      currentTs === null
+        ? incomingTs
+        : incomingTs === null
+          ? currentTs
+          : Math.min(currentTs, incomingTs);
+    const latestTs =
+      currentUpdatedTs === null
+        ? incomingUpdatedTs
+        : incomingUpdatedTs === null
+          ? currentUpdatedTs
+          : Math.max(currentUpdatedTs, incomingUpdatedTs);
+    const merged = incomingIsLatest
+      ? { ...current, ...incoming }
+      : { ...incoming, ...current };
+    return {
+      ...merged,
+      phase: latest.phase,
+      message: latest.message,
+      errorMessage: latest.errorMessage ?? current.errorMessage ?? incoming.errorMessage,
+      ts: earliestTs,
+      updatedTs: latestTs,
+    };
+  }
+
   const winner =
     activityRichnessScore(incoming) > activityRichnessScore(current)
       ? incoming

@@ -12,7 +12,9 @@ describe('runProjectionActivityHydration', () => {
     const store = useAgentActivityStore();
     const runId = 'run-1';
 
-    store.addActivity(runId, {
+    store.addToolActivity(runId, {
+      kind: 'tool',
+      activityId: 'stale',
       invocationId: 'stale',
       toolName: 'old_tool',
       type: 'tool_call',
@@ -38,7 +40,7 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -73,7 +75,7 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -82,4 +84,33 @@ describe('runProjectionActivityHydration', () => {
       }),
     );
   });
+
+  it('hydrates durable compaction projection rows without fabricating tool data', () => {
+    const store = useAgentActivityStore();
+    const runId = 'run-3';
+
+    hydrateActivitiesFromProjection(runId, [
+      {
+        kind: 'compaction',
+        activityId: 'compaction:boundary:boundary-1',
+        phase: 'completed',
+        message: 'Provider context compaction boundary recorded',
+        turnId: 'turn-1',
+        provider: 'codex',
+        boundaryKey: 'boundary-1',
+        ts: 30,
+      },
+    ]);
+
+    expect(store.getToolActivities(runId)).toHaveLength(0);
+    expect(store.getCompactionActivities(runId)).toEqual([
+      expect.objectContaining({
+        kind: 'compaction',
+        activityId: 'compaction:boundary:boundary-1',
+        phase: 'completed',
+        provider: 'codex',
+      }),
+    ]);
+  });
+
 });

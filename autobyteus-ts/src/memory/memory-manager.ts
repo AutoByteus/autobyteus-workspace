@@ -49,6 +49,13 @@ export type OperationBoundaryNoteInput = {
   reason?: string | null;
 };
 
+export type CompactionOperationId = string;
+
+export type PendingCompactionRequest = {
+  operationId: CompactionOperationId;
+  requestedTurnId: string | null;
+};
+
 const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
 
 export class MemoryManager {
@@ -61,6 +68,8 @@ export class MemoryManager {
   workingContextSnapshot: WorkingContextSnapshot;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   compactionRequired = false;
+  private pendingCompactionRequest: PendingCompactionRequest | null = null;
+  private compactionOperationCounter = 0;
   private seqByTurn = new Map<string, number>();
 
   constructor(options: {
@@ -85,12 +94,38 @@ export class MemoryManager {
     return this.turnTracker.nextTurnId();
   }
 
-  requestCompaction(): void {
+  requestCompaction(requestedTurnId?: string | null): CompactionOperationId {
     this.compactionRequired = true;
+    if (!this.pendingCompactionRequest) {
+      this.pendingCompactionRequest = {
+        operationId: this.createCompactionOperationId(),
+        requestedTurnId: requestedTurnId ?? null,
+      };
+    } else if (!this.pendingCompactionRequest.requestedTurnId && requestedTurnId) {
+      this.pendingCompactionRequest.requestedTurnId = requestedTurnId;
+    }
+    return this.pendingCompactionRequest.operationId;
+  }
+
+  getPendingCompactionRequest(): PendingCompactionRequest | null {
+    return this.pendingCompactionRequest;
+  }
+
+  requirePendingCompactionRequest(): PendingCompactionRequest {
+    if (!this.pendingCompactionRequest) {
+      this.requestCompaction();
+    }
+    return this.pendingCompactionRequest!;
   }
 
   clearCompactionRequest(): void {
     this.compactionRequired = false;
+    this.pendingCompactionRequest = null;
+  }
+
+  private createCompactionOperationId(): CompactionOperationId {
+    this.compactionOperationCounter += 1;
+    return `compaction_operation_${Date.now().toString(36)}_${this.compactionOperationCounter}`;
   }
 
   private nextSeq(turnId: string): number {

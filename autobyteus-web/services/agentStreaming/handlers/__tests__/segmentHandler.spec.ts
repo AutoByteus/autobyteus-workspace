@@ -47,7 +47,7 @@ describe('segmentHandler', () => {
       expect(mockContext.conversation.messages[0]?.type).toBe('ai');
       expect((mockContext.conversation.messages[0] as any).segments).toHaveLength(1);
 
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
         expect.objectContaining({
           invocationId: 'test-id',
           toolName: 'read_file',
@@ -118,7 +118,7 @@ describe('segmentHandler', () => {
       expect(segment.type).toBe('tool_call');
       expect(segment.toolName).toBe('');
       expect(consoleErrorSpy).not.toHaveBeenCalled();
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toHaveLength(0);
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toHaveLength(0);
     });
 
     it('replaces unknown_tool when a later SEGMENT_START provides the concrete tool name', () => {
@@ -168,7 +168,7 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'Question for you',
       });
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
         expect.objectContaining({
           invocationId: 'send-msg-1',
           toolName: 'send_message_to',
@@ -221,7 +221,7 @@ describe('segmentHandler', () => {
       expect(bashSegment.command).toBe('python fibonacci.py');
       expect(bashSegment.arguments).toEqual({ command: 'python fibonacci.py' });
 
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
         expect.objectContaining({
           invocationId: 'test-id-kf',
           toolName: 'write_file',
@@ -268,7 +268,7 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'hello',
       });
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toHaveLength(1);
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toHaveLength(1);
     });
 
     it('deduplicates cross-type start collisions and keeps a single segment', () => {
@@ -715,7 +715,7 @@ describe('segmentHandler', () => {
       expect(segment.status).toBe('error');
       expect(segment.error).toBe('stream exploded');
       expect(segment.result).toBeNull();
-      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+      expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
         expect.objectContaining({
           invocationId: 'seg-tool-failed',
           toolName: 'search_web',

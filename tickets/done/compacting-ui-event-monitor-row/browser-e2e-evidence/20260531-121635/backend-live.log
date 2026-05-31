@@ -1,0 +1,547 @@
+Starting foreground backend at 2026-05-31T12:17:11+02:00
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/.env
+[dotenv@17.3.1] injecting env (12) from tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:81200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from existing-env: process.env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/db/production.db"
+
+SQLite database production.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/db/production.db
+
+13 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+AgentRunManager initialized.
+[2026-05-31T10:17:13.503Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1780222633573,"pid":81200,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-05-31T10:17:13.573Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+[2026-05-31T10:17:13.574Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 2 agent definitions into cache.
+[2026-05-31T10:17:13.587Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Loaded tool group: Browser Tools
+No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-05-31T10:17:13.596Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 29
+No Autobyteus LLM server hosts configured. Skipping discovery.
+Successfully fetched 50 models from LLMFactory.
+LLM models cache populated with 50 items.
+Pre-loaded 50 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 6 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4
+Image models by runtime: api=6
+Image models cache populated with 6 items.
+Pre-loaded 6 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1780222676133,"pid":81200,"hostname":"MacBookPro","reqId":"req-4","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.4918339252471924,"msg":"http request completed"}
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 12c94556-0d70-41a5-86cf-cabd56605559 for workspace temp_ws_default
+Created file explorer session 12c94556-0d70-41a5-86cf-cabd56605559 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 12c94556-0d70-41a5-86cf-cabd56605559 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+FileExplorerSession closed: 12c94556-0d70-41a5-86cf-cabd56605559
+Closed file explorer session 12c94556-0d70-41a5-86cf-cabd56605559. Active sessions: 0
+File explorer WebSocket disconnected: 12c94556-0d70-41a5-86cf-cabd56605559
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Created and registered workspace ID: agent_ws_6fa0f2e84768e82c0a4b01aa21704224d1bd040ab1365381d8cca34630c1e31a
+Agent websocket attached for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Created agent session 428634ee-7690-4427-b54d-2f7e5ed5327b for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Agent WebSocket connected: session=428634ee-7690-4427-b54d-2f7e5ed5327b, run=browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Reusing existing workspace ID: agent_ws_6fa0f2e84768e82c0a4b01aa21704224d1bd040ab1365381d8cca34630c1e31a
+Resolved system prompt from fresh definition instructions for AgentDefinition browser-compaction-test-agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/media
+AgentRuntimeState initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': No tools provided in config.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': LLM instance 'LMStudioLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' with config: 'Browser Compaction Test Agent'.
+AgentWorker initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'.
+Registered AgentContext for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Context registered.
+Agent facade initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' created and stored successfully.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' requesting runtime to start.
+AgentRuntime for 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Starting worker.
+AgentWorker 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Starting...
+AgentWorker 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' asyncRun(): Starting.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Runtime init completed (event store initialized).
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Runtime init completed (status deriver initialized).
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Runtime init completed (AgentEventInbox initialized).
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' to become idle (timeout: 30s)...
+AgentEventStream (ID: 8318a500-6b0f-433e-b7e1-525d479d8346) initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Subscribed to notifier.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Bootstrapper starting direct lifecycle execution.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Executing McpServerPrewarmingStep.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Executing SystemPromptProcessingStep.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': No skills found in registry. Skipping injection.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Final processed system prompt configured on LLM instance. Final length: 337.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Final processed system prompt:
+---
+You are a validation assistant for a browser E2E compaction test.
+
+Rules:
+- Use the configured local LM Studio model only.
+- Answer user turns with one short sentence.
+- Do not call tools.
+- Do not include markdown tables or long explanations.
+- When asked for a marker, repeat the requested marker exactly once and add no extra details.
+---
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' initialized successfully. Entering main event scheduler loop.
+Agent 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878' has become idle.
+AgentEventStream (ID: 8318a500-6b0f-433e-b7e1-525d479d8346) for 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: ef10c3e7-f381-45ad-9749-0f1c85711f00) initialized for agent_id 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'. Subscribed to notifier.
+Successfully created autobyteus agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878'.
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': UserInputContextBuildingProcessor completed. Final content length: 66
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  prompt_tokens: 111,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Reusing existing workspace ID: agent_ws_6fa0f2e84768e82c0a4b01aa21704224d1bd040ab1365381d8cca34630c1e31a
+Agent websocket attached for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Created agent session 028e7543-03b7-4663-a385-d93f912474fe for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Agent WebSocket connected: session=028e7543-03b7-4663-a385-d93f912474fe, run=browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+{"level":30,"time":1780222781591,"pid":81200,"hostname":"MacBookPro","reqId":"req-2g","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:447:23)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1780222781591,"pid":81200,"hostname":"MacBookPro","reqId":"req-2g","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.247999906539917,"msg":"http request completed"}
+{"level":30,"time":1780222781643,"pid":81200,"hostname":"MacBookPro","reqId":"req-2h","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:447:23)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1780222781643,"pid":81200,"hostname":"MacBookPro","reqId":"req-2h","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.6694998741149902,"msg":"http request completed"}
+{"level":30,"time":1780222781691,"pid":81200,"hostname":"MacBookPro","reqId":"req-2i","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:447:23)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1780222781691,"pid":81200,"hostname":"MacBookPro","reqId":"req-2i","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.49820804595947266,"msg":"http request completed"}
+{"level":30,"time":1780222781740,"pid":81200,"hostname":"MacBookPro","reqId":"req-2j","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:447:23)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1780222781740,"pid":81200,"hostname":"MacBookPro","reqId":"req-2j","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5996670722961426,"msg":"http request completed"}
+Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' updated to '0.01'
+Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated to '4000'
+Server setting 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS' updated to 'true'
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': UserInputContextBuildingProcessor completed. Final content length: 66
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  prompt_tokens: 131,
+  effective_total_context_tokens: 4000,
+  context_derived_input_cap_tokens: 4000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 4000,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 3744,
+  compaction_ratio: 0.01,
+  trigger_threshold_tokens: 37,
+  override_active: true,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  phase: 'requested',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': UserInputContextBuildingProcessor completed. Final content length: 70
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_execution_context {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0003',
+  pending_compaction: true,
+  selected_block_count: 2,
+  frontier_block_count: 1,
+  raw_trace_count: 5
+}
+compaction_started {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  phase: 'started',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Reusing existing workspace ID: agent_ws_6fa0f2e84768e82c0a4b01aa21704224d1bd040ab1365381d8cca34630c1e31a
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/temp_workspace.
+Reusing existing workspace ID: agent_ws_6fa0f2e84768e82c0a4b01aa21704224d1bd040ab1365381d8cca34630c1e31a
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-memory-compactor.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/in-progress/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data/media
+AgentRuntimeState initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_memory_compaction_specialist_5145': No tools provided in config.
+Agent 'memory_compactor_memory_compaction_specialist_5145': LLM instance 'LMStudioLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_memory_compaction_specialist_5145' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'.
+Registered AgentContext for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'.
+Agent 'memory_compactor_memory_compaction_specialist_5145' created and stored successfully.
+Agent 'memory_compactor_memory_compaction_specialist_5145' requesting runtime to start.
+AgentRuntime for 'memory_compactor_memory_compaction_specialist_5145': Starting worker.
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145': Starting...
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145' asyncRun(): Starting.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Runtime init completed (event store initialized).
+Agent 'memory_compactor_memory_compaction_specialist_5145': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_memory_compaction_specialist_5145': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_memory_compaction_specialist_5145': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_memory_compaction_specialist_5145' to become idle (timeout: 30s)...
+AgentEventStream (ID: f2b0116d-a779-4ba7-83ca-ca8a14c0dbb3) initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Subscribed to notifier.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'memory_compactor_memory_compaction_specialist_5145': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_memory_compaction_specialist_5145': Executing McpServerPrewarmingStep.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_memory_compaction_specialist_5145': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_memory_compaction_specialist_5145': No skills found in registry. Skipping injection.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Final processed system prompt configured on LLM instance. Final length: 3149.
+Agent 'memory_compactor_memory_compaction_specialist_5145': Final processed system prompt:
+---
+You are the AutoByteus Memory Compactor. Your job is to turn settled AutoByteus conversation, tool, validation, file, planning, and decision history into compact durable memory for future runs.
+
+You may be used in two ways:
+1. Automated compaction tasks: the user message includes an exact output contract plus `[SETTLED_BLOCKS]`. Follow that supplied contract exactly; it is the current parser-compatible shape.
+2. Manual testing: a user may paste arbitrary conversation/history content and ask you to compact it. In that case, still return the same compact memory categories below as JSON only.
+
+Output discipline:
+- Return JSON only. Do not include Markdown fences, commentary, apologies, headings, or prose outside the JSON object.
+- Do not invent facts, tools, file paths, validation results, decisions, or user preferences that are not present in the supplied history.
+- Prefer specific, source-grounded facts over vague statements.
+- If a category has no relevant facts, return an empty array for that category.
+- When an automated task supplies an exact output contract, that contract wins over any human-readable shape described here.
+
+Memory categories:
+- `episodic_summary`: a concise narrative of what happened, why it mattered, and the current state after the settled history.
+- `critical_issues`: blockers, failures, regressions, safety concerns, failing checks, unresolved review findings, or other issues future work must not miss.
+- `unresolved_work`: planned next steps, incomplete implementation, pending validation, open questions, or work explicitly deferred.
+- `durable_facts`: stable technical/product facts, decisions, constraints, architecture choices, config values, important commands, and implementation facts that may matter later.
+- `user_preferences`: durable user instructions, style preferences, workflow preferences, product direction, and explicit likes/dislikes.
+- `important_artifacts`: important file paths, documents, tickets, reports, generated outputs, test artifacts, logs, branches, commits, run ids, or other named artifacts.
+
+Preserve:
+- decisions and rationale;
+- constraints, requirements, and guardrails;
+- changed or created files and important artifact paths;
+- validation evidence, command outcomes, failures, and blockers;
+- tool outcomes when they materially changed state or revealed useful facts;
+- user preferences and corrections;
+- open work and next actions needed to continue safely.
+
+Drop or compress:
+- repeated chatter and acknowledgements;
+- transient progress/status messages that do not affect future work;
+- verbose raw payloads when a short digest is enough;
+- low-value operational noise;
+- duplicated facts already captured more clearly elsewhere.
+
+Manual test guidance:
+When manually given pasted history, infer the same categories from the content. If the user does not provide an explicit schema, use this shape:
+
+{
+  "episodic_summary": "string",
+  "critical_issues": [{ "fact": "string" }],
+  "unresolved_work": [{ "fact": "string" }],
+  "durable_facts": [{ "fact": "string" }],
+  "user_preferences": [{ "fact": "string" }],
+  "important_artifacts": [{ "fact": "string" }]
+}
+---
+Agent 'memory_compactor_memory_compaction_specialist_5145': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145' initialized successfully. Entering main event scheduler loop.
+Agent 'memory_compactor_memory_compaction_specialist_5145' has become idle.
+AgentEventStream (ID: f2b0116d-a779-4ba7-83ca-ca8a14c0dbb3) for 'memory_compactor_memory_compaction_specialist_5145': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: e4739736-10a7-43ef-be01-d3b4d6b78d97) initialized for agent_id 'memory_compactor_memory_compaction_specialist_5145'. Subscribed to notifier.
+Successfully created autobyteus agent run 'memory_compactor_memory_compaction_specialist_5145'.
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'memory_compactor_memory_compaction_specialist_5145': UserInputContextBuildingProcessor completed. Final content length: 859
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent websocket attached for run memory_compactor_memory_compaction_specialist_5145
+Created agent session 9bbdbe84-84ec-490b-9e84-e87ef11d4e94 for run memory_compactor_memory_compaction_specialist_5145
+Agent WebSocket connected: session=9bbdbe84-84ec-490b-9e84-e87ef11d4e94, run=memory_compactor_memory_compaction_specialist_5145
+Agent websocket attached for run memory_compactor_memory_compaction_specialist_5145
+Created agent session 404ca618-84b7-4225-9d3c-9a005e2a9cc9 for run memory_compactor_memory_compaction_specialist_5145
+Agent WebSocket connected: session=404ca618-84b7-4225-9d3c-9a005e2a9cc9, run=memory_compactor_memory_compaction_specialist_5145
+AgentEventStream (ID: e4739736-10a7-43ef-be01-d3b4d6b78d97) for 'memory_compactor_memory_compaction_specialist_5145': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'memory_compactor_memory_compaction_specialist_5145'. Attempting graceful shutdown.
+Agent 'memory_compactor_memory_compaction_specialist_5145' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145': Stop requested.
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145': Running shutdown sequence on worker loop.
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_memory_compaction_specialist_5145': Shutdown sequence completed.
+AgentExternalEventNotifier (NotifierID: dd1f01b4-0020-4769-9e2e-a12a96751507, AgentID: memory_compactor_memory_compaction_specialist_5145) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Unregistered AgentContext for agent_id 'memory_compactor_memory_compaction_specialist_5145'.
+AgentRuntime for 'memory_compactor_memory_compaction_specialist_5145': Context unregistered.
+AgentRuntime for 'memory_compactor_memory_compaction_specialist_5145' stop() method completed.
+compaction_failed {
+  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+  phase: 'failed',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: null,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'qwen3.6-27b:lmstudio@127.0.0.1:1234',
+  compaction_run_id: 'memory_compactor_memory_compaction_specialist_5145',
+  compaction_task_id: 'compaction_task_34d45a3893c7414da6064c7fd0a5aff1',
+  error_message: "Memory compaction failed before dispatch: Compactor agent run 'memory_compactor_memory_compaction_specialist_5145' timed out after 120000ms before returning final JSON."
+}
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 9bbdbe84-84ec-490b-9e84-e87ef11d4e94
+Agent WebSocket disconnected: 9bbdbe84-84ec-490b-9e84-e87ef11d4e94
+Closed agent session 404ca618-84b7-4225-9d3c-9a005e2a9cc9
+Agent WebSocket disconnected: 404ca618-84b7-4225-9d3c-9a005e2a9cc9
+Closed agent session 428634ee-7690-4427-b54d-2f7e5ed5327b
+Agent WebSocket disconnected: 428634ee-7690-4427-b54d-2f7e5ed5327b
+Agent websocket attached for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Created agent session 8d269371-1992-46d9-be10-7ebde79da786 for run browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+Agent WebSocket connected: session=8d269371-1992-46d9-be10-7ebde79da786, run=browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878
+[2026-05-31T10:28:01.829Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 028e7543-03b7-4663-a385-d93f912474fe
+Agent WebSocket disconnected: 028e7543-03b7-4663-a385-d93f912474fe
+Closed agent session 8d269371-1992-46d9-be10-7ebde79da786
+Agent WebSocket disconnected: 8d269371-1992-46d9-be10-7ebde79da786

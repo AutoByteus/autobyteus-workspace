@@ -60,6 +60,38 @@ describe('AgentConversationFeed', () => {
     ]));
   });
 
+  it('passes explicit run id to AI messages when it differs from conversation id', () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        runId: 'member-run-1',
+        conversation: {
+          id: 'team-run-1::professor',
+          createdAt: '2026-03-07T00:00:00.000Z',
+          updatedAt: '2026-03-07T00:00:00.000Z',
+          messages: [
+            {
+              type: 'ai',
+              text: '',
+              timestamp: new Date('2026-03-07T00:00:01.000Z'),
+              isComplete: true,
+              segments: [{ type: 'text', content: 'hi' }],
+            },
+          ],
+        } as any,
+      },
+      global: {
+        stubs: {
+          AIMessage: {
+            props: ['runId'],
+            template: '<div data-test="ai-message">{{ runId }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.get('[data-test="ai-message"]').text()).toBe('member-run-1');
+  });
+
   it('can hide token-cost and total-usage metadata for smaller tiles', () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {
@@ -103,4 +135,63 @@ describe('AgentConversationFeed', () => {
     expect(wrapper.text()).not.toContain('tokens / $');
     expect(wrapper.text()).not.toContain('Total:');
   });
+
+  it('renders compaction status rows inside the conversation feed by timestamp', () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        conversation: {
+          id: 'run-1',
+          createdAt: '2026-03-07T00:00:00.000Z',
+          updatedAt: '2026-03-07T00:00:00.000Z',
+          messages: [
+            {
+              type: 'user',
+              text: 'before',
+              timestamp: new Date('2026-03-07T00:00:00.000Z'),
+            },
+            {
+              type: 'ai',
+              text: '',
+              timestamp: new Date('2026-03-07T00:00:02.000Z'),
+              isComplete: true,
+              segments: [{ type: 'text', content: 'after' }],
+            },
+          ],
+        } as any,
+        compactionActivities: [
+          {
+            kind: 'compaction',
+            activityId: 'compaction:task:1',
+            phase: 'completed',
+            message: 'Memory compacted',
+            timestamp: new Date('2026-03-07T00:00:01.000Z'),
+            updatedAt: new Date('2026-03-07T00:00:01.000Z'),
+          },
+        ],
+      },
+      global: {
+        stubs: {
+          UserMessage: {
+            props: ['message'],
+            template: '<div data-test="user-message">{{ message.text }}</div>',
+          },
+          AIMessage: {
+            props: ['message'],
+            template: '<div data-test="ai-message">{{ message.segments[0].content }}</div>',
+          },
+          CompactionStatusRow: {
+            props: ['activity'],
+            template: '<div data-test="compaction-row">{{ activity.message }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('[data-test]').map((node) => node.attributes('data-test'))).toEqual([
+      'user-message',
+      'compaction-row',
+      'ai-message',
+    ]);
+  });
+
 });
