@@ -13,6 +13,7 @@
 - Native AutoByteus, Codex, Claude, and team-member bootstraps share the same configured-skill resolver boundary.
 - Codex materializes resolved package skills into `.codex/skills/<skillName>` symlinks that target exact package source roots.
 - Native AutoByteus consumes exact resolved package skill roots through `AgentConfig.skills`.
+- The compaction activity label is localized so the macOS Electron build localization audit passes on the integrated branch.
 
 ## Guidance And Safety
 
@@ -20,8 +21,4 @@
 - Codex uses the normal resolved `Skill[]` materialization path and has no source-aware duplicate-name preflight/materializer behavior in this ticket.
 - Supported package layouts include colocated `agents/<agent-id>/SKILL.md`, multi-skill `agents/<agent-id>/skills/<skill-name>/SKILL.md`, team-local equivalents, and `agent-teams/<team-id>/skills/<skill-name>/SKILL.md` for team-shared skills.
 - `SKILL.md` frontmatter `name` must match the configured `skillNames` entry; mismatches and unsafe path-like names are skipped with warnings.
-- Live model-backed Codex/Claude/native conversations were not part of validation; deterministic package import, contextual resolver, runtime-boundary E2E, catalog/API non-leakage, and TypeScript checks passed.
-
-## Delivery Note
-
-- Integrated macOS Electron packaging is currently blocked by a frontend localization-audit issue from the newly integrated base branch. The release remains on hold until that local fix is completed and the user verifies the rebuilt integrated app.
+- Live model-backed Codex/Claude/native conversations were not part of package-skill validation; deterministic package import, contextual resolver, runtime-boundary E2E, catalog/API non-leakage, TypeScript checks, localization audit, and local Electron build passed.

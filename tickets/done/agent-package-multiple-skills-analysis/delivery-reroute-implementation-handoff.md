@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-review-report.md`
-- Prior implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/review-report.md`
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/validation-report.md`
-- Round 5 delivery check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/post-round5-delivery-checks.log`
-- Failed integrated Electron build log from delivery: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T113610Z.log`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-review-report.md`
+- Prior implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/review-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/validation-report.md`
+- Round 5 delivery check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/post-round5-delivery-checks.log`
+- Failed integrated Electron build log from delivery: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T113610Z.log`
 
 ## What Changed
 
@@ -29,8 +29,8 @@ No package-skill runtime implementation changes were made during this delivery r
 - `autobyteus-web/components/progress/CompactionActivityItem.vue`
 - `autobyteus-web/localization/messages/en/workspace.ts`
 - `autobyteus-web/localization/messages/zh-CN/workspace.ts`
-- `tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/latest-electron-mac-build-log.txt`
-- Successful build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`
+- `tickets/done/agent-package-multiple-skills-analysis/build-logs/latest-electron-mac-build-log.txt`
+- Successful build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`
 
 ## Important Assumptions
 
@@ -76,7 +76,7 @@ Record only implementation-scoped checks here, such as build, typecheck, unit te
 
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings after the fix. Existing Node `MODULE_TYPELESS_PACKAGE_JSON` warning only.
 - `pnpm -C autobyteus-server-ts build` — Passed while checking the server build path used by Electron `prepare-server`.
-- `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` from `autobyteus-web` — Passed with exit status 0. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`.
+- `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` from `autobyteus-web` — Passed with exit status 0. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`.
 - `git diff --check` — Passed.
 
 Built Electron artifacts from the successful reroute command:

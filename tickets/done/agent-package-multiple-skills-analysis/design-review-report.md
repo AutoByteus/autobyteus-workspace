@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-spec.md`
 - Current Review Round: 2 corrected package
 - Trigger: Corrected Round 2 package after `solution_designer` withdrew the prior Codex same-name/source-aware materializer addendum because duplicate skill names are product-excluded.
 - Prior Review Round Reviewed: Round 1 findings and prior Round 2 pass rechecked against corrected package.

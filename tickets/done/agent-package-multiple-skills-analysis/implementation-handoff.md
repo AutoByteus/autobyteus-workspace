@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-review-report.md`
 
 ## What Changed
 

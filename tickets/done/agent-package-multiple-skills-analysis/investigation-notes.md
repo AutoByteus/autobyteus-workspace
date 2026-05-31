@@ -22,7 +22,7 @@ User suspects a limitation: imported agent or agent-team packages include agent 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis`
 - Current Branch: `codex/agent-package-multiple-skills-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis`
 - Bootstrap Base Branch: `origin/personal`
@@ -265,7 +265,7 @@ Important locked assumptions for design:
 
 ## Design Review Response - 2026-05-31 - Round 1 Findings
 
-Architecture reviewer returned `Design Impact` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-review-report.md`.
+Architecture reviewer returned `Design Impact` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-review-report.md`.
 
 Revisions applied:
 
@@ -282,8 +282,8 @@ Revisions applied:
   - Requirements were refined with `REQ-10`, `REQ-11`, `AC-10`, and `AC-11` for safe names and metadata matching.
 
 Updated artifacts:
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/requirements.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-spec.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/requirements.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-spec.md`
 
 ## User Follow-up Analysis - 2026-05-31 - Codex Skill Materializer Impact
 

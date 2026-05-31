@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/design-review-report.md`
-- Prior Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/implementation-handoff.md`
-- Delivery Reroute Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/delivery-reroute-implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/design-review-report.md`
+- Prior Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/implementation-handoff.md`
+- Delivery Reroute Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/delivery-reroute-implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/review-report.md`
 - Current Validation Round: `4`
 - Trigger: Round 6 code review passed for a delivery-reroute implementation fix that replaced a hard-coded Electron UI localization literal in `CompactionActivityItem.vue` and added matching English/zh-CN catalog entries.
 - Prior Round Reviewed: `3`
@@ -138,10 +138,10 @@ Round 4 durable validation updates:
 
 ## Other Validation Artifacts
 
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/validation-report.md`
-- Failed delivery Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T113610Z.log`
-- Successful reroute Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`
-- Latest Electron macOS build-log marker: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/latest-electron-mac-build-log.txt`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/validation-report.md`
+- Failed delivery Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T113610Z.log`
+- Successful reroute Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`
+- Latest Electron macOS build-log marker: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/latest-electron-mac-build-log.txt`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -190,7 +190,7 @@ Round 4 delivery-reroute validation evidence:
   - `zh_literal=1`
 - Failed build-log recheck: `electron-mac-build-20260531T113610Z.log` contains `M-008 components/progress/CompactionActivityItem.vue Memory compaction unresolved`.
 - Successful build-log recheck: `electron-mac-build-20260531T114417Z-reroute.log` records production build completion, DMG/zip artifacts, and `Electron macOS build exit status: 0`.
-- Latest build-log marker recheck: `latest-electron-mac-build-log.txt` points to `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`.
+- Latest build-log marker recheck: `latest-electron-mac-build-log.txt` points to `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T114417Z-reroute.log`.
 - `git diff --check` — Passed.
 
 ## Failed
