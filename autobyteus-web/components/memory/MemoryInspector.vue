@@ -1,146 +1,82 @@
 <template>
-  <div class="flex flex-col h-full bg-white">
-    <div class="h-16 flex items-center px-6 border-b border-gray-200 bg-gray-50 flex-shrink-0">
-      <div>
-        <h2 class="text-lg font-semibold text-gray-800">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h2>
-        <p class="text-xs text-gray-500">
-          {{ headerSubtitle }}
-        </p>
-      </div>
-    </div>
+  <div class="mx-auto max-w-5xl p-6">
+    <button class="mb-4 text-sm font-semibold text-blue-600 hover:underline" @click="$emit('back')">← {{ backLabel }}</button>
+    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
+      <header class="border-b border-gray-100 p-5">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</p>
+        <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h1>
+        <p class="mt-2 text-sm text-gray-600">{{ breadcrumb }}</p>
+        <p v-if="metadataLine" class="mt-1 text-xs text-gray-500">{{ metadataLine }}</p>
+      </header>
 
-    <div v-if="activeError" class="px-6 py-3 border-b border-red-200 bg-red-50 text-sm text-red-700">
-      {{ activeError }}
-    </div>
+      <div v-if="store.error" class="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{{ store.error }}</div>
+      <div v-if="!store.target" class="p-12 text-center text-gray-400">{{ $t('memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect') }}</div>
 
-    <div v-if="!hasSelection" class="flex-1 flex items-center justify-center text-gray-400">{{ $t('memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect') }}</div>
-
-    <div v-else class="flex-1 flex flex-col overflow-hidden">
-      <div class="px-6 pt-4">
-        <nav class="flex space-x-2 border-b border-gray-200">
-          <button
-            v-for="tab in tabs"
-            :key="tab.id"
-            class="px-3 py-2 text-sm font-semibold rounded-t-md"
-            :class="activeTab === tab.id ? 'bg-white text-blue-600 border border-gray-200 border-b-white' : 'text-gray-500 hover:text-gray-700'"
-            @click="setTab(tab.id)"
-          >
+      <div v-else>
+        <nav class="flex gap-2 border-b border-gray-100 px-5 pt-4">
+          <button v-for="tab in tabs" :key="tab.id" class="rounded-t-lg px-3 py-2 text-sm font-semibold" :class="store.activeTab === tab.id ? 'border border-gray-200 border-b-white bg-white text-blue-600' : 'text-gray-500 hover:text-gray-700'" @click="store.setActiveTab(tab.id)">
             {{ tab.label }}
           </button>
         </nav>
+
+        <div class="min-h-[360px] p-5">
+          <div v-if="store.loading && !store.memoryView" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryInspector.loading_memory_view') }}</div>
+          <WorkingContextTab v-else-if="store.activeTab === 'working'" :messages="store.memoryView?.workingContext ?? null" />
+          <EpisodicTab v-else-if="store.activeTab === 'episodic'" :items="store.memoryView?.episodic ?? null" />
+          <SemanticTab v-else-if="store.activeTab === 'semantic'" :items="store.memoryView?.semantic ?? null" />
+          <RawTracesTab v-else :traces="store.memoryView?.rawTraces ?? null" :limit="store.rawTraceLimit" :loading="store.loading" @updateLimit="store.setRawTraceLimit" />
+        </div>
       </div>
-
-      <div class="flex-1 overflow-y-auto px-6 py-4">
-        <div v-if="activeLoading && !activeMemoryView" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryInspector.loading_memory_view') }}</div>
-
-        <WorkingContextTab
-          v-else-if="activeTab === 'working'"
-          :messages="activeMemoryView?.workingContext ?? null"
-        />
-
-        <EpisodicTab
-          v-else-if="activeTab === 'episodic'"
-          :items="activeMemoryView?.episodic ?? null"
-        />
-
-        <SemanticTab
-          v-else-if="activeTab === 'semantic'"
-          :items="activeMemoryView?.semantic ?? null"
-        />
-
-        <RawTracesTab
-          v-else-if="activeTab === 'raw'"
-          :traces="activeMemoryView?.rawTraces ?? null"
-          :limit="activeRawTraceLimit"
-          :loading="activeLoading"
-          @updateLimit="updateRawTraceLimit"
-        />
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useAgentMemoryViewStore } from '~/stores/agentMemoryViewStore';
-import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
-import { useTeamMemoryViewStore } from '~/stores/teamMemoryViewStore';
+import { computed } from 'vue';
+import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
+import type { MemoryInspectorTab } from '~/types/memory';
 import WorkingContextTab from './WorkingContextTab.vue';
 import EpisodicTab from './EpisodicTab.vue';
 import SemanticTab from './SemanticTab.vue';
 import RawTracesTab from './RawTracesTab.vue';
 
-const scopeStore = useMemoryScopeStore();
-const agentViewStore = useAgentMemoryViewStore();
-const teamViewStore = useTeamMemoryViewStore();
+withDefaults(defineProps<{ backLabel?: string }>(), { backLabel: 'Back to Memory' });
+defineEmits<{ back: [] }>();
 
-const tabs = [
+const store = useMemoryInspectorStore();
+const tabs: Array<{ id: MemoryInspectorTab; label: string }> = [
   { id: 'working', label: 'Working Context' },
   { id: 'episodic', label: 'Episodic' },
   { id: 'semantic', label: 'Semantic' },
   { id: 'raw', label: 'Raw Traces' },
 ];
 
-const activeTab = ref('working');
-
-const isAgentScope = computed(() => scopeStore.scope === 'agent');
-
-const hasSelection = computed(() => {
-  if (isAgentScope.value) {
-    return Boolean(agentViewStore.selectedRunId);
+const breadcrumb = computed(() => {
+  const target = store.target;
+  if (!target) return 'No memory selected';
+  if (target.kind === 'agent_run') {
+    const agent = target.agentDisplayName || target.agentDefinitionId || 'Unattributed runs';
+    return `Agents / ${agent} / ${target.runLabel || target.runId}`;
   }
-  return Boolean(teamViewStore.selectedTeamRunId && teamViewStore.selectedMemberRunId);
+  const team = target.teamDefinitionName || target.teamDefinitionId || 'Agent Team';
+  const member = target.memberName || target.memberRouteKey || target.memberRunId;
+  return `Agent Teams / ${team} / ${target.teamRunId} / ${member}`;
 });
 
-const activeError = computed(() => {
-  return isAgentScope.value ? agentViewStore.error : teamViewStore.error;
-});
-
-const activeLoading = computed(() => {
-  return isAgentScope.value ? agentViewStore.loading : teamViewStore.loading;
-});
-
-const activeMemoryView = computed(() => {
-  return isAgentScope.value ? agentViewStore.memoryView : teamViewStore.memoryView;
-});
-
-const activeRawTraceLimit = computed(() => {
-  return isAgentScope.value ? agentViewStore.rawTraceLimit : teamViewStore.rawTraceLimit;
-});
-
-const headerSubtitle = computed(() => {
-  if (isAgentScope.value) {
-    if (!agentViewStore.selectedRunId) {
-      return 'Agent Runs: no selection';
-    }
-    return `Agent Run: ${agentViewStore.selectedRunId}`;
+const metadataLine = computed(() => {
+  const target = store.target;
+  if (!target) return '';
+  if (target.kind === 'agent_run') {
+    const workspace = target.workspaceRootPath ? `Workspace: ${target.workspaceRootPath}` : `Run: ${target.runId}`;
+    return target.lastUpdatedAt ? `${workspace} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : workspace;
   }
-
-  if (!teamViewStore.selectedTeamRunId || !teamViewStore.selectedMemberRunId) {
-    return 'Team Runs: no selection';
-  }
-
-  const teamName = teamViewStore.selectedTeamDefinitionName || teamViewStore.selectedTeamRunId;
-  const memberName = teamViewStore.selectedMemberName || teamViewStore.selectedMemberRouteKey || 'member';
-  return `Team: ${teamName} / Member: ${memberName} / Run: ${teamViewStore.selectedMemberRunId}`;
+  const memberRun = `Member run: ${target.memberRunId}`;
+  return target.lastUpdatedAt ? `${memberRun} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : memberRun;
 });
 
-const setTab = async (tabId: string) => {
-  activeTab.value = tabId;
-  const includeRawTraces = tabId === 'raw';
-
-  if (isAgentScope.value) {
-    await agentViewStore.setIncludeRawTraces(includeRawTraces);
-    return;
-  }
-  await teamViewStore.setIncludeRawTraces(includeRawTraces);
-};
-
-const updateRawTraceLimit = async (limit: number) => {
-  if (isAgentScope.value) {
-    await agentViewStore.setRawTraceLimit(limit);
-    return;
-  }
-  await teamViewStore.setRawTraceLimit(limit);
+const formatTimestamp = (value?: string | null) => {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 };
 </script>

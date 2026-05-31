@@ -68,6 +68,11 @@ export enum AgentMemberRefScope {
   TeamLocal = 'TEAM_LOCAL'
 }
 
+export enum AgentMemoryAttribution {
+  Definition = 'DEFINITION',
+  Unattributed = 'UNATTRIBUTED'
+}
+
 export type AgentMemoryView = {
   __typename?: 'AgentMemoryView';
   episodic?: Maybe<Array<Scalars['JSON']['output']>>;
@@ -123,10 +128,31 @@ export enum AgentPackageUpdateStatus {
   NotChecked = 'NOT_CHECKED',
   ReloadAvailable = 'RELOAD_AVAILABLE',
   Unknown = 'UNKNOWN',
-  UpToDate = 'UP_TO_DATE',
   UpdateAvailable = 'UPDATE_AVAILABLE',
-  UpdateFailed = 'UPDATE_FAILED'
+  UpdateFailed = 'UPDATE_FAILED',
+  UpToDate = 'UP_TO_DATE'
 }
+
+export type AgentRunMemoryPage = {
+  __typename?: 'AgentRunMemoryPage';
+  entries: Array<AgentRunMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentRunMemorySummary = {
+  __typename?: 'AgentRunMemorySummary';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
+  agentName?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memory: MemoryAvailabilitySummary;
+  runId: Scalars['String']['output'];
+  summary?: Maybe<Scalars['String']['output']>;
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
 
 export type AgentTeamDefinition = {
   __typename?: 'AgentTeamDefinition';
@@ -153,6 +179,72 @@ export enum AgentTeamDefinitionOwnershipScope {
   Shared = 'SHARED',
   TeamLocal = 'TEAM_LOCAL'
 }
+
+export type AgentTeamRunMemoryPage = {
+  __typename?: 'AgentTeamRunMemoryPage';
+  entries: Array<AgentTeamRunMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentTeamRunMemorySummary = {
+  __typename?: 'AgentTeamRunMemorySummary';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberTargets: Array<TeamMemberMemoryTargetSummary>;
+  memory: MemoryAvailabilitySummary;
+  summary?: Maybe<Scalars['String']['output']>;
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+  teamRunId: Scalars['String']['output'];
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentTeamWithMemoryPage = {
+  __typename?: 'AgentTeamWithMemoryPage';
+  entries: Array<AgentTeamWithMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentTeamWithMemorySummary = {
+  __typename?: 'AgentTeamWithMemorySummary';
+  latestMemoryAt?: Maybe<Scalars['String']['output']>;
+  memberMemoryCount: Scalars['Int']['output'];
+  memory: MemoryAvailabilitySummary;
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+  teamRunCount: Scalars['Int']['output'];
+};
+
+export type AgentWithMemoryPage = {
+  __typename?: 'AgentWithMemoryPage';
+  entries: Array<AgentWithMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentWithMemorySelectorInput = {
+  agentDefinitionId?: InputMaybe<Scalars['String']['input']>;
+  attribution: AgentMemoryAttribution;
+};
+
+export type AgentWithMemorySummary = {
+  __typename?: 'AgentWithMemorySummary';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
+  attribution: AgentMemoryAttribution;
+  displayName: Scalars['String']['output'];
+  latestMemoryAt?: Maybe<Scalars['String']['output']>;
+  memory: MemoryAvailabilitySummary;
+  runCount: Scalars['Int']['output'];
+  stableId: Scalars['String']['output'];
+};
 
 export type AppDataMigrationMutationResult = {
   __typename?: 'AppDataMigrationMutationResult';
@@ -650,6 +742,16 @@ export enum McpTransportTypeEnum {
   StreamableHttp = 'STREAMABLE_HTTP'
 }
 
+export type MemoryAvailabilitySummary = {
+  __typename?: 'MemoryAvailabilitySummary';
+  hasEpisodic: Scalars['Boolean']['output'];
+  hasRawArchive: Scalars['Boolean']['output'];
+  hasRawTraces: Scalars['Boolean']['output'];
+  hasSemantic: Scalars['Boolean']['output'];
+  hasWorkingContext: Scalars['Boolean']['output'];
+  latestMemoryAt?: Maybe<Scalars['String']['output']>;
+};
+
 export type MemoryMessage = {
   __typename?: 'MemoryMessage';
   content?: Maybe<Scalars['String']['output']>;
@@ -657,26 +759,6 @@ export type MemoryMessage = {
   role: Scalars['String']['output'];
   toolPayload?: Maybe<Scalars['JSON']['output']>;
   ts?: Maybe<Scalars['Float']['output']>;
-};
-
-export type MemorySnapshotPage = {
-  __typename?: 'MemorySnapshotPage';
-  entries: Array<MemorySnapshotSummary>;
-  page: Scalars['Int']['output'];
-  pageSize: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
-export type MemorySnapshotSummary = {
-  __typename?: 'MemorySnapshotSummary';
-  hasEpisodic: Scalars['Boolean']['output'];
-  hasRawArchive: Scalars['Boolean']['output'];
-  hasRawTraces: Scalars['Boolean']['output'];
-  hasSemantic: Scalars['Boolean']['output'];
-  hasWorkingContext: Scalars['Boolean']['output'];
-  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  runId: Scalars['String']['output'];
 };
 
 export type MemoryTraceEvent = {
@@ -818,6 +900,7 @@ export type MutationArchiveStoredTeamRunArgs = {
 export type MutationCancelPreparedAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
 };
+
 
 export type MutationCheckAgentPackageUpdatesArgs = {
   packageIds?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -991,6 +1074,7 @@ export type MutationRegisterRemoteBrowserBridgeArgs = {
   input: RemoteBrowserBridgeInput;
 };
 
+
 export type MutationReloadAgentPackageArgs = {
   packageId: Scalars['String']['input'];
 };
@@ -1099,6 +1183,7 @@ export type MutationUpdateAgentDefinitionArgs = {
   input: UpdateAgentDefinitionInput;
 };
 
+
 export type MutationUpdateAgentPackageArgs = {
   packageId: Scalars['String']['input'];
 };
@@ -1181,12 +1266,12 @@ export type Query = {
   externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
+  getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getGeminiSetupConfig: GeminiSetupConfig;
   getLlmProviderApiKeyConfigured: Scalars['Boolean']['output'];
   getRunFileChanges: Array<RunFileChangeEntryObject>;
-  getRunMemoryView: AgentMemoryView;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
   getServerSettings: Array<ServerSetting>;
@@ -1195,9 +1280,11 @@ export type Query = {
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   health: HealthStatus;
+  listAgentRunsWithMemory: AgentRunMemoryPage;
+  listAgentTeamRunsWithMemory: AgentTeamRunMemoryPage;
+  listAgentTeamsWithMemory: AgentTeamWithMemoryPage;
+  listAgentsWithMemory: AgentWithMemoryPage;
   listApplications: Array<Application>;
-  listRunMemorySnapshots: MemorySnapshotPage;
-  listTeamRunMemorySnapshots: TeamRunMemorySnapshotPage;
   listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
   managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
   managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
@@ -1269,6 +1356,17 @@ export type QueryFolderChildrenArgs = {
 };
 
 
+export type QueryGetAgentRunMemoryViewArgs = {
+  includeArchive?: Scalars['Boolean']['input'];
+  includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraces?: Scalars['Boolean']['input'];
+  includeSemantic?: Scalars['Boolean']['input'];
+  includeWorkingContext?: Scalars['Boolean']['input'];
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetAgentRunResumeConfigArgs = {
   runId: Scalars['String']['input'];
 };
@@ -1280,17 +1378,6 @@ export type QueryGetLlmProviderApiKeyConfiguredArgs = {
 
 
 export type QueryGetRunFileChangesArgs = {
-  runId: Scalars['String']['input'];
-};
-
-
-export type QueryGetRunMemoryViewArgs = {
-  includeArchive?: Scalars['Boolean']['input'];
-  includeEpisodic?: Scalars['Boolean']['input'];
-  includeRawTraces?: Scalars['Boolean']['input'];
-  includeSemantic?: Scalars['Boolean']['input'];
-  includeWorkingContext?: Scalars['Boolean']['input'];
-  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
   runId: Scalars['String']['input'];
 };
 
@@ -1328,14 +1415,30 @@ export type QueryGetTeamRunResumeConfigArgs = {
 };
 
 
-export type QueryListRunMemorySnapshotsArgs = {
+export type QueryListAgentRunsWithMemoryArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  selector: AgentWithMemorySelectorInput;
+};
+
+
+export type QueryListAgentTeamRunsWithMemoryArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  teamDefinitionId: Scalars['String']['input'];
+};
+
+
+export type QueryListAgentTeamsWithMemoryArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
-export type QueryListTeamRunMemorySnapshotsArgs = {
+export type QueryListAgentsWithMemoryArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
@@ -1362,11 +1465,6 @@ export type QueryPreviewMcpServerToolsArgs = {
 export type QuerySearchFilesArgs = {
   query: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
-};
-
-
-export type QueryWorkspaceMetadataArgs = {
-  rootPath: Scalars['String']['input'];
 };
 
 
@@ -1418,6 +1516,11 @@ export type QueryTotalCostInPeriodArgs = {
 export type QueryUsageStatisticsInPeriodArgs = {
   endTime: Scalars['DateTime']['input'];
   startTime: Scalars['DateTime']['input'];
+};
+
+
+export type QueryWorkspaceMetadataArgs = {
+  rootPath: Scalars['String']['input'];
 };
 
 export type ReloadToolSchemaResult = {
@@ -1486,14 +1589,15 @@ export type RunHistoryAgentGroupObject = {
 
 export type RunHistoryItemObject = {
   __typename?: 'RunHistoryItemObject';
+  archivedAt?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
-  lastActivityAt: Scalars['String']['output'];
-  lastKnownStatus: Scalars['String']['output'];
   runId: Scalars['String']['output'];
   shouldConnectStream: Scalars['Boolean']['output'];
   status: Scalars['String']['output'];
   statusSource: Scalars['String']['output'];
   summary: Scalars['String']['output'];
+  terminatedAt?: Maybe<Scalars['String']['output']>;
 };
 
 export type RunMetadataConfigObject = {
@@ -1713,17 +1817,14 @@ export type TeamMemberInput = {
   refType: TeamMemberType;
 };
 
-export type TeamMemberMemorySnapshotSummary = {
-  __typename?: 'TeamMemberMemorySnapshotSummary';
-  hasEpisodic: Scalars['Boolean']['output'];
-  hasRawArchive: Scalars['Boolean']['output'];
-  hasRawTraces: Scalars['Boolean']['output'];
-  hasSemantic: Scalars['Boolean']['output'];
-  hasWorkingContext: Scalars['Boolean']['output'];
+export type TeamMemberMemoryTargetSummary = {
+  __typename?: 'TeamMemberMemoryTargetSummary';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
   lastUpdatedAt?: Maybe<Scalars['String']['output']>;
   memberName: Scalars['String']['output'];
   memberRouteKey: Scalars['String']['output'];
   memberRunId: Scalars['String']['output'];
+  memory: MemoryAvailabilitySummary;
 };
 
 export type TeamMemberRunProjectionPayload = {
@@ -1739,24 +1840,6 @@ export enum TeamMemberType {
   Agent = 'AGENT',
   AgentTeam = 'AGENT_TEAM'
 }
-
-export type TeamRunMemorySnapshotPage = {
-  __typename?: 'TeamRunMemorySnapshotPage';
-  entries: Array<TeamRunMemorySnapshotSummary>;
-  page: Scalars['Int']['output'];
-  pageSize: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
-export type TeamRunMemorySnapshotSummary = {
-  __typename?: 'TeamRunMemorySnapshotSummary';
-  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  members: Array<TeamMemberMemorySnapshotSummary>;
-  teamDefinitionId: Scalars['String']['output'];
-  teamDefinitionName: Scalars['String']['output'];
-  teamRunId: Scalars['String']['output'];
-};
 
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
@@ -1893,11 +1976,10 @@ export type WorkspaceHistoryTeamDefinitionObject = {
 
 export type WorkspaceHistoryTeamRunItemObject = {
   __typename?: 'WorkspaceHistoryTeamRunItemObject';
+  archivedAt?: Maybe<Scalars['String']['output']>;
   coordinatorMemberRouteKey: Scalars['String']['output'];
-  deleteLifecycle: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
-  lastActivityAt: Scalars['String']['output'];
-  lastKnownStatus: Scalars['String']['output'];
   memberTree: Scalars['JSON']['output'];
   members: Array<WorkspaceHistoryTeamRunMemberObject>;
   status: Scalars['String']['output'];
@@ -1905,6 +1987,7 @@ export type WorkspaceHistoryTeamRunItemObject = {
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
   teamRunId: Scalars['String']['output'];
+  terminatedAt?: Maybe<Scalars['String']['output']>;
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1943,42 +2026,42 @@ export type AgentPackageFieldsFragment = { __typename?: 'AgentPackage', packageI
 export type GetAgentPackagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<AgentPackageFieldsFragment> };
+export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type ImportAgentPackageMutationVariables = Exact<{
   input: ImportAgentPackageInput;
 }>;
 
 
-export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<AgentPackageFieldsFragment> };
+export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type RemoveAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<AgentPackageFieldsFragment> };
+export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type ReloadAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type ReloadAgentPackageMutation = { __typename?: 'Mutation', reloadAgentPackage: Array<AgentPackageFieldsFragment> };
+export type ReloadAgentPackageMutation = { __typename?: 'Mutation', reloadAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type CheckAgentPackageUpdatesMutationVariables = Exact<{
   packageIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
-export type CheckAgentPackageUpdatesMutation = { __typename?: 'Mutation', checkAgentPackageUpdates: Array<AgentPackageFieldsFragment> };
+export type CheckAgentPackageUpdatesMutation = { __typename?: 'Mutation', checkAgentPackageUpdates: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type UpdateAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type UpdateAgentPackageMutation = { __typename?: 'Mutation', updateAgentPackage: Array<AgentPackageFieldsFragment> };
+export type UpdateAgentPackageMutation = { __typename?: 'Mutation', updateAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
 
 export type ApplicationPackageListFieldsFragment = { __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean };
 
@@ -2373,28 +2456,6 @@ export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>
 
 export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
 
-export type ListRunMemorySnapshotsQueryVariables = Exact<{
-  search?: InputMaybe<Scalars['String']['input']>;
-  page?: InputMaybe<Scalars['Int']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type ListRunMemorySnapshotsQuery = { __typename?: 'Query', listRunMemorySnapshots: { __typename?: 'MemorySnapshotPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'MemorySnapshotSummary', runId: string, lastUpdatedAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }> } };
-
-export type GetRunMemoryViewQueryVariables = Exact<{
-  runId: Scalars['String']['input'];
-  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
-  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
-  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
-  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
-  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
-  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type GetRunMemoryViewQuery = { __typename?: 'Query', getRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
-
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2519,12 +2580,77 @@ export type PreviewMcpServerToolsQueryVariables = Exact<{
 
 export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServerTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string }> };
 
+export type ListAgentsWithMemoryQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentsWithMemoryQuery = { __typename?: 'Query', listAgentsWithMemory: { __typename?: 'AgentWithMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentWithMemorySummary', attribution: AgentMemoryAttribution, agentDefinitionId?: string | null, displayName: string, stableId: string, runCount: number, latestMemoryAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
+
+export type ListAgentRunsWithMemoryQueryVariables = Exact<{
+  selector: AgentWithMemorySelectorInput;
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentRunsWithMemoryQuery = { __typename?: 'Query', listAgentRunsWithMemory: { __typename?: 'AgentRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentRunMemorySummary', runId: string, agentDefinitionId?: string | null, agentName?: string | null, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
+
+export type ListAgentTeamsWithMemoryQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentTeamsWithMemoryQuery = { __typename?: 'Query', listAgentTeamsWithMemory: { __typename?: 'AgentTeamWithMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamWithMemorySummary', teamDefinitionId: string, teamDefinitionName: string, teamRunCount: number, memberMemoryCount: number, latestMemoryAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
+
+export type ListAgentTeamRunsWithMemoryQueryVariables = Exact<{
+  teamDefinitionId: Scalars['String']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListAgentTeamRunsWithMemoryQuery = { __typename?: 'Query', listAgentTeamRunsWithMemory: { __typename?: 'AgentTeamRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamRunMemorySummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }, memberTargets: Array<{ __typename?: 'TeamMemberMemoryTargetSummary', memberRouteKey: string, memberName: string, memberRunId: string, agentDefinitionId?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> }> } };
+
+export type GetAgentRunMemoryViewQueryVariables = Exact<{
+  runId: Scalars['String']['input'];
+  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetAgentRunMemoryViewQuery = { __typename?: 'Query', getAgentRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
+
+export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  memberRunId: Scalars['String']['input'];
+  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
+
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, status: string, lastKnownStatus: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, status: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -2583,29 +2709,6 @@ export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, serperApiKeyConfigured: boolean, serpapiApiKeyConfigured: boolean, googleCseApiKeyConfigured: boolean, googleCseId?: string | null, vertexAiSearchApiKeyConfigured: boolean, vertexAiSearchServingConfig?: string | null } };
-
-export type ListTeamRunMemorySnapshotsQueryVariables = Exact<{
-  search?: InputMaybe<Scalars['String']['input']>;
-  page?: InputMaybe<Scalars['Int']['input']>;
-  pageSize?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type ListTeamRunMemorySnapshotsQuery = { __typename?: 'Query', listTeamRunMemorySnapshots: { __typename?: 'TeamRunMemorySnapshotPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'TeamRunMemorySnapshotSummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, lastUpdatedAt?: string | null, members: Array<{ __typename?: 'TeamMemberMemorySnapshotSummary', memberRouteKey: string, memberName: string, memberRunId: string, lastUpdatedAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }> }> } };
-
-export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
-  teamRunId: Scalars['String']['input'];
-  memberRunId: Scalars['String']['input'];
-  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
-  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
-  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
-  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
-  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
-  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
@@ -2770,6 +2873,32 @@ export type ActivateSkillVersionMutationVariables = Exact<{
 
 export type ActivateSkillVersionMutation = { __typename?: 'Mutation', activateSkillVersion: { __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean } };
 
+export const AgentPackageFieldsFragmentDoc = gql`
+    fragment AgentPackageFields on AgentPackage {
+  packageId
+  displayName
+  path
+  sourceKind
+  source
+  sharedAgentCount
+  teamLocalAgentCount
+  agentTeamCount
+  applicationCount
+  isDefault
+  isRemovable
+  updateInfo {
+    status
+    canCheck
+    canUpdate
+    canReload
+    message
+    installedRevision
+    latestRevision
+    checkedAt
+    lastError
+  }
+}
+    `;
 export const ApplicationPackageListFieldsFragmentDoc = gql`
     fragment ApplicationPackageListFields on ApplicationPackage {
   packageId
@@ -2899,32 +3028,6 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
-export const AgentPackageFieldsFragmentDoc = gql`
-    fragment AgentPackageFields on AgentPackage {
-  packageId
-  displayName
-  path
-  sourceKind
-  source
-  sharedAgentCount
-  teamLocalAgentCount
-  agentTeamCount
-  applicationCount
-  isDefault
-  isRemovable
-  updateInfo {
-    status
-    canCheck
-    canUpdate
-    canReload
-    message
-    installedRevision
-    latestRevision
-    checkedAt
-    lastError
-  }
-}
-    `;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -3017,6 +3120,24 @@ export const ReloadAgentPackageDocument = gql`
   }
 }
     ${AgentPackageFieldsFragmentDoc}`;
+
+/**
+ * __useReloadAgentPackageMutation__
+ *
+ * To run a mutation, you first call `useReloadAgentPackageMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useReloadAgentPackageMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useReloadAgentPackageMutation({
+ *   variables: {
+ *     packageId: // value for 'packageId'
+ *   },
+ * });
+ */
 export function useReloadAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables>> = {}) {
   return VueApolloComposable.useMutation<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables>(ReloadAgentPackageDocument, options);
 }
@@ -3028,6 +3149,24 @@ export const CheckAgentPackageUpdatesDocument = gql`
   }
 }
     ${AgentPackageFieldsFragmentDoc}`;
+
+/**
+ * __useCheckAgentPackageUpdatesMutation__
+ *
+ * To run a mutation, you first call `useCheckAgentPackageUpdatesMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCheckAgentPackageUpdatesMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCheckAgentPackageUpdatesMutation({
+ *   variables: {
+ *     packageIds: // value for 'packageIds'
+ *   },
+ * });
+ */
 export function useCheckAgentPackageUpdatesMutation(options: VueApolloComposable.UseMutationOptions<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables>> = {}) {
   return VueApolloComposable.useMutation<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables>(CheckAgentPackageUpdatesDocument, options);
 }
@@ -3039,6 +3178,24 @@ export const UpdateAgentPackageDocument = gql`
   }
 }
     ${AgentPackageFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateAgentPackageMutation__
+ *
+ * To run a mutation, you first call `useUpdateAgentPackageMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAgentPackageMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateAgentPackageMutation({
+ *   variables: {
+ *     packageId: // value for 'packageId'
+ *   },
+ * });
+ */
 export function useUpdateAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables>> = {}) {
   return VueApolloComposable.useMutation<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables>(UpdateAgentPackageDocument, options);
 }
@@ -4777,116 +4934,6 @@ export function useGetAgentDefinitionsLazyQuery(options: VueApolloComposable.Use
   return VueApolloComposable.useLazyQuery<GetAgentDefinitionsQuery, GetAgentDefinitionsQueryVariables>(GetAgentDefinitionsDocument, {}, options);
 }
 export type GetAgentDefinitionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentDefinitionsQuery, GetAgentDefinitionsQueryVariables>;
-export const ListRunMemorySnapshotsDocument = gql`
-    query ListRunMemorySnapshots($search: String, $page: Int, $pageSize: Int) {
-  listRunMemorySnapshots(search: $search, page: $page, pageSize: $pageSize) {
-    total
-    page
-    pageSize
-    totalPages
-    entries {
-      runId
-      lastUpdatedAt
-      hasWorkingContext
-      hasEpisodic
-      hasSemantic
-      hasRawTraces
-      hasRawArchive
-    }
-  }
-}
-    `;
-
-/**
- * __useListRunMemorySnapshotsQuery__
- *
- * To run a query within a Vue component, call `useListRunMemorySnapshotsQuery` and pass it any options that fit your needs.
- * When your component renders, `useListRunMemorySnapshotsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useListRunMemorySnapshotsQuery({
- *   search: // value for 'search'
- *   page: // value for 'page'
- *   pageSize: // value for 'pageSize'
- * });
- */
-export function useListRunMemorySnapshotsQuery(variables: ListRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>(ListRunMemorySnapshotsDocument, variables, options);
-}
-export function useListRunMemorySnapshotsLazyQuery(variables: ListRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>(ListRunMemorySnapshotsDocument, variables, options);
-}
-export type ListRunMemorySnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>;
-export const GetRunMemoryViewDocument = gql`
-    query GetRunMemoryView($runId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
-  getRunMemoryView(
-    runId: $runId
-    includeWorkingContext: $includeWorkingContext
-    includeEpisodic: $includeEpisodic
-    includeSemantic: $includeSemantic
-    includeRawTraces: $includeRawTraces
-    includeArchive: $includeArchive
-    rawTraceLimit: $rawTraceLimit
-  ) {
-    runId
-    workingContext {
-      role
-      content
-      reasoning
-      toolPayload
-      ts
-    }
-    episodic
-    semantic
-    rawTraces {
-      traceType
-      content
-      toolName
-      toolCallId
-      toolArgs
-      toolResult
-      toolError
-      media
-      turnId
-      seq
-      ts
-    }
-  }
-}
-    `;
-
-/**
- * __useGetRunMemoryViewQuery__
- *
- * To run a query within a Vue component, call `useGetRunMemoryViewQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetRunMemoryViewQuery({
- *   runId: // value for 'runId'
- *   includeWorkingContext: // value for 'includeWorkingContext'
- *   includeEpisodic: // value for 'includeEpisodic'
- *   includeSemantic: // value for 'includeSemantic'
- *   includeRawTraces: // value for 'includeRawTraces'
- *   includeArchive: // value for 'includeArchive'
- *   rawTraceLimit: // value for 'rawTraceLimit'
- * });
- */
-export function useGetRunMemoryViewQuery(variables: GetRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetRunMemoryViewQueryVariables> | ReactiveFunction<GetRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>(GetRunMemoryViewDocument, variables, options);
-}
-export function useGetRunMemoryViewLazyQuery(variables?: GetRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetRunMemoryViewQueryVariables> | ReactiveFunction<GetRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>(GetRunMemoryViewDocument, variables, options);
-}
-export type GetRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>;
 export const GetAgentTeamDefinitionsDocument = gql`
     query GetAgentTeamDefinitions {
   agentTeamDefinitions {
@@ -5634,6 +5681,372 @@ export function usePreviewMcpServerToolsLazyQuery(variables?: PreviewMcpServerTo
   return VueApolloComposable.useLazyQuery<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>(PreviewMcpServerToolsDocument, variables, options);
 }
 export type PreviewMcpServerToolsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>;
+export const ListAgentsWithMemoryDocument = gql`
+    query ListAgentsWithMemory($search: String, $page: Int, $pageSize: Int) {
+  listAgentsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      attribution
+      agentDefinitionId
+      displayName
+      stableId
+      runCount
+      latestMemoryAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentsWithMemoryQuery({
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentsWithMemoryQuery(variables: ListAgentsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentsWithMemoryQueryVariables> | ReactiveFunction<ListAgentsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>(ListAgentsWithMemoryDocument, variables, options);
+}
+export function useListAgentsWithMemoryLazyQuery(variables: ListAgentsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentsWithMemoryQueryVariables> | ReactiveFunction<ListAgentsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>(ListAgentsWithMemoryDocument, variables, options);
+}
+export type ListAgentsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>;
+export const ListAgentRunsWithMemoryDocument = gql`
+    query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $search: String, $page: Int, $pageSize: Int) {
+  listAgentRunsWithMemory(
+    selector: $selector
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      runId
+      agentDefinitionId
+      agentName
+      summary
+      workspaceRootPath
+      createdAt
+      lastUpdatedAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentRunsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentRunsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentRunsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentRunsWithMemoryQuery({
+ *   selector: // value for 'selector'
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentRunsWithMemoryQuery(variables: ListAgentRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>(ListAgentRunsWithMemoryDocument, variables, options);
+}
+export function useListAgentRunsWithMemoryLazyQuery(variables?: ListAgentRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>(ListAgentRunsWithMemoryDocument, variables, options);
+}
+export type ListAgentRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>;
+export const ListAgentTeamsWithMemoryDocument = gql`
+    query ListAgentTeamsWithMemory($search: String, $page: Int, $pageSize: Int) {
+  listAgentTeamsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      teamDefinitionId
+      teamDefinitionName
+      teamRunCount
+      memberMemoryCount
+      latestMemoryAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentTeamsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentTeamsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentTeamsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentTeamsWithMemoryQuery({
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentTeamsWithMemoryQuery(variables: ListAgentTeamsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentTeamsWithMemoryQueryVariables> | ReactiveFunction<ListAgentTeamsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>(ListAgentTeamsWithMemoryDocument, variables, options);
+}
+export function useListAgentTeamsWithMemoryLazyQuery(variables: ListAgentTeamsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentTeamsWithMemoryQueryVariables> | ReactiveFunction<ListAgentTeamsWithMemoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>(ListAgentTeamsWithMemoryDocument, variables, options);
+}
+export type ListAgentTeamsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>;
+export const ListAgentTeamRunsWithMemoryDocument = gql`
+    query ListAgentTeamRunsWithMemory($teamDefinitionId: String!, $search: String, $page: Int, $pageSize: Int) {
+  listAgentTeamRunsWithMemory(
+    teamDefinitionId: $teamDefinitionId
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      teamRunId
+      teamDefinitionId
+      teamDefinitionName
+      summary
+      workspaceRootPath
+      createdAt
+      lastUpdatedAt
+      memory {
+        latestMemoryAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+      memberTargets {
+        memberRouteKey
+        memberName
+        memberRunId
+        agentDefinitionId
+        lastUpdatedAt
+        memory {
+          latestMemoryAt
+          hasWorkingContext
+          hasEpisodic
+          hasSemantic
+          hasRawTraces
+          hasRawArchive
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListAgentTeamRunsWithMemoryQuery__
+ *
+ * To run a query within a Vue component, call `useListAgentTeamRunsWithMemoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAgentTeamRunsWithMemoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListAgentTeamRunsWithMemoryQuery({
+ *   teamDefinitionId: // value for 'teamDefinitionId'
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListAgentTeamRunsWithMemoryQuery(variables: ListAgentTeamRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentTeamRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentTeamRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>(ListAgentTeamRunsWithMemoryDocument, variables, options);
+}
+export function useListAgentTeamRunsWithMemoryLazyQuery(variables?: ListAgentTeamRunsWithMemoryQueryVariables | VueCompositionApi.Ref<ListAgentTeamRunsWithMemoryQueryVariables> | ReactiveFunction<ListAgentTeamRunsWithMemoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>(ListAgentTeamRunsWithMemoryDocument, variables, options);
+}
+export type ListAgentTeamRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>;
+export const GetAgentRunMemoryViewDocument = gql`
+    query GetAgentRunMemoryView($runId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
+  getAgentRunMemoryView(
+    runId: $runId
+    includeWorkingContext: $includeWorkingContext
+    includeEpisodic: $includeEpisodic
+    includeSemantic: $includeSemantic
+    includeRawTraces: $includeRawTraces
+    includeArchive: $includeArchive
+    rawTraceLimit: $rawTraceLimit
+  ) {
+    runId
+    workingContext {
+      role
+      content
+      reasoning
+      toolPayload
+      ts
+    }
+    episodic
+    semantic
+    rawTraces {
+      traceType
+      content
+      toolName
+      toolCallId
+      toolArgs
+      toolResult
+      toolError
+      media
+      turnId
+      seq
+      ts
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentRunMemoryViewQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunMemoryViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunMemoryViewQuery({
+ *   runId: // value for 'runId'
+ *   includeWorkingContext: // value for 'includeWorkingContext'
+ *   includeEpisodic: // value for 'includeEpisodic'
+ *   includeSemantic: // value for 'includeSemantic'
+ *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeArchive: // value for 'includeArchive'
+ *   rawTraceLimit: // value for 'rawTraceLimit'
+ * });
+ */
+export function useGetAgentRunMemoryViewQuery(variables: GetAgentRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetAgentRunMemoryViewQueryVariables> | ReactiveFunction<GetAgentRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>(GetAgentRunMemoryViewDocument, variables, options);
+}
+export function useGetAgentRunMemoryViewLazyQuery(variables?: GetAgentRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetAgentRunMemoryViewQueryVariables> | ReactiveFunction<GetAgentRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>(GetAgentRunMemoryViewDocument, variables, options);
+}
+export type GetAgentRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>;
+export const GetTeamMemberRunMemoryViewDocument = gql`
+    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
+  getTeamMemberRunMemoryView(
+    teamRunId: $teamRunId
+    memberRunId: $memberRunId
+    includeWorkingContext: $includeWorkingContext
+    includeEpisodic: $includeEpisodic
+    includeSemantic: $includeSemantic
+    includeRawTraces: $includeRawTraces
+    includeArchive: $includeArchive
+    rawTraceLimit: $rawTraceLimit
+  ) {
+    runId
+    workingContext {
+      role
+      content
+      reasoning
+      toolPayload
+      ts
+    }
+    episodic
+    semantic
+    rawTraces {
+      traceType
+      content
+      toolName
+      toolCallId
+      toolArgs
+      toolResult
+      toolError
+      media
+      turnId
+      seq
+      ts
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTeamMemberRunMemoryViewQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberRunMemoryViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberRunMemoryViewQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   memberRunId: // value for 'memberRunId'
+ *   includeWorkingContext: // value for 'includeWorkingContext'
+ *   includeEpisodic: // value for 'includeEpisodic'
+ *   includeSemantic: // value for 'includeSemantic'
+ *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeArchive: // value for 'includeArchive'
+ *   rawTraceLimit: // value for 'rawTraceLimit'
+ * });
+ */
+export function useGetTeamMemberRunMemoryViewQuery(variables: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
+}
+export function useGetTeamMemberRunMemoryViewLazyQuery(variables?: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
+}
+export type GetTeamMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
@@ -5645,9 +6058,10 @@ export const ListWorkspaceRunHistoryDocument = gql`
       runs {
         runId
         summary
-        lastActivityAt
+        createdAt
+        archivedAt
+        terminatedAt
         status
-        lastKnownStatus
         isActive
         shouldConnectStream
         statusSource
@@ -5663,10 +6077,10 @@ export const ListWorkspaceRunHistoryDocument = gql`
         coordinatorMemberRouteKey
         workspaceRootPath
         summary
-        lastActivityAt
+        createdAt
+        archivedAt
+        terminatedAt
         status
-        lastKnownStatus
-        deleteLifecycle
         isActive
         memberTree
         members {
@@ -6076,126 +6490,6 @@ export function useGetSearchConfigLazyQuery(options: VueApolloComposable.UseQuer
   return VueApolloComposable.useLazyQuery<GetSearchConfigQuery, GetSearchConfigQueryVariables>(GetSearchConfigDocument, {}, options);
 }
 export type GetSearchConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSearchConfigQuery, GetSearchConfigQueryVariables>;
-export const ListTeamRunMemorySnapshotsDocument = gql`
-    query ListTeamRunMemorySnapshots($search: String, $page: Int, $pageSize: Int) {
-  listTeamRunMemorySnapshots(search: $search, page: $page, pageSize: $pageSize) {
-    total
-    page
-    pageSize
-    totalPages
-    entries {
-      teamRunId
-      teamDefinitionId
-      teamDefinitionName
-      lastUpdatedAt
-      members {
-        memberRouteKey
-        memberName
-        memberRunId
-        lastUpdatedAt
-        hasWorkingContext
-        hasEpisodic
-        hasSemantic
-        hasRawTraces
-        hasRawArchive
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useListTeamRunMemorySnapshotsQuery__
- *
- * To run a query within a Vue component, call `useListTeamRunMemorySnapshotsQuery` and pass it any options that fit your needs.
- * When your component renders, `useListTeamRunMemorySnapshotsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useListTeamRunMemorySnapshotsQuery({
- *   search: // value for 'search'
- *   page: // value for 'page'
- *   pageSize: // value for 'pageSize'
- * });
- */
-export function useListTeamRunMemorySnapshotsQuery(variables: ListTeamRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListTeamRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListTeamRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>(ListTeamRunMemorySnapshotsDocument, variables, options);
-}
-export function useListTeamRunMemorySnapshotsLazyQuery(variables: ListTeamRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListTeamRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListTeamRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>(ListTeamRunMemorySnapshotsDocument, variables, options);
-}
-export type ListTeamRunMemorySnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>;
-export const GetTeamMemberRunMemoryViewDocument = gql`
-    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
-  getTeamMemberRunMemoryView(
-    teamRunId: $teamRunId
-    memberRunId: $memberRunId
-    includeWorkingContext: $includeWorkingContext
-    includeEpisodic: $includeEpisodic
-    includeSemantic: $includeSemantic
-    includeRawTraces: $includeRawTraces
-    includeArchive: $includeArchive
-    rawTraceLimit: $rawTraceLimit
-  ) {
-    runId
-    workingContext {
-      role
-      content
-      reasoning
-      toolPayload
-      ts
-    }
-    episodic
-    semantic
-    rawTraces {
-      traceType
-      content
-      toolName
-      toolCallId
-      toolArgs
-      toolResult
-      toolError
-      media
-      turnId
-      seq
-      ts
-    }
-  }
-}
-    `;
-
-/**
- * __useGetTeamMemberRunMemoryViewQuery__
- *
- * To run a query within a Vue component, call `useGetTeamMemberRunMemoryViewQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTeamMemberRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetTeamMemberRunMemoryViewQuery({
- *   teamRunId: // value for 'teamRunId'
- *   memberRunId: // value for 'memberRunId'
- *   includeWorkingContext: // value for 'includeWorkingContext'
- *   includeEpisodic: // value for 'includeEpisodic'
- *   includeSemantic: // value for 'includeSemantic'
- *   includeRawTraces: // value for 'includeRawTraces'
- *   includeArchive: // value for 'includeArchive'
- *   rawTraceLimit: // value for 'rawTraceLimit'
- * });
- */
-export function useGetTeamMemberRunMemoryViewQuery(variables: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
-}
-export function useGetTeamMemberRunMemoryViewLazyQuery(variables?: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
-}
-export type GetTeamMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>;
 export const GetUsageStatisticsInPeriodDocument = gql`
     query GetUsageStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
   usageStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
@@ -6383,6 +6677,7 @@ export const GetWorkspaceMetadataDocument = gql`
  * When your component renders, `useGetWorkspaceMetadataQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
+ * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example

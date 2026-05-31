@@ -1,0 +1,80 @@
+{
+  "frontendUrl": "http://127.0.0.1:18181/memory",
+  "backendUrl": "http://127.0.0.1:18180/graphql",
+  "checks": [
+    {
+      "id": "UI-001",
+      "name": "Memory Home agents tab filters to memory-bearing Codex agent",
+      "result": "pass",
+      "evidence": {
+        "labelsVisible": ["Agents with Memory", "Agent Teams with Memory"],
+        "visibleAgent": "Codex E2E Agent / e2e-codex-agent / 2 runs",
+        "noMemoryAgentHidden": true,
+        "screenshot": "ui-memory-home-agents.png"
+      }
+    },
+    {
+      "id": "UI-002",
+      "name": "Memory Home -> Agent Memory Detail -> Agent Run Memory Inspector",
+      "result": "pass",
+      "evidence": {
+        "agentDetailUrlContains": "view=agent-detail&agentDefinitionId=e2e-codex-agent",
+        "agentDetailShowsOnlySelectedAgentRuns": ["e2e-codex-run-001", "e2e-codex-run-002"],
+        "agentDetailExcludesOtherAgentRun": "e2e-research-run-001",
+        "inspectorBreadcrumb": "Agents / Codex E2E Agent / Codex E2E run with full memory",
+        "workingContextText": "Please validate memory for e2e-codex-run-001.",
+        "screenshot": "ui-agent-detail.png"
+      }
+    },
+    {
+      "id": "UI-003",
+      "name": "Agent inspector raw traces are opt-in and trace limit refetch works",
+      "result": "pass",
+      "evidence": {
+        "rawTraceTextAbsentBeforeRawTab": true,
+        "rawTraceTextVisibleAfterRawTab": "raw trace 4 for e2e-codex-run-001",
+        "limitChangedTo": 2,
+        "afterLimitVisibleSeqs": [4, 5],
+        "afterLimitHiddenText": "raw trace 0 for e2e-codex-run-001",
+        "screenshot": "ui-agent-inspector-raw-traces.png"
+      }
+    },
+    {
+      "id": "UI-004",
+      "name": "Memory Home teams tab -> Agent Team Memory Detail",
+      "result": "pass",
+      "evidence": {
+        "visibleTeam": "Software E2E Team / e2e-software-team / 2 team runs",
+        "noMemoryTeamHidden": true,
+        "teamDetailShowsRuns": ["e2e-software-team-run-001", "e2e-software-team-run-002"],
+        "memberTargetsForRun001": ["e2e-code-member-run-001", "e2e-solution-member-run-001"],
+        "noMemoryMemberHidden": "e2e-no-memory-member-run-001",
+        "screenshot": "ui-team-detail.png"
+      }
+    },
+    {
+      "id": "UI-005",
+      "name": "Agent Team Memory Detail -> Team Member Memory Inspector",
+      "result": "pass",
+      "evidence": {
+        "inspectorBreadcrumb": "Agent Teams / Software E2E Team / e2e-software-team-run-001 / solution_designer",
+        "workingContextText": "Team memory for solution_designer in e2e-software-team-run-001.",
+        "rawTraceTextVisibleAfterRawTab": "team raw trace for solution_designer",
+        "toolResultVisible": "validation_tool",
+        "screenshot": "ui-team-inspector-raw-traces.png"
+      }
+    },
+    {
+      "id": "UI-006",
+      "name": "Direct refresh/deep links restore agent detail, team detail, agent inspector, and team-member inspector",
+      "result": "pass",
+      "evidence": {
+        "agentDetailDeepLink": true,
+        "teamDetailDeepLink": true,
+        "agentInspectorDeepLink": true,
+        "teamInspectorDeepLink": true,
+        "initialDeepLinkRawTraceTextAbsent": true
+      }
+    }
+  ]
+}

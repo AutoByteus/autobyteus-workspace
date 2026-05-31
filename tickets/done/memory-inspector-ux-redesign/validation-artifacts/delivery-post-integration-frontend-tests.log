@@ -1,0 +1,109 @@
+# Delivery post-integration frontend targeted tests
+Started: 2026-05-31T13:35:15+02:00
+HEAD: ca2a44365a861e351fd47a7cb3cbcc6a8d7d1f32
+Base: origin/personal 00f7bab40543497c629204e9ce6c1e7d6c71ed6d
+Command: pnpm -C autobyteus-web test:nuxt --run tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts components/memory/__tests__/MemoryHome.spec.ts components/memory/__tests__/AgentMemoryDetail.spec.ts components/memory/__tests__/AgentTeamMemoryDetail.spec.ts components/memory/__tests__/MemoryInspector.spec.ts pages/__tests__/memory.spec.ts components/memory/__tests__/WorkingContextTab.spec.ts components/memory/__tests__/EpisodicTab.spec.ts components/memory/__tests__/SemanticTab.spec.ts components/memory/__tests__/RawTracesTab.spec.ts
+
+> autobyteus@1.3.36 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts components/memory/__tests__/MemoryHome.spec.ts components/memory/__tests__/AgentMemoryDetail.spec.ts components/memory/__tests__/AgentTeamMemoryDetail.spec.ts components/memory/__tests__/MemoryInspector.spec.ts pages/__tests__/memory.spec.ts components/memory/__tests__/WorkingContextTab.spec.ts components/memory/__tests__/EpisodicTab.spec.ts components/memory/__tests__/SemanticTab.spec.ts components/memory/__tests__/RawTracesTab.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-web
+
+stderr | components/memory/__tests__/WorkingContextTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/EpisodicTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/RawTracesTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/memory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/MemoryHome.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/SemanticTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/AgentMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/MemoryInspector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/MemoryInspector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/SemanticTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/MemoryHome.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/WorkingContextTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/AgentMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/EpisodicTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/RawTracesTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/memory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/SemanticTab.spec.ts (1 test) 6ms
+ ✓ components/memory/__tests__/RawTracesTab.spec.ts (1 test) 11ms
+ ✓ components/memory/__tests__/EpisodicTab.spec.ts (1 test) 7ms
+ ✓ components/memory/__tests__/WorkingContextTab.spec.ts (1 test) 6ms
+ ✓ components/memory/__tests__/AgentTeamMemoryDetail.spec.ts (1 test) 21ms
+ ✓ components/memory/__tests__/MemoryInspector.spec.ts (3 tests) 22ms
+ ✓ components/memory/__tests__/AgentMemoryDetail.spec.ts (1 test) 24ms
+ ✓ components/memory/__tests__/MemoryHome.spec.ts (2 tests) 22ms
+ ✓ pages/__tests__/memory.spec.ts (3 tests) 19ms
+stderr | tests/stores/memoryInspectorStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/memoryExplorerStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/stores/memoryInspectorStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/memoryExplorerStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/memoryExplorerStore.test.ts (3 tests) 4ms
+ ✓ tests/stores/memoryInspectorStore.test.ts (3 tests) 4ms
+
+ Test Files  11 passed (11)
+      Tests  20 passed (20)
+   Start at  13:35:17
+   Duration  8.36s (transform 3.57s, setup 53.16s, collect 1.28s, tests 145ms, environment 3.52s, prepare 2.63s)
+
+Finished: 2026-05-31T13:35:26+02:00
