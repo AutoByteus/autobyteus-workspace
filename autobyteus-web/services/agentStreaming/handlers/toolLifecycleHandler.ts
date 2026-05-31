@@ -42,14 +42,14 @@ import {
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import {
-  addActivityLog,
+  addToolActivityLog,
   inferSegmentTypeFromTool,
   isProjectableToolSegment,
-  setActivityResult,
-  updateActivityApprovalTarget,
+  setToolActivityResult,
+  updateToolActivityApprovalTarget,
   syncActivityToolName,
-  updateActivityArguments,
-  updateActivityStatus,
+  updateToolActivityArguments,
+  updateToolActivityStatus,
   upsertActivityFromToolSegment,
 } from './toolActivityProjection';
 
@@ -205,10 +205,10 @@ export function handleToolApprovalRequested(
 
   const transitioned = applyApprovalRequestedState(segment);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
-  updateActivityApprovalTarget(context, parsed.invocationId, parsed.approvalTarget);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityApprovalTarget(context, parsed.invocationId, parsed.approvalTarget);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'awaiting-approval');
+    updateToolActivityStatus(context, parsed.invocationId, 'awaiting-approval');
   }
 }
 
@@ -228,7 +228,7 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
 
   const transitioned = applyApprovedState(segment);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'approved');
+    updateToolActivityStatus(context, parsed.invocationId, 'approved');
   }
 }
 
@@ -252,12 +252,12 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
   }
   mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyDeniedState(segment, parsed.reason, parsed.error);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'denied');
-    setActivityResult(context, parsed.invocationId, null, segment.error);
+    updateToolActivityStatus(context, parsed.invocationId, 'denied');
+    setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
 }
 
@@ -288,9 +288,9 @@ export function handleToolExecutionStarted(
 
   const transitioned = applyExecutionStartedState(segment);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'executing');
+    updateToolActivityStatus(context, parsed.invocationId, 'executing');
   }
 }
 
@@ -317,12 +317,12 @@ export function handleToolExecutionSucceeded(
   }
   mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionSucceededState(segment, parsed.result);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'success');
-    setActivityResult(context, parsed.invocationId, segment.result, null);
+    updateToolActivityStatus(context, parsed.invocationId, 'success');
+    setToolActivityResult(context, parsed.invocationId, segment.result, null);
   }
 }
 
@@ -349,12 +349,12 @@ export function handleToolExecutionFailed(
   }
   mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionFailedState(segment, parsed.error);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'error');
-    setActivityResult(context, parsed.invocationId, null, segment.error);
+    updateToolActivityStatus(context, parsed.invocationId, 'error');
+    setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
 }
 
@@ -381,12 +381,12 @@ export function handleToolExecutionInterrupted(
   }
   mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateToolActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionInterruptedState(segment, parsed.reason);
   if (transitioned) {
-    updateActivityStatus(context, parsed.invocationId, 'interrupted');
-    setActivityResult(context, parsed.invocationId, null, segment.error);
+    updateToolActivityStatus(context, parsed.invocationId, 'interrupted');
+    setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
 }
 
@@ -401,5 +401,5 @@ export function handleToolLog(payload: ToolLogPayload, context: AgentContext): v
 
   appendLog(segment, parsed.logEntry);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
-  addActivityLog(context, parsed.invocationId, parsed.logEntry);
+  addToolActivityLog(context, parsed.invocationId, parsed.logEntry);
 }

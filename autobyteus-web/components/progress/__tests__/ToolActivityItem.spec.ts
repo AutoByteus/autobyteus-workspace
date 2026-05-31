@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import type { ToolActivity } from '~/stores/agentActivityStore';
-import ActivityItem from '../ActivityItem.vue';
+import ToolActivityItem from '../ToolActivityItem.vue';
 
 const IconStub = {
   name: 'Icon',
@@ -10,6 +10,8 @@ const IconStub = {
 };
 
 const activity: ToolActivity = {
+  kind: 'tool',
+  activityId: 'abc123def456',
   invocationId: 'abc123def456',
   toolName: 'ReadFile',
   type: 'tool_call',
@@ -22,9 +24,9 @@ const activity: ToolActivity = {
   timestamp: new Date('2026-04-08T10:00:00.000Z'),
 };
 
-describe('ActivityItem.vue', () => {
+describe('ToolActivityItem.vue', () => {
   it('keeps the right-panel status chip text and short debug id visible', () => {
-    const wrapper = mount(ActivityItem, {
+    const wrapper = mount(ToolActivityItem, {
       props: {
         activity,
       },

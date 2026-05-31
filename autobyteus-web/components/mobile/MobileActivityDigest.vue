@@ -51,15 +51,15 @@
       <MobileTeamMessages v-if="showTeamMessages" :context="context" class="mt-3" />
     </article>
 
-    <article v-if="showTools" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-testid="mobile-activity-tool-history">
+    <article v-if="showActivity" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-testid="mobile-activity-run-history">
       <div class="flex items-start justify-between gap-3">
         <div>
-          <h3 class="font-bold text-slate-950">Run and tool history</h3>
-          <p class="mt-1 text-sm text-slate-500">{{ toolSummary }}</p>
+          <h3 class="font-bold text-slate-950">Run activity history</h3>
+          <p class="mt-1 text-sm text-slate-500">{{ activitySummary }}</p>
         </div>
-        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{{ visibleToolCount }}</span>
+        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{{ visibleActivityCount }}</span>
       </div>
-      <MobileToolActivityList :context="context" class="mt-3" />
+      <MobileRunActivityList :context="context" class="mt-3" />
     </article>
 
     <article v-if="!context" class="rounded-3xl border border-dashed border-slate-300 p-6 text-center">
@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 import MobileTeamMessages from '~/components/mobile/MobileTeamMessages.vue';
-import MobileToolActivityList from '~/components/mobile/MobileToolActivityList.vue';
+import MobileRunActivityList from '~/components/mobile/MobileRunActivityList.vue';
 import { useMobileFocusedRunIdentity } from '~/composables/mobile/useMobileFocusedRunIdentity';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
@@ -91,7 +91,7 @@ defineEmits<{
   chooseWork: [];
 }>();
 
-type ActivityFilter = 'tasks' | 'messages' | 'tools';
+type ActivityFilter = 'tasks' | 'messages' | 'activity';
 
 const activityStore = useAgentActivityStore();
 const selectionStore = useAgentSelectionStore();
@@ -127,17 +127,17 @@ const teamMessages = computed(() => {
     memberKind: teamContextsStore.focusedMemberNode?.memberKind || null,
   }).messages;
 });
-const toolActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
+const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [
   { id: 'tasks' as const, label: 'Tasks', count: taskCards.value.length },
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
-  { id: 'tools' as const, label: 'Tools', count: toolActivities.value.length },
+  { id: 'activity' as const, label: 'Activity', count: runActivities.value.length },
 ]);
-const primaryFilters = computed(() => filters.value.filter((filter) => ['tasks', 'messages', 'tools'].includes(filter.id)));
+const primaryFilters = computed(() => filters.value.filter((filter) => ['tasks', 'messages', 'activity'].includes(filter.id)));
 const showTasks = computed(() => activeFilter.value === 'tasks');
 const showMessages = computed(() => activeFilter.value === 'messages');
-const showTools = computed(() => activeFilter.value === 'tools');
-const visibleToolCount = computed(() => toolActivities.value.length);
+const showActivity = computed(() => activeFilter.value === 'activity');
+const visibleActivityCount = computed(() => runActivities.value.length);
 const taskPlanSummary = computed(() => {
   if (!hasTeamContext.value) return 'Select a team run to see task activity.';
   if (!taskCards.value.length) return 'No task plan updates yet.';
@@ -148,9 +148,9 @@ const messageSummary = computed(() => {
   if (!teamMessages.value.length) return 'No team messages yet for the focused member.';
   return `${teamMessages.value.length} message${teamMessages.value.length === 1 ? '' : 's'}; open details for full text.`;
 });
-const toolSummary = computed(() => {
-  if (!focusedRunId.value) return 'Select a run to see run and tool history.';
-  if (!toolActivities.value.length) return 'No tool activity has been recorded for this run yet.';
-  return `${toolActivities.value.length} activity item${toolActivities.value.length === 1 ? '' : 's'}; rows are compact by default.`;
+const activitySummary = computed(() => {
+  if (!focusedRunId.value) return 'Select a run to see run activity history.';
+  if (!runActivities.value.length) return 'No run activity has been recorded for this run yet.';
+  return `${runActivities.value.length} activity item${runActivities.value.length === 1 ? '' : 's'}; rows are compact by default.`;
 });
 </script>

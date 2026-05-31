@@ -6,7 +6,7 @@ import MobileChat from "../MobileChat.vue";
 import MobileComposerContextTray from "../MobileComposerContextTray.vue";
 import MobileRunSetup from "../MobileRunSetup.vue";
 import MobileTeamMemberFocusBar from "../MobileTeamMemberFocusBar.vue";
-import MobileToolActivityList from "../MobileToolActivityList.vue";
+import MobileRunActivityList from "../MobileRunActivityList.vue";
 import MobileWorkShell from "../MobileWorkShell.vue";
 import { useMobileFileContextCoordinator } from "~/composables/mobile/useMobileFileContextCoordinator";
 import { useMobilePendingTeamRunAttachments } from "~/composables/mobile/useMobilePendingTeamRunAttachments";
@@ -787,6 +787,8 @@ describe("mobile context selection stale-run regression", () => {
   it("does not leak stale run or tool activity into non-run mobile activity contexts", async () => {
     seedActiveAgentRun();
     const activity: ToolActivity = {
+      kind: "tool",
+      activityId: "tool-1",
       invocationId: "tool-1",
       toolName: "read_file",
       type: "tool_call",
@@ -798,17 +800,17 @@ describe("mobile context selection stale-run regression", () => {
       error: null,
       timestamp: new Date("2026-05-18T16:05:00.000Z"),
     };
-    useAgentActivityStore().addActivity("run-1", activity);
+    useAgentActivityStore().addToolActivity("run-1", activity);
 
-    const wrapper = mountWithPinia(MobileToolActivityList, {
+    const wrapper = mountWithPinia(MobileRunActivityList, {
       props: { context: workspaceContext },
     });
 
     expect(
-      wrapper.find('[data-testid="mobile-tool-activity-row"]').exists(),
+      wrapper.find('[data-testid="mobile-run-activity-row"]').exists(),
     ).toBe(false);
     expect(wrapper.text()).toContain(
-      "Select a run to see run and tool history.",
+      "Select a run to see run activity history.",
     );
     expect(wrapper.text()).not.toContain("read_file");
 
@@ -816,7 +818,7 @@ describe("mobile context selection stale-run regression", () => {
     await nextTick();
 
     expect(
-      wrapper.find('[data-testid="mobile-tool-activity-row"]').exists(),
+      wrapper.find('[data-testid="mobile-run-activity-row"]').exists(),
     ).toBe(true);
     expect(wrapper.text()).toContain("read_file");
   });

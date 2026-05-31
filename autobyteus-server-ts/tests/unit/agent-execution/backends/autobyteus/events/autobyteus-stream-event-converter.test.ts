@@ -97,6 +97,31 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
+  it("preserves semantic compaction operation identity from native compaction statuses", () => {
+    expect(
+      new AutoByteusStreamEventConverter("run-1").convert({
+        event_type: StreamEventType.COMPACTION_STATUS,
+        data: {
+          phase: "started",
+          turn_id: "turn-execution",
+          compaction_operation_id: "operation-1",
+          requested_turn_id: "turn-requested",
+          execution_turn_id: "turn-execution",
+        },
+      } as any),
+    )?.toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        phase: "started",
+        turn_id: "turn-execution",
+        compaction_operation_id: "operation-1",
+        requested_turn_id: "turn-requested",
+        execution_turn_id: "turn-execution",
+      },
+      statusHint: null,
+    });
+  });
+
   it("preserves public running status for stale non-active snapshots while a turn is active", () => {
     let snapshotStatus: "idle" | "initializing" = "idle";
     const converter = new AutoByteusStreamEventConverter("run-1", () => ({

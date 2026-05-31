@@ -21,7 +21,7 @@ const buildContext = (): AgentContext =>
       messages: [],
       updatedAt: '',
     },
-  }) as AgentContext;
+  }) as unknown as AgentContext;
 
 describe('tool lifecycle ordering regression', () => {
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    let activities = useAgentActivityStore().getActivities(runId);
+    let activities = useAgentActivityStore().getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -70,7 +70,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(aiMessage.segments).toHaveLength(1);
     expect(aiMessage.segments[0].arguments).toEqual({ command: 'pwd' });
 
-    activities = useAgentActivityStore().getActivities(runId);
+    activities = useAgentActivityStore().getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -114,7 +114,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(aiMessage.segments[0].type).toBe('terminal_command');
     expect(aiMessage.segments[0].command).toBe('pwd');
 
-    const activities = useAgentActivityStore().getActivities(runId);
+    const activities = useAgentActivityStore().getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -175,7 +175,7 @@ describe('tool lifecycle ordering regression', () => {
       }),
     );
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(2);
     expect(activities.map((activity) => activity.invocationId)).toEqual([
       'bash-alias-base:approval-1',
@@ -243,7 +243,7 @@ describe('tool lifecycle ordering regression', () => {
     );
     expect(toolSegments).toHaveLength(expectedIds.length);
     expect(toolSegments.map((segment) => segment.invocationId)).toEqual(expectedIds);
-    expect(store.getActivities(runId).map((activity) => activity.invocationId)).toEqual(expectedIds);
+    expect(store.getToolActivities(runId).map((activity) => activity.invocationId)).toEqual(expectedIds);
   });
 
   it('keeps Kimi numeric run_bash invocations distinct across transcript and Activity after intermediate assistant completion', () => {
@@ -313,7 +313,7 @@ describe('tool lifecycle ordering regression', () => {
       'echo phase-4',
     ]);
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(5);
     expect(activities.map((activity) => activity.invocationId)).toEqual(invocations);
     for (const invocationId of invocations) {
@@ -380,7 +380,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(toolSegments).toHaveLength(5);
     expect(toolSegments.map((segment) => segment.invocationId)).toEqual(invocations);
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(5);
     expect(activities.map((activity) => activity.invocationId)).toEqual(invocations);
     expect(activities.every((activity) => activity.status === 'success')).toBe(true);
@@ -439,12 +439,12 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    expect(store.getActivities(runId).map((activity) => activity.invocationId).sort()).toEqual([
+    expect(store.getToolActivities(runId).map((activity) => activity.invocationId).sort()).toEqual([
       'codex-command-1',
       'codex-dynamic-1',
       'codex-file-1',
     ]);
-    expect(store.getActivities(runId).find((activity) => activity.invocationId === 'codex-dynamic-1')).toEqual(
+    expect(store.getToolActivities(runId).find((activity) => activity.invocationId === 'codex-dynamic-1')).toEqual(
       expect.objectContaining({
         status: 'parsing',
         toolName: 'echo_dynamic',
@@ -452,7 +452,7 @@ describe('tool lifecycle ordering regression', () => {
         arguments: { value: 'HELLO_DYNAMIC' },
       }),
     );
-    expect(store.getActivities(runId).find((activity) => activity.invocationId === 'codex-file-1')).toEqual(
+    expect(store.getToolActivities(runId).find((activity) => activity.invocationId === 'codex-file-1')).toEqual(
       expect.objectContaining({
         status: 'parsing',
         toolName: 'edit_file',
@@ -517,7 +517,7 @@ describe('tool lifecycle ordering regression', () => {
     handleSegmentEnd({ id: 'codex-dynamic-1', turn_id: 'turn-1' }, context);
     handleSegmentEnd({ id: 'codex-file-1', turn_id: 'turn-1' }, context);
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(3);
     expect(activities.map((activity) => activity.invocationId).sort()).toEqual([
       'codex-command-1',
@@ -570,7 +570,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    expect(store.getActivities(runId)).toEqual([
+    expect(store.getToolActivities(runId)).toEqual([
       expect.objectContaining({
         invocationId,
         toolName: 'search_web',
@@ -628,7 +628,7 @@ describe('tool lifecycle ordering regression', () => {
       }),
     );
 
-    const activities = store.getActivities(runId);
+    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -686,7 +686,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    const activity = useAgentActivityStore().getActivities(runId)[0];
+    const activity = useAgentActivityStore().getToolActivities(runId)[0];
     expect(activity?.status).toBe('awaiting-approval');
   });
 
@@ -712,7 +712,7 @@ describe('tool lifecycle ordering regression', () => {
     const aiMessage = context.conversation.messages[0] as any;
     const segment = aiMessage.segments[0];
     expect(segment.status).toBe('executing');
-    expect(store.getActivities(runId)[0]).toEqual(
+    expect(store.getToolActivities(runId)[0]).toEqual(
       expect.objectContaining({
         invocationId,
         toolName: 'Write',
@@ -733,7 +733,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     expect(segment.status).toBe('awaiting-approval');
-    expect(store.getActivities(runId)[0]).toEqual(
+    expect(store.getToolActivities(runId)[0]).toEqual(
       expect.objectContaining({
         invocationId,
         status: 'awaiting-approval',
@@ -753,7 +753,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     expect(segment.status).toBe('approved');
-    expect(store.getActivities(runId)[0]).toEqual(
+    expect(store.getToolActivities(runId)[0]).toEqual(
       expect.objectContaining({
         invocationId,
         status: 'approved',
@@ -774,7 +774,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     expect(segment.status).toBe('success');
-    expect(store.getActivities(runId)[0]).toEqual(
+    expect(store.getToolActivities(runId)[0]).toEqual(
       expect.objectContaining({
         invocationId,
         status: 'success',
@@ -825,7 +825,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    const activity = useAgentActivityStore().getActivities(runId)[0];
+    const activity = useAgentActivityStore().getToolActivities(runId)[0];
     expect(activity?.status).toBe('success');
   });
 });
