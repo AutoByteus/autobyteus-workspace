@@ -12,6 +12,7 @@ import { parseTeamMd, TeamMdParseError } from "../../agent-team-definition/utils
 import type {
   AgentDefinition,
   AgentDefinitionOwnershipScope,
+  AgentDefinitionSourceInfo,
 } from "../domain/models.js";
 import { AgentMdParseError } from "../utils/agent-md-parser.js";
 
@@ -32,6 +33,7 @@ type OwnershipRecord = {
   ownerApplicationName?: string | null;
   ownerPackageId?: string | null;
   ownerLocalApplicationId?: string | null;
+  sourceInfo?: AgentDefinitionSourceInfo | null;
 };
 
 type ReadAgentFromPaths = (
@@ -174,6 +176,10 @@ export async function readTeamLocalAgentFromSourcePaths(
       ownerApplicationName: ownership.ownerApplicationName ?? null,
       ownerPackageId: ownership.ownerPackageId ?? null,
       ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
+      sourceInfo: {
+        agentDirPath: filePaths.agentDir,
+        teamDirPath: options.teamSourcePaths.teamDir,
+      },
     },
   );
 }

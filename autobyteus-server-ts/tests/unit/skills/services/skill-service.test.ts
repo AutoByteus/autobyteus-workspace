@@ -4,16 +4,24 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillService } from "../../../../src/skills/services/skill-service.js";
 import { SkillVersion } from "../../../../src/skills/domain/skill-version.js";
+import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 
 const createTempRoot = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-skill-service-"));
 
-const writeSkill = (root: string, name: string, description: string, content: string) => {
-  const skillDir = path.join(root, name);
+const writeSkillDirectory = (
+  skillDir: string,
+  name: string,
+  description: string,
+  content: string,
+) => {
   fs.mkdirSync(skillDir, { recursive: true });
   const skillMd = `---\nname: ${name}\ndescription: ${description}\n---\n\n${content}\n`;
   fs.writeFileSync(path.join(skillDir, "SKILL.md"), skillMd, "utf-8");
   return skillDir;
 };
+
+const writeSkill = (root: string, name: string, description: string, content: string) =>
+  writeSkillDirectory(path.join(root, name), name, description, content);
 
 describe("SkillService", () => {
   let tempRoot: string;
@@ -55,6 +63,7 @@ describe("SkillService", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     fs.rmSync(tempRoot, { recursive: true, force: true });
   });
 
@@ -116,7 +125,7 @@ describe("SkillService", () => {
     expect(resolved[0]?.name).toBe("configured_skill");
   });
 
-  it("discovers bundled agent-local skills from agent package roots without adding a skill source", () => {
+  it("does not expose bundled agent-local root skills through global lookup", () => {
     const packageRoot = path.join(tempRoot, "package-root");
     const bundledDir = path.join(packageRoot, "agents", "requirements-engineer");
     fs.mkdirSync(bundledDir, { recursive: true });
@@ -128,14 +137,13 @@ describe("SkillService", () => {
     additionalDefinitionRoots = [packageRoot];
 
     const skills = service.listSkills();
-    expect(skills.map((skill) => skill.name)).toContain("requirements-engineer");
+    expect(skills.map((skill) => skill.name)).not.toContain("requirements-engineer");
 
     const bundled = service.getSkill("requirements-engineer");
-    expect(bundled?.description).toBe("Bundled requirements skill");
-    expect(bundled?.rootPath).toBe(bundledDir);
+    expect(bundled).toBeNull();
   });
 
-  it("discovers bundled team-local skills from package roots that only contain agent-teams", () => {
+  it("does not expose bundled team-local root skills through global lookup", () => {
     const packageRoot = path.join(tempRoot, "package-root");
     const bundledDir = path.join(
       packageRoot,
@@ -153,11 +161,10 @@ describe("SkillService", () => {
     additionalDefinitionRoots = [packageRoot];
 
     const skills = service.listSkills();
-    expect(skills.map((skill) => skill.name)).toContain("reviewer");
+    expect(skills.map((skill) => skill.name)).not.toContain("reviewer");
 
     const bundled = service.getSkill("reviewer");
-    expect(bundled?.description).toBe("Team-local reviewer skill");
-    expect(bundled?.rootPath).toBe(bundledDir);
+    expect(bundled).toBeNull();
   });
 
   it("prefers standalone skills over bundled agent package root skills when names collide", () => {
@@ -176,6 +183,192 @@ describe("SkillService", () => {
     const skill = service.getSkill("requirements-engineer");
     expect(skill?.description).toBe("Standalone skill");
     expect(skill?.rootPath).toBe(path.join(skillsDir, "requirements-engineer"));
+  });
+
+  it("resolves a configured colocated private root skill for its owning agent", () => {
+    const agentDir = path.join(tempRoot, "package-root", "agents", "writer");
+    writeSkillDirectory(agentDir, "writer-style", "Writer style", "Private root content");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "writer",
+        name: "Writer",
+        description: "Writes",
+        instructions: "",
+        skillNames: ["writer-style"],
+        sourceInfo: { agentDirPath: agentDir },
+      }),
+    );
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.name).toBe("writer-style");
+    expect(resolved[0]?.rootPath).toBe(path.resolve(agentDir));
+  });
+
+  it("resolves multiple configured private skills from an agent skills folder", () => {
+    const agentDir = path.join(tempRoot, "package-root", "agents", "writer");
+    writeSkillDirectory(path.join(agentDir, "skills", "tone"), "tone", "Tone", "Tone content");
+    writeSkillDirectory(path.join(agentDir, "skills", "outline"), "outline", "Outline", "Outline content");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "writer",
+        name: "Writer",
+        description: "Writes",
+        instructions: "",
+        skillNames: ["tone", "outline"],
+        sourceInfo: { agentDirPath: agentDir },
+      }),
+    );
+
+    expect(resolved.map((skill) => skill.name)).toEqual(["tone", "outline"]);
+    expect(resolved.map((skill) => skill.rootPath)).toEqual([
+      path.resolve(path.join(agentDir, "skills", "tone")),
+      path.resolve(path.join(agentDir, "skills", "outline")),
+    ]);
+  });
+
+  it("resolves team-shared skills after agent-private candidates", () => {
+    const teamDir = path.join(tempRoot, "package-root", "agent-teams", "editorial");
+    const agentDir = path.join(teamDir, "agents", "reviewer");
+    writeSkillDirectory(path.join(teamDir, "skills", "rubric"), "rubric", "Team rubric", "Team content");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "editorial:reviewer",
+        name: "Reviewer",
+        description: "Reviews",
+        instructions: "",
+        skillNames: ["rubric"],
+        ownershipScope: "team_local",
+        sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir },
+      }),
+    );
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.description).toBe("Team rubric");
+    expect(resolved[0]?.rootPath).toBe(path.resolve(path.join(teamDir, "skills", "rubric")));
+  });
+
+  it("resolves a team-local agent colocated private root skill", () => {
+    const teamDir = path.join(tempRoot, "package-root", "agent-teams", "editorial");
+    const agentDir = path.join(teamDir, "agents", "reviewer");
+    writeSkillDirectory(agentDir, "review-style", "Review style", "Root content");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "editorial:reviewer",
+        name: "Reviewer",
+        description: "Reviews",
+        instructions: "",
+        skillNames: ["review-style"],
+        ownershipScope: "team_local",
+        sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir },
+      }),
+    );
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.description).toBe("Review style");
+    expect(resolved[0]?.rootPath).toBe(path.resolve(agentDir));
+  });
+
+  it("resolves private skills from only the configured agent source context", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const agentOneDir = path.join(tempRoot, "package-root", "agents", "agent-one");
+    const agentTwoDir = path.join(tempRoot, "package-root", "agents", "agent-two");
+    writeSkillDirectory(path.join(agentOneDir, "skills", "tone-one"), "tone-one", "Agent one tone", "One");
+    writeSkillDirectory(path.join(agentTwoDir, "skills", "tone-two"), "tone-two", "Agent two tone", "Two");
+
+    const one = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "agent-one",
+        name: "Agent One",
+        description: "One",
+        instructions: "",
+        skillNames: ["tone-one", "tone-two"],
+        sourceInfo: { agentDirPath: agentOneDir },
+      }),
+    );
+    const two = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "agent-two",
+        name: "Agent Two",
+        description: "Two",
+        instructions: "",
+        skillNames: ["tone-two", "tone-one"],
+        sourceInfo: { agentDirPath: agentTwoDir },
+      }),
+    );
+
+    expect(one).toHaveLength(1);
+    expect(one[0]?.description).toBe("Agent one tone");
+    expect(two).toHaveLength(1);
+    expect(two[0]?.description).toBe("Agent two tone");
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("tone-two"));
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("tone-one"));
+  });
+
+  it("falls back to global skills only after contextual candidates miss", () => {
+    writeSkill(skillsDir, "global_skill", "Global skill", "Global content");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "writer",
+        name: "Writer",
+        description: "Writes",
+        instructions: "",
+        skillNames: ["global_skill"],
+        sourceInfo: { agentDirPath: path.join(tempRoot, "package-root", "agents", "writer") },
+      }),
+    );
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.description).toBe("Global skill");
+    expect(resolved[0]?.rootPath).toBe(path.resolve(path.join(skillsDir, "global_skill")));
+  });
+
+  it("skips unsafe configured skill names before contextual path construction", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const agentDir = path.join(tempRoot, "package-root", "agents", "writer");
+    writeSkillDirectory(path.join(tempRoot, "package-root", "escape"), "escape", "Escaped", "Nope");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "writer",
+        name: "Writer",
+        description: "Writes",
+        instructions: "",
+        skillNames: ["../escape", "a/b", "a\\b", ".", "..", ""],
+        sourceInfo: { agentDirPath: agentDir },
+      }),
+    );
+
+    expect(resolved).toEqual([]);
+    expect(warnSpy).toHaveBeenCalled();
+  });
+
+  it("skips contextual candidates whose metadata name mismatches the configured name", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const teamDir = path.join(tempRoot, "package-root", "agent-teams", "editorial");
+    const agentDir = path.join(teamDir, "agents", "reviewer");
+    writeSkillDirectory(path.join(agentDir, "skills", "rubric"), "wrong-agent-name", "Bad", "Bad");
+    writeSkillDirectory(path.join(teamDir, "skills", "rubric"), "wrong-team-name", "Bad team", "Bad");
+
+    const resolved = service.resolveConfiguredSkillsForAgent(
+      new AgentDefinition({
+        id: "editorial:reviewer",
+        name: "Reviewer",
+        description: "Reviews",
+        instructions: "",
+        skillNames: ["rubric"],
+        ownershipScope: "team_local",
+        sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir },
+      }),
+    );
+
+    expect(resolved).toEqual([]);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("wrong-agent-name"));
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("wrong-team-name"));
   });
 
   it("enables versioning for existing skills", () => {

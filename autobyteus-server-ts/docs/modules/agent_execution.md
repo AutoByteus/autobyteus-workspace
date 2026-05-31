@@ -20,6 +20,18 @@ Manages runtime agent runs and message execution flow.
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
 
+Configured agent skills are resolved before runtime-specific bootstrap through
+`SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`. Native
+AutoByteus, Codex, Claude, and team-member launch paths should consume that
+resolved `Skill[]` shape instead of calling global skill catalog lookup by name.
+This preserves package-private and owning-team-shared skill context while still
+allowing global skill fallback.
+
+Native AutoByteus runs consume the resolved `Skill.rootPath` values directly in
+`AgentConfig.skills`. For imported package agents this includes exact colocated
+private skill roots and `skills/<skillName>` multi-skill roots, without scanning
+package roots into the global Skills catalog.
+
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 
 `AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.

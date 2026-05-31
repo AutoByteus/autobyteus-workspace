@@ -228,6 +228,10 @@ Manage agent package sources used by the app.
 - Direct private GitHub URL imports are not authenticated in this flow. Clone or
   sync private repositories locally, import the local path, and use **Reload**
   after external updates.
+- Package agents may carry package-private or team-shared skills referenced from
+  `agent-config.json.skillNames`. Those skills travel with the imported package
+  and resolve at agent runtime, but they do not appear as standalone rows in the
+  global Skills page/catalog.
 - Remove removable imported packages from app-managed storage. Built-in/default
   package rows are platform-owned and do not expose user update, reload, or
   remove actions.

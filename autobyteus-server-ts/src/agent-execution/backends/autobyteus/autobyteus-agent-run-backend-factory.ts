@@ -417,16 +417,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
     const skillPaths: string[] = [];
     if (agentDef.skillNames?.length) {
-      for (const skillName of agentDef.skillNames) {
-        const skill = this.skillService.getSkill(skillName);
-        if (skill) {
-          skillPaths.push(skill.rootPath);
-          logger.info(`Resolved skill '${skillName}' to path: ${skill.rootPath}`);
-        } else {
-          logger.warn(
-            `Skill '${skillName}' defined in agent definition '${agentDef.name}' not found via SkillService. Skipping.`,
-          );
-        }
+      for (const skill of this.skillService.resolveConfiguredSkillsForAgent(agentDef)) {
+        skillPaths.push(skill.rootPath);
+        logger.info(`Resolved skill '${skill.name}' to path: ${skill.rootPath}`);
       }
     }
 

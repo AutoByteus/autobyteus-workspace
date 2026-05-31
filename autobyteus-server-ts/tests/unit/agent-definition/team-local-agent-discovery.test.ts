@@ -106,6 +106,7 @@ describe("team-local-agent-discovery", () => {
           ownershipScope: ownership.ownershipScope,
           ownerTeamId: ownership.ownerTeamId,
           ownerTeamName: ownership.ownerTeamName,
+          sourceInfo: ownership.sourceInfo,
         }),
     });
 
@@ -115,6 +116,10 @@ describe("team-local-agent-discovery", () => {
         ownershipScope: "team_local",
         ownerTeamId: localTeamId,
         ownerTeamName: "Research Team",
+        sourceInfo: {
+          agentDirPath: localAgentDir,
+          teamDirPath: localTeamDir,
+        },
       }),
     ]);
   });

@@ -93,6 +93,9 @@ export const readApplicationOwnedAgentDefinitionFromSource = async (
       ownerPackageId: sourcePaths.packageId,
       ownerLocalApplicationId: sourcePaths.localApplicationId,
       defaultLaunchConfig: normalizedConfig.defaultLaunchConfig,
+      sourceInfo: {
+        agentDirPath: sourcePaths.agentDir,
+      },
     });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {

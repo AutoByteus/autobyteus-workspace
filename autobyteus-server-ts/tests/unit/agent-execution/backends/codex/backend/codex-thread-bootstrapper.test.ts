@@ -79,7 +79,7 @@ const createBootstrapper = (input: {
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    getSkills: vi.fn(async () => input.skills),
+    resolveConfiguredSkillsForAgent: vi.fn(() => input.skills),
   } as unknown as SkillService;
   const client = {
     request: vi.fn(input.requestImplementation),

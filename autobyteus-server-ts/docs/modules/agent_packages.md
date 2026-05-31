@@ -80,6 +80,45 @@ caches before returning the latest package inventory. Frontend stores then
 refresh Applications, Agents, and Agent Teams so source mutations are visible in
 the same session.
 
+## Package-Contained Configured Skills
+
+Agent packages may carry skill content that is private to a package agent or
+shared by members of a package team. These skills are resolved only when an
+agent definition that references them is used for runtime bootstrap; they are
+not imported into the global Skills catalog.
+
+Supported package layouts:
+
+- shared agent colocated skill:
+  `agents/<agent-id>/SKILL.md`
+- shared agent private multi-skill layout:
+  `agents/<agent-id>/skills/<skill-name>/SKILL.md`
+- team-local agent colocated skill:
+  `agent-teams/<team-id>/agents/<agent-id>/SKILL.md`
+- team-local agent private multi-skill layout:
+  `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
+- owning-team shared skill for team-local members:
+  `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
+
+`agent-config.json.skillNames` stores the logical names. At runtime,
+`SkillService.resolveConfiguredSkillsForAgent(...)` resolves those names from
+the current agent's source folder first, then from the owning team folder for
+team-local agents, then from the global catalog as a fallback. A contextual
+candidate's `SKILL.md` frontmatter `name` must match the configured name, and
+unsafe path-like names are skipped.
+
+Because package-contained skills are contextual, package import summaries and
+the GraphQL `skills` catalog continue to report only global skills. Duplicate
+skill names across configured/default/private/team-shared sources are
+product-excluded for this ticket; package authors should choose unique logical
+skill names instead of relying on collision disambiguation.
+
+Runtime-specific consumers receive resolved paths. Codex materializes imported
+package private roots and multi-skill roots into `.codex/skills/<skillName>`
+symlinks that target the package source directories. Native AutoByteus receives
+the same exact resolved roots through `AgentConfig.skills`. Neither path turns
+package-contained skills into global catalog entries.
+
 ## Failure And Rollback Rules
 
 - Duplicate GitHub imports are rejected with guidance to use the existing row's
