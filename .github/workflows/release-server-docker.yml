@@ -158,6 +158,8 @@ jobs:
         with:
           context: .
           file: autobyteus-server-ts/docker/Dockerfile.monorepo
+          build-args: |
+            CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
           push: true
           provenance: false
@@ -174,6 +176,7 @@ jobs:
           file: autobyteus-server-ts/docker/Dockerfile.monorepo
           build-args: |
             BASE_IMAGE_TAG=${{ needs.prepare-release.outputs.build_variant }}
+            CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
           push: true
           provenance: false

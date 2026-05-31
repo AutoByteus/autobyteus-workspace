@@ -303,6 +303,25 @@ If you only want to build the image without starting it:
 ./build.sh --variant zh
 ```
 
+By default, the server Dockerfile asks npm for the current `latest` dist-tag of
+both bundled runtime CLIs:
+
+- `@openai/codex`
+- `@anthropic-ai/claude-code`
+
+The build scripts pass a changing `CLI_INSTALL_CACHE_BUSTER` build arg so the
+CLI install layer is re-run during scripted builds instead of silently reusing a
+stale Docker cache layer. If you need a reproducible rollback or emergency pin,
+override the package versions explicitly:
+
+```bash
+docker buildx build \
+  --build-arg CODEX_CLI_VERSION=0.135.0 \
+  --build-arg CLAUDE_CODE_VERSION=2.1.158 \
+  -f autobyteus-server-ts/docker/Dockerfile.monorepo \
+  .
+```
+
 ## Multi-Arch Release Image
 
 For a publishable image that is fully built at image-build time, use the multi-arch script:

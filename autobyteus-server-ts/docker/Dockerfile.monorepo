@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
 ARG BASE_IMAGE_TAG=latest
-ARG CODEX_CLI_VERSION=0.112.0
-ARG CLAUDE_CODE_VERSION=2.1.72
+ARG CODEX_CLI_VERSION=latest
+ARG CLAUDE_CODE_VERSION=latest
 
 FROM node:22-bookworm AS builder
 WORKDIR /app
@@ -38,12 +38,14 @@ WORKDIR /app
 
 ARG CODEX_CLI_VERSION
 ARG CLAUDE_CODE_VERSION
+ARG CLI_INSTALL_CACHE_BUSTER=0
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git ripgrep \
   && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g \
+RUN echo "CLI install cache buster: ${CLI_INSTALL_CACHE_BUSTER}" \
+  && npm install -g \
   "@openai/codex@${CODEX_CLI_VERSION}" \
   "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
 
