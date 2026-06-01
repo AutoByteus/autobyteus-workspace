@@ -18,7 +18,7 @@ const renderReferenceFiles = (
 };
 
 export class TaskDelegationCompletionNotifier {
-  async notifyTerminalStatus(input: {
+  async notifyReportedStatus(input: {
     teamRun: TeamRun;
     payload: TaskDelegationCompletionPayload;
     coordinatorMemberRouteKey?: string | null;
@@ -34,13 +34,11 @@ export class TaskDelegationCompletionNotifier {
       data: eventPayload,
     });
 
-    await this.postCompletionMessage(input.teamRun, input.payload);
+    const delegatorTaskAgentRunId = input.payload.delegator.taskAgentRunId?.trim() || null;
+    await this.postCompletionMessage(input.teamRun, input.payload, null, delegatorTaskAgentRunId);
     const fallbackRouteKey = input.coordinatorMemberRouteKey?.trim() || null;
-    if (
-      fallbackRouteKey &&
-      fallbackRouteKey !== input.payload.delegator.memberRouteKey
-    ) {
-      await this.postCompletionMessage(input.teamRun, input.payload, fallbackRouteKey);
+    if (fallbackRouteKey && (fallbackRouteKey !== input.payload.delegator.memberRouteKey || delegatorTaskAgentRunId)) {
+      await this.postCompletionMessage(input.teamRun, input.payload, fallbackRouteKey, null);
     }
   }
 
@@ -48,17 +46,39 @@ export class TaskDelegationCompletionNotifier {
     teamRun: TeamRun,
     payload: TaskDelegationCompletionPayload,
     overrideRouteKey?: string | null,
+    targetMemberRunId?: string | null,
   ): Promise<void> {
     const targetRouteKey = overrideRouteKey?.trim() || payload.delegator.memberRouteKey;
+    const targetRunId = targetMemberRunId?.trim() || null;
+    const taskAgentId = payload.taskAgentInstance?.taskAgentInstanceId ?? "unbound";
+    const taskAgentRunId = payload.taskAgentInstance?.taskAgentRunId ?? "unbound";
+    const statusLine = payload.status === "completed"
+      ? "Delegated task reported completed and is awaiting your acceptance."
+      : "Delegated task reported failed.";
+    const followUpLines = payload.status === "completed"
+      ? [
+          "",
+          `If changes are needed, call send_message_to with recipient_name="${payload.member.memberName}", task_agent_id="${taskAgentId}", and task_agent_run_id="${taskAgentRunId}".`,
+          `If accepted, call update_task_status with status="accepted" and task_id="${payload.taskId}".`,
+        ]
+      : [
+          "",
+          "Failure reports do not require acceptance; the framework will settle the task-agent after idle cleanup.",
+        ];
     const content = [
-      `Delegated task ${payload.status}.`,
+      statusLine,
       "",
-      `Task: ${payload.taskLabel} (${payload.taskId})`,
-      `Member: ${payload.member.memberName}`,
-      `Status: ${payload.status}`,
+      `Task ID: ${payload.taskId}`,
+      `Task: ${payload.taskLabel}`,
+      `Target member: ${payload.member.memberName}`,
+      `Task agent ID: ${taskAgentId}`,
+      `Task agent run ID: ${taskAgentRunId}`,
+      `Delegator: ${payload.delegator.memberName}`,
+      `Reported status: ${payload.status}`,
       `Message: ${payload.message ?? "None provided"}`,
       "Reference files:",
       renderReferenceFiles(payload.referenceFiles),
+      ...followUpLines,
     ].join("\n");
     const message = new AgentInputUserMessage(
       content,
@@ -69,15 +89,22 @@ export class TaskDelegationCompletionNotifier {
         team_run_id: payload.teamRunId,
         task_id: payload.taskId,
         message_type: "task_delegation_terminal_status",
+        delegator_member_route_key: payload.delegator.memberRouteKey,
+        reported_status: payload.status,
+        target_member_route_key: payload.member.memberRouteKey,
+        task_agent_instance_id: payload.taskAgentInstance?.taskAgentInstanceId ?? null,
+        task_agent_run_id: payload.taskAgentInstance?.taskAgentRunId ?? null,
+        ...(payload.delegator.taskAgentRunId ? { delegator_task_agent_run_id: payload.delegator.taskAgentRunId } : {}),
       },
     );
     const result = await teamRun.postMessage(
       message,
       selectorFromMemberRouteKey(targetRouteKey),
+      targetRunId,
     );
     if (!result.accepted) {
       console.warn(
-        `TaskDelegationCompletionNotifier: failed to notify '${targetRouteKey}' for task '${payload.taskId}': ${result.message ?? "unknown error"}`,
+        `TaskDelegationCompletionNotifier: failed to notify '${targetRouteKey}'${targetRunId ? ` run '${targetRunId}'` : ""} for task '${payload.taskId}': ${result.message ?? "unknown error"}`,
       );
     }
   }

@@ -67,6 +67,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -76,7 +77,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
 
     try {
-      return await this.teamManager.postMessage(message, target);
+      return await this.teamManager.postMessage(message, target, targetMemberRunId);
     } catch (error) {
       return buildCommandFailure("post team message", error);
     }

@@ -32,6 +32,7 @@ import { MixedTeamMemberRegistry } from "./members/mixed-team-member-registry.js
 import { buildServerManagedMemberStatusSnapshots } from "../common/server-managed-team-member-projections.js";
 import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
 import {
+  buildInterAgentDeliveryInputMessage,
   buildInterAgentMessageReferenceFileEntries,
   buildRecipientVisibleInterAgentMessageContent,
 } from "../../services/inter-agent-message-runtime-builders.js";
@@ -140,10 +141,7 @@ export class MixedTeamManager implements TeamManager {
     };
   }
 
-  async postMessage(
-    message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-  ): Promise<AgentOperationResult> {
+  async postMessage(message: AgentInputUserMessage, target: TeamMemberSelector, targetMemberRunId: string | null = null): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
@@ -151,6 +149,8 @@ export class MixedTeamManager implements TeamManager {
     if (isOperationResult(resolved)) {
       return resolved;
     }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) return this.memberRegistry.postMessageToTaskAgent(resolved.memberRouteKey, taskAgentRunId, message);
     const result = await this.memberRegistry.getOrCreate(resolved).postMessage(message);
     this.publishTeamStatusIfChanged();
     return result;
@@ -171,6 +171,7 @@ export class MixedTeamManager implements TeamManager {
     if (isOperationResult(resolvedRecipient)) {
       return resolvedRecipient;
     }
+    if (request.recipient.participant.taskAgentRunId?.trim()) return this.memberRegistry.postMessageToTaskAgent(resolvedRecipient.memberRouteKey, request.recipient.participant.taskAgentRunId.trim(), buildInterAgentDeliveryInputMessage(request));
     const normalizedRequest = this.normalizeDeliveryRequest(request, senderContext, resolvedRecipient);
     const communicationPayload = this.buildCommunicationPayload(normalizedRequest);
     const tracedRequest = this.attachRecipientInputTrace(

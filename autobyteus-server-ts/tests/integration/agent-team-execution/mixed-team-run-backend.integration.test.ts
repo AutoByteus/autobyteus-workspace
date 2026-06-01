@@ -132,7 +132,7 @@ describe("MixedTeamRunBackend integration", () => {
     expect(manager.postMessage).toHaveBeenCalledWith(userMessage, {
       kind: "route_key",
       memberRouteKey: "coord-route",
-    });
+    }, null);
 
     await expect(
       backend.deliverInterAgentMessage({

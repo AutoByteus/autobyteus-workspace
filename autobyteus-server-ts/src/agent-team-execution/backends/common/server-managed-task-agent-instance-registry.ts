@@ -132,6 +132,16 @@ export class ServerManagedTaskAgentInstanceRegistry<
     };
   }
 
+  async postMessage(logicalMemberRouteKey: string, taskAgentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    if (!this.options.isTeamActive()) return this.runNotFound();
+    const active = this.activeByRunId.get(taskAgentRunId) ?? null;
+    if (!active) return { accepted: false, code: "TASK_AGENT_RUN_NOT_FOUND", message: `Task-agent run '${taskAgentRunId}' was not found.` };
+    if (active.logicalMember.memberRouteKey !== logicalMemberRouteKey) return { accepted: false, code: "TASK_AGENT_ROUTE_MISMATCH", message: `Task-agent run '${taskAgentRunId}' is not for logical member '${logicalMemberRouteKey}'.` };
+    const result = await active.run.postUserMessage(message);
+    this.options.publishTeamStatusIfChanged();
+    return { ...result, memberRunId: active.identity.taskAgentRunId, memberName: active.logicalMember.memberName };
+  }
+
   async settle(
     logicalMemberRouteKey: string,
     taskAgentRunId: string,

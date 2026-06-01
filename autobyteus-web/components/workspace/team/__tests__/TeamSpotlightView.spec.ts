@@ -100,7 +100,7 @@ describe('TeamSpotlightView', () => {
     expect(wrapper.emitted('select-member')).toEqual([['professor']]);
   });
 
-  it('does not promote an offline task-only logical member into the spotlight surface', () => {
+  it('can focus an offline logical parent without treating it as a task-agent child', () => {
     const wrapper = mount(TeamSpotlightView, {
       props: {
         teamContext: {
@@ -127,7 +127,7 @@ describe('TeamSpotlightView', () => {
     });
 
     const tiles = wrapper.findAll('.tile');
-    expect(tiles.map((tile) => tile.text())).toEqual(['coordinator']);
+    expect(tiles.map((tile) => tile.text())).toEqual(['worker', 'coordinator']);
     expect(tiles[0].attributes('data-variant')).toBe('primary');
   });
 

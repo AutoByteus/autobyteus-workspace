@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  TASK_DELEGATION_MODEL_TOOL_STATUSES,
   type DelegateTasksInput,
   type UpdateTaskStatusInput,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
@@ -18,11 +17,22 @@ const DelegateTasksInputSchema = z.object({
   tasks: z.array(TaskInputSchema).min(1, "delegate_tasks requires at least one task"),
 }).strict();
 
-const UpdateTaskStatusInputSchema = z.object({
-  status: z.enum(TASK_DELEGATION_MODEL_TOOL_STATUSES),
+const UpdateTaskExecutionStatusInputSchema = z.object({
+  status: z.enum(["in_progress", "completed", "failed"]),
   message: z.string().trim().optional().nullable(),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict();
+
+const UpdateTaskAcceptanceStatusInputSchema = z.object({
+  status: z.literal("accepted"),
+  task_id: nonEmptyString("task_id"),
+  message: z.string().trim().optional().nullable(),
+}).strict();
+
+const UpdateTaskStatusInputSchema = z.discriminatedUnion("status", [
+  UpdateTaskExecutionStatusInputSchema,
+  UpdateTaskAcceptanceStatusInputSchema,
+]);
 
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");

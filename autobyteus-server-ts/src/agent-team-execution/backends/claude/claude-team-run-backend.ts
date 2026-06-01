@@ -89,6 +89,7 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -97,7 +98,7 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
       return buildTargetMemberRequiredResult();
     }
     try {
-      return await this.options.claudeTeamManager.postMessage(message, target);
+      return await this.options.claudeTeamManager.postMessage(message, target, targetMemberRunId);
     } catch (error) {
       return buildCommandFailure("post team message", error);
     }

@@ -114,9 +114,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.team.postMessage || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);
+    }
+    if (targetMemberRunId?.trim()) {
+      return { accepted: false, code: "TASK_AGENT_RUN_NOT_SUPPORTED", message: "Native AutoByteus team postMessage does not support task-agent run targeting." };
     }
     const memberContext = target ? this.resolveTargetMemberContext(target) : null;
     if (memberContext && "accepted" in memberContext) {
@@ -172,6 +176,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       const recipientContext = this.resolveTargetMemberContext(request.recipient.selector);
       if ("accepted" in recipientContext) {
         return recipientContext;
+      }
+      if (request.recipient.participant.taskAgentRunId?.trim()) {
+        return { accepted: false, code: "UNSUPPORTED_RUNTIME_COMMAND", message: "Native AutoByteus team runs do not support task-agent-targeted inter-agent messages." };
       }
       this.publishMemberCommandStatus(recipientContext, "initializing");
       await this.team.postMessage(buildInterAgentDeliveryInputMessage(request), recipientContext.memberName);

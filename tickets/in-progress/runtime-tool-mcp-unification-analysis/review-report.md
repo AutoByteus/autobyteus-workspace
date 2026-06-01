@@ -2,197 +2,177 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Local-Fix Recheck Before API/E2E Resume`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/requirements.md`
-- Current Review Round: `20`
-- Trigger: CR-011 local-fix recheck after Round 19 found stale `workspaceExecutionMemberRouteKey=worker` normalization only covered pre-existing subscribed team contexts.
-- Prior Review Round Reviewed: `19`
-- Latest Authoritative Round: `20`
+- Current Review Round: `25`
+- Trigger: Implementation local fix for Round 24 `CR-012` / `CR-013` task-agent child preservation and parent-visible focus semantics.
+- Prior Review Round Reviewed: `24`
+- Latest Authoritative Round: `25`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-spec.md`
-- Supplemental Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
-- Latest Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
-- API/E2E Round 14 Worker-Row Reroute Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round14-worker-row-semantics-reroute.md`
-- API/E2E Round 17 Failure Artifact Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round17-worker-row-focus-failure.md`
-- API/E2E Round 18 Failure Artifact Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`
+- Supplemental Migration Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
-- Delivery Reports Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/handoff-summary.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/release-deployment-report.md`
-- Delivery Failure Log Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-8/electron-rebuild-failure.log`
-- API / E2E Validation Started Yet: `Yes`; API/E2E may resume after this pass.
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`, implementation-owned frontend tests were updated for CR-011. No API/E2E-owned durable validation source was added in this local-fix turn.
+- API / E2E Validation Started Yet: `Yes` in prior rounds; currently paused for implementation local-fix review before API/E2E resumes.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes` historically in this ticket; current Round 25 source/test delta is implementation-owned frontend code and focused frontend tests.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1-13 | Earlier implementation/API/E2E/frontend rounds | CR-001 through CR-007 and API/E2E frontend findings | See prior history in earlier report revisions | Mixed | No | Earlier rounds culminated in API/E2E and delivery work before later frontend/browser semantics findings. |
-| 14 | Delivery-blocking Electron localization audit local fix | Delivery localization blocker rechecked | CR-008 | Fail | No | Audit passed, but source review found raw visible `Deny` / `Approve` labels in `TeamTaskAgentActivityBar.vue`. |
-| 15 | CR-008 local-fix recheck | CR-008 | None | Pass | No | Approval action labels route through localized `ToolCallIndicator` keys. |
-| 16 | Round 14 worker-row semantics implementation alignment | CR-008 remains resolved | CR-009, CR-010 | Fail | No | Grid/spotlight/header improvements were real, but active-execution projection was still bypassed by focus-mode/composer/send paths and the running-team row. |
-| 17 | CR-009 / CR-010 local-fix recheck | CR-009, CR-010 | None | Pass | No | Active-execution focus became store-owned and the running-team row used the active-execution projection; downstream browser validation found the workspace/history tree bypass. |
-| 18 | API/E2E Round 10 / Round 17 worker-row focus local fix | CR-009, CR-010, API/E2E Round 17 workspace/history tree failure | None | Pass | No | Normal active workspace/history tree row path was fixed; downstream browser validation found stale route/member-link reopening could still revive the worker. |
-| 19 | API/E2E Round 11 / Round 18 stale worker route local fix | CR-009, CR-010, API-E2E-R17-WORKER-ROW, API-E2E-R18-STALE-ROUTE | CR-011 | Fail | No | The fix only normalized when an existing subscribed team context was present; no-existing and existing-but-unsubscribed live openings could still pass raw `worker` into hydration. |
-| 20 | CR-011 local-fix recheck | CR-011 plus prior active-execution worker-row findings | None | Pass | Yes | Live hydration and open finalization now both resolve requested focus through the active-execution projection; task-agent-work-packet-only logical worker projections are filtered from active rows. |
+| 1-21 | Earlier implementation, API/E2E validation-code, frontend UX, worker-row semantics, latest-base conflict rounds | Earlier `CR-001` through `CR-011` | Yes, in earlier rounds | Mixed historical pass/fail | No | Superseded by later architecture clarifications and local fixes. Earlier findings are rechecked below by status. |
+| 22 | Backend Round 13 acceptance-gated completion / revision-routing implementation | `CR-001` through `CR-011` | `CR-012`, `CR-013` remained open from frontend cumulative package | Fail / Local Fix | No | Backend acceptance lifecycle accepted; frontend active task-agent child preservation and stale test expectation blocked API/E2E. |
+| 24 | Re-review before CR-012/CR-013 fix | `CR-012`, `CR-013` | No additional backend blocker | Fail / Local Fix | No | Required implementation to preserve/reconstruct task-agent child nodes and update parent-visible run-open expectation. |
+| 25 | CR-012/CR-013 local fix | `CR-012`, `CR-013` | None | Pass | Yes | Frontend live re-open/hydration now preserves/restores task-agent child projection; focused test expectation now matches parent-visible semantics. |
 
 ## Review Scope
 
-Implementation/code re-review of the stale workspace execution member route local fix:
+Reviewed the cumulative package and the current implementation-owned local fix, with emphasis on:
 
-- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
-- `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
-- `autobyteus-web/utils/teamActiveExecutionMembers.ts`
-- `autobyteus-web/stores/runHistoryTeamRows.ts`
-- `autobyteus-web/stores/runHistoryTeamHelpers.ts`
-- `autobyteus-web/stores/runHistorySelectionActions.ts`
-- `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts`
-- `autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts`
-
-Also rechecked the adjacent active-execution consumers covered by the focused regression suite: grid, workspace header, running row, history tree, active context/send target, context-file draft owner, event monitor, and team streaming tests.
+- Latest architecture basis: logical members remain stable parent/template rows; active task-agent instances are concrete child entities and must remain visible/addressable while running or awaiting acceptance, then be removed only after acceptance-gated settlement/offline cleanup.
+- Backend Round 13 acceptance-gated lifecycle remains accepted from prior source review: worker `completed` -> `awaiting_acceptance`; original delegator `accepted + task_id` -> accepted/settlement; revision via task-agent-targeted `send_message_to`.
+- Current frontend fix:
+  - `autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts`
+  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+  - `autobyteus-web/components/workspace/team/TeamTaskAgentActivityBar.vue`
+  - focused tests in `TeamStreamingService.spec.ts`, `teamRunOpenCoordinator.spec.ts`, and `TeamTaskAgentActivityBar.spec.ts`.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1-13 | CR-001 through CR-007 | Blocking when opened | Remain source-resolved in reviewed scope | This CR-011 frontend local fix does not reintroduce old model-facing task tools, task selectors, stale task schema fields, or server approval route regressions. | No regression found in reviewed source paths. |
-| 14-15 | CR-008 | Blocking for delivery packaging retry readiness | Remains resolved | This local fix does not touch the localized task-agent activity-bar approval labels. | No CR-008 regression. |
-| 16 | CR-009 | Blocking before API/E2E resumes | Remains resolved | Active execution focus consumers continue to use the store-owned active-execution route/context/node boundary. The CR-011 fix feeds that boundary normalized hydrated state. | No regression found. |
-| 16 | CR-010 | Blocking before API/E2E resumes | Remains resolved | Running-team and workspace/history row projections still use active-execution member filtering. | No regression found. |
-| API/E2E Round 17 | API-E2E-R17-WORKER-ROW | Blocking browser validation failure | Source-resolved pending live replay | Existing active execution row consumers remain filtered through `flattenActiveExecutionMemberNodesForDisplay(...)` / `isActiveExecutionMemberNode(...)`. | API/E2E should replay the browser flow. |
-| API/E2E Round 18 | API-E2E-R18-STALE-ROUTE | Blocking browser validation failure | Source-resolved pending live replay | `teamRunContextHydrationService.ts:251-270` normalizes active live hydration focus through `resolveActiveExecutionFocusedMemberRouteKey(...)`; `teamRunOpenCoordinator.ts:140-145` re-resolves the final hydrated live context for every live open; `teamRunOpenCoordinator.ts:161-162` applies the normalized focus to existing contexts. | API/E2E should replay stale URL/member-link opening. |
-| 19 | CR-011 | Blocking before API/E2E resumes | Resolved | No-existing-context and existing-but-unsubscribed live opens are now covered by `runHistoryStore.spec.ts:2672-2847`; the existing subscribed-context fast path remains covered by `teamRunOpenCoordinator.spec.ts:287-342`. | No open code-review finding remains. |
+| 1-21 | CR-001 through CR-011 | Blocking when opened | Remain resolved / superseded | Current reviewed state still keeps the server-owned task delegation model, strict model-facing schema, task-agent identity routing, localized frontend labels, task-agent approval routing, parent/child active-execution projection, and latest-base compaction identity merge. | No regression found in the current local-fix scope. |
+| 22/24 | CR-012 | High | **Resolved** | `ensureTaskAgentContext(...)` now stores task-agent identity in a projection-owned WeakMap and calls `ensureTaskAgentNode(...)` even when the `AgentContext` already exists. `restoreTaskAgentContextProjections(...)` can restore captured task-agent nodes and reconstruct a missing child node from preserved live task-agent contexts. `openTeamRun(...)` captures live task-agent nodes/contexts before replacing metadata-derived tree/maps, merges preserved task-agent contexts back, then calls the projection restoration boundary. Focused tests cover subscribed live reopen with a missing child node and subsequent stream repair. | This restores the invariant that a running/awaiting-acceptance task-agent remains visible/addressable after active live re-open/hydration refresh. |
+| 22/24 | CR-013 | High | **Resolved** | `teamRunOpenCoordinator.spec.ts` now asserts current parent-visible semantics: reopening with logical parent `member-b` preserves `member-b` focus instead of normalizing to `member-a`. The focused Vitest command now passes: `3` files / `34` tests. | This aligns the test with the latest architecture clarification that logical parents remain visible/focusable rows. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 495 | Pass, close to limit | Pass for this delta | Pass; live hydration is the right owner to prevent raw metadata membership from authorizing stale active-execution focus. | Pass | Accept with residual size risk | Avoid further growth; split before unrelated additions. |
-| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 203 | Pass | Pass | Pass; open orchestration now preserves pre-hydration fast normalization and final hydrated-context normalization. | Pass | Accept | None. |
-| `autobyteus-web/utils/teamActiveExecutionMembers.ts` | 86 | Pass | Pass | Pass; this is now the reusable active-execution projection/focus boundary. | Pass | Accept | None. |
-| `autobyteus-web/stores/runHistoryTeamRows.ts` | 194 | Pass | Pass | Pass; history/workspace tree rows consume the active-execution projection. | Pass | Accept | None. |
-| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | 499 | Pass, close to limit | No new direct CR-011 growth beyond earlier reviewed state | Mostly pass but very near hard limit and still a broad helper. | Pass | Residual risk only | Split before any further unrelated growth. |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 253 | Pass | Review | Pass | Pass | Accept | None. It correctly delegates task-agent repair to the projection owner instead of duplicating repair logic. |
+| `autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts` | 308 | Pass | Review | Pass | Pass | Accept | None. File is larger than the soft review threshold but owns the coherent task-agent projection invariant. |
+| `autobyteus-web/components/workspace/team/TeamTaskAgentActivityBar.vue` | 178 | Pass | Pass | Pass | Pass | Accept | None. It renders from active-execution projection instead of raw tree filtering. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff records CR-011 as a local active-execution boundary fix; code now matches that assessment. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Stale route spine is now `workspaceExecutionMemberRouteKey -> openTeamRun -> live hydration -> active-execution focus resolver -> active UI`; both pre-existing subscribed and fresh/unsubscribed openings are covered. | None. |
-| Ownership boundary preservation and clarity | Pass | `resolveActiveExecutionFocusedMemberRouteKey(...)` is the authoritative frontend focus boundary for active execution; live hydration and run-open finalization both depend on it. | None. |
-| Off-spine concern clarity | Pass | Projection filtering remains in `teamActiveExecutionMembers.ts`; hydration and run-open orchestration stay in their existing owners. | None. |
-| Existing capability/subsystem reuse check | Pass | The fix reuses the existing active-execution projection utility instead of adding a new parallel route policy. | None. |
-| Reusable owned structures check | Pass | No duplicate route DTOs or status/projection structures were added. | None. |
-| Shared-structure/data-model tightness check | Pass | No kitchen-sink type or overlapping identity representation was introduced. | None. |
-| Repeated coordination ownership check | Pass | The previously repeated raw-focus decision is now consolidated around the active-execution resolver for live openings and row projection. | None. |
-| Empty indirection check | Pass | Added calls own real normalization behavior; no pass-through-only layer was introduced. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Live hydration prevents bad focus payloads; run open normalizes final applied state; row builders filter display rows. | None. |
-| Ownership-driven dependency check | Pass | Active execution consumers do not bypass the projection boundary with raw metadata focus for the reviewed stale-link paths. | None. |
-| Authoritative Boundary Rule check | Pass | Callers above active execution depend on the active-execution boundary rather than on raw `memberRouteKey` plus member metadata as sufficient focus authority. | None. |
-| File placement check | Pass | Files remain in frontend run hydration, run open, active execution utility, and run-history row owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | No new split is necessary for the bounded fix; the near-limit files are recorded as residual risk. | None now. |
-| Interface/API/query/command/service-method boundary clarity | Pass | `OpenTeamRunWithCoordinatorInput.memberRouteKey` remains accepted as a request, but active live opens normalize it before it becomes authoritative focused state. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Names such as `fallbackFocusKey`, `resolvedFocusedMemberRouteKey`, and `resolveActiveExecutionFocusedMemberRouteKey` describe the ownership boundary clearly. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No broad duplicate filtering policy was introduced; row/open/hydration paths reuse the shared active-execution utility. | None. |
-| Patch-on-patch complexity control | Pass | CR-011 closes the previously uncovered branch without adding another special-case-only branch; final live state is normalized for all live opens. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead code or compatibility branch found in the reviewed delta. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests now cover existing subscribed context, no existing context, existing-but-unsubscribed context, active row filtering, stale selection redirection, and direct logical history preservation. | API/E2E should still replay the live browser scenario. |
-| Test maintainability is acceptable for the changed behavior | Pass | Tests are focused and avoid broad snapshots; they assert route/focus/member-row outcomes. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Focused Vitest suites, `git diff --check`, and `pnpm -C autobyteus-web build` passed in review. | Send to API/E2E for live replay. |
-| No backward-compatibility mechanisms | Pass | No compatibility wrapper or dual old task UI path was added. | None. |
-| No legacy code retention for old behavior | Pass | Raw logical worker focus is no longer retained as authoritative for active stale live openings in the reviewed paths. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Latest design review identifies task-agent parent/child projection and acceptance-gated lifecycle; current fix preserves child visibility during live reopen/hydration. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Relevant frontend spine is now: stream identity / live context -> task-agent projection owner -> open/hydration reconciliation -> active-execution display/activity bar. | None. |
+| Ownership boundary preservation and clarity | Pass | `teamRunOpenCoordinator` captures live state but delegates node/tree repair to `restoreTaskAgentContextProjections(...)`; projection invariant lives in `teamTaskAgentContextProjection.ts`. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | WeakMap identity storage is a local projection concern; activity bar rendering remains a display concern. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The fix extends existing task-agent projection and run-open coordinator rather than creating a parallel state manager. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Task-agent identity extraction/storage remains in the projection module and is reused by run-open preservation. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Task-agent identity stays specialized (`TaskAgentStreamIdentity`) and node fields remain concrete (`taskAgentRunId`, `taskAgentInstanceId`, `taskId`, `logicalMemberRouteKey`). | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Child-node reconstruction policy is centralized in the projection module; run-open does not duplicate insertion rules. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | `restoreTaskAgentContextProjections(...)` owns real reconciliation work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Run-open coordinates hydration and live preservation; projection module owns task-agent context/node/tree invariants; activity bar owns display/approval actions. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | The dependency from run-open to the projection restoration boundary is justified by live context preservation and does not reach into a lower-level private helper. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Run-open now uses the projection-owned exported repair boundary and no longer leaves raw tree/map replacement as the sole authority for task-agent children. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Files remain in `services/runOpen`, `services/agentStreaming`, and `components/workspace/team` according to their concerns. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No new artificial module split was introduced; the added projection helpers are cohesive. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `restoreTaskAgentContextProjections(teamContext, taskAgentNodes)` has a narrow reconciliation purpose; task-agent identity remains explicit. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names such as `getTaskAgentIdentityFromContext`, `restoreTaskAgentContextProjections`, and `liveTaskAgentContextsToRestore` match their responsibilities. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated insertion/repair policy found; tests add focused cases rather than duplicated broad snapshots. | None. |
+| Patch-on-patch complexity control | Pass | The previous patch-on-patch breakage is addressed by a single reconciliation boundary and targeted tests. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The stale worker-hidden run-open expectation was removed and replaced by parent-visible semantics. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover parent focus preservation, live reopen reconstruction after missing node, stream-triggered repair for existing context, and activity-bar rendering from active projection. | API/E2E should still replay the live browser path. |
+| Test maintainability is acceptable for the changed behavior | Pass | Coverage is targeted to public service behavior and visible component behavior instead of implementation-only assertions. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused frontend suite, build, source-size check, and diff check pass. Ready for API/E2E resume. | API/E2E to validate live/browser behavior. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No old task-plan or worker-hidden compatibility path was added. | None. |
+| No legacy code retention for old behavior | Pass | Old normalize-away logical parent expectation is gone; current test asserts accepted parent-visible semantics. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.13
-- Overall score (`/100`): 91.3
-- Score calculation note: Simple average for trend visibility only. Review passes because all mandatory structural checks pass and no blocking findings remain.
+- Overall score (`/10`): 9.23
+- Overall score (`/100`): 92.3
+- Score calculation note: simple average across the ten mandatory categories. The score is for trend visibility; the pass decision is based on the structural checks and findings.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | The stale URL/member-link spine is now covered at live hydration and final open application. | Live browser replay is still downstream-owned. | API/E2E should verify the full runtime/browser path. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.1 | Active-execution focus is the single reusable boundary for reviewed live opening and row paths. | Some raw logical focus state still exists legitimately for roster/template contexts, so future changes must keep using the active boundary for execution surfaces. | Keep new execution consumers on the active-execution getters/utilities. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.0 | `memberRouteKey` is treated as a requested focus and normalized before becoming active live focused state. | The input name does not itself encode requested-vs-authoritative semantics. | Consider a future rename only if this API is otherwise touched; no blocking action now. |
-| `4` | `Separation of Concerns and File Placement` | 9.0 | Hydration, opening, projection, and row display concerns are in appropriate owners. | `teamRunContextHydrationService.ts` and `runHistoryTeamHelpers.ts` are close to the 500-line guard. | Split before further unrelated growth. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | No loose shared DTO or duplicated identity structure was introduced. | Task-agent-only historical classification currently relies on stable work-packet text. | Prefer typed projection metadata in a future broader cleanup if the backend exposes it. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | The active-execution resolver and local focus variables are clear. | The hydration service remains dense due its existing size. | Keep names explicit during any future extraction. |
-| `7` | `Validation Readiness` | 9.1 | Review reran the focused 2-file suite, the 11-file regression suite, `git diff --check`, and frontend build successfully. | Live browser/API-E2E replay was not run by code review. | API/E2E should replay Round 18 stale-route validation. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | Source now covers subscribed, no-existing, and unsubscribed-existing active open cases, plus task-agent-only projection filtering. | The task-agent-only conversation detector is string-based because the historical projection lacks a reviewed typed marker here. | API/E2E should validate against real projection payloads. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.3 | No old task-plan compatibility or legacy active worker focus path is retained in the reviewed execution surfaces. | None blocking. | Continue rejecting compatibility branches. |
-| `10` | `Cleanup Completeness` | 9.2 | No dead code or obsolete branch found in this local fix; CR-011 coverage was added. | Near-limit files remain a maintenance risk. | Split if any future changes touch these owners materially. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | The frontend live-hydration spine now clearly preserves task-agent context -> repairs projection -> renders active child. | Live behavior still needs API/E2E replay for full runtime proof. | API/E2E should exercise reopen/awaiting-acceptance behavior in browser. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.1 | Projection repair is owned by `teamTaskAgentContextProjection`; run-open calls that boundary. | The projection file is over the soft review threshold and now owns several related helpers. | If it grows again, split by real sub-concern, not before. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Exported projection APIs are explicit and identity-based. | No blocking gap; some helper types still use `any` in run-open context maps because surrounding store types are loose. | Tighten surrounding store types opportunistically. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Hydration/opening, task-agent projection, and display remain separated. | Run-open necessarily coordinates state preservation and projection repair, so it remains a sensitive integration point. | Keep future child-entity rules in the projection owner. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Task-agent identity is specialized and reused instead of duplicated. | WeakMap identity is intentionally in-memory only, so historical/persisted reconstruction depends on nodes or stream identity. | API/E2E should verify the intended live-only preservation behavior. |
+| `6` | `Naming Quality and Local Readability` | 9.0 | Names are direct and readable. | `teamTaskAgentContextProjection.ts` is moderately dense after adding restoration helpers. | Consider extraction only if further responsibilities are added. |
+| `7` | `Validation Readiness` | 9.3 | Focused Vitest suite, build, size check, and `git diff --check` pass. | No live browser/API replay was run by implementation or code review. | API/E2E owns the live replay. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Covered edges include missing child after live reopen and existing-context stream repair. | A real websocket/hydration race can only be fully validated in API/E2E. | Validate active/awaiting task-agent remains visible across live reopen. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No dual old task-plan/tool path or stale worker-hidden behavior added. | None in current scope. | Continue clean-cut model. |
+| `10` | `Cleanup Completeness` | 9.3 | Prior stale expectation is replaced and local fix keeps source under guardrails. | Backend manager files from prior rounds remain near the 500-line hard guard, though not changed by this local frontend fix. | Avoid further backend manager growth without extraction. |
 
 ## Findings
 
-No open findings for Round 20.
+No open findings in the latest authoritative round.
 
-Resolved this round:
+Resolved in this round:
 
-### CR-011 — Stale worker route normalization only covers pre-existing subscribed team contexts
-
-- Previous severity: Blocking before API/E2E resumes.
-- Current status: Resolved.
-- Resolution evidence:
-  - `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:251-270` resolves active live hydration focus through `resolveActiveExecutionFocusedMemberRouteKey(...)` before returning the payload, so raw metadata membership alone cannot make a settled task-only logical worker authoritative focused state.
-  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:97-114` keeps the subscribed-context fast pre-normalization path.
-  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:140-145` re-resolves the final hydrated context for every live open, including no-existing-context and existing-but-unsubscribed-context paths.
-  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:161-162` applies the normalized focus when updating an existing context.
-  - `autobyteus-web/utils/teamActiveExecutionMembers.ts:13-45` no longer treats `initializing` alone as runtime activity and excludes conversations whose user messages are only task-agent work packets from direct logical member activity.
-  - `autobyteus-web/stores/runHistoryTeamRows.ts:114-128` filters active workspace/history rows through `isActiveExecutionMemberNode(...)`.
-  - `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:2672-2847` covers stale worker opens with no existing context and with an existing unsubscribed active context.
-  - `autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:287-342` keeps coverage for the existing subscribed-context fast path.
+- `CR-012` — live re-open/hydration can drop an active task-agent child while preserving its context. **Resolved** by preserving task-agent contexts/nodes during subscribed live reopen and adding projection-owned repair/reconstruction.
+- `CR-013` — focused run-open test retained stale worker-hidden expectation. **Resolved** by updating the test to current parent-visible semantics and passing focused checks.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E Round 18 stale-route replay and broader browser worker-row validation. |
-| Tests | Test quality is acceptable | Pass | The new tests cover both CR-011 requested cases and assert final focused route/member row projection. |
-| Tests | Test maintainability is acceptable | Pass | Tests are targeted and use explicit fixture data rather than snapshots. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open review findings remain; API/E2E should validate live behavior. |
-
-## Checks Run By Code Review
-
-- `pnpm -C autobyteus-web exec vitest run stores/__tests__/runHistoryStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts` — passed: `2` files / `54` tests.
-- `pnpm -C autobyteus-web exec vitest run services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/activeContextStore.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` — passed: `11` files / `159` tests.
-- `git diff --check` — passed.
-- Source size check — passed hard limit: `teamRunContextHydrationService.ts` `495`, `teamRunOpenCoordinator.ts` `203`, `teamActiveExecutionMembers.ts` `86`, `runHistoryTeamHelpers.ts` `499` effective non-empty lines.
-- `pnpm -C autobyteus-web build` — passed; Nuxt build completed with the existing large chunk warning only.
+| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E to resume. This is an implementation-review entry point, so route is to API/E2E, not delivery. |
+| Tests | Test quality is acceptable | Pass | Focused cases assert the behavior at service/component boundaries. |
+| Tests | Test maintainability is acceptable | Pass | Tests are localized and aligned with current parent-visible semantics. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open code-review findings; API/E2E should validate live/browser behavior. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No old active worker focus compatibility path or task-plan compatibility path was added. |
-| No legacy old-behavior retention in changed scope | Pass | Stale active route openings now normalize through active-execution focus instead of accepting raw logical worker focus as authoritative. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead or obsolete code found in the reviewed local fix. |
+| No backward-compatibility mechanisms in changed scope | Pass | No dual old behavior or compatibility wrapper was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Stale worker-hidden test expectation was removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead or obsolete local-fix code found. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-No dead / obsolete / legacy items requiring removal were found in the reviewed Round 20 scope.
+None found in the latest reviewed scope.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No` for this CR-011 local fix.
-- Why: The change is an internal frontend active-execution focus/hydration correction for already-documented task-agent execution semantics.
-- Files or areas likely affected: None for this local fix. Existing delivery docs remain part of the cumulative package.
+- Docs impact: `No` for this local source fix beyond the already-updated implementation handoff.
+- Why: The change implements the latest accepted UI/runtime semantics and does not alter public user documentation or runtime model-facing contracts.
+- Files or areas likely affected: none required by code review. API/E2E may update validation evidence after replay.
 
 ## Classification
 
-- Latest result is `Pass`; no failure classification applies.
+- Latest round classification: `Pass`.
+- No non-pass classification applies.
 
 ## Recommended Recipient
 
 - `api_e2e_engineer`
 
-Routing note: API/E2E should resume and replay the Round 18 stale `workspaceExecutionMemberRouteKey=worker` browser scenario plus the surrounding worker-row/task-agent lifecycle validation.
+Routing note: this is an implementation-review pass. API/E2E should resume and validate the current cumulative state, especially the live/browser task-agent child preservation across active reopen/hydration and the acceptance-gated lifecycle.
 
 ## Residual Risks
 
-- Live browser/API-E2E replay was not run by code review; API/E2E should verify the real route/navigation/browser DOM behavior against the current implementation.
-- `teamRunContextHydrationService.ts` (`495`) and `runHistoryTeamHelpers.ts` (`499`) are very close to the 500 effective-line hard limit. They pass now, but future changes should split them before adding unrelated behavior.
-- Task-agent-only logical projection filtering currently detects stable work-packet text in historical conversation projections. That is acceptable for this local fix, but a future typed projection marker would be more robust if the backend exposes one.
+- Live browser/API/E2E still needs to confirm that a running or awaiting-acceptance task-agent child remains visible/addressable after active team reopen/hydration refresh and is removed only after accepted settlement.
+- `teamTaskAgentContextProjection.ts` is above the soft review threshold but below the hard guardrail and currently cohesive. Avoid adding unrelated responsibilities to it.
+- Prior backend manager files remain close to the 500-line hard guard from earlier rounds; no new growth was introduced in this local frontend fix.
+
+## Checks Run By Code Review
+
+- Fresh context review of latest requirements, investigation notes, design spec, supplemental migration analysis, latest design-review report, implementation handoff, validation report, and prior review report.
+- Source review of:
+  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+  - `autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts`
+  - `autobyteus-web/components/workspace/team/TeamTaskAgentActivityBar.vue`
+  - focused tests in `teamRunOpenCoordinator.spec.ts`, `TeamStreamingService.spec.ts`, and `TeamTaskAgentActivityBar.spec.ts`.
+- `pnpm -C autobyteus-web exec vitest run services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/workspace/team/__tests__/TeamTaskAgentActivityBar.spec.ts` — passed: `3` files / `34` tests. Existing KaTeX quirks warnings and expected mocked websocket error logs only.
+- Source size check — passed:
+  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`: `253` effective non-empty lines.
+  - `autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts`: `308` effective non-empty lines.
+  - `autobyteus-web/components/workspace/team/TeamTaskAgentActivityBar.vue`: `178` effective non-empty lines.
+- `git diff --check` — passed.
+- `pnpm -C autobyteus-web build` — passed; existing large chunk warning only.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Score Summary: `9.13 / 10` (`91.3 / 100`)
-- Notes: CR-011 is source-resolved. API/E2E may resume with live stale-route and worker-row validation.
+- Score Summary: `9.23 / 10` (`92.3 / 100`)
+- Notes: `CR-012` and `CR-013` are resolved. The cumulative package is ready for API/E2E to resume.

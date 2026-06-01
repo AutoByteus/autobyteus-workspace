@@ -18,6 +18,9 @@
 - Delivery handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/handoff-summary.md`
 - Delivery release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/release-deployment-report.md`
 - Delivery Electron rebuild failure log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-8/electron-rebuild-failure.log`
+- Delivery latest-base conflict reroute: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`
+- Delivery Round 20 Electron rebuild log after latest-base merge: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`
+- Delivery Round 20 post-conflict targeted Vitest log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/post-conflict-targeted-vitest.log`
 
 ## What Changed
 
@@ -27,11 +30,10 @@
   - required rich `description`.
   - optional `reference_files`.
 - Removed model-facing `assignee_name`, `task_name`, `dependencies`, `completion_criteria`, and `expected_deliverables` from the task-delegation input type, parser, parameter schema, docs, work packets, E2E payloads, and focused tests. Parser objects are strict, so stale fields are rejected before ledger mutation.
-- `update_task_status` model-facing schema is now exactly:
-  - `status`.
-  - optional `message`.
-  - optional `reference_files`.
-- Removed model-facing `task_id`, `task_name`, `summary`, and `deliverables` from `update_task_status`. The service now resolves the bound task only from caller task-agent instance/run context.
+- `update_task_status` model-facing schema now has two strict modes:
+  - task-agent execution mode: `status` = `in_progress` / `completed` / `failed`, optional `message`, optional `reference_files`, with the task resolved only from caller task-agent instance/run context;
+  - original-delegator acceptance mode: `status` = `accepted`, required generated `task_id`, optional `message`, authorized against the stored original delegator identity.
+- Removed stale model-facing `task_name`, `summary`, and `deliverables` from `update_task_status`. `task_id` is rejected for task-agent execution updates and accepted only for original-delegator acceptance.
 - Kept internal task identity in ledger/events/metadata only. The work packet renders a derived task label for human display but does not instruct the worker to pass any task selector.
 - Updated `TaskDelegationService` to enforce selector-free updates:
   - resolves records by caller `taskAgentRunId` / task-agent context;
@@ -40,8 +42,8 @@
   - verifies caller logical member and internal task-agent instance/task context still match the bound record.
 - Preserved one runnable task -> one concrete task-agent instance activation. Same-member parallel tasks receive distinct task-agent run IDs and cannot update each other's tasks through model-facing selectors.
 - Replaced terminal result storage/projection from deliverable objects to optional `message` plus string `reference_files`.
-- Updated activation/status/terminal events and coordinator notifications to carry task label, member identity, optional message/reference files, and task-agent identity.
-- Updated runtime and work-packet instructions to say `update_task_status` is bound to the current task-agent instance and must not receive `task_id`/`task_name`.
+- Updated activation/status/reported-completion events plus original-delegator notifications/coordinator-visible fallback to carry task label, member identity, exact delegator identity, optional message/reference files, and task-agent identity. Accepted status updates carry acceptance message/timestamp and schedule settlement.
+- Updated runtime and work-packet instructions to say task-agent execution `update_task_status` is bound to the current task-agent instance and must not receive `task_id`/`task_name`; acceptance uses generated `task_id` only from the original delegator.
 - Kept mandatory delayed final task-agent settlement for supported server-managed paths and native AutoByteus pure-team gating while native task-agent/per-member settlement remains unsupported.
 - Tightened Claude task-delegation MCP schema object generation for nested task items so stale fields are not accepted by the runtime projection layer before service parsing.
 - Carried forward earlier fixes: obsolete legacy `autobyteus-ts` task-tool imports/tests are gone, canonical task-delegation activation/status events are emitted, and pre-activation/unbound status transitions reject without mutation.
@@ -74,30 +76,59 @@
   - Replaced the remaining raw `Deny` / `Approve` button labels in `TeamTaskAgentActivityBar.vue` with existing localized approval-action keys from `ToolCallIndicator`.
   - No new component-owned keys were needed because the shared approval action labels already exist in the generated workspace localization catalogs for English and Simplified Chinese.
 - Round 14 worker-row semantics alignment:
-  - Added an explicit active-execution member projection for frontend team execution surfaces. Grid and spotlight views no longer render the raw logical `memberTree`; they render only concrete task-agent instances, the coordinator execution node, members/subteams with live runtime activity, or logical members that have a separate direct conversation/history.
-  - Offline empty logical assignees that only served as task-agent templates disappear from active execution grid/spotlight UI after the final concrete task-agent instance settles.
-  - Task-agent settlement focus fallback no longer chooses the task-only logical worker. It resolves to an active execution route, preferring the coordinator when available, otherwise the first remaining active execution entity, otherwise no focused execution route.
-  - `TeamWorkspaceView` derives header/status/avatar/composer state from the active-execution focused route, so a stale hidden worker focus cannot keep a `worker • Offline` style header after task-agent settlement.
+  - Added an explicit active-execution member projection for frontend team execution surfaces.
+  - After the 2026-06-01 architecture clarification, that projection keeps logical members visible as stable parent/template rows and renders concrete task-agent instances as distinct child/near-child rows under the matching logical parent.
+  - Offline/available logical assignees remain visible after the final concrete task-agent instance settles, but the settled task-agent child is removed.
+  - Task-agent settlement focus fallback removes only the concrete child; parent visibility is preserved and any parent `Offline`/available status is member/template status, not completed task-agent execution status.
+  - `TeamWorkspaceView` derives header/status/avatar/composer state from the active-execution focused route while task-agent packet/tool/status streams remain routed to concrete task-agent child contexts.
   - The roster/topology panel is explicitly labeled as a logical roster and non-active task execution when it shows logical members.
 - CR-009 / CR-010 local fix for active-execution focus/row bypasses:
   - `AgentTeamEventMonitor`, `activeContextStore`, `agentTeamRunStore`, and `ContextFilePathInputArea` now use the store-owned active-execution focused route/context/node instead of raw logical `focusedMemberRouteKey` for focus-mode body, active context, send/interrupt target, and context-file draft ownership.
   - `agentTeamContextsStore` exposes active-execution focus getters as the single frontend boundary for these consumers, preserving the raw logical focus only for roster/template state.
-  - `RunningTeamRow` now renders the active-execution projection instead of raw `memberTree`, and highlights the resolved active-execution focused route so an offline task-only worker row is not kept in the running-team sidebar after settlement.
+  - `RunningTeamRow` now renders the active-execution projection instead of raw `memberTree`, including logical member parents and any active task-agent child rows.
   - Added focused tests for stale logical worker focus after task-agent settlement across focus-mode display, active-context interrupt routing, send target/draft ownership, and expanded running-team sidebar projection.
 - API/E2E Round 10 / Round 17 worker-row focus local fix:
-  - The run-history/workspace team tree now projects active local team contexts through the same active-execution member filter before rendering member rows, so a task-delegation-only logical worker with only placeholder `initializing` state is removed from the clickable workspace tree after the concrete task-agent settles.
-  - Active-execution projection no longer treats logical-member `initializing` status alone as runtime activity; concrete task-agent nodes still render through explicit task-agent identity, and direct logical-member conversations/history still keep those logical rows visible.
-  - Stale workspace/history member-row selection is guarded in `selectTreeRunFromHistory`: when a local live team context exists, the requested row is normalized to the resolved active-execution target before focus hydration and selected-team-member state are updated, preventing a stale DOM click from targeting the task-only worker for composer sends.
-  - Run-history team-node focus now falls back to the first active-execution row when the raw focused logical member was filtered out.
+  - The run-history/workspace team tree now projects active local team contexts through the same active-execution member projection before rendering member rows.
+  - Under the latest parent/child semantics, task-delegation logical workers remain clickable parent/template rows, while task-agent packet/tool/completed conversation content is not rendered as the parent member's normal conversation.
+  - Stale workspace/history member-row selection is still guarded through `selectTreeRunFromHistory`, but logical parent selection is now valid when the parent row is visible.
+  - Run-history team-node focus resolves to a visible active-execution row instead of a removed child.
 - API/E2E Round 11 / Round 18 stale-route local fix:
-  - Active team opening now normalizes a requested `workspaceExecutionMemberRouteKey` against the existing subscribed team context's active-execution projection before hydration/open state is applied.
-  - A stale URL or workspace execution link targeting a settled task-only logical worker is therefore reopened/focused through the resolved active-execution route, preferring the coordinator when available, instead of hydrating/focusing the logical `worker Offline` row.
-  - Added focused `openTeamRun` coverage proving stale live member focus is rewritten to the active execution target before the hydration payload is requested/applied.
+  - Active team opening resolves a requested `workspaceExecutionMemberRouteKey` against the active-execution projection before hydration/open state is applied.
+  - Under the latest parent/child semantics, a URL or workspace execution link targeting the logical worker can focus that parent row, but task-agent-only projection content is suppressed from the parent conversation surface.
+  - Focused `openTeamRun` coverage now proves logical parent focus remains valid while task-agent-only history does not promote the parent into a completed task-agent execution row.
 - CR-011 local fix:
-  - Active team opening now resolves the final focused route from the hydrated active-execution projection for every live open, including no pre-existing context and existing-but-unsubscribed active contexts, rather than only the subscribed in-memory branch.
-  - Live team-run hydration now normalizes the requested member route before returning the hydration payload, so raw metadata membership cannot by itself assign `focusedMemberRouteKey` to a settled task-delegation-only logical worker.
-  - Active-execution member filtering no longer treats task-agent work-packet-only logical-member conversations as direct logical member activity. A logical worker whose projection only contains the task-agent activation packet/history is excluded from active execution rows and cannot become the final focused member solely because raw metadata contains `worker`.
-  - Added focused run-history/open tests for direct stale URL/link opening with no existing context and with an existing unsubscribed active context.
+  - Active team opening resolves the final focused route from the hydrated active-execution projection for every live open, including no pre-existing context and existing-but-unsubscribed active contexts.
+  - Live team-run hydration continues to use the active-execution projection before returning the hydration payload.
+  - The 2026-06-01 parent/child UX clarification supersedes the earlier stronger exclusion rule: a logical worker whose projection only contains task-agent activation packet/history remains visible as a parent/template row, but those task-agent work-packet messages are not displayed through the parent normal conversation surface.
+  - Focused run-history/open tests cover direct stale URL/link opening with no existing context and with an existing unsubscribed active context under the latest parent visibility semantics.
+- Delivery latest-base integration local fix:
+  - Reviewed the merge of latest `origin/personal` (`27f19cdef8101bb94ed1fad7fae6b9228bfec9fb`) into the ticket branch (`a64978a3447d49e147be3d5f6bc9398ad1d72ef6`) and took implementation ownership of the conflict-resolution local fix reported by delivery.
+  - Confirmed `compactionTypes.ts` preserves this ticket's `TeamStreamIdentityPayload` inheritance for task-agent/team-stream identity while also accepting the latest base compaction status/provenance fields.
+  - Confirmed `AgentTeamEventMonitor.spec.ts` no longer asserts a stale direct `compactionStatus` prop after latest base moved compaction display through `AgentEventMonitor`'s activity-store-derived compaction rows, while preserving the active-execution focus regression coverage from this ticket.
+- 2026-06-01 / Architecture Review Round 12 delegation-authority local fix:
+  - `delegate_tasks` remains available to any authorized active team agent context when exposed by runtime tooling; service authorization now validates the caller against the active team member roster instead of assuming coordinator-only delegation.
+  - The model-facing schema still has no `delegator` field. Strict parser coverage now rejects stale/model-supplied `delegator`, and runtime descriptions/instructions tell agents the framework derives the delegator from tool context.
+  - `TaskDelegationService` stores exact original delegator identity in the ledger, including `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and `logicalMemberRouteKey` when the delegator is itself a concrete task-agent.
+  - Terminal completion notification now first targets that exact original delegator run when it is a task-agent, and still records coordinator-visible fallback history without retargeting the task-agent through the logical member normal run.
+  - TeamRun/backend post-message APIs accept an optional concrete member/task-agent run guard. Codex, Claude, and Mixed server-managed managers route guarded task-agent messages to the active task-agent registry/handle; native pure-team rejects unsupported task-agent-run post targeting.
+  - Work packets include the delegating task-agent run ID for nested delegation auditability while preserving selector-free `update_task_status`.
+  - Focused unit/integration tests cover task-agent-as-delegator child work, exact delegator identity in terminal payloads, original task-agent-run notification plus coordinator fallback, strict `delegator` rejection, runtime guidance, and backend task-agent post-message routing.
+- 2026-06-01 / Architecture Review Round 13 completion acceptance local fix:
+  - Worker-reported `completed` now transitions delegated tasks to `awaiting_acceptance` rather than final settlement, preserving the task-agent child/addressability for revision.
+  - Original-delegator acceptance reuses `update_task_status({ status: "accepted", task_id })`, validates exact stored delegator identity (including task-agent delegator identity for nested delegation), transitions the record to `accepted`, and requests delayed settlement only after acceptance.
+  - The settlement coordinator records idle task-agent observations so a task-agent that became idle before acceptance still settles immediately after acceptance when no bound work remains.
+  - Completion notifications include generated `task_id`, target logical member, `task_agent_id`, `task_agent_run_id`, reported status, message, reference files, and explicit revision/acceptance instructions.
+  - `send_message_to` accepts notification-provided `task_agent_id` / `task_agent_run_id`; Codex, Claude, and Mixed server-managed delivery routes revision messages to the concrete task-agent run, while native pure-team rejects unsupported task-agent-targeted delivery.
+  - Failure reports remain failure-terminal by explicit policy and schedule idle-gated settlement without acceptance.
+  - Focused tests cover awaiting-acceptance transitions, revision before acceptance, exact original-delegator acceptance (including task-agent delegators), task-agent-targeted revision routing, parser/schema contracts, and the updated live mixed-runtime E2E acceptance prompt.
+
+- 2026-06-01 frontend parent/child task-agent UX local fix:
+  - Logical team members now remain visible as stable member/template parent rows even when they are offline/available and have no direct conversation.
+  - Concrete task-agent instances remain the execution children. The active-execution flattener orders task-agent nodes directly after their `logicalMemberRouteKey` parent and indents them in grid/running-team surfaces.
+  - Task-agent display labels use parent/child wording (`worker · task_0001`) instead of treating the logical parent row as the task execution row.
+  - Parent member tiles are explicitly labeled `Member`; task-agent child tiles remain labeled `Task agent`.
+  - Task-agent work-packet-only conversations are suppressed from logical parent preview/focus surfaces so task packets/tools/status history are not rendered as the parent's normal conversation.
+  - Focused tests were updated to assert parent visibility, task-agent child ordering, child removal with parent preservation, and work-packet suppression on the parent surface.
 
 ## Key Files Or Areas
 
@@ -206,10 +237,12 @@
 - `member_name` is an exact logical team roster member/template name. Route-key aliases are intentionally not accepted by the model-facing schema.
 - The server generates internal task identity and may derive a display label from `description`; the model never supplies `task_name`.
 - `update_task_status` is valid only from a task-agent instance bound to exactly one delegated task. The model-facing tool takes no selector; internal task-agent context is the selector.
-- Dependency authoring/dependent activation remains deferred out of this first ticket. `delegate_tasks` accepts only ready-to-run work items; dependent follow-up work is coordinator-sequenced by waiting for completion notification and then calling `delegate_tasks` again. Multiple submitted tasks are independent and activated according to current task-agent concurrency behavior.
+- Dependency authoring/dependent activation remains deferred out of this first ticket. `delegate_tasks` accepts only ready-to-run work items; dependent follow-up work is sequenced by the delegator by waiting for completion notification and then calling `delegate_tasks` again. Multiple submitted tasks are independent and activated according to current task-agent concurrency behavior.
 - Supported server-managed paths must settle each final task-agent instance after terminal status once the current turn is safe, idle/offline is observed, and no current delegated work remains for that task-agent instance.
 - Native AutoByteus pure-team task delegation remains hidden/gated until native task-agent/per-member settlement is implemented and validated.
 - Approval-required task-agent tool calls require both the logical member selector and the concrete `task_agent_run_id`; the logical selector guards roster/member ownership while the run ID routes the approval/denial to the active task-agent instance.
+- `delegate_tasks` authorization is context-derived: any authorized active team agent can delegate when the tool is exposed, but the model cannot supply or spoof a delegator/task selector.
+- Nested delegation completion routes to the original task-agent delegator run when reachable and also leaves team/coordinator-visible fallback history.
 
 ## Known Risks / Follow-Ups
 
@@ -217,9 +250,11 @@
 - Rejected task-agent activation rolls the task back to `not_started` and reports the rejection to the tool caller. There is no independent retry scheduler in this ticket.
 - Native AutoByteus pure-team task delegation is intentionally gated rather than implemented.
 - Live mixed-runtime validation with LMStudio/Codex flags was not re-run by implementation; API/E2E owns that environment. The repository E2E was updated to use `member_name` and selector-free `update_task_status`, and to assert task-agent-run settlement after terminal status.
+- Live nested-delegation runtime validation was not run by implementation; focused server unit/integration tests cover the service/backend routing contract and API/E2E owns live validation.
 - Live browser/API E2E for the new frontend transient task-agent card/row behavior was not re-run by implementation; API/E2E owns that environment. Implementation added focused frontend unit coverage and a Nuxt production build check.
-- Live browser/API E2E for the Round 14/Round 17/Round 18/CR-011 worker-row semantics clarification was not re-run by implementation; API/E2E owns that environment. Implementation added focused frontend coverage for active-execution projection, focus fallback, focus-mode display, active command targets, draft ownership, running-team sidebar projection, run-history/workspace tree projection, stale history-row selection guards, stale URL/workspace execution link focus normalization, and task-agent-work-packet-only logical projection exclusion.
+- Live browser/API E2E for the Round 14/Round 17/Round 18/CR-011 and 2026-06-01 parent/child worker-row semantics clarification was not re-run by implementation; API/E2E owns that environment. Implementation added focused frontend coverage for active-execution projection, parent visibility, child ordering/removal, focus-mode display, active command targets, draft ownership, running-team sidebar projection, run-history/workspace tree projection, stale history-row selection guards, stale URL/workspace execution link focus handling, and task-agent-work-packet suppression on the logical parent surface.
 - Electron packaging was not re-run by implementation after the localization local fix; delivery owns that packaging command. Implementation re-ran the blocking localization audit plus targeted frontend checks and a Nuxt production build.
+- Electron packaging was not re-run by implementation after the latest-base conflict local fix; delivery already produced the integrated Round 20 Electron rebuild evidence before routing back, and implementation re-ran source/test/build checks around the conflict-resolution files.
 - `pnpm -C autobyteus-server-ts typecheck` remains unsuitable in this repo shape because `tsconfig.json` includes tests while `rootDir` is `src` (TS6059). Build/type coverage used `tsconfig.build.json` and executable focused tests instead.
 - `pnpm -C autobyteus-web exec tsc -p tsconfig.json --noEmit` remains unsuitable as a broad local gate in the current repo shape because it includes many existing test/SFC and unrelated type errors. Nuxt production build and focused Vitest coverage were used for this frontend change.
 
@@ -230,7 +265,7 @@
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A; Round 8 architecture review passed before this refreshed alignment.
-- Evidence / notes: Runtime adapters call the server-owned task delegation boundary; task-agent lifecycle is explicit; stale schema fields/selectors are rejected; native pure-team exposure is gated until settlement support exists; frontend runtime projection now preserves concrete task-agent identity as a transient UI entity separate from the logical roster member, and active execution surfaces/actions/history-tree selections plus stale workspace execution links now consume one active-execution projection/focus boundary instead of raw roster focus.
+- Evidence / notes: Runtime adapters call the server-owned task delegation boundary; task-agent lifecycle is explicit; stale schema fields/selectors are rejected; native pure-team exposure is gated until settlement support exists; frontend runtime projection now preserves concrete task-agent identity as a transient child entity under the logical roster member, active execution surfaces/actions/history-tree selections plus stale workspace execution links consume one active-execution projection/focus boundary, and task delegation now derives/stores exact original delegator identity for non-coordinator and task-agent delegators.
 
 ## Legacy / Compatibility Removal Check
 
@@ -241,6 +276,31 @@
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
 
 ## Local Implementation Checks Run
+
+### 2026-06-01 Delegation-Authority Round 12 Local Fix Checks
+
+- Source size check on changed server source files — passed: `task-delegation-record.ts` `139` effective lines, `task-delegation-ledger.ts` `230`, `task-delegation-input-resolver.ts` `157`, `task-delegation-service.ts` `180`, `task-delegation-completion-notifier.ts` `84`, `server-managed-task-agent-instance-registry.ts` `272`, `codex-team-manager.ts` `497`, `claude-team-manager.ts` `492`, `mixed-team-manager.ts` `497`, all changed server source files below the `500` effective-line hard guard.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/integration/agent-team-execution/codex-team-run-backend.integration.test.ts tests/integration/agent-team-execution/claude-team-run-backend.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts` — passed: `9` files / `56` tests. Vitest emitted existing tool-registration/stdout and Node SQLite experimental warnings only.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
+- `git diff --check` — passed.
+
+### 2026-06-01 Parent/Child Task-Agent UX Local Fix Checks
+
+- Source size check on changed frontend source files — passed: `teamActiveExecutionMembers.ts` `99` effective lines, `teamTaskAgentContextProjection.ts` `229`, `TeamMemberMonitorTile.vue` `173`, `AgentTeamEventMonitor.vue` `99`, `TeamTaskAgentActivityBar.vue` `178`.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/team/__tests__/TeamTaskAgentActivityBar.spec.ts` — passed: `8` files / `97` tests. Vitest emitted existing KaTeX quirks warnings and expected mocked websocket error logs only.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamTaskAgentActivityBar.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` — passed: `13` files / `165` tests. Vitest emitted existing KaTeX quirks warnings, expected mocked websocket error logs, and the existing terminate-failure test log only.
+- `pnpm -C autobyteus-web audit:localization-literals && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web guard:web-boundary` — passed; localization audit emitted the existing `MODULE_TYPELESS_PACKAGE_JSON` warning only.
+- `pnpm -C autobyteus-web build` — passed; Nuxt production client/server/static build completed with the existing large chunk warning only.
+- `git diff --check` — passed.
+
+### Delivery Latest-Base Integration Conflict Local Fix Checks
+
+- Conflict marker sweep on the delivery conflict files: `rg -n "<<<<<<<|=======|>>>>>>>" autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts || true` — passed with no matches.
+- Source size check: `autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts` is `33` effective non-empty lines.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts` — passed: `5` files / `48` tests. Vitest emitted existing KaTeX quirks warnings and expected mocked websocket error logs only.
+- `pnpm -C autobyteus-web guard:web-boundary` — passed.
+- `pnpm -C autobyteus-web build` — passed; Nuxt production client/server/static build completed with the existing large chunk warning only.
+- `git diff --check` — passed.
 
 ### Delivery Round 8 Electron Localization Local Fix Checks
 
@@ -362,26 +422,56 @@
   - `rg "task-management/tools/task-tools/(create-tasks|create-task|assign-task-to|get-my-tasks|get-task-plan-status)|create-tasks\\.js|create-task\\.js|assign-task-to\\.js|get-my-tasks\\.js|get-task-plan-status\\.js" autobyteus-ts/tests autobyteus-ts/src autobyteus-server-ts/tests autobyteus-server-ts/src`
 - Round 7 stale schema sweep across relevant source/docs/tests — no source contract/schema/projection occurrences of old model-facing fields remained. Matches are limited to explicit rejection/instruction text saying not to pass stale fields/selectors.
 
+
+### Round 13 Completion Acceptance / Revision Routing Local Fix Checks
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts` — passed: `5` files / `47` tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
+- `git diff --check` — passed.
+
+Round 13 implementation notes:
+- Worker task-agent `update_task_status({ status: "completed" })` now records `awaiting_acceptance`, emits the reported-completion event/notification, and deliberately does not request settlement.
+- Original-delegator acceptance uses `update_task_status({ status: "accepted", task_id })`, is authorized against the stored original delegator identity, transitions the record to `accepted`, and schedules task-agent settlement only after no-bound-work plus idle gates.
+- Revision feedback can use existing `send_message_to` with the notification-provided `recipient_name`, `task_agent_id`, and `task_agent_run_id`; Codex/Claude/Mixed server-managed routing sends that message to the concrete task-agent run instead of the logical member conversation.
+- Failure reports remain failure-terminal by explicit policy: `failed` notifies the delegator and schedules idle-gated settlement without requiring acceptance.
+- The repository live mixed-runtime E2E prompt/expectations were aligned so the coordinator accepts by generated `task_id` before expecting task-agent offline/settled state.
+
+
+### CR-012 / CR-013 Task-Agent Child Preservation Local Fix Checks
+
+- Source size check on changed frontend source files — passed: `teamRunOpenCoordinator.ts` `253` effective lines and `teamTaskAgentContextProjection.ts` `308`, both below the `500` effective-line guardrail.
+- `pnpm -C autobyteus-web exec vitest run services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/workspace/team/__tests__/TeamTaskAgentActivityBar.spec.ts` — passed: `3` files / `34` tests. Vitest emitted existing KaTeX quirks warnings and expected mocked websocket error logs only.
+- `pnpm -C autobyteus-web build` — passed; Nuxt production client/server/static build completed with the existing large chunk warning only.
+- `git diff --check` — passed.
+
+CR-012 / CR-013 implementation notes:
+- Live re-open/hydration now preserves concrete task-agent child `AgentContext`s and restores/reconstructs their `memberNodesByRouteKey` / `memberTree` entries after active subscribed team metadata refreshes, so running or awaiting-acceptance task-agent children remain visible/addressable instead of being dropped while their contexts survive.
+- `ensureTaskAgentContext(...)` now repairs a missing task-agent node/tree entry when the task-agent context already exists, covering streamed status/tool/activity arrivals after any projection refresh that temporarily removed the node.
+- Focused run-open expectations were updated for the latest parent-visible semantics: logical member parents remain valid visible/focusable team-member/template rows; stale worker-hidden expectations are no longer the target behavior.
+- Focused coverage was added for reconstructing missing live task-agent children through subscribed active-team reopen and for repairing a missing task-agent node from an existing task-agent context on subsequent stream identity.
+
 ## Downstream Validation Hints / Suggested Scenarios
 
 - Re-run code review before API/E2E because implementation and repository-resident E2E validation changed after the previous review.
 - API/E2E should re-run the live mixed-runtime task-delegation scenario and verify:
   - coordinator can call `delegate_tasks` with only `member_name`, rich `description`, and optional `reference_files`;
   - worker receives a work packet containing rich `description`, optional references, task-agent instance identity, and selector-free status instructions;
-  - worker calls `update_task_status` with only `status`, optional `message`, and optional `reference_files`;
-  - stale selectors such as `task_id`/`task_name` are rejected before mutation;
-  - coordinator receives terminal notification with internal task identity, member, status, optional message/reference files;
-  - the task-agent run goes offline/settles and `AgentRunManager.getActiveRun(taskAgentRunId)` is absent.
+  - worker calls `update_task_status` with only `status`, optional `message`, and optional `reference_files` for execution updates;
+  - stale execution selectors such as `task_id`/`task_name` are rejected before mutation, while original-delegator acceptance accepts only `status="accepted"` plus generated `task_id`;
+  - coordinator/original delegator receives reported-completion notification with generated task identity, target member, task-agent identity, reported status, message, and reference files;
+  - revision feedback through `send_message_to` with `task_agent_run_id` reaches the same concrete task-agent instance;
+  - the task-agent remains addressable while awaiting acceptance, then goes offline/settles only after original-delegator acceptance plus idle/no-bound-work gates.
 - Validate same-member parallel tasks produce separate task-agent run IDs and cannot update each other's tasks through model-facing selectors.
 - Validate native AutoByteus pure-team agents do not receive `delegate_tasks` / `update_task_status` while native task-agent settlement remains unsupported.
 - Validate frontend/browser behavior for task-agent lifecycle:
   - task-agent activation/status/stream payloads create a transient row/card keyed by concrete task-agent run/instance identity;
   - the work packet and subsequent task-agent conversation/tool activity appear on that transient entity, not the logical worker row;
   - multiple same-member task-agent instances render independently;
-  - terminal/offline backend settlement removes only the settled transient entity.
-  - active execution grid/spotlight/header no longer show a task-delegation-only logical worker as an offline/initializing execution entity after the final task-agent settles;
-  - workspace/history team tree rows do not expose the settled task-only logical worker as a clickable active execution member, and stale member-row clicks route to the resolved active-execution target;
-  - roster/topology-only views, if visible, are clearly labeled as non-execution logical roster surfaces.
+  - reported completion keeps the task-agent child visible/addressable while awaiting acceptance;
+  - accepted/offline backend settlement removes only the settled transient entity.
+  - active execution grid/spotlight/header keep the logical member parent visible but do not reuse that parent as the completed task-agent execution row after the concrete child settles;
+  - workspace/history team tree rows keep logical parents distinct from task-agent children, and stale child-route clicks route to the resolved visible active-execution target;
+  - roster/topology-only views, if visible, are clearly labeled as logical member/template surfaces rather than completed task-agent execution history.
 - Validate an approval-required tool call from a task-agent worker:
   - approval request payload includes concrete `task_agent_run_id`;
   - frontend approval/denial command sends that run ID back;
@@ -389,4 +479,4 @@
 
 ## API / E2E / Executable Validation Still Required
 
-Yes. Implementation-scoped build/unit/integration checks passed, and the gated live E2E file was syntax/execution loaded with the test skipped by default. Full live API/E2E validation of mixed runtime task delegation, terminal notification, and mandatory task-agent settlement remains owned by `api_e2e_engineer` after this package passes code review.
+Yes. Implementation-scoped build/unit/integration checks passed, and the gated live E2E file was syntax/execution loaded with the test skipped by default. Full live API/E2E validation of mixed runtime task delegation, reported-completion notification, original-delegator acceptance, revision routing, and mandatory acceptance-gated task-agent settlement remains owned by `api_e2e_engineer` after this package passes code review.

@@ -1,7 +1,9 @@
 import {
   TaskDelegationError,
   type DelegateTasksInput,
+  type TaskDelegationCallerIdentity,
   type TaskDelegationContext,
+  type TaskDelegationDelegatorIdentity,
   type TaskDelegationMemberIdentity,
   type TaskDelegationTaskInput,
   type UpdateTaskStatusInput,
@@ -32,6 +34,16 @@ export const cloneTaskDelegationMemberIdentity = (
   runtimeKind: identity.runtimeKind ?? null,
 });
 
+export const cloneTaskDelegationDelegatorIdentity = (
+  identity: TaskDelegationCallerIdentity,
+): TaskDelegationDelegatorIdentity => ({
+  ...cloneTaskDelegationMemberIdentity(identity),
+  taskAgentInstanceId: identity.taskAgentInstanceId ?? null,
+  taskAgentRunId: identity.taskAgentRunId ?? null,
+  taskId: identity.taskId ?? null,
+  logicalMemberRouteKey: identity.logicalMemberRouteKey ?? null,
+});
+
 export class TaskDelegationInputResolver {
   constructor(
     private readonly teamRunId: string,
@@ -52,6 +64,8 @@ export class TaskDelegationInputResolver {
     normalizeRequiredTaskDelegationString(context.caller.memberName, "caller.memberName");
     normalizeRequiredTaskDelegationString(context.caller.memberRouteKey, "caller.memberRouteKey");
     normalizeRequiredTaskDelegationString(context.caller.memberRunId, "caller.memberRunId");
+    this.assertTaskAgentCallerShape(context.caller);
+    this.assertAuthorizedDelegator(context);
   }
 
   buildCreateInputs(
@@ -66,7 +80,7 @@ export class TaskDelegationInputResolver {
       taskId: this.ledger.reserveTaskId(),
       task,
       member: members[index]!,
-      delegator: cloneTaskDelegationMemberIdentity(context.caller),
+      delegator: cloneTaskDelegationDelegatorIdentity(context.caller),
     }));
   }
 
@@ -108,5 +122,48 @@ export class TaskDelegationInputResolver {
       );
     }
     return cloneTaskDelegationMemberIdentity(matches[0]);
+  }
+
+  private assertAuthorizedDelegator(context: TaskDelegationContext): void {
+    const callerRouteKey = context.caller.memberRouteKey.trim();
+    const logicalRouteKey = context.caller.logicalMemberRouteKey?.trim() || callerRouteKey;
+    const member = context.members.find((candidate) => candidate.memberRouteKey === logicalRouteKey) ?? null;
+    if (!member || member.memberName !== context.caller.memberName) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Caller '${context.caller.memberName}' is not an authorized active team member for this delegation context.`,
+      );
+    }
+    const taskAgentRunId = context.caller.taskAgentRunId?.trim() || null;
+    if (taskAgentRunId) {
+      if (context.caller.memberRunId !== taskAgentRunId || callerRouteKey !== logicalRouteKey) {
+        throw new TaskDelegationError(
+          "DELEGATOR_NOT_AUTHORIZED",
+          `Task-agent delegator '${context.caller.memberName}' has inconsistent caller identity.`,
+        );
+      }
+      return;
+    }
+    if (member.memberRunId !== context.caller.memberRunId) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Caller run '${context.caller.memberRunId}' is not authorized for member '${context.caller.memberName}'.`,
+      );
+    }
+  }
+
+  private assertTaskAgentCallerShape(caller: TaskDelegationCallerIdentity): void {
+    const taskAgentFields = [
+      caller.taskAgentInstanceId?.trim(),
+      caller.taskAgentRunId?.trim(),
+      caller.taskId?.trim(),
+      caller.logicalMemberRouteKey?.trim(),
+    ];
+    if (taskAgentFields.some(Boolean) && !taskAgentFields.every(Boolean)) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_CONTEXT_INCOMPLETE",
+        "Task-agent delegation context requires taskAgentInstanceId, taskAgentRunId, taskId, and logicalMemberRouteKey.",
+      );
+    }
   }
 }

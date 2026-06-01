@@ -49,9 +49,6 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
       : {}),
   };
   const members = memberTeamContext.members.map(toIdentity);
-  if (!members.some((member) => member.memberRouteKey === caller.memberRouteKey)) {
-    members.unshift(caller);
-  }
   return {
     teamRunId: memberTeamContext.teamRunId,
     teamDefinitionId: memberTeamContext.teamDefinitionId,

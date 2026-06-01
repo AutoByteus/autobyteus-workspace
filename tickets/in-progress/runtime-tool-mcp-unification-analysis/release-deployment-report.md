@@ -2,85 +2,114 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, deployment, version bump, or tag is approved or in progress. Repository finalization is paused because API/E2E Round 9 reopened the previous pass as `Unclear` pending solution-designer clarification of worker-row/task-agent semantics.
+No release, publication, deployment, version bump, or tag was run. Delivery is ready for user verification after latest-base integration, Round 21 code-review pass, API/E2E Round 13 post-conflict pass, docs sync, and local macOS Electron packaging evidence.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/handoff-summary.md`
-- Handoff summary status: `Updated for pause/blocker`
-- Notes: Records that prior delivery readiness is superseded by Round 9 `Unclear` validation and the worker-row semantics reroute.
+- Handoff summary status: updated for Round 21 pass, API/E2E Round 13 validation-impact decision, latest `origin/personal` freshness check, docs sync, and Electron artifact paths.
 
 ## Integrated-State Refresh
 
-- Latest tracked remote base in the ticket branch: `origin/personal` `2f545609568b7cb369e4b4b086fa9268cb7fd3e8`.
-- Latest merge already on branch: `e3e8197b6e3c86b48275a53099e1cad3e631b7ca`.
-- Additional delivery refresh/finalization: `Not run after Round 9 because validation is reopened and finalization is paused.`
+- Ticket branch: `codex/runtime-tool-mcp-unification-analysis`.
+- Finalization target: `personal` / `origin/personal`.
+- Latest tracked remote base: `origin/personal` `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb` (`27f19cde Merge compaction config save button fix`).
+- Safety checkpoint commit before merge: `cc2151f664f1a87785967cde1087da64bb2fd45d`.
+- Latest-base merge commit: `a64978a3447d49e147be3d5f6bc9398ad1d72ef6`.
+- Final fetch after Round 21 validation handoff: `git fetch origin personal` at 2026-05-31 22:06 CEST; `origin/personal` remained `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb` and is contained in `HEAD`.
 
-## User Verification
+Merge conflicts resolved during integration and reviewed in Round 21:
 
-- Explicit user completion/verification received: `No`.
-- Verification status: blocked before final verification; design clarification is pending.
-- Renewed verification required after clarification and downstream work: `Yes`.
+- `autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts`
+- `autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts`
+
+## Latest Conflict-Fix Review / Validation
+
+- Code Review Round 21: Pass, no open findings.
+- API/E2E Round 13: Pass / targeted no-broad-replay decision.
+- Reroute artifact retained for context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`.
+
+Rationale from API/E2E: the conflict fix is limited to frontend protocol typing and team-monitor unit-test owner-boundary alignment. It does not change runtime task delegation, task-agent settlement, stale-route hydration/opening, websocket command routing, or backend task-delegation service paths already proven by Round 12 live validation.
 
 ## Docs Sync Result
 
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`
-- Docs sync result: `Paused / needs follow-up`.
-- Reason: long-lived docs around logical member/template vs task-model worker/sub-agent visibility must wait for solution-designer clarification.
-
-## Repository Finalization
-
-- Ticket branch: `codex/runtime-tool-mcp-unification-analysis`.
-- Finalization target: `origin/personal` / `personal`.
-- Ticket branch final commit: `Not started`.
-- Ticket branch push: `Not started`.
-- Merge into target: `Not started`.
-- Push target branch: `Not started`.
-- Repository finalization status: `Paused / blocked`.
-- Blocker: API/E2E Round 9 result `Unclear`; solution-designer clarification pending.
-
-## Release / Publication / Deployment
-
-- Applicable: `No` before finalization.
-- Result: `Not started`.
-- Published artifacts: `None`.
-- Note: The existing local Electron artifacts from the prior successful rebuild remain available for context only, but they are not final release candidates while validation is reopened.
-
-## Post-Finalization Cleanup
-
-Not run. Do not clean up ticket worktree, branches, Electron artifacts, or browser validation processes while the Round 9 clarification is pending.
-
-## Escalation / Reroute
-
-- Classification: `Unclear` / potential `Design Impact`.
-- Routed owner: `solution_designer`.
-- Reroute artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round14-worker-row-semantics-reroute.md`.
-- Summary: User expects the task-model worker/sub-agent to disappear after completion; current interpretation leaves a visible logical `worker` row after the transient task-agent card disappears.
+- Result: Complete against the latest integrated state.
+- Durable docs updated for task-delegation contract, no-dependency task shape, pushed work packets, task-agent settlement, native AutoByteus gating, frontend task-agent card lifecycle, approval routing, stale-route normalization, and live mixed-runtime validation.
+- Latest-base conflict fix had no additional long-lived docs impact.
 
 ## Verification Checks
 
-Prior checks remain recorded but are superseded for final-delivery purposes by the Round 9 `Unclear` validation result:
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Final `origin/personal` freshness check | Pass | `origin/personal` remained `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb`; current `HEAD` contains it. |
+| Conflict marker sweep on resolved merge files | Pass | No `<<<<<<<`, `=======`, or `>>>>>>>` markers found in the two conflict files. |
+| `git diff --check` | Pass | Run after final delivery updates. |
+| README-guided macOS Electron rebuild | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log` |
+| Delivery rerun of API/E2E targeted frontend suite | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/post-round21-api-e2e-targeted-vitest.log` — 5 files / 48 tests |
+| API/E2E Round 13 validation-impact decision | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md` |
 
-- Round 8 API/E2E: previously Pass, now reopened.
-- Round 15 code review / CR-008: Pass.
-- Delivery Electron rebuild after CR-008: Pass.
+Electron rebuild command from `autobyteus-web/README.md`:
 
-Current authoritative validation status:
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
-- Latest result: `Unclear`.
+Observed non-blocking warnings during build:
 
-## Evidence
+- Existing Node `MODULE_TYPELESS_PACKAGE_JSON` localization audit warning.
+- Existing Nuxt large chunk warning.
+- Existing electron-builder unresolved optional dependency diagnostics and unsigned/no-notarization behavior due local build env (`APPLE_TEAM_ID=` and no signing identity).
 
-User/API-E2E screenshots:
+## Electron Artifacts Produced
 
-- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_2898ee285924__image.png`
-- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_22a2dda5b43a__image.png`
+- Build summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-summary.md`
+- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-artifacts.sha256`
+
+| Artifact | Size (bytes) | SHA-256 |
+| --- | ---: | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.dmg` | 379976600 | `dd0852a98b67f82c7972d9f93b9c3bf03e7b40b0d4abc82a49b87fc0f6da53f5` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.dmg.blockmap` | 394686 | `9b5b1cb6de1e98f0744d63254bcaec1356904efa0a3015193bb07ebbbb6c3ff4` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.zip` | 377319981 | `d6eeb02c44c2415face5a6a117d5a34e81f71e69a8febade8b831ab445598311` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.zip.blockmap` | 387349 | `f801ed7444d8b0a166b5ff959eac291df5412adca50267775589534d8d2386fa` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `77e10f7c5603f8a5d39267617b4695413a3b5ab10b45a0459a2c6f75201524a4` |
+
+`latest-mac.yml` reports version `1.3.37` and release date `2026-05-31T19:43:24.738Z`.
+
+The Electron package was not rebuilt again after Round 21 because the post-packaging delta was limited to test/report artifacts. Runtime packaging inputs were unchanged after the successful integrated Electron rebuild.
+
+## User Verification
+
+- Explicit user completion/verification received: No.
+- Verification status: waiting for user inspection/confirmation.
+- Required before finalization: Yes.
+
+## Repository Finalization
+
+Not started:
+
+- Ticket folder move to `tickets/done/`.
+- Final ticket-branch commit/push.
+- Final target branch refresh/merge/push.
+- Tag/release/publication/deployment.
+- Worktree/branch/artifact/browser-process cleanup.
+
+## Release / Publication / Deployment
+
+- Applicable now: No, not before repository finalization and explicit user verification.
+- Published artifacts: None.
+- Local Electron artifacts are available for inspection only; they have not been notarized, signed for distribution, uploaded, or released.
+
+## Running Browser Inspection Setup
+
+API/E2E left Round 20 backend/frontend dev processes running for optional inspection. Delivery did not stop them. Session details are in:
+
+- `/tmp/autobyteus-worker-row-round20-20260531-212249/session.env`
 
 ## Environment Or Migration Notes
 
-No database migrations or runtime deployment steps were added by delivery. No cleanup or finalization was performed.
+No database migrations, deployment runtime changes, or cleanup steps were performed by delivery.
 
 ## Final Status
 
-Delivery is paused. Do not archive, finalize, push, merge into `personal`, release, deploy, clean up, or present the prior Electron package as final until solution-designer clarification resolves the worker-row/task-agent semantics and any required implementation/review/API-E2E loop completes.
+Delivery is ready for user verification on the latest integrated state. Do not archive, push, merge into `personal`, release, deploy, tag, or clean up until the user explicitly confirms completion/verification.

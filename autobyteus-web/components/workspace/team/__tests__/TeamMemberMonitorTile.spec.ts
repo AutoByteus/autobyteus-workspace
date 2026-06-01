@@ -170,4 +170,52 @@ describe('TeamMemberMonitorTile', () => {
     expect(wrapper.text()).not.toContain('Team');
   });
 
+  it('labels logical parent members and does not preview task-agent work packets as parent conversation', () => {
+    const workerNode = {
+      memberKind: 'agent',
+      memberName: 'worker',
+      displayName: 'Worker',
+      memberPath: ['worker'],
+      memberRouteKey: 'worker',
+      agentDefinitionId: 'worker-agent',
+    };
+    const workerContext = {
+      ...buildMemberContext(),
+      state: {
+        currentStatus: AgentStatus.Offline,
+        conversation: {
+          id: 'team-1::worker',
+          createdAt: '2026-05-30T00:00:00.000Z',
+          updatedAt: '2026-05-30T00:00:00.000Z',
+          agentName: 'Worker',
+          messages: [{
+            type: 'user',
+            text: 'You have been activated as task agent task_agent_task_0001.\nTask-agent run: team-1__worker__task_0001',
+            timestamp: new Date('2026-05-30T00:00:00.000Z'),
+          }],
+        },
+      },
+    };
+
+    const wrapper = mount(TeamMemberMonitorTile, {
+      props: {
+        memberNode: workerNode as any,
+        memberContext: workerContext as any,
+      },
+      global: {
+        stubs: {
+          AgentConversationFeed: {
+            template: '<div data-test="conversation-feed" />',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('Worker');
+    expect(wrapper.text()).toContain('Member');
+    expect(wrapper.find('[data-test="conversation-feed"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('No activity yet');
+    expect(wrapper.text()).not.toContain('Task-agent run');
+  });
+
 });

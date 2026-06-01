@@ -275,8 +275,8 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const coordinatorAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task delegation E2E.",
-      toolNames: ["delegate_tasks"],
-      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"delegate_tasks","parameters":<exact arguments>}}. Do not call update_task_status. Do not explore the environment.`,
+      toolNames: ["delegate_tasks", "update_task_status"],
+      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"delegate_tasks","parameters":<exact arguments>}}. When you later receive a framework task completion notification with a Task ID, accept it exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"update_task_status","parameters":{"status":"accepted","task_id":"<Task ID>"}}}. Do not explore the environment.`,
     });
     const workerAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-worker-${unique}`,
@@ -367,8 +367,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "task delegation terminal event", 120_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "EXTERNAL_USER_MESSAGE" && message.payload.agent_name === "coordinator" && typeof message.payload.content === "string" && message.payload.content.includes("Delegated task completed.") && message.payload.content.includes(taskId) && message.payload.content.includes(completionToken),
+        message.type === "EXTERNAL_USER_MESSAGE" && message.payload.agent_name === "coordinator" && typeof message.payload.content === "string" && message.payload.content.includes("reported completed") && message.payload.content.includes(taskId) && message.payload.content.includes(completionToken),
         "coordinator task completion notification", 120_000,
+      );
+      await waitForMessageAfter(connection.messages, startIndex, (message) =>
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "update_task_status",
+        "coordinator acceptance update_task_status success", 240_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "AGENT_STATUS" &&

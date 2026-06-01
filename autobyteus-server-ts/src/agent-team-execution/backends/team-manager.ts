@@ -14,6 +14,7 @@ export interface TeamManager {
   postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector,
+    targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,

@@ -68,13 +68,13 @@ const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
 });
 
 describe('RunningTeamRow', () => {
-  it('hides initializing task-only logical topology rows from active execution', () => {
+  it('keeps initializing task-only logical members visible as parent/template rows', () => {
     const wrapper = mountRow();
 
     const rows = wrapper.findAll('.member-row');
-    expect(rows.map((row) => row.attributes('data-route'))).toEqual(['coordinator']);
-    expect(rows[0].attributes('data-focused')).toBe('true');
-    expect(wrapper.text()).not.toContain('Worker');
+    expect(rows.map((row) => row.attributes('data-route'))).toEqual(['coordinator', 'worker']);
+    expect(rows[1].attributes('data-focused')).toBe('true');
+    expect(wrapper.text()).toContain('Worker');
   });
 
   it('keeps logical members with direct conversation history visible in the running sidebar', () => {

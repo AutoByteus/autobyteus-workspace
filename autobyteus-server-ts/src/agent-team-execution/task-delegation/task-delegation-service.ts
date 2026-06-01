@@ -51,6 +51,7 @@ export class TaskDelegationService {
     context: TaskDelegationContext,
     input: DelegateTasksInput,
   ): Promise<DelegateTasksResult> {
+    this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
     const createInputs = this.inputResolver.buildCreateInputs(context, input);
     const records = this.ledger.createRecords(createInputs);
@@ -71,9 +72,13 @@ export class TaskDelegationService {
     context: TaskDelegationContext,
     input: UpdateTaskStatusInput,
   ): Promise<UpdateTaskStatusResult> {
+    this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
-    const existing = this.resolveCallerBoundRecord(context);
+    if (input.status === "accepted") {
+      return this.acceptTaskStatus(context, input);
+    }
 
+    const existing = this.resolveCallerBoundRecord(context);
     const message = this.inputResolver.normalizeStatusMessage(input.message ?? null);
     const referenceFiles = this.inputResolver.normalizeReferenceFiles(input.reference_files);
     const previousStatus = existing.status;
@@ -91,8 +96,8 @@ export class TaskDelegationService {
     });
 
     let settlementRequested = false;
-    if (isTaskDelegationTerminalStatus(updated.status)) {
-      await this.completionNotifier.notifyTerminalStatus({
+    if (input.status === "completed" || input.status === "failed") {
+      await this.completionNotifier.notifyReportedStatus({
         teamRun: this.teamRun,
         payload: {
           teamRunId: context.teamRunId,
@@ -101,14 +106,16 @@ export class TaskDelegationService {
           member: updated.member,
           delegator: updated.delegator,
           taskAgentInstance: updated.taskAgentInstance,
-          status: updated.status,
+          status: input.status,
           message: updated.statusMessage,
           referenceFiles: updated.statusReferenceFiles,
           completedAt: updated.terminalAt ?? updated.updatedAt,
         },
         coordinatorMemberRouteKey: context.coordinatorMemberRouteKey ?? null,
       });
-      settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
+      if (input.status === "failed") {
+        settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
+      }
     }
 
     return {
@@ -118,6 +125,47 @@ export class TaskDelegationService {
       reference_files_count: updated.statusReferenceFiles.length,
       settlement_requested: settlementRequested,
     };
+  }
+
+  private acceptTaskStatus(
+    context: TaskDelegationContext,
+    input: Extract<UpdateTaskStatusInput, { status: "accepted" }>,
+  ): UpdateTaskStatusResult {
+    const taskId = input.task_id.trim();
+    if (!taskId) {
+      throw new TaskDelegationError("VALIDATION_ERROR", "task_id is required for accepted status.");
+    }
+    const existing = this.ledger.getRecord(taskId);
+    if (!existing) {
+      throw new TaskDelegationError("TASK_NOT_FOUND", `Delegated task '${taskId}' was not found.`);
+    }
+    this.assertOriginalDelegator(context, existing);
+    const message = this.inputResolver.normalizeStatusMessage(input.message ?? null);
+    const previousStatus = existing.status;
+    const updated = this.ledger.acceptTask({ taskId, message });
+    this.eventPublisher.publishStatusUpdated({
+      teamRun: this.teamRun,
+      teamRunId: context.teamRunId,
+      previousStatus,
+      record: updated,
+    });
+    const settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
+    return {
+      status: updated.status,
+      terminal: isTaskDelegationTerminalStatus(updated.status),
+      message: updated.acceptanceMessage,
+      reference_files_count: updated.statusReferenceFiles.length,
+      settlement_requested: settlementRequested,
+    };
+  }
+
+  private assertTeamRunActive(): void {
+    if (!this.teamRun.isActive()) {
+      throw new TaskDelegationError(
+        "TEAM_RUN_NOT_ACTIVE",
+        `Team run '${this.teamRun.runId}' is not active.`,
+      );
+    }
   }
 
   private resolveCallerBoundRecord(context: TaskDelegationContext): TaskDelegationRecord {
@@ -175,5 +223,57 @@ export class TaskDelegationService {
       );
     }
     return record;
+  }
+
+  private assertOriginalDelegator(
+    context: TaskDelegationContext,
+    record: TaskDelegationRecord,
+  ): void {
+    const caller = context.caller;
+    const callerLogicalRoute = caller.logicalMemberRouteKey?.trim() || caller.memberRouteKey.trim();
+    if (
+      record.delegator.memberRouteKey !== callerLogicalRoute ||
+      record.delegator.memberName !== caller.memberName
+    ) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Only original delegator '${record.delegator.memberName}' may accept delegated task '${record.taskId}'.`,
+      );
+    }
+    if (record.delegator.taskAgentRunId) {
+      this.assertTaskAgentDelegatorIdentity(context, record);
+      return;
+    }
+    if (caller.taskAgentRunId?.trim()) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Task-agent caller is not the original delegator for delegated task '${record.taskId}'.`,
+      );
+    }
+    if (record.delegator.memberRunId !== caller.memberRunId) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Caller run '${caller.memberRunId}' is not the original delegator run for delegated task '${record.taskId}'.`,
+      );
+    }
+  }
+
+  private assertTaskAgentDelegatorIdentity(
+    context: TaskDelegationContext,
+    record: TaskDelegationRecord,
+  ): void {
+    const caller = context.caller;
+    const expected = record.delegator;
+    if (
+      caller.taskAgentRunId !== expected.taskAgentRunId ||
+      caller.taskAgentInstanceId !== expected.taskAgentInstanceId ||
+      caller.taskId !== expected.taskId ||
+      caller.memberRunId !== expected.taskAgentRunId
+    ) {
+      throw new TaskDelegationError(
+        "DELEGATOR_NOT_AUTHORIZED",
+        `Caller task-agent identity is not the original delegator for delegated task '${record.taskId}'.`,
+      );
+    }
   }
 }

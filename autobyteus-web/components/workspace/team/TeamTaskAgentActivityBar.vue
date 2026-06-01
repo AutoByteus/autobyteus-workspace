@@ -91,6 +91,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AIResponseSegment, ToolApprovalTarget, ToolInvocationLifecycle } from '~/types/segments';
+import { flattenActiveExecutionMemberNodesForDisplay } from '~/utils/teamActiveExecutionMembers';
 
 const props = defineProps<{
   teamContext: AgentTeamContext;
@@ -144,9 +145,10 @@ const findPendingApprovals = (context: AgentContext | null): PendingTaskAgentApp
 };
 
 const taskAgentEntries = computed<TaskAgentEntry[]>(() => (
-  props.teamContext.memberTree
-    .filter((node) => node.isTaskAgentInstance)
-    .map((node) => {
+  flattenActiveExecutionMemberNodesForDisplay(props.teamContext)
+    .filter((entry) => entry.node.isTaskAgentInstance)
+    .map((entry) => {
+      const { node } = entry;
       const context = props.teamContext.leafAgentContextsByRouteKey.get(node.memberRouteKey) ?? null;
       const runId = node.taskAgentRunId || node.memberRunId || node.memberRouteKey;
       return {

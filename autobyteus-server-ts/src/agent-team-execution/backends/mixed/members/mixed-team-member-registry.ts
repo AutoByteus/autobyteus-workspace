@@ -1,3 +1,4 @@
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { StartTaskAgentInstanceRequest } from "../../../domain/task-agent-instance.js";
 import { cloneTaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
@@ -182,6 +183,14 @@ export class MixedTeamMemberRegistry {
       this.taskAgentHandles.delete(taskAgentRunId);
     }
     return result;
+  }
+
+  async postMessageToTaskAgent(logicalMemberRouteKey: string, taskAgentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    const handle = this.taskAgentHandles.get(taskAgentRunId) ?? null;
+    if (!handle) return { accepted: false, code: "TASK_AGENT_RUN_NOT_FOUND", message: `Task-agent run '${taskAgentRunId}' was not found.` };
+    if (handle.context.memberRouteKey !== logicalMemberRouteKey) return { accepted: false, code: "TASK_AGENT_ROUTE_MISMATCH", message: `Task-agent run '${taskAgentRunId}' is not for logical member '${logicalMemberRouteKey}'.` };
+    if (!handle.isActive()) return { accepted: false, code: "TARGET_MEMBER_INACTIVE", message: `Task-agent run '${taskAgentRunId}' is not active.` };
+    return handle.postMessage(message);
   }
 
   async approveTaskAgentToolInvocation(

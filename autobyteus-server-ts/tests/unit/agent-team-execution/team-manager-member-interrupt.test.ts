@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { CodexTeamManager } from "../../../src/agent-team-execution/backends/codex/codex-team-manager.js";
 import {
@@ -16,6 +17,7 @@ import {
   MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
@@ -69,6 +71,7 @@ const createTeamRunConfig = (teamBackendKind: TeamBackendKind) =>
 
 const createFakeAgentRun = () => ({
   isActive: vi.fn(() => true),
+  postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
@@ -101,7 +104,7 @@ const attachMemberRuns = (manager: unknown) => {
     context,
     isActive: () => true,
     getStatusSnapshot: run.getStatusSnapshot,
-    postMessage: vi.fn(),
+    postMessage: vi.fn(async (message: AgentInputUserMessage) => run.postUserMessage(message)),
     deliverInterMemberMessage: vi.fn(),
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(async () => run.interrupt()),
@@ -182,7 +185,11 @@ const attachTaskAgentRun = (manager: unknown) => {
     },
     isActive: () => true,
     getStatusSnapshot: taskAgentRun.getStatusSnapshot,
-    postMessage: vi.fn(),
+    postMessage: vi.fn(async (message: AgentInputUserMessage) => ({
+      ...(await taskAgentRun.postUserMessage(message)),
+      memberRunId: taskAgentRunId,
+      memberName: logicalContext.memberName,
+    })),
     deliverInterMemberMessage: vi.fn(),
     approveToolInvocation: vi.fn(async (
       _target: unknown,
@@ -380,5 +387,74 @@ describe.each([
       "approved",
     );
     expect(codeReviewerRun.approveToolInvocation).not.toHaveBeenCalled();
+  });
+});
+
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s task-agent post-message routing", (_managerName, createManager) => {
+  it("routes messages to the concrete task-agent run instead of the logical member run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+    const message = new AgentInputUserMessage("Delegated child task completed.");
+
+    await expect(
+      manager.postMessage(
+        message,
+        { kind: "route_key", memberRouteKey: logicalRouteKey },
+        taskAgentRunId,
+      ),
+    ).resolves.toEqual({ accepted: true, memberRunId: taskAgentRunId, memberName: "Code Reviewer" });
+
+    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(message);
+    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
+  });
+
+  it("routes inter-agent revision messages to the concrete task-agent run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+    const request: InterAgentMessageDeliveryRequest = {
+      teamRunId,
+      sender: {
+        participant: {
+          memberKind: "agent",
+          memberName: "Solution Designer",
+          memberPath: ["solution_designer"],
+          memberRouteKey: "solution_designer",
+          memberRunId: "team-1::solution_designer",
+          address: { teamRunId, memberPath: ["solution_designer"], memberRouteKey: "solution_designer" },
+        },
+        selector: { kind: "route_key", memberRouteKey: "solution_designer" },
+      },
+      recipient: {
+        participant: {
+          memberKind: "agent",
+          memberName: "Code Reviewer",
+          memberPath: ["code_reviewer"],
+          memberRouteKey: logicalRouteKey,
+          memberRunId: taskAgentRunId,
+          taskAgentRunId,
+          taskAgentInstanceId: "task-agent-instance-1",
+          logicalMemberRouteKey: logicalRouteKey,
+          address: { teamRunId, memberPath: ["code_reviewer"], memberRouteKey: logicalRouteKey },
+        },
+        selector: { kind: "route_key", memberRouteKey: logicalRouteKey },
+      },
+      content: "Please revise the completed task.",
+      messageType: "task_revision",
+    };
+
+    await expect(manager.deliverInterAgentMessage(request))
+      .resolves.toMatchObject({ accepted: true, memberRunId: taskAgentRunId });
+
+    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ content: expect.stringContaining("Please revise the completed task.") }),
+    );
+    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
   });
 });

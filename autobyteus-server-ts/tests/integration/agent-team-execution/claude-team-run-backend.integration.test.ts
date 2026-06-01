@@ -131,7 +131,7 @@ describe("ClaudeTeamRunBackend integration", () => {
     await expect(backend.postMessage(userMessage, coordinatorTarget)).resolves.toEqual({
       accepted: true,
     });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, coordinatorTarget);
+    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, coordinatorTarget, null);
 
     await expect(
       backend.deliverInterAgentMessage({

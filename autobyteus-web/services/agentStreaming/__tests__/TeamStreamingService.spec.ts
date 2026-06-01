@@ -1220,7 +1220,7 @@ describe('TeamStreamingService', () => {
     expect(teamContext.leafAgentContextsByRouteKey.has('task-agent-run-1')).toBe(false);
     expect(teamContext.memberNodesByRouteKey.has('task-agent-run-1')).toBe(false);
     expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).not.toContain('task-agent-run-1');
-    expect(teamContext.focusedMemberRouteKey).toBe('');
+    expect(teamContext.focusedMemberRouteKey).toBe('worker');
   });
 
   it('creates the transient task-agent context from a work-packet echo that carries task-agent identity', () => {
@@ -1263,6 +1263,64 @@ describe('TeamStreamingService', () => {
     });
     expect(workerContext.conversation.messages).toHaveLength(0);
     expect(workerContext.state.runId).toBe('worker-run-1');
+  });
+
+  it('repairs a missing task-agent node when the task-agent context already exists', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'task-agent-run-repair',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-repair',
+          task_agent_run_id: 'task-agent-run-repair',
+          task_id: 'task-repair',
+        },
+      }),
+    );
+    const existingTaskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-repair');
+    expect(existingTaskContext).toBeTruthy();
+
+    teamContext.memberNodesByRouteKey.delete('task-agent-run-repair');
+    teamContext.memberTree = teamContext.memberTree.filter((node: any) => node.memberRouteKey !== 'task-agent-run-repair');
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'task-agent-repair-segment',
+          turn_id: 'turn-repair',
+          segment_type: 'text',
+          agent_id: 'task-agent-run-repair',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-repair',
+          task_agent_run_id: 'task-agent-run-repair',
+          task_id: 'task-repair',
+        },
+      }),
+    );
+
+    expect(teamContext.leafAgentContextsByRouteKey.get('task-agent-run-repair')).toBe(existingTaskContext);
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-repair')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'worker',
+      taskAgentRunId: 'task-agent-run-repair',
+    });
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-repair');
   });
 
   it('routes typed task-agent tool approval requests and approval commands by task-agent run identity', () => {

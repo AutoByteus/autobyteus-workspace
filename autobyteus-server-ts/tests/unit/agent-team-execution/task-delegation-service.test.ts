@@ -28,7 +28,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 class FakeTeamRunBackend implements TeamRunBackend {
   readonly runId = "team-run-1";
   readonly teamBackendKind = TeamBackendKind.MIXED;
-  readonly messages: Array<{ content: string; target: TeamMemberSelector | null | undefined }> = [];
+  readonly messages: Array<{ content: string; target: TeamMemberSelector | null | undefined; targetMemberRunId: string | null | undefined }> = [];
   readonly taskAgentStarts: StartTaskAgentInstanceRequest[] = [];
   readonly publishedEvents: TeamRunEvent[] = [];
   readonly settlements: Array<{ routeKey: string; runId: string | null | undefined; reason: string | null | undefined }> = [];
@@ -65,8 +65,9 @@ class FakeTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target?: TeamMemberSelector | null,
+    targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult> {
-    this.messages.push({ content: message.content, target });
+    this.messages.push({ content: message.content, target, targetMemberRunId });
     return this.postMessageResults.shift() ?? this.postMessageResult;
   }
 
@@ -141,6 +142,13 @@ const worker = {
   memberRunId: "run-worker",
 };
 
+const reviewer = {
+  memberName: "reviewer",
+  memberPath: ["reviewer"],
+  memberRouteKey: "reviewer",
+  memberRunId: "run-reviewer",
+};
+
 const buildContext = (caller = coordinator, members = [coordinator, worker]) => ({
   teamRunId: "team-run-1",
   teamDefinitionId: "team-def-1",
@@ -166,6 +174,7 @@ const findTaskAgentIdentity = (
 const buildTaskAgentContext = (
   backend: FakeTeamRunBackend,
   taskId: string,
+  members = [coordinator, worker],
 ) => {
   const identity = findTaskAgentIdentity(backend, taskId);
   return buildContext({
@@ -175,7 +184,7 @@ const buildTaskAgentContext = (
     taskAgentRunId: identity.taskAgentRunId,
     taskId: identity.taskId,
     logicalMemberRouteKey: identity.logicalMember.memberRouteKey,
-  });
+  }, members);
 };
 
 const publishIdleEvent = (
@@ -186,13 +195,13 @@ const publishIdleEvent = (
   backend.publishEvent({
     eventSourceType: TeamRunEventSourceType.AGENT,
     teamRunId: backend.runId,
-    sourcePath: worker.memberPath,
+    sourcePath: identity.logicalMember.memberPath,
     data: {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberName: worker.memberName,
+      memberName: identity.logicalMember.memberName,
       memberRunId: identity.taskAgentRunId,
-      memberPath: worker.memberPath,
-      memberRouteKey: worker.memberRouteKey,
+      memberPath: identity.logicalMember.memberPath,
+      memberRouteKey: identity.logicalMember.memberRouteKey,
       taskAgentInstance: identity,
       agentEvent: {
         eventType: AgentRunEventType.AGENT_STATUS,
@@ -311,27 +320,28 @@ describe("TaskDelegationService", () => {
       ]),
     );
 
-    const firstTerminal = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
+    const firstCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
       status: "completed",
       message: "Draft complete.",
       reference_files: ["/tmp/draft.md"],
     });
 
-    expect(firstTerminal).toMatchObject({
-      terminal: true,
+    expect(firstCompletion).toMatchObject({
+      status: "awaiting_acceptance",
+      terminal: false,
       message: "Draft complete.",
       reference_files_count: 1,
-      settlement_requested: true,
+      settlement_requested: false,
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_STATUS_UPDATED")).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           taskId: "task_0001",
           previousStatus: "in_progress",
-          status: "completed",
+          status: "awaiting_acceptance",
           message: "Draft complete.",
           referenceFiles: ["/tmp/draft.md"],
-          terminal: true,
+          terminal: false,
         }),
       ]),
     );
@@ -347,6 +357,19 @@ describe("TaskDelegationService", () => {
     );
 
     publishIdleEvent(backend, "task_0001");
+    expect(backend.taskAgentSettlements).toEqual([]);
+
+    const firstAccepted = await service.updateTaskStatus(buildContext(), {
+      status: "accepted",
+      task_id: "task_0001",
+      message: "Draft accepted.",
+    });
+    expect(firstAccepted).toMatchObject({
+      status: "accepted",
+      terminal: true,
+      message: "Draft accepted.",
+      settlement_requested: true,
+    });
     await vi.waitFor(() => {
       expect(backend.taskAgentSettlements).toEqual([
         expect.objectContaining({
@@ -356,20 +379,31 @@ describe("TaskDelegationService", () => {
       ]);
     });
 
-    const secondTerminal = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0002"), {
+    const secondCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0002"), {
       status: "completed",
       message: "Polish complete.",
       reference_files: ["/tmp/final.md"],
     });
 
-    expect(secondTerminal).toMatchObject({
-      terminal: true,
+    expect(secondCompletion).toMatchObject({
+      status: "awaiting_acceptance",
+      terminal: false,
       message: "Polish complete.",
       reference_files_count: 1,
-      settlement_requested: true,
+      settlement_requested: false,
     });
     expect(backend.settlements).toEqual([]);
     expect(backend.taskAgentSettlements).toHaveLength(1);
+
+    const secondAccepted = await service.updateTaskStatus(buildContext(), {
+      status: "accepted",
+      task_id: "task_0002",
+    });
+    expect(secondAccepted).toMatchObject({
+      status: "accepted",
+      terminal: true,
+      settlement_requested: true,
+    });
 
     publishIdleEvent(backend, "task_0002");
     await vi.waitFor(() => {
@@ -383,6 +417,172 @@ describe("TaskDelegationService", () => {
           runId: findTaskAgentIdentity(backend, "task_0002").taskAgentRunId,
         }),
       ]);
+    });
+    service.dispose();
+  });
+
+  it("captures a task-agent delegator identity and routes child completion to the original task-agent with coordinator fallback", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = new TaskDelegationService(new TeamRun({ backend }));
+    const members = [coordinator, worker, reviewer];
+
+    await service.delegateTasks(buildContext(coordinator, members), {
+      tasks: [{ member_name: "worker", description: "Parent task that may delegate child work." }],
+    });
+    const parentTaskAgent = findTaskAgentIdentity(backend, "task_0001");
+
+    await service.delegateTasks(buildTaskAgentContext(backend, "task_0001", members), {
+      tasks: [{ member_name: "reviewer", description: "Child review task delegated by a worker task-agent." }],
+    });
+    expect(backend.taskAgentStarts).toHaveLength(2);
+    expect(backend.taskAgentStarts[1].message.content).toContain(
+      `Delegator task-agent run: ${parentTaskAgent.taskAgentRunId}`,
+    );
+
+    const childTaskAgent = findTaskAgentIdentity(backend, "task_0002");
+    await service.updateTaskStatus(buildContext({
+      ...reviewer,
+      memberRunId: childTaskAgent.taskAgentRunId,
+      taskAgentInstanceId: childTaskAgent.taskAgentInstanceId,
+      taskAgentRunId: childTaskAgent.taskAgentRunId,
+      taskId: childTaskAgent.taskId,
+      logicalMemberRouteKey: childTaskAgent.logicalMember.memberRouteKey,
+    }, members), {
+      status: "completed",
+      message: "Child review complete.",
+    });
+
+    const terminalPayload = taskDelegationPayloads(backend, "TASK_DELEGATION_TERMINAL_STATUS")[0] as Record<string, unknown>;
+    expect(terminalPayload).toMatchObject({
+      taskId: "task_0002",
+      delegator: expect.objectContaining({
+        memberRouteKey: "worker",
+        memberRunId: parentTaskAgent.taskAgentRunId,
+        taskAgentInstanceId: parentTaskAgent.taskAgentInstanceId,
+        taskAgentRunId: parentTaskAgent.taskAgentRunId,
+        taskId: "task_0001",
+        logicalMemberRouteKey: "worker",
+      }),
+    });
+    expect(backend.messages).toEqual([
+      expect.objectContaining({
+        target: expect.objectContaining({ memberRouteKey: "worker" }),
+        targetMemberRunId: parentTaskAgent.taskAgentRunId,
+        content: expect.stringContaining("Child review complete."),
+      }),
+      expect.objectContaining({
+        target: expect.objectContaining({ memberRouteKey: "coordinator" }),
+        targetMemberRunId: null,
+        content: expect.stringContaining("Child review complete."),
+      }),
+    ]);
+    const accepted = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
+      status: "accepted",
+      task_id: "task_0002",
+    });
+    expect(accepted).toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
+
+    publishIdleEvent(backend, "task_0002");
+    await vi.waitFor(() => {
+      expect(backend.taskAgentSettlements).toEqual([
+        expect.objectContaining({
+          routeKey: "reviewer",
+          runId: childTaskAgent.taskAgentRunId,
+        }),
+      ]);
+    });
+    service.dispose();
+  });
+
+  it("keeps completed task-agents addressable for revision and settles only after original-delegator acceptance", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = new TaskDelegationService(new TeamRun({ backend }));
+    const members = [coordinator, worker, reviewer];
+
+    await service.delegateTasks(buildContext(coordinator, members), {
+      tasks: [{ member_name: "worker", description: "Prepare a report that may need revision." }],
+    });
+
+    await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
+      status: "completed",
+      message: "Report ready for review.",
+      reference_files: ["/tmp/report.md"],
+    });
+
+    expect(backend.taskAgentSettlements).toEqual([]);
+    await expect(
+      service.updateTaskStatus(buildContext(reviewer, members), {
+        status: "accepted",
+        task_id: "task_0001",
+      }),
+    ).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
+
+    const revisionStarted = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
+      status: "in_progress",
+      message: "Applying requested changes.",
+    });
+    expect(revisionStarted).toMatchObject({ status: "in_progress", terminal: false });
+
+    const revisedCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
+      status: "completed",
+      message: "Revised report ready.",
+      reference_files: ["/tmp/report-v2.md"],
+    });
+    expect(revisedCompletion).toMatchObject({
+      status: "awaiting_acceptance",
+      terminal: false,
+      reference_files_count: 2,
+      settlement_requested: false,
+    });
+
+    const accepted = await service.updateTaskStatus(buildContext(coordinator, members), {
+      status: "accepted",
+      task_id: "task_0001",
+    });
+    expect(accepted).toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
+
+    await expect(
+      service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
+        status: "completed",
+        message: "Too late.",
+      }),
+    ).rejects.toMatchObject({ code: "TASK_ALREADY_TERMINAL" });
+
+    publishIdleEvent(backend, "task_0001");
+    await vi.waitFor(() => {
+      expect(backend.taskAgentSettlements).toHaveLength(1);
+    });
+    service.dispose();
+  });
+
+  it("treats failed reports as failure-terminal and settles after idle without acceptance", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = new TaskDelegationService(new TeamRun({ backend }));
+
+    await service.delegateTasks(buildContext(), {
+      tasks: [{ member_name: "worker", description: "Attempt a risky task." }],
+    });
+
+    const failed = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
+      status: "failed",
+      message: "Blocked by missing credentials.",
+    });
+    expect(failed).toMatchObject({
+      status: "failed",
+      terminal: true,
+      settlement_requested: true,
+    });
+
+    await expect(
+      service.updateTaskStatus(buildContext(), {
+        status: "accepted",
+        task_id: "task_0001",
+      }),
+    ).rejects.toMatchObject({ code: "TASK_NOT_AWAITING_ACCEPTANCE" });
+
+    publishIdleEvent(backend, "task_0001");
+    await vi.waitFor(() => {
+      expect(backend.taskAgentSettlements).toHaveLength(1);
     });
     service.dispose();
   });
@@ -426,15 +626,16 @@ describe("TaskDelegationService", () => {
       }),
     ).rejects.toMatchObject({ code: "TASK_AGENT_NOT_BOUND" });
 
-    const terminal = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
+    const completion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
       status: "completed",
       message: "Draft complete.",
     });
 
-    expect(terminal).toMatchObject({
-      terminal: true,
+    expect(completion).toMatchObject({
+      status: "awaiting_acceptance",
+      terminal: false,
       message: "Draft complete.",
-      settlement_requested: true,
+      settlement_requested: false,
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_TERMINAL_STATUS")).toEqual(
@@ -445,6 +646,38 @@ describe("TaskDelegationService", () => {
         }),
       ]),
     );
+    service.dispose();
+  });
+
+  it("rejects unrostered or inconsistent delegator contexts before ledger mutation", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = new TaskDelegationService(new TeamRun({ backend }));
+
+    await expect(
+      service.delegateTasks(buildContext({
+        memberName: "intruder",
+        memberPath: ["intruder"],
+        memberRouteKey: "intruder",
+        memberRunId: "run-intruder",
+      }, [coordinator, worker]), {
+        tasks: [{ member_name: "worker", description: "Spoofed delegation should fail." }],
+      }),
+    ).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
+
+    await expect(
+      service.delegateTasks(buildContext({
+        ...worker,
+        memberRunId: "not-the-task-agent-run",
+        taskAgentInstanceId: "task_agent_task_9999",
+        taskAgentRunId: "task-agent-run-9999",
+        taskId: "task_9999",
+        logicalMemberRouteKey: "worker",
+      }, [coordinator, worker]), {
+        tasks: [{ member_name: "worker", description: "Inconsistent task-agent identity should fail." }],
+      }),
+    ).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
+
+    expect(backend.taskAgentStarts).toHaveLength(0);
     service.dispose();
   });
 
@@ -551,7 +784,7 @@ describe("TaskDelegationService", () => {
   });
 
   it("rejects stale delegate_tasks and update_task_status fields that are no longer model-facing", () => {
-    for (const staleField of ["task_name", "assignee_name", "dependencies", "completion_criteria", "expected_deliverables"]) {
+    for (const staleField of ["task_name", "assignee_name", "delegator", "dependencies", "completion_criteria", "expected_deliverables"]) {
       expect(() =>
         parseDelegateTasksInput({
           tasks: [
@@ -584,6 +817,29 @@ describe("TaskDelegationService", () => {
       message: "Done.",
       reference_files: ["/tmp/result.md"],
     });
+
+    expect(parseUpdateTaskStatusInput({
+      status: "accepted",
+      task_id: "task_0001",
+      message: "Accepted.",
+    })).toEqual({
+      status: "accepted",
+      task_id: "task_0001",
+      message: "Accepted.",
+    });
+
+    expect(() =>
+      parseUpdateTaskStatusInput({
+        status: "accepted",
+      }),
+    ).toThrow(/task_id|expected string/);
+    expect(() =>
+      parseUpdateTaskStatusInput({
+        status: "accepted",
+        task_id: "task_0001",
+        reference_files: ["/tmp/not-accepted.md"],
+      }),
+    ).toThrow(/Unrecognized key/);
   });
 
   it("rejects ambiguous or missing member_name and accepts unique exact member names", async () => {

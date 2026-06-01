@@ -1,6 +1,8 @@
 import {
   isTaskDelegationTerminalStatus,
   TaskDelegationError,
+  type TaskDelegationDelegatorIdentity,
+  type TaskDelegationExecutionToolStatus,
   type TaskDelegationMemberIdentity,
   type TaskDelegationRecord,
   type TaskDelegationStatus,
@@ -15,7 +17,7 @@ export type CreateTaskDelegationRecordInput = {
   taskId: string;
   task: TaskDelegationTaskInput;
   member: TaskDelegationMemberIdentity;
-  delegator: TaskDelegationMemberIdentity;
+  delegator: TaskDelegationDelegatorIdentity;
 };
 
 const cloneIdentity = (
@@ -28,10 +30,20 @@ const cloneIdentity = (
   runtimeKind: identity.runtimeKind ?? null,
 });
 
+const cloneDelegatorIdentity = (
+  identity: TaskDelegationDelegatorIdentity,
+): TaskDelegationDelegatorIdentity => ({
+  ...cloneIdentity(identity),
+  taskAgentInstanceId: identity.taskAgentInstanceId ?? null,
+  taskAgentRunId: identity.taskAgentRunId ?? null,
+  taskId: identity.taskId ?? null,
+  logicalMemberRouteKey: identity.logicalMemberRouteKey ?? null,
+});
+
 const cloneRecord = (record: TaskDelegationRecord): TaskDelegationRecord => ({
   ...record,
   member: cloneIdentity(record.member),
-  delegator: cloneIdentity(record.delegator),
+  delegator: cloneDelegatorIdentity(record.delegator),
   referenceFiles: [...record.referenceFiles],
   statusReferenceFiles: [...record.statusReferenceFiles],
   taskAgentInstance: record.taskAgentInstance
@@ -74,11 +86,13 @@ export class TaskDelegationLedger {
         description: item.task.description,
         status: "not_started",
         member: cloneIdentity(item.member),
-        delegator: cloneIdentity(item.delegator),
+        delegator: cloneDelegatorIdentity(item.delegator),
         referenceFiles: [...(item.task.reference_files ?? [])],
         taskAgentInstance: null,
         statusMessage: null,
         statusReferenceFiles: [],
+        acceptanceMessage: null,
+        acceptedAt: null,
         createdAt: now,
         updatedAt: now,
         queuedAt: null,
@@ -154,7 +168,7 @@ export class TaskDelegationLedger {
 
   updateStatus(input: {
     taskId: string;
-    status: Exclude<TaskDelegationStatus, "not_started" | "queued">;
+    status: TaskDelegationExecutionToolStatus;
     message?: string | null;
     referenceFiles?: string[];
   }): TaskDelegationRecord {
@@ -171,9 +185,10 @@ export class TaskDelegationLedger {
         `Delegated task '${input.taskId}' is already ${record.status}.`,
       );
     }
-    this.assertValidStatusTransition(record, input.status);
+    const nextStatus = input.status === "completed" ? "awaiting_acceptance" : input.status;
+    this.assertValidStatusTransition(record, nextStatus);
     const now = new Date().toISOString();
-    record.status = input.status;
+    record.status = nextStatus;
     record.updatedAt = now;
     if (input.referenceFiles?.length) {
       record.statusReferenceFiles.push(...input.referenceFiles);
@@ -181,9 +196,35 @@ export class TaskDelegationLedger {
     if (input.message !== undefined) {
       record.statusMessage = input.message?.trim() || null;
     }
-    if (isTaskDelegationTerminalStatus(input.status)) {
+    if (isTaskDelegationTerminalStatus(nextStatus)) {
       record.terminalAt = now;
     }
+    return cloneRecord(record);
+  }
+
+  acceptTask(input: {
+    taskId: string;
+    message?: string | null;
+  }): TaskDelegationRecord {
+    const record = this.recordsById.get(input.taskId);
+    if (!record) {
+      throw new TaskDelegationError(
+        "TASK_NOT_FOUND",
+        `Delegated task '${input.taskId}' was not found.`,
+      );
+    }
+    if (record.status !== "awaiting_acceptance") {
+      throw new TaskDelegationError(
+        "TASK_NOT_AWAITING_ACCEPTANCE",
+        `Delegated task '${input.taskId}' is ${record.status}, not awaiting acceptance.`,
+      );
+    }
+    const now = new Date().toISOString();
+    record.status = "accepted";
+    record.acceptedAt = now;
+    record.terminalAt = now;
+    record.updatedAt = now;
+    record.acceptanceMessage = input.message?.trim() || null;
     return cloneRecord(record);
   }
 
@@ -209,7 +250,11 @@ export class TaskDelegationLedger {
     return [...this.recordsById.values()].some(
       (record) =>
         record.taskAgentInstance?.taskAgentRunId === normalizedRunId &&
-        (record.status === "queued" || record.status === "in_progress"),
+        (
+          record.status === "queued" ||
+          record.status === "in_progress" ||
+          record.status === "awaiting_acceptance"
+        ),
     );
   }
 
@@ -228,7 +273,11 @@ export class TaskDelegationLedger {
         `Delegated task '${record.taskId}' has not been activated and cannot be updated to ${nextStatus}.`,
       );
     }
-    if (record.status === "queued" || record.status === "in_progress") {
+    if (
+      record.status === "queued" ||
+      record.status === "in_progress" ||
+      record.status === "awaiting_acceptance"
+    ) {
       return;
     }
     throw new TaskDelegationError(

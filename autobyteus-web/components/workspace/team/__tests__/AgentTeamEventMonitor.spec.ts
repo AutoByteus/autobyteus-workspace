@@ -197,28 +197,6 @@ describe('AgentTeamEventMonitor.vue', () => {
     expect(monitor.props('agentAvatarUrl')).toBe('https://example.com/professor.png');
   });
 
-  it('passes focused member compaction status to AgentEventMonitor', () => {
-    const wrapper = shallowMount(AgentTeamEventMonitor, {
-      global: {
-        stubs: {
-          AgentEventMonitor: {
-            name: 'AgentEventMonitor',
-            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
-            template: '<div class="agent-event-monitor-stub" />',
-          },
-        },
-      },
-    });
-
-    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.exists()).toBe(true);
-    expect(monitor.props('compactionStatus')).toEqual({
-      phase: 'requested',
-      message: 'Compaction queued',
-      turnId: 'turn-1',
-    });
-  });
-
   it('uses active-execution focus instead of stale raw logical focus', () => {
     state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
     state.focusedMemberContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
@@ -230,7 +208,7 @@ describe('AgentTeamEventMonitor.vue', () => {
         stubs: {
           AgentEventMonitor: {
             name: 'AgentEventMonitor',
-            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
             template: '<div class="agent-event-monitor-stub" />',
           },
         },
@@ -241,5 +219,33 @@ describe('AgentTeamEventMonitor.vue', () => {
     expect(monitor.exists()).toBe(true);
     expect(monitor.props('agentName')).toBe('Professor');
     expect((monitor.props('conversation') as any).id).toBe('team-1::professor');
+  });
+
+  it('does not render task-agent work packets as the logical parent conversation', () => {
+    const studentContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
+    studentContext.state.conversation.messages.push({
+      type: 'user',
+      text: 'You have been activated as task agent task_agent_task_0001.\nTask-agent run: team-1__student__task_0001',
+      timestamp: new Date('2026-05-30T00:00:00.000Z'),
+    });
+    state.activeExecutionFocusedMemberRouteKey = 'sub-team/Student';
+
+    const wrapper = shallowMount(AgentTeamEventMonitor, {
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: {
+          AgentEventMonitor: {
+            name: 'AgentEventMonitor',
+            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            template: '<div class="agent-event-monitor-stub" />',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).exists()).toBe(false);
+    expect(wrapper.text()).toContain('workspace.components.workspace.team.TeamMemberMonitorTile.no_activity_yet');
   });
 });

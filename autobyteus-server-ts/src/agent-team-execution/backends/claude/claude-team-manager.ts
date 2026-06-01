@@ -153,10 +153,7 @@ export class ClaudeTeamManager implements TeamManager {
     };
   }
 
-  async postMessage(
-    message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-  ): Promise<AgentOperationResult> {
+  async postMessage(message: AgentInputUserMessage, target: TeamMemberSelector, targetMemberRunId: string | null = null): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
@@ -164,6 +161,8 @@ export class ClaudeTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, taskAgentRunId, message);
     this.publishMemberCommandStatus(memberContext, "initializing");
     let result: AgentOperationResult;
     try { const memberRun = await this.ensureMemberReady(memberContext); result = await memberRun.postUserMessage(message); memberContext.sessionId = memberRun.getPlatformAgentRunId() ?? memberContext.sessionId; }
@@ -184,6 +183,7 @@ export class ClaudeTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    if (request.recipient.participant.taskAgentRunId?.trim()) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, request.recipient.participant.taskAgentRunId.trim(), buildInterAgentDeliveryInputMessage(request));
     this.publishMemberCommandStatus(memberContext, "initializing");
     let memberRun: AgentRun;
     let result: AgentOperationResult;

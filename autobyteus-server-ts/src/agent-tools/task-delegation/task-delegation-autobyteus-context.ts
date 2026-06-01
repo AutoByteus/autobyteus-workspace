@@ -85,9 +85,6 @@ export const buildTaskDelegationToolContextFromNativeContext = (
     memberRouteKey: member.memberRouteKey,
     memberRunId: member.memberRunId,
   }));
-  if (!members.some((member) => member.memberRouteKey === caller.memberRouteKey)) {
-    members.unshift(caller);
-  }
   return {
     teamRunId: normalizeRequiredString(teamContext.teamRunId, "teamRunId"),
     teamDefinitionId: teamContext.teamDefinitionId ?? null,

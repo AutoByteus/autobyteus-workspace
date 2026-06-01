@@ -18,6 +18,27 @@ export interface TaskAgentStreamIdentity {
   logicalMemberPath: string[];
 }
 
+const taskAgentIdentityByContext = new WeakMap<AgentContext, TaskAgentStreamIdentity>();
+
+const cloneTaskAgentIdentity = (identity: TaskAgentStreamIdentity): TaskAgentStreamIdentity => ({
+  ...identity,
+  logicalMemberPath: [...identity.logicalMemberPath],
+});
+
+const setTaskAgentContextIdentity = (
+  context: AgentContext,
+  identity: TaskAgentStreamIdentity,
+): void => {
+  taskAgentIdentityByContext.set(context, cloneTaskAgentIdentity(identity));
+};
+
+export const getTaskAgentIdentityFromContext = (
+  context: AgentContext,
+): TaskAgentStreamIdentity | null => {
+  const identity = taskAgentIdentityByContext.get(context);
+  return identity ? cloneTaskAgentIdentity(identity) : null;
+};
+
 const normalizeString = (value: unknown): string | null => (
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null
 );
@@ -85,7 +106,7 @@ const buildTaskAgentDisplayName = (
     logicalRoute.split('/').filter(Boolean).pop() ||
     'Task agent';
   const taskLabel = identity.taskId || identity.taskAgentInstanceId || identity.taskAgentRunId;
-  return `${logicalName} task ${taskLabel}`;
+  return `${logicalName} · ${taskLabel}`;
 };
 
 const buildTaskAgentFallbackConfig = (
@@ -114,12 +135,143 @@ const buildTaskAgentFallbackConfig = (
   };
 };
 
+const insertTaskAgentNodeNearParent = (
+  nodes: readonly AgentTeamContext['memberTree'][number][],
+  taskAgentNode: AgentTeamMemberNode,
+  parentRouteKey: string | null,
+): AgentTeamContext['memberTree'] => {
+  if (!parentRouteKey) {
+    return [...nodes, taskAgentNode];
+  }
+  let inserted = false;
+  const visit = (source: readonly AgentTeamContext['memberTree'][number][]): AgentTeamContext['memberTree'] =>
+    source.flatMap((node) => {
+      const withChildren = node.memberKind === 'agent_team'
+        ? { ...node, children: visit(node.children) }
+        : node;
+      if (node.memberRouteKey !== parentRouteKey) {
+        return [withChildren];
+      }
+      inserted = true;
+      return [withChildren, taskAgentNode];
+    });
+  const updated = visit(nodes);
+  return inserted ? updated : [...updated, taskAgentNode];
+};
+
+const removeTaskAgentNodeFromTree = (
+  nodes: readonly AgentTeamContext['memberTree'][number][],
+  taskAgentRunId: string,
+): AgentTeamContext['memberTree'] =>
+  nodes.flatMap((node) => {
+    if (node.memberRouteKey === taskAgentRunId) {
+      return [];
+    }
+    if (node.memberKind !== 'agent_team') {
+      return [node];
+    }
+    return [{ ...node, children: removeTaskAgentNodeFromTree(node.children, taskAgentRunId) }];
+  });
+
+const buildTaskAgentNode = (
+  teamContext: AgentTeamContext,
+  identity: TaskAgentStreamIdentity,
+  context: AgentContext,
+): AgentTeamMemberNode => {
+  const logicalContext = identity.logicalMemberRouteKey
+    ? teamContext.leafAgentContextsByRouteKey.get(identity.logicalMemberRouteKey) || null
+    : null;
+  const displayName = context.config.agentDefinitionName || buildTaskAgentDisplayName(teamContext, identity);
+  const memberPath = identity.logicalMemberPath.length > 0
+    ? [...identity.logicalMemberPath, identity.taskAgentRunId]
+    : [identity.taskAgentRunId];
+
+  return {
+    memberKind: 'agent',
+    memberName: displayName,
+    displayName,
+    memberPath,
+    memberRouteKey: identity.taskAgentRunId,
+    memberRunId: identity.taskAgentRunId,
+    agentDefinitionId: logicalContext?.config.agentDefinitionId ?? context.config.agentDefinitionId ?? 'task-agent',
+    currentStatus: context.state.currentStatus,
+    isTaskAgentInstance: true,
+    taskAgentInstanceId: identity.taskAgentInstanceId,
+    taskAgentRunId: identity.taskAgentRunId,
+    taskId: identity.taskId,
+    logicalMemberRouteKey: identity.logicalMemberRouteKey,
+  };
+};
+
+const ensureTaskAgentNode = (
+  teamContext: AgentTeamContext,
+  identity: TaskAgentStreamIdentity,
+  context: AgentContext,
+): AgentTeamMemberNode => {
+  const existingNode = teamContext.memberNodesByRouteKey.get(identity.taskAgentRunId);
+  if (existingNode?.isTaskAgentInstance) {
+    return existingNode as AgentTeamMemberNode;
+  }
+
+  const node = buildTaskAgentNode(teamContext, identity, context);
+  teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskAgentRunId, node);
+  teamContext.memberTree = insertTaskAgentNodeNearParent(
+    removeTaskAgentNodeFromTree(teamContext.memberTree, identity.taskAgentRunId),
+    node,
+    identity.logicalMemberRouteKey,
+  );
+  return node;
+};
+
+const restoreTaskAgentNodes = (
+  teamContext: AgentTeamContext,
+  taskAgentNodes: readonly AgentTeamMemberNode[],
+): void => {
+  let memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey);
+  let memberTree = teamContext.memberTree;
+
+  for (const node of taskAgentNodes) {
+    if (!node.isTaskAgentInstance) {
+      continue;
+    }
+    if (!teamContext.leafAgentContextsByRouteKey.has(node.memberRouteKey)) {
+      continue;
+    }
+    memberNodesByRouteKey = new Map(memberNodesByRouteKey).set(node.memberRouteKey, node);
+    memberTree = insertTaskAgentNodeNearParent(
+      removeTaskAgentNodeFromTree(memberTree, node.memberRouteKey),
+      node,
+      node.logicalMemberRouteKey ?? null,
+    );
+  }
+
+  teamContext.memberNodesByRouteKey = memberNodesByRouteKey;
+  teamContext.memberTree = memberTree;
+};
+
+export const restoreTaskAgentContextProjections = (
+  teamContext: AgentTeamContext,
+  taskAgentNodes: readonly AgentTeamMemberNode[] = [],
+): void => {
+  restoreTaskAgentNodes(teamContext, taskAgentNodes);
+
+  for (const context of teamContext.leafAgentContextsByRouteKey.values()) {
+    const identity = getTaskAgentIdentityFromContext(context);
+    if (!identity || teamContext.memberNodesByRouteKey.get(identity.taskAgentRunId)?.isTaskAgentInstance) {
+      continue;
+    }
+    ensureTaskAgentNode(teamContext, identity, context);
+  }
+};
+
 export const ensureTaskAgentContext = (
   teamContext: AgentTeamContext,
   identity: TaskAgentStreamIdentity,
 ): AgentContext => {
   const existing = teamContext.leafAgentContextsByRouteKey.get(identity.taskAgentRunId) || null;
   if (existing) {
+    setTaskAgentContextIdentity(existing, identity);
+    ensureTaskAgentNode(teamContext, identity, existing);
     return existing;
   }
 
@@ -142,29 +294,10 @@ export const ensureTaskAgentContext = (
     new AgentRunState(identity.taskAgentRunId, conversation),
   );
   context.isSubscribed = true;
-
-  const memberPath = identity.logicalMemberPath.length > 0
-    ? [...identity.logicalMemberPath, identity.taskAgentRunId]
-    : [identity.taskAgentRunId];
-  const node: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: displayName,
-    displayName,
-    memberPath,
-    memberRouteKey: identity.taskAgentRunId,
-    memberRunId: identity.taskAgentRunId,
-    agentDefinitionId: logicalContext?.config.agentDefinitionId ?? 'task-agent',
-    currentStatus: AgentStatus.Initializing,
-    isTaskAgentInstance: true,
-    taskAgentInstanceId: identity.taskAgentInstanceId,
-    taskAgentRunId: identity.taskAgentRunId,
-    taskId: identity.taskId,
-    logicalMemberRouteKey: identity.logicalMemberRouteKey,
-  };
+  setTaskAgentContextIdentity(context, identity);
 
   teamContext.leafAgentContextsByRouteKey = new Map(teamContext.leafAgentContextsByRouteKey).set(identity.taskAgentRunId, context);
-  teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskAgentRunId, node);
-  teamContext.memberTree = [...teamContext.memberTree, node];
+  ensureTaskAgentNode(teamContext, identity, context);
   return context;
 };
 
@@ -193,9 +326,7 @@ export const removeTaskAgentContext = (
   const memberNodes = new Map(teamContext.memberNodesByRouteKey);
   memberNodes.delete(identity.taskAgentRunId);
   teamContext.memberNodesByRouteKey = memberNodes;
-  teamContext.memberTree = teamContext.memberTree.filter(
-    (candidate) => candidate.memberRouteKey !== identity.taskAgentRunId,
-  );
+  teamContext.memberTree = removeTaskAgentNodeFromTree(teamContext.memberTree, identity.taskAgentRunId);
 
   if (teamContext.focusedMemberRouteKey === identity.taskAgentRunId) {
     teamContext.focusedMemberRouteKey = resolveActiveExecutionFocusedMemberRouteKey(teamContext);

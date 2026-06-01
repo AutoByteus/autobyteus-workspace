@@ -8,7 +8,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import {
   hydrateTeamMemberActivitiesFromProjection,
   loadTeamRunContextHydrationPayload,
@@ -19,6 +19,10 @@ import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import {
+  getTaskAgentIdentityFromContext,
+  restoreTaskAgentContextProjections,
+} from '~/services/agentStreaming/teamTaskAgentContextProjection';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
@@ -91,6 +95,30 @@ const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
   return teamContext?.members instanceof Map ? teamContext.members : new Map();
 };
 
+const getTaskAgentNodesByRouteKey = (teamContext: AgentTeamContext | null | undefined): AgentTeamMemberNode[] => {
+  if (!(teamContext?.memberNodesByRouteKey instanceof Map)) {
+    return [];
+  }
+
+  return Array.from(teamContext.memberNodesByRouteKey.values()).filter(
+    (node): node is AgentTeamMemberNode => node.memberKind === 'agent' && Boolean(node.isTaskAgentInstance),
+  );
+};
+
+const getTaskAgentContextsByRouteKey = (
+  teamContext: AgentTeamContext | null | undefined,
+  taskAgentNodes: readonly AgentTeamMemberNode[],
+): Map<string, any> => {
+  const contexts = getLeafAgentContextsByRouteKey(teamContext);
+  const taskAgentNodeKeys = new Set(taskAgentNodes.map((node) => node.memberRouteKey));
+  return new Map(
+    Array.from(contexts.entries()).filter(([memberRouteKey, context]) => (
+      taskAgentNodeKeys.has(memberRouteKey) ||
+      getTaskAgentIdentityFromContext(context)?.taskAgentRunId === memberRouteKey
+    )),
+  );
+};
+
 export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
@@ -146,6 +174,13 @@ export const openTeamRun = async (
 
   const existingTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId);
   const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
+  const liveTaskAgentNodesToRestore = shouldKeepLiveContext
+    ? getTaskAgentNodesByRouteKey(existingTeamContext)
+    : [];
+  const liveTaskAgentContextsToRestore = shouldKeepLiveContext
+    ? getTaskAgentContextsByRouteKey(existingTeamContext, liveTaskAgentNodesToRestore)
+    : new Map<string, any>();
+  let finalFocusedMemberRouteKey = resolvedFocusedMemberRouteKey;
   let liveProjectionActivityMemberKeys = Array.from(members.keys());
 
   if (existingTeamContext) {
@@ -171,6 +206,12 @@ export const openTeamRun = async (
         preserveLiveRuntimeState: true,
         preserveMemberStatus: true,
       });
+      if (liveTaskAgentContextsToRestore.size > 0) {
+        existingTeamContext.leafAgentContextsByRouteKey = new Map([
+          ...existingTeamContext.leafAgentContextsByRouteKey,
+          ...liveTaskAgentContextsToRestore,
+        ]);
+      }
     } else {
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: false,
@@ -183,6 +224,19 @@ export const openTeamRun = async (
       existingTeamContext.taskStatuses = null;
     }
     (existingTeamContext as any).members = existingTeamContext.leafAgentContextsByRouteKey;
+
+    if (liveTaskAgentNodesToRestore.length > 0 || liveTaskAgentContextsToRestore.size > 0) {
+      restoreTaskAgentContextProjections(existingTeamContext, liveTaskAgentNodesToRestore);
+      if (shouldTreatAsLive) {
+        const restoredFocus = resolveActiveExecutionFocusedMemberRouteKey(
+          existingTeamContext,
+          input.memberRouteKey ?? existingTeamContext.focusedMemberRouteKey,
+        ) || existingTeamContext.focusedMemberRouteKey;
+        existingTeamContext.focusedMemberRouteKey = restoredFocus;
+        (existingTeamContext as any).focusedMemberName = restoredFocus;
+        finalFocusedMemberRouteKey = restoredFocus;
+      }
+    }
   } else {
     teamContextsStore.addTeamContext(hydratedContext);
   }
@@ -219,7 +273,7 @@ export const openTeamRun = async (
 
   return {
     teamRunId: metadata.teamRunId,
-    focusedMemberRouteKey: resolvedFocusedMemberRouteKey,
+    focusedMemberRouteKey: finalFocusedMemberRouteKey,
     resumeConfig,
   };
 };

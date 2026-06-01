@@ -21,6 +21,7 @@ export interface TeamRunBackend {
   postMessage(
     message: AgentInputUserMessage,
     target?: TeamMemberSelector | null,
+    targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,

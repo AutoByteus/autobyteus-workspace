@@ -5,24 +5,33 @@ export const TASK_DELEGATION_MODEL_TOOL_STATUSES = [
   "in_progress",
   "completed",
   "failed",
+  "accepted",
 ] as const;
 
 export const TASK_DELEGATION_LEDGER_STATUSES = [
   "not_started",
   "queued",
-  ...TASK_DELEGATION_MODEL_TOOL_STATUSES,
+  "in_progress",
+  "awaiting_acceptance",
+  "accepted",
+  "failed",
 ] as const;
 
 export type TaskDelegationModelToolStatus =
   (typeof TASK_DELEGATION_MODEL_TOOL_STATUSES)[number];
+export type TaskDelegationExecutionToolStatus = Exclude<
+  TaskDelegationModelToolStatus,
+  "accepted"
+>;
 export type TaskDelegationStatus =
   (typeof TASK_DELEGATION_LEDGER_STATUSES)[number];
-export type TaskDelegationTerminalStatus = "completed" | "failed";
+export type TaskDelegationReportedTerminalStatus = "completed" | "failed";
+export type TaskDelegationTerminalStatus = "accepted" | "failed";
 
 export const isTaskDelegationTerminalStatus = (
   status: TaskDelegationStatus,
 ): status is TaskDelegationTerminalStatus =>
-  status === "completed" || status === "failed";
+  status === "accepted" || status === "failed";
 
 export type TaskDelegationMemberIdentity = {
   memberName: string;
@@ -38,6 +47,8 @@ export type TaskDelegationCallerIdentity = TaskDelegationMemberIdentity & {
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
 };
+
+export type TaskDelegationDelegatorIdentity = TaskDelegationCallerIdentity;
 
 export type TaskDelegationContext = {
   teamRunId: string;
@@ -58,11 +69,21 @@ export type DelegateTasksInput = {
   tasks: TaskDelegationTaskInput[];
 };
 
-export type UpdateTaskStatusInput = {
-  status: TaskDelegationModelToolStatus;
+export type UpdateTaskExecutionStatusInput = {
+  status: TaskDelegationExecutionToolStatus;
   message?: string | null;
   reference_files?: string[];
 };
+
+export type UpdateTaskAcceptanceStatusInput = {
+  status: "accepted";
+  task_id: string;
+  message?: string | null;
+};
+
+export type UpdateTaskStatusInput =
+  | UpdateTaskExecutionStatusInput
+  | UpdateTaskAcceptanceStatusInput;
 
 export type TaskDelegationRecord = {
   taskId: string;
@@ -70,11 +91,13 @@ export type TaskDelegationRecord = {
   description: string;
   status: TaskDelegationStatus;
   member: TaskDelegationMemberIdentity;
-  delegator: TaskDelegationMemberIdentity;
+  delegator: TaskDelegationDelegatorIdentity;
   referenceFiles: string[];
   taskAgentInstance: TaskAgentInstanceIdentity | null;
   statusMessage: string | null;
   statusReferenceFiles: string[];
+  acceptanceMessage: string | null;
+  acceptedAt: string | null;
   createdAt: string;
   updatedAt: string;
   queuedAt: string | null;
@@ -106,12 +129,14 @@ export type TaskDelegationStatusUpdatePayload = {
   taskId: string;
   taskLabel: string;
   member: TaskDelegationMemberIdentity;
-  delegator: TaskDelegationMemberIdentity;
+  delegator: TaskDelegationDelegatorIdentity;
   taskAgentInstance: TaskAgentInstanceIdentity | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
   message: string | null;
   referenceFiles: string[];
+  acceptanceMessage: string | null;
+  acceptedAt: string | null;
   updatedAt: string;
   terminal: boolean;
 };
@@ -121,9 +146,9 @@ export type TaskDelegationCompletionPayload = {
   taskId: string;
   taskLabel: string;
   member: TaskDelegationMemberIdentity;
-  delegator: TaskDelegationMemberIdentity;
+  delegator: TaskDelegationDelegatorIdentity;
   taskAgentInstance: TaskAgentInstanceIdentity | null;
-  status: TaskDelegationTerminalStatus;
+  status: TaskDelegationReportedTerminalStatus;
   message: string | null;
   referenceFiles: string[];
   completedAt: string;

@@ -150,10 +150,7 @@ export class CodexTeamManager implements TeamManager {
     };
   }
 
-  async postMessage(
-    message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-  ): Promise<AgentOperationResult> {
+  async postMessage(message: AgentInputUserMessage, target: TeamMemberSelector, targetMemberRunId: string | null = null): Promise<AgentOperationResult> {
     const teamContext = this.teamContext;
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -162,6 +159,8 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, taskAgentRunId, message);
     this.publishMemberCommandStatus(memberContext, "initializing");
     let result: AgentOperationResult;
     try { const memberRun = await this.ensureMemberReady(memberContext); result = await memberRun.postUserMessage(message); memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId; }
@@ -182,6 +181,7 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    if (request.recipient.participant.taskAgentRunId?.trim()) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, request.recipient.participant.taskAgentRunId.trim(), buildInterAgentDeliveryInputMessage(request));
     this.publishMemberCommandStatus(memberContext, "initializing");
     let memberRun: AgentRun;
     let result: AgentOperationResult;

@@ -42,6 +42,12 @@
               {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge') }}
             </span>
             <span
+              v-else-if="memberNode?.memberKind === 'agent'"
+              class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
+            >
+              {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.member_badge') }}
+            </span>
+            <span
               v-if="memberNode?.memberKind === 'agent_team'"
               class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
             >
@@ -118,6 +124,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
+import { shouldShowMemberConversationPreview } from '~/utils/teamActiveExecutionMembers';
 
 const props = withDefaults(defineProps<{
   memberName?: string;
@@ -155,7 +162,9 @@ const displayStatus = computed(() => (
     ?? props.memberNode?.currentStatus
     ?? AgentStatus.Offline
 ));
-const hasPreviewMessages = computed(() => (props.memberContext?.state.conversation.messages.length ?? 0) > 0);
+const hasPreviewMessages = computed(() =>
+  shouldShowMemberConversationPreview(props.memberNode, props.memberContext ?? null),
+);
 const subteamChildRows = computed(() => (
   props.memberNode?.memberKind === 'agent_team'
     ? flattenTeamMemberNodesForDisplay(props.memberNode.children)

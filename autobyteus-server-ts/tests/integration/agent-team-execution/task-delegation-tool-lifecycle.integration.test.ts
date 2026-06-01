@@ -48,7 +48,7 @@ const updateEntry = getTaskDelegationToolManifestEntry(UPDATE_TASK_STATUS_TOOL_N
 class ManagedCodexTeamBackend implements TeamRunBackend {
   readonly runId = teamRunId;
   readonly teamBackendKind = TeamBackendKind.CODEX_APP_SERVER;
-  readonly messages: Array<{ content: string; targetRouteKey: string | null; metadata: Record<string, unknown> | null }> = [];
+  readonly messages: Array<{ content: string; targetRouteKey: string | null; targetMemberRunId: string | null; metadata: Record<string, unknown> | null }> = [];
   readonly taskAgentStarts: StartTaskAgentInstanceRequest[] = [];
   readonly publishedEvents: TeamRunEvent[] = [];
   readonly postMessageResults: Array<{ accepted: boolean; message?: string }> = [];
@@ -90,10 +90,11 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
     return () => { this.listeners.delete(listener); };
   }
 
-  async postMessage(message: AgentInputUserMessage, target?: TeamMemberSelector | null) {
+  async postMessage(message: AgentInputUserMessage, target?: TeamMemberSelector | null, targetMemberRunId: string | null = null) {
     this.messages.push({
       content: message.content,
       targetRouteKey: target ? selectorToRouteKey(target) : null,
+      targetMemberRunId,
       metadata: message.metadata && typeof message.metadata === "object" && !Array.isArray(message.metadata)
         ? (message.metadata as Record<string, unknown>)
         : null,
@@ -260,6 +261,17 @@ const buildToolContext = (
 const executeDelegateTasks = async (harness: Harness, rawInput: Record<string, unknown>) =>
   (await delegateEntry.execute(harness.service, harness.coordinatorContext, delegateEntry.parseInput(rawInput))) as DelegateTasksResult;
 
+const executeDelegateTasksAsTaskAgent = async (harness: Harness, contextTaskId: string, rawInput: Record<string, unknown>) =>
+  (await delegateEntry.execute(
+    harness.service,
+    buildToolContext(
+      { runId: harness.backend.runId, teamBackendKind: TeamBackendKind.CODEX_APP_SERVER, config: harness.manager.getTeamRun(harness.backend.runId)?.config ?? null },
+      "worker",
+      findTaskAgentIdentity(harness.backend, contextTaskId),
+    ),
+    delegateEntry.parseInput(rawInput),
+  )) as DelegateTasksResult;
+
 const findTaskAgentIdentity = (
   backend: ManagedCodexTeamBackend,
   taskId: string,
@@ -296,6 +308,15 @@ const executeWorkerStatusUpdateAsTaskAgent = async (
   )) as UpdateTaskStatusResult;
 };
 
+const executeCoordinatorAcceptance = async (
+  harness: Harness,
+  taskId: string,
+) => (await updateEntry.execute(
+  harness.service,
+  harness.coordinatorContext,
+  updateEntry.parseInput({ status: "accepted", task_id: taskId }),
+)) as UpdateTaskStatusResult;
+
 const taskDelegationEvents = (backend: ManagedCodexTeamBackend, eventType: TeamRunTaskDelegationEventPayload["eventType"]): TeamRunEvent[] =>
   backend.publishedEvents.filter((event) =>
     event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION &&
@@ -310,13 +331,13 @@ const publishIdleEvent = (
   backend.publishEvent({
     eventSourceType: TeamRunEventSourceType.AGENT,
     teamRunId: backend.runId,
-    sourcePath: ["worker"],
+    sourcePath: identity.logicalMember.memberPath,
     data: {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberName: "worker",
+      memberName: identity.logicalMember.memberName,
       memberRunId: identity.taskAgentRunId,
-      memberPath: ["worker"],
-      memberRouteKey: "worker",
+      memberPath: identity.logicalMember.memberPath,
+      memberRouteKey: identity.logicalMember.memberRouteKey,
       taskAgentInstance: identity,
       agentEvent: {
         eventType: AgentRunEventType.AGENT_STATUS,
@@ -379,8 +400,8 @@ describe("task delegation tool lifecycle integration", () => {
       status: "completed",
       message: "Draft complete.",
       reference_files: ["/tmp/draft.md"],
-    })).resolves.toMatchObject({ terminal: true, reference_files_count: 1, settlement_requested: true });
-    expect(harness.backend.messages.some((message) => message.targetRouteKey === "coordinator" && message.content.includes("Delegated task completed.") && message.content.includes("task_0001"))).toBe(true);
+    })).resolves.toMatchObject({ status: "awaiting_acceptance", terminal: false, reference_files_count: 1, settlement_requested: false });
+    expect(harness.backend.messages.some((message) => message.targetRouteKey === "coordinator" && message.content.includes("reported completed") && message.content.includes("task_0001"))).toBe(true);
 
     const terminalSocketMessage = websocketMessageFor(taskDelegationEvents(harness.backend, "TASK_DELEGATION_TERMINAL_STATUS")[0]);
     expect(terminalSocketMessage.type).toBe(ServerMessageType.TASK_PLAN_EVENT);
@@ -394,6 +415,9 @@ describe("task delegation tool lifecycle integration", () => {
     });
 
     publishIdleEvent(harness.backend, "task_0001");
+    expect(harness.backend.taskAgentSettlementAttempts).toEqual([]);
+    await expect(executeCoordinatorAcceptance(harness, "task_0001"))
+      .resolves.toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
     await vi.waitFor(() => {
       expect(harness.backend.taskAgentSettlementAttempts).toEqual([
         expect.objectContaining({
@@ -408,9 +432,12 @@ describe("task delegation tool lifecycle integration", () => {
       status: "completed",
       message: "Review complete.",
       reference_files: ["/tmp/review.md"],
-    })).resolves.toMatchObject({ terminal: true, reference_files_count: 1, settlement_requested: true });
+    })).resolves.toMatchObject({ status: "awaiting_acceptance", terminal: false, reference_files_count: 1, settlement_requested: false });
     expect(harness.backend.settlementAttempts).toEqual([]);
     expect(harness.backend.taskAgentSettlementAttempts).toHaveLength(1);
+
+    await expect(executeCoordinatorAcceptance(harness, "task_0002"))
+      .resolves.toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
 
     publishIdleEvent(harness.backend, "task_0002");
     await vi.waitFor(() => {
@@ -435,6 +462,54 @@ describe("task delegation tool lifecycle integration", () => {
     await harness.manager.terminateTeamRun(harness.backend.runId);
   });
 
+  it("lets a task-agent delegate child work and sends child completion to the original task-agent run with coordinator fallback", async () => {
+    const harness = await createHarness();
+    await executeDelegateTasks(harness, {
+      tasks: [{ member_name: "worker", description: "Parent worker task." }],
+    });
+    const parentTaskAgent = findTaskAgentIdentity(harness.backend, "task_0001");
+
+    const childCreated = await executeDelegateTasksAsTaskAgent(harness, "task_0001", {
+      tasks: [{ member_name: "worker", description: "Child worker task from parent task-agent." }],
+    });
+    expect(childCreated.createdTasks).toEqual([
+      expect.objectContaining({ member_name: "worker", status: "queued" }),
+    ]);
+    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain(
+      `Delegator task-agent run: ${parentTaskAgent.taskAgentRunId}`,
+    );
+
+    await expect(executeWorkerStatusUpdateAsTaskAgent(harness, "task_0002", {
+      status: "completed",
+      message: "Nested child complete.",
+    })).resolves.toMatchObject({ status: "awaiting_acceptance", terminal: false, settlement_requested: false });
+
+    const terminalPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_TERMINAL_STATUS")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
+    expect(terminalPayload).toMatchObject({
+      taskId: "task_0002",
+      delegator: expect.objectContaining({
+        memberRouteKey: "worker",
+        taskAgentRunId: parentTaskAgent.taskAgentRunId,
+        taskAgentInstanceId: parentTaskAgent.taskAgentInstanceId,
+        taskId: "task_0001",
+      }),
+    });
+    expect(harness.backend.messages).toEqual([
+      expect.objectContaining({
+        targetRouteKey: "worker",
+        targetMemberRunId: parentTaskAgent.taskAgentRunId,
+        content: expect.stringContaining("Nested child complete."),
+      }),
+      expect.objectContaining({
+        targetRouteKey: "coordinator",
+        targetMemberRunId: null,
+        content: expect.stringContaining("Nested child complete."),
+      }),
+    ]);
+    harness.runRegistry.clear();
+    await harness.manager.terminateTeamRun(harness.backend.runId);
+  });
+
   it("keeps rejected task-agent activations out of queued tasks and websocket activation events", async () => {
     const harness = await createHarness();
     harness.backend.taskAgentStartResults.push(
@@ -451,7 +526,7 @@ describe("task delegation tool lifecycle integration", () => {
     await expect(executeWorkerStatusUpdate(harness, "task_0001", {
       status: "completed",
       message: "Draft complete.",
-    })).resolves.toMatchObject({ terminal: true, settlement_requested: true });
+    })).resolves.toMatchObject({ status: "awaiting_acceptance", terminal: false, settlement_requested: false });
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
     const terminalPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_TERMINAL_STATUS")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
     expect(terminalPayload).toMatchObject({ taskId: "task_0001", message: "Draft complete." });
@@ -473,6 +548,7 @@ describe("task delegation tool lifecycle integration", () => {
       tasks: [{ member_name: "worker", description: "Complete one bounded task." }],
     });
     await executeWorkerStatusUpdate(harness, "task_0001", { status: "completed", message: "Done." });
+    await executeCoordinatorAcceptance(harness, "task_0001");
 
     harness.backend.publishEvent({
       eventSourceType: TeamRunEventSourceType.AGENT,

@@ -83,6 +83,7 @@ export class CodexTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -95,6 +96,7 @@ export class CodexTeamRunBackend implements TeamRunBackend {
       return await this.teamManager.postMessage(
         message,
         target,
+        targetMemberRunId,
       );
     } catch (error) {
       return buildCommandFailure("post team message", error);

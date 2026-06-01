@@ -270,6 +270,8 @@ describe("member-run-instruction-composer", () => {
     );
     expect(enabled.runtimeInstruction).toContain("does not take task_id or task_name");
     expect(enabled.runtimeInstruction).toContain("include optional `message` and `reference_files`");
+    expect(enabled.runtimeInstruction).toContain('status="accepted"');
+    expect(enabled.runtimeInstruction).toContain("task_agent_run_id");
     expect(enabled.runtimeInstruction).toContain(
       "must settle or exit the final task-agent instance",
     );

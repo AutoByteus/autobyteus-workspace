@@ -90,6 +90,8 @@ const messages = {
     "Subteam members",
   "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
     "Task agent",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
+    "Member",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "Team roster",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":

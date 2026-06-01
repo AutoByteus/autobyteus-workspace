@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
+import { ensureTaskAgentContext } from '~/services/agentStreaming/teamTaskAgentContextProjection';
 
 const {
   loadTeamRunContextHydrationPayloadMock,
@@ -115,9 +116,13 @@ const createMemberContext = (runId: string, conversationId: string) => ({
   },
 });
 
-const createPayload = (members: Map<string, any>, projectionByMemberRouteKey: Map<string, any>) => ({
+const createPayload = (
+  members: Map<string, any>,
+  projectionByMemberRouteKey: Map<string, any>,
+  focusedMemberRouteKey = 'member-a',
+) => ({
   teamRunId: 'team-1',
-  focusedMemberRouteKey: 'member-a',
+  focusedMemberRouteKey,
   resumeConfig: {
     teamRunId: 'team-1',
     isActive: true,
@@ -150,6 +155,12 @@ const memberTree = [
 ];
 
 const memberNodesByRouteKey = new Map(memberTree.map((node) => [node.memberRouteKey, node]));
+
+const flattenMemberRouteKeys = (nodes: readonly any[]): string[] =>
+  nodes.flatMap((node) => [
+    node.memberRouteKey,
+    ...(node.children ? flattenMemberRouteKeys(node.children) : []),
+  ]);
 
 describe('openTeamRun', () => {
   beforeEach(() => {
@@ -284,7 +295,7 @@ describe('openTeamRun', () => {
     });
   });
 
-  it('normalizes stale member focus against existing active execution before hydration', async () => {
+  it('keeps parent logical member focus when reopening subscribed active execution', async () => {
     const existingContext = {
       teamRunId: 'team-1',
       config: {},
@@ -322,7 +333,7 @@ describe('openTeamRun', () => {
     ]);
     getTeamContextByIdMock.mockReturnValue(existingContext);
     loadTeamRunContextHydrationPayloadMock.mockResolvedValue(
-      createPayload(projectedMembers, new Map()),
+      createPayload(projectedMembers, new Map(), 'member-b'),
     );
 
     await openTeamRun({
@@ -335,10 +346,67 @@ describe('openTeamRun', () => {
     expect(loadTeamRunContextHydrationPayloadMock).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'member-a',
+        memberRouteKey: 'member-b',
       }),
     );
-    expect(existingContext.focusedMemberRouteKey).toBe('member-a');
+    expect(existingContext.focusedMemberRouteKey).toBe('member-b');
+  });
+
+  it('reconstructs a missing live task-agent child node when reopening a subscribed active team', async () => {
+    const existingContext = {
+      teamRunId: 'team-1',
+      config: {},
+      memberTree,
+      memberNodesByRouteKey: new Map(memberNodesByRouteKey),
+      leafAgentContextsByRouteKey: new Map([
+        ['member-a', createMemberContext('run-a', 'live-a')],
+        ['member-b', createMemberContext('run-b', 'live-b')],
+      ]),
+      coordinatorMemberRouteKey: 'member-a',
+      historicalHydration: null,
+      focusedMemberRouteKey: 'task-agent-run-1',
+      currentStatus: 'running',
+      isSubscribed: true,
+      taskPlan: null,
+      taskStatuses: null,
+    } as any;
+    const existingTaskAgentContext = ensureTaskAgentContext(existingContext, {
+      taskAgentInstanceId: 'task-agent-instance-1',
+      taskAgentRunId: 'task-agent-run-1',
+      taskId: 'task_0001',
+      logicalMemberRouteKey: 'member-b',
+      logicalMemberPath: ['member-b'],
+    });
+    existingContext.memberNodesByRouteKey.delete('task-agent-run-1');
+    existingContext.memberTree = existingContext.memberTree.filter((node: any) => node.memberRouteKey !== 'task-agent-run-1');
+
+    const projectedMembers = new Map([
+      ['member-a', createMemberContext('run-a', 'projected-a')],
+      ['member-b', createMemberContext('run-b', 'projected-b')],
+    ]);
+    getTeamContextByIdMock.mockReturnValue(existingContext);
+    loadTeamRunContextHydrationPayloadMock.mockResolvedValue(
+      createPayload(projectedMembers, new Map()),
+    );
+
+    const result = await openTeamRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'task-agent-run-1',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    });
+
+    expect(existingContext.leafAgentContextsByRouteKey.get('task-agent-run-1')).toBe(existingTaskAgentContext);
+    expect(existingContext.memberNodesByRouteKey.get('task-agent-run-1')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'member-b',
+      taskAgentRunId: 'task-agent-run-1',
+    });
+    const routeKeys = flattenMemberRouteKeys(existingContext.memberTree);
+    expect(routeKeys).toEqual(expect.arrayContaining(['member-b', 'task-agent-run-1']));
+    expect(routeKeys.indexOf('task-agent-run-1')).toBeGreaterThan(routeKeys.indexOf('member-b'));
+    expect(existingContext.focusedMemberRouteKey).toBe('task-agent-run-1');
+    expect(result.focusedMemberRouteKey).toBe('task-agent-run-1');
   });
 
   it('preserves existing member-scoped statuses when reopening an active unsubscribed team', async () => {

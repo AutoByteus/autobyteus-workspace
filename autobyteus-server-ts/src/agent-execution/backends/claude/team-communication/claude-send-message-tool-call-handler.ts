@@ -137,6 +137,8 @@ export class ClaudeSendMessageToolCallHandler {
       content: parsed.content ?? "",
       message_type: parsed.messageType,
       ...(parsed.referenceFiles.length > 0 ? { reference_files: parsed.referenceFiles } : {}),
+      ...(parsed.taskAgentRunId ? { task_agent_run_id: parsed.taskAgentRunId } : {}),
+      ...(parsed.taskAgentInstanceId ? { task_agent_id: parsed.taskAgentInstanceId } : {}),
     };
 
     const invocationId = `${options.runContext.runId}:${CLAUDE_SEND_MESSAGE_TOOL_NAME}:${Date.now()}:${Math.random()
@@ -220,6 +222,8 @@ export class ClaudeSendMessageToolCallHandler {
       content,
       messageType: parsed.messageType,
       referenceFiles: parsed.referenceFiles,
+      taskAgentRunId: parsed.taskAgentRunId,
+      taskAgentInstanceId: parsed.taskAgentInstanceId,
     });
     if (!requestResult.ok) {
       return this.buildRejectedResult({

@@ -56,8 +56,12 @@ export class TaskDelegationEventPublisher {
       taskAgentInstance: input.record.taskAgentInstance,
       previousStatus: input.previousStatus,
       status: input.record.status,
-      message: input.record.statusMessage,
+      message: input.record.status === "accepted"
+        ? input.record.acceptanceMessage
+        : input.record.statusMessage,
       referenceFiles: input.record.statusReferenceFiles,
+      acceptanceMessage: input.record.acceptanceMessage,
+      acceptedAt: input.record.acceptedAt,
       updatedAt: input.record.updatedAt,
       terminal: isTaskDelegationTerminalStatus(input.record.status),
     };

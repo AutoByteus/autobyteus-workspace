@@ -52,6 +52,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "Coordinator" },
+      null,
     );
   });
 
@@ -78,6 +79,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "Coordinator" },
+      null,
     );
   });
 
@@ -105,6 +107,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "ReviewTeam/Reviewer" },
+      null,
     );
   });
 

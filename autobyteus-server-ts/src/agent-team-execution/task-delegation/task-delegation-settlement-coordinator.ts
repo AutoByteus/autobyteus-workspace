@@ -65,6 +65,7 @@ const isIdleAgentEvent = (event: AgentRunEvent): boolean => {
 
 export class TaskDelegationSettlementCoordinator {
   private readonly pendingByTaskAgentRunId = new Map<string, PendingSettlement>();
+  private readonly idleTaskAgentRunIds = new Set<string>();
   private unsubscribe: TeamRunEventUnsubscribe | null = null;
 
   constructor(
@@ -89,6 +90,7 @@ export class TaskDelegationSettlementCoordinator {
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.pendingByTaskAgentRunId.clear();
+    this.idleTaskAgentRunIds.clear();
   }
 
   requestSettlement(taskAgentInstance: TaskAgentInstanceIdentity | null): boolean {
@@ -108,6 +110,9 @@ export class TaskDelegationSettlementCoordinator {
       taskAgentInstance: cloneTaskAgentIdentity(taskAgentInstance),
       requestedAt: new Date().toISOString(),
     });
+    if (this.idleTaskAgentRunIds.has(taskAgentRunId)) {
+      void this.settleIfReady(taskAgentRunId);
+    }
     return true;
   }
 
@@ -116,16 +121,22 @@ export class TaskDelegationSettlementCoordinator {
     if (!taskAgentRunId) {
       return;
     }
+    const routeKey = eventMemberRouteKey(event);
+    const payload = event.data as TeamRunAgentEventPayload;
+    if (!isIdleAgentEvent(payload.agentEvent)) {
+      this.idleTaskAgentRunIds.delete(taskAgentRunId);
+      return;
+    }
+    this.idleTaskAgentRunIds.add(taskAgentRunId);
+    await this.settleIfReady(taskAgentRunId, routeKey);
+  }
+
+  private async settleIfReady(taskAgentRunId: string, eventRouteKey?: string | null): Promise<void> {
     const pending = this.pendingByTaskAgentRunId.get(taskAgentRunId);
     if (!pending) {
       return;
     }
-    const routeKey = eventMemberRouteKey(event);
-    if (routeKey !== pending.taskAgentInstance.logicalMember.memberRouteKey) {
-      return;
-    }
-    const payload = event.data as TeamRunAgentEventPayload;
-    if (!isIdleAgentEvent(payload.agentEvent)) {
+    if (eventRouteKey && eventRouteKey !== pending.taskAgentInstance.logicalMember.memberRouteKey) {
       return;
     }
     if (this.ledger.hasCurrentWorkForTaskAgentInstance(taskAgentRunId)) {
@@ -140,9 +151,10 @@ export class TaskDelegationSettlementCoordinator {
     );
     if (!result.accepted) {
       console.warn(
-        `TaskDelegationSettlementCoordinator: settlement rejected for '${routeKey}': ${result.message ?? "unknown error"}`,
+        `TaskDelegationSettlementCoordinator: settlement rejected for '${pending.taskAgentInstance.logicalMember.memberRouteKey}': ${result.message ?? "unknown error"}`,
       );
     }
+    this.idleTaskAgentRunIds.delete(taskAgentRunId);
   }
 
   private isProtectedMember(routeKey: string): boolean {

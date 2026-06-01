@@ -84,10 +84,12 @@ export class TeamRun {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.postMessage(
       message,
       this.resolvePostMessageTarget(target),
+      targetMemberRunId,
     );
   }
 
