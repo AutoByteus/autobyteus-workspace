@@ -1,11 +1,6 @@
-# Release Notes — Frontend File Explorer Context Menu
+# Release Notes: Package Skills In Skills Page
 
-- Restores the desktop Files tab right-click context menu for file and folder rows.
-- Adds root/background context-menu creation for new files or folders at the workspace root.
-- Keeps create/delete actions scoped to the visible workspace and updates the file tree immediately after successful mutations.
-- Cleans up open file tabs and preview state when a deleted file or folder contains the active file.
-- Preserves left-click open/expand behavior, lazy loading, search, drag/drop moves, and inactive Files-panel cleanup.
-
-## Fixes
-
-- Fixed browser-backed RPA streaming errors so parseable server error frames surface the original error text instead of `Invalid stream response format`.
+- Restores bundled agent-package skills to the normal Skills page catalog, including shared-agent, team-local, and team-shared skill layouts.
+- Lets users open package/private skills through the existing Skill Detail and File Explorer flow to inspect `SKILL.md` and package files.
+- Preserves source-context-first runtime skill resolution for package agents and team members before global skill-directory fallback.
+- Adds durable backend/GraphQL coverage for package skill catalog visibility, detail lookup, and SkillWorkspace/File Explorer openability.
