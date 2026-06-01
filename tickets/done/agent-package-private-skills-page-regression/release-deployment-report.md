@@ -85,9 +85,9 @@ Version bump, tag, and release commit will be handled by the documented `pnpm re
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.40 -- --release-notes tickets/done/agent-package-private-skills-page-regression/release-notes.md`
-- Release/publication/deployment result: `Pending in this finalization pass`
+- Release/publication/deployment result: `Partially completed; server Docker workflow failed twice on GitHub runner disk exhaustion and deployment-local workflow disk cleanup hotfix is being applied`
 - Release notes handoff result: `Pending in this finalization pass`
-- Blocker (if applicable): `None`
+- Blocker (if applicable): `Server Docker Release v1.3.40 failed twice with no space left on device during buildx image export; applying workflow disk cleanup and manually redispatching server Docker release.`
 
 ## Post-Finalization Cleanup
 
@@ -112,7 +112,11 @@ Version bump, tag, and release commit will be handled by the documented `pnpm re
 
 ## Deployment Steps
 
-None before user verification. No deployment path is in scope for this ticket.
+- Release helper completed and pushed `personal` plus tag `v1.3.40`.
+- GitHub release workflows started from tag `v1.3.40`.
+- Desktop Release, Android APK Release, and Release Messaging Gateway completed successfully.
+- Server Docker Release failed twice during Docker buildx image export with GitHub-hosted runner disk exhaustion (`no space left on device`).
+- Server Docker Release disk exhaustion reroute: delivery added a deployment-local workflow cleanup step in `.github/workflows/release-server-docker.yml` to remove unused hosted-tool directories before Docker buildx and will manually dispatch Server Docker Release for `v1.3.40` from `personal`.
 
 ## Environment Or Migration Notes
 
