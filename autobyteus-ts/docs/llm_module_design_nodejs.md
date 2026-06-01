@@ -320,6 +320,12 @@ for await (const chunk of client.streamMessage({
 }
 ```
 
+`AutobyteusClient.streamMessage(...)` parses RPA server-sent-event `data:`
+frames before yielding them. A parseable JSON frame with an `error` field is a
+server/provider error and is thrown with that error text; only a syntactically
+invalid JSON `data:` frame should be reported as `Invalid stream response
+format`.
+
 The payload invariants are:
 
 - `messages` is the rendered conversation transcript and must be non-empty.

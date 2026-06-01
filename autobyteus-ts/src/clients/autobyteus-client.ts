@@ -340,15 +340,18 @@ export class AutobyteusClient {
         for await (const line of rl) {
           if (typeof line !== 'string') continue;
           if (!line.startsWith('data: ')) continue;
+          let chunk: JsonRecord;
           try {
-            const chunk = JSON.parse(line.slice(6));
-            if (chunk?.error) {
-              throw new Error(chunk.error);
-            }
-            yield chunk;
-          } catch (error) {
+            chunk = JSON.parse(line.slice(6)) as JsonRecord;
+          } catch {
             throw new Error('Invalid stream response format');
           }
+          if (chunk.error) {
+            throw new Error(
+              typeof chunk.error === 'string' ? chunk.error : JSON.stringify(chunk.error)
+            );
+          }
+          yield chunk;
         }
       } finally {
         rl.close();

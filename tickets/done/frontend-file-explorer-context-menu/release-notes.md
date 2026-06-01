@@ -5,7 +5,3 @@
 - Keeps create/delete actions scoped to the visible workspace and updates the file tree immediately after successful mutations.
 - Cleans up open file tabs and preview state when a deleted file or folder contains the active file.
 - Preserves left-click open/expand behavior, lazy loading, search, drag/drop moves, and inactive Files-panel cleanup.
-
-## Fixes
-
-- Fixed browser-backed RPA streaming errors so parseable server error frames surface the original error text instead of `Invalid stream response format`.

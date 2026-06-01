@@ -24,6 +24,17 @@ function isAbsoluteLocalPath(path: string): boolean {
   return /^[a-zA-Z]:[\\/]/.test(path)
 }
 
+const normalizeDeletedPath = (path: string): string =>
+  path.trim().replace(/^\/+/, '').replace(/\/+$/, '')
+
+const isPathInDeletedScope = (filePath: string, deletedPath: string): boolean => {
+  const normalizedDeletedPath = normalizeDeletedPath(deletedPath)
+  if (!normalizedDeletedPath) {
+    return filePath === ''
+  }
+  return filePath === normalizedDeletedPath || filePath.startsWith(`${normalizedDeletedPath}/`)
+}
+
 export const fileExplorerContentActions = {
   async openFile(this: any, filePath: string, workspaceId: string) {
     return this._openFileWithMode(filePath, 'edit', workspaceId)
@@ -139,6 +150,26 @@ export const fileExplorerContentActions = {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => file.path !== filePath)
     if (wsState.activeFile === filePath) {
+      const lastOpenFile = wsState.openFiles[wsState.openFiles.length - 1]
+      wsState.activeFile = lastOpenFile ? lastOpenFile.path : null
+    }
+  },
+
+  closePathScopedFiles(this: any, deletedPath: string, workspaceId: string) {
+    const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    const activeFileWasDeleted = Boolean(
+      wsState.activeFile && isPathInDeletedScope(wsState.activeFile, deletedPath),
+    )
+
+    wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => {
+      return !isPathInDeletedScope(file.path, deletedPath)
+    })
+
+    const activeFileStillOpen = Boolean(
+      wsState.activeFile && wsState.openFiles.some((file: OpenFileState) => file.path === wsState.activeFile),
+    )
+
+    if (activeFileWasDeleted || (wsState.activeFile && !activeFileStillOpen)) {
       const lastOpenFile = wsState.openFiles[wsState.openFiles.length - 1]
       wsState.activeFile = lastOpenFile ? lastOpenFile.path : null
     }

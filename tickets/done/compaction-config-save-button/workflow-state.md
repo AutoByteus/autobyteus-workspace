@@ -4,12 +4,12 @@
 
 - Ticket: `compaction-config-save-button`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization / Cleanup`
+- Next Stage: `Complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-010`
-- Last Updated: `2026-05-31`
+- Last Transition ID: `T-013`
+- Last Updated: `2026-06-01`
 
 ## Stage 0 Bootstrap Record
 
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md`; targeted component Vitest 6/6 passed |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded with mandatory review checks | `code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` no-impact decision |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + repository finalization complete when git repo | User verification/finalize request received 2026-05-31; release/version bump explicitly not required |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + repository finalization complete when git repo + applicable release/publication/deployment complete | Release helper completed and pushed `personal` plus tag `v1.3.38` on 2026-06-01; release notes passed from archived ticket path; prior ticket worktree/local branch cleanup already complete |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -72,6 +72,8 @@
 | T-009 | 2026-05-31 | 8 | 9 | Code review passed; moving to docs sync/no-impact decision. | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-010 | 2026-05-31 | 9 | 10 | Docs sync recorded no-impact decision; handoff summary ready and awaiting user verification. | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-011 | 2026-05-31 | 10 | 10 | User confirmed finalization and requested no release/version bump; repository finalization starting. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-012 | 2026-06-01 | 10 | 10 | User reopened Stage 10 and requested a new release/version bump after prior no-release finalization; release notes prepared and release publication is starting. | N/A | Locked | `release-notes.md`, `handoff-summary.md`, `workflow-state.md` |
+| T-013 | 2026-06-01 | 10 | Complete | Documented release helper completed for version `1.3.38`; branch `personal` and tag `v1.3.38` were pushed. | N/A | Locked | `release-notes.md`, `.github/release-notes/release-notes.md`, package versions, managed messaging release manifest, `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log
 
@@ -87,6 +89,8 @@
 | 2026-05-31 | Transition | Stage 7 executable validation passed. I entered Stage 8 code review and locked code edits. | Success | N/A |
 | 2026-05-31 | Transition | Stage 8 code review passed. I moved to Stage 9 docs sync with code edits locked. | Success | N/A |
 | 2026-05-31 | Transition | Stage 9 docs sync is complete with a no-impact decision. Stage 10 handoff is ready and waiting for your verification before archival and repository finalization. | Success | N/A |
+| 2026-06-01 | Transition | Stage 10 release has been reopened. Release notes for version 1.3.38 are prepared, code edits remain locked, and I am running the documented release publication path. | Success | N/A |
+| 2026-06-01 | Gate | Stage 10 release publication is complete. Version 1.3.38 and tag v1.3.38 were pushed; code edits remained locked. | Success | N/A |
 
 ## Process Violation Log
 

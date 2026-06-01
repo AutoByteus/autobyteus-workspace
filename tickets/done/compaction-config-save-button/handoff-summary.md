@@ -3,7 +3,8 @@
 ## Status
 
 - Engineering stages complete through Stage 9.
-- User verified/finalized on 2026-05-31; repository finalization is proceeding.
+- User verified/finalized on 2026-05-31; repository finalization completed on `personal`.
+- User requested Stage 10 release/version bump on 2026-06-01; release publication completed for version `1.3.38`.
 
 ## What Changed
 
@@ -30,8 +31,22 @@ The Compaction config card used `isSaving` as the only style switch. When it was
 ## Docs / Release Notes
 
 - Docs sync result: No long-lived docs impact; `autobyteus-web/docs/settings.md` remains accurate.
-- Release notes: Not required. User explicitly requested finalization with no new release/version bump on 2026-05-31.
+- Release notes: Required after user reopened Stage 10 for a release on 2026-06-01.
+- Release notes artifact: `tickets/done/compaction-config-save-button/release-notes.md` (after archival).
 
 ## User Verification
 
-User confirmed finalization on 2026-05-31. No release/version bump requested.
+User confirmed finalization on 2026-05-31. On 2026-06-01, user requested Stage 10 release/version bump; version `1.3.38` was published using the documented release helper.
+
+
+## Release Publication Record
+
+- Release command: `pnpm release 1.3.38 -- --release-notes tickets/done/compaction-config-save-button/release-notes.md`
+- Release commit: `baae15e4b2fb94bb460527a51220b771f03f3647` (`chore(release): bump workspace release version to 1.3.38`)
+- Release tag: `v1.3.38` pushed to `origin`
+- Branch pushed: `personal`
+- Package versions updated: `autobyteus-web` `1.3.38`, `autobyteus-message-gateway` `1.3.38`
+- Curated release notes synced to: `.github/release-notes/release-notes.md`
+- Managed messaging gateway release manifest synced to: `v1.3.38`
+- Manual release dispatch: Not run; fresh tag push starts the documented release workflows.
+- Post-finalization cleanup: Ticket worktree and local ticket branch were already removed during prior Stage 10 finalization; no additional cleanup required for the release-only reopen.

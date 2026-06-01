@@ -1,0 +1,42 @@
+# Electron build artifact summary
+Timestamp: 2026-06-01 (Europe/Berlin)
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu
+Branch: codex/frontend-file-explorer-context-menu
+HEAD: b8e24ed9d3f22b1edb59367c1e8e32ddd1f79ab5
+
+README commands reviewed:
+- Root README release workflow: release helper is for publishing/version/tag flow; not used.
+- autobyteus-web README desktop build: pnpm build:electron:mac; local mac build can use NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=...
+
+Build command executed:
+cd autobyteus-web && NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac
+
+Build result: PASS (exit code 0)
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app | 1.2G | sha256=directory
+- /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.38.dmg | 379764077 bytes | sha256=28eb966ca87661fc226ae4acfc97becb7c5fd8f7fd476ea7fe958ebbec317a46
+- /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.38.dmg.blockmap | 396016 bytes | sha256=1bdbbdca27d2c7a7feeb2bb415c9420c46b48dde22d01c01988f9a1cd89f6c17
+- /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.38.zip | 377238591 bytes | sha256=78de51d93cd956acfbcbc8a9253e3005a43cf9cc9a6d1f90f611868a42288739
+- /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.38.zip.blockmap | 387310 bytes | sha256=aafd84f1f712bb11dd463b25fdcc3bef9d43e5e825e0388ffdb569af8626ea9b
+
+hdiutil verify:
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $4262C35B
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $308EBB3D
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $1D4FC1DD
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $52246375
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $1D4FC1DD
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $2777E25E
+Die überprüfte CRC32-Prüfsumme ist $B922EE4B
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.38.dmg" is VALID
+hdiutil verify exit code: 0

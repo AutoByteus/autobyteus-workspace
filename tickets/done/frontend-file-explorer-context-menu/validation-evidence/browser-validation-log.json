@@ -1,0 +1,251 @@
+{
+  "startedAt": "2026-06-01T06:24:15.259Z",
+  "frontendUrl": "http://127.0.0.1:3000/workspace",
+  "backendBaseUrl": "http://127.0.0.1:29695",
+  "workspaceRoot": "/Users/normy/.autobyteus/server-data/temp_workspace",
+  "rootFolder": "e2e-cm-20260601062415",
+  "scenarios": [
+    {
+      "id": "E2E-FE-CM-SETUP",
+      "status": "Pass",
+      "details": {
+        "activeWorkspace": "temp_workspace",
+        "visibleRows": 160
+      },
+      "at": "2026-06-01T06:24:24.423Z"
+    },
+    {
+      "id": "E2E-FE-CM-ROOT-MENU",
+      "status": "Pass",
+      "details": {
+        "rootPos": {
+          "x": 970,
+          "y": 148
+        },
+        "rootMenu": {
+          "labels": [
+            "Add File",
+            "Add Folder"
+          ],
+          "rect": {
+            "x": 970,
+            "y": 148,
+            "width": 196,
+            "height": 103.8800048828125
+          }
+        }
+      },
+      "at": "2026-06-01T06:24:24.501Z"
+    },
+    {
+      "id": "E2E-FE-CM-ROOT-CREATE-FOLDER",
+      "status": "Pass",
+      "details": {
+        "created": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415"
+      },
+      "at": "2026-06-01T06:24:24.739Z"
+    },
+    {
+      "id": "E2E-FE-CM-ROW-MENU",
+      "status": "Pass",
+      "details": {
+        "rowPos": {
+          "x": 1038,
+          "y": 514.25
+        },
+        "rowMenu": {
+          "labels": [
+            "Add File",
+            "Add Folder",
+            "Rename",
+            "Delete"
+          ],
+          "rect": {
+            "x": 1038,
+            "y": 514,
+            "width": 196,
+            "height": 190.1199951171875
+          }
+        }
+      },
+      "at": "2026-06-01T06:24:24.856Z"
+    },
+    {
+      "id": "E2E-FE-CM-FOLDER-TARGET-CREATE",
+      "status": "Pass",
+      "details": {
+        "created": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415/folder-child"
+      },
+      "at": "2026-06-01T06:24:25.115Z"
+    },
+    {
+      "id": "E2E-FE-CM-NESTED-ROW-MENU",
+      "status": "Pass",
+      "details": {
+        "nestedPos": {
+          "x": 1054,
+          "y": 548.75
+        },
+        "nestedMenu": {
+          "labels": [
+            "Add File",
+            "Add Folder",
+            "Rename",
+            "Delete"
+          ],
+          "rect": {
+            "x": 1054,
+            "y": 548,
+            "width": 196,
+            "height": 190.1199951171875
+          }
+        }
+      },
+      "at": "2026-06-01T06:24:25.399Z"
+    },
+    {
+      "id": "E2E-FE-CM-FOLDER-TARGET-CREATE-FILE",
+      "status": "Pass",
+      "details": {
+        "created": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415/target-file.md"
+      },
+      "at": "2026-06-01T06:24:25.770Z"
+    },
+    {
+      "id": "E2E-FE-CM-FILE-TARGET-SIBLING-CREATE",
+      "status": "Pass",
+      "details": {
+        "created": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415/sibling-folder",
+        "fileMenu": {
+          "labels": [
+            "Add File",
+            "Add Folder",
+            "Rename",
+            "Delete"
+          ],
+          "rect": {
+            "x": 1054,
+            "y": 575,
+            "width": 196,
+            "height": 190.1199951171875
+          }
+        }
+      },
+      "at": "2026-06-01T06:24:26.140Z"
+    },
+    {
+      "id": "E2E-FE-CM-DELETE-CANCEL",
+      "status": "Pass",
+      "details": {
+        "retained": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415/sibling-folder"
+      },
+      "at": "2026-06-01T06:24:26.779Z"
+    },
+    {
+      "id": "E2E-FE-CM-OPEN-FILE",
+      "status": "Pass",
+      "details": {
+        "activeFile": "e2e-cm-20260601062415/target-file.md"
+      },
+      "at": "2026-06-01T06:24:26.896Z"
+    },
+    {
+      "id": "E2E-FE-CM-DELETE-CONFIRM-CLEANUP",
+      "status": "Pass",
+      "details": {
+        "removed": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415",
+        "activeFileTabGone": true,
+        "contentViewerExcerpt": "No file selected\n\nSelect a file from the explorer to view or edit its content."
+      },
+      "at": "2026-06-01T06:24:27.487Z"
+    },
+    {
+      "id": "E2E-FE-CM-INACTIVE-CLOSE",
+      "status": "Pass",
+      "details": {
+        "action": "opened menu on .claude then switched to Terminal tab"
+      },
+      "at": "2026-06-01T06:24:27.608Z"
+    },
+    {
+      "id": "E2E-FE-CM-MENU-OPACITY",
+      "status": "Pass",
+      "details": {
+        "computedOpacityAfter300ms": "1",
+        "visibility": "visible",
+        "labels": [
+          "Add File",
+          "Add Folder",
+          "Rename",
+          "Delete"
+        ],
+        "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/menu-opacity-after-wait.png"
+      },
+      "at": "2026-06-01T06:26:30.060Z"
+    },
+    {
+      "id": "E2E-FE-CM-CREATE-FAILURE-NO-FALSE-SUCCESS",
+      "status": "Pass",
+      "details": {
+        "folder": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-failure-20260601062734",
+        "visibleCountBefore": 1,
+        "visibleCountAfter": 1,
+        "consoleErrors": [
+          "Failed to create file/folder: ApolloError: File or folder already exists at path: e2e-cm-failure-20260601062734\n    at new ApolloError (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=0e20e414:59:28)\n    at http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=0e20e414:129:47\n    at both (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:35:31)\n    at http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:24:24)\n    at Object.next (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:37:49)\n    at notifySubscription (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:132:18)\n    at onNotify (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:225:5)",
+          "Failed to create file/folder: ApolloError: File or folder already exists at path: e2e-cm-failure-20260601062734\n    at new ApolloError (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=0e20e414:59:28)\n    at http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=0e20e414:129:47\n    at both (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:35:31)\n    at http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:24:24)\n    at Object.next (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=0e20e414:37:49)\n    at notifySubscription (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:132:18)\n    at onNotify (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=0e20e414:225:5)"
+        ],
+        "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/14-duplicate-create-failure-no-duplicate.png"
+      },
+      "at": "2026-06-01T06:27:45.748Z"
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/01-files-tab-loaded.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/02-root-context-menu.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/03-root-folder-created.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/04-folder-row-context-menu.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/05-child-folder-created-visible.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/06-nested-context-menu-closed.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/07-target-file-created.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/08-sibling-folder-created.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/09-delete-cancel-kept-target.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/10-target-file-open-active.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/11-delete-containing-folder-dialog.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/12-containing-folder-deleted-clean-preview.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/13-menu-closed-after-inactive-tab.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/menu-opacity-after-wait.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/in-progress/frontend-file-explorer-context-menu/validation-evidence/14-duplicate-create-failure-no-duplicate.png"
+  ],
+  "consoleWarnings": [
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping",
+      "at": "2026-06-01T06:24:17.280Z"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping",
+      "at": "2026-06-01T06:24:18.056Z"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping",
+      "at": "2026-06-01T06:24:18.268Z"
+    },
+    {
+      "type": "warning",
+      "text": "[toolLifecycleHandler] Dropping malformed TOOL_LOG payload {threadId: 019e81ce-f00d-73d1-8fe2-cc61f522d7cc, turnId: 019e81ce-f08e-7590-941c-1785054e09ec, item: Object, tool_invocation_id: call_eWMUWC5BuXBUxL6iReusi7VJ, log_entry: Chunk ID: b29bd8\nWall time: 5.0019 seconds\nProcess…session ID 67355\nOriginal token count: 0\nOutput:\n}",
+      "at": "2026-06-01T06:24:27.333Z"
+    }
+  ],
+  "consoleErrors": [],
+  "cleanup": [
+    {
+      "path": "/Users/normy/.autobyteus/server-data/temp_workspace/e2e-cm-20260601062415",
+      "action": "no leftover temp folder found"
+    }
+  ],
+  "finishedAt": "2026-06-01T06:24:27.608Z",
+  "result": "Pass",
+  "failurePathResult": "Pass"
+}
