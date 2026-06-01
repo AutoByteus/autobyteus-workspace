@@ -3,7 +3,8 @@
 ## Status
 
 - Engineering stages complete through Stage 9.
-- User verified/finalized on 2026-05-31; repository finalization is proceeding.
+- User verified/finalized on 2026-05-31; repository finalization completed on `personal`.
+- User requested Stage 10 release/version bump on 2026-06-01; release publication is proceeding for version `1.3.38`.
 
 ## What Changed
 
@@ -30,8 +31,9 @@ The Compaction config card used `isSaving` as the only style switch. When it was
 ## Docs / Release Notes
 
 - Docs sync result: No long-lived docs impact; `autobyteus-web/docs/settings.md` remains accurate.
-- Release notes: Not required. User explicitly requested finalization with no new release/version bump on 2026-05-31.
+- Release notes: Required after user reopened Stage 10 for a release on 2026-06-01.
+- Release notes artifact: `tickets/done/compaction-config-save-button/release-notes.md` (after archival).
 
 ## User Verification
 
-User confirmed finalization on 2026-05-31. No release/version bump requested.
+User confirmed finalization on 2026-05-31. On 2026-06-01, user requested Stage 10 release/version bump; publishing version `1.3.38` using the documented release helper.
