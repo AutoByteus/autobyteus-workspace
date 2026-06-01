@@ -395,6 +395,41 @@ describe('AutobyteusClient', () => {
     }));
   });
 
+  it('surfaces parseable stream error chunks without relabeling them as invalid format', async () => {
+    const client = new AutobyteusClient();
+    const stream = Readable.from(['data: {"error":"upload still in progress timeout"}\n']);
+    const postMock = vi.fn().mockResolvedValue({ data: stream });
+    (client.asyncClient.post as any) = postMock;
+
+    const iterator = client.streamMessage({
+      conversationId: 'conversation-stream-error',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    });
+
+    let thrown: unknown;
+    try {
+      await iterator.next();
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toBe('upload still in progress timeout');
+    expect((thrown as Error).message).not.toBe('Invalid stream response format');
+  });
+
   it('posts rendered tool transcript content without structured tool payload fields', async () => {
     const client = new AutobyteusClient();
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
