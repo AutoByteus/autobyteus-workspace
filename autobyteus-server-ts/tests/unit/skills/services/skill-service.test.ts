@@ -125,46 +125,69 @@ describe("SkillService", () => {
     expect(resolved[0]?.name).toBe("configured_skill");
   });
 
-  it("does not expose bundled agent-local root skills through global lookup", () => {
+  it("lists and retrieves bundled package skills from all supported definition-root layouts", () => {
     const packageRoot = path.join(tempRoot, "package-root");
-    const bundledDir = path.join(packageRoot, "agents", "requirements-engineer");
-    fs.mkdirSync(bundledDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(bundledDir, "SKILL.md"),
-      "---\nname: requirements-engineer\ndescription: Bundled requirements skill\n---\n\nBundled content\n",
-      "utf-8",
+    const sharedRootDir = writeSkillDirectory(
+      path.join(packageRoot, "agents", "requirements-engineer"),
+      "requirements-engineer",
+      "Bundled shared root skill",
+      "Shared root content",
+    );
+    const sharedMultiDir = writeSkillDirectory(
+      path.join(packageRoot, "agents", "writer", "skills", "writer-tone"),
+      "writer-tone",
+      "Bundled shared multi skill",
+      "Shared multi content",
+    );
+    const teamLocalRootDir = writeSkillDirectory(
+      path.join(packageRoot, "agent-teams", "software-engineering-team", "agents", "reviewer"),
+      "review-style",
+      "Bundled team-local root skill",
+      "Team-local root content",
+    );
+    const teamLocalMultiDir = writeSkillDirectory(
+      path.join(packageRoot, "agent-teams", "software-engineering-team", "agents", "reviewer", "skills", "review-rubric"),
+      "review-rubric",
+      "Bundled team-local multi skill",
+      "Team-local multi content",
+    );
+    const teamSharedDir = writeSkillDirectory(
+      path.join(packageRoot, "agent-teams", "software-engineering-team", "skills", "handoff-checklist"),
+      "handoff-checklist",
+      "Bundled team-shared skill",
+      "Team-shared content",
     );
     additionalDefinitionRoots = [packageRoot];
 
     const skills = service.listSkills();
-    expect(skills.map((skill) => skill.name)).not.toContain("requirements-engineer");
+    expect(skills.map((skill) => skill.name)).toEqual([
+      "handoff-checklist",
+      "requirements-engineer",
+      "review-rubric",
+      "review-style",
+      "writer-tone",
+    ]);
 
-    const bundled = service.getSkill("requirements-engineer");
-    expect(bundled).toBeNull();
+    expect(service.getSkill("requirements-engineer")?.rootPath).toBe(path.resolve(sharedRootDir));
+    expect(service.getSkill("writer-tone")?.rootPath).toBe(path.resolve(sharedMultiDir));
+    expect(service.getSkill("review-style")?.rootPath).toBe(path.resolve(teamLocalRootDir));
+    expect(service.getSkill("review-rubric")?.rootPath).toBe(path.resolve(teamLocalMultiDir));
+    expect(service.getSkill("handoff-checklist")?.rootPath).toBe(path.resolve(teamSharedDir));
   });
 
-  it("does not expose bundled team-local root skills through global lookup", () => {
-    const packageRoot = path.join(tempRoot, "package-root");
-    const bundledDir = path.join(
-      packageRoot,
-      "agent-teams",
-      "software-engineering-team",
-      "agents",
-      "reviewer",
+  it("discovers bundled skills from app-data definition roots", () => {
+    const bundledDir = writeSkillDirectory(
+      path.join(tempRoot, "agents", "app-data-agent"),
+      "app-data-skill",
+      "App data bundled skill",
+      "App data content",
     );
-    fs.mkdirSync(bundledDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(bundledDir, "SKILL.md"),
-      "---\nname: reviewer\ndescription: Team-local reviewer skill\n---\n\nBundled team-local content\n",
-      "utf-8",
-    );
-    additionalDefinitionRoots = [packageRoot];
 
-    const skills = service.listSkills();
-    expect(skills.map((skill) => skill.name)).not.toContain("reviewer");
+    const skill = service.getSkill("app-data-skill");
 
-    const bundled = service.getSkill("reviewer");
-    expect(bundled).toBeNull();
+    expect(service.listSkills().map((entry) => entry.name)).toContain("app-data-skill");
+    expect(skill?.rootPath).toBe(path.resolve(bundledDir));
+    expect(skill?.content).toBe("App data content");
   });
 
   it("prefers standalone skills over bundled agent package root skills when names collide", () => {
@@ -183,6 +206,12 @@ describe("SkillService", () => {
     const skill = service.getSkill("requirements-engineer");
     expect(skill?.description).toBe("Standalone skill");
     expect(skill?.rootPath).toBe(path.join(skillsDir, "requirements-engineer"));
+
+    const listedMatches = service
+      .listSkills()
+      .filter((entry) => entry.name === "requirements-engineer");
+    expect(listedMatches).toHaveLength(1);
+    expect(listedMatches[0]?.description).toBe("Standalone skill");
   });
 
   it("resolves a configured colocated private root skill for its owning agent", () => {

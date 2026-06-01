@@ -229,9 +229,10 @@ Manage agent package sources used by the app.
   sync private repositories locally, import the local path, and use **Reload**
   after external updates.
 - Package agents may carry package-private or team-shared skills referenced from
-  `agent-config.json.skillNames`. Those skills travel with the imported package
-  and resolve at agent runtime, but they do not appear as standalone rows in the
-  global Skills page/catalog.
+  `agent-config.json.skillNames`. Those skills travel with the imported package,
+  resolve context-first at agent runtime, and appear as standalone rows in the
+  normal Skills page/catalog so users can browse their `SKILL.md` content and
+  package files through the existing Skill Detail/File Explorer flow.
 - Remove removable imported packages from app-managed storage. Built-in/default
   package rows are platform-owned and do not expose user update, reload, or
   remove actions.

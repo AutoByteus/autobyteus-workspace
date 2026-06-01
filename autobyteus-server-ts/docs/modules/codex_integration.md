@@ -156,7 +156,10 @@ Configured runtime skills are first resolved by
 `SkillService.resolveConfiguredSkillsForAgent(...)`, so Codex receives the same
 context-aware `Skill[]` shape as the other runtime bootstraps. That resolver can
 return package-private agent skills, owning-team shared skills for team-local
-members, or global catalog fallback skills.
+members, or configured global skill-directory fallback skills. Package skills
+may also appear in the normal Skills catalog for browsing, but Codex
+materialization uses the already-resolved runtime skill roots rather than a
+package-wide catalog lookup.
 
 The resolved skills are then preflighted against Codex `skills/list` for the run
 working directory.

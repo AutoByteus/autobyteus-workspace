@@ -635,7 +635,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     expect(multiBackend.getContext().config.workspaceId).toBe(workspaceId);
     await multiBackend.terminate();
   });
-  it("imports shared agents with colocated, multi-skill, context-bound private, and global fallback skills without global leakage", async () => {
+  it("imports shared agents with colocated, multi-skill, context-bound private, and global fallback skills with catalog visibility", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
 
@@ -673,7 +673,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       instructions: "Use multiple private skills.",
       skillNames: [toneSkillName, outlineSkillName, globalSkillName],
     });
-    await writeSkillDirectory(
+    const toneSkillDir = await writeSkillDirectory(
       path.join(multiAgentDir, "skills", toneSkillName),
       toneSkillName,
       "Shared private tone skill",
@@ -712,33 +712,72 @@ describe("Agent package private skills GraphQL e2e", () => {
     foreignWarnSpy.mockRestore();
 
     const catalog = await execGraphql<{
-      skills: Array<{ name: string }>;
-      rootPrivate: { name: string } | null;
-      tonePrivate: { name: string } | null;
+      skills: Array<{ name: string; rootPath: string }>;
+      rootPrivate: { name: string; rootPath: string; content: string; fileCount: number } | null;
+      tonePrivate: { name: string; rootPath: string; content: string; fileCount: number } | null;
       globalFallback: { name: string } | null;
+      rootPrivateTree: string | null;
+      rootPrivateFile: string | null;
+      tonePrivateFile: string | null;
+      rootPrivateWorkspaceTree: string | null;
+      rootPrivateWorkspaceFile: string | null;
+      tonePrivateWorkspaceFile: string | null;
     }>(
       `
-        query SkillCatalog($rootSkillName: String!, $toneSkillName: String!, $globalSkillName: String!) {
-          skills { name }
-          rootPrivate: skill(name: $rootSkillName) { name }
-          tonePrivate: skill(name: $toneSkillName) { name }
+        query SkillCatalog(
+          $rootSkillName: String!
+          $toneSkillName: String!
+          $globalSkillName: String!
+          $rootSkillWorkspaceId: String!
+          $toneSkillWorkspaceId: String!
+        ) {
+          skills { name rootPath }
+          rootPrivate: skill(name: $rootSkillName) { name rootPath content fileCount }
+          tonePrivate: skill(name: $toneSkillName) { name rootPath content fileCount }
           globalFallback: skill(name: $globalSkillName) { name }
+          rootPrivateTree: skillFileTree(name: $rootSkillName)
+          rootPrivateFile: skillFileContent(skillName: $rootSkillName, path: "SKILL.md")
+          tonePrivateFile: skillFileContent(skillName: $toneSkillName, path: "SKILL.md")
+          rootPrivateWorkspaceTree: folderChildren(workspaceId: $rootSkillWorkspaceId, folderPath: "")
+          rootPrivateWorkspaceFile: fileContent(workspaceId: $rootSkillWorkspaceId, filePath: "SKILL.md")
+          tonePrivateWorkspaceFile: fileContent(workspaceId: $toneSkillWorkspaceId, filePath: "SKILL.md")
         }
       `,
       {
         rootSkillName,
         toneSkillName,
         globalSkillName,
+        rootSkillWorkspaceId: `skill_ws_${rootSkillName}`,
+        toneSkillWorkspaceId: `skill_ws_${toneSkillName}`,
       },
     );
 
     const catalogNames = catalog.skills.map((skill) => skill.name);
     expect(catalogNames).toContain(globalSkillName);
-    expect(catalogNames).not.toContain(rootSkillName);
-    expect(catalogNames).not.toContain(toneSkillName);
-    expect(catalog.rootPrivate).toBeNull();
-    expect(catalog.tonePrivate).toBeNull();
+    expect(catalogNames).toContain(rootSkillName);
+    expect(catalogNames).toContain(toneSkillName);
+    expect(catalog.rootPrivate?.name).toBe(rootSkillName);
+    expect(catalog.rootPrivate?.rootPath).toBe(path.resolve(rootAgentDir));
+    expect(catalog.rootPrivate?.content).toContain("Root private skill content");
+    expect(catalog.rootPrivate?.fileCount).toBeGreaterThanOrEqual(1);
+    expect(catalog.tonePrivate?.name).toBe(toneSkillName);
+    expect(catalog.tonePrivate?.rootPath).toBe(path.resolve(toneSkillDir));
+    expect(catalog.tonePrivate?.content).toContain("Tone content");
     expect(catalog.globalFallback?.name).toBe(globalSkillName);
+    expect(catalog.rootPrivateFile).toContain("Root private skill content");
+    expect(catalog.tonePrivateFile).toContain("Tone content");
+    expect(JSON.parse(catalog.rootPrivateTree ?? "{}").children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "SKILL.md", is_file: true }),
+      ]),
+    );
+    expect(catalog.rootPrivateWorkspaceFile).toContain("Root private skill content");
+    expect(catalog.tonePrivateWorkspaceFile).toContain("Tone content");
+    expect(JSON.parse(catalog.rootPrivateWorkspaceTree ?? "{}").children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "SKILL.md", is_file: true }),
+      ]),
+    );
   });
 
   it("imports team-local private and team-shared skills with context guards plus warn-and-skip guards", async () => {
@@ -801,7 +840,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         skillNames: [localToneSkillName, localOutlineSkillName],
       },
     );
-    await writeSkillDirectory(
+    const localToneSkillDir = await writeSkillDirectory(
       path.join(multiLocalAgentDir, "skills", localToneSkillName),
       localToneSkillName,
       "Team-local private tone skill",
@@ -820,7 +859,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       instructions: "Use team shared skill.",
       skillNames: [teamSharedSkillName],
     });
-    await writeSkillDirectory(
+    const teamSharedSkillDir = await writeSkillDirectory(
       path.join(teamDir, "skills", teamSharedSkillName),
       teamSharedSkillName,
       "Owning team shared skill",
@@ -899,26 +938,63 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const catalog = await execGraphql<{
       skills: Array<{ name: string }>;
-      localRoot: { name: string } | null;
-      teamShared: { name: string } | null;
+      localRoot: { name: string; rootPath: string; content: string } | null;
+      localTone: { name: string; rootPath: string; content: string } | null;
+      teamShared: { name: string; rootPath: string; content: string } | null;
+      teamSharedTree: string | null;
+      teamSharedFile: string | null;
+      teamSharedWorkspaceTree: string | null;
+      teamSharedWorkspaceFile: string | null;
     }>(
       `
-        query TeamSkillCatalog($localRootSkillName: String!, $teamSharedSkillName: String!) {
+        query TeamSkillCatalog(
+          $localRootSkillName: String!
+          $localToneSkillName: String!
+          $teamSharedSkillName: String!
+          $teamSharedWorkspaceId: String!
+        ) {
           skills { name }
-          localRoot: skill(name: $localRootSkillName) { name }
-          teamShared: skill(name: $teamSharedSkillName) { name }
+          localRoot: skill(name: $localRootSkillName) { name rootPath content }
+          localTone: skill(name: $localToneSkillName) { name rootPath content }
+          teamShared: skill(name: $teamSharedSkillName) { name rootPath content }
+          teamSharedTree: skillFileTree(name: $teamSharedSkillName)
+          teamSharedFile: skillFileContent(skillName: $teamSharedSkillName, path: "SKILL.md")
+          teamSharedWorkspaceTree: folderChildren(workspaceId: $teamSharedWorkspaceId, folderPath: "")
+          teamSharedWorkspaceFile: fileContent(workspaceId: $teamSharedWorkspaceId, filePath: "SKILL.md")
         }
       `,
       {
         localRootSkillName,
+        localToneSkillName,
         teamSharedSkillName,
+        teamSharedWorkspaceId: `skill_ws_${teamSharedSkillName}`,
       },
     );
 
     const catalogNames = catalog.skills.map((skill) => skill.name);
-    expect(catalogNames).not.toContain(localRootSkillName);
-    expect(catalogNames).not.toContain(teamSharedSkillName);
-    expect(catalog.localRoot).toBeNull();
-    expect(catalog.teamShared).toBeNull();
+    expect(catalogNames).toEqual(expect.arrayContaining([
+      localRootSkillName,
+      localToneSkillName,
+      localOutlineSkillName,
+      teamSharedSkillName,
+    ]));
+    expect(catalog.localRoot?.rootPath).toBe(path.resolve(localRootAgentDir));
+    expect(catalog.localRoot?.content).toContain("Local root content");
+    expect(catalog.localTone?.rootPath).toBe(path.resolve(localToneSkillDir));
+    expect(catalog.localTone?.content).toContain("Local tone content");
+    expect(catalog.teamShared?.rootPath).toBe(path.resolve(teamSharedSkillDir));
+    expect(catalog.teamShared?.content).toContain("Team shared content");
+    expect(catalog.teamSharedFile).toContain("Team shared content");
+    expect(JSON.parse(catalog.teamSharedTree ?? "{}").children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "SKILL.md", is_file: true }),
+      ]),
+    );
+    expect(catalog.teamSharedWorkspaceFile).toContain("Team shared content");
+    expect(JSON.parse(catalog.teamSharedWorkspaceTree ?? "{}").children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "SKILL.md", is_file: true }),
+      ]),
+    );
   });
 });
