@@ -19,10 +19,10 @@ The File Explorer module enables users to:
 ```
 autobyteus-web/
 ├── components/fileExplorer/
-│   ├── FileExplorer.vue              # Main file explorer panel
-│   ├── FileItem.vue                  # File/folder item with actions
+│   ├── FileExplorer.vue              # Main file explorer panel and context-action host
+│   ├── FileItem.vue                  # Recursive file/folder row, open/rename/drag source
 │   ├── FileContentViewer.vue         # Multi-tab content viewer
-│   ├── FileContextMenu.vue           # Right-click context menu
+│   ├── FileContextMenu.vue           # Presentational right-click context menu
 │   ├── AddFileOrFolderDialog.vue     # Create file/folder dialog
 │   ├── ConfirmDeleteDialog.vue       # Delete confirmation dialog
 │   ├── MonacoEditor.vue              # Code editing component
@@ -38,6 +38,9 @@ autobyteus-web/
 │   └── MobileFileViewer.vue          # Read-only mobile file viewer/attach sheet
 ├── composables/mobile/
 │   └── useMobileWorkspaceFileExplorer.ts # Mobile workspace resolution, lazy load, search, and open state coordinator
+├── composables/
+│   ├── useWorkspaceFileExplorer.ts       # Workspace-scoped file explorer API boundary
+│   └── useFileExplorerContextActions.ts  # Desktop context-menu/create/delete lifecycle owner
 ├── services/
 │   └── fileExplorerStreaming/        # WebSocket streaming service
 │       ├── FileExplorerStreamingService.ts  # WebSocket client
@@ -51,6 +54,7 @@ autobyteus-web/
 │   └── mutations/file_explorer_mutations.ts
 ├── utils/fileExplorer/
 │   ├── TreeNode.ts                   # TreeNode class
+│   ├── contextMenu.ts                # Context target/action/create-path policy
 │   ├── fileUtils.ts                  # Tree manipulation utilities
 │   ├── openFolderRefresh.ts          # Visible-session snapshot refresh helpers
 │   └── stateSync.ts                  # Mutation echo suppression and path remapping helpers
@@ -65,6 +69,9 @@ flowchart TD
     subgraph "UI Layer"
         FileExplorer[FileExplorer.vue]
         FileItem[FileItem.vue]
+        ContextActions[useFileExplorerContextActions]
+        ContextMenu[FileContextMenu.vue]
+        ContextDialogs[Add/Delete Dialogs]
         RightSideTabs[RightSideTabs.vue]
         FileContentViewer[FileContentViewer.vue]
         Viewers[Type-Specific Viewers]
@@ -86,9 +93,15 @@ flowchart TD
     end
 
     FileExplorer --> FileItem
+    FileItem --> ContextActions
+    FileExplorer --> ContextActions
+    ContextActions --> ContextMenu
+    ContextActions --> ContextDialogs
     RightSideTabs --> FileContentViewer
     FileContentViewer --> Viewers
 
+    FileExplorer --> FileExplorerStore
+    ContextActions --> FileExplorerStore
     FileItem --> FileExplorerStore
     FileItem --> WorkspaceStore
     FileContentViewer --> FileExplorerStore
@@ -127,15 +140,22 @@ Main container component for the file browser panel:
 - Search files within active workspace
 - Displays workspace tree or search results
 - Collapsible panel integration
+- Owns the single desktop context-action surface for the explorer, including
+  root/background context menus, row context-menu requests, create/delete
+  dialogs, and rename requests.
+- Closes context menus/dialogs when the Files panel becomes inactive.
 
 ### FileItem.vue
 
-Recursive component for files and folders:
+Recursive component for files and folders. `FileItem.vue` renders rows and
+normalizes row context-menu requests, but it does not own context-menu state,
+create/delete dialogs, or mutation target policy.
 
 | Feature           | Description                                                                           |
 | ----------------- | ------------------------------------------------------------------------------------- |
 | **Click**         | Open file (preview mode for `.md`/`.html`/`.csv`, edit mode for code) / toggle folder |
-| **Context Menu**  | Rename, delete, add file/folder                                                       |
+| **Context Menu**  | Emits row target/position requests to the explorer-owned context-action controller     |
+| **Rename**        | Starts inline rename when the explorer-owned context-action controller requests it     |
 | **Drag & Drop**   | Move files between folders                                                            |
 | **Visual States** | Open folder indicator, drag-over highlight                                            |
 
@@ -155,6 +175,38 @@ onDrop(event: DragEvent) {
   fileExplorerStore.moveFileOrFolder(sourcePath, destinationPath)
 }
 ```
+
+### Desktop Context Actions
+
+Desktop create/rename/delete context actions use one explorer-owned controller
+instead of per-row menus. The ownership split is:
+
+- `FileExplorer.vue` hosts one `FileContextMenu`, one create dialog, and one
+  delete confirmation dialog for the whole explorer surface.
+- `useFileExplorerContextActions.ts` owns active target state, menu visibility,
+  menu positioning, document click/Escape listeners, create/delete confirmation
+  flow, and rename request dispatch.
+- `utils/fileExplorer/contextMenu.ts` owns the pure context target/action model:
+  row targets can add file, add folder, rename, and delete; root/background
+  targets can only add file or add folder.
+- `FileItem.vue` emits a `FileExplorerContextRequest` containing a row target
+  and pointer position. It no longer dispatches a global close-all event or
+  renders its own context menu/dialogs.
+- `FileContextMenu.vue` is presentational: it receives visible/menu-item
+  props and emits the selected action id.
+
+Create-path policy is target-aware:
+
+| Target | Create Parent |
+| --- | --- |
+| Explorer background/root | Workspace root (`""`) |
+| Folder row | The folder path |
+| File row | The file's containing folder |
+
+All context actions remain scoped through `useWorkspaceFileExplorer`, so
+mutations use the resolved workspace id for the visible desktop Files panel.
+When the Files panel becomes inactive, `FileExplorer.vue` closes open context
+menus and dialogs and suspends inactive explorer work.
 
 ### FileContentViewer.vue
 
@@ -220,6 +272,11 @@ interface OpenFileState {
 | `saveFileContentFromEditor()`                     | Saves text content via mutation and suppresses self-echo modify events |
 | `toggleFolder()`                                  | Expands/collapses folder     |
 | `searchFiles()`                                   | Searches files via GraphQL   |
+| `createFileOrFolder()`                            | Creates a workspace-relative file or folder and applies the returned tree change |
+| `renameFileOrFolder()`                            | Renames a node, remaps open/path-scoped state, and applies the returned tree change |
+| `deleteFileOrFolder()`                            | Deletes a node, closes open/active files in the deleted path scope, and applies the returned tree change |
+| `moveFileOrFolder()`                              | Moves a node, remaps open/path-scoped state, and applies the returned tree change |
+| `closePathScopedFiles()`                          | Removes open-file/active-file state for a deleted file or containing folder |
 | `navigateToNextTab()` / `navigateToPreviousTab()` | Tab navigation               |
 
 > **Important:** All actions and getters in `FileExplorerStore` require a mandatory `workspaceId` parameter. The store is **workspace-agnostic** and does not assume any "active" workspace.
@@ -265,6 +322,8 @@ const activeFile = explorer.activeFile; // ComputedRef<string | null>
 // FileExplorer.vue
 const explorer = useWorkspaceFileExplorer(toRef(props, "workspaceId"));
 provide("workspaceFileExplorer", explorer);
+provide("requestFileExplorerContextMenu", openContextMenu);
+provide("fileExplorerRenameRequest", renameRequest);
 
 // FileItem.vue (child)
 const explorer = inject("workspaceFileExplorer")!;
@@ -272,6 +331,11 @@ explorer.openFile(props.file.path); // Uses the correct workspace context
 ```
 
 This pattern is critical for **Skill workspaces**, which are NOT the "active" workspace but need their own isolated file explorer context.
+
+`FileExplorer.vue` also provides the desktop context-action request and rename
+signals to recursive `FileItem.vue` rows. Rows use those signals to request a
+menu or start inline rename, while the parent controller keeps the mutation
+target, dialogs, and close behavior centralized.
 
 ### Mobile Files and `useMobileWorkspaceFileExplorer`
 
@@ -725,10 +789,16 @@ sequenceDiagram
 
 Frontend:
 
-- `components/fileExplorer/FileExplorer.vue` - visible-session acquisition/release.
+- `components/fileExplorer/FileExplorer.vue` - visible-session acquisition/release and desktop context-action host.
+- `components/fileExplorer/FileItem.vue` - recursive row rendering, file/folder open behavior, inline rename, drag/drop, and row context-menu request emission.
+- `components/fileExplorer/FileContextMenu.vue` - presentational menu that renders computed action items and emits selected action ids.
+- `composables/useFileExplorerContextActions.ts` - desktop context-menu target state, positioning, create/delete dialog lifecycle, rename request dispatch, and panel-inactive cleanup.
+- `utils/fileExplorer/contextMenu.ts` - root/node context target model, allowed action lists, and create-path resolution policy.
 - `services/fileExplorerStreaming/FileExplorerStreamingService.ts` - low-level WebSocket client, authenticated remote-access WebSocket URL handling, reconnect policy.
 - `services/fileExplorerStreaming/types.ts` - protocol types.
 - `stores/workspace.ts` - metadata-only workspace lifecycle and live-consumer tracking, one stream per workspace.
+- `stores/fileExplorerContentActions.ts` - file open/content state management, including path-scoped cleanup when a delete removes an open file or containing folder.
+- `stores/fileExplorerMutationActions.ts` - create/rename/delete/move GraphQL mutations, returned change-event application, and path-scoped state remapping/cleanup.
 - `stores/workspaceFileExplorerLiveActions.ts` - visible-consumer acquisition/release, reconnect snapshot refresh, search abort/generation invalidation on final release.
 - `utils/fileExplorer/openFolderRefresh.ts` - root/open-folder refresh helpers for newly visible explorers.
 - `utils/fileExplorer/stateSync.ts` - structural mutation echo filtering and path remapping helpers.
@@ -872,6 +942,11 @@ await fileExplorerStore.openFilePreview("/docs/README.md", workspaceId);
 ```
 
 ### Performing File Operations
+
+Desktop context-menu actions should prefer the explorer-owned
+`useFileExplorerContextActions` flow, which delegates mutations through the
+workspace-scoped `useWorkspaceFileExplorer` instance. Lower-level callers can
+still invoke the store directly when they already have an explicit workspace id:
 
 ```typescript
 // Create a new file

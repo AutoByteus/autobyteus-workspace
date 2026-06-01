@@ -16,7 +16,7 @@
         />
       </div>
     </div>
-    <div class="file-explorer-content flex-grow overflow-y-auto relative">
+    <div class="file-explorer-content flex-grow overflow-y-auto relative" @contextmenu.prevent="handleRootContextMenu">
       <div v-if="isActivatingWorkspace" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">Loading workspace…</div>
       <div v-else-if="activationError" class="flex flex-col items-center justify-center h-full text-center text-red-600 p-4">
         <p>{{ activationError }}</p>
@@ -29,14 +29,37 @@
         <FileItem v-for="file in displayedFiles" :key="file.id" :file="file" />
       </div>
     </div>
+    <FileContextMenu
+      :visible="contextMenuVisible"
+      :position="contextMenuPosition"
+      :items="contextMenuItems"
+      @select="selectContextAction"
+    />
+    <ConfirmDeleteDialog
+      :show="deleteDialogVisible"
+      :targetName="deleteTargetName"
+      @confirm="confirmContextDelete"
+      @cancel="cancelContextDelete"
+    />
+    <AddFileOrFolderDialog
+      :show="addDialogVisible"
+      :parentPath="addDialogParentPath"
+      :isFile="addFileMode"
+      @confirm="confirmContextAdd"
+      @cancel="cancelContextAdd"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onUnmounted, nextTick, provide } from 'vue';
 import FileItem from "~/components/fileExplorer/FileItem.vue";
+import FileContextMenu from "~/components/fileExplorer/FileContextMenu.vue";
+import ConfirmDeleteDialog from "~/components/fileExplorer/ConfirmDeleteDialog.vue";
+import AddFileOrFolderDialog from "~/components/fileExplorer/AddFileOrFolderDialog.vue";
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer';
+import { useFileExplorerContextActions } from '~/composables/useFileExplorerContextActions';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 
 let fileExplorerConsumerCounter = 0;
@@ -55,14 +78,35 @@ const isActivatingWorkspace = ref(false);
 const activationError = ref<string | null>(null);
 const explorer = useWorkspaceFileExplorer(activatedWorkspaceId);
 const panelActive = computed(() => props.active);
-const closeContextMenusSignal = ref(0);
 const outsideDragSignal = ref(0);
 const globalDragResetSignal = ref(0);
+const {
+  menuVisible: contextMenuVisible,
+  menuPosition: contextMenuPosition,
+  menuItems: contextMenuItems,
+  addDialogVisible,
+  addFileMode,
+  addDialogParentPath,
+  deleteDialogVisible,
+  deleteTargetName,
+  renameRequest,
+  openContextMenu,
+  selectAction: selectContextAction,
+  confirmAdd: confirmContextAdd,
+  cancelAdd: cancelContextAdd,
+  confirmDelete: confirmContextDelete,
+  cancelDelete: cancelContextDelete,
+  closeAll: closeAllContextActions,
+} = useFileExplorerContextActions({
+  explorer,
+  panelActive,
+});
 
 // Provide the explorer instance to all children (FileItem)
 provide('workspaceFileExplorer', explorer);
 provide('fileExplorerPanelActive', panelActive);
-provide('fileExplorerCloseContextMenusSignal', closeContextMenusSignal);
+provide('requestFileExplorerContextMenu', openContextMenu);
+provide('fileExplorerRenameRequest', renameRequest);
 provide('fileExplorerOutsideDragSignal', outsideDragSignal);
 provide('fileExplorerGlobalDragResetSignal', globalDragResetSignal);
 
@@ -231,8 +275,19 @@ onMounted(() => {
   }
 });
 
-const onCloseAllContextMenusEvent = () => {
-  closeContextMenusSignal.value += 1;
+const handleRootContextMenu = (event: MouseEvent) => {
+  if (!panelActive.value || !currentWorkspace.value) return;
+  if (event.target instanceof Element && event.target.closest('.file-item')) {
+    return;
+  }
+
+  openContextMenu({
+    target: { kind: 'root' },
+    position: {
+      top: event.clientY,
+      left: event.clientX,
+    },
+  });
 };
 
 const onGlobalDragOver = (event: DragEvent) => {
@@ -250,7 +305,6 @@ const onGlobalDragEnd = () => {
 let globalListenersAttached = false;
 const attachGlobalFileExplorerListeners = () => {
   if (globalListenersAttached) return;
-  document.addEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
   document.addEventListener('dragover', onGlobalDragOver);
   document.addEventListener('dragend', onGlobalDragEnd);
   globalListenersAttached = true;
@@ -258,7 +312,6 @@ const attachGlobalFileExplorerListeners = () => {
 
 const detachGlobalFileExplorerListeners = () => {
   if (!globalListenersAttached) return;
-  document.removeEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
   document.removeEventListener('dragover', onGlobalDragOver);
   document.removeEventListener('dragend', onGlobalDragEnd);
   globalListenersAttached = false;
@@ -271,6 +324,7 @@ watch(panelActive, (isActive) => {
   }
 
   detachGlobalFileExplorerListeners();
+  closeAllContextActions();
   suspendInactiveWork();
 }, { immediate: true });
 </script>

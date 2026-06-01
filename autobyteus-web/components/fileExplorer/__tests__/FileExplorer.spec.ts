@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { nextTick } from "vue";
@@ -12,6 +12,8 @@ import { createNodeIdToNodeDictionary } from "~/utils/fileExplorer/fileUtils";
 import { TreeNode } from "~/utils/fileExplorer/TreeNode";
 
 const mutateMock = vi.fn();
+let pinia: ReturnType<typeof createPinia>;
+const mountedWrappers: Array<ReturnType<typeof mount>> = [];
 
 vi.mock("~/utils/apolloClient", () => ({
   getApolloClient: vi.fn(() => ({
@@ -20,10 +22,20 @@ vi.mock("~/utils/apolloClient", () => ({
   })),
 }));
 
+vi.mock("@iconify/vue", () => ({
+  Icon: {
+    name: "Icon",
+    props: ["icon"],
+    template: "<span />",
+  },
+}));
+
 const flushUi = async () => {
   await Promise.resolve();
   await nextTick();
   await Promise.resolve();
+  await nextTick();
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
   await nextTick();
 };
 
@@ -85,14 +97,154 @@ const getRenderedPaths = (wrapper: ReturnType<typeof mount>) =>
     .map((componentWrapper) => (componentWrapper.props("file") as TreeNode).path)
     .sort();
 
-describe("FileExplorer", () => {
-  let pinia: ReturnType<typeof createPinia>;
+const setupWorkspace = (workspaceId = "ws-context") => {
+  const workspaceStore = useWorkspaceStore();
+  const fileExplorerStore = useFileExplorerStore();
+  vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(vi.fn());
 
+  workspaceStore.workspaces[workspaceId] = {
+    workspaceId,
+    name: "Test Workspace",
+    workspaceConfig: {},
+    absolutePath: "/tmp/test-workspace",
+  };
+
+  const root = createWorkspaceTree();
+  const explorerState = fileExplorerStore._getOrCreateWorkspaceState(workspaceId);
+  explorerState.tree = root;
+  explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
+  explorerState.openFolders["tickets"] = true;
+  explorerState.openFolders["tickets/in-progress"] = true;
+  explorerState.openFolders["tickets/in-progress/ticket-123"] = true;
+  explorerState.openFolders["tickets/in-progress/ticket-123/attachments"] = true;
+  explorerState.openFolders["tickets/done"] = true;
+
+  return {
+    workspaceStore,
+    fileExplorerStore,
+    explorerState,
+    root,
+  };
+};
+
+const mountFileExplorer = (options: any) => {
+  const wrapper = mount(FileExplorer, options);
+  mountedWrappers.push(wrapper);
+  return wrapper;
+};
+
+const mountExplorerWithRealContextMenu = (workspaceId = "ws-context", active = true) => mountFileExplorer({
+  props: {
+    workspaceId,
+    active,
+  },
+  global: {
+    plugins: [pinia],
+    mocks: {
+      $t: (key: string) => key,
+    },
+    stubs: {
+      Icon: true,
+    },
+  },
+});
+
+const findFileItemByPath = (wrapper: ReturnType<typeof mount>, path: string) => {
+  const item = wrapper.findAllComponents(FileItem).find((componentWrapper) => {
+    return (componentWrapper.props("file") as TreeNode).path === path;
+  });
+  if (!item) {
+    throw new Error(`Unable to find FileItem for path ${path}`);
+  }
+  return item;
+};
+
+const getMenuLabels = () =>
+  Array.from(document.body.querySelectorAll(".menu-item"))
+    .map((element) => element.textContent?.trim())
+    .filter(Boolean);
+
+const clickMenuItem = async (label: string) => {
+  const item = Array.from(document.body.querySelectorAll(".menu-item")).find((element) => {
+    return element.textContent?.trim() === label;
+  });
+  expect(item, `Expected menu item "${label}" to exist`).toBeTruthy();
+  item!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushUi();
+};
+
+const setDialogInputValue = async (value: string) => {
+  const input = document.body.querySelector("input");
+  expect(input, "Expected dialog input to exist").toBeTruthy();
+  (input as HTMLInputElement).value = value;
+  input!.dispatchEvent(new Event("input", { bubbles: true }));
+  await flushUi();
+};
+
+const clickDialogButton = async (label: string) => {
+  const button = Array.from(document.body.querySelectorAll("button")).find((element) => {
+    return element.textContent?.trim() === label;
+  });
+  expect(button, `Expected dialog button "${label}" to exist`).toBeTruthy();
+  button!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushUi();
+};
+
+const mockCreateMutation = (parentId: string, path: string, isFile: boolean) => {
+  const name = path.split("/").pop() || path;
+  mutateMock.mockResolvedValueOnce({
+    data: {
+      createFileOrFolder: JSON.stringify({
+        changes: [{
+          type: "add",
+          parent_id: parentId,
+          node: {
+            name,
+            path,
+            is_file: isFile,
+            children: [],
+            id: `${parentId}-${name}`,
+            childrenLoaded: true,
+          },
+        }],
+      }),
+    },
+    errors: [],
+  });
+};
+
+const mockDeleteMutation = (nodeId: string, parentId: string) => {
+  mutateMock.mockResolvedValueOnce({
+    data: {
+      deleteFileOrFolder: JSON.stringify({
+        changes: [{
+          type: "delete",
+          node_id: nodeId,
+          parent_id: parentId,
+        }],
+      }),
+    },
+    errors: [],
+  });
+};
+
+describe("FileExplorer", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     pinia = createPinia();
     setActivePinia(pinia);
     mutateMock.mockReset();
+  });
+
+  afterEach(() => {
+    for (const wrapper of mountedWrappers.splice(0)) {
+      try {
+        wrapper.unmount();
+      } catch {
+        // Ignore wrappers that a test already unmounted explicitly.
+      }
+    }
+    document.body.innerHTML = "";
   });
 
   it("renders moved descendants under the new folder after mutation and streamed echo replay", async () => {
@@ -116,7 +268,7 @@ describe("FileExplorer", () => {
     explorerState.openFolders["tickets/in-progress/ticket-123"] = true;
     explorerState.openFolders["tickets/done"] = true;
 
-    const wrapper = mount(FileExplorer, {
+    const wrapper = mountFileExplorer({
       props: {
         workspaceId: "ws-1",
       },
@@ -196,7 +348,7 @@ describe("FileExplorer", () => {
     explorerState.tree = root;
     explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
 
-    const wrapper = mount(FileExplorer, {
+    const wrapper = mountFileExplorer({
       props: {
         workspaceId: "ws-live",
       },
@@ -237,7 +389,7 @@ describe("FileExplorer", () => {
     explorerState.tree = root;
     explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
 
-    const wrapper = mount(FileExplorer, {
+    const wrapper = mountFileExplorer({
       props: {
         workspaceId: "ws-cached",
         active: true,
@@ -257,7 +409,7 @@ describe("FileExplorer", () => {
     expect(acquire).toHaveBeenCalledTimes(1);
     expect(addDocumentListener).toHaveBeenCalledWith("dragover", expect.any(Function));
     expect(addDocumentListener).toHaveBeenCalledWith("dragend", expect.any(Function));
-    expect(addDocumentListener).toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
+    expect(addDocumentListener).not.toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
 
     await wrapper.setProps({ active: false });
     await flushUi();
@@ -266,11 +418,169 @@ describe("FileExplorer", () => {
     expect(abortSearch).toHaveBeenCalledWith("ws-cached");
     expect(removeDocumentListener).toHaveBeenCalledWith("dragover", expect.any(Function));
     expect(removeDocumentListener).toHaveBeenCalledWith("dragend", expect.any(Function));
-    expect(removeDocumentListener).toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
+    expect(removeDocumentListener).not.toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
 
     await wrapper.setProps({ active: true });
     await flushUi();
 
     expect(acquire).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps a top-level row context menu visible after the legacy close event would have fired", async () => {
+    setupWorkspace("ws-context-top");
+    const wrapper = mountExplorerWithRealContextMenu("ws-context-top");
+    await flushUi();
+
+    await findFileItemByPath(wrapper, "tickets").trigger("contextmenu", {
+      clientX: 22,
+      clientY: 44,
+    });
+    await flushUi();
+    document.dispatchEvent(new Event("closeAllFileContextMenus"));
+    await flushUi();
+
+    expect(getMenuLabels()).toEqual(["Add File", "Add Folder", "Rename", "Delete"]);
+  });
+
+  it("opens a nested row context menu through the injected owner callback", async () => {
+    setupWorkspace("ws-context-nested");
+    const wrapper = mountExplorerWithRealContextMenu("ws-context-nested");
+    await flushUi();
+
+    await findFileItemByPath(wrapper, "tickets/in-progress/ticket-123/attachments").trigger("contextmenu", {
+      clientX: 30,
+      clientY: 52,
+    });
+    await flushUi();
+
+    expect(getMenuLabels()).toContain("Add Folder");
+    expect(getMenuLabels()).toContain("Delete");
+  });
+
+  it("creates a folder under a folder row target", async () => {
+    setupWorkspace("ws-create-folder");
+    const wrapper = mountExplorerWithRealContextMenu("ws-create-folder");
+    await flushUi();
+    mockCreateMutation("ticket-123", "tickets/in-progress/ticket-123/new-folder", false);
+
+    await findFileItemByPath(wrapper, "tickets/in-progress/ticket-123").trigger("contextmenu", {
+      clientX: 12,
+      clientY: 18,
+    });
+    await flushUi();
+    await clickMenuItem("Add Folder");
+    await setDialogInputValue("new-folder");
+    await clickDialogButton("Create");
+
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        workspaceId: "ws-create-folder",
+        path: "tickets/in-progress/ticket-123/new-folder",
+        isFile: false,
+      },
+    }));
+  });
+
+  it("creates a folder beside a file row target", async () => {
+    setupWorkspace("ws-create-sibling");
+    const wrapper = mountExplorerWithRealContextMenu("ws-create-sibling");
+    await flushUi();
+    mockCreateMutation("ticket-123", "tickets/in-progress/ticket-123/sibling-folder", false);
+
+    await findFileItemByPath(wrapper, "tickets/in-progress/ticket-123/spec.md").trigger("contextmenu", {
+      clientX: 12,
+      clientY: 18,
+    });
+    await flushUi();
+    await clickMenuItem("Add Folder");
+    await setDialogInputValue("sibling-folder");
+    await clickDialogButton("Create");
+
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        workspaceId: "ws-create-sibling",
+        path: "tickets/in-progress/ticket-123/sibling-folder",
+        isFile: false,
+      },
+    }));
+  });
+
+  it("opens a root context menu with root create actions only", async () => {
+    setupWorkspace("ws-root-create");
+    const wrapper = mountExplorerWithRealContextMenu("ws-root-create");
+    await flushUi();
+    mockCreateMutation("root", "root-folder", false);
+
+    await wrapper.find(".file-explorer-content").trigger("contextmenu", {
+      clientX: 4,
+      clientY: 8,
+    });
+    await flushUi();
+
+    expect(getMenuLabels()).toEqual(["Add File", "Add Folder"]);
+
+    await clickMenuItem("Add Folder");
+    await setDialogInputValue("root-folder");
+    await clickDialogButton("Create");
+
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        workspaceId: "ws-root-create",
+        path: "root-folder",
+        isFile: false,
+      },
+    }));
+  });
+
+  it("requires delete confirmation before deleting a row target", async () => {
+    setupWorkspace("ws-delete");
+    const wrapper = mountExplorerWithRealContextMenu("ws-delete");
+    await flushUi();
+    mockDeleteMutation("spec-file", "ticket-123");
+
+    await findFileItemByPath(wrapper, "tickets/in-progress/ticket-123/spec.md").trigger("contextmenu", {
+      clientX: 14,
+      clientY: 28,
+    });
+    await flushUi();
+    await clickMenuItem("Delete");
+
+    expect(document.body.textContent).toContain("spec.md");
+    expect(mutateMock).not.toHaveBeenCalled();
+
+    await clickDialogButton("Delete");
+
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        workspaceId: "ws-delete",
+        path: "tickets/in-progress/ticket-123/spec.md",
+      },
+    }));
+  });
+
+  it("closes context actions and ignores context menu requests while inactive", async () => {
+    setupWorkspace("ws-inactive");
+    const wrapper = mountExplorerWithRealContextMenu("ws-inactive");
+    await flushUi();
+
+    await findFileItemByPath(wrapper, "tickets").trigger("contextmenu", {
+      clientX: 22,
+      clientY: 44,
+    });
+    await flushUi();
+    expect(getMenuLabels()).toContain("Add Folder");
+
+    await wrapper.setProps({ active: false });
+    await flushUi();
+    expect(getMenuLabels()).toEqual([]);
+
+    await wrapper.find(".file-explorer-content").trigger("contextmenu", {
+      clientX: 1,
+      clientY: 1,
+    });
+    await flushUi();
+
+    expect(getMenuLabels()).toEqual([]);
+    expect(mutateMock).not.toHaveBeenCalled();
   });
 });

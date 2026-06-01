@@ -1,0 +1,35 @@
+# Delivery finalization refresh evidence
+Timestamp: 2026-06-01 (Europe/Berlin)
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-file-explorer-context-menu
+User verification: it works; finalize and release new version
+Command: git fetch origin --prune --tags
+
+Command: git status --short --branch
+## codex/frontend-file-explorer-context-menu...origin/personal
+ M autobyteus-web/components/fileExplorer/FileContextMenu.vue
+ M autobyteus-web/components/fileExplorer/FileExplorer.vue
+ M autobyteus-web/components/fileExplorer/FileItem.vue
+ M autobyteus-web/components/fileExplorer/__tests__/FileExplorer.spec.ts
+ M autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts
+ M autobyteus-web/docs/file_explorer.md
+ M autobyteus-web/stores/__tests__/fileExplorerStore.spec.ts
+ M autobyteus-web/stores/fileExplorerContentActions.ts
+ M autobyteus-web/stores/fileExplorerMutationActions.ts
+?? autobyteus-web/composables/useFileExplorerContextActions.ts
+?? autobyteus-web/utils/fileExplorer/__tests__/contextMenu.test.ts
+?? autobyteus-web/utils/fileExplorer/contextMenu.ts
+?? tickets/done/frontend-file-explorer-context-menu/
+
+Command: git rev-parse HEAD origin/personal
+b8e24ed9d3f22b1edb59367c1e8e32ddd1f79ab5
+b8e24ed9d3f22b1edb59367c1e8e32ddd1f79ab5
+
+Command: git rev-list --left-right --count HEAD...origin/personal
+0	0
+
+Command: git diff --check
+git diff --check exit code: 0
+
+Selected release version: 1.3.39 (v1.3.39 absent locally/remotely)
+Local tag check:
+Remote tag check:
