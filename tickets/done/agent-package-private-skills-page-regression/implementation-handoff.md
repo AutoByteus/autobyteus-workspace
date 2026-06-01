@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
 
 ## What Changed
 

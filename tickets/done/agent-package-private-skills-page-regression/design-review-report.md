@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
 - Current Review Round: 1
 - Trigger: Revised design package after user clarification that package/private skills should be restored as normal Skills page entries, not a separate read-only catalog.
 - Prior Review Round Reviewed: None. A prior review turn was interrupted before an authoritative report or decision was written.
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

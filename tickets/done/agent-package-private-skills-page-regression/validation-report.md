@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Code-review pass for package/private skill Skills page visibility restoration.
 - Prior Round Reviewed: `N/A`
@@ -119,7 +119,7 @@ Updated repository-resident durable validation after code review:
 
 ## Other Validation Artifacts
 
-- Authoritative validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/validation-report.md`
+- Authoritative validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/validation-report.md`
 - Temporary scripts were created under `/tmp` for probes and removed after execution; they are not repository artifacts.
 
 ## Temporary Validation Methods / Scaffolding

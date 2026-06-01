@@ -5,9 +5,9 @@
 - Ticket: `agent-package-private-skills-page-regression`
 - Branch: `codex/agent-package-private-skills-page-regression`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression`
-- Current delivery status: `User verified; repository finalization and release in progress`
-- Latest authoritative code review: Post-validation durable-validation re-review passed with no findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/review-report.md`.
-- Latest authoritative validation: API/E2E validation passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/validation-report.md`.
+- Current delivery status: `Completed; v1.3.40 released`
+- Latest authoritative code review: Post-validation durable-validation re-review passed with no findings in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/review-report.md`.
+- Latest authoritative validation: API/E2E validation passed in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/validation-report.md`.
 - Handoff state: user verified the local Electron test build/ticket; ticket artifacts are archived under `tickets/done`; repository finalization and release are in progress.
 
 ## Integrated State
@@ -38,24 +38,24 @@
 - Delivery verified existing web docs updates and added backend module docs updates for the final integrated behavior.
 - Stale long-lived claims that package/private/team-shared skills are hidden from the Skills page or GraphQL catalog were removed from project docs.
 - Runtime docs now explicitly distinguish the normal browsing/opening catalog from source-context-first runtime configured-skill resolution.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/docs-sync-report.md`
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/review-report.md`
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/handoff-summary.md`
-- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/electron-test-build-report.md`
-- Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
-- Electron build checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/release-notes.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/review-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/handoff-summary.md`
+- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/electron-test-build-report.md`
+- Electron build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
+- Electron build checksums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/release-notes.md`
 
 ## Checks And Evidence
 
@@ -77,9 +77,10 @@
 
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.39.dmg`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.39.zip`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
-- Checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
+- Checksums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
 - Note: this is a local unsigned/not-notarized macOS build; use right-click → Open if macOS Gatekeeper blocks normal launch.
+- Post-finalization note: the dedicated ticket worktree was removed after release; use the published `v1.3.40` release artifacts for ongoing install/testing.
 
 ## Suggested User Verification Focus
 
@@ -94,5 +95,22 @@
 - Waiting for explicit user verification: `No`
 - User verification received: `Yes`
 - Verification reference: user message on 2026-06-01: “the ticket is done. lets finalize and release a new version”
-- Finalization status: in progress; `origin/personal` was refreshed after verification and remained at `fb22bc830cdbf78764fef6fc1a47ffd297812149` with `HEAD...origin/personal = 0 0` before archival/finalization work.
+- Finalization status: completed; `origin/personal` was refreshed after verification and remained at `fb22bc830cdbf78764fef6fc1a47ffd297812149` with `HEAD...origin/personal = 0 0` before archival/finalization work. Ticket commit was fast-forwarded into `personal`, release `v1.3.40` was published, and Server Docker Release succeeded after workflow disk-space recovery.
 - Ticket branch commit: `Completed in commit fix(skills): restore package skills catalog visibility`
+
+## Release Completion
+
+- Release tag: `v1.3.40`
+- Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.40
+- Release commit: `aedfec71` (`chore(release): bump workspace release version to 1.3.40`)
+- Post-release workflow-fix commit: `cc9e2855` (`ci(release): free disk before server docker build`)
+- Desktop Release: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26767369240
+- Android APK Release: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26767368803
+- Release Messaging Gateway: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26767368788
+- Server Docker Release: initial tag workflow failed twice due GitHub runner disk exhaustion; manual redispatch after workflow cleanup succeeded — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26769349316
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree removed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression`
+- Local ticket branch removed: `codex/agent-package-private-skills-page-regression`
+- Remote ticket branch removed: `origin/codex/agent-package-private-skills-page-regression`

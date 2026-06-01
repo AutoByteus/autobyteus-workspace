@@ -27,7 +27,7 @@ Reference images supplied by user:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression`
 - Current Branch: `codex/agent-package-private-skills-page-regression`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression`
 - Bootstrap Base Branch: `origin/personal`

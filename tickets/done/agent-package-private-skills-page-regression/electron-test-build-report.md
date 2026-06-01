@@ -28,7 +28,7 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 
 Log file:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-20260601T153428Z.log`
 
 ## Result
 
@@ -48,7 +48,7 @@ Log file:
 
 Checksum file:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-private-skills-page-regression/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-private-skills-page-regression/build-logs/electron-mac-build-artifacts-20260601T153814Z.sha256`
 
 ## Additional Verification
 
