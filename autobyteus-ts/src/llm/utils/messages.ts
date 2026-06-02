@@ -42,6 +42,8 @@ export class ToolResultPayload {
 
 export type ToolPayload = ToolCallPayload | ToolResultPayload;
 
+export type MessageMetadata = Record<string, unknown>;
+
 export interface MessageOptions {
   content?: string | null;
   reasoning_content?: string | null;
@@ -49,6 +51,7 @@ export interface MessageOptions {
   audio_urls?: string[];
   video_urls?: string[];
   tool_payload?: ToolPayload | null;
+  metadata?: MessageMetadata | null;
 }
 
 export class Message {
@@ -59,6 +62,7 @@ export class Message {
   public audio_urls: string[];
   public video_urls: string[];
   public tool_payload: ToolPayload | null;
+  public metadata: MessageMetadata | null;
 
   constructor(role: MessageRole, options: MessageOptions | string = {}) {
     this.role = role;
@@ -70,6 +74,7 @@ export class Message {
       this.audio_urls = [];
       this.video_urls = [];
       this.tool_payload = null;
+      this.metadata = null;
     } else {
       this.content = options.content ?? null;
       this.reasoning_content = options.reasoning_content ?? null;
@@ -77,6 +82,7 @@ export class Message {
       this.audio_urls = options.audio_urls ?? [];
       this.video_urls = options.video_urls ?? [];
       this.tool_payload = options.tool_payload ?? null;
+      this.metadata = options.metadata ?? null;
     }
   }
 
@@ -120,7 +126,8 @@ export class Message {
       image_urls: this.image_urls,
       audio_urls: this.audio_urls,
       video_urls: this.video_urls,
-      tool_payload: this.serializeToolPayload()
+      tool_payload: this.serializeToolPayload(),
+      metadata: this.metadata
     };
   }
 }

@@ -80,7 +80,13 @@ const runtimeProviders: Record<string, any[]> = {
           configSchema: {
             type: 'object',
             properties: {
-              reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+              reasoning_effort: {
+                type: 'string',
+                title: 'Reasoning Effort',
+                description: 'Reasoning Effort',
+                enum: ['low', 'medium', 'high', 'xhigh'],
+                default: 'medium',
+              },
             },
           },
         },
@@ -96,7 +102,13 @@ const runtimeProviders: Record<string, any[]> = {
           configSchema: {
             type: 'object',
             properties: {
-              reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+              reasoning_effort: {
+                type: 'string',
+                title: 'Reasoning Effort',
+                description: 'Reasoning Effort',
+                enum: ['low', 'medium', 'high', 'xhigh'],
+                default: 'medium',
+              },
             },
           },
         },
@@ -525,6 +537,151 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.text()).toContain('Not recorded for this historical run')
     expect(wrapper.find('[data-testid="missing-historical-config-value"]').exists()).toBe(true)
     expect(wrapper.find('select[id^="config-reviewer"]').exists()).toBe(false)
+  })
+
+  it('keeps inherited effort-only reasoning compact until expanded and displays the schema default', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmModel: 'gpt-5.4',
+        globalLlmConfig: null,
+        disabled: false,
+        advancedInitiallyExpanded: false,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+    const reasoningSelect = wrapper.get('select#config-reviewer-reasoning_effort')
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.get('button').element.disabled).toBe(true)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+
+    await advancedToggle.trigger('click')
+
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
+
+  it('keeps compact advanced collapsed when inherited global thinking-on model changes', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmModel: 'gpt-5.4',
+        globalLlmConfig: null,
+        disabled: false,
+        advancedInitiallyExpanded: false,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(advancedContainer.attributes('style')).toContain('display: none')
+
+    await wrapper.setProps({ globalLlmModel: 'gpt-5.3-codex' })
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
+
+  it('opens compact advanced for an explicit member model selection whose effective thinking is on', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmModel: 'gpt-5.4',
+        globalLlmConfig: null,
+        disabled: false,
+        advancedInitiallyExpanded: false,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+
+    wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
+    await nextTick()
+    await wrapper.setProps({
+      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+    })
+    await flushPromises()
+    await nextTick()
+
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      'reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    ])
+  })
+
+  it('opens compact advanced for an explicit member runtime selection to an effective-on model', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'autobyteus',
+        globalLlmModel: 'gpt-5.4',
+        globalLlmConfig: null,
+        disabled: false,
+        advancedInitiallyExpanded: false,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+
+    await wrapper.get('#override-runtime-reviewer').setValue('codex_app_server')
+    await nextTick()
+    await wrapper.setProps({
+      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+    })
+    await flushPromises()
+    await nextTick()
+
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      'reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        runtimeKind: 'codex_app_server',
+      },
+    ])
   })
 
 })

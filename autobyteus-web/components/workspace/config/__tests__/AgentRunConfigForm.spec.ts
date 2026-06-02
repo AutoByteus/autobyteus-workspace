@@ -282,12 +282,13 @@ describe('AgentRunConfigForm', () => {
     expect(localConfig.llmModelIdentifier).toBe('deepseek-v4-flash')
     expect(localConfig.llmConfig).toBeNull()
 
-    await wrapper.get('[data-testid="advanced-params-toggle"]').trigger('click')
-    await wrapper.vm.$nextTick()
-
     const advancedLabels = wrapper.findAll('label[for]').map((label) => label.text().trim())
     const reasoningEffortSelect = wrapper.get('select#agent-run-reasoning_effort')
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
 
+    expect(wrapper.get('[data-testid="advanced-params-toggle"]').attributes('aria-expanded')).toBe('true')
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.get('button').element.disabled).toBe(false)
     expect(wrapper.findAll('input[type="text"]')).toHaveLength(0)
     expect(advancedLabels).toContain('Reasoning Effort')
     expect(advancedLabels).not.toContain('Thinking Type')
@@ -296,7 +297,7 @@ describe('AgentRunConfigForm', () => {
     expect(reasoningEffortSelect.text()).toContain('max')
     expect(wrapper.find('select#agent-run-thinking_type').exists()).toBe(false)
 
-    const thinkingToggle = wrapper.getComponent({ name: 'ModelConfigBasic' }).get('button')
+    const thinkingToggle = thinkingRow.get('button')
     await thinkingToggle.trigger('click')
     expect(localConfig.llmConfig).toEqual({ thinking_type: 'disabled' })
 
@@ -305,6 +306,140 @@ describe('AgentRunConfigForm', () => {
       thinking_type: 'enabled',
       reasoning_effort: 'high',
     })
+  })
+
+  it('renders Codex effort-only reasoning defaults visibly without materializing display defaults', async () => {
+    setProviders([
+      buildProviderRow('OPENAI', 'OpenAI', [
+        {
+          modelIdentifier: 'gpt-5.5',
+          name: 'GPT-5.5 (default reasoning: medium)',
+          value: 'gpt-5.5',
+          canonicalName: 'gpt-5.5',
+          providerId: 'OPENAI',
+          providerName: 'OpenAI',
+          providerType: 'OPENAI',
+          runtime: 'codex_app_server',
+          configSchema: {
+            parameters: [
+              {
+                name: 'reasoning_effort',
+                type: 'string',
+                title: 'Reasoning Effort',
+                default_value: 'medium',
+                enum_values: ['low', 'medium', 'high', 'xhigh'],
+              },
+              {
+                name: 'service_tier',
+                type: 'string',
+                title: 'Fast mode',
+                enum_values: ['fast'],
+              },
+            ],
+          },
+        },
+      ]),
+    ])
+
+    const localConfig = {
+      ...mockConfig,
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.5',
+      llmConfig: null,
+    }
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: localConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const reasoningSelect = wrapper.get('select#agent-run-reasoning_effort')
+    const serviceTierSelect = wrapper.get('select#agent-run-service_tier')
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.get('button').element.disabled).toBe(true)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(reasoningSelect.isVisible()).toBe(true)
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+    expect((serviceTierSelect.element as HTMLSelectElement).value).toBe('__default__')
+    expect(localConfig.llmConfig).toBeNull()
+
+    await thinkingRow.get('button').trigger('click')
+    expect(localConfig.llmConfig).toBeNull()
+
+    await reasoningSelect.setValue('high')
+
+    expect(localConfig.llmConfig).toEqual({ reasoning_effort: 'high' })
+  })
+
+  it('starts primary advanced collapsed for OpenAI Responses off defaults', async () => {
+    setProviders([
+      buildProviderRow('OPENAI', 'OpenAI', [
+        {
+          modelIdentifier: 'gpt-5.5-responses',
+          name: 'GPT-5.5 Responses',
+          value: 'gpt-5.5-responses',
+          canonicalName: 'gpt-5.5-responses',
+          providerId: 'OPENAI',
+          providerName: 'OpenAI',
+          providerType: 'OPENAI',
+          runtime: 'autobyteus',
+          configSchema: {
+            parameters: [
+              {
+                name: 'reasoning_effort',
+                type: 'string',
+                title: 'Reasoning Effort',
+                default_value: 'none',
+                enum_values: ['none', 'low', 'medium', 'high'],
+              },
+              {
+                name: 'reasoning_summary',
+                type: 'string',
+                title: 'Reasoning Summary',
+                default_value: 'none',
+                enum_values: ['none', 'auto', 'concise'],
+              },
+            ],
+          },
+        },
+      ]),
+    ])
+
+    const localConfig = {
+      ...mockConfig,
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.5-responses',
+      llmConfig: null,
+    }
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: localConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+
+    expect(thinkingRow.props('enabled')).toBe(false)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect((wrapper.get('select#agent-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
+    expect((wrapper.get('select#agent-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
+    expect(localConfig.llmConfig).toBeNull()
   })
 
   it('updates config when the runtime and model selection change', async () => {

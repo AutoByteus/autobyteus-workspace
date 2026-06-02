@@ -1,30 +1,33 @@
 import { CompactionPreparationError } from '../../agent/compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../../agent/compaction/compaction-runtime-reporter.js';
 import type { MemoryManager, PendingCompactionRequest } from '../memory-manager.js';
-import { CompactionSnapshotBuilder } from '../compaction-snapshot-builder.js';
 import { CompactionRuntimeSettingsResolver } from './compaction-runtime-settings.js';
-import { CompactionWindowPlanner } from './compaction-window-planner.js';
+import { WorkingContextMessageWindowPlanner } from './working-context-message-window-planner.js';
+import { WorkingContextSnapshotRebuilder } from './working-context-snapshot-rebuilder.js';
 import type { CompactionAgentExecutionMetadata } from './compaction-agent-runner.js';
 
 export type PendingCompactionExecutionInput = {
   turnId?: string | null;
   systemPrompt: string;
+  inputBudgetTokens?: number | null;
 };
 
 export type PendingCompactionExecutorOptions = {
-  snapshotBuilder?: CompactionSnapshotBuilder;
-  planner?: CompactionWindowPlanner;
+  planner?: WorkingContextMessageWindowPlanner;
+  snapshotRebuilder?: WorkingContextSnapshotRebuilder;
   reporter?: CompactionRuntimeReporter | null;
   runtimeSettingsResolver?: CompactionRuntimeSettingsResolver;
+  inputBudgetTokens?: number | null;
   maxEpisodic?: number;
   maxSemantic?: number;
 };
 
 export class PendingCompactionExecutor {
-  private readonly snapshotBuilder: CompactionSnapshotBuilder;
-  private readonly planner: CompactionWindowPlanner;
+  private readonly planner: WorkingContextMessageWindowPlanner;
+  private readonly snapshotRebuilder: WorkingContextSnapshotRebuilder;
   private readonly reporter: CompactionRuntimeReporter | null;
   private readonly runtimeSettingsResolver: CompactionRuntimeSettingsResolver;
+  private readonly inputBudgetTokens: number | null;
   private readonly maxEpisodic: number;
   private readonly maxSemantic: number;
 
@@ -32,10 +35,11 @@ export class PendingCompactionExecutor {
     private readonly memoryManager: MemoryManager,
     options: PendingCompactionExecutorOptions = {},
   ) {
-    this.snapshotBuilder = options.snapshotBuilder ?? new CompactionSnapshotBuilder();
-    this.planner = options.planner ?? new CompactionWindowPlanner(undefined, undefined, this.memoryManager.compactionPolicy.maxItemChars);
+    this.planner = options.planner ?? new WorkingContextMessageWindowPlanner();
+    this.snapshotRebuilder = options.snapshotRebuilder ?? new WorkingContextSnapshotRebuilder();
     this.reporter = options.reporter ?? null;
     this.runtimeSettingsResolver = options.runtimeSettingsResolver ?? new CompactionRuntimeSettingsResolver();
+    this.inputBudgetTokens = options.inputBudgetTokens ?? null;
     this.maxEpisodic = options.maxEpisodic ?? 3;
     this.maxSemantic = options.maxSemantic ?? 20;
   }
@@ -64,20 +68,25 @@ export class PendingCompactionExecutor {
       throw new CompactionPreparationError(errorMessage);
     }
 
-    const rawTraces = this.memoryManager.listRawTracesOrdered();
-    const plan = this.planner.plan(rawTraces, input.turnId ?? null);
+    const messages = this.memoryManager.getWorkingContextMessages();
+    const plan = this.planner.plan({
+      messages,
+      inputBudgetTokens: input.inputBudgetTokens ?? this.inputBudgetTokens,
+    });
 
     this.reporter?.logExecutionContext({
       turn_id: input.turnId ?? null,
       ...lifecycleMetadata,
       pending_compaction: true,
-      selected_block_count: plan.selectedBlockCount,
-      frontier_block_count: plan.frontierBlocks.length,
-      raw_trace_count: rawTraces.length,
+      selected_unit_count: plan.compactableUnits.length,
+      protected_suffix_unit_count: plan.protectedSuffixUnits.length,
+      retained_unit_count: plan.retainedUnits.length,
+      working_context_message_count: messages.length,
+      raw_trace_count: plan.rawTraceIdsToArchive.length,
     }, runtimeSettings.detailedLogsEnabled);
 
-    if (!plan.selectedBlockCount) {
-      const errorMessage = 'Memory compaction failed before dispatch: no eligible settled block was available.';
+    if (!plan.compactableUnits.length) {
+      const errorMessage = 'Memory compaction failed before dispatch: no eligible settled working-context message was available.';
       this.reporter?.emitStatus({
         phase: 'failed',
         turn_id: input.turnId ?? null,
@@ -93,15 +102,18 @@ export class PendingCompactionExecutor {
       phase: 'started',
       turn_id: input.turnId ?? null,
       ...lifecycleMetadata,
-      selected_block_count: plan.selectedBlockCount,
+      selected_block_count: plan.compactableUnits.length,
       compacted_block_count: null,
     });
 
     try {
-      const outcome = await this.memoryManager.compactor.compact(plan);
+      const outcome = await this.memoryManager.compactor.compactWorkingContext(plan);
       const bundle = this.memoryManager.retriever.retrieve(this.maxEpisodic, this.maxSemantic);
-      const snapshotMessages = this.snapshotBuilder.build(input.systemPrompt, bundle, plan, {
-        maxItemChars: this.memoryManager.compactionPolicy.maxItemChars,
+      const snapshotMessages = this.snapshotRebuilder.rebuild({
+        systemPrompt: input.systemPrompt,
+        headMessages: plan.headMessages,
+        bundle,
+        retainedMessages: plan.retainedMessages,
       });
       this.memoryManager.resetWorkingContextSnapshot(snapshotMessages);
       this.memoryManager.clearCompactionRequest();
@@ -110,8 +122,8 @@ export class PendingCompactionExecutor {
         phase: 'completed',
         turn_id: input.turnId ?? null,
         ...lifecycleMetadata,
-        selected_block_count: plan.selectedBlockCount,
-        compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
+        selected_block_count: plan.compactableUnits.length,
+        compacted_block_count: outcome?.compactedUnitCount ?? plan.compactableUnits.length,
         raw_trace_count: outcome?.rawTraceCount ?? 0,
         semantic_fact_count: outcome?.semanticFactCount ?? 0,
         ...toStatusMetadata(outcome?.compactionMetadata ?? null),
@@ -119,8 +131,8 @@ export class PendingCompactionExecutor {
       this.reporter?.logResultSummary({
         turn_id: input.turnId ?? null,
         ...lifecycleMetadata,
-        selected_block_count: plan.selectedBlockCount,
-        compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
+        selected_block_count: plan.compactableUnits.length,
+        compacted_block_count: outcome?.compactedUnitCount ?? plan.compactableUnits.length,
         episodic_summary_length: outcome?.result.episodicSummary.length ?? 0,
         semantic_fact_count: outcome?.semanticFactCount ?? 0,
         ...toStatusMetadata(outcome?.compactionMetadata ?? null),
@@ -136,7 +148,7 @@ export class PendingCompactionExecutor {
         phase: 'failed',
         turn_id: input.turnId ?? null,
         ...lifecycleMetadata,
-        selected_block_count: plan.selectedBlockCount,
+        selected_block_count: plan.compactableUnits.length,
         compacted_block_count: null,
         ...toStatusMetadata(this.memoryManager.compactor.getLastCompactionExecutionMetadata()),
         error_message: errorMessage,

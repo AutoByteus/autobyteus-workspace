@@ -77,6 +77,11 @@ model settings.
 
 - `supportedReasoningEfforts` / `supported_reasoning_efforts` is normalized to
   the existing `reasoning_effort` enum parameter.
+- `defaultReasoningEffort` / `default_reasoning_effort` is normalized as the
+  schema default. The frontend displays that default as the effective reasoning
+  value and **Thinking** state, opens **Advanced** for that ON default, and still
+  leaves unset `llmConfig.reasoning_effort` as null so the Codex App Server can
+  apply its own model default.
 - `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
   `service_tier` enum parameter labeled **Fast mode**. Only `fast` is exposed;
   leaving the control at Default/off omits the setting and preserves Codex's

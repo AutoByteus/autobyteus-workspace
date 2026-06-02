@@ -313,12 +313,22 @@ healthy custom providers or the built-in registry.
 
 ## 8. Provider Configuration Mapping
 
+Provider config schemas are the source of truth for both runtime payload shaping
+and frontend model-config display. The UI displays explicit config values first
+and valid schema defaults second, but it does not write displayed defaults into
+`llmConfig` unless the user changes a control or an existing apply-defaults flow
+requires it. The top-level **Thinking** state is schema/default-driven and must
+not be inferred from model names. In editable primary/global launch config,
+**Advanced** opens by default when effective **Thinking** is ON and starts
+collapsed when effective **Thinking** is OFF or unavailable; toggling a supported
+**Thinking** control ON opens **Advanced**.
+
 | Provider   | Param Name         | Type    | UI Control | Runtime / Provider Request Effect |
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
-| GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "high"}` |
-| Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
-| Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking: {type: "adaptive"}}` |
+| GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown / schema-backed Thinking state | `{reasoning_effort: "high"}` |
+| Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
+| Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
 | Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
 | DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{extra_body: {thinking: {type: "enabled"}}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
-| Zhipu GLM        | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking_enabled: true}`   |
+| Zhipu GLM        | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |

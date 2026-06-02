@@ -60,6 +60,7 @@ runIntegration('Memory compaction flow (LM Studio)', () => {
           turnId,
           'LLMUserMessageReadyEvent'
         );
+        memoryManager.appendWorkingContextUserMessage(`turn ${idx} user`, { turnId });
         memoryManager.ingestAssistantResponse(
           new CompleteResponse({ content: `turn ${idx} assistant` }),
           turnId,

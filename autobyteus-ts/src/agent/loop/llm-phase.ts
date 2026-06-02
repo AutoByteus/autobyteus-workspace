@@ -12,6 +12,7 @@ import { PendingCompactionExecutor } from '../../memory/compaction/pending-compa
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { buildToolArgumentSchemaResolver, resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
+import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
@@ -53,6 +54,15 @@ export class LlmPhase {
 
     const compactionReporter = new CompactionRuntimeReporter(agentId, context.statusManager?.notifier ?? null);
     const runtimeSettingsResolver = new CompactionRuntimeSettingsResolver();
+    const requestTokenBudget = resolveTokenBudget(
+      llmInstance.model,
+      llmInstance.config,
+      memoryManager.compactionPolicy,
+      runtimeSettingsResolver.resolve()
+    );
+    if (requestTokenBudget) {
+      applyCompactionPolicy(memoryManager.compactionPolicy, requestTokenBudget);
+    }
 
     const toolNames = resolveTurnToolNames(context);
     const provider = llmInstance.model?.provider ?? null;
@@ -75,6 +85,7 @@ export class LlmPhase {
     const pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
       reporter: compactionReporter,
       runtimeSettingsResolver,
+      inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
       maxEpisodic: 3,
       maxSemantic: 20
     });
@@ -213,20 +224,14 @@ export class LlmPhase {
         parsedToolInvocationCount = toolInvocations.length;
         turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
         turn.startToolInvocationBatch(toolInvocations);
-        memoryManager.ingestToolIntents(toolInvocations, activeTurnId, {
-          assistantContent: completeResponseText || null,
-          assistantReasoning: completeReasoningText || null
-        });
+        memoryManager.ingestAssistantToolResponse(completeResponse, toolInvocations, activeTurnId, 'LlmPhase');
       }
     }
 
-    turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
-    memoryManager.ingestAssistantResponse(
-      completeResponse,
-      activeTurnId,
-      'LlmPhase',
-      { appendToWorkingContext: parsedToolInvocationCount === 0 }
-    );
+    if (parsedToolInvocationCount === 0) {
+      turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
+      memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LlmPhase');
+    }
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
     evaluateLlmPhaseCompaction({
@@ -241,6 +246,17 @@ export class LlmPhase {
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocationCount > 0
       ? streamingHandler.getAllInvocations()
       : [];
+    if (!toolInvocations.length && memoryManager.compactionRequired) {
+      try {
+        await pendingCompactionExecutor.executeIfRequired({
+          turnId: activeTurnId,
+          systemPrompt: systemPrompt ?? ''
+        });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        notifier?.notifyAgentErrorOutputGeneration('LlmPhase.immediateCompaction', errorMessage, String(error));
+      }
+    }
     if (toolInvocations.length) {
       return { kind: 'tool_invocations', response: completeResponse, toolInvocations };
     }

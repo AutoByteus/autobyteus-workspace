@@ -44,6 +44,7 @@ describe('Memory compaction summarizer flow', () => {
         turn1,
         'LLMUserMessageReadyEvent'
       );
+      memoryManager.appendWorkingContextUserMessage('We need to write hello.py that prints Hello World.', { turnId: turn1 });
       const invocation = new ToolInvocation('write_file', { path: 'hello.py' }, 'call_1', turn1);
       memoryManager.ingestToolIntent(invocation, turn1);
       memoryManager.ingestToolResult(new ToolResultEvent('write_file', 'ok', 'call_1', undefined, undefined, turn1), turn1);
@@ -59,6 +60,7 @@ describe('Memory compaction summarizer flow', () => {
         turn2,
         'LLMUserMessageReadyEvent'
       );
+      memoryManager.appendWorkingContextUserMessage('Also add a short README.', { turnId: turn2 });
       memoryManager.ingestAssistantResponse(
         { content: 'Added README', reasoning: null } as any,
         turn2,

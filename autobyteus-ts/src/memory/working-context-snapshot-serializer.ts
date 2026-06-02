@@ -24,7 +24,7 @@ const safeJsonValue = (value: unknown): unknown => {
 };
 
 export class WorkingContextSnapshotSerializer {
-  static readonly CURRENT_SCHEMA_VERSION = 3;
+  static readonly CURRENT_SCHEMA_VERSION = 4;
 
   static serialize(snapshot: WorkingContextSnapshot, metadata: SnapshotMetadata = {}): SerializedPayload {
     return {
@@ -90,6 +90,9 @@ export class WorkingContextSnapshotSerializer {
     if (base.tool_payload) {
       base.tool_payload = this.normalizeToolPayload(base.tool_payload as ToolPayloadRecord);
     }
+    if (base.metadata !== null && base.metadata !== undefined) {
+      base.metadata = safeJsonValue(base.metadata);
+    }
     return base;
   }
 
@@ -102,7 +105,8 @@ export class WorkingContextSnapshotSerializer {
       image_urls: (data.image_urls as string[] | undefined) ?? [],
       audio_urls: (data.audio_urls as string[] | undefined) ?? [],
       video_urls: (data.video_urls as string[] | undefined) ?? [],
-      tool_payload: toolPayload
+      tool_payload: toolPayload,
+      metadata: deserializeMetadata(data.metadata)
     });
   }
 
@@ -155,3 +159,8 @@ export class WorkingContextSnapshotSerializer {
     return null;
   }
 }
+
+const deserializeMetadata = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;

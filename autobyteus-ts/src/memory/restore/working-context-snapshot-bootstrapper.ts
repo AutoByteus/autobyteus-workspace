@@ -1,9 +1,9 @@
-import { CompactionSnapshotBuilder } from '../compaction-snapshot-builder.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from '../store/working-context-snapshot-store.js';
 import type { MemoryManager } from '../memory-manager.js';
-import { CompactionWindowPlanner } from '../compaction/compaction-window-planner.js';
 import { CompactedMemorySchemaGate } from './compacted-memory-schema-gate.js';
+import { WorkingContextRecoveryProjector } from './working-context-recovery-projector.js';
+import { WorkingContextSnapshotRebuilder } from '../compaction/working-context-snapshot-rebuilder.js';
 import type { MemoryStore } from '../store/base-store.js';
 
 export type WorkingContextSnapshotBootstrapOptionsInit = {
@@ -26,19 +26,19 @@ export class WorkingContextSnapshotBootstrapOptions {
 
 export class WorkingContextSnapshotBootstrapper {
   private snapshotStore: WorkingContextSnapshotStore | null;
-  private snapshotBuilder: CompactionSnapshotBuilder;
-  private planner: CompactionWindowPlanner;
+  private snapshotRebuilder: WorkingContextSnapshotRebuilder;
+  private recoveryProjector: WorkingContextRecoveryProjector;
   private schemaGate: CompactedMemorySchemaGate;
 
   constructor(
     snapshotStore: WorkingContextSnapshotStore | null = null,
-    snapshotBuilder: CompactionSnapshotBuilder | null = null,
-    planner: CompactionWindowPlanner | null = null,
+    snapshotRebuilder: WorkingContextSnapshotRebuilder | null = null,
+    recoveryProjector: WorkingContextRecoveryProjector | null = null,
     schemaGate: CompactedMemorySchemaGate | null = null,
   ) {
     this.snapshotStore = snapshotStore;
-    this.snapshotBuilder = snapshotBuilder ?? new CompactionSnapshotBuilder();
-    this.planner = planner ?? new CompactionWindowPlanner();
+    this.snapshotRebuilder = snapshotRebuilder ?? new WorkingContextSnapshotRebuilder();
+    this.recoveryProjector = recoveryProjector ?? new WorkingContextRecoveryProjector();
     this.schemaGate = schemaGate ?? new CompactedMemorySchemaGate();
   }
 
@@ -62,8 +62,12 @@ export class WorkingContextSnapshotBootstrapper {
 
     const bundle = memoryManager.retriever.retrieve(options.maxEpisodic, options.maxSemantic);
     const maxItemChars = options.maxItemChars ?? memoryManager.compactionPolicy.maxItemChars ?? null;
-    const plan = this.planner.plan(memoryManager.listRawTracesOrdered(), null);
-    const snapshotMessages = this.snapshotBuilder.build(systemPrompt, bundle, plan, { maxItemChars });
+    const recoveredMessages = this.recoveryProjector.project(memoryManager.listRawTracesOrdered(), maxItemChars);
+    const snapshotMessages = this.snapshotRebuilder.rebuild({
+      systemPrompt,
+      bundle,
+      retainedMessages: recoveredMessages,
+    });
     memoryManager.resetWorkingContextSnapshot(snapshotMessages);
   }
 

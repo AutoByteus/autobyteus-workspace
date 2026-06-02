@@ -52,6 +52,7 @@ export interface CompactionActivity {
   errorMessage?: string | null;
   timestamp: Date;
   updatedAt: Date;
+  centerTimelineTimestamp?: Date | null;
 }
 
 export type RunActivity = ToolActivity | CompactionActivity;
@@ -160,7 +161,11 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       }
 
       const originalTimestamp = existing.timestamp;
-      Object.assign(existing, activity, { timestamp: originalTimestamp });
+      const originalCenterTimelineTimestamp = existing.centerTimelineTimestamp ?? null;
+      Object.assign(existing, activity, {
+        timestamp: originalTimestamp,
+        centerTimelineTimestamp: originalCenterTimelineTimestamp ?? activity.centerTimelineTimestamp ?? null,
+      });
     },
 
     updateToolActivityStatus(
