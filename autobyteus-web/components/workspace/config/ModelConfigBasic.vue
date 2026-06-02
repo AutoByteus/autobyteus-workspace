@@ -3,6 +3,7 @@
     <div>
       <label :class="labelClass">{{ label }}</label>
       <p v-if="description" :class="descriptionClass">{{ description }}</p>
+      <p v-if="readOnlyReason" :class="descriptionClass">{{ readOnlyReason }}</p>
     </div>
     <div class="flex items-center">
       <button 
@@ -31,6 +32,7 @@ const props = defineProps<{
   disabled?: boolean;
   label?: string;
   description?: string;
+  readOnlyReason?: string;
   compact?: boolean;
 }>();
 

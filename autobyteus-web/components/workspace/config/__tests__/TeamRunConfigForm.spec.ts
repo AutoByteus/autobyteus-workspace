@@ -52,6 +52,11 @@ const mockConfig = {
   memberOverrides: {},
 }
 
+const flushPromises = async () => {
+  await Promise.resolve()
+  await new Promise<void>((resolve) => setTimeout(resolve, 0))
+}
+
 describe('TeamRunConfigForm', () => {
   let llmStore: any
   let runtimeStore: any
@@ -72,6 +77,34 @@ describe('TeamRunConfigForm', () => {
         },
         models: [
           { modelIdentifier: 'gpt-5.4', name: 'GPT-5.4', value: 'gpt-5.4', canonicalName: 'gpt-5.4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'autobyteus' },
+          {
+            modelIdentifier: 'gpt-5.5-responses',
+            name: 'GPT-5.5 Responses',
+            value: 'gpt-5.5-responses',
+            canonicalName: 'gpt-5.5-responses',
+            providerId: 'OPENAI',
+            providerName: 'OpenAI',
+            providerType: 'OPENAI',
+            runtime: 'autobyteus',
+            configSchema: {
+              parameters: [
+                {
+                  name: 'reasoning_effort',
+                  type: 'string',
+                  title: 'Reasoning Effort',
+                  default_value: 'none',
+                  enum_values: ['none', 'low', 'medium', 'high'],
+                },
+                {
+                  name: 'reasoning_summary',
+                  type: 'string',
+                  title: 'Reasoning Summary',
+                  default_value: 'none',
+                  enum_values: ['none', 'auto', 'concise'],
+                },
+              ],
+            },
+          },
         ],
       },
     ],
@@ -88,6 +121,33 @@ describe('TeamRunConfigForm', () => {
           statusMessage: null,
         },
         models: [
+          {
+            modelIdentifier: 'gpt-5.5',
+            name: 'GPT-5.5 (default reasoning: medium)',
+            value: 'gpt-5.5',
+            canonicalName: 'gpt-5.5',
+            providerId: 'OPENAI',
+            providerName: 'OpenAI',
+            providerType: 'OPENAI',
+            runtime: 'codex_app_server',
+            configSchema: {
+              parameters: [
+                {
+                  name: 'reasoning_effort',
+                  type: 'string',
+                  title: 'Reasoning Effort',
+                  default_value: 'medium',
+                  enum_values: ['low', 'medium', 'high', 'xhigh'],
+                },
+                {
+                  name: 'service_tier',
+                  type: 'string',
+                  title: 'Fast mode',
+                  enum_values: ['fast'],
+                },
+              ],
+            },
+          },
           { modelIdentifier: 'gpt-5.3-codex', name: 'GPT-5.3 Codex', value: 'gpt-5.3-codex', canonicalName: 'gpt-5.3-codex', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
         ],
       },
@@ -228,7 +288,7 @@ describe('TeamRunConfigForm', () => {
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('claude_agent_sdk')
 
     const store = useTeamRunConfigStore()
-    expect(store.runtimeModelCatalogs.autobyteus).toEqual(['gpt-5.4'])
+    expect(store.runtimeModelCatalogs.autobyteus).toEqual(['gpt-5.4', 'gpt-5.5-responses'])
     expect(store.runtimeModelCatalogs.claude_agent_sdk).toEqual(['claude-sonnet'])
   })
 
@@ -244,6 +304,59 @@ describe('TeamRunConfigForm', () => {
     expect(config.runtimeKind).toBe('codex_app_server')
     expect(config.llmModelIdentifier).toBe('')
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
+  })
+
+  it('renders Codex effort-only reasoning defaults visibly on the team-global config path', async () => {
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.5',
+      llmConfig: null,
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const reasoningSelect = wrapper.get('select#team-run-reasoning_effort')
+    const serviceTierSelect = wrapper.get('select#team-run-service_tier')
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.get('button').element.disabled).toBe(true)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(reasoningSelect.isVisible()).toBe(true)
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+    expect((serviceTierSelect.element as HTMLSelectElement).value).toBe('__default__')
+    expect(config.llmConfig).toBeNull()
+
+    await thinkingRow.get('button').trigger('click')
+    expect(config.llmConfig).toBeNull()
+
+    await reasoningSelect.setValue('xhigh')
+
+    expect(config.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+  })
+
+  it('starts team-global advanced collapsed for OpenAI Responses off defaults', async () => {
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.5-responses',
+      llmConfig: null,
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+
+    expect(thinkingRow.props('enabled')).toBe(false)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect((wrapper.get('select#team-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
+    expect((wrapper.get('select#team-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
+    expect(config.llmConfig).toBeNull()
   })
 
   it('prunes inherited member-only llmConfig overrides when the global model changes', async () => {
