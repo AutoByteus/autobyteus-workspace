@@ -17,7 +17,7 @@ import type {
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { projectCompactionStatusToActivity } from './compactionActivityProjection';
+import { isCenterFeedCompactionPhase, projectCompactionStatusToActivity } from './compactionActivityProjection';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
 import {
@@ -78,11 +78,16 @@ export function handleCompactionStatus(
   payload: CompactionStatusPayload,
   context: AgentContext
 ): void {
+  const previousStatus = context.state.compactionStatus;
   const projection = projectCompactionStatusToActivity(payload, {
     runId: context.state.runId,
-    previousStatus: context.state.compactionStatus,
+    previousStatus,
   });
   context.state.compactionStatus = projection.status;
+
+  if (shouldCloseCurrentAIMessageForCenterCompaction(projection.status, previousStatus)) {
+    markConversationComplete(context);
+  }
 
   const activityStore = useAgentActivityStore();
   activityStore.upsertCompactionActivity(context.state.runId, projection.activity);
@@ -183,6 +188,19 @@ function markConversationComplete(context: AgentContext): void {
   if (lastMessage?.type === 'ai') {
     lastMessage.isComplete = true;
   }
+}
+
+function shouldCloseCurrentAIMessageForCenterCompaction(
+  status: NonNullable<AgentContext['state']['compactionStatus']>,
+  previousStatus: AgentContext['state']['compactionStatus'],
+): boolean {
+  if (!isCenterFeedCompactionPhase(status.phase)) {
+    return false;
+  }
+  if (previousStatus?.activityId !== status.activityId) {
+    return true;
+  }
+  return !isCenterFeedCompactionPhase(previousStatus.phase);
 }
 
 function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegment {

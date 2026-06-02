@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import AgentEventMonitor from '../AgentEventMonitor.vue';
 import { handleCompactionStatus } from '~/services/agentStreaming/handlers/agentStatusHandler';
+import { handleSegmentStart } from '~/services/agentStreaming/handlers/segmentHandler';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { Conversation } from '~/types/conversation';
 
@@ -78,6 +79,34 @@ describe('AgentEventMonitor live compaction flow', () => {
     expect(feed.text()).toContain('Backend compaction quota exceeded');
     expect(feed.text()).toContain('Turn: turn-live-1');
     expect(wrapper.html()).not.toContain('compaction-status-banner');
+  });
+
+  it('keeps requested compaction out of the center feed while preserving the Activity lifecycle row', () => {
+    const conversation = createConversation('run-requested-hidden');
+    const context = createContext('run-requested-hidden', conversation);
+
+    handleCompactionStatus({
+      phase: 'requested',
+      turn_id: 'turn-requested',
+      compaction_operation_id: 'operation-requested-hidden',
+      requested_turn_id: 'turn-requested',
+    }, context as any);
+
+    const store = useAgentActivityStore();
+    const activities = store.getCompactionActivities('run-requested-hidden');
+    expect(activities).toHaveLength(1);
+    expect(activities[0]).toMatchObject({
+      activityId: 'compaction:operation:operation-requested-hidden',
+      phase: 'requested',
+      message: 'Compaction queued',
+      centerTimelineTimestamp: null,
+    });
+
+    const wrapper = mountMonitor(conversation, 'run-requested-hidden');
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]');
+
+    expect(feed.find('[data-testid="compaction-status-row"]').exists()).toBe(false);
+    expect(feed.text()).not.toContain('Compaction queued');
   });
 
   it('uses explicit run identity so focused team-member compaction rows do not leak across conversations', () => {
@@ -161,5 +190,53 @@ describe('AgentEventMonitor live compaction flow', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].text()).toContain('Memory compaction failed before dispatch');
     expect(rows[0].text()).toContain('Turn: turn-3');
+  });
+
+  it('closes only the current visual AI block on execution-phase compaction so continuation starts a new block', () => {
+    const conversation = createConversation('run-split-ai-block');
+    const context = createContext('run-split-ai-block', conversation);
+
+    handleSegmentStart({
+      id: 'segment-before-compaction',
+      turn_id: 'turn-1',
+      segment_type: 'text',
+    }, context as any);
+
+    const firstAIMessage = conversation.messages[1];
+    expect(firstAIMessage?.type).toBe('ai');
+    if (firstAIMessage?.type !== 'ai') {
+      throw new Error('expected first AI message');
+    }
+    expect(firstAIMessage.isComplete).toBe(false);
+
+    handleCompactionStatus({
+      phase: 'requested',
+      compaction_operation_id: 'operation-split-ai-block',
+      requested_turn_id: 'turn-1',
+    }, context as any);
+    expect(firstAIMessage.isComplete).toBe(false);
+
+    handleCompactionStatus({
+      phase: 'started',
+      compaction_operation_id: 'operation-split-ai-block',
+      requested_turn_id: 'turn-1',
+      execution_turn_id: 'turn-2',
+    }, context as any);
+    expect(firstAIMessage.isComplete).toBe(true);
+
+    handleSegmentStart({
+      id: 'segment-after-compaction',
+      turn_id: 'turn-2',
+      segment_type: 'text',
+    }, context as any);
+
+    expect(conversation.messages).toHaveLength(3);
+    const secondAIMessage = conversation.messages[2];
+    expect(secondAIMessage?.type).toBe('ai');
+    if (secondAIMessage?.type !== 'ai') {
+      throw new Error('expected second AI message');
+    }
+    expect(secondAIMessage.isComplete).toBe(false);
+    expect(secondAIMessage.segments).toHaveLength(1);
   });
 });

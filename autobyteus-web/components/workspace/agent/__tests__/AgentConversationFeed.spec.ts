@@ -166,6 +166,7 @@ describe('AgentConversationFeed', () => {
             message: 'Memory compacted',
             timestamp: new Date('2026-03-07T00:00:01.000Z'),
             updatedAt: new Date('2026-03-07T00:00:01.000Z'),
+            centerTimelineTimestamp: new Date('2026-03-07T00:00:01.000Z'),
           },
         ],
       },
@@ -192,6 +193,73 @@ describe('AgentConversationFeed', () => {
       'compaction-row',
       'ai-message',
     ]);
+  });
+
+  it('hides requested compaction rows and orders execution rows by center timeline timestamp', () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        conversation: {
+          id: 'run-2',
+          createdAt: '2026-03-07T00:00:00.000Z',
+          updatedAt: '2026-03-07T00:00:05.000Z',
+          messages: [
+            {
+              type: 'ai',
+              text: '',
+              timestamp: new Date('2026-03-07T00:00:02.000Z'),
+              isComplete: true,
+              segments: [{ type: 'text', content: 'tool result visible first' }],
+            },
+            {
+              type: 'ai',
+              text: '',
+              timestamp: new Date('2026-03-07T00:00:04.000Z'),
+              isComplete: false,
+              segments: [{ type: 'text', content: 'post-compaction continuation' }],
+            },
+          ],
+        } as any,
+        compactionActivities: [
+          {
+            kind: 'compaction',
+            activityId: 'compaction:operation:queued',
+            phase: 'requested',
+            message: 'Compaction queued',
+            timestamp: new Date('2026-03-07T00:00:01.000Z'),
+            updatedAt: new Date('2026-03-07T00:00:01.000Z'),
+            centerTimelineTimestamp: null,
+          },
+          {
+            kind: 'compaction',
+            activityId: 'compaction:operation:executing',
+            phase: 'completed',
+            message: 'Memory compacted',
+            timestamp: new Date('2026-03-07T00:00:00.000Z'),
+            updatedAt: new Date('2026-03-07T00:00:03.000Z'),
+            centerTimelineTimestamp: new Date('2026-03-07T00:00:03.000Z'),
+          },
+        ],
+      },
+      global: {
+        stubs: {
+          AIMessage: {
+            props: ['message'],
+            template: '<div data-test="ai-message">{{ message.segments[0].content }}</div>',
+          },
+          CompactionStatusRow: {
+            props: ['activity'],
+            template: '<div data-test="compaction-row">{{ activity.message }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('[data-test]').map((node) => node.text())).toEqual([
+      'tool result visible first',
+      'Memory compacted',
+      'post-compaction continuation',
+    ]);
+    expect(wrapper.text()).not.toContain('Compaction queued');
   });
 
 });

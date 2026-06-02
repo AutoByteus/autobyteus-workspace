@@ -127,10 +127,11 @@ describe('agentActivityStore', () => {
     expect(warnSpy).toHaveBeenCalled();
   });
 
-  it('upserts compaction activities without changing their placement timestamp', () => {
+  it('upserts compaction activities without changing Activity placement timestamp or first center timeline timestamp', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
     const firstTimestamp = new Date('2026-05-31T10:00:00.000Z');
+    const firstCenterTimestamp = new Date('2026-05-31T10:00:30.000Z');
 
     store.upsertCompactionActivity(agentId, {
       kind: 'compaction',
@@ -139,6 +140,7 @@ describe('agentActivityStore', () => {
       message: 'Compacting memory…',
       timestamp: firstTimestamp,
       updatedAt: firstTimestamp,
+      centerTimelineTimestamp: firstCenterTimestamp,
     });
     store.upsertCompactionActivity(agentId, {
       kind: 'compaction',
@@ -147,11 +149,13 @@ describe('agentActivityStore', () => {
       message: 'Memory compacted',
       timestamp: new Date('2026-05-31T10:01:00.000Z'),
       updatedAt: new Date('2026-05-31T10:01:00.000Z'),
+      centerTimelineTimestamp: new Date('2026-05-31T10:01:00.000Z'),
     });
 
     const activity = store.getCompactionActivities(agentId)[0];
     expect(activity.phase).toBe('completed');
     expect(activity.timestamp).toBe(firstTimestamp);
+    expect(activity.centerTimelineTimestamp).toBe(firstCenterTimestamp);
     expect(store.getToolActivities(agentId)).toHaveLength(0);
   });
 });

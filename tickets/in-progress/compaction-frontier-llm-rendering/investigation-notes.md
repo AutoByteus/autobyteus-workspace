@@ -314,3 +314,22 @@ If/when requirements are approved, the design should start from these spines:
 2. **Tool continuation spine:** LLM emits tool calls -> structured working context tool-call message -> tool execution/result ingestion -> pending compaction executes -> structured frontier messages survive/reset -> renderer sends provider-valid tool continuation.
 
 Initial design direction: keep `CompactionWindowPlanner` as the owner of eligible/frontier selection; introduce or extract an LLM-facing frontier message projector under memory/compaction that emits canonical `Message[]`; keep/debug any raw frontier formatter separately and remove its use from normal `CompactionSnapshotBuilder` output.
+
+
+## UI Compaction Feed Investigation Addendum (2026-06-02)
+
+A post-implementation Electron run exposed a frontend ordering problem: compaction cards were grouped below a large assistant/tool visual block instead of appearing naturally around the actual compaction execution point. Detailed evidence and recommended scope are recorded in `ui-compaction-feed-ordering-investigation.md`.
+
+Key evidence:
+
+- `autobyteus-web/components/workspace/agent/AgentConversationFeed.vue` combines whole `conversation.messages` rows with `compactionActivities` and sorts only at whole-message granularity.
+- `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` reuses the last incomplete `AIMessage`, so a long active turn can keep appending later tool/result/assistant segments to a visual block whose timestamp is the first assistant segment.
+- `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` upserts compaction activity status but does not split the current visual AI message.
+- `agentActivityStore.upsertCompactionActivity()` preserves the original request timestamp while updating phase/details, which is correct for Activity lifecycle history but insufficient for center-feed execution placement.
+- Daily Assistant run `daily_assistant_general_agent_4141` confirmed multiple native compactions during one long `turn_0001`; active and archived raw traces remain available for history replay through the complete raw-trace corpus.
+
+Refined UX/design decision:
+
+- Activity panel may show `requested -> started -> completed/failed` as one row keyed by stable operation identity.
+- Center live monitor hides queued/requested, shows only execution-phase compaction feedback, and splits the current frontend AI visual block only at execution phase.
+- Historical/reopen center replay does not need native compaction cards; it only needs complete ordered raw-trace replay from active plus archive.

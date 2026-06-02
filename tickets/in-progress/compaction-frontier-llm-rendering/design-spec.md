@@ -599,3 +599,79 @@ Higher layers must not bypass lower authoritative boundaries: agent loop calls e
 - Make compaction memory message natural, e.g. “You are continuing an ongoing task...” rather than bracketed internal labels.
 - Do not expose `turn_id`, `seq`, `source_event`, block id, or raw trace id to the main LLM or compaction LLM in normal mode.
 - Ensure tests verify rendered provider payloads, not just internal `Message[]` shape, for OpenAI-compatible/DeepSeek native tool continuation.
+
+
+## UI Compaction Feed Design Addendum (2026-06-02)
+
+### Current-State Read
+
+The frontend center monitor currently renders at two granularities at once: whole conversation `AIMessage` rows and compaction Activity rows. `AgentConversationFeed.vue` sorts these rows by timestamp, but `segmentHandler.findOrCreateAIMessage()` appends all later streaming segments to the last incomplete visual `AIMessage`. In a long tool-heavy turn, that creates one coarse visual assistant block whose timestamp is the beginning of the block, while compaction statuses are fine-grained lifecycle rows. Sorting cannot place a compaction card inside that visual block.
+
+The right-side Activity panel is a different surface. Its compaction row is lifecycle-oriented and should continue to show operation status updates. The center feed should be timeline/narrative oriented and should not display internal queued state.
+
+### Target UI Behavior
+
+Activity feed:
+
+```text
+Compaction queued -> Compacting memory... -> Memory compacted / failed
+```
+
+- One row per operation, keyed by `compaction_operation_id` when present.
+- Keep the original lifecycle timestamp for Activity ordering; update `updatedAt`, phase, message, and details on later statuses.
+
+Center live feed:
+
+```text
+assistant/tool-call segment(s)
+tool-result segment(s)
+Compacting memory... / Memory compacted
+post-compaction assistant continuation
+```
+
+- Do not render `requested`/queued in the center feed.
+- Render only execution-phase compaction statuses: `started`, terminal `completed` if no `started` arrived, and `failed` if execution failed or blocks continuation.
+- On the first execution-phase center boundary, close the current frontend visual `AIMessage` (`isComplete = true`) so subsequent streamed segments create a new visual block. This is display-only and must not mutate backend working context, LLM messages, turns, raw traces, or tool protocol.
+- Use a center timeline/execution timestamp separate from the Activity row's original request timestamp.
+
+Historical/reopen feed:
+
+- Do not add native compaction cards to center historical replay in this change.
+- History correctness is complete ordered rendering of user/assistant/reasoning/tool-call/tool-result raw traces from the active raw trace file plus compaction archives.
+- If future product value requires historical native compaction Activity rows, synthesize them from `raw_traces_archive_manifest.json` rather than adding LLM-facing or raw-trace pseudo-messages.
+
+### Target Frontend Ownership
+
+Add or adjust a small frontend presentation boundary rather than pushing UI semantics into backend memory:
+
+- `agentActivityStore`: keep lifecycle compaction activity upsert behavior for Activity panel. If needed, add execution/timeline metadata fields to `CompactionActivity` without changing its operation identity.
+- `compactionActivityProjection.ts`: preserve request timestamp for Activity lifecycle row, but expose or derive execution-phase timestamp for center-feed rows.
+- `AgentEventMonitor.vue` / `AgentConversationFeed.vue`: pass/render only center-eligible compaction statuses (`started`, terminal `completed`, execution `failed`) for center feed; hide `requested`.
+- `agentStatusHandler.handleCompactionStatus(...)`: on first center-eligible execution phase for an operation, mark the current frontend visual AI message complete before later post-compaction segments arrive. Do not split on `requested`.
+- `CompactionStatusRow.vue`: reuse visual row for execution status; wording should be `Compacting memory...`, `Memory compacted`, or failure text.
+
+### Backend Ordering Contract
+
+The existing backend timing already supports this target:
+
+- No-tool threshold crossing can execute compaction immediately after the assistant message is committed.
+- Tool-call threshold crossing emits/request compaction after the assistant tool-call message is committed, executes tools, ingests tool results, then runs pending compaction before continuation rendering.
+
+Frontend center-feed correctness depends on execution-phase compaction status being emitted after pending tool-result display events have been emitted/recorded and before post-compaction assistant continuation events begin.
+
+### Explicit Non-Goals
+
+- Do not add historical native compaction cards to the center feed for this change.
+- Do not persist product-internal compaction cards as LLM-facing messages.
+- Do not alter working-context compaction, raw-trace archiving, or provider rendering to solve this UI issue.
+- Do not split frontend visual messages on queued/requested compaction.
+
+### Validation Additions
+
+Add frontend tests covering:
+
+1. `requested` compaction is hidden from center feed but present/updated in Activity feed.
+2. `requested -> started -> completed` remains one Activity row for one operation.
+3. first execution-phase compaction closes the current visual AI block and subsequent segments create a new block.
+4. tool results render before the center compaction execution row and assistant continuation renders after it.
+5. historical/reopen projection can render archived raw traces without requiring native compaction center cards.

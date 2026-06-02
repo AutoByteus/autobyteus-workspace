@@ -1,0 +1,114 @@
+compaction_budget_evaluated {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  prompt_tokens: 3221,
+  effective_total_context_tokens: 500000,
+  context_derived_input_cap_tokens: 116000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 116000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 115744,
+  compaction_ratio: 0.02,
+  trigger_threshold_tokens: 2314,
+  override_active: true,
+  compaction_required: true
+}
+
+---
+
+compaction_requested {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  phase: 'requested',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mpwo8ejc_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+---
+
+AgentExternalEventNotifier (NotifierID: d456cab3-e59a-4382-b754-0736382fcdde, AgentID: ui_compaction_feed_e2e_8f21973a_assistant_9879) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+
+---
+
+AgentExternalEventNotifier (NotifierID: d456cab3-e59a-4382-b754-0736382fcdde, AgentID: ui_compaction_feed_e2e_8f21973a_assistant_9879) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+---
+
+compaction_execution_context {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mpwo8ejc_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  pending_compaction: true,
+  selected_unit_count: 1,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 1,
+  working_context_message_count: 4,
+  raw_trace_count: 1
+}
+
+---
+
+compaction_started {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  phase: 'started',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mpwo8ejc_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  selected_block_count: 1,
+  compacted_block_count: null
+}
+
+---
+
+compaction_completed {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  phase: 'completed',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mpwo8ejc_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  raw_trace_count: 1,
+  semantic_fact_count: 4,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_memory_compaction_specialist_2323',
+  compaction_task_id: 'compaction_task_815605a43e70444697dcfaa64fa9573e'
+}
+
+---
+
+compaction_budget_evaluated {
+  agent_id: 'ui_compaction_feed_e2e_8f21973a_assistant_9879',
+  prompt_tokens: 1008,
+  effective_total_context_tokens: 500000,
+  context_derived_input_cap_tokens: 116000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 116000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 115744,
+  compaction_ratio: 0.02,
+  trigger_threshold_tokens: 2314,
+  override_active: true,
+  compaction_required: false
+}
+
+---
+
+Agent run 'ui_compaction_feed_e2e_8f21973a_assistant_9879': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+---
+
+AgentExternalEventNotifier (NotifierID: d456cab3-e59a-4382-b754-0736382fcdde, AgentID: ui_compaction_feed_e2e_8f21973a_assistant_9879) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload

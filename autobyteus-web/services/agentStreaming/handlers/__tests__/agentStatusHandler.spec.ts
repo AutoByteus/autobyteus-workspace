@@ -160,6 +160,7 @@ describe('agentStatusHandler', () => {
         compactionRunId: 'compaction-run-1',
         compactionTaskId: 'compaction-task-1',
         errorMessage: null,
+        centerTimelineTimestamp: expect.any(Date),
       });
       expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledWith(
         mockContext.state.runId,
@@ -187,7 +188,37 @@ describe('agentStatusHandler', () => {
         message: 'Compaction failed hard',
         turnId: 'turn-2',
         errorMessage: 'Compaction failed hard',
+        centerTimelineTimestamp: expect.any(Date),
       });
+    });
+
+    it('splits the current visual AI block only on the first center-eligible execution phase', () => {
+      const aiMsg = { type: 'ai', isComplete: false, segments: [{ type: 'text', content: 'before compaction' }] };
+      mockContext.conversation.messages.push(aiMsg);
+
+      handleCompactionStatus({
+        phase: 'requested',
+        compaction_operation_id: 'operation-split-1',
+        requested_turn_id: 'turn-1',
+      }, mockContext);
+      expect(aiMsg.isComplete).toBe(false);
+
+      handleCompactionStatus({
+        phase: 'started',
+        compaction_operation_id: 'operation-split-1',
+        requested_turn_id: 'turn-1',
+        execution_turn_id: 'turn-2',
+      }, mockContext);
+      expect(aiMsg.isComplete).toBe(true);
+
+      aiMsg.isComplete = false;
+      handleCompactionStatus({
+        phase: 'completed',
+        compaction_operation_id: 'operation-split-1',
+        requested_turn_id: 'turn-1',
+        execution_turn_id: 'turn-2',
+      }, mockContext);
+      expect(aiMsg.isComplete).toBe(false);
     });
 
 

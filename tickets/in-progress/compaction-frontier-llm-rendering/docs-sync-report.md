@@ -3,10 +3,11 @@
 ## Scope
 
 - Ticket: `compaction-frontier-llm-rendering`
-- Trigger: Delivery-stage docs sync after API/E2E Round 2 real browser/full-stack provider-backed validation passed and code-review Round 5 cleared VR-001.
+- Trigger: Delivery-stage docs sync after API/E2E Round 2 real browser/full-stack provider-backed validation passed and code-review Round 5 cleared VR-001, followed by the user-requested 2026-06-02 Electron build refresh.
 - Bootstrap base reference: `origin/personal@b8e24ed9` (recorded in investigation notes; task branch created 2026-06-01).
-- Integrated base reference used for docs sync: `origin/personal@1678dc82`; already merged into the ticket branch by merge commit `a0d0c654`, reconfirmed after `git fetch origin --prune` on 2026-06-02.
-- Post-integration verification reference: ticket branch `codex/compaction-frontier-llm-rendering` at checkpoint `8fd8bf87` (`chore(ticket): checkpoint browser validation pass state`) plus delivery docs edits; delivery checks passed before docs edits and `git diff --check` passed after docs edits.
+- Initial integrated base reference used for docs sync: `origin/personal@1678dc82`; merged into the ticket branch by merge commit `a0d0c654` and checked before docs edits.
+- Latest integrated base reference after the user noted `origin/personal` had advanced: `origin/personal@0d82530f`; merged into the ticket branch by merge commit `8efd4967` with no conflicts.
+- Post-integration verification reference: ticket branch `codex/compaction-frontier-llm-rendering` at merge commit `8efd4967`; post-refresh `autobyteus-ts` build, focused provider/runtime suite, README-directed Electron macOS build, and `hdiutil verify` checks passed.
 
 ## Why Docs Were Updated
 
@@ -53,12 +54,13 @@
 
 - Docs impact: `N/A — docs updated`
 - Rationale: Long-lived memory design docs required updates.
+- Follow-up after latest `origin/personal@0d82530f` refresh: no additional compaction/memory documentation changes were required beyond the already-updated memory design docs. The newly integrated upstream changes were unrelated to this ticket's working-context compaction behavior.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed after latest-base integration refresh and successful integrated-state checks. Delivery remains in the required user-verification hold; ticket archival/finalization/push/merge/release/deployment are not performed before explicit user verification.
+- Notes: Docs sync completed after latest-base integration refresh and successful integrated-state checks, then was rechecked after the user-requested `origin/personal@0d82530f` merge and Electron build. Delivery remains in the required user-verification hold; ticket archival/finalization/push/merge/release/deployment are not performed before explicit user verification.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

@@ -6,6 +6,11 @@ import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
   value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
 
+export const isCenterFeedCompactionPhase = (
+  phase: CompactionStatusPhase | null | undefined,
+): boolean =>
+  phase === 'started' || phase === 'completed' || phase === 'failed';
+
 const normalizeText = (value: unknown): string | null =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
 
@@ -209,6 +214,7 @@ export const projectCompactionStatusToActivity = (
   const boundaryKey = normalizeText(payload.boundary_key);
   const providerEventId = normalizeText(payload.provider_event_id);
   const providerSessionId = getProviderSessionId(payload);
+  const centerTimelineTimestamp = isCenterFeedCompactionPhase(phase) ? now : null;
 
   const status: AgentCompactionStatus = {
     activityId,
@@ -234,6 +240,7 @@ export const projectCompactionStatusToActivity = (
     ...(providerEventId ? { providerEventId } : {}),
     ...(providerSessionId ? { providerSessionId } : {}),
     errorMessage,
+    centerTimelineTimestamp,
   };
 
   return {
@@ -268,6 +275,7 @@ export const projectCompactionStatusToActivity = (
       errorMessage,
       timestamp: now,
       updatedAt: now,
+      centerTimelineTimestamp,
     },
   };
 };

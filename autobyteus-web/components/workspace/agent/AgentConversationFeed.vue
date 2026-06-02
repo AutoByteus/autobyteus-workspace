@@ -115,6 +115,10 @@ const toTimestampMs = (value: Date | string | number | null | undefined): number
   return 0;
 };
 
+const isCenterFeedCompactionActivity = (activity: CompactionActivity): boolean =>
+  Boolean(activity.centerTimelineTimestamp) &&
+  (activity.phase === 'started' || activity.phase === 'completed' || activity.phase === 'failed');
+
 const feedItems = computed<FeedItem[]>(() => {
   const messageItems: MessageFeedItem[] = props.conversation.messages.map((message, index) => ({
     kind: 'message',
@@ -125,13 +129,15 @@ const feedItems = computed<FeedItem[]>(() => {
     originalOrder: index * 2,
   }));
 
-  const compactionItems: CompactionFeedItem[] = props.compactionActivities.map((activity, index) => ({
-    kind: 'compaction',
-    key: `compaction-${activity.activityId}`,
-    activity,
-    timestampMs: toTimestampMs(activity.timestamp),
-    originalOrder: (props.conversation.messages.length + index) * 2 + 1,
-  }));
+  const compactionItems: CompactionFeedItem[] = props.compactionActivities
+    .filter(isCenterFeedCompactionActivity)
+    .map((activity, index) => ({
+      kind: 'compaction',
+      key: `compaction-${activity.activityId}`,
+      activity,
+      timestampMs: toTimestampMs(activity.centerTimelineTimestamp),
+      originalOrder: (props.conversation.messages.length + index) * 2 + 1,
+    }));
 
   return [...messageItems, ...compactionItems].sort((left, right) => {
     const timeDelta = left.timestampMs - right.timestampMs;

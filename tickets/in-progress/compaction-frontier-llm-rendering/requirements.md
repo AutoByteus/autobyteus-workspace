@@ -55,7 +55,7 @@ Medium
 - Changing the compactor agent output schema.
 - Removing internal trace metadata from persisted memory/logs.
 - Full provider renderer redesign unrelated to compaction frontier rendering.
-- UI copy/status changes for queued compaction, unless separately scoped.
+- Historical/reopen native compaction cards in the center feed are out of scope for this change; live center-feed compaction execution feedback is now separately scoped in the UI addendum below.
 
 
 ## Case Taxonomy
@@ -197,4 +197,49 @@ Compaction behavior must be defined by settlement/consumption state, not by assu
 
 ## Approval Status
 
-Approved for design by user direction on 2026-06-02. Architecture handoff still pending user confirmation after design review summary.
+Approved/refined for design by user direction on 2026-06-02. UI compaction feed behavior was additionally clarified and incorporated on 2026-06-02.
+
+
+## UI Compaction Feed Addendum (2026-06-02)
+
+The user clarified a post-implementation UI behavior requirement after running the Electron app: compaction lifecycle cards in the center agent monitor should not appear as queued/internal rows interleaved awkwardly with streamed tool calls. The history/reopen view does not need native compaction cards; it only needs complete ordered replay of user/assistant/tool raw traces, including traces archived by compaction.
+
+### Additional In-Scope Use Case
+
+- UC-006: During a live run, the center agent monitor gives natural feedback when actual memory compaction is executing, without showing internal queued/requested state before pending tool results; after restart/reopen, historical rendering focuses on the actual work trace rather than compaction lifecycle cards.
+
+### Additional Functional Requirements
+
+- REQ-026: The right-side Activity feed must keep compaction lifecycle visibility as a single logical row/card per compaction operation, keyed by stable `compaction_operation_id` when available, updating `requested -> started -> completed/failed` rather than appending duplicate lifecycle rows for the same operation.
+- REQ-027: The center live agent monitor must not render `requested`/queued compaction as an in-feed card. Queued/requested compaction is internal scheduling state and must not appear between a streamed assistant tool call and its pending tool result.
+- REQ-028: The center live agent monitor may render a compaction card only for execution-phase statuses: `started`, terminal `completed` when `started` was not observed, or `failed` when execution failed or blocks continuation.
+- REQ-029: For tool-call responses that trigger compaction, the center live monitor must naturally order display as assistant/tool-call segment(s), tool-result segment(s), compaction execution card, then post-compaction assistant continuation.
+- REQ-030: The frontend center-feed compaction boundary must split the current visual AI message only at the first execution-phase compaction status, never at queued/requested; this split is display-only and must not alter backend turns, working context, LLM messages, raw traces, or tool-call/result protocol.
+- REQ-031: Historical/reopen rendering is not required to show native compaction cards in the center feed. It must instead render user, assistant, reasoning, tool-call, and tool-result history from the complete raw-trace corpus, including active and archived traces, without dropping compacted history.
+
+### Additional Acceptance Criteria
+
+- AC-021: A live tool-call run that emits compaction `requested` before tool execution does not show a queued compaction card in the center feed, while the Activity feed shows or updates one lifecycle row.
+- AC-022: When the same operation emits `started` and then `completed`, the Activity feed still contains one compaction row for that operation, and the center feed shows one execution card updated to the latest execution/terminal status.
+- AC-023: A live tool-call run renders tool call/result content above the center compaction execution card and renders post-compaction assistant continuation below it.
+- AC-024: Marking the current frontend AI visual message complete at compaction execution causes later streamed assistant/tool segments to create a new visual block, without changing working-context or raw-trace persistence.
+- AC-025: Reopening a run after native compaction renders the actual user/assistant/tool history from active plus archived raw traces; absence of native compaction cards in the center historical replay is acceptable.
+- AC-026: Tests or static assertions verify center-feed compaction rows use execution/timeline timing, not the original queued/request timestamp, for placement.
+
+### Additional Requirement-To-Use-Case Coverage
+
+- REQ-026 -> UC-006
+- REQ-027 -> UC-006
+- REQ-028 -> UC-006
+- REQ-029 -> UC-006
+- REQ-030 -> UC-006
+- REQ-031 -> UC-006
+
+### Additional Acceptance-Criteria-To-Scenario Intent
+
+- AC-021 validates that internal queued compaction does not pollute the center live monitor.
+- AC-022 validates one Activity lifecycle row and one center execution row per operation.
+- AC-023 validates natural live ordering around tool results and compaction execution.
+- AC-024 validates the display-only nature of the AI visual-block split.
+- AC-025 validates historical replay correctness without requiring historical compaction cards.
+- AC-026 validates the timestamp distinction between Activity lifecycle and center timeline placement.
