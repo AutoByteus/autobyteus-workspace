@@ -138,3 +138,14 @@ Delivery is ready for user verification on the latest integrated state. Do not a
 - User requested worktree cleanup and main repo `personal` branch update.
 - Ticket artifacts moved to `tickets/done/runtime-tool-mcp-unification-analysis/` before merging the ticket branch into `personal`.
 - Main repo `personal` Electron rebuild evidence will be recorded after the branch update/build completes.
+
+## Main Repo Personal Electron Build
+
+- Updated (UTC): `2026-06-02T16:45:00Z`.
+- Main repo `personal` branch was updated by merging the finalized ticket branch at `9667d37671286d7f7ea4f24c5bf4b6979139a492`.
+- Electron was rebuilt from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `personal` using README command `pnpm build:electron:mac`.
+- Artifact flavor: `AutoByteus_personal`.
+- Current DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.dmg`.
+- DMG SHA-256: `963198d339cb0a50614746454f4c4451582b6f1e755af24f88b4f27792386f0e`.
+- Evidence summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/main-personal-build-20260602/electron-build-final-summary-main-personal-1.3.41.md`.
+- No remote push, release upload, deployment, or tag was performed in this step.

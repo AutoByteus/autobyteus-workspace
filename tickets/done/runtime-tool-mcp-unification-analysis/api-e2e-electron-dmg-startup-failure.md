@@ -210,3 +210,20 @@ Evidence:
 - DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-30/electron-dmg-notarize-staple-1.3.41-after-origin-personal-ade1afde.log`
 - Built app verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-30/electron-signing-notarization-verification-1.3.41-after-origin-personal-ade1afde.log`
 - Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-30/electron-dmg-mounted-final-verification-1.3.41-after-origin-personal-ade1afde.log`
+
+## Main Repo Personal Build Verification
+
+After ticket finalization and worktree cleanup, delivery rebuilt Electron from the main repo `personal` branch. The final main-personal artifact is:
+
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.dmg`
+
+Pass conditions met:
+
+- `codesign --verify --deep --strict --verbose=2` passed for the built app and the app inside the mounted DMG.
+- `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
+- `xcrun stapler validate` passed for the app and DMG.
+- `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
+
+Evidence summary:
+
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/main-personal-build-20260602/electron-build-final-summary-main-personal-1.3.41.md`
