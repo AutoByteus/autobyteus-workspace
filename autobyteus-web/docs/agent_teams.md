@@ -51,10 +51,12 @@ that child to a canonical team-local team id. Shared nested teams stay
 `refScope: 'APPLICATION_OWNED'` when the containing team belongs to an
 application bundle. Missing nested-team scope is invalid in current team config.
 
-`defaultLaunchConfig.llmConfig` carries schema-driven runtime/model parameters
-for the selected model. This includes thinking settings such as
+`defaultLaunchConfig.llmConfig` carries explicit schema-driven runtime/model
+parameters for the selected model. This includes thinking settings such as
 `reasoning_effort` and runtime-specific non-thinking settings such as Codex
 `service_tier: "fast"` for models whose catalog schema exposes **Fast mode**.
+Launch-time UI may display valid schema defaults as effective values, but those
+defaults are not stored in `llmConfig` merely because the form renders them.
 
 ## Ownership Behavior
 
@@ -108,9 +110,16 @@ overrides. Each leaf member can:
 - carry an explicit member `llmConfig` (including explicit `null`) only when that row truly owns the divergence.
 
 Member `llmConfig` values use the same schema-driven shape as the team default.
-For Codex members, `service_tier: "fast"` is valid only while the selected or
-inherited Codex model schema exposes **Fast mode**; stale values are cleared when
-the owning runtime/model context changes.
+The team-global model config initializes **Advanced** from effective **Thinking**
+state: ON opens by default, while OFF or unavailable starts collapsed. Compact
+member override rows stay collapsed until the user expands or explicitly
+configures that member. Inherited member controls may display effective schema
+defaults such as a reasoning effort value, but display-only defaults do not
+create member overrides. Explicit member-local runtime/model selections that
+resolve to an effective-ON model may open only that member's **Advanced**
+controls. For Codex members, `service_tier: "fast"` is valid only while the
+selected or inherited Codex model schema exposes **Fast mode**; stale values are
+cleared when the owning runtime/model context changes.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 

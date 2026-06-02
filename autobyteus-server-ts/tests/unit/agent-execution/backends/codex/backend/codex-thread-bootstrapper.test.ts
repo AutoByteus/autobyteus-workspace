@@ -7,7 +7,10 @@ import { DefaultCodexThreadBootstrapStrategy } from "../../../../../../src/agent
 import {
   CodexThreadBootstrapper,
   normalizeSandboxMode,
+  resolveEffectiveCodexSandboxMode,
 } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+import { CodexAgentRunContext } from "../../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-context.js";
+import { CodexApprovalPolicy } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import {
   BROWSER_BRIDGE_BASE_URL_ENV,
   BROWSER_BRIDGE_TOKEN_ENV,
@@ -25,6 +28,7 @@ const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
+  autoExecuteTools?: boolean;
 } = {}) =>
   new AgentRunContext({
     runId: "run-1",
@@ -32,12 +36,43 @@ const createRunContext = (input: {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       agentDefinitionId: "agent-def",
       llmModelIdentifier: "gpt-test",
-      autoExecuteTools: false,
+      autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     }),
     runtimeContext: null,
+  });
+
+const createRestoreRunContext = (input: {
+  llmConfig?: Record<string, unknown> | null;
+  autoExecuteTools?: boolean;
+} = {}) =>
+  new AgentRunContext({
+    runId: "run-restore",
+    config: new AgentRunConfig({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      agentDefinitionId: "agent-def",
+      llmModelIdentifier: "gpt-test",
+      autoExecuteTools: input.autoExecuteTools ?? false,
+      workspaceId: "workspace-id",
+      llmConfig: input.llmConfig ?? null,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    }),
+    runtimeContext: new CodexAgentRunContext({
+      codexThreadConfig: {
+        model: "gpt-test",
+        workingDirectory: WORKING_DIRECTORY,
+        reasoningEffort: "medium",
+        serviceTier: null,
+        approvalPolicy: CodexApprovalPolicy.ON_REQUEST,
+        sandbox: "workspace-write",
+        baseInstructions: null,
+        developerInstructions: null,
+        dynamicTools: null,
+      },
+      threadId: "thread-existing",
+    }),
   });
 
 const createSkill = (name: string) =>
@@ -154,6 +189,40 @@ describe("CodexThreadBootstrapper", () => {
     );
 
     warnSpy.mockRestore();
+  });
+
+  it("uses danger-full-access as the effective Codex sandbox for auto-approved runs", async () => {
+    process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+
+    expect(resolveEffectiveCodexSandboxMode(false)).toBe("workspace-write");
+    expect(resolveEffectiveCodexSandboxMode(true)).toBe("danger-full-access");
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+    const runContext = await bootstrapper.bootstrapForCreate(
+      createRunContext({ autoExecuteTools: true }),
+    );
+
+    expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
+    expect(runContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
+  });
+
+  it("keeps danger-full-access as the effective Codex sandbox when restoring auto-approved runs", async () => {
+    process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+    const runContext = await bootstrapper.bootstrapForRestore(
+      createRestoreRunContext({ autoExecuteTools: true }),
+    );
+
+    expect(runContext.runtimeContext.threadId).toBe("thread-existing");
+    expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
+    expect(runContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
   });
 
   it("filters out configured skills that Codex already discovers by name", async () => {

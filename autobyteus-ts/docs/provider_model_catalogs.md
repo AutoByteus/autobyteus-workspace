@@ -32,6 +32,44 @@ or changing provider-specific request-shaping behavior.
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
+## Frontend Schema-Default Display And Disclosure Contract
+
+Runtime/model configuration UI is schema-driven. The frontend uses explicit
+`llmConfig` first, then a valid schema default, to decide displayed control
+values and the top-level **Thinking** state. Displaying a schema default does not
+materialize it into `llmConfig`; only an explicit user action or an existing
+apply-defaults flow may write a config value.
+
+Editable primary/global agent and team launch configuration initializes
+**Advanced** from effective **Thinking** state:
+
+- effective **Thinking** ON -> **Advanced** opens by default;
+- effective **Thinking** OFF or unavailable -> **Advanced** starts collapsed but
+  remains openable; and
+- toggling a supported **Thinking** control ON opens **Advanced** automatically.
+
+Compact member override rows may remain collapsed for density. They should sync
+inherited effective values/state with the global config, but not blindly inherit
+the global expanded/collapsed disclosure state. Explicit member-local runtime or
+model selections that resolve to an effective-ON model may open that member's
+**Advanced** controls; displaying inherited/default values must not create member
+`llmConfig` or `memberOverrides` entries.
+
+Read-only historical runs are different: if backend metadata does not include a
+recorded `llmConfig`, the frontend may show an explicit not-recorded state and
+must not infer current catalog defaults as historical truth.
+
+The **Thinking** row must reflect schema-backed provider semantics rather than
+model/display names. Supported ON/OFF gates include `thinking_enabled`,
+`thinking_type`, `include_thoughts`, `thinking_level`, `reasoning_summary`, and
+`reasoning_effort` according to the provider schema shape. If a schema advertises
+reasoning enabled by default but no supported off value, the UI may show an ON
+read-only/non-disable-capable state, but it must not invent values such as
+`reasoning_effort: "none"`. Catalog rows whose names contain `thinking` or
+`reasoning` but expose no schema/default metadata must not get a guessed
+**Thinking** state; provider or catalog owners should add machine-readable
+metadata if that state should be visible.
+
 ## Provider-Specific Runtime Notes
 
 ### Anthropic Claude Opus 4.7
@@ -69,12 +107,14 @@ configuration keys:
 
 The schema must not expose the provider-native top-level `thinking` object to
 UI/catalog consumers. In the frontend, the basic `Thinking` toggle owns visible
-DeepSeek enable/disable state; Advanced renders `reasoning_effort`, not a second
-`Thinking Type` control. `DeepSeekLLM` owns the request-shape conversion: it
-removes the flat `thinking_type` key, drops any stale raw top-level `thinking`
-value, and sends the provider switch as `extra_body.thinking.type`. When
-`thinking_type` is `disabled`, the adapter omits `reasoning_effort` instead of
-sending an OpenAI-style `reasoning_effort: "none"`.
+DeepSeek enable/disable state and reads the schema default, so default
+`thinking_type: "enabled"` displays as **Thinking** on and opens **Advanced**.
+Advanced renders `reasoning_effort` with its effective schema default (normally
+`high`), not a second `Thinking Type` control. `DeepSeekLLM` owns the
+request-shape conversion: it removes the flat `thinking_type` key, drops any
+stale raw top-level `thinking` value, and sends the provider switch as
+`extra_body.thinking.type`. When `thinking_type` is `disabled`, the adapter omits
+`reasoning_effort` instead of sending an OpenAI-style `reasoning_effort: "none"`.
 
 No new DeepSeek transport path is required for these models.
 

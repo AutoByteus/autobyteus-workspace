@@ -327,6 +327,82 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("maps local dynamic tool approval requests into TOOL_APPROVAL_REQUESTED with arguments", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+      params: {
+        invocation_id: "call_send_message_approval",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "code_reviewer",
+          content: "ready for review",
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_send_message_approval",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "code_reviewer",
+          content: "ready for review",
+        },
+      },
+    });
+  });
+
+  it("maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+      params: {
+        invocation_id: "perm-request-1",
+        tool_name: "request_permissions",
+        arguments: {
+          permissions: {
+            fileSystem: {
+              read: ["/tmp/codex-validation"],
+            },
+            network: {
+              enabled: true,
+            },
+          },
+          cwd: "/tmp/codex-validation",
+          reason: "Need validation access",
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "perm-request-1",
+        tool_name: "request_permissions",
+        arguments: {
+          permissions: {
+            fileSystem: {
+              read: ["/tmp/codex-validation"],
+            },
+            network: {
+              enabled: true,
+            },
+          },
+          cwd: "/tmp/codex-validation",
+          reason: "Need validation access",
+        },
+      },
+    });
+  });
+
   it("fans out mcpToolCall starts into tool_call segment and lifecycle start", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

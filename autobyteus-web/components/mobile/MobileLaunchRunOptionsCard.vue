@@ -4,7 +4,7 @@
       <div class="min-w-0">
         <p class="text-sm font-bold text-blue-950">Auto approve tools</p>
         <p class="mt-1 text-xs leading-relaxed text-slate-500">
-          Allow tool calls for this run to execute without asking each time. Off by default.
+          High-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.
         </p>
       </div>
       <button

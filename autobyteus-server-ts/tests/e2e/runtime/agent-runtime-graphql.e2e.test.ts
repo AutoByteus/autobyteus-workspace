@@ -1431,87 +1431,106 @@ const defineRuntimeSuite = (input: {
 
     if (input.runtimeKind === "codex_app_server") {
       it("auto-executes Codex tool calls over websocket without approval requests", async () => {
-        const workspaceRootPath = await mkdtemp(
-          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-autoexec-workspace-`),
-        );
-        createdWorkspaceRoots.add(workspaceRootPath);
-        const llmModelIdentifier = await fetchModelIdentifier();
-        const agentDefinitionId = await createAgentDefinition([
-          "read_file",
-          "write_file",
-          "edit_file",
-          "run_bash",
-        ]);
-        const runId = await createAgentRun({
-          agentDefinitionId,
-          llmModelIdentifier,
-          workspaceRootPath,
-          autoExecuteTools: true,
-        });
-
-        const { app, socket, messages } = await openAgentSocket(runId);
-        const targetAbsolutePath = path.join(
-          workspaceRootPath,
-          `api-autoexec-${randomUUID().replace(/-/g, "_")}.txt`,
-        );
-        const expectedContent = `AUTOEXEC_OK_${randomUUID().replace(/-/g, "_")}`;
-        const toolRequestContent =
-          `Use the terminal tool to execute this command exactly once:\n` +
-          `printf '${escapeForSingleQuotedShell(expectedContent)}\\n' > '${escapeForSingleQuotedShell(targetAbsolutePath)}'\n` +
-          "Do not ask for approval. Do not simulate execution.";
-
+        const originalCodexSandbox = process.env.CODEX_APP_SERVER_SANDBOX;
+        process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
         try {
-          const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
-                content: toolRequestContent,
-              },
-            }),
+          const workspaceRootPath = await mkdtemp(
+            path.join(os.tmpdir(), `${input.runtimeKind}-runtime-autoexec-workspace-`),
           );
+          createdWorkspaceRoots.add(workspaceRootPath);
+          const llmModelIdentifier = await fetchModelIdentifier();
+          const agentDefinitionId = await createAgentDefinition([
+            "read_file",
+            "write_file",
+            "edit_file",
+            "run_bash",
+          ]);
+          const runId = await createAgentRun({
+            agentDefinitionId,
+            llmModelIdentifier,
+            workspaceRootPath,
+            autoExecuteTools: true,
+          });
 
-          const startedMessage = await waitForMessageAfter(
-            messages,
-            startIndex,
-            (message) => message.type === "TOOL_EXECUTION_STARTED",
-            "TOOL_EXECUTION_STARTED",
+          const { app, socket, messages } = await openAgentSocket(runId);
+          const outsideWorkspaceTargetDirectory =
+            process.env.CODEX_E2E_FULL_ACCESS_TARGET_DIR?.trim() ||
+            path.join(os.homedir(), "Downloads");
+          await mkdir(outsideWorkspaceTargetDirectory, { recursive: true });
+          const targetAbsolutePath = path.join(
+            outsideWorkspaceTargetDirectory,
+            `api-autoexec-outside-workspace-${randomUUID().replace(/-/g, "_")}.txt`,
           );
-          expect(startedMessage.payload.tool_name).toBe("run_bash");
+          expect(path.relative(workspaceRootPath, targetAbsolutePath).startsWith("..")).toBe(true);
+          const expectedContent = `AUTOEXEC_OK_${randomUUID().replace(/-/g, "_")}`;
+          const toolRequestContent =
+            `Use the terminal tool to execute this command exactly once:\n` +
+            `printf '${escapeForSingleQuotedShell(expectedContent)}\\n' > '${escapeForSingleQuotedShell(targetAbsolutePath)}'\n` +
+            "Do not ask for approval. Do not simulate execution.";
 
-          const startedInvocationId = resolveInvocationId(startedMessage.payload);
-          await waitForMessageAfter(
-            messages,
-            startIndex,
-            (message) =>
-              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-              matchesInvocationId(message.payload, startedInvocationId),
-            "TOOL_EXECUTION_SUCCEEDED",
-          );
-          await waitForMessageAfter(
-            messages,
-            startIndex,
-            (message) =>
-              message.type === "AGENT_STATUS" && message.payload.status === "idle",
-            "AGENT_STATUS IDLE after auto-executed tool",
-          );
-          await waitForMessageAfter(
-            messages,
-            startIndex,
-            (message) => isFinalAssistantMessage(message),
-            "final assistant message",
-          );
+          try {
+            const startIndex = messages.length;
+            const messageId = `codex-autoexec-${randomUUID()}`;
+            socket.send(
+              JSON.stringify({
+                type: "SEND_MESSAGE",
+                payload: {
+                  message_id: messageId,
+                  dedupe_key: `agent_run_input:e2e:${messageId}`,
+                  content: toolRequestContent,
+                },
+              }),
+            );
 
-          expect(
-            messages
-              .slice(startIndex)
-              .some((message) => message.type === "TOOL_APPROVAL_REQUESTED"),
-          ).toBe(false);
-          expect(await readFile(targetAbsolutePath, "utf-8")).toContain(expectedContent);
+            const startedMessage = await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) => message.type === "TOOL_EXECUTION_STARTED",
+              "TOOL_EXECUTION_STARTED",
+            );
+            expect(startedMessage.payload.tool_name).toBe("run_bash");
+
+            const startedInvocationId = resolveInvocationId(startedMessage.payload);
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+                matchesInvocationId(message.payload, startedInvocationId),
+              "TOOL_EXECUTION_SUCCEEDED",
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.status === "idle",
+              "AGENT_STATUS IDLE after auto-executed tool",
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) => isFinalAssistantMessage(message),
+              "final assistant message",
+            );
+
+            expect(
+              messages
+                .slice(startIndex)
+                .some((message) => message.type === "TOOL_APPROVAL_REQUESTED"),
+            ).toBe(false);
+            expect(await readFile(targetAbsolutePath, "utf-8")).toContain(expectedContent);
+          } finally {
+            socket.close();
+            await app.close();
+            await rm(targetAbsolutePath, { force: true }).catch(() => undefined);
+            await terminateAgentRun(runId).catch(() => undefined);
+          }
         } finally {
-          socket.close();
-          await app.close();
-          await terminateAgentRun(runId).catch(() => undefined);
+          if (typeof originalCodexSandbox === "string") {
+            process.env.CODEX_APP_SERVER_SANDBOX = originalCodexSandbox;
+          } else {
+            delete process.env.CODEX_APP_SERVER_SANDBOX;
+          }
         }
       }, 180_000);
 

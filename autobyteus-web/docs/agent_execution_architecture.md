@@ -283,13 +283,32 @@ not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
 
-The model-config surface is schema-driven, not thinking-only. Thinking controls
-such as `reasoning_effort` use the basic/advanced thinking presentation when the
-schema marks them as supported, while non-thinking runtime/model parameters
-render through the same advanced schema component. For Codex, a fast-capable
-model can therefore expose `service_tier` with the user-facing label **Fast
-mode** beside reasoning settings, and a non-thinking schema can still render its
-parameters directly.
+The model-config surface is schema-driven, not thinking-only. It renders
+explicit `llmConfig` values first and valid schema defaults second; showing a
+default does not write that value into the launch buffer. The top-level
+**Thinking** state is computed from provider schema keys such as
+`reasoning_effort`, `thinking_enabled`, `thinking_type`, `thinking_level`, and
+`include_thoughts`, not from model/display names. If a schema-backed model has
+reasoning enabled by default but no supported off value, the UI can show
+**Thinking** on in a non-disable-capable state instead of emitting an unsupported
+off payload.
+
+Editable primary/global agent and team launch config initializes **Advanced**
+from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
+by default so users can see defaults such as Codex `reasoning_effort: "medium"`
+or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
+unavailable leaves **Advanced** collapsed initially, but still openable.
+Toggling a supported **Thinking** control ON opens **Advanced** automatically;
+toggling OFF after inspection does not force-collapse the section.
+
+Compact member override rows may stay collapsed to avoid expanding large team
+forms. They still display inherited/effective defaults when expanded, and
+explicit member-local runtime or model selections that resolve to an effective-ON
+model can open only that member's **Advanced** controls. Display-only inherited
+or schema-default values must not create member overrides. Non-thinking
+runtime/model parameters render through the same advanced schema component; for
+Codex, a fast-capable model can therefore expose `service_tier` with the
+user-facing label **Fast mode** beside reasoning settings.
 
 ### New Run From Existing Run
 

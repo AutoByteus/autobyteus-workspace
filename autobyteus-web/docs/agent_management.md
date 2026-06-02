@@ -39,10 +39,12 @@ The frontend agent definition shape now includes:
   - `defaultLaunchConfig.runtimeKind`
   - `defaultLaunchConfig.llmConfig`
 
-`defaultLaunchConfig.llmConfig` stores schema-driven runtime/model parameters
-for the selected model. This includes thinking settings such as
+`defaultLaunchConfig.llmConfig` stores explicit schema-driven runtime/model
+parameters for the selected model. This includes thinking settings such as
 `reasoning_effort` and runtime-specific non-thinking settings such as Codex
 `service_tier: "fast"` for models whose catalog schema exposes **Fast mode**.
+Launch-time UI may display valid schema defaults as effective values, but those
+defaults are not stored in `llmConfig` merely because the form renders them.
 
 ## Ownership Behavior
 

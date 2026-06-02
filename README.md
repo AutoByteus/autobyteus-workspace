@@ -232,6 +232,14 @@ runtime/model config UI exposes **Fast mode** and persists it as
 `llmConfig.service_tier = "fast"`. Reasoning effort remains a separate setting
 such as `llmConfig.reasoning_effort = "high"`.
 
+The launch UI displays valid schema defaults as effective values without writing
+them into `llmConfig`. For example, a Codex model whose catalog default is
+`reasoning_effort = "medium"` shows **Thinking** on, opens **Advanced** by
+default, and displays `Reasoning Effort = medium` while the launch config can
+remain unset. If a Codex schema does not advertise an off/`none` value, the UI
+keeps that enabled state read-only instead of emitting an unsupported disable
+payload.
+
 Fast mode applies to new or restored Codex sessions and subsequent turns through
 the Codex App Server `serviceTier` request field. Leaving the control at
 Default/off omits the setting and keeps Codex's default service tier.
@@ -250,6 +258,11 @@ headless runs.
   - Default: `workspace-write`
   - UI and server-setting changes apply to new/future Codex sessions, not already-active sessions.
   - `danger-full-access` disables filesystem sandboxing; use only for trusted tasks and environments.
+  - Codex run launch `autoExecuteTools=true` is a separate high-trust per-run
+    policy. For that run it automatically approves tool calls and Codex
+    access/permission requests, and the backend starts/resumes Codex with an
+    effective `danger-full-access` sandbox even if the saved full-access setting
+    is off. Leave auto-approve off when you want visible approval prompts.
 - Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
   - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
   - Default: `default`
