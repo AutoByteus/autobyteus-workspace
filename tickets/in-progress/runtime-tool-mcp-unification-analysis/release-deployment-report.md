@@ -109,3 +109,14 @@ Not started pending explicit user verification:
 ## Final Status
 
 Delivery is ready for user verification on the latest integrated state. Do not archive, push, merge into `personal`, release, deploy, tag, or clean up until the user explicitly confirms completion/verification.
+
+## Round 29 Rebuild / Release Artifact Update
+
+- Updated (UTC): `2026-06-02T10:03:00Z`.
+- Final integrated ticket HEAD: `52c8c07dd0a6f1f9e493aefdcfecbc9c8fd074fe`.
+- Latest tracked base: `origin/personal` `269fdc5671352327b02c2d0b45543fab8a8810c2`.
+- Current local Electron release artifact version: `1.3.41`.
+- Current DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg`.
+- DMG SHA-256: `37870aa440d914fe8bbf4304c72799d73edd1b7724ded6ccfe7a1f8ae21b50d1`.
+- Current Electron evidence summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-build-final-summary-1.3.41.md`.
+- Published artifacts: none. This is still a local verified artifact for user inspection; no release upload, deployment, tag, final push, or target-branch merge has been performed.

@@ -118,3 +118,16 @@ Awaiting explicit user verification before any of the following:
 - Electron DMG startup failure and delivery resolution: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-electron-dmg-startup-failure.md`
 - Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`
 - Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/release-deployment-report.md`
+
+## Round 29 User-Requested Latest-Base Electron Rebuild
+
+- Updated (UTC): `2026-06-02T10:03:00Z`.
+- Final integrated ticket HEAD after the latest `origin/personal` refresh: `52c8c07dd0a6f1f9e493aefdcfecbc9c8fd074fe`.
+- Latest tracked base: `origin/personal` `269fdc5671352327b02c2d0b45543fab8a8810c2`.
+- Package version after latest base: `1.3.41`.
+- README command used: `pnpm build:electron:mac`.
+- Current DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg`.
+- DMG SHA-256: `37870aa440d914fe8bbf4304c72799d73edd1b7724ded6ccfe7a1f8ae21b50d1`.
+- Build/verification summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-build-final-summary-1.3.41.md`.
+- The app and DMG are signed, notarized, and stapled. Built app and mounted-DMG app pass `codesign --verify --deep --strict --verbose=2` and `spctl --assess --type execute --verbose=4`; the DMG passes `spctl --assess --type open --context context:primary-signature --verbose=4`.
+- Repository finalization, push, merge to `personal`, ticket archival, release/deployment, and cleanup remain on hold pending explicit user verification.

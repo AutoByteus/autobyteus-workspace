@@ -164,3 +164,26 @@ Pass conditions met for the current 1.3.40 artifact:
 - `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
 - `xcrun stapler validate` passed for the app and DMG.
 - `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
+
+## Post-Latest-Base Delivery Rebuild (1.3.41)
+
+After the user requested another remote-base check and Electron rebuild on 2026-06-02, delivery found `origin/personal` had advanced to release version `1.3.41`, merged the latest base into the ticket branch, reran the README macOS Electron build, notarized/stapled the DMG, and verified the built app and app inside the mounted DMG.
+
+Final current artifact:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg`
+
+Pass conditions met for the current 1.3.41 artifact:
+
+- `codesign --verify --deep --strict --verbose=2` passed for the built app and the app inside the mounted DMG.
+- `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
+- `xcrun stapler validate` passed for the app and DMG.
+- `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
+
+Evidence:
+
+- Final summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-build-final-summary-1.3.41.md`
+- Successful build retry: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-rebuild-retry-after-hdiutil-cleanup-1.3.41.log`
+- DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-notarize-staple-1.3.41.log`
+- Built app verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-signing-notarization-verification-final-1.3.41.log`
+- Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-mounted-final-verification-1.3.41.log`
