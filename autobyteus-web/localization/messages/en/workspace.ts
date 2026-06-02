@@ -15,6 +15,10 @@ const messages = {
     "New Team Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "Configuration",
+  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
+    "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
+    "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":

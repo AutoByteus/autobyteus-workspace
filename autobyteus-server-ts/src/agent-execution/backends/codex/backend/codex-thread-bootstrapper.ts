@@ -119,6 +119,13 @@ export const normalizeSandboxMode = (): CodexSandboxMode => {
   return sandbox;
 };
 
+const AUTO_APPROVED_CODEX_SANDBOX_MODE: CodexSandboxMode = "danger-full-access";
+
+export const resolveEffectiveCodexSandboxMode = (
+  autoExecuteTools: boolean,
+): CodexSandboxMode =>
+  autoExecuteTools ? AUTO_APPROVED_CODEX_SANDBOX_MODE : normalizeSandboxMode();
+
 export const resolveDefaultModel = (): string | null => {
   const model = process.env.CODEX_APP_SERVER_MODEL;
   if (typeof model !== "string") {
@@ -267,7 +274,7 @@ export class CodexThreadBootstrapper {
       approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(
         input.agentRunConfig.autoExecuteTools,
       ),
-      sandbox: normalizeSandboxMode(),
+      sandbox: resolveEffectiveCodexSandboxMode(input.agentRunConfig.autoExecuteTools),
       baseInstructions: input.baseInstructions,
       developerInstructions: input.developerInstructions,
       dynamicTools: buildCodexDynamicToolSpecs(input.dynamicToolRegistrations),

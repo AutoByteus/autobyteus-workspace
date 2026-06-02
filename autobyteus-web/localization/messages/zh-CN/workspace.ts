@@ -15,6 +15,10 @@ const messages = {
     "新建团队配置",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "配置",
+  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
+    "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
+    "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
