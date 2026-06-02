@@ -4,13 +4,15 @@ import os from 'node:os';
 import path from 'node:path';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
-import { LLMUserMessage } from '../../../src/llm/user-message.js';
+import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
+import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
 import { CompactionResult } from '../../../src/memory/compaction/compaction-result.js';
 import { Compactor } from '../../../src/memory/compaction/compactor.js';
 import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
 import { Summarizer } from '../../../src/memory/compaction/summarizer.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 
@@ -22,32 +24,8 @@ class TestSummarizer extends Summarizer {
   }
 }
 
-const makeTrace = (options: {
-  turnId: string;
-  seq: number;
-  traceType: string;
-  content?: string;
-  toolName?: string;
-  toolCallId?: string;
-  toolArgs?: Record<string, unknown>;
-  toolResult?: unknown;
-}) =>
-  new RawTraceItem({
-    id: `rt_${options.turnId}_${options.seq}`,
-    ts: Date.now() / 1000,
-    turnId: options.turnId,
-    seq: options.seq,
-    traceType: options.traceType,
-    content: options.content ?? '',
-    sourceEvent: 'TestEvent',
-    toolName: options.toolName ?? null,
-    toolCallId: options.toolCallId ?? null,
-    toolArgs: options.toolArgs ?? null,
-    toolResult: options.toolResult ?? null
-  });
-
 describe('Memory compaction tool tail integration', () => {
-  it('includes tool tail in snapshot', async () => {
+  it('retains the live tool suffix as canonical messages without raw frontier text', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mem-compact-tail-'));
     try {
       const store = new FileMemoryStore(tempDir, 'agent_compact_tool_tail');
@@ -56,61 +34,57 @@ describe('Memory compaction tool tail integration', () => {
       const memoryManager = new MemoryManager({ store, compactionPolicy: policy, compactor });
 
       const oldTurn = memoryManager.startTurn();
-      store.add([
-        makeTrace({ turnId: oldTurn, seq: 1, traceType: 'user', content: 'old user' }),
-        makeTrace({ turnId: oldTurn, seq: 2, traceType: 'assistant', content: 'old assistant' })
-      ]);
+      memoryManager.appendWorkingContextUserMessage('old user', { turnId: oldTurn });
+      memoryManager.ingestAssistantResponse(new CompleteResponse({ content: 'old assistant' }), oldTurn, 'test');
+      const olderTurn = memoryManager.startTurn();
+      memoryManager.appendWorkingContextUserMessage('older user', { turnId: olderTurn });
+      memoryManager.ingestAssistantResponse(new CompleteResponse({ content: 'older assistant' }), olderTurn, 'test');
 
       const tailTurn = memoryManager.startTurn();
-      store.add([
-        makeTrace({ turnId: tailTurn, seq: 1, traceType: 'user', content: 'tail user' }),
-        makeTrace({
-          turnId: tailTurn,
-          seq: 2,
-          traceType: 'tool_call',
-          toolName: 'write_file',
-          toolCallId: 'call_1',
-          toolArgs: { path: 'x.txt' }
-        }),
-        makeTrace({
-          turnId: tailTurn,
-          seq: 3,
-          traceType: 'tool_result',
-          toolName: 'write_file',
-          toolCallId: 'call_1',
-          toolResult: 'ok'
-        }),
-        makeTrace({ turnId: tailTurn, seq: 4, traceType: 'assistant', content: 'tail assistant' }),
-        makeTrace({ turnId: tailTurn, seq: 5, traceType: 'tool_continuation', content: 'continue after tool' }),
-        makeTrace({ turnId: tailTurn, seq: 6, traceType: 'assistant', content: 'continuation ack' }),
-        makeTrace({
-          turnId: tailTurn,
-          seq: 7,
-          traceType: 'tool_call',
-          toolName: 'write_file',
-          toolCallId: 'call_2',
-          toolArgs: { path: 'y.txt' }
-        })
-      ]);
-
-      const currentTurn = tailTurn;
-      const currentUser = new LLMUserMessage({ content: 'Please respond with pong.' });
+      memoryManager.appendWorkingContextUserMessage('tail user', { turnId: tailTurn });
+      memoryManager.ingestAssistantToolResponse(
+        new CompleteResponse({ content: 'I will write a file.' }),
+        [new ToolInvocation('write_file', { path: 'x.txt' }, 'call_1', tailTurn)],
+        tailTurn,
+        'test'
+      );
+      memoryManager.ingestToolResults([
+        new ToolResultEvent('write_file', 'ok', 'call_1', undefined, { path: 'x.txt' }, tailTurn)
+      ], tailTurn);
+      memoryManager.ingestAssistantToolResponse(
+        new CompleteResponse({ content: 'I will write another file.' }),
+        [new ToolInvocation('write_file', { path: 'y.txt' }, 'call_2', tailTurn)],
+        tailTurn,
+        'test'
+      );
+      memoryManager.ingestToolResults([
+        new ToolResultEvent('write_file', 'ok 2', 'call_2', undefined, { path: 'y.txt' }, tailTurn)
+      ], tailTurn);
 
       const assembler = new LLMRequestAssembler(
         memoryManager,
         new OpenAIChatRenderer(),
         new PendingCompactionExecutor(memoryManager)
       );
-      memoryManager.requestCompaction();
+      memoryManager.requestCompaction(tailTurn);
 
-      const request = await assembler.prepareRequest(currentUser, currentTurn, 'System prompt');
+      const request = await assembler.prepareToolContinuationRequest(tailTurn, 'System prompt');
 
       expect(request.didCompact).toBe(true);
-      const snapshot = request.messages[1].content ?? '';
-      expect(snapshot).toContain('[RAW_FRONTIER]');
-      expect(snapshot).toContain('TOOL_CONTINUATION:');
-      expect(snapshot).toContain('TOOL_CALL:');
-      expect(snapshot).toContain('write_file');
+      const joinedText = request.messages.map((message) => message.content ?? '').join('\n');
+      expect(joinedText).not.toContain('[RAW_FRONTIER]');
+      expect(joinedText).not.toContain('[BLOCK');
+      expect(joinedText).not.toContain('turn_');
+
+      const latestAssistant = request.messages.at(-2);
+      const latestToolResult = request.messages.at(-1);
+      expect(latestAssistant?.tool_payload).toBeInstanceOf(ToolCallPayload);
+      expect(latestToolResult?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect((latestAssistant?.tool_payload as ToolCallPayload).toolCalls[0].id).toBe('call_2');
+      expect((latestToolResult?.tool_payload as ToolResultPayload).toolCallId).toBe('call_2');
+
+      expect(JSON.stringify(request.renderedPayload)).toContain('"tool_calls"');
+      expect(JSON.stringify(request.renderedPayload)).toContain('"tool_call_id":"call_2"');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

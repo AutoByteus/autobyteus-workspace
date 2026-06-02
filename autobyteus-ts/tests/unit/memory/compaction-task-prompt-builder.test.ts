@@ -46,7 +46,9 @@ describe('CompactionTaskPromptBuilder', () => {
     expect(prompt).not.toContain('"tags"');
     expect(prompt).not.toContain('"reference"');
     expect(prompt).toContain('[SETTLED_BLOCKS]');
-    expect(prompt).toContain('[BLOCK block_0001] turn=turn-1 kind=user');
+    expect(prompt).not.toContain('[BLOCK');
+    expect(prompt).not.toContain('turn=turn-1');
+    expect(prompt).not.toContain('(turn-1:1)');
     expect(prompt).toContain('User asked to preserve the agent-based compaction plan.');
   });
 

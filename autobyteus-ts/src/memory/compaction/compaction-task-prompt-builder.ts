@@ -23,15 +23,17 @@ export const COMPACTION_OUTPUT_CONTRACT = [
 const safeStringify = (value: unknown): string => formatToCleanString(value);
 
 const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): string => {
-  const prefix = `(${trace.turnId}:${trace.seq}) ${trace.traceType.toUpperCase()}:`;
-
   let line: string;
   if (trace.traceType === 'tool_call') {
-    line = `${prefix} ${safeStringify(trace.toolName ?? 'unknown_tool')} ${safeStringify(trace.toolArgs ?? {})}`;
+    line = `Assistant requested tool ${safeStringify(trace.toolName ?? 'unknown_tool')} with arguments ${safeStringify(trace.toolArgs ?? {})}.`;
   } else if (trace.traceType === 'tool_result') {
-    line = `${prefix} ${safeStringify(trace.toolName ?? 'unknown_tool')} ${safeStringify(trace.toolError ?? trace.toolResult)}`;
+    line = `Tool result from ${safeStringify(trace.toolName ?? 'unknown_tool')}: ${safeStringify(trace.toolError ?? trace.toolResult)}`;
+  } else if (trace.traceType === 'user') {
+    line = `User: ${safeStringify(trace.content)}`;
+  } else if (trace.traceType === 'assistant') {
+    line = `Assistant: ${safeStringify(trace.content)}`;
   } else {
-    line = `${prefix} ${safeStringify(trace.content)}`;
+    line = `Context note: ${safeStringify(trace.content)}`;
   }
 
   return clampRenderedLine(line, maxItemChars);
@@ -55,13 +57,12 @@ export class CompactionTaskPromptBuilder {
     const lines: string[] = [];
 
     for (const block of blocks) {
-      lines.push(`[BLOCK ${block.blockId}] turn=${block.turnId ?? 'unknown'} kind=${block.blockKind}`);
       const digestByTraceId = new Map(block.toolResultDigests.map((digest) => [digest.traceId, digest]));
 
       for (const trace of block.traces) {
         const digest = digestByTraceId.get(trace.id);
         if (trace.traceType === 'tool_result' && digest) {
-          const digestLine = `(${trace.turnId}:${trace.seq}) TOOL_RESULT_DIGEST: ${digest.toolName ?? 'unknown_tool'} status=${digest.status} summary=${digest.summary}`;
+          const digestLine = `Tool result digest from ${digest.toolName ?? 'unknown_tool'} (${digest.status}): ${digest.summary}`;
           lines.push(clampRenderedLine(digestLine, maxItemChars));
           continue;
         }

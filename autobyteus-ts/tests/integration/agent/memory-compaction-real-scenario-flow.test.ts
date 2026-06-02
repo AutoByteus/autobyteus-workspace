@@ -86,6 +86,7 @@ describe('Memory compaction real scenario flow', () => {
         turn1,
         'LLMUserMessageReadyEvent'
       );
+      memoryManager.appendWorkingContextUserMessage('Idea: Approach-ALPHA keeps all raw traces forever.', { turnId: turn1 });
       memoryManager.ingestAssistantResponse(
         { content: 'We can try Approach-ALPHA first.', reasoning: null } as any,
         turn1,
@@ -98,6 +99,7 @@ describe('Memory compaction real scenario flow', () => {
         turn2,
         'LLMUserMessageReadyEvent'
       );
+      memoryManager.appendWorkingContextUserMessage('DROPPED: Approach-ALPHA caused context overflow.', { turnId: turn2 });
       memoryManager.ingestAssistantResponse(
         { content: 'We will not use Approach-ALPHA.', reasoning: null } as any,
         turn2,
@@ -112,9 +114,29 @@ describe('Memory compaction real scenario flow', () => {
         turn3,
         'LLMUserMessageReadyEvent'
       );
+      memoryManager.appendWorkingContextUserMessage(
+        'DECISION: Use Approach-BETA (compaction + episodic/semantic). Constraint: keep raw tail 2 turns.',
+        { turnId: turn3 }
+      );
       memoryManager.ingestAssistantResponse(
         { content: 'Proceeding with Approach-BETA.', reasoning: null } as any,
         turn3,
+        'LLMCompleteResponseReceivedEvent'
+      );
+
+      const turn4 = memoryManager.startTurn();
+      memoryManager.appendWorkingContextUserMessage('Follow-up: keep implementation simple.', { turnId: turn4 });
+      memoryManager.ingestAssistantResponse(
+        { content: 'Noted simplicity follow-up.', reasoning: null } as any,
+        turn4,
+        'LLMCompleteResponseReceivedEvent'
+      );
+
+      const turn5 = memoryManager.startTurn();
+      memoryManager.appendWorkingContextUserMessage('Follow-up: verify with tests.', { turnId: turn5 });
+      memoryManager.ingestAssistantResponse(
+        { content: 'Noted test verification follow-up.', reasoning: null } as any,
+        turn5,
         'LLMCompleteResponseReceivedEvent'
       );
 
