@@ -57,7 +57,7 @@
 - Requested by user after delivery handoff: `pnpm -C autobyteus-web build:electron`
 - Result: `Passed` on 2026-06-02.
 - Scope: full Electron build script ran guards, localization audit, server preparation, Nuxt Electron generation, Electron transpilation, build script typecheck, and electron-builder packaging.
-- Artifacts produced under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`:
+- Artifacts were produced under the now-cleaned dedicated ticket worktree path `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/autobyteus-web/electron-dist/` before final cleanup; checksums are recorded below. Published `v1.3.41` assets are available from the GitHub Release:
   - `AutoByteus_personal_linux-1.3.40.AppImage` — 327 MB — SHA256 `b221825373971a20cf7472f0287b9f0988bb0ef363c48046988fdac7f1062148`
   - `AutoByteus_personal_windows-1.3.40.exe` — 209 MB — SHA256 `69fb80565787f0991869763daed13b91365b0af3159c5b8726b5bc62c16a1049`
   - `AutoByteus_personal_macos-arm64-1.3.40.dmg` — 362 MB — SHA256 `a4dc35dfd387bd942266ef04da7c27f7143adced29830251fb52dc723dbd43cf`

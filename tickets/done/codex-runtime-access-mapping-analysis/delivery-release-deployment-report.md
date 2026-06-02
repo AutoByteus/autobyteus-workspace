@@ -130,11 +130,11 @@ Delivery checks run on 2026-06-02:
 - `git diff --check origin/personal -- . ':!tickets/**'` — passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; Node emitted an existing module-type warning only.
-- `pnpm -C autobyteus-web build:electron` — passed; generated Linux AppImage, Windows NSIS installer, macOS arm64 DMG/zip, and macOS Intel DMG/zip under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`. Non-blocking notes: Vite large chunk warnings; skipped macOS/Windows signing due missing signing identity/cert; APFS DMG creation on arm64 host.
+- `pnpm -C autobyteus-web build:electron` — passed; generated Linux AppImage, Windows NSIS installer, macOS arm64 DMG/zip, and macOS Intel DMG/zip under the dedicated ticket worktree before final cleanup. The local build artifacts were removed with the worktree cleanup; published release artifacts are available from GitHub Release `v1.3.41`. Non-blocking notes: Vite large chunk warnings; skipped macOS/Windows signing due missing signing identity/cert; APFS DMG creation on arm64 host.
 
 ## Electron Build Artifacts
 
-Local build artifacts generated under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`:
+Local build artifacts generated under the now-removed dedicated ticket worktree path `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/autobyteus-web/electron-dist/` before cleanup. Checksums are retained for the tested local build; published `v1.3.41` assets are available at https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.41:
 
 | Artifact | Size | SHA256 |
 | --- | ---: | --- |
