@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/design-spec.md`
 - Current Review Round: 3
 - Trigger: UI compaction feed ordering/replay design addendum requested by `solution_designer` after user reported post-implementation center-feed compaction card behavior.
 - Prior Review Round Reviewed: Round 2, plus prior code review / validation artifacts as current baseline context.

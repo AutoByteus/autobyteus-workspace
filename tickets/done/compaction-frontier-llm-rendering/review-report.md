@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/requirements.md`
 - Current Review Round: `6`
 - Trigger: UI compaction feed ordering/replay addendum implementation handoff from `implementation_engineer`.
 - Prior Review Round Reviewed: `5`
 - Latest Authoritative Round: `6`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/investigation-notes.md`; UI addendum investigation `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/ui-compaction-feed-ordering-investigation.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/api-e2e-validation-report.md` (prior main-ticket validation context only; addendum still needs API/E2E validation)
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/investigation-notes.md`; UI addendum investigation `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/ui-compaction-feed-ordering-investigation.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/api-e2e-validation-report.md` (prior main-ticket validation context only; addendum still needs API/E2E validation)
 - API / E2E Validation Started Yet: `No` for this UI addendum implementation after the new handoff
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` by API/E2E; implementation added/updated unit/component tests before this review
 

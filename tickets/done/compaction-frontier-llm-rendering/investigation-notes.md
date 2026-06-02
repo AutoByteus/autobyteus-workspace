@@ -24,7 +24,7 @@ User clarified that from the LLM perspective, compaction should resemble a human
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering`
 - Current Branch: `codex/compaction-frontier-llm-rendering`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering`
 - Bootstrap Base Branch: `origin/personal`

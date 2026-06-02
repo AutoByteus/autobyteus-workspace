@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/review-report.md`
 - Current Validation Round: `3`
 - Trigger: Code review Round 6 passed the UI compaction feed ordering/replay addendum; live UI browser behavior required before delivery resumes.
 - Prior Round Reviewed: `2` (browser/full-stack provider-backed validation pass)
@@ -128,13 +128,13 @@ The validation scope was executable and boundary-focused:
 
 ## Other Validation Artifacts
 
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/api-e2e-validation-report.md`
-- Round 3 browser/evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602`
-  - Live UI screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/live-ui-feed-order.png`
-  - Historical replay screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/historical-replay.png`
-  - Browser observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/browser-observations.md`
-  - Backend event extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-event-order-extract.log`
-  - Backend run summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-run-summary.json`
+- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/api-e2e-validation-report.md`
+- Round 3 browser/evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602`
+  - Live UI screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/live-ui-feed-order.png`
+  - Historical replay screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/historical-replay.png`
+  - Browser observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/browser-observations.md`
+  - Backend event extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-event-order-extract.log`
+  - Backend run summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-run-summary.json`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -485,12 +485,12 @@ Code review Round 6 approved a UI compaction feed ordering/replay addendum and a
 
 ## Round 3 Evidence Artifacts
 
-- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602`
-- Browser observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/browser-observations.md`
-- Backend event-order extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-event-order-extract.log`
-- Backend run summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-run-summary.json`
-- Live UI screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/live-ui-feed-order.png`
-- Historical replay screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/historical-replay.png`
+- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602`
+- Browser observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/browser-observations.md`
+- Backend event-order extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-event-order-extract.log`
+- Backend run summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/backend-run-summary.json`
+- Live UI screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/live-ui-feed-order.png`
+- Historical replay screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/validation-evidence/round3-ui-feed-e2e-20260602/historical-replay.png`
 
 ## Round 3 Final Classification
 

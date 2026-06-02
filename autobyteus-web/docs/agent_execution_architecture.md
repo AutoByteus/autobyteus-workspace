@@ -157,6 +157,31 @@ stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
 
+### Compaction Lifecycle Activity And Center Feed
+
+Native AutoByteus memory compaction status is projected as Activity lifecycle
+state first. The right-side Activity panel should retain the full compaction
+operation identity and phase progression, including requested/queued,
+execution, terminal success/failure, timestamps, and surrounding tool-result
+detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+LLM-facing text and must not replace the backend memory artifact contract.
+
+The center conversation feed is narrower. Requested/queued compaction phases are
+internal scheduling states and stay out of the center feed so a pending
+tool-call turn is not split before tool results arrive. The first
+center-eligible execution phase for a compaction operation marks the current
+frontend assistant visual block complete, allowing the `Memory compacted` row to
+appear after the tool-call/result block and before the post-compaction assistant
+continuation. Completed/failed execution rows may be shown in the center feed;
+requested/queued rows must not.
+
+Historical run reopen uses the backend replay bundle as the display source for
+actual user, assistant, reasoning, and tool trace content. Native compaction
+projection cards are intentionally live-only center feedback in this slice:
+reopened historical conversations should replay the real work trace from active
+plus archived raw traces and should not synthesize center compaction cards from
+compaction lifecycle/status entries.
+
 ### Run Reopen Projection Hydration
 
 Run-history reopen consumes a backend replay bundle with sibling

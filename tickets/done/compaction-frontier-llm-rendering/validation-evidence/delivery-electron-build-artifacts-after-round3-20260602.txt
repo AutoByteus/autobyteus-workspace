@@ -1,0 +1,60 @@
+# Electron macOS Build Artifact Summary After API/E2E Round 3 — compaction-frontier-llm-rendering
+
+Generated: 2026-06-02T13:45:41Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering
+Branch: codex/compaction-frontier-llm-rendering
+HEAD: 41dade3181359ef84087c8c868121562dfb28e64
+Latest tracked base: origin/personal@0d82530f
+Branch relation to origin/personal: 6 ahead / 0 behind
+
+## Validation Context
+
+- API/E2E Round 3 UI compaction feed ordering/replay validation passed after code review Round 6.
+- The prior local Electron build from earlier delivery is superseded by this after-Round-3 build.
+
+## README Guidance Used
+
+- autobyteus-web/README.md lists macOS desktop build command: pnpm build:electron:mac.
+- autobyteus-web/README.md notes local macOS verbose/no-notarization/no-timestamping form with NO_TIMESTAMP=1 and APPLE_TEAM_ID=.
+
+## Build Command
+
+From: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac
+Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/delivery-electron-build-mac-after-round3-20260602.log
+Build exit marker: # Electron macOS build after API/E2E Round 3 exit_code=0
+Build finish marker: # Electron macOS build after API/E2E Round 3 finished: 2026-06-02T13:44:58Z
+
+## Artifacts
+
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+  - size_bytes: 379888882
+  - sha256: 1c5b06ef9aa51162ecb8b50faf5df1c4275e50c39ae8d2d6c5dbb044b9320b67
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap
+  - size_bytes: 394905
+  - sha256: 9c31d43d1ebe7841781326f359452e223ddf1356257c7d54de74eaa4f3b4ae70
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip
+  - size_bytes: 377301753
+  - sha256: 1bf07760d90ad84b79aa6eec02ba2c132e8a7ba76e3feac186ef0c3e8a20a06f
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap
+  - size_bytes: 387835
+  - sha256: 169afc9682843fbe307d8886ed1013749930f594b8789e0a8afdbfc889031ad2
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/builder-debug.yml
+  - size_bytes: 813
+  - sha256: ed385e8fd8a1f1805f2961879c48eed5566a9dd37ac549d14f4690f4df26af80
+- /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/latest-mac.yml
+  - size_bytes: 561
+  - sha256: 8380ee8b0bc572f0ef65610844cc4acef341f4d95d6771d4f3d6a148c85ef359
+
+## DMG Verification
+
+Verification command: hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+Verification log: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/validation-evidence/delivery-electron-dmg-verify-after-round3-20260602.log
+Verification exit marker: # hdiutil verify after API/E2E Round 3 exit_code=0
+Verification validity line: hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg" is VALID
+
+## Publication / Signing Scope
+
+- Local build only; no publish/release/upload command was run.
+- Build log reports electron-builder artifactCreated with isPublish: false.
+- Build used local no-notarization/no-timestamp settings; electron-builder skipped macOS code signing because identity is null.

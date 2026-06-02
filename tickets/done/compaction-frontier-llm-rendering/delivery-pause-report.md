@@ -5,7 +5,7 @@
 - Date: 2026-06-02
 - Delivery status: `Paused / Blocked`
 - Trigger: `code_reviewer` withdrew the prior delivery handoff after API/E2E withdrew its earlier validation `Pass`.
-- Latest authoritative review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/review-report.md`
+- Latest authoritative review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/compaction-frontier-llm-rendering/review-report.md`
 - Latest authoritative review round: `4`
 - Latest review decision: `Blocked`
 - Blocking finding: `VR-001 — prior API/E2E validation pass was withdrawn; delivery is not authorized`
