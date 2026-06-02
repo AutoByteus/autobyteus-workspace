@@ -3,18 +3,18 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/requirements.md`
 - Current Review Round: 3
 - Trigger: Local Fix implementation from `implementation_engineer` for API/E2E `FAIL-001 / SC-007`, where explicit member runtime selection to an effective-ON Codex model did not open that member's compact Advanced disclosure.
-- Prior Review Round Reviewed: Round 2 from this same canonical report path, plus the Round 2 API/E2E validation failure context in `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/api-e2e-validation-report.md`.
+- Prior Review Round Reviewed: Round 2 from this same canonical report path, plus the Round 2 API/E2E validation failure context in `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/api-e2e-validation-report.md`.
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/proposed-design.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/api-e2e-validation-report.md`
-- Post-Validation Clarification Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
-- Delivery Reroute Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/proposed-design.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/api-e2e-validation-report.md`
+- Post-Validation Clarification Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
+- Delivery Reroute Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes` — the implementation-owned local fix updates focused frontend regression coverage, especially `MemberOverrideItem.spec.ts`. No API/E2E-authored durable validation was added during the failed API/E2E round.
 

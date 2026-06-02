@@ -8,8 +8,8 @@ This revision incorporates the user's post-validation 2026-06-02 clarification t
 
 ## Design Inputs
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/investigation-notes.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/investigation-notes.md`
 - User screenshots:
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_4023883c/solution_designer_85fb741cf29ca867/context_files/ctx_0b938a9bc9c2__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_4023883c/solution_designer_85fb741cf29ca867/context_files/ctx_7445bd0557f8__image.png`

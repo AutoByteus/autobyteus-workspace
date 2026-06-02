@@ -16,7 +16,7 @@ After delivery had prepared a pre-finalization handoff, `api_e2e_engineer` repor
 
 Clarification artifact:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
 
 ## Requirement Gap / Design Impact Summary
 
@@ -53,17 +53,17 @@ Member override direction remains compact/inheritance-safe:
 
 ## Artifacts For Redesign
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/proposed-design.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/api-e2e-validation-report.md`
-- Post-validation clarification: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
-- Delivery pause/reroute report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/handoff-summary.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/proposed-design.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/api-e2e-validation-report.md`
+- Post-validation clarification: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
+- Delivery pause/reroute report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/handoff-summary.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/release-deployment-report.md`
 
 ## Required Next Step
 

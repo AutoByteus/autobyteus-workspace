@@ -2,14 +2,14 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/proposed-design.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/design-review-report.md`
-- Post-Validation Clarification: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
-- Delivery Pause / Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/proposed-design.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/design-review-report.md`
+- Post-Validation Clarification: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
+- Delivery Pause / Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/review-report.md`
 - Current Validation Round: 3
 - Trigger: Code-review-passed Local Fix for Round 2 `FAIL-001 / SC-007` member runtime override disclosure behavior.
 - Prior Round Reviewed: Round 2 failed because explicit member runtime selection to `codex_app_server` updated effective values and override data but did not open that member's Advanced controls.

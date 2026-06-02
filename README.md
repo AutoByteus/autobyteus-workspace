@@ -232,6 +232,14 @@ runtime/model config UI exposes **Fast mode** and persists it as
 `llmConfig.service_tier = "fast"`. Reasoning effort remains a separate setting
 such as `llmConfig.reasoning_effort = "high"`.
 
+The launch UI displays valid schema defaults as effective values without writing
+them into `llmConfig`. For example, a Codex model whose catalog default is
+`reasoning_effort = "medium"` shows **Thinking** on, opens **Advanced** by
+default, and displays `Reasoning Effort = medium` while the launch config can
+remain unset. If a Codex schema does not advertise an off/`none` value, the UI
+keeps that enabled state read-only instead of emitting an unsupported disable
+payload.
+
 Fast mode applies to new or restored Codex sessions and subsequent turns through
 the Codex App Server `serviceTier` request field. Leaving the control at
 Default/off omits the setting and keeps Codex's default service tier.

@@ -56,5 +56,5 @@ Likely required changes:
 
 ## Affected Existing Artifacts
 
-- Validation report passed under superseded criteria: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/api-e2e-validation-report.md`
+- Validation report passed under superseded criteria: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/api-e2e-validation-report.md`
 - Requirements/design likely need refinement before implementation rework.

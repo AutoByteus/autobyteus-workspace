@@ -42,7 +42,7 @@ Clarification received on 2026-06-02:
 
 - Project Type (`Git`/`Non-Git`): Git superrepo
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux`
 - Current Branch: `codex/reasoning-advanced-config-ux`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux`
 - Bootstrap Base Branch: `origin/personal`
@@ -263,7 +263,7 @@ The currently modified `llmThinkingConfigAdapter.ts` detection order checks `rea
 
 ## Post-Validation Requirement Gap Investigation (2026-06-02)
 
-Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
+Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/post-validation-requirement-clarification.md`
 
 API/E2E validation passed under the previously reviewed criteria, but the user clarified a different disclosure journey after validation:
 
@@ -299,7 +299,7 @@ This is a requirement gap/design impact because the validated implementation cur
 
 ## Delivery Pause Confirmation (2026-06-02)
 
-Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/in-progress/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
+Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/reasoning-advanced-config-ux/tickets/done/reasoning-advanced-config-ux/delivery-pause-reroute-report.md`
 
 Delivery confirmed the same Requirement Gap / Design Impact and paused repository finalization. No commit, push, merge, archival, deployment, or cleanup was performed. Delivery's base refresh found `origin/personal @ 1678dc82b705d24c58b073c75f363d96b5d4cc3c` unchanged, so the ticket branch was not rebased or merged before reroute. Delivery-owned durable docs edits prepared under the superseded always-open rule were reverted; long-lived docs sync is blocked until this refined design is implemented and revalidated.
 
