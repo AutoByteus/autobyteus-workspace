@@ -7,8 +7,8 @@
 - README command used from `autobyteus-web/README.md` macOS no-notarization build section:
   `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`.
 - Result: Pass.
-- Full build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`.
-- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-artifacts.sha256`.
+- Full build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`.
+- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-artifacts.sha256`.
 
 ## Artifacts
 

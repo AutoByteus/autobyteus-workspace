@@ -38,7 +38,7 @@ Observed in the browser after task completion:
 - Earlier screenshot from the same browser validation:
   - `/Users/normy/.autobyteus/browser-artifacts/146733-1780132510883.png`
 - Round 6 validation report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
 - Browser validation session data:
   - `/tmp/autobyteus-browser-task-ui-20260530-110606/session.env`
   - `/tmp/autobyteus-browser-task-ui-20260530-110606/team-seed.json`

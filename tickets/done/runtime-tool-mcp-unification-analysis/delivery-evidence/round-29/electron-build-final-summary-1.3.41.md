@@ -63,7 +63,7 @@ b63feb2210edafde69ef98acdbea4405dc66318b34dba05734448810cba29c9e  AutoByteus_ent
 88fda0f033c31257365365afd34af20401fbbaee2bed5be57e7a04eef4937c97  latest-mac.yml
 ```
 
-Full SHA manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-build-artifacts-1.3.41.sha256`
+Full SHA manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-build-artifacts-1.3.41.sha256`
 
 ## Verification result
 
@@ -83,9 +83,9 @@ Pass.
 
 ## Evidence logs
 
-- Initial failed build attempt: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-rebuild-signed-notarized-after-origin-personal-1012c6ee.log`
-- Successful retry build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-rebuild-retry-after-hdiutil-cleanup-1.3.41.log`
-- DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-notarize-staple-1.3.41.log`
-- Built app final verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-signing-notarization-verification-final-1.3.41.log`
-- Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-mounted-final-verification-1.3.41.log`
-- Final `git diff --check`: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/git-diff-check-final-1.3.41.log`
+- Initial failed build attempt: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-rebuild-signed-notarized-after-origin-personal-1012c6ee.log`
+- Successful retry build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-rebuild-retry-after-hdiutil-cleanup-1.3.41.log`
+- DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-notarize-staple-1.3.41.log`
+- Built app final verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-signing-notarization-verification-final-1.3.41.log`
+- Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/electron-dmg-mounted-final-verification-1.3.41.log`
+- Final `git diff --check`: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-29/git-diff-check-final-1.3.41.log`

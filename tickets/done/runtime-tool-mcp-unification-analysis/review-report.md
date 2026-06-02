@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review` (fresh review requested; Round 27 / API-E2E Round 15 local implementation fix)
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/requirements.md`
 - Current Review Round: `28`
 - Trigger: API/E2E Round 15 found the live browser could keep a task-delegation-only logical `worker` focused/displayed as `Initializing` after `mark_task_completed` + `accept_task` + settlement; implementation returned a local frontend stream/projection/focus fix.
 - Prior Review Round Reviewed: `27`
 - Latest Authoritative Round: `28`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/investigation-notes.md`
-- Supplemental Migration Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/investigation-notes.md`
+- Supplemental Migration Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`; API/E2E Round 15 failed on browser task-agent active-execution focus after accepted settlement.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`; implementation updated frontend durable tests for stream identity poison prevention, active-execution filtering, running/grid/spotlight rows, run-open normalization, and run-history normalization.
 
@@ -33,7 +33,7 @@
 
 This was a fresh re-check of the current cumulative package with emphasis on the API/E2E Round 15 failure and local fix. Reviewed sources and tests included:
 
-- failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`;
+- failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`;
 - frontend stream routing and task-agent identity detection:
   - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`;
   - `autobyteus-web/services/agentStreaming/taskAgentRunIdentity.ts`;

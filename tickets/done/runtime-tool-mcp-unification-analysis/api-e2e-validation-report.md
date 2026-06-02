@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-spec.md`
-- Supplemental Analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/design-spec.md`
+- Supplemental Analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/review-report.md`
 - Current Validation Round: 16
 - Trigger: Round 28 code-review pass for the Round 27 / API-E2E Round 15 local implementation fix.
 - Prior Round Rechecked: Round 15 explicit-intent API/browser failure where the task-only logical `worker` stayed focused/displayed as `Initializing` after `accept_task` and settlement.
@@ -303,7 +303,7 @@ Blocking browser failure:
 - A fresh post-settlement websocket snapshot showed no task-agent status message for `team_round27-browser-explicit-tools-e4e9f405_a3d4182e__worker__task_0001`, with coordinator `idle`, logical worker `offline`, and team `idle`, confirming the remaining `Initializing` is a frontend live projection/focus/status problem rather than a still-active task-agent.
 - Implementation clue: the live stream emitted an early task-agent `AGENT_STATUS initializing` with `agent_id` equal to the task-agent run id but without `task_agent_run_id`; this can poison the logical `worker` context. Current `teamActiveExecutionMembers.ts` also treats every route-keyed logical node as active, allowing `worker` to remain focusable in active execution after settlement.
 
-Round 15 conclusion: **Fail / Local Fix**. The explicit API split is validated, but delivery is blocked until the post-acceptance browser active-execution UI no longer shows or targets a task-delegation-only logical worker as `Initializing`/stuck after the concrete task-agent has settled. Failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`.
+Round 15 conclusion: **Fail / Local Fix**. The explicit API split is validated, but delivery is blocked until the post-acceptance browser active-execution UI no longer shows or targets a task-delegation-only logical worker as `Initializing`/stuck after the concrete task-agent has settled. Failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`.
 
 ## Round 16 Round 28 Fix Revalidation
 
@@ -374,8 +374,8 @@ Round 16 conclusion: **Pass**. The explicit task API remains intact and AE2E-023
 
 - Repository-resident durable validation code added or updated by API/E2E after the Round 28 code-review pass: `No`.
 - API/E2E updated only validation report artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
-  - Prior Round 15 failure artifact remains for historical evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
+  - Prior Round 15 failure artifact remains for historical evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`
 
 ## Untested / Residual Risk
 
@@ -413,7 +413,7 @@ API/E2E's prior interpretation was:
 
 The reopened question is whether that distinction is actually the intended product/domain model. If task delegation is meant to be sub-agent-like, the UI may need to hide or relabel the logical `worker` row in task-agent-only contexts, attach history to a completed task-agent entity rather than the logical member, or clarify acceptance criteria so users can distinguish an offline logical assignee from a live task-agent.
 
-Reroute artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round14-worker-row-semantics-reroute.md`.
+Reroute artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round14-worker-row-semantics-reroute.md`.
 
 User-supplied screenshots:
 
@@ -460,7 +460,7 @@ Blocking failure:
 }
 ```
 
-Focused failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round17-worker-row-focus-failure.md`.
+Focused failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round17-worker-row-focus-failure.md`.
 
 ## Round 11 Stale Worker Route Recheck After Round 18
 
@@ -487,7 +487,7 @@ Blocking failure:
 - Stale-click screenshot: `/Users/normy/.autobyteus/browser-artifacts/86fbc9-1780205397333.png`.
 - A blocked composer-send probe from the revived `worker Offline` state found the send button disabled and captured no `SEND_MESSAGE`; this part is improved, but the visible/focusable stale worker row remains a blocking active-execution UX failure.
 
-Focused failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
+Focused failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
 
 ## Round 12 Stale Worker Route Recheck After Round 20 / CR-011
 
@@ -528,7 +528,7 @@ Passing evidence:
 }
 ```
 
-Resolved prior failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
+Resolved prior failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
 
 ## Round 13 Latest-Base Conflict Validation-Impact Decision
 
@@ -571,8 +571,8 @@ Rationale: Round 16 directly revalidated the current Round 28 cumulative package
   - `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/workspace-acceptance/round25-task-agent-reopen-5f1f4e0b.txt`
   - `/Users/normy/.autobyteus/browser-artifacts/555078-1780311694686.png`
   - `/Users/normy/.autobyteus/browser-artifacts/555078-1780311519227.png`
-- Prior Round 12 failure artifact rechecked and remains resolved under current parent/child semantics: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
-- Round 13 conflict reroute artifact remains resolved: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`.
+- Prior Round 12 failure artifact rechecked and remains resolved under current parent/child semantics: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
+- Round 13 conflict reroute artifact remains resolved: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`.
 - Round 16 browser/API evidence:
   - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-validation-summary.json`
   - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-event-evidence.json`

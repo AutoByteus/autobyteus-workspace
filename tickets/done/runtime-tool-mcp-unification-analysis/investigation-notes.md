@@ -22,7 +22,7 @@ User observed that project tools such as `send_message_to`, `open_tab`, and `cre
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis`
 - Current Branch: `codex/runtime-tool-mcp-unification-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis`
 - Bootstrap Base Branch: `origin/personal` (`56c6d4bfa27ced68678e4d21dccd4acbcb31aa76`, 2026-05-28 14:46:17 +0200, `docs(delivery): record mobile artifacts finalization`)

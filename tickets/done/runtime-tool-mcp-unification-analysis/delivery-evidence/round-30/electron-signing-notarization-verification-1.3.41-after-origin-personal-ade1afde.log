@@ -1,0 +1,50 @@
+Date (UTC): 2026-06-02T16:12:40Z
+HEAD: 25a5f485d5f7457c9034c57c92de9ba56fb92fcb
+origin/personal: ade1afdec18fd8c0ae322517439b51c9769c2d80
+App: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+--- app CodeResources presence ---
+present: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/_CodeSignature/CodeResources
+--- codesign verify built app ---
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement
+--- spctl assess built app ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: accepted
+source=Notarized Developer ID
+--- stapler validate built app ---
+Processing: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+The validate action worked!
+--- codesign display built app ---
+Identifier=com.autobyteus.app
+Authority=Developer ID Application: YU ZHENG (7Y86YBQ7B4)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=2. Jun 2026 at 17:54:05
+Notarization Ticket=stapled
+TeamIdentifier=7Y86YBQ7B4
+Runtime Version=26.0.0
+Sealed Resources version=2 rules=13 files=31506
+--- stapler validate DMG ---
+Processing: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+The validate action worked!
+--- spctl assess DMG ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg: accepted
+source=Notarized Developer ID

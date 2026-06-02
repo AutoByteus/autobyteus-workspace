@@ -26,10 +26,10 @@ The merge created conflicts and a post-integration targeted test initially faile
 - Initial targeted check after the merge exposed the stale test conflict resolution:
   `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` — failed 1 assertion (`compactionStatus` prop undefined).
 - After the current local test adjustment:
-  `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` — Pass, 2 files / 27 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/post-conflict-targeted-vitest.log`.
+  `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` — Pass, 2 files / 27 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/post-conflict-targeted-vitest.log`.
 - README-guided Electron rebuild on the integrated branch passed before the test-only adjustment; the adjustment affects only a unit test file, not packaged runtime code.
-  - Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`
-  - Build summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-summary.md`
+  - Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`
+  - Build summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-summary.md`
 
 ## Local Electron Artifact Available For Inspection
 
@@ -46,7 +46,7 @@ Do not archive, push, merge to `personal`, release, deploy, tag, or clean up unt
 
 ## Resolution Update
 
-- Implementation ownership completed the local fix and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`.
-- Code Review Round 21 passed with no open findings and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`.
-- API/E2E Round 13 passed with a targeted no-broad-replay decision and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`.
+- Implementation ownership completed the local fix and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/implementation-handoff.md`.
+- Code Review Round 21 passed with no open findings and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/review-report.md`.
+- API/E2E Round 13 passed with a targeted no-broad-replay decision and updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`.
 - Delivery resumed after confirming latest `origin/personal` remains integrated and rerunning the same targeted frontend suite successfully. Delivery is now ready for user verification, with repository finalization still on hold until explicit user confirmation.

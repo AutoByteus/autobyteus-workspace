@@ -23,11 +23,11 @@ Pass. Electron Builder produced macOS arm64 DMG and ZIP artifacts.
 
 Full log:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/electron-rebuild-after-origin-personal-fb22bc83.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/electron-rebuild-after-origin-personal-fb22bc83.log`
 
 SHA-256 manifest:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/electron-build-artifacts.sha256`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/done/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/electron-build-artifacts.sha256`
 
 ## Artifacts
 
