@@ -12,6 +12,7 @@ export enum CodexThreadEventName {
   ITEM_PLAN_DELTA = "item/plan/delta",
   ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL = "item/commandExecution/requestApproval",
   ITEM_TOOL_CALL = "item/tool/call",
+  ITEM_PERMISSIONS_REQUEST_APPROVAL = "item/permissions/requestApproval",
   ITEM_FILE_CHANGE_OUTPUT_DELTA = "item/fileChange/outputDelta",
   ITEM_FILE_CHANGE_REQUEST_APPROVAL = "item/fileChange/requestApproval",
   RAW_RESPONSE_ITEM_COMPLETED = "rawResponseItem/completed",

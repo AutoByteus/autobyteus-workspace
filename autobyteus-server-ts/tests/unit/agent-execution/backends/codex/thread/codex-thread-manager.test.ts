@@ -15,6 +15,9 @@ const createRunContext = (
   runId: string,
   workingDirectory: string,
   input: {
+    autoExecuteTools?: boolean;
+    approvalPolicy?: CodexApprovalPolicy;
+    sandbox?: "read-only" | "workspace-write" | "danger-full-access";
     serviceTier?: string | null;
     threadId?: string | null;
   } = {},
@@ -25,7 +28,7 @@ const createRunContext = (
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       agentDefinitionId: "agent-def",
       llmModelIdentifier: "",
-      autoExecuteTools: false,
+      autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: workingDirectory,
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
@@ -36,8 +39,8 @@ const createRunContext = (
         workingDirectory,
         reasoningEffort: null,
         serviceTier: input.serviceTier ?? null,
-        approvalPolicy: CodexApprovalPolicy.ON_REQUEST,
-        sandbox: "workspace-write",
+        approvalPolicy: input.approvalPolicy ?? CodexApprovalPolicy.ON_REQUEST,
+        sandbox: input.sandbox ?? "workspace-write",
         baseInstructions: null,
         developerInstructions: null,
         dynamicTools: [],
@@ -100,6 +103,64 @@ describe("CodexThreadManager", () => {
     );
     expect(thread.threadId).toBe("thread-live-1");
     expect(thread.startup.status).toBe("ready");
+  });
+
+  it("passes auto-approved access config to Codex thread start and resume", async () => {
+    const request = vi.fn(async (method: string) => ({
+      thread: {
+        id: method === "thread/resume" ? "thread-auto-resumed" : "thread-auto-started",
+      },
+    }));
+    const client = {
+      request,
+      onNotification: vi.fn(() => () => {}),
+      onServerRequest: vi.fn(() => () => {}),
+      onClose: vi.fn(() => () => {}),
+    } as unknown as CodexAppServerClient;
+    const clientManager = {
+      acquireClient: vi.fn(async () => client),
+      releaseClient: vi.fn(async () => undefined),
+    } as unknown as CodexAppServerClientManager;
+    const threadCleanup = {
+      cleanupThreadResources: vi.fn(async () => undefined),
+    } as unknown as CodexThreadCleanup;
+    const clientThreadRouter = {
+      registerThread: vi.fn(() => () => {}),
+    } as unknown as CodexClientThreadRouter;
+    const manager = new CodexThreadManager(
+      clientManager,
+      threadCleanup,
+      clientThreadRouter,
+    );
+    const autoConfig = {
+      autoExecuteTools: true,
+      approvalPolicy: CodexApprovalPolicy.NEVER,
+      sandbox: "danger-full-access" as const,
+    };
+
+    await manager.createThread(createRunContext("run-auto-start", "/tmp/workspace", autoConfig));
+    await manager.restoreThread(
+      createRunContext("run-auto-resume", "/tmp/workspace", {
+        ...autoConfig,
+        threadId: "thread-existing-auto",
+      }),
+    );
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/start",
+      expect.objectContaining({
+        approvalPolicy: "never",
+        sandbox: "danger-full-access",
+      }),
+    );
+    expect(request).toHaveBeenCalledWith(
+      "thread/resume",
+      expect.objectContaining({
+        threadId: "thread-existing-auto",
+        approvalPolicy: "never",
+        sandbox: "danger-full-access",
+      }),
+    );
   });
 
   it("passes serviceTier when resuming a remote Codex thread", async () => {

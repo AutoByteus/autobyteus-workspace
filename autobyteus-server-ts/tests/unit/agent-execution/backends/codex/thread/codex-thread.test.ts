@@ -10,6 +10,7 @@ import {
 } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { createCodexThreadStartupGate } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-startup-gate.js";
+import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 
 const createRunContext = (input: {
@@ -17,6 +18,7 @@ const createRunContext = (input: {
   workingDirectory: string;
   autoExecuteTools: boolean;
   serviceTier?: string | null;
+  dynamicToolHandlers?: Record<string, any>;
 }) =>
   new AgentRunContext({
     runId: input.runId,
@@ -43,6 +45,7 @@ const createRunContext = (input: {
         developerInstructions: null,
         dynamicTools: [],
       },
+      dynamicToolHandlers: input.dynamicToolHandlers ?? null,
     }),
   });
 
@@ -50,6 +53,7 @@ const createThread = (
   autoExecuteTools: boolean,
   input: {
     serviceTier?: string | null;
+    dynamicToolHandlers?: Record<string, any>;
   } = {},
 ) => {
   const client = {
@@ -68,6 +72,7 @@ const createThread = (
       workingDirectory: "/tmp/codex-thread-unit",
       autoExecuteTools,
       serviceTier: input.serviceTier ?? null,
+      dynamicToolHandlers: input.dynamicToolHandlers,
     }),
     client: client as never,
     startup: createCodexThreadStartupGate(),
@@ -235,6 +240,380 @@ describe("CodexThread MCP tool approval bridge", () => {
       serverName: "tts",
       toolName: "speak",
     })).toBeNull();
+  });
+});
+
+describe("CodexThread Codex approval surfaces", () => {
+  it("auto-accepts terminal approvals when autoExecuteTools is enabled", () => {
+    const { thread, client } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(301, CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, {
+      itemId: "item-terminal-auto",
+      approvalId: "approval-auto",
+      command: "pwd",
+    });
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(301, { decision: "accept" });
+    expect(thread.findApprovalRecord("item-terminal-auto")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "item-terminal-auto",
+          tool_name: "run_bash",
+        }),
+      }),
+    );
+  });
+
+  it("gates file-change approvals in manual mode and returns decline on denial", async () => {
+    const { thread, client } = createThread(false);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(302, CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL, {
+      itemId: "item-file-change-1",
+      approvalId: "approval-file-change-1",
+      path: "/tmp/codex-thread-unit/changed.txt",
+      diff: "--- a/changed.txt\n+++ b/changed.txt\n@@\n+hello\n",
+    });
+
+    expect(client.respondSuccess).not.toHaveBeenCalled();
+    expect(thread.findApprovalRecord("item-file-change-1")).toEqual(
+      expect.objectContaining({
+        requestId: 302,
+        method: CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL,
+        invocationId: "item-file-change-1",
+        approvalId: "approval-file-change-1",
+        responseMode: "decision",
+        toolName: "edit_file",
+      }),
+    );
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL,
+        params: expect.objectContaining({
+          invocation_id: "item-file-change-1",
+          itemId: "item-file-change-1",
+          approvalId: "approval-file-change-1",
+        }),
+      }),
+    );
+
+    await thread.approveTool("item-file-change-1", false);
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(302, { decision: "decline" });
+    expect(thread.findApprovalRecord("item-file-change-1")).toBeNull();
+  });
+
+  it("gates dynamic tools in manual mode until approval", async () => {
+    const handler = vi.fn(async () => createCodexDynamicToolTextResult("dynamic ok"));
+    const { thread, client } = createThread(false, {
+      dynamicToolHandlers: {
+        send_message_to: handler,
+      },
+    });
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(401, CodexThreadEventName.ITEM_TOOL_CALL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      callId: "call-dynamic-1",
+      tool: "send_message_to",
+      arguments: {
+        recipient_name: "code_reviewer",
+        content: "ready",
+      },
+    });
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(client.respondSuccess).not.toHaveBeenCalled();
+    expect(thread.findApprovalRecord("call-dynamic-1")).toEqual(
+      expect.objectContaining({
+        responseMode: "dynamic_tool_call",
+        invocationId: "call-dynamic-1",
+        toolName: "send_message_to",
+        arguments: {
+          recipient_name: "code_reviewer",
+          content: "ready",
+        },
+      }),
+    );
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+        params: expect.objectContaining({
+          invocation_id: "call-dynamic-1",
+          tool_name: "send_message_to",
+          arguments: {
+            recipient_name: "code_reviewer",
+            content: "ready",
+          },
+        }),
+      }),
+    );
+
+    await thread.approveTool("call-dynamic-1", true);
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: "run-manual",
+        threadId: "thread-1",
+        turnId: "turn-1",
+        callId: "call-dynamic-1",
+        toolName: "send_message_to",
+      }),
+    );
+    expect(client.respondSuccess).toHaveBeenCalledWith(401, {
+      success: true,
+      contentItems: [{ type: "inputText", text: "dynamic ok" }],
+    });
+    expect(thread.findApprovalRecord("call-dynamic-1")).toBeNull();
+  });
+
+  it("claims manual dynamic approvals before awaited handler execution", async () => {
+    let releaseHandler: (() => void) | null = null;
+    const firstHandlerGate = new Promise<void>((resolve) => {
+      releaseHandler = resolve;
+    });
+    let handlerCallCount = 0;
+    const handler = vi.fn(async () => {
+      handlerCallCount += 1;
+      if (handlerCallCount === 1) {
+        await firstHandlerGate;
+        return createCodexDynamicToolTextResult("dynamic ok once");
+      }
+      return createCodexDynamicToolTextResult("duplicate dynamic invocation");
+    });
+    const { thread, client } = createThread(false, {
+      dynamicToolHandlers: {
+        publish_artifacts: handler,
+      },
+    });
+
+    thread.handleAppServerRequest(404, CodexThreadEventName.ITEM_TOOL_CALL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      callId: "call-repeat-1",
+      tool: "publish_artifacts",
+      arguments: {
+        artifacts: [{ path: "/tmp/report.md" }],
+      },
+    });
+
+    const firstApproval = thread.approveTool("call-repeat-1", true);
+
+    await vi.waitFor(() => {
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+    expect(thread.findApprovalRecord("call-repeat-1")).toBeNull();
+
+    await expect(thread.approveTool("call-repeat-1", true)).rejects.toThrow(
+      "No pending approval found for invocation 'call-repeat-1'.",
+    );
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    releaseHandler?.();
+    await firstApproval;
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(client.respondSuccess).toHaveBeenCalledTimes(1);
+    expect(client.respondSuccess).toHaveBeenCalledWith(404, {
+      success: true,
+      contentItems: [{ type: "inputText", text: "dynamic ok once" }],
+    });
+  });
+
+  it("denies dynamic tools in manual mode without invoking the handler", async () => {
+    const handler = vi.fn(async () => createCodexDynamicToolTextResult("should not run"));
+    const { thread, client } = createThread(false, {
+      dynamicToolHandlers: {
+        generate_image: handler,
+      },
+    });
+
+    thread.handleAppServerRequest(402, CodexThreadEventName.ITEM_TOOL_CALL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      callId: "call-denied-1",
+      tool: "generate_image",
+      arguments: {
+        prompt: "cat",
+      },
+    });
+
+    await thread.approveTool("call-denied-1", false);
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(client.respondSuccess).toHaveBeenCalledWith(402, {
+      success: false,
+      contentItems: [{ type: "inputText", text: "Tool execution denied by user." }],
+    });
+    expect(thread.findApprovalRecord("call-denied-1")).toBeNull();
+  });
+
+  it("executes dynamic tools immediately when autoExecuteTools is enabled", async () => {
+    const handler = vi.fn(async () => createCodexDynamicToolTextResult("auto dynamic ok"));
+    const { thread, client } = createThread(true, {
+      dynamicToolHandlers: {
+        generate_speech: handler,
+      },
+    });
+
+    thread.handleAppServerRequest(403, CodexThreadEventName.ITEM_TOOL_CALL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      callId: "call-auto-dynamic-1",
+      tool: "generate_speech",
+      arguments: {
+        text: "hello",
+      },
+    });
+
+    await vi.waitFor(() => {
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(client.respondSuccess).toHaveBeenCalledWith(403, {
+        success: true,
+        contentItems: [{ type: "inputText", text: "auto dynamic ok" }],
+      });
+    });
+    expect(thread.findApprovalRecord("call-auto-dynamic-1")).toBeNull();
+  });
+
+  it("grants permission requests automatically in auto mode", () => {
+    const { thread, client } = createThread(true);
+
+    thread.handleAppServerRequest(501, CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      itemId: "perm-auto-1",
+      cwd: "/tmp/codex-thread-unit",
+      permissions: {
+        fileSystem: {
+          entries: [],
+        },
+        network: {
+          enabled: true,
+        },
+      },
+      reason: "Need network",
+      startedAtMs: 1,
+    });
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(501, {
+      permissions: {
+        fileSystem: {
+          entries: [],
+        },
+        network: {
+          enabled: true,
+        },
+      },
+      scope: "session",
+    });
+    expect(thread.findApprovalRecord("perm-auto-1")).toBeNull();
+  });
+
+  it("queues permission requests in manual mode and grants only after approval", async () => {
+    const { thread, client } = createThread(false);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(502, CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      itemId: "perm-manual-1",
+      cwd: "/tmp/codex-thread-unit",
+      permissions: {
+        fileSystem: {
+          read: ["/tmp"],
+        },
+        network: null,
+      },
+      reason: "Need /tmp",
+      startedAtMs: 1,
+    });
+
+    expect(client.respondSuccess).not.toHaveBeenCalled();
+    expect(thread.findApprovalRecord("perm-manual-1")).toEqual(
+      expect.objectContaining({
+        responseMode: "permission_request",
+        invocationId: "perm-manual-1",
+        toolName: "request_permissions",
+      }),
+    );
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+        params: expect.objectContaining({
+          invocation_id: "perm-manual-1",
+          tool_name: "request_permissions",
+          arguments: {
+            permissions: {
+              fileSystem: {
+                read: ["/tmp"],
+              },
+              network: null,
+            },
+            cwd: "/tmp/codex-thread-unit",
+            reason: "Need /tmp",
+          },
+        }),
+      }),
+    );
+
+    await thread.approveTool("perm-manual-1", true);
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(502, {
+      permissions: {
+        fileSystem: {
+          read: ["/tmp"],
+        },
+        network: null,
+      },
+      scope: "turn",
+    });
+    expect(thread.findApprovalRecord("perm-manual-1")).toBeNull();
+  });
+
+  it("denies permission requests in manual mode with a no-grant response", async () => {
+    const { thread, client } = createThread(false);
+
+    thread.handleAppServerRequest(503, CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      itemId: "perm-denied-1",
+      cwd: "/tmp/codex-thread-unit",
+      permissions: {
+        network: {
+          enabled: true,
+        },
+      },
+      startedAtMs: 1,
+    });
+
+    await thread.approveTool("perm-denied-1", false);
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(503, {
+      permissions: {
+        fileSystem: null,
+        network: null,
+      },
+      scope: "turn",
+    });
+    expect(thread.findApprovalRecord("perm-denied-1")).toBeNull();
   });
 });
 
