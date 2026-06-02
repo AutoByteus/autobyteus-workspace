@@ -26,7 +26,7 @@ Team runs:
 1. Team services create a team run with deterministic `memberRunId` values and resolve the governing `TeamBackendKind`.
 2. Single-runtime Codex teams use `codex-team-run-backend-factory.ts` + `codex-team-manager.ts` to create/restore one standalone Codex `AgentRun` per team member.
 3. Mixed-runtime teams still run Codex members as standalone Codex `AgentRun`s, but the governing team owner is `MixedTeamManager`, not `codex-team-manager.ts`.
-4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
+4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
 5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
 Codex team communication uses the same dynamic-tool lifecycle normalization as
@@ -35,6 +35,22 @@ successful delivery is no longer represented only by `SEGMENT_START` /
 `SEGMENT_END`; the sender stream must also contain matching
 `TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
 the dynamic tool invocation id.
+
+Codex team task delegation is projected as dynamic tools generated from the
+server-owned task-delegation manifest. When an agent definition enables
+`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and/or
+`accept_task`, Codex receives those tools with
+JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
+`TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
+runtime does not mutate task state directly and must not expose the removed
+legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
+`get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
+ready-to-run/no-dependencies task guidance from the shared manifest/schema:
+dependent follow-up work should be delegated after the framework
+terminal/completion notification. Activation details are pushed to task-agent
+instances as work packets, and completion/failure is observed through framework
+task-delegation events and coordinator notifications rather than a model polling
+tool.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -153,6 +169,7 @@ Team runtime:
 - `src/agent-team-execution/backends/codex/codex-team-manager.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
+- `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 
 ## Skills
@@ -260,7 +277,8 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`.
+  `send_message_to`, `delegate_tasks`, `mark_task_completed`,
+  `mark_task_failed`, and `accept_task`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.
@@ -307,7 +325,14 @@ conversation is being applied.
 - Durable long-turn attribution probes live under `tests/integration/runtime-execution/codex-app-server/thread/`.
 - `codex-raw-vs-backend-cadence.probe.test.ts` compares native raw `item/agentMessage/delta` cadence with backend `SEGMENT_CONTENT` cadence in the same run.
 - `codex-long-turn-cadence.probe.test.ts` records backend long-turn event cadence over time.
-- These live probes are intentionally opt-in and require both a working `codex` binary and `RUN_CODEX_E2E=1`.
+- `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` is the gated live
+  mixed-runtime task-delegation proof. The default command
+  `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
+  should skip when live flags are absent. To exercise the live path, run with a
+  working LMStudio Qwen model and Codex `gpt-5.5`, for example:
+  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" --no-file-parallelism`.
+- These live probes are intentionally opt-in and require the matching local
+  runtime prerequisites; they must not become default CI prerequisites.
 
 ## MCP Mode
 

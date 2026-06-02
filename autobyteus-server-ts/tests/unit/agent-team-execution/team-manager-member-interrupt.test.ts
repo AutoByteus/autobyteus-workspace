@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { CodexTeamManager } from "../../../src/agent-team-execution/backends/codex/codex-team-manager.js";
 import {
@@ -16,6 +17,7 @@ import {
   MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
@@ -69,7 +71,10 @@ const createTeamRunConfig = (teamBackendKind: TeamBackendKind) =>
 
 const createFakeAgentRun = () => ({
   isActive: vi.fn(() => true),
+  postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
+  approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+  terminate: vi.fn().mockResolvedValue({ accepted: true }),
   getStatusSnapshot: vi.fn(() => ({ status: "running", can_interrupt: true })),
   subscribeToEvents: vi.fn(() => () => undefined),
 });
@@ -99,11 +104,11 @@ const attachMemberRuns = (manager: unknown) => {
     context,
     isActive: () => true,
     getStatusSnapshot: run.getStatusSnapshot,
-    postMessage: vi.fn(),
+    postMessage: vi.fn(async (message: AgentInputUserMessage) => run.postUserMessage(message)),
     deliverInterMemberMessage: vi.fn(),
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(async () => run.interrupt()),
-    terminate: vi.fn(),
+    terminate: vi.fn(async () => run.terminate()),
     dispose: vi.fn(),
   });
 
@@ -124,6 +129,81 @@ const attachMemberRuns = (manager: unknown) => {
   );
 
   return { solutionDesignerRun, codeReviewerRun };
+};
+
+const attachTaskAgentRun = (manager: unknown) => {
+  const taskAgentRun = createFakeAgentRun();
+  const logicalRouteKey = "code_reviewer";
+  const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
+
+  const serverManagedRegistry = (manager as {
+    taskAgentRegistry?: {
+      activeByRunId?: Map<string, unknown>;
+    };
+    teamContext?: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext | MixedTeamRunContext>;
+  }).taskAgentRegistry;
+
+  if (serverManagedRegistry?.activeByRunId) {
+    const logicalMember = (manager as {
+      teamContext: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext>;
+    }).teamContext.runtimeContext.memberContexts.find(
+      (context) => context.memberRouteKey === logicalRouteKey,
+    );
+    serverManagedRegistry.activeByRunId.set(taskAgentRunId, {
+      logicalMember,
+      identity: {
+        teamRunId,
+        taskAgentInstanceId: "task-agent-instance-1",
+        taskAgentRunId,
+        taskId: "task-1",
+        logicalMember: {
+          memberName: "Code Reviewer",
+          memberPath: ["code_reviewer"],
+          memberRouteKey: logicalRouteKey,
+        },
+      },
+      run: taskAgentRun,
+      unsubscribe: vi.fn(),
+    });
+    return { taskAgentRun, taskAgentRunId, logicalRouteKey };
+  }
+
+  const mixed = manager as {
+    teamContext: TeamRunContext<MixedTeamRunContext>;
+    memberRegistry: {
+      taskAgentHandles: Map<string, unknown>;
+    };
+  };
+  const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
+    (context) => context.memberRouteKey === logicalRouteKey,
+  ) as MixedAgentMemberContext;
+  mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
+    context: {
+      ...logicalContext,
+      memberRunId: taskAgentRunId,
+      getPlatformAgentRunId: () => null,
+    },
+    isActive: () => true,
+    getStatusSnapshot: taskAgentRun.getStatusSnapshot,
+    postMessage: vi.fn(async (message: AgentInputUserMessage) => ({
+      ...(await taskAgentRun.postUserMessage(message)),
+      memberRunId: taskAgentRunId,
+      memberName: logicalContext.memberName,
+    })),
+    deliverInterMemberMessage: vi.fn(),
+    approveToolInvocation: vi.fn(async (
+      _target: unknown,
+      invocationId: string,
+      approved: boolean,
+      reason: string | null,
+    ) =>
+      taskAgentRun.approveToolInvocation(invocationId, approved, reason),
+    ),
+    interrupt: vi.fn(),
+    terminate: vi.fn(),
+    dispose: vi.fn(),
+  });
+  return { taskAgentRun, taskAgentRunId, logicalRouteKey };
 };
 
 const createCodexManager = () => {
@@ -241,5 +321,140 @@ describe.each([
 
     expect(codeReviewerRun.interrupt).not.toHaveBeenCalled();
     expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s focused member settlement routing", (_managerName, createManager) => {
+  it("settles only the requested member route key", async () => {
+    const manager = createManager();
+    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
+
+    await expect(
+      manager.settleMember("code_reviewer", "team-1::code_reviewer"),
+    ).resolves.toMatchObject({
+      accepted: true,
+      memberRunId: "team-1::code_reviewer",
+      memberName: "Code Reviewer",
+    });
+
+    expect(codeReviewerRun.terminate).toHaveBeenCalledTimes(1);
+    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
+  });
+
+  it("rejects settlement run-id guard mismatches without retargeting by run id", async () => {
+    const manager = createManager();
+    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
+
+    await expect(
+      manager.settleMember("code_reviewer", "team-1::solution_designer"),
+    ).resolves.toMatchObject({
+      accepted: false,
+      code: "TARGET_MEMBER_RUN_MISMATCH",
+    });
+
+    expect(codeReviewerRun.terminate).not.toHaveBeenCalled();
+    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s task-agent approval routing", (_managerName, createManager) => {
+  it("routes approval to the concrete task-agent run instead of the logical member run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+
+    await expect(
+      manager.approveToolInvocation(
+        { kind: "route_key", memberRouteKey: logicalRouteKey },
+        "inv-task-agent",
+        true,
+        "approved",
+        taskAgentRunId,
+      ),
+    ).resolves.toEqual({ accepted: true });
+
+    expect(taskAgentRun.approveToolInvocation).toHaveBeenCalledWith(
+      "inv-task-agent",
+      true,
+      "approved",
+    );
+    expect(codeReviewerRun.approveToolInvocation).not.toHaveBeenCalled();
+  });
+});
+
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s task-agent post-message routing", (_managerName, createManager) => {
+  it("routes messages to the concrete task-agent run instead of the logical member run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+    const message = new AgentInputUserMessage("Delegated child task completed.");
+
+    await expect(
+      manager.postMessage(
+        message,
+        { kind: "route_key", memberRouteKey: logicalRouteKey },
+        taskAgentRunId,
+      ),
+    ).resolves.toEqual({ accepted: true, memberRunId: taskAgentRunId, memberName: "Code Reviewer" });
+
+    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(message);
+    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
+  });
+
+  it("routes inter-agent revision messages to the concrete task-agent run", async () => {
+    const manager = createManager();
+    const { codeReviewerRun } = attachMemberRuns(manager);
+    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
+    const request: InterAgentMessageDeliveryRequest = {
+      teamRunId,
+      sender: {
+        participant: {
+          memberKind: "agent",
+          memberName: "Solution Designer",
+          memberPath: ["solution_designer"],
+          memberRouteKey: "solution_designer",
+          memberRunId: "team-1::solution_designer",
+          address: { teamRunId, memberPath: ["solution_designer"], memberRouteKey: "solution_designer" },
+        },
+        selector: { kind: "route_key", memberRouteKey: "solution_designer" },
+      },
+      recipient: {
+        participant: {
+          memberKind: "agent",
+          memberName: "Code Reviewer",
+          memberPath: ["code_reviewer"],
+          memberRouteKey: logicalRouteKey,
+          memberRunId: taskAgentRunId,
+          taskAgentRunId,
+          taskAgentInstanceId: "task-agent-instance-1",
+          logicalMemberRouteKey: logicalRouteKey,
+          address: { teamRunId, memberPath: ["code_reviewer"], memberRouteKey: logicalRouteKey },
+        },
+        selector: { kind: "route_key", memberRouteKey: logicalRouteKey },
+      },
+      content: "Please revise the completed task.",
+      messageType: "task_revision",
+    };
+
+    await expect(manager.deliverInterAgentMessage(request))
+      .resolves.toMatchObject({ accepted: true, memberRunId: taskAgentRunId });
+
+    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ content: expect.stringContaining("Please revise the completed task.") }),
+    );
+    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
   });
 });

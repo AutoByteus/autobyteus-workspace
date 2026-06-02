@@ -247,6 +247,57 @@ describe("AgentTeamStreamHandler", () => {
     });
   });
 
+  it("maps task-agent member input events with concrete task-agent identity", () => {
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      createTeamRunService(null) as any,
+    );
+
+    const message = handler.convertTeamEvent({
+      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+      teamRunId: "team-1",
+      sourcePath: ["worker"],
+      data: {
+        messageId: "task-agent-input-1",
+        dedupeKey: "member_input:team-1:worker:task-agent-input-1",
+        teamRunId: "team-1",
+        recipientMemberRunId: "task-agent-run-1",
+        recipientMemberName: "worker",
+        recipientMemberPath: ["worker"],
+        recipientMemberRouteKey: "worker",
+        content: "Delegated task work packet",
+        inputOrigin: "user_message",
+        receivedAt: "2026-05-30T08:00:00.000Z",
+        contextFilePaths: [],
+        taskAgentInstance: {
+          taskAgentInstanceId: "task-agent-instance-1",
+          taskAgentRunId: "task-agent-run-1",
+          taskId: "task-1",
+          logicalMember: {
+            memberName: "worker",
+            memberPath: ["worker"],
+            memberRouteKey: "worker",
+          },
+        },
+      },
+    });
+
+    expect(message.type).toBe(ServerMessageType.EXTERNAL_USER_MESSAGE);
+    expect(message.payload).toMatchObject({
+      content: "Delegated task work packet",
+      message_id: "task-agent-input-1",
+      agent_name: "worker",
+      agent_id: "task-agent-run-1",
+      member_route_key: "worker",
+      member_path: ["worker"],
+      source_route_key: "worker",
+      source_path: ["worker"],
+      task_agent_instance_id: "task-agent-instance-1",
+      task_agent_run_id: "task-agent-run-1",
+      task_id: "task-1",
+    });
+  });
+
   it("connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(null, {
@@ -351,7 +402,6 @@ describe("AgentTeamStreamHandler", () => {
       teamRun,
       expect.objectContaining({
         summary: "hello team",
-        lastKnownStatus: "ACTIVE",
       }),
     );
   });
@@ -693,6 +743,7 @@ describe("AgentTeamStreamHandler", () => {
       "inv-1",
       true,
       null,
+      null,
     );
   });
 
@@ -741,6 +792,7 @@ describe("AgentTeamStreamHandler", () => {
       "inv-camel-path",
       true,
       null,
+      null,
     );
     expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
       2,
@@ -751,6 +803,46 @@ describe("AgentTeamStreamHandler", () => {
       "inv-camel-route",
       false,
       "not allowed",
+      null,
+    );
+  });
+
+  it("routes approval commands with task-agent run identity as a concrete run guard", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-task-agent",
+          member_route_key: "worker-a",
+          source_route_key: "worker-a",
+          task_agent_run_id: "task-agent-run-1",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      {
+        kind: "route_key",
+        memberRouteKey: "worker-a",
+      },
+      "inv-task-agent",
+      true,
+      null,
+      "task-agent-run-1",
     );
   });
 

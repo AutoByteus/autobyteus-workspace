@@ -1,0 +1,28 @@
+=== 2026-06-01T13:42:09Z DMG signing preflight ===
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg
+--- codesign -dv dmg ---
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg
+Identifier=AutoByteus_enterprise_macos-arm64-1
+Format=disk image
+CodeDirectory v=20200 size=323 flags=0x0(none) hashes=1+6 location=embedded
+Hash type=sha256 size=32
+CandidateCDHash sha256=babf2a2479c1d14af62bc362aa5bfd80bde205ab
+CandidateCDHashFull sha256=babf2a2479c1d14af62bc362aa5bfd80bde205ab27ec22dc21f279b4892599db
+Hash choices=sha256
+CMSDigest=babf2a2479c1d14af62bc362aa5bfd80bde205ab27ec22dc21f279b4892599db
+CMSDigestType=2
+Page size=none
+CDHash=babf2a2479c1d14af62bc362aa5bfd80bde205ab
+Signature size=9036
+Authority=Developer ID Application: YU ZHENG (7Y86YBQ7B4)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=1. Jun 2026 at 15:40:04
+Info.plist=not bound
+TeamIdentifier=7Y86YBQ7B4
+Sealed Resources=none
+Internal requirements count=1 size=196
+
+--- codesign verify dmg ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg: satisfies its Designated Requirement

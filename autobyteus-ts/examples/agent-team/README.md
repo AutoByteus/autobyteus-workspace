@@ -5,8 +5,8 @@ version of Autobyteus. They mirror the Python examples, but use the Ink-based TU
 
 ## Categories
 
-- `manual-notification/`: Coordinator agents explicitly send messages to start work.
-- `event-driven/`: Coordinator publishes a plan and the system handles notifications.
+- `manual-notification/`: Coordinator agents explicitly send messages to start work with `send_message_to`.
+- `event-driven/`: Native `TaskNotificationMode.SYSTEM_EVENT_DRIVEN` demos for the internal TypeScript task-plan notifier. These examples do not expose the removed model-facing task-plan tools.
 
 ## Running Examples
 
@@ -57,6 +57,13 @@ node dist-examples/examples/agent-team/event-driven/run-software-engineering-tea
 
 The event-driven examples set `AUTOBYTEUS_TASK_NOTIFICATION_MODE=system_event_driven` automatically.
 You can override it in your shell if needed.
+
+The legacy model-facing task-plan tools (`assign_task_to`, `create_task`,
+`create_tasks`, `get_my_tasks`, `get_task_plan_status`, and the old local
+`update_task_status`) are not available in these examples. For server-managed
+bounded task delegation, use the `autobyteus-server-ts` team runtime tools
+`delegate_tasks` and `update_task_status`; activated members receive concrete
+work packets instead of polling for tasks.
 
 ## Tool Call Format
 

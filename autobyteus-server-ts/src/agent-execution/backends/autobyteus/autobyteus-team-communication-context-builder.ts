@@ -9,7 +9,22 @@ import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../..
 export type AutoByteusStandaloneTeamContext = {
   teamRunId: string;
   teamDefinitionId: string;
+  teamName: string;
   currentMemberName: string;
+  currentMemberPath: string[];
+  currentMemberRouteKey: string;
+  currentMemberRunId: string;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
+  coordinatorMemberRouteKey: string | null;
+  members: Array<{
+    memberName: string;
+    memberPath: string[];
+    memberRouteKey: string;
+    memberRunId: string;
+  }>;
   communicationContext: TeamCommunicationContext;
 };
 
@@ -62,7 +77,23 @@ export const buildAutoByteusStandaloneTeamContext = (
   return {
     teamRunId: memberTeamContext.teamRunId,
     teamDefinitionId: memberTeamContext.teamDefinitionId,
+    teamName: memberTeamContext.teamName,
     currentMemberName: memberTeamContext.memberName,
+    currentMemberPath: [...memberTeamContext.memberPath],
+    currentMemberRouteKey: memberTeamContext.memberRouteKey,
+    currentMemberRunId: memberTeamContext.memberRunId,
+    taskAgentInstanceId: memberTeamContext.taskAgentInstance?.taskAgentInstanceId ?? null,
+    taskAgentRunId: memberTeamContext.taskAgentInstance?.taskAgentRunId ?? null,
+    taskId: memberTeamContext.taskAgentInstance?.taskId ?? null,
+    logicalMemberRouteKey:
+      memberTeamContext.taskAgentInstance?.logicalMember.memberRouteKey ?? null,
+    coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
+    members: memberTeamContext.members.map((member) => ({
+      memberName: member.memberName,
+      memberPath: [...member.memberPath],
+      memberRouteKey: member.memberRouteKey,
+      memberRunId: member.memberRunId,
+    })),
     communicationContext,
   };
 };

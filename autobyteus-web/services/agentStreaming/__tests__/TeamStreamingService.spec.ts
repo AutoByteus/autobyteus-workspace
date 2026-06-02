@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
+import type { ServerMessage } from '../protocol';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
@@ -17,6 +20,89 @@ vi.mock('~/stores/teamCommunicationStore', () => ({
     upsertFromBackendPayload: upsertTeamCommunicationMessageMock,
   }),
 }));
+
+const createWsHarness = () => {
+  const callbacks = new Map<string, (payload?: any) => void>();
+  const wsClient = {
+    state: 'disconnected',
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    send: vi.fn(),
+    on: vi.fn((event: string, cb: (payload?: any) => void) => {
+      callbacks.set(event, cb);
+    }),
+    off: vi.fn(),
+  } as any;
+  const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+  return { callbacks, service, wsClient };
+};
+
+const createLogicalAgentContext = (memberName: string, runId: string): AgentContext => {
+  const conversation = {
+    id: runId,
+    messages: [],
+    createdAt: '2026-05-30T00:00:00.000Z',
+    updatedAt: '2026-05-30T00:00:00.000Z',
+    agentDefinitionId: `${memberName}-definition`,
+    agentName: memberName,
+    llmModelIdentifier: 'test-model',
+  };
+  return new AgentContext(
+    {
+      agentDefinitionId: `${memberName}-definition`,
+      agentDefinitionName: memberName,
+      llmModelIdentifier: 'test-model',
+      runtimeKind: 'codex_app_server',
+      workspaceId: null,
+      workspaceMetadata: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
+      isLocked: true,
+      llmConfig: null,
+    },
+    new AgentRunState(runId, conversation),
+  );
+};
+
+const createTeamContextWithWorker = () => {
+  const coordinatorContext = createLogicalAgentContext('coordinator', 'coordinator-run-1');
+  coordinatorContext.state.currentStatus = AgentStatus.Running;
+  const workerContext = createLogicalAgentContext('worker', 'worker-run-1');
+  const coordinatorNode = {
+    memberKind: 'agent',
+    memberName: 'coordinator',
+    displayName: 'Coordinator',
+    memberPath: ['coordinator'],
+    memberRouteKey: 'coordinator',
+    memberRunId: 'coordinator-run-1',
+    agentDefinitionId: 'coordinator-definition',
+    currentStatus: AgentStatus.Running,
+  };
+  const workerNode = {
+    memberKind: 'agent',
+    memberName: 'worker',
+    displayName: 'Worker',
+    memberPath: ['worker'],
+    memberRouteKey: 'worker',
+    memberRunId: 'worker-run-1',
+    agentDefinitionId: 'worker-definition',
+    currentStatus: AgentStatus.Offline,
+  };
+  return {
+    currentStatus: AgentTeamStatus.Idle,
+    focusedMemberRouteKey: 'worker',
+    coordinatorMemberRouteKey: 'coordinator',
+    memberTree: [coordinatorNode, workerNode],
+    memberNodesByRouteKey: new Map([
+      ['coordinator', coordinatorNode],
+      ['worker', workerNode],
+    ]),
+    leafAgentContextsByRouteKey: new Map([
+      ['coordinator', coordinatorContext],
+      ['worker', workerContext],
+    ]),
+  } as any;
+};
 
 describe('TeamStreamingService', () => {
   beforeEach(() => {
@@ -1057,6 +1143,393 @@ describe('TeamStreamingService', () => {
       dedupeKey: 'member_input:team-1:BuildSquad/review_lead:member-input-1',
     });
     expect(reviewLeadConversation.messages[0].timestamp.toISOString()).toBe('2026-05-13T06:30:00.000Z');
+  });
+
+  it('projects task-agent stream identity into a transient context and removes it after offline settlement', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'task-agent-run-1',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-1',
+          task_agent_run_id: 'task-agent-run-1',
+          task_id: 'task-1',
+        },
+      }),
+    );
+
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-1');
+    const taskNode = teamContext.memberNodesByRouteKey.get('task-agent-run-1');
+    expect(taskContext).toBeTruthy();
+    expect(taskContext.state.currentStatus).toBe(AgentStatus.Running);
+    expect(taskNode).toMatchObject({
+      isTaskAgentInstance: true,
+      memberRouteKey: 'task-agent-run-1',
+      memberRunId: 'task-agent-run-1',
+      taskAgentInstanceId: 'task-agent-instance-1',
+      taskAgentRunId: 'task-agent-run-1',
+      taskId: 'task-1',
+      logicalMemberRouteKey: 'worker',
+    });
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-1');
+    expect(workerContext.state.runId).toBe('worker-run-1');
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'EXTERNAL_USER_MESSAGE',
+        payload: {
+          content: 'Task-agent work packet',
+          received_at: '2026-05-30T08:00:00.000Z',
+          message_id: 'work-packet-1',
+          agent_name: 'worker',
+          agent_id: 'task-agent-run-1',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+        },
+      }),
+    );
+
+    expect(taskContext.conversation.messages).toHaveLength(1);
+    expect(taskContext.conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'Task-agent work packet',
+      messageId: 'work-packet-1',
+    });
+    expect(workerContext.conversation.messages).toHaveLength(0);
+
+    teamContext.focusedMemberRouteKey = 'task-agent-run-1';
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'offline',
+          can_interrupt: false,
+          agent_id: 'task-agent-run-1',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-1',
+          task_agent_run_id: 'task-agent-run-1',
+          task_id: 'task-1',
+        },
+      }),
+    );
+
+    expect(teamContext.leafAgentContextsByRouteKey.has('task-agent-run-1')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('task-agent-run-1')).toBe(false);
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).not.toContain('task-agent-run-1');
+    expect(teamContext.focusedMemberRouteKey).toBe('coordinator');
+  });
+
+  it('does not let identity-less task-agent status poison the logical member context before projection exists', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      service.connect('team-1', teamContext);
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'AGENT_STATUS',
+          payload: {
+            status: 'initializing',
+            can_interrupt: false,
+            agent_id: 'team-1__worker__task_0001',
+            agent_name: 'worker',
+            member_route_key: 'worker',
+            member_path: ['worker'],
+            source_route_key: 'worker',
+            source_path: ['worker'],
+          },
+        }),
+      );
+
+      expect(workerContext.state.runId).toBe('worker-run-1');
+      expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
+      expect(workerContext.conversation.messages).toHaveLength(0);
+      expect(teamContext.leafAgentContextsByRouteKey.has('team-1__worker__task_0001')).toBe(false);
+      expect(warnSpy).toHaveBeenCalledWith('No member context found for message, skipping');
+
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'AGENT_STATUS',
+          payload: {
+            status: 'running',
+            can_interrupt: true,
+            agent_id: 'team-1__worker__task_0001',
+            agent_name: 'worker',
+            member_route_key: 'worker',
+            member_path: ['worker'],
+            source_route_key: 'worker',
+            source_path: ['worker'],
+            task_agent_instance_id: 'task-agent-instance-1',
+            task_agent_run_id: 'team-1__worker__task_0001',
+            task_id: 'task_0001',
+          },
+        }),
+      );
+
+      const taskContext = teamContext.leafAgentContextsByRouteKey.get('team-1__worker__task_0001');
+      expect(taskContext).toBeTruthy();
+      expect(taskContext?.state.currentStatus).toBe(AgentStatus.Running);
+      expect(workerContext.state.runId).toBe('worker-run-1');
+      expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  it('creates the transient task-agent context from a work-packet echo that carries task-agent identity', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'EXTERNAL_USER_MESSAGE',
+        payload: {
+          content: 'Delegated task work packet',
+          received_at: '2026-05-30T08:00:00.000Z',
+          message_id: 'work-packet-with-task-agent-identity',
+          agent_name: 'worker',
+          agent_id: 'task-agent-run-from-packet',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-from-packet',
+          task_agent_run_id: 'task-agent-run-from-packet',
+          task_id: 'task-from-packet',
+        },
+      }),
+    );
+
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-from-packet');
+    expect(taskContext).toBeTruthy();
+    expect(taskContext.conversation.messages).toHaveLength(1);
+    expect(taskContext.conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'Delegated task work packet',
+    });
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-from-packet')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'worker',
+      taskId: 'task-from-packet',
+    });
+    expect(workerContext.conversation.messages).toHaveLength(0);
+    expect(workerContext.state.runId).toBe('worker-run-1');
+  });
+
+  it('repairs a missing task-agent node when the task-agent context already exists', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'task-agent-run-repair',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-repair',
+          task_agent_run_id: 'task-agent-run-repair',
+          task_id: 'task-repair',
+        },
+      }),
+    );
+    const existingTaskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-repair');
+    expect(existingTaskContext).toBeTruthy();
+
+    teamContext.memberNodesByRouteKey.delete('task-agent-run-repair');
+    teamContext.memberTree = teamContext.memberTree.filter((node: any) => node.memberRouteKey !== 'task-agent-run-repair');
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'task-agent-repair-segment',
+          turn_id: 'turn-repair',
+          segment_type: 'text',
+          agent_id: 'task-agent-run-repair',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-repair',
+          task_agent_run_id: 'task-agent-run-repair',
+          task_id: 'task-repair',
+        },
+      }),
+    );
+
+    expect(teamContext.leafAgentContextsByRouteKey.get('task-agent-run-repair')).toBe(existingTaskContext);
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-repair')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'worker',
+      taskAgentRunId: 'task-agent-run-repair',
+    });
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-repair');
+  });
+
+  it('routes typed task-agent tool approval requests and approval commands by task-agent run identity', () => {
+    const { callbacks, service, wsClient } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+    const approvalMessage = {
+      type: 'TOOL_APPROVAL_REQUESTED',
+      payload: {
+        invocation_id: 'tool-approval-1',
+        tool_name: 'read_file',
+        turn_id: 'turn-tool-1',
+        arguments: { path: '/tmp/task-agent-input.txt' },
+        agent_id: 'task-agent-run-tool',
+        agent_name: 'worker',
+        member_route_key: 'worker',
+        member_path: ['worker'],
+        source_route_key: 'worker',
+        source_path: ['worker'],
+        task_agent_instance_id: 'task-agent-instance-tool',
+        task_agent_run_id: 'task-agent-run-tool',
+        task_id: 'task-tool',
+      },
+    } satisfies ServerMessage;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify(approvalMessage));
+
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-tool');
+    expect(taskContext).toBeTruthy();
+    expect(workerContext.conversation.messages).toHaveLength(0);
+    expect(taskContext.conversation.messages).toHaveLength(1);
+    const toolSegment = (taskContext.conversation.messages[0] as any).segments[0];
+    expect(toolSegment).toMatchObject({
+      invocationId: 'tool-approval-1',
+      status: 'awaiting-approval',
+      approvalTarget: {
+        memberRouteKey: 'worker',
+        sourceRouteKey: 'worker',
+        taskAgentRunId: 'task-agent-run-tool',
+      },
+    });
+
+    service.approveTool('tool-approval-1');
+
+    const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
+    expect(outbound).toMatchObject({
+      type: 'APPROVE_TOOL',
+      payload: {
+        invocation_id: 'tool-approval-1',
+        member_route_key: 'worker',
+        source_route_key: 'worker',
+        task_agent_run_id: 'task-agent-run-tool',
+      },
+    });
+  });
+
+  it('keeps parallel same-member task-agent instances distinct until each settles', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+
+    service.connect('team-1', teamContext);
+    for (const taskNumber of [1, 2]) {
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'AGENT_STATUS',
+          payload: {
+            status: 'running',
+            can_interrupt: true,
+            agent_id: `task-agent-run-${taskNumber}`,
+            agent_name: 'worker',
+            member_route_key: 'worker',
+            member_path: ['worker'],
+            source_route_key: 'worker',
+            source_path: ['worker'],
+            task_agent_instance_id: `task-agent-instance-${taskNumber}`,
+            task_agent_run_id: `task-agent-run-${taskNumber}`,
+            task_id: `task-${taskNumber}`,
+          },
+        }),
+      );
+    }
+
+    const firstContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-1');
+    const secondContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-2');
+    expect(firstContext).toBeTruthy();
+    expect(secondContext).toBeTruthy();
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-1')?.displayName).toContain('task-1');
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-2')?.displayName).toContain('task-2');
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'task-2-segment',
+          turn_id: 'turn-task-2',
+          segment_type: 'text',
+          agent_id: 'task-agent-run-2',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-2',
+          task_agent_run_id: 'task-agent-run-2',
+          task_id: 'task-2',
+        },
+      }),
+    );
+
+    expect(firstContext.conversation.messages).toHaveLength(0);
+    expect(secondContext.conversation.messages).toHaveLength(1);
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'offline',
+          can_interrupt: false,
+          agent_id: 'task-agent-run-1',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-1',
+          task_agent_run_id: 'task-agent-run-1',
+          task_id: 'task-1',
+        },
+      }),
+    );
+
+    expect(teamContext.leafAgentContextsByRouteKey.has('task-agent-run-1')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('task-agent-run-1')).toBe(false);
+    expect(teamContext.leafAgentContextsByRouteKey.has('task-agent-run-2')).toBe(true);
+    expect(teamContext.memberNodesByRouteKey.has('task-agent-run-2')).toBe(true);
   });
 
   it('routes compaction lifecycle messages to the targeted member context', () => {

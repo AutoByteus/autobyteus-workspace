@@ -34,18 +34,23 @@
     </div>
 
     <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
+      <TeamTaskAgentActivityBar
+        :team-context="activeTeamContext"
+        @select-member="setFocusedMember"
+      />
+
       <div class="flex-grow min-h-0">
         <AgentTeamEventMonitor v-if="currentMode === 'focus'" />
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
+          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
         <TeamSpotlightView
           v-else
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
+          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
       </div>
@@ -99,6 +104,7 @@ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
 import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
+import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
@@ -117,19 +123,12 @@ const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
+const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
 const focusedMemberContext = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey) {
-    return null;
-  }
-  return team.leafAgentContextsByRouteKey.get(team.focusedMemberRouteKey) ?? null;
+  return teamContextsStore.activeExecutionFocusedMemberContext;
 });
 const focusedMemberNode = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey) {
-    return null;
-  }
-  return team.memberNodesByRouteKey.get(team.focusedMemberRouteKey) ?? null;
+  return teamContextsStore.activeExecutionFocusedMemberNode;
 });
 
 const currentMode = computed<TeamWorkspaceViewMode>(() => {
@@ -137,6 +136,12 @@ const currentMode = computed<TeamWorkspaceViewMode>(() => {
 });
 
 const showSharedComposer = computed(() => {
+  if (!activeExecutionFocusedMemberRouteKey.value) {
+    return false;
+  }
+  if (focusedMemberNode.value?.isTaskAgentInstance) {
+    return false;
+  }
   return Boolean(activeTeamContext.value) && (
     currentMode.value !== 'focus' || focusedMemberNode.value?.memberKind === 'agent_team'
   );
@@ -155,7 +160,7 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberRouteKey = team.focusedMemberRouteKey?.trim();
+  const focusedMemberRouteKey = activeExecutionFocusedMemberRouteKey.value;
   if (!focusedMemberRouteKey) {
     return team.config.teamDefinitionName || 'Team';
   }
@@ -168,11 +173,12 @@ const headerTitle = computed(() => {
 
 const headerAvatarUrl = computed(() => {
   const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey || focusedMemberNode.value?.memberKind === 'agent_team') {
+  const focusedRouteKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!team || !focusedRouteKey || focusedMemberNode.value?.memberKind === 'agent_team') {
     return '';
   }
 
-  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMemberContext.value);
+  return getMemberAvatarUrl(focusedRouteKey, focusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);

@@ -11,6 +11,10 @@ describe("configured-agent-tool-exposure", () => {
       " open_tab ",
       "read_page",
       "generate_image",
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
       "send_message_to",
       " publish_artifacts ",
       "",
@@ -22,16 +26,58 @@ describe("configured-agent-tool-exposure", () => {
       "open_tab",
       "read_page",
       "generate_image",
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
       "send_message_to",
       "publish_artifacts",
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
+    expect(exposure.enabledTaskDelegationToolNames).toEqual([
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
+    ]);
     expect(exposure.sendMessageToConfigured).toBe(true);
     expect(exposure.publishArtifactsConfigured).toBe(true);
     expect(toConfiguredAgentToolNameSet(exposure)).toEqual(
-      new Set(["open_tab", "read_page", "generate_image", "send_message_to", "publish_artifacts"]),
+      new Set([
+        "open_tab",
+        "read_page",
+        "generate_image",
+        "delegate_tasks",
+        "mark_task_completed",
+        "mark_task_failed",
+        "accept_task",
+        "send_message_to",
+        "publish_artifacts",
+      ]),
     );
+  });
+
+  it("does not expose removed legacy task tools as task delegation tools", () => {
+    const exposure = buildConfiguredAgentToolExposure([
+      "create_task",
+      "create_tasks",
+      "get_my_tasks",
+      "get_task_plan_status",
+      "assign_task_to",
+      "update_task_status",
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
+    ]);
+
+    expect(exposure.enabledTaskDelegationToolNames).toEqual([
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
+    ]);
   });
 
   it("does not expose artifact publication for old singular-only configs", () => {
@@ -53,6 +99,7 @@ describe("configured-agent-tool-exposure", () => {
       configuredToolNames: [],
       enabledBrowserToolNames: [],
       enabledMediaToolNames: [],
+      enabledTaskDelegationToolNames: [],
       sendMessageToConfigured: false,
       publishArtifactsConfigured: false,
     });

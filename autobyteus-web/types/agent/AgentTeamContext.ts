@@ -15,6 +15,12 @@ export interface TeamMemberNodeBase {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId?: string | null;
+  /** True for transient frontend projections of concrete delegated task-agent instances. */
+  isTaskAgentInstance?: boolean;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
   /** Backend-owned canonical status for structural/non-leaf members. */
   currentStatus?: AgentStatus | null;
   role?: string | null;

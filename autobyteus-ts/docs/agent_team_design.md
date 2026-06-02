@@ -6,11 +6,11 @@ Agent Teams provide the **multi-agent orchestration layer** in Autobyteus. A tea
 
 - routes messages to the correct node,
 - lazily starts agents/sub-teams on demand,
-- coordinates task plans and optional system-driven notifications,
+- coordinates native internal task-plan events and optional system-driven notifications,
 - aggregates events into a single team stream,
 - and manages clean shutdown across all nodes.
 
-This document focuses on the **agent-team** package and how it integrates with the runtime and event-driven core.
+This document focuses on the **agent-team** package and how it integrates with the runtime and event-driven core. Server-managed bounded task delegation (`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and `accept_task`) is owned in `autobyteus-server-ts`; see `agent_team_runtime_and_task_coordination.md` for the boundary between native internal task-plan support and server-owned delegation.
 
 ---
 
@@ -42,7 +42,7 @@ The facade forwards all calls to the runtime, ensuring concurrency and event-dri
 
 - enforces unique node names,
 - sets the coordinator,
-- configures `TaskNotificationMode`.
+- configures the native `TaskNotificationMode` used by the internal `TaskPlan` notifier.
 
 The builder compiles everything into a single immutable **AgentTeamConfig**.
 
@@ -118,7 +118,7 @@ When a message targets a node, `ensure_node_is_ready()`:
 
 This guarantees a consistent path for all intra-team communication.
 
-For native AutoByteus teams, `TeamManager` remains the authoritative owner of task-plan-aware routing. Communication-only adapters may provide a narrower `TeamCommunicationContext` without exposing the full native team runtime.
+For native AutoByteus teams, `TeamManager` remains the authoritative owner of message routing and native task-notifier activation. Communication-only adapters may provide a narrower `TeamCommunicationContext` without exposing the full native team runtime.
 
 ---
 
@@ -127,8 +127,8 @@ For native AutoByteus teams, `TeamManager` remains the authoritative owner of ta
 Team initialization runs inside the worker loop via `AgentTeamBootstrapper`:
 
 1. **Queue initialization** (`AgentTeamRuntimeQueueInitializationStep`)
-2. **TaskPlan setup + event bridging** (`TeamContextInitializationStep`)
-3. **Optional notifier** (SYSTEM_EVENT_DRIVEN only)
+2. **Native TaskPlan setup + event bridging** (`TeamContextInitializationStep`)
+3. **Optional native notifier** (SYSTEM_EVENT_DRIVEN only)
 4. **Final agent config preparation** (context injection + attach TeamManifestInjectorProcessor). The processor replaces `{{team}}` if present; otherwise it appends a Team Manifest section automatically.
 5. **Coordinator initialization** (ensure coordinator starts early)
 
@@ -136,24 +136,39 @@ When complete, the worker enqueues `AgentTeamReadyEvent` and the status updates 
 
 ---
 
-## 7. Task Plan + Notification Modes
+## 7. Native TaskPlan + Notification Modes
 
-Teams can run in two modes (see `TaskNotificationMode`):
-You can set the default via `AUTOBYTEUS_TASK_NOTIFICATION_MODE` (`agent_manual_notification` or `system_event_driven`).
+Native teams still initialize an internal `TaskPlan` and can run with
+`TaskNotificationMode` (`agent_manual_notification` or `system_event_driven`).
+This is a native runtime subsystem, not the current cross-runtime model-facing
+task tool surface.
 
 ### 7.1 AGENT_MANUAL_NOTIFICATION (default)
 
-- Coordinator explicitly sends messages to agents using tools.
-- TaskPlan is updated, but no automatic activation occurs.
+- Coordinators explicitly send teammate messages, normally with `send_message_to`.
+- Native `TaskPlan` state may exist, but there is no model-facing task-plan tool
+  workflow for agents to create or poll tasks.
 
 ### 7.2 SYSTEM_EVENT_DRIVEN
 
-- `SystemEventDrivenAgentTaskNotifier` monitors TaskPlan events.
-- `ActivationPolicy` tracks which agents have already been activated for a “wave”.
-- `TaskActivator` ensures the agent is running and sends a generic “start work” message.
-- Runnable tasks are marked `QUEUED` before activation.
+- `SystemEventDrivenAgentTaskNotifier` monitors native `TaskPlan` events.
+- `ActivationPolicy` tracks which agents have already been activated for a wave.
+- `TaskActivator` ensures the agent is running and sends a generic start-work
+  message.
+- Runnable native tasks are marked `QUEUED` before activation.
 
-This mode allows _fully automated_ task distribution with minimal coordinator overhead.
+The removed legacy model-facing task-plan tools are `assign_task_to`,
+`create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, and the
+old local task-plan `update_task_status`. Server-managed bounded work uses the
+server-owned explicit task-delegation flow: `delegate_tasks` pushes concrete
+work packets, task-agent workers report results with `mark_task_completed` or
+`mark_task_failed`, and original delegators accept successful work with
+`accept_task`. The server emits task-delegation events, notifies original
+delegators and team/coordinator history on terminal reports, keeps completed
+task-agent instances addressable while awaiting acceptance, and handles safe
+task-agent settlement on supported server team backends. Native AutoByteus
+pure-team exposure is gated until native task-agent/per-member settlement
+exists.
 
 ---
 
@@ -166,7 +181,7 @@ This mode allows _fully automated_ task distribution with minimal coordinator ov
 - can include optional explicit `reference_files` absolute local paths for files the recipient may need to inspect,
 - relies on the communication-context owner to start or wake the recipient if needed.
 
-In native teams, `createScopedNativeTeamContext(...)` supplies a communication context that still delegates to `TeamManager`. Server-owned mixed-team adapters can provide the same communication contract without exposing the whole native `AgentTeamContext`. Task-plan tools remain native-team concerns and are not covered by this narrower communication seam.
+In native teams, `createScopedNativeTeamContext(...)` supplies a communication context that still delegates to `TeamManager`. Server-owned mixed-team adapters can provide the same communication contract without exposing the whole native `AgentTeamContext`. Bounded task delegation is a separate server-owned workflow; `send_message_to` should not be treated as a task ledger, and removed task-plan tools should not be reintroduced through this communication seam.
 
 ---
 
@@ -177,7 +192,7 @@ Agent Teams expose a unified stream via `AgentTeamExternalEventNotifier`:
 - **TEAM**: status updates
 - **AGENT**: re-broadcast agent events
 - **SUB_TEAM**: re-broadcast sub-team streams
-- **TASK_PLAN**: task plan updates
+- **TASK_PLAN**: native internal task-plan updates
 
 `AgentEventMultiplexer` manages bridges:
 

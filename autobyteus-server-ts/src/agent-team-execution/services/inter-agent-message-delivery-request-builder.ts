@@ -46,6 +46,8 @@ export const buildInterAgentMessageDeliveryRequestFromRecipientName = (input: {
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+  taskAgentRunId?: string | null;
+  taskAgentInstanceId?: string | null;
 }): InterAgentMessageDeliveryRequestBuildResult => {
   const recipient = findCommunicationRecipient(input.memberTeamContext, input.recipientName);
   if (!recipient) {
@@ -57,6 +59,17 @@ export const buildInterAgentMessageDeliveryRequestFromRecipientName = (input: {
   }
 
   const sender = buildSenderParticipant(input.memberTeamContext);
+  const taskAgentRunId = input.taskAgentRunId?.trim() || null;
+  const taskAgentInstanceId = input.taskAgentInstanceId?.trim() || null;
+  const recipientParticipant = taskAgentRunId
+    ? {
+        ...recipient.participant,
+        memberRunId: taskAgentRunId,
+        taskAgentRunId,
+        taskAgentInstanceId,
+        logicalMemberRouteKey: recipient.participant.memberRouteKey,
+      }
+    : recipient.participant;
   return {
     ok: true,
     recipient,
@@ -67,7 +80,7 @@ export const buildInterAgentMessageDeliveryRequestFromRecipientName = (input: {
         selectorFromMemberPath(sender.address.memberPath),
       ),
       recipient: buildDeliveryEndpointForParticipant(
-        recipient.participant,
+        recipientParticipant,
         recipient.delivery.selector,
       ),
       content: input.content,

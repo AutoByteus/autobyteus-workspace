@@ -18,6 +18,9 @@ import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { applyLiveTeamStatusSnapshot } from './teamRunStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunStatusHydration';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+
 export {
   applyLiveTeamStatusSnapshot,
   hydrateTeamMemberActivitiesFromProjection,
@@ -245,12 +248,26 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
   });
 
-  const availableMemberRouteKeys = collectMetadataMemberRouteKeys(input.metadata);
-  const focusedMemberRouteKey = resolveFocusKey({
+  const fallbackFocusKey = resolveFocusKey({
     requestedMemberRouteKey: input.requestedMemberRouteKey,
     coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
-    availableMemberRouteKeys,
+    availableMemberRouteKeys: collectMetadataMemberRouteKeys(input.metadata),
   });
+  const memberTree = teamMemberNodesFromMetadata(input.metadata.memberTree);
+  const focusedMemberRouteKey = resolveActiveExecutionFocusedMemberRouteKey({
+    teamRunId: input.metadata.teamRunId,
+    config: {} as AgentTeamContext['config'],
+    memberTree,
+    memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree),
+    leafAgentContextsByRouteKey: members,
+    coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
+    historicalHydration: null,
+    focusedMemberRouteKey: fallbackFocusKey,
+    currentStatus: AgentTeamStatus.Running,
+    isSubscribed: false,
+    taskPlan: null,
+    taskStatuses: null,
+  }, fallbackFocusKey) || fallbackFocusKey;
 
   if (!focusedMemberRouteKey) {
     throw new Error(`Team '${input.metadata.teamRunId}' has no members in metadata.`);

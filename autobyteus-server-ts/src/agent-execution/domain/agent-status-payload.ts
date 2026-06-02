@@ -9,6 +9,9 @@ export type AgentStatusPayload = {
   member_path?: string[];
   source_route_key?: string;
   source_path?: string[];
+  task_agent_instance_id?: string;
+  task_agent_run_id?: string;
+  task_id?: string;
 };
 
 const normalizeStatusToken = (value: unknown): string | null => {
@@ -55,6 +58,9 @@ export const buildAgentStatusPayload = (input: {
   memberPath?: string[] | null;
   sourceRouteKey?: string | null;
   sourcePath?: string[] | null;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
 }): AgentStatusPayload => {
   const status = normalizeAgentApiStatus(input.status);
   const payload: AgentStatusPayload = {
@@ -88,6 +94,18 @@ export const buildAgentStatusPayload = (input: {
     : [];
   if (sourcePath.length > 0) {
     payload.source_path = sourcePath;
+  }
+  const taskAgentInstanceId = typeof input.taskAgentInstanceId === "string" ? input.taskAgentInstanceId.trim() : "";
+  if (taskAgentInstanceId) {
+    payload.task_agent_instance_id = taskAgentInstanceId;
+  }
+  const taskAgentRunId = typeof input.taskAgentRunId === "string" ? input.taskAgentRunId.trim() : "";
+  if (taskAgentRunId) {
+    payload.task_agent_run_id = taskAgentRunId;
+  }
+  const taskId = typeof input.taskId === "string" ? input.taskId.trim() : "";
+  if (taskId) {
+    payload.task_id = taskId;
   }
   return payload;
 };

@@ -27,6 +27,7 @@ import type { AgentStatusPayload } from "../../../../agent-execution/domain/agen
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
+import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import {
   getMemberTeamContextBuilder,
   type MemberTeamContextBuilder,
@@ -57,6 +58,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryRequest) => Promise<AgentOperationResult>;
+    taskAgentInstance?: TaskAgentInstanceIdentity | null;
   }) {
     this.context = options.context;
     this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
@@ -88,6 +90,13 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       member_path: this.context.memberPath,
       source_route_key: this.context.memberRouteKey,
       source_path: this.context.memberPath,
+      ...(this.options.taskAgentInstance
+        ? {
+            task_agent_instance_id: this.options.taskAgentInstance.taskAgentInstanceId,
+            task_agent_run_id: this.options.taskAgentInstance.taskAgentRunId,
+            task_id: this.options.taskAgentInstance.taskId,
+          }
+        : {}),
     } satisfies AgentStatusPayload;
   }
 
@@ -141,6 +150,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
         teamRunId: this.options.teamContext.runId,
         memberContext: this.context,
         message,
+        taskAgentInstance: this.options.taskAgentInstance ?? null,
       }) satisfies TeamRunMemberInputEventPayload,
     });
   }
@@ -248,6 +258,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       members: this.buildMemberTeamContextInputs(),
       parentBoundary: this.options.teamContext.runtimeContext.parentBoundary,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+      taskAgentInstance: this.options.taskAgentInstance ?? null,
     });
 
     return new AgentRunConfig({
@@ -351,6 +362,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
           memberPath: this.context.memberPath,
           memberRouteKey: this.context.memberRouteKey,
           agentEvent: event,
+          taskAgentInstance: this.options.taskAgentInstance ?? null,
         } satisfies TeamRunAgentEventPayload,
       };
       this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);

@@ -5,27 +5,16 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type {
-  TeamTreeNode,
-  TeamRunHistoryItem,
-  TeamRunMetadataPayload,
-  TeamMemberRunProjectionPayload,
-} from '~/stores/runHistoryTypes';
+import type { TeamTreeNode, TeamRunHistoryItem, TeamRunMetadataPayload, TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 import { hydrateActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
 import { normalizeTeamRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
-import {
-  applyMemberOrHistoryStatusSnapshot,
-  initializeRuntimeStatusState,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyMemberOrHistoryStatusSnapshot, initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
-import {
-  buildTeamRowsFromContext,
-  buildTeamRowsFromHistoryItem,
-  flattenTeamRows,
-} from '~/stores/runHistoryTeamRows';
+import { buildTeamRowsFromContext, buildTeamRowsFromHistoryItem, flattenTeamRows } from '~/stores/runHistoryTeamRows';
+import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 export const toHistoryTeamStatus = (
   team: Pick<TeamRunHistoryItem, 'status'>,
@@ -202,6 +191,13 @@ export const buildTeamNodes = (params: {
       params.resolveWorkspaceRootPath,
     );
     const members = flattenTeamRows(memberTree);
+    const activeExecutionFocusedRouteKey = resolveActiveExecutionFocusedMemberRouteKey(
+      teamContext,
+      teamContext.focusedMemberRouteKey,
+    );
+    const focusedMemberRouteKey = members.find((member) => member.memberRouteKey === activeExecutionFocusedRouteKey)?.memberRouteKey ||
+      members.find((member) => member.memberRouteKey === teamContext.focusedMemberRouteKey)?.memberRouteKey ||
+      members[0]?.memberRouteKey || '';
     const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
     const teamDefinitionId =
       existing?.teamDefinitionId ||
@@ -219,7 +215,7 @@ export const buildTeamNodes = (params: {
       isActive,
       currentStatus,
       deleteLifecycle,
-      focusedMemberRouteKey: teamContext.focusedMemberRouteKey,
+      focusedMemberRouteKey,
       members,
       memberTree,
     });

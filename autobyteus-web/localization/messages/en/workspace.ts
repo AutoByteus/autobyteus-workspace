@@ -92,6 +92,22 @@ const messages = {
     "Focused subteam",
   "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
     "Subteam members",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
+    "Task agent",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
+    "Member",
+  "workspace.components.workspace.team.TeamMembersPanel.team_members":
+    "Team roster",
+  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
+    "No team roster members.",
+  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
+    "Logical roster, not active task execution.",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
+    "Active task agents",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
+    "Task agent",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
+    "Approval required",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

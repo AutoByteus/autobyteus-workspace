@@ -37,6 +37,9 @@ const {
     activeTeamContext: null as any,
     focusedMemberContext: null as any,
     focusedMemberNode: null as any,
+    activeExecutionFocusedMemberRouteKey: '' as string,
+    activeExecutionFocusedMemberContext: null as any,
+    activeExecutionFocusedMemberNode: null as any,
     getTeamContextById: vi.fn(),
     removeTeamContext: vi.fn(),
     promoteTemporaryTeamRunId: vi.fn(),
@@ -100,18 +103,43 @@ const buildTeamContext = (params: {
   };
 };
 
+const indexMemberNodes = (nodes: any[]): Map<string, any> => {
+  const indexed = new Map<string, any>();
+  const visit = (node: any) => {
+    indexed.set(node.memberRouteKey, node);
+    if (Array.isArray(node.children)) {
+      node.children.forEach(visit);
+    }
+  };
+  nodes.forEach(visit);
+  return indexed;
+};
+
 const setActiveTeamContext = (teamContext: any) => {
-  if (!teamContext.memberTree || !teamContext.memberNodesByRouteKey) {
+  if (!teamContext.memberTree) {
     const memberRouteKeys = Array.from(teamContext.leafAgentContextsByRouteKey.keys());
     teamContext.memberTree = memberRouteKeys.map((memberRouteKey) => buildAgentNode(memberRouteKey as string));
-    teamContext.memberNodesByRouteKey = new Map(teamContext.memberTree.map((node: any) => [node.memberRouteKey, node]));
+  }
+  if (!teamContext.memberNodesByRouteKey) {
+    teamContext.memberNodesByRouteKey = indexMemberNodes(teamContext.memberTree);
   }
   teamContextsStoreMock.activeTeamContext = teamContext;
   teamContextsStoreMock.focusedMemberContext = teamContext.leafAgentContextsByRouteKey.get(teamContext.focusedMemberRouteKey) || null;
   teamContextsStoreMock.focusedMemberNode = teamContext.memberNodesByRouteKey.get(teamContext.focusedMemberRouteKey) || null;
+  teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = teamContext.focusedMemberRouteKey;
+  teamContextsStoreMock.activeExecutionFocusedMemberContext = teamContextsStoreMock.focusedMemberContext;
+  teamContextsStoreMock.activeExecutionFocusedMemberNode = teamContextsStoreMock.focusedMemberNode;
   teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
     teamRunId === teamContext.teamRunId ? teamContext : null,
   );
+};
+
+const setActiveExecutionFocus = (teamContext: any, memberRouteKey: string) => {
+  teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = memberRouteKey;
+  teamContextsStoreMock.activeExecutionFocusedMemberContext =
+    teamContext.leafAgentContextsByRouteKey.get(memberRouteKey) || null;
+  teamContextsStoreMock.activeExecutionFocusedMemberNode =
+    teamContext.memberNodesByRouteKey.get(memberRouteKey) || null;
 };
 
 vi.mock('~/services/agentStreaming', () => ({
@@ -192,6 +220,9 @@ describe('agentTeamRunStore', () => {
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
     teamContextsStoreMock.focusedMemberNode = null;
+    teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = '';
+    teamContextsStoreMock.activeExecutionFocusedMemberContext = null;
+    teamContextsStoreMock.activeExecutionFocusedMemberNode = null;
     teamContextsStoreMock.getTeamContextById.mockReset();
     runHistoryStoreMock.teamResumeConfigByTeamRunId = {};
     contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
@@ -348,9 +379,7 @@ describe('agentTeamRunStore', () => {
       leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
     };
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
       teamRunId === 'team-1' ? teamContext : null,
     );
@@ -368,6 +397,64 @@ describe('agentTeamRunStore', () => {
       dedupeKey: expect.stringContaining('member_input:'),
     }));
     expect(teamContext.isSubscribed).toBe(true);
+  });
+
+  it('sends to active-execution focus instead of stale task-only logical focus', async () => {
+    const coordinator = {
+      state: {
+        runId: 'coordinator-run',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+    };
+    const worker = {
+      state: {
+        runId: 'worker-run',
+        currentStatus: AgentStatus.Offline,
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-active-focus-send-1',
+      focusedMemberRouteKey: 'worker',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberContexts: {
+        coordinator,
+        worker,
+      },
+    });
+    teamContext.coordinatorMemberRouteKey = 'coordinator';
+    setActiveTeamContext(teamContext);
+    setActiveExecutionFocus(teamContext, 'coordinator');
+
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('send to active execution', []);
+
+    expect(coordinator.state.conversation.messages).toHaveLength(1);
+    expect(worker.state.conversation.messages).toHaveLength(0);
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'send to active execution',
+      'coordinator',
+      [],
+      [],
+      expect.objectContaining({
+        messageId: expect.stringMatching(/^client_/),
+        dedupeKey: expect.stringContaining('member_input:team-active-focus-send-1:coordinator:'),
+      }),
+    );
   });
 
   it('does not synthesize a focused-member approval target when no event target is supplied', async () => {
@@ -478,9 +565,7 @@ describe('agentTeamRunStore', () => {
       leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
     };
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
       teamRunId === 'team-restore-1' ? teamContext : null,
     );
@@ -616,9 +701,7 @@ describe('agentTeamRunStore', () => {
       leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
     };
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
       teamRunId === teamContext.teamRunId ? teamContext : null,
     );
@@ -694,9 +777,7 @@ describe('agentTeamRunStore', () => {
       leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
     };
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
 
     const store = useAgentTeamRunStore();
@@ -796,9 +877,7 @@ describe('agentTeamRunStore', () => {
       ],
     });
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
       teamRunId === 'team-1' ? { ...teamContext, teamRunId: 'team-1' } : null,
     );
@@ -928,9 +1007,7 @@ describe('agentTeamRunStore', () => {
       return null;
     });
 
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.focusedMemberContext = focusedMember;
-    teamContextsStoreMock.focusedMemberNode = buildAgentNode(teamContext.focusedMemberRouteKey);
+    setActiveTeamContext(teamContext);
     teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
       teamRunId === 'team-nested-1' ? { ...teamContext, teamRunId: 'team-nested-1' } : null,
     );

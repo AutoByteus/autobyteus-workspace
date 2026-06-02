@@ -1,6 +1,7 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
@@ -8,6 +9,7 @@ export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   TEAM = "TEAM",
   TASK_PLAN = "TASK_PLAN",
+  TASK_DELEGATION = "TASK_DELEGATION",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
 }
@@ -24,9 +26,18 @@ export type TeamRunAgentEventPayload = {
   memberPath: string[];
   memberRouteKey: string;
   agentEvent: AgentRunEvent;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 };
 
 export type TeamRunTaskPlanEventPayload = Record<string, unknown>;
+
+export type TeamRunTaskDelegationEventPayload = {
+  eventType:
+    | "TASK_DELEGATION_TERMINAL_STATUS"
+    | "TASK_DELEGATION_STATUS_UPDATED"
+    | "TASK_DELEGATION_ACTIVATED";
+  payload: unknown;
+};
 
 export type TeamCommunicationReferenceFile = {
   referenceId: string;
@@ -85,12 +96,14 @@ export type TeamRunMemberInputEventPayload = {
   senderMemberPath?: string[] | null;
   senderMemberRouteKey?: string | null;
   parentCommunicationMessageId?: string | null;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 };
 
 export type TeamRunEventData =
   | TeamRunStatusUpdateData
   | TeamRunAgentEventPayload
   | TeamRunTaskPlanEventPayload
+  | TeamRunTaskDelegationEventPayload
   | TeamRunCommunicationEventPayload
   | TeamRunMemberInputEventPayload;
 

@@ -45,6 +45,9 @@
       <div v-else-if="!focusedMember">
          <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the') }}</p>
       </div>
+      <div v-else>
+        <p>{{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.no_activity_yet') }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -54,6 +57,7 @@ import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
+import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
@@ -63,25 +67,30 @@ defineProps<{
 }>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const focusedMember = computed(() => teamContextsStore.focusedMemberContext);
-const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
-const conversationOfFocusedMember = computed(() => focusedMember.value?.state.conversation);
+const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
+const focusedMember = computed(() => teamContextsStore.activeExecutionFocusedMemberContext);
+const focusedMemberNode = computed(() => teamContextsStore.activeExecutionFocusedMemberNode);
+const conversationOfFocusedMember = computed(() => (
+  shouldShowMemberConversation(focusedMemberNode.value, focusedMember.value)
+    ? focusedMember.value?.state.conversation
+    : null
+));
 
 const focusedMemberDisplayName = computed(() => {
-  const team = activeTeam.value;
-  if (!team?.focusedMemberRouteKey) {
+  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!routeKey) {
     return '';
   }
   return focusedMemberNode.value?.displayName
-    || getMemberDisplayName(team.focusedMemberRouteKey, focusedMember.value);
+    || getMemberDisplayName(routeKey, focusedMember.value);
 });
 
 const focusedMemberAvatarUrl = computed(() => {
-  const team = activeTeam.value;
-  if (!team?.focusedMemberRouteKey || !focusedMember.value) {
+  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!routeKey || !focusedMember.value) {
     return null;
   }
-  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMember.value) || null;
+  return getMemberAvatarUrl(routeKey, focusedMember.value) || null;
 });
 
 const interAgentSenderNameById = computed<Record<string, string>>(() => {

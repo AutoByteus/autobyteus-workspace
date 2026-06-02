@@ -11,7 +11,7 @@ Agent Teams in Autobyteus expose a **single, unified event stream** (`AgentTeamE
 1.  **TEAM**: The coordinator itself (status updates).
 2.  **AGENT**: Individual agents running in the team (streamed responses, tool calls).
 3.  **SUB_TEAM**: Nested sub-teams (recursive aggregation).
-4.  **TASK_PLAN**: Task management events (task creation, status updates).
+4.  **TASK_PLAN**: Native internal TaskPlan events (task creation, status updates). Server-owned task-delegation events are documented in `autobyteus-server-ts/docs/modules/agent_team_execution.md`.
 
 This document defines the **JSON wire format** and **data flow** for this stream.
 
@@ -119,7 +119,7 @@ Recursive events from nested teams.
 
 #### D. Source Type: `TASK_PLAN`
 
-Events related to the shared task board.
+Events related to the native internal task board. These are not the server-owned explicit task-delegation events used by cross-runtime delegation (`delegate_tasks`, task-agent `mark_task_completed` / `mark_task_failed`, and delegator `accept_task`).
 
 - **TypeScript Type**: `TaskPlanEventPayload` (Union)
 - **Payload (`data`)** (Example: `TasksCreatedEvent`):

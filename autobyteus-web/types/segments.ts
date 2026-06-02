@@ -40,6 +40,7 @@ export interface ToolApprovalTarget {
   memberPath?: string[] | null;
   sourceRouteKey?: string | null;
   sourcePath?: string[] | null;
+  taskAgentRunId?: string | null;
 }
 
 export interface AIResponseTextSegment {

@@ -39,6 +39,7 @@ const agentSelectionStoreMock = reactive({
 
 const agentTeamContextsStoreMock = reactive({
   activeTeamContext: null as any,
+  activeExecutionFocusedMemberRouteKey: '',
 });
 
 const contextFileUploadStoreMock = reactive({
@@ -128,6 +129,8 @@ describe('ContextFilePathInputArea', () => {
 
     selectContext(createContext('temp-agent-1'));
     agentSelectionStoreMock.selectedType = 'agent';
+    agentTeamContextsStoreMock.activeTeamContext = null;
+    agentTeamContextsStoreMock.activeExecutionFocusedMemberRouteKey = '';
     contextFileUploadStoreMock.isUploading = false;
     windowNodeContextStoreMock.isEmbeddedWindow = true;
     workspaceStoreMock.activeWorkspace = { workspaceId: 'ws-1' };
@@ -263,6 +266,7 @@ describe('ContextFilePathInputArea', () => {
         ['implementation_engineer', implementationContext],
       ]),
     };
+    agentTeamContextsStoreMock.activeExecutionFocusedMemberRouteKey = 'solution_designer';
 
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(new Blob(['image-bytes'], { type: 'image/png' }), {

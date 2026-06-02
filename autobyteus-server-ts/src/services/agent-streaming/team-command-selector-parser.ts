@@ -71,6 +71,23 @@ export const resolveToolApprovalTargetSelector = (
   ],
 });
 
+export const resolveToolApprovalTargetRunId = (
+  payload: Record<string, unknown>,
+): string | null => {
+  for (const key of [
+    "task_agent_run_id",
+    "taskAgentRunId",
+    "target_member_run_id",
+    "targetMemberRunId",
+  ]) {
+    const value = payload[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return null;
+};
+
 export const resolveInterruptGenerationTargetSelector = (
   payload: Record<string, unknown>,
 ): TeamMemberSelector | null => resolveTeamMemberSelectorFromPayload(payload, {

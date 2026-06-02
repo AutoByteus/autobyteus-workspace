@@ -1,0 +1,67 @@
+Date (UTC): 2026-06-02T10:01:53Z
+Final HEAD: 52c8c07dd0a6f1f9e493aefdcfecbc9c8fd074fe
+origin/personal: 269fdc5671352327b02c2d0b45543fab8a8810c2
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+Mount point: /Volumes/AutoByteus 1.3.41-arm64
+App: /Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app
+--- attach output ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $4C7A6A23
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $527458CE
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $668C6CD5
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $A45C498A
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $668C6CD5
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $B56F5BF9
+Die überprüfte CRC32-Prüfsumme ist $F0523B81
+/dev/disk10         	EF57347C-0000-11AA-AA11-0030654	
+/dev/disk10s1       	41504653-0000-11AA-AA11-0030654	/Volumes/AutoByteus 1.3.41-arm64
+/dev/disk9          	GUID_partition_scheme          	
+/dev/disk9s1        	Apple_APFS                     	
+--- mounted app CodeResources presence ---
+present: /Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/_CodeSignature/CodeResources
+--- codesign verify mounted app ---
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app: valid on disk
+/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app: satisfies its Designated Requirement
+--- spctl assess mounted app ---
+/Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app: accepted
+source=Notarized Developer ID
+--- stapler validate mounted app ---
+Processing: /Volumes/AutoByteus 1.3.41-arm64/AutoByteus.app
+The validate action worked!
+--- codesign display mounted app ---
+Identifier=com.autobyteus.app
+Authority=Developer ID Application: YU ZHENG (7Y86YBQ7B4)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=2. Jun 2026 at 11:39:37
+Notarization Ticket=stapled
+TeamIdentifier=7Y86YBQ7B4
+Runtime Version=26.0.0
+Sealed Resources version=2 rules=13 files=31462

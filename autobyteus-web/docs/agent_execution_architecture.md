@@ -54,7 +54,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
-  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
+  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., native task-plan updates, server task-delegation lifecycle events, status changes) via WebSocket.
   - `sendMessageToFocusedMember()`: Routes user input to a specific focused member. After validation, it immediately begins a local submission for that member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
   - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
@@ -84,8 +84,12 @@ shown only for `awaiting-approval` rows, and backend rejection remains
 authoritative when a stale client attempts to approve an active-but-not-pending
 tool invocation. For team streams, approval dispatch must use the structured
 `ToolApprovalTarget` captured from the backend approval event, such as a member
-route key/path. The frontend must not rebuild approval targets from the current
-focused member, scalar aliases, or invocation-id fallbacks after focus changes.
+route key/path. When the pending approval belongs to a delegated task-agent run,
+the target must also carry the concrete `task_agent_run_id` emitted by the
+backend so approval/denial routes to that task-scoped runtime rather than the
+logical member template. The frontend must not rebuild approval targets from the
+current focused member, scalar aliases, or invocation-id fallbacks after focus
+changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
@@ -150,6 +154,21 @@ member-scoped active history/snapshot/event, the other members must stay at
 their own member-scoped status, or default to `offline/canInterrupt=false`
 until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
 out aggregate team `running` or `initializing` state to every member row.
+Delegated task-agent instances are task-scoped transient child entities under
+their logical member/template. When team stream payloads carry
+`task_agent_run_id` plus logical member metadata, `TeamStreamingService` creates
+a temporary task-agent context/node keyed by the task-agent run id.
+`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
+strip as concrete task children, and shows pending approvals on the task-agent
+card when the task-agent runtime is waiting for tool approval. Running and
+awaiting-acceptance task-agent children must remain visible and addressable
+after active team reopen/hydration, even when server resume metadata only lists
+the stable logical coordinator/member rows. Run-open hydration therefore
+restores concrete children from live task-agent projection/identity instead of
+collapsing them into the logical member parent. After delegator acceptance and
+backend settlement/offline cleanup, the frontend removes the transient child
+node/card while preserving the logical member parent and the
+coordinator/member history that records the delegated task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -385,13 +404,13 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with task-agent identity update the transient task-agent context and remove its card after terminal `offline`. |
 | `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
 | `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
-| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`.                     |
+| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id for card-level approve/deny routing. |
 | `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
 | `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
 | `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |

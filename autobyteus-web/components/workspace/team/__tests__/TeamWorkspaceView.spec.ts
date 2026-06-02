@@ -16,6 +16,7 @@ const {
 } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
+    activeExecutionFocusedMemberRouteKey: '' as string,
     currentMode: 'focus' as 'focus' | 'grid' | 'spotlight',
   };
 
@@ -24,6 +25,21 @@ const {
     teamContextsStoreMock: {
       get activeTeamContext() {
         return localState.activeTeamContext;
+      },
+      get activeExecutionFocusedMemberRouteKey() {
+        return localState.activeExecutionFocusedMemberRouteKey;
+      },
+      get activeExecutionFocusedMemberContext() {
+        const routeKey = teamContextsStoreMock.activeExecutionFocusedMemberRouteKey;
+        return routeKey
+          ? localState.activeTeamContext?.leafAgentContextsByRouteKey.get(routeKey) ?? null
+          : null;
+      },
+      get activeExecutionFocusedMemberNode() {
+        const routeKey = teamContextsStoreMock.activeExecutionFocusedMemberRouteKey;
+        return routeKey
+          ? localState.activeTeamContext?.memberNodesByRouteKey.get(routeKey) ?? null
+          : null;
       },
       setFocusedMember: vi.fn(),
       focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
@@ -158,6 +174,7 @@ describe('TeamWorkspaceView', () => {
     vi.clearAllMocks();
     state.currentMode = 'focus';
     state.activeTeamContext = buildTeamContext();
+    state.activeExecutionFocusedMemberRouteKey = 'professor';
   });
 
   const mountComponent = () => mount(TeamWorkspaceView, {
@@ -208,15 +225,31 @@ describe('TeamWorkspaceView', () => {
     expect(avatar.attributes('src')).toBe('https://example.com/professor.png');
   });
 
-  it('falls back to focused route key when focused member context is missing', () => {
+  it('falls back to the team title when no active execution focus is available', () => {
     state.activeTeamContext = buildTeamContext({
       focusedMemberRouteKey: 'missing-member',
       memberTree: [],
       memberNodesByRouteKey: new Map<string, any>(),
       leafAgentContextsByRouteKey: new Map<string, any>(),
     });
+    state.activeExecutionFocusedMemberRouteKey = '';
     const wrapper = mountComponent();
-    expect(wrapper.find('h4').text()).toBe('missing-member');
+    expect(wrapper.find('h4').text()).toBe('Class Room Simulation');
+  });
+
+  it('falls back from an initializing task-only logical worker focus to active coordinator execution', () => {
+    const context = buildTeamContext({
+      coordinatorMemberRouteKey: 'professor',
+      focusedMemberRouteKey: 'student',
+    });
+    context.leafAgentContextsByRouteKey.get('student').state.currentStatus = AgentStatus.Initializing;
+    state.activeTeamContext = context;
+    state.activeExecutionFocusedMemberRouteKey = 'professor';
+
+    const wrapper = mountComponent();
+
+    expect(wrapper.find('h4').text()).toBe('Professor');
+    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
   });
 
   it('opens selected team config from header action', async () => {

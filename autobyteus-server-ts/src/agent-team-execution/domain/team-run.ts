@@ -21,6 +21,7 @@ import {
   type TeamRunStatusUpdateData,
 } from "./team-run-event.js";
 import type { TeamStatusPayload } from "./team-status-payload.js";
+import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -83,10 +84,12 @@ export class TeamRun {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.postMessage(
       message,
       this.resolvePostMessageTarget(target),
+      targetMemberRunId,
     );
   }
 
@@ -101,12 +104,14 @@ export class TeamRun {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
       target,
       invocationId,
       approved,
       reason,
+      targetMemberRunId,
     );
   }
 
@@ -126,6 +131,57 @@ export class TeamRun {
       normalizedTargetMemberRouteKey,
       targetMemberRunId,
     );
+  }
+
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_REQUIRED",
+        message: "targetMemberRouteKey is required.",
+      };
+    }
+    return this.backend.settleMember(
+      normalizedTargetMemberRouteKey,
+      targetMemberRunId,
+      reason,
+    );
+  }
+
+  async startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    return this.backend.startTaskAgentInstance(request);
+  }
+
+  async settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedLogicalMemberRouteKey = logicalMemberRouteKey.trim();
+    const normalizedTaskAgentRunId = taskAgentRunId.trim();
+    if (!normalizedLogicalMemberRouteKey || !normalizedTaskAgentRunId) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_TARGET_REQUIRED",
+        message: "logicalMemberRouteKey and taskAgentRunId are required.",
+      };
+    }
+    return this.backend.settleTaskAgentInstance(
+      normalizedLogicalMemberRouteKey,
+      normalizedTaskAgentRunId,
+      reason,
+    );
+  }
+
+  publishEvent(event: TeamRunEvent): void {
+    this.backend.publishEvent(event);
   }
 
   async terminate(): Promise<AgentOperationResult> {

@@ -131,7 +131,7 @@ describe("ClaudeTeamRunBackend integration", () => {
     await expect(backend.postMessage(userMessage, coordinatorTarget)).resolves.toEqual({
       accepted: true,
     });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, coordinatorTarget);
+    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, coordinatorTarget, null);
 
     await expect(
       backend.deliverInterAgentMessage({
@@ -160,6 +160,7 @@ describe("ClaudeTeamRunBackend integration", () => {
       "inv-1",
       true,
       "approved",
+      null,
     );
 
     await expect(backend.interruptMember("coord-route", "coord-run")).resolves.toEqual({ accepted: true });

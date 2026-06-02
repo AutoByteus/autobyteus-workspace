@@ -216,12 +216,15 @@ const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
     return null;
   }
 
-  const activeMember = activeTeam.leafAgentContextsByRouteKey.get(activeTeam.focusedMemberRouteKey) ?? null;
+  const activeExecutionRouteKey = agentTeamContextsStore.activeExecutionFocusedMemberRouteKey?.trim() || '';
+  const activeMember = activeExecutionRouteKey
+    ? activeTeam.leafAgentContextsByRouteKey.get(activeExecutionRouteKey) ?? null
+    : null;
   if (activeMember !== targetContext) {
     return null;
   }
 
-  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeTeam.focusedMemberRouteKey);
+  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeExecutionRouteKey);
 };
 
 const getTargetForContext = (targetContext: AgentContext | null) => {

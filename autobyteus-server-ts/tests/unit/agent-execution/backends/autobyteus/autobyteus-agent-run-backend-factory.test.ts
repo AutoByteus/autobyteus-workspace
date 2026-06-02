@@ -19,7 +19,9 @@ import { AgentDefinition } from "../../../../../src/agent-definition/domain/mode
 import { AutoByteusAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { MemberTeamContext } from "../../../../../src/agent-team-execution/domain/member-team-context.js";
+import type { TaskAgentInstanceIdentity } from "../../../../../src/agent-team-execution/domain/task-agent-instance.js";
 import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 
 class DummyLLM extends BaseLLM {
@@ -68,19 +70,21 @@ const createMemberTeamContext = (
   deliverInterAgentMessage: ReturnType<typeof vi.fn> = vi
     .fn()
     .mockResolvedValue({ accepted: true }),
+  taskAgentInstance: TaskAgentInstanceIdentity | null = null,
 ) =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
     teamBackendKind,
     memberName: "Professor",
+    memberPath: ["professor"],
     memberRouteKey: "professor",
-    memberRunId: "run-professor",
+    memberRunId: taskAgentInstance?.taskAgentRunId ?? "run-professor",
     members: [
       {
         memberKind: "agent",
         memberName: "Professor",
-        memberPath: ["Professor"],
+        memberPath: ["professor"],
         memberRouteKey: "professor",
         memberRunId: "run-professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -90,7 +94,7 @@ const createMemberTeamContext = (
       {
         memberKind: "agent",
         memberName: "Writer",
-        memberPath: ["Writer"],
+        memberPath: ["writer"],
         memberRouteKey: "writer",
         memberRunId: "run-writer",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -98,9 +102,37 @@ const createMemberTeamContext = (
         description: "Drafts the answer.",
       },
     ],
+    communicationRecipients: [
+      {
+        recipientName: "Writer",
+        scope: "local_agent",
+        participant: {
+          memberKind: "agent",
+          memberName: "Writer",
+          memberPath: ["writer"],
+          memberRouteKey: "writer",
+          memberRunId: "run-writer",
+          address: {
+            teamRunId: "team-1",
+            memberPath: ["writer"],
+            memberRouteKey: "writer",
+          },
+          platformRunId: null,
+          teamDefinitionId: null,
+          representedSubTeam: null,
+        },
+        delivery: {
+          teamRunId: "team-1",
+          selector: { kind: "route_key", memberRouteKey: "writer" },
+        },
+        role: "writer",
+        description: "Drafts the answer.",
+      },
+    ],
     allowedRecipientNames: ["Writer"],
     sendMessageToEnabled: true,
     deliverInterAgentMessage,
+    taskAgentInstance,
   });
 
 describe("AutoByteusAgentRunBackendFactory", () => {
@@ -180,7 +212,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         currentMemberName: "Professor",
         communicationContext: expect.objectContaining({
           members: expect.arrayContaining([
-            expect.objectContaining({ memberName: "Professor", agentId: "run-professor" }),
             expect.objectContaining({ memberName: "Writer", agentId: "run-writer" }),
           ]),
         }),
@@ -319,15 +350,120 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ).rejects.toThrow("Writer is unavailable.");
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(
       expect.objectContaining({
-        senderRunId: "run-professor",
-        senderMemberName: "Professor",
-        recipientMemberName: "Writer",
+        sender: expect.objectContaining({
+          participant: expect.objectContaining({
+            memberName: "Professor",
+            memberRunId: "run-professor",
+          }),
+        }),
+        recipient: expect.objectContaining({
+          participant: expect.objectContaining({
+            memberName: "Writer",
+            memberRunId: "run-writer",
+          }),
+        }),
         content: "Please investigate.",
         messageType: "direct_message",
         referenceFiles: ["/tmp/native-reference.md"],
       }),
     );
   });
+
+  it("propagates mixed AutoByteus task-agent identity into native custom data and task delegation context", async () => {
+    const taskAgentInstance: TaskAgentInstanceIdentity = {
+      taskAgentInstanceId: "task_agent_task_0007",
+      taskAgentRunId: "team-1__professor__task_0007",
+      teamRunId: "team-1",
+      taskId: "task_0007",
+      logicalMember: {
+        memberName: "Professor",
+        memberPath: ["professor"],
+        memberRouteKey: "professor",
+        templateMemberRunId: "run-professor",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+      },
+      createdAt: "2026-05-29T00:00:00.000Z",
+    };
+    const memberTeamContext = createMemberTeamContext(
+      TeamBackendKind.MIXED,
+      vi.fn().mockResolvedValue({ accepted: true }),
+      taskAgentInstance,
+    );
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () =>
+          new AgentDefinition({
+            id: "agent-1",
+            name: "Professor",
+            description: "Coordinates work.",
+            toolNames: ["send_message_to"],
+          }),
+        ),
+      } as any,
+      llmFactory: {
+        createLLM: vi.fn(async () =>
+          new DummyLLM(
+            new LLMModel({
+              name: "dummy-model",
+              value: "dummy-model",
+              canonicalName: "dummy-model",
+              provider: LLMProvider.OPENAI,
+            }),
+            new LLMConfig(),
+          ),
+        ),
+      } as any,
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: {
+        getSkill: () => null,
+      } as any,
+    });
+
+    const built = await (factory as any).buildAgentConfig(
+      new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberTeamContext,
+      }),
+    );
+
+    const nativeTeamContext = built.agentConfig.initialCustomData?.teamContext as Record<string, unknown>;
+    expect(nativeTeamContext).toMatchObject({
+      currentMemberName: "Professor",
+      currentMemberRouteKey: "professor",
+      currentMemberRunId: "team-1__professor__task_0007",
+      taskAgentInstanceId: "task_agent_task_0007",
+      taskAgentRunId: "team-1__professor__task_0007",
+      taskId: "task_0007",
+      logicalMemberRouteKey: "professor",
+    });
+
+    const delegationContext = buildTaskDelegationToolContextFromNativeContext({
+      config: { name: "Professor" },
+      customData: { teamContext: nativeTeamContext },
+    });
+
+    expect(delegationContext.caller).toMatchObject({
+      memberName: "Professor",
+      memberRouteKey: "professor",
+      memberRunId: "team-1__professor__task_0007",
+      taskAgentInstanceId: "task_agent_task_0007",
+      taskAgentRunId: "team-1__professor__task_0007",
+      taskId: "task_0007",
+      logicalMemberRouteKey: "professor",
+    });
+  });
+
   it("injects a server-backed compaction runner using the parent workspace context", async () => {
     const compactionRunner = { runCompactionTask: vi.fn() };
     const compactionAgentRunnerFactory = vi.fn(() => compactionRunner);
