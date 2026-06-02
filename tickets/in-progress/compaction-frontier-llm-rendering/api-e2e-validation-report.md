@@ -8,16 +8,17 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/in-progress/compaction-frontier-llm-rendering/review-report.md`
-- Current Validation Round: `1`
-- Trigger: Code review round 2 passed; API/E2E validation requested by `code_reviewer`.
-- Prior Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Validation Round: `2`
+- Trigger: Prior API/E2E pass was withdrawn after user/code-review challenge; real browser/full-stack provider-backed validation required.
+- Prior Round Reviewed: `1` (withdrawn as insufficient full-stack evidence)
+- Latest Authoritative Round: `2`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review pass after local-fix re-review | N/A | None | Pass | Yes | Added durable executable validation for lifecycle status ordering, native same-turn continuation, non-native text-history continuation, and persisted old-schema snapshot fallback. |
+| 1 | Code review pass after local-fix re-review | N/A | None | Withdrawn | No | Durable regression coverage remains useful, but the validation pass was withdrawn because the main lifecycle evidence used mocked LLM/provider streaming instead of real browser/full-stack execution. |
+| 2 | User/code-review challenge requiring real browser/full-stack validation | Round 1 withdrawal VR-001 | None | Pass | Yes | Browser UI drove ticket backend/frontend with AutoByteus runtime, real DeepSeek Flash provider calls, low compaction ratio, native provider tool continuation, XML/text-parser tool continuation, UI compaction events, backend logs, and memory/snapshot artifacts. |
 
 ## Validation Basis
 
@@ -55,7 +56,8 @@ Notes:
 - Local platform: macOS worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering`.
 - Package: `autobyteus-ts`.
 - Node/Vitest runtime through existing project `pnpm` environment.
-- External provider calls: not used. Provider-realistic validation used renderer/API payload capture and mocked client or mocked streaming LLM responses to avoid network/provider nondeterminism.
+- Round 1 external provider calls: not used; that pass is withdrawn as insufficient.
+- Round 2 external provider calls: used real DeepSeek Flash (`deepseek-v4-flash`) through the browser UI and ticket backend/frontend. DeepSeek API key was read from local server `.env` and was not printed in evidence.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
@@ -103,12 +105,13 @@ The validation scope was executable and boundary-focused:
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `Yes`
-- Paths added or updated:
+- Repository-resident durable validation added or updated in Round 1: `Yes` (the Round 1 pass was withdrawn, but the code tests remain durable regression coverage)
+- Repository-resident durable validation added or updated in Round 2: `No`
+- Round 1 paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-ts/tests/integration/agent/memory-compaction-runtime-e2e.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts`
-- If `Yes`, returned through `code_reviewer` before delivery: `Pending via this validation handoff`
-- Post-validation code review artifact: `Pending`
+- Round 1 validation-code review status: reviewed by `code_reviewer` before the validation pass was later withdrawn for missing browser/full-stack evidence.
+- Round 2 validation-code review status: no source/test code added; return to `code_reviewer` is to review real browser evidence and clear VR-001 / delivery readiness.
 
 ## Other Validation Artifacts
 
@@ -201,7 +204,7 @@ None.
 
 ## Not Tested / Out Of Scope
 
-- Live network calls to external providers. Renderer/provider payload construction was validated deterministically with mocked clients or local renderers.
+- Additional providers beyond DeepSeek Flash in live browser mode. Round 2 used real DeepSeek Flash for native API-tool and XML/text-parser browser flows; other provider families remain covered by deterministic renderer/payload suites.
 - Oversized live tool result truncation/artifact policy. This was identified upstream as a future policy and remains out of scope.
 - Delivery-stage documentation sync and branch refresh; delivery owns those after validation-code re-review.
 
@@ -217,7 +220,7 @@ None.
 ## Classification
 
 - No failure classification applies. Validation result is `Pass`.
-- Because repository-resident durable validation was added/updated after code review, routing is back to `code_reviewer` for validation-code re-review before delivery.
+- Round 2 added no repository-resident source/test code. Routing is still back to `code_reviewer` because the authoritative review report currently blocks delivery on VR-001 until real browser/full-stack validation evidence is reviewed.
 
 ## Recommended Recipient
 
@@ -236,4 +239,126 @@ None.
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: API/E2E and executable validation passed. Durable validation was added/updated, so the next required workflow step is narrow `code_reviewer` re-review of the validation-code changes and directly related evidence before delivery.
+- Notes: Round 2 browser/full-stack provider-backed validation passed. No source/test code was added in Round 2; next required workflow step is `code_reviewer` review of the new browser evidence to clear VR-001 and re-establish delivery readiness.
+
+
+# Validation Correction / Withdrawal Notice
+
+Date: 2026-06-02
+
+The Round 1 `Pass` result above is withdrawn. The executable tests added in Round 1 used mocked LLM streaming/provider behavior for the main runtime lifecycle path. That evidence is useful as regression coverage, but it is not sufficient API/E2E or browser/full-stack validation for this ticket.
+
+Authoritative status after correction: `Incomplete / Not Yet Validated`.
+
+Required next validation before any pass can be claimed:
+
+- Start the ticket worktree backend, not the packaged application backend.
+- Start the ticket worktree frontend.
+- Use the browser UI to select/configure the AutoByteus runtime and a real DeepSeek/DeepSeek Flash model or equivalent real provider-backed model.
+- Use a low compaction ratio / context setting to trigger compaction through the real UI run path.
+- Verify compaction lifecycle, continuation behavior, UI-observable success, backend logs, and memory/snapshot artifacts without mocked LLM/runtime responses.
+
+Until that browser/full-stack validation is completed, this report must not be used as delivery-ready validation evidence.
+
+# Round 2 Browser / Full-Stack Provider-Backed Validation
+
+Date: 2026-06-02
+
+## Round 2 Authoritative Status
+
+- Round 1 validation pass remains withdrawn.
+- Latest authoritative validation round: `2`.
+- Latest authoritative result: `Pass`.
+- Repository-resident durable validation added or updated during Round 2: `No`.
+- Routing after Round 2: back to `code_reviewer` because the authoritative code review report currently blocks delivery on VR-001 until real browser/full-stack validation is reviewed and delivery readiness is re-established.
+
+## Why This Round Addresses The User Challenge
+
+The prior mocked lifecycle tests were not treated as sufficient. Round 2 used the actual browser UI, the ticket worktree backend, the ticket worktree frontend, AutoByteus runtime, and real DeepSeek Flash provider calls. No mocked LLM, mocked provider streaming, or mocked runtime responses were used for the Round 2 browser evidence.
+
+## Shared Browser/Full-Stack Setup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering`
+- Backend: ticket worktree `autobyteus-server-ts/dist/app.js` on `http://127.0.0.1:29731`.
+- Frontend: ticket worktree `autobyteus-web` dev server on `http://127.0.0.1:30731`.
+- Browser target: `http://127.0.0.1:30731` using the frontend tab automation available in this session after the in-app Browser MCP was unavailable.
+- Provider/model selected in UI: `AutoByteus` runtime + `DeepSeek / deepseek-v4-flash`.
+- DeepSeek key source: local server `.env` copied into isolated validation data dirs; secret value not printed.
+- Compaction forcing settings:
+  - `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.02`
+  - `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=500000`
+  - `AUTOBYTEUS_COMPACTION_DEBUG_LOGS=1`
+- Calibration note: an initial attempt with `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=900` made DeepSeek's effective input budget zero because the model advertises a very large output ceiling, which caused recursive memory-compactor self-compaction. That calibration run was stopped and is not used as pass evidence. The final Round 2 runs keep the requested low ratio while using a non-zero input budget (`115744`) and trigger threshold (`2314`), so the main Daily Assistant prompt crosses the threshold while Memory Compactor runs stay below it.
+
+## Round 2 Scenario Results
+
+| Scenario | Runtime surface | Parser/provider mode | Browser run | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| VAL-008 real browser native tool continuation and immediate final compaction | Browser UI + ticket backend/frontend + real DeepSeek Flash | `AUTOBYTEUS_STREAM_PARSER=api_tool_call` | `daily_assistant_general_agent_5535` | Pass | UI idle success with `run_bash` success and two completed memory compactions; backend event order; schema-4 snapshot with natural compacted memory and no raw frontier markers in LLM-facing content. |
+| VAL-009 real browser XML/text-parser continuation | Browser UI + ticket backend/frontend + real DeepSeek Flash | `AUTOBYTEUS_STREAM_PARSER=xml` | `daily_assistant_general_agent_7656` | Pass | UI idle success with XML-parser tool segment (`turn_...:seg_1`), `run_bash` success, and two completed memory compactions; backend event order; schema-4 snapshot with natural compacted memory and no raw frontier markers in LLM-facing content. |
+
+## VAL-008 Details — Native API Tool Continuation + Final No-Tool Immediate Compaction
+
+Environment/data dir:
+
+- Data dir: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/server-data`
+- Backend live log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/logs/server-e2e-real-live.log`
+- Event-order extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/evidence/daily-5535-event-order.txt`
+- Snapshot extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/evidence/daily-5535-snapshot-summary.txt`
+- Final browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/8bbfd8-1780389015797.png`
+
+Observed evidence:
+
+- UI selected Daily Assistant, AutoByteus runtime, `DeepSeek / deepseek-v4-flash`.
+- User message was sent from the browser chat input.
+- The real DeepSeek response produced a native API tool call: backend logged `ApiToolCallStreamingResponseHandler finalized 1 tool invocations`.
+- Operation `compaction_operation_mpwdl0ek_1` was `requested` after the tool-call response, then tools executed, then compaction `started -> completed` with `protected_suffix_unit_count: 1`; this proves the native same-turn tool suffix was protected until after tool results were available.
+- The continuation response completed with marker text visible in the browser.
+- Operation `compaction_operation_mpwdldfb_2` was then `requested -> started -> completed` for the final no-tool assistant response in the same turn.
+- Browser UI showed Idle state, `run_bash` success, and two completed memory compaction activity cards.
+- Backend recorded token usage for `deepseek-v4-flash`: prompt tokens `7198`, completion tokens `186`.
+- Persisted working context snapshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/server-data/memory/agents/daily_assistant_general_agent_5535/working_context_snapshot.json`
+  - `schema_version: 4`
+  - `epoch_id: 3`
+  - `message_count: 3`
+  - LLM-facing message content had no `RAW_FRONTIER`, `FrontierFormatter`, `[BLOCK`, `source_event`, or `turn_000` text.
+  - Natural compacted memory message was present as normal user content: `You are continuing an ongoing task after compacting earlier working memory...`.
+
+## VAL-009 Details — Real XML/Text-Parser Continuation
+
+Environment/data dir:
+
+- Data dir: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/server-data`
+- Backend live log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/logs/server-e2e-xml-live.log`
+- Event-order extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/evidence/daily-7656-xml-event-order.txt`
+- Snapshot extract: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/evidence/daily-7656-xml-snapshot-summary.txt`
+- Final browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/8bbfd8-1780389273885.png`
+
+Observed evidence:
+
+- Backend was restarted with `AUTOBYTEUS_STREAM_PARSER=xml`; the Daily Assistant system prompt included XML tool definitions.
+- UI selected Daily Assistant, AutoByteus runtime, `DeepSeek / deepseek-v4-flash` again.
+- User message was sent from the browser chat input and explicitly asked the agent to use `run_bash pwd` before answering.
+- Real DeepSeek emitted a text-parser tool segment for `run_bash`; backend stored pending invocation `turn_ac6648c1e5ba4ae0824ce01d884b1606:seg_1` and executed it successfully.
+- Operation `compaction_operation_mpwdr0nb_1` was `requested` after the XML/text-parser tool-call response, then `started -> completed` after tool execution with `protected_suffix_unit_count: 1`.
+- Operation `compaction_operation_mpwds3fp_2` then completed after the final no-tool answer.
+- Browser UI showed Idle state, `run_bash` success, and two completed memory compaction activity cards.
+- Backend recorded token usage for `deepseek-v4-flash`: prompt tokens `8870`, completion tokens `124`.
+- Persisted working context snapshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/server-data/memory/agents/daily_assistant_general_agent_7656/working_context_snapshot.json`
+  - `schema_version: 4`
+  - `epoch_id: 3`
+  - `message_count: 3`
+  - LLM-facing message content had no `RAW_FRONTIER`, `FrontierFormatter`, `[BLOCK`, `source_event`, or `turn_000` text.
+  - Natural compacted memory message was present as normal user content.
+
+## Round 2 Residuals / Notes
+
+- Browser validation used local ignored evidence directories under `.local/`; they are not repository-resident durable validation artifacts.
+- Round 2 did not add or modify source/test code. It only updates this validation report and leaves local ignored logs/screenshots as evidence.
+- Round 1 durable tests still provide deterministic regression coverage for old-schema persisted snapshot fallback and provider payload matrix breadth. Round 2 adds the missing real browser/full-stack provider-backed proof.
+
+## Round 2 Final Classification
+
+- Failure classification: `N/A`.
+- Final Round 2 result: `Pass`.
+- Recommended next recipient: `code_reviewer` to clear VR-001 / re-establish delivery readiness from the authoritative review report.
