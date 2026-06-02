@@ -140,6 +140,19 @@ jobs:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
 
+      - name: Free runner disk space
+        run: |
+          set -euxo pipefail
+          df -h /
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /usr/local/share/boost \
+            /opt/ghc \
+            /opt/hostedtoolcache/CodeQL || true
+          docker system prune -af || true
+          df -h /
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 

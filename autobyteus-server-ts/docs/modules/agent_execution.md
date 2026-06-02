@@ -29,8 +29,10 @@ allowing global skill fallback.
 
 Native AutoByteus runs consume the resolved `Skill.rootPath` values directly in
 `AgentConfig.skills`. For imported package agents this includes exact colocated
-private skill roots and `skills/<skillName>` multi-skill roots, without scanning
-package roots into the global Skills catalog.
+private skill roots and `skills/<skillName>` multi-skill roots. The separate
+normal Skills catalog also exposes bundled package skills for browsing/opening,
+but runtime configured-skill fallback stays limited to configured global skill
+directories so package agents keep source-context-first resolution.
 
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 

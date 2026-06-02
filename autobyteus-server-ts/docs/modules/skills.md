@@ -16,22 +16,42 @@ resolution for agent definitions.
 - `src/skills/services/skill-service.ts`
 - `src/skills/services/configured-agent-skill-resolver.ts`
 
-## Global Skill Catalog
+## Skills Catalog
 
-The Skills module has a global catalog surface backed by the configured skills
-directories:
+The Skills module has a normal catalog surface backed by configured skills
+directories plus bundled skill layouts found in app-data and imported agent
+package definition roots. The catalog is what the GraphQL `skills` and
+`skill(name)` fields expose to the frontend Skills page and Skill Detail/File
+Explorer flow.
+
+Configured/global skill directories are scanned first:
 
 - the default skills directory from server config
 - additional skills directories from server config
 
-`SkillService.listSkills()` and `SkillService.getSkill(name)` are intentionally
-global-catalog operations. They do not scan agent package definition roots for
-private agent skills or team-shared package skills. The GraphQL `skills` and
-`skill(name)` fields follow that same global-only boundary, so package-private
-skills do not appear as standalone catalog rows.
+After those directories, `SkillService.listSkills()` and
+`SkillService.getSkill(name)` scan definition roots from app data and configured
+agent package roots for bundled package skills:
 
-Global catalog skills remain the source for normal Skills-page CRUD, versioning,
-file-explorer workspaces, and UI selection during agent authoring.
+- shared agent colocated skills: `agents/<agent-id>/SKILL.md`
+- shared agent multi-skill folders:
+  `agents/<agent-id>/skills/<skill-name>/SKILL.md`
+- team-local agent colocated skills:
+  `agent-teams/<team-id>/agents/<agent-id>/SKILL.md`
+- team-local agent multi-skill folders:
+  `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
+- owning-team shared skills:
+  `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
+
+Duplicate skill names use deterministic first-seen precedence: configured/global
+skill directories win over later bundled package roots, and later duplicates are
+skipped in the catalog.
+
+Catalog skills remain the source for normal Skills-page browsing, Skill Detail
+loading, File Explorer workspaces, and UI selection during agent authoring.
+Create/edit/versioning behavior still depends on the existing Skills and File
+Explorer operations plus the underlying filesystem permissions of each resolved
+skill root.
 
 ## Configured Agent Skill Resolution
 
@@ -56,7 +76,7 @@ For each configured skill name, resolution proceeds in this order:
    `<agentDirPath>/SKILL.md`
 3. owning-team shared skill for team-local agents:
    `<teamDirPath>/skills/<skillName>/SKILL.md`
-4. global catalog fallback through `getSkill(skillName)`
+4. configured/global skill-directory fallback
 
 Contextual candidates must contain `SKILL.md`, and that file's frontmatter
 `name` must exactly match the configured skill name. Unsafe configured names
@@ -65,10 +85,13 @@ skipped with a warning. Missing or invalid configured skills are skipped rather
 than blocking bootstrap.
 
 This lets an imported package carry private skill content beside its agent or
-team without registering that content globally. Duplicate skill names across
-configured/default/private/team-shared sources are product-excluded for this
-ticket, so callers must not rely on duplicate-name collision or
-source-disambiguation behavior.
+team while preserving source-context-first runtime resolution. Runtime fallback
+is deliberately limited to configured/global skill directories, not the full
+package-scanning catalog, so one package agent does not accidentally resolve a
+different agent's private package skill. Duplicate skill names across
+configured/default/private/team-shared sources should still be avoided; the
+catalog uses first-seen precedence and the runtime resolver prefers the owning
+context before global fallback.
 
 ## Runtime Consumption
 
@@ -81,9 +104,10 @@ private skill scan.
 - Native AutoByteus passes the exact resolved `Skill.rootPath` values to
   `AgentConfig.skills`, including colocated private skill roots and
   `skills/<skillName>` multi-skill roots.
-- GraphQL `skills` / `skill(name)` and the frontend global Skills page remain
-  global-catalog surfaces and do not expose package-private or team-shared
-  package skills as standalone catalog entries.
+- GraphQL `skills` / `skill(name)` and the frontend Skills page expose bundled
+  package skills as normal catalog entries when their package roots are
+  available, so users can browse their `SKILL.md` content and files through the
+  existing Skill Detail/File Explorer flow.
 
 ## Supported Package Authoring Layouts
 
@@ -122,7 +146,7 @@ agent-teams/review-team/
       private-tone/SKILL.md
 ```
 
-Skill names are expected to be unique across configured global, agent-private,
-and team-shared sources. Duplicate-name conflict behavior is intentionally out
-of scope. If no contextual location matches the configured name, the resolver
-falls back to the global catalog.
+Skill names should be unique across configured global, agent-private, and
+team-shared sources. The catalog applies first-seen precedence for duplicate
+names, while runtime resolution checks the owning agent/team context before it
+falls back to configured/global skill directories.

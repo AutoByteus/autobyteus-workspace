@@ -83,9 +83,14 @@ the same session.
 ## Package-Contained Configured Skills
 
 Agent packages may carry skill content that is private to a package agent or
-shared by members of a package team. These skills are resolved only when an
-agent definition that references them is used for runtime bootstrap; they are
-not imported into the global Skills catalog.
+shared by members of a package team. These skills participate in two related
+surfaces:
+
+- the normal Skills catalog scans available package roots so users can browse
+  and open bundled skill files through the existing Skills page, Skill Detail,
+  and File Explorer flow;
+- runtime bootstrap resolves configured skill names source-context-first for the
+  owning agent/team before falling back to configured global skill directories.
 
 Supported package layouts:
 
@@ -103,21 +108,23 @@ Supported package layouts:
 `agent-config.json.skillNames` stores the logical names. At runtime,
 `SkillService.resolveConfiguredSkillsForAgent(...)` resolves those names from
 the current agent's source folder first, then from the owning team folder for
-team-local agents, then from the global catalog as a fallback. A contextual
-candidate's `SKILL.md` frontmatter `name` must match the configured name, and
-unsafe path-like names are skipped.
+team-local agents, then from configured global skill directories as a fallback.
+A contextual candidate's `SKILL.md` frontmatter `name` must match the configured
+name, and unsafe path-like names are skipped.
 
-Because package-contained skills are contextual, package import summaries and
-the GraphQL `skills` catalog continue to report only global skills. Duplicate
-skill names across configured/default/private/team-shared sources are
-product-excluded for this ticket; package authors should choose unique logical
-skill names instead of relying on collision disambiguation.
+The GraphQL `skills` catalog also scans available package definition roots and
+returns bundled package skills as standalone catalog rows. Duplicate skill names
+use first-seen catalog precedence: global skill directories are scanned before
+package roots, and later package duplicates are skipped. Package authors should
+choose unique logical skill names instead of relying on collision
+disambiguation.
 
 Runtime-specific consumers receive resolved paths. Codex materializes imported
 package private roots and multi-skill roots into `.codex/skills/<skillName>`
 symlinks that target the package source directories. Native AutoByteus receives
-the same exact resolved roots through `AgentConfig.skills`. Neither path turns
-package-contained skills into global catalog entries.
+the same exact resolved roots through `AgentConfig.skills`. Runtime resolution
+does not use the package-wide catalog scan as its fallback, preserving the
+owning agent/team context for package-contained skills.
 
 ## Failure And Rollback Rules
 
