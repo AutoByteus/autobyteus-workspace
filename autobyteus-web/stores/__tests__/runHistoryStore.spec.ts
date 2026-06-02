@@ -2039,7 +2039,7 @@ describe('runHistoryStore', () => {
     );
   });
 
-  it('filters an initializing task-delegation-only worker from active team rows while keeping coordinator focus', () => {
+  it('keeps an initializing task-delegation-only worker in roster rows while keeping coordinator active focus', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
@@ -2124,8 +2124,8 @@ describe('runHistoryStore', () => {
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-task-delegation-only-1');
 
     expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
-    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
+    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('selectTreeRun opens persisted team member when local team context is absent', async () => {
@@ -2750,7 +2750,7 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-1');
     expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context', async () => {
@@ -2843,7 +2843,7 @@ describe('runHistoryStore', () => {
     expect(hydratedTeam.focusedMemberRouteKey).toBe('coordinator');
     expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-2');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('openTeamMemberRun trusts history active state and reconnects a team stream', async () => {

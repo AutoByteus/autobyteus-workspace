@@ -44,13 +44,13 @@
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
         <TeamSpotlightView
           v-else
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
       </div>
@@ -124,6 +124,9 @@ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamM
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
+const rosterFocusedMemberRouteKey = computed(() =>
+  activeTeamContext.value?.focusedMemberRouteKey || activeExecutionFocusedMemberRouteKey.value,
+);
 const focusedMemberContext = computed(() => {
   return teamContextsStore.activeExecutionFocusedMemberContext;
 });
