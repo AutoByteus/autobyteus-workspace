@@ -4,13 +4,13 @@
 
 - Ticket: `codex-runtime-access-mapping-analysis`
 - Date: 2026-06-02
-- Current Status: `Verified / Finalization In Progress`
-- Workflow State Source: Cumulative team artifact package under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/` plus current integrated repository diff against `origin/personal`.
+- Current Status: `Finalized / Released`
+- Workflow State Source: Cumulative team artifact package under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/` plus current integrated repository diff against `origin/personal`.
 
 ## Delivery Summary
 
 - Delivered scope: Codex auto approval now behaves as a high-trust per-run approval/access policy. Auto-approved Codex runs use `approvalPolicy: "never"`, effective `danger-full-access`, auto execution/grant behavior for command/file/MCP/dynamic/permission request surfaces, and visible lifecycle/result events. Manual Codex runs gate dynamic tools and permission requests through existing approval flows.
-- Planned scope reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/requirements-doc.md`
+- Planned scope reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/requirements-doc.md`
 - Deferred / not delivered: No scoped implementation behavior deferred. Fully live model-driven permission no-grant semantics remain a residual validation risk because the temporary live prompt did not emit `item/permissions/requestApproval`; backend behavior and generated schema are covered.
 - Key architectural or ownership changes: Codex server-request approval policy is centralized in `codex-tool-approval-coordinator.ts`; permission grant/no-grant construction lives in `codex-permission-approval-response.ts`; pending approval records are typed by approval surface; effective Codex sandbox resolution is centralized in the bootstrapper.
 - Removed / decommissioned items: Removed the old direct manual dynamic-tool execution path; manual dynamic tools now require approval before handler invocation.
@@ -35,7 +35,7 @@
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated: `README.md`, `autobyteus-web/docs/settings.md`, Settings localization copy, desktop run-launch localization copy, and mobile launch copy.
 - Notes: Docs/UI copy now call Codex auto approve a high-trust mode and explain the relationship between saved full access and per-run effective full access.
@@ -43,8 +43,8 @@
 ## Release Notes Status
 
 - Release notes required: `Yes`
-- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
-- Notes: Created concise user-facing release notes for the eventual release path. No release or deployment is being run before explicit user verification.
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
+- Notes: Created concise user-facing release notes and used them for release `v1.3.41`; the release helper copied them into `.github/release-notes/release-notes.md` in the release commit.
 
 ## Delivery-Local Checks
 
@@ -57,7 +57,7 @@
 - Requested by user after delivery handoff: `pnpm -C autobyteus-web build:electron`
 - Result: `Passed` on 2026-06-02.
 - Scope: full Electron build script ran guards, localization audit, server preparation, Nuxt Electron generation, Electron transpilation, build script typecheck, and electron-builder packaging.
-- Artifacts produced under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/autobyteus-web/electron-dist/`:
+- Artifacts produced under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`:
   - `AutoByteus_personal_linux-1.3.40.AppImage` — 327 MB — SHA256 `b221825373971a20cf7472f0287b9f0988bb0ef363c48046988fdac7f1062148`
   - `AutoByteus_personal_windows-1.3.40.exe` — 209 MB — SHA256 `69fb80565787f0991869763daed13b91365b0af3159c5b8726b5bc62c16a1049`
   - `AutoByteus_personal_macos-arm64-1.3.40.dmg` — 362 MB — SHA256 `a4dc35dfd387bd942266ef04da7c27f7143adced29830251fb52dc723dbd43cf`
@@ -70,19 +70,32 @@
 
 - Waiting for explicit user verification: `No`
 - User verification received: `Yes`
-- Notes: Per delivery workflow, do not archive the ticket, commit/push, merge to `personal`, release, deploy, or clean up the worktree until the user explicitly verifies this handoff.
+- Notes: User verification was received on 2026-06-02; archival, commit/push, merge, release, and cleanup are complete.
 
 ## Finalization Record
 
-- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis`
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis`
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis`
 - Ticket branch: `codex/codex-runtime-access-mapping-analysis`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: In progress; ticket branch finalization commit not yet created at time of this artifact update.
-- Push status: In progress; not yet pushed at time of this artifact update.
-- Merge status: In progress; target merge not yet completed at time of this artifact update.
-- Release/publication/deployment status: Authorized by user; release target version planned as `1.3.41`.
-- Worktree cleanup status: Not started; pending finalization.
-- Local branch cleanup status: Not started; pending finalization.
-- Blockers / notes: No technical blockers remain. Awaiting explicit user verification.
+- Commit status: Completed — ticket commit `9436f42b01c75b48dd24481240fc6b5ae5832052`; release commit `1012c6ee3c38fd395bef962853f464b2b48ce55b`.
+- Push status: Completed — ticket branch, `personal`, release tag `v1.3.41`, and final release-completion report were pushed.
+- Merge status: Completed — `personal` fast-forwarded to ticket commit and pushed.
+- Release/publication/deployment status: Completed — `v1.3.41` pushed and release workflows all passed (Desktop Release, Android APK Release, Release Messaging Gateway, Server Docker Release).
+- Worktree cleanup status: Completed — dedicated ticket worktree directory removed.
+- Local branch cleanup status: Completed — local and remote ticket branches deleted.
+- Blockers / notes: None.
+
+## Final Release Record
+
+- Release version: `1.3.41`
+- Release tag: `v1.3.41` at `1012c6ee3c38fd395bef962853f464b2b48ce55b`
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.41
+- Release workflows: all passed
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001015
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001061
+  - Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001131
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810000954
+- GitHub release asset count observed: 19
+- Cleanup: dedicated worktree removed; local and remote ticket branches deleted.

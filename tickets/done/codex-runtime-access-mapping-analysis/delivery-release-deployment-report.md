@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-A user-requested local Electron build was run after the pre-finalization handoff. No GitHub release, publication, deployment, tag, push, or target-branch merge has been run. This delivery pass prepares the verified integrated handoff state, docs sync, ticket-local release notes, and local Electron build artifacts for later finalization.
+A user-requested local Electron build, repository finalization, and release `v1.3.41` are complete. The `v1.3.41` tag was pushed, GitHub Release assets were published, and the Desktop, Android APK, Messaging Gateway, and Server Docker release workflows all passed.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary is current with the integrated state and records the superseding Round 5 blocker resolution, docs sync, release notes, checks, residual risk, and user-verification hold.
+- Notes: Handoff summary is current with the finalized/released state and records the superseding Round 5 blocker resolution, docs sync, release notes, checks, residual risk, release workflows, and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -36,7 +36,7 @@ A user-requested local Electron build was run after the pre-finalization handoff
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `README.md`; `autobyteus-web/docs/settings.md`; `autobyteus-web/localization/messages/en/settings.ts`; `autobyteus-web/localization/messages/zh-CN/settings.ts`; `autobyteus-web/localization/messages/en/workspace.ts`; `autobyteus-web/localization/messages/zh-CN/workspace.ts`; `autobyteus-web/components/mobile/MobileLaunchRunOptionsCard.vue`.
 - No-impact rationale (if applicable): N/A
@@ -44,48 +44,48 @@ A user-requested local Electron build was run after the pre-finalization handoff
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis`
 
 ## Version / Tag / Release Commit
 
-- Version bump: Authorized; planned release version `1.3.41` (next patch after latest tag/package version `1.3.40`).
-- Tag creation: Pending release helper execution for `v1.3.41`.
-- Release commit: Pending release helper execution for `1.3.41`.
-- Release notes artifact prepared: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
+- Version bump: Completed — `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` updated to `1.3.41` by release helper.
+- Tag creation: Completed — annotated tag `v1.3.41` pushed to origin.
+- Release commit: Completed — `1012c6ee3c38fd395bef962853f464b2b48ce55b` (`chore(release): bump workspace release version to 1.3.41`).
+- Release notes artifact prepared: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/investigation-notes.md`
 - Ticket branch: `codex/codex-runtime-access-mapping-analysis`
-- Ticket branch commit result: In progress.
-- Ticket branch push result: Pending.
+- Ticket branch commit result: Completed — `9436f42b01c75b48dd24481240fc6b5ae5832052` (`fix(codex): align auto approve access`).
+- Ticket branch push result: Completed — pushed `codex/codex-runtime-access-mapping-analysis`, then deleted after finalization.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`; post-verification refresh found `origin/personal` unchanged at `1678dc82b705d24c58b073c75f363d96b5d4cc3c`.
-- Target branch update result: Pending.
-- Merge into target result: Pending.
-- Push target branch result: Pending.
-- Repository finalization status: In progress.
-- Blocker (if applicable): None technical; workflow verification hold only.
+- Target branch update result: Completed — `personal` refreshed from `origin/personal` before merge.
+- Merge into target result: Completed — `personal` fast-forwarded to ticket commit `9436f42b01c75b48dd24481240fc6b5ae5832052`.
+- Push target branch result: Completed — `personal` pushed first to ticket commit, then release helper pushed release commit `1012c6ee3c38fd395bef962853f464b2b48ce55b`.
+- Repository finalization status: `Completed`.
+- Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes` for local build only; `No` for GitHub release/publication/deployment before explicit finalization authorization.
+- Applicable: `Yes` — local Electron build and GitHub release/publication/deployment for `v1.3.41` completed.
 - Method: `Documented Command`
-- Method reference / command: `pnpm -C autobyteus-web build:electron`
-- Release/publication/deployment result: `Completed` for local Electron build; GitHub release/publication/deployment authorized; pending `pnpm release 1.3.41 -- --release-notes tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`.
-- Release notes handoff result: `Used` for pre-verification handoff; not promoted to `.github/release-notes/release-notes.md` yet.
+- Method reference / command: `pnpm -C autobyteus-web build:electron`; `pnpm release 1.3.41 -- --release-notes tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
+- Release/publication/deployment result: `Completed` — local Electron build passed, `pnpm release 1.3.41 -- --release-notes tickets/done/codex-runtime-access-mapping-analysis/release-notes.md` completed, tag `v1.3.41` was pushed, and all release workflows passed.
+- Release notes handoff result: `Used` — promoted to `.github/release-notes/release-notes.md` by the release helper in release commit `1012c6ee3c38fd395bef962853f464b2b48ce55b`.
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis`
-- Worktree cleanup result: `Not required` before finalization.
-- Worktree prune result: `Not required` before finalization.
-- Local ticket branch cleanup result: `Not required` before finalization.
-- Remote branch cleanup result: `Not required`
+- Worktree cleanup result: `Completed` — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis` removed.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` — `codex/codex-runtime-access-mapping-analysis` deleted locally.
+- Remote branch cleanup result: `Completed` — `origin/codex/codex-runtime-access-mapping-analysis` deleted.
 - Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -94,13 +94,13 @@ N/A — no technical blocker remains.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
-- Archived release notes artifact used for release/publication: Not yet; ticket is not archived before user verification.
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-runtime-access-mapping-analysis/release-notes.md`
+- Archived release notes artifact used for release/publication: `tickets/done/codex-runtime-access-mapping-analysis/release-notes.md` was passed to the release helper and copied to `.github/release-notes/release-notes.md` in the release commit.
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-Local Electron packaging completed with `pnpm -C autobyteus-web build:electron`. No deployment/publish step was run.
+Local Electron packaging completed with `pnpm -C autobyteus-web build:electron`. The release helper pushed `v1.3.41`; GitHub workflows published desktop assets, Android APK, messaging gateway assets, and server Docker images successfully.
 
 ## Environment Or Migration Notes
 
@@ -130,11 +130,11 @@ Delivery checks run on 2026-06-02:
 - `git diff --check origin/personal -- . ':!tickets/**'` — passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; Node emitted an existing module-type warning only.
-- `pnpm -C autobyteus-web build:electron` — passed; generated Linux AppImage, Windows NSIS installer, macOS arm64 DMG/zip, and macOS Intel DMG/zip under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/autobyteus-web/electron-dist/`. Non-blocking notes: Vite large chunk warnings; skipped macOS/Windows signing due missing signing identity/cert; APFS DMG creation on arm64 host.
+- `pnpm -C autobyteus-web build:electron` — passed; generated Linux AppImage, Windows NSIS installer, macOS arm64 DMG/zip, and macOS Intel DMG/zip under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`. Non-blocking notes: Vite large chunk warnings; skipped macOS/Windows signing due missing signing identity/cert; APFS DMG creation on arm64 host.
 
 ## Electron Build Artifacts
 
-Local build artifacts generated under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-access-mapping-analysis/autobyteus-web/electron-dist/`:
+Local build artifacts generated under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`:
 
 | Artifact | Size | SHA256 |
 | --- | ---: | --- |
@@ -145,10 +145,22 @@ Local build artifacts generated under `/Users/normy/autobyteus_org/autobyteus-wo
 | `AutoByteus_personal_macos-intel-1.3.40.dmg` | 367 MB | `34f600d252367dcc55e9fb1f45981ea81094a29f2a04692dfe9c863912cee6fb` |
 | `AutoByteus_personal_macos-intel-1.3.40.zip` | 365 MB | `1914dbeac1139a91fd95805ce3da9a675066f49eaa756ed6d12b7f35326a53a5` |
 
+## Release Workflow Results
+
+- Release tag: `v1.3.41`
+- Release commit: `1012c6ee3c38fd395bef962853f464b2b48ce55b`
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.41
+- GitHub release asset count observed: 19
+- Workflow results observed via `gh run list` / `gh run view`:
+  - Desktop Release — `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001015
+  - Android APK Release — `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001061
+  - Release Messaging Gateway — `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810001131
+  - Server Docker Release — `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26810000954
+
 ## Rollback Criteria
 
 If post-verification finalization exposes a regression, rollback by reverting the final ticket commit/merge from `personal`. Functional rollback would restore Codex auto-approved runs to relying on the saved sandbox setting and would reintroduce the old manual dynamic-tool behavior, so rollback should be used only if runtime approval/access behavior or launch/settings copy causes a blocking production issue.
 
 ## Final Status
 
-`Awaiting User Verification / Finalization Authorization` — delivery docs sync, release notes, handoff summary, delivery checks, and user-requested local Electron build are complete. User verification received; repository finalization and release are now authorized and in progress.
+`Completed` — repository finalization, release `v1.3.41`, workflow verification, and cleanup are complete. This report records the final released state.
