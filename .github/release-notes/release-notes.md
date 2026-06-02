@@ -1,6 +1,6 @@
-# Release Notes: Package Skills In Skills Page
+## Fixes
+- Fixed Codex Auto approve tools so high-trust runs can complete tool actions that need filesystem access even when the saved full-access setting is off.
+- Fixed manual Codex runs so dynamic tools and permission requests wait for visible approval instead of running or granting silently.
 
-- Restores bundled agent-package skills to the normal Skills page catalog, including shared-agent, team-local, and team-shared skill layouts.
-- Lets users open package/private skills through the existing Skill Detail and File Explorer flow to inspect `SKILL.md` and package files.
-- Preserves source-context-first runtime skill resolution for package agents and team members before global skill-directory fallback.
-- Adds durable backend/GraphQL coverage for package skill catalog visibility, detail lookup, and SkillWorkspace/File Explorer openability.
+## Improvements
+- Clarified Codex full-access and auto-approve wording in Settings, run launch, mobile launch, and project docs.
