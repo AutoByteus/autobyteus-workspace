@@ -40,7 +40,12 @@
     </div>
 
     <div class="mt-2 flex items-center justify-between gap-4 py-2">
-      <label for="auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools') }}</label>
+      <div class="min-w-0">
+        <label for="auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools') }}</label>
+        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+          {{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help') }}
+        </p>
+      </div>
       <button
         id="auto-execute"
         type="button"

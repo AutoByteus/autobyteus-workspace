@@ -267,6 +267,7 @@ A flexible key-value store for backend configurations.
   - The Advanced/API path still accepts all runtime-valid values: `read-only`, `workspace-write`, and `danger-full-access`.
   - `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
   - Changes apply to new/future Codex sessions. Existing active Codex sessions keep the sandbox mode they were started with.
+  - Agent/team launch `Auto approve tools` is a separate high-trust per-run policy for Codex. When enabled, the backend automatically allows Codex tool calls and access/permission requests for that run and starts/resumes Codex with effective `danger-full-access`, even if this saved full-access toggle is off. When disabled, Codex dynamic tools and permission requests use the visible tool-approval flow.
 - **Streaming parser:** `components/settings/StreamingParserCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common XML streaming parser override without requiring operators to edit the raw `AUTOBYTEUS_STREAM_PARSER` key.
   - Toggle on saves `xml`.
   - Toggle off saves `api_tool_call`, the provider-native/default non-XML mode.

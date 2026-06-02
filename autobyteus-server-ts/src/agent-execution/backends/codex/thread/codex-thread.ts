@@ -7,6 +7,9 @@ import { handleAppServerNotification as applyAppServerNotification } from "./cod
 import {
   handleAppServerRequest as applyAppServerRequest,
 } from "./codex-thread-server-request-handler.js";
+import {
+  respondToPendingCodexToolApproval,
+} from "./codex-tool-approval-coordinator.js";
 import type { CodexApprovalRecord } from "./codex-approval-record.js";
 import type { CodexAppServerMessage } from "./codex-app-server-message.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
@@ -249,25 +252,15 @@ export class CodexThread {
       throw new Error(`No pending approval found for invocation '${invocationId}'.`);
     }
 
-    const decision = approved ? "accept" : "decline";
-    if (approval.responseMode === "mcp_server_elicitation") {
-      this.client.respondSuccess(approval.requestId, { action: decision });
-    } else {
-      this.client.respondSuccess(approval.requestId, { decision });
-    }
-    if (approved) {
-      this.emitThreadAppServerMessage({
-        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
-        params: {
-          invocation_id: approval.invocationId,
-          itemId: approval.invocationId,
-          approvalId: approval.approvalId,
-          requestId: approval.requestId,
-          ...(approval.toolName ? { tool_name: approval.toolName } : {}),
-        },
-      });
-    }
     this.deleteApprovalRecord(approval);
+    await respondToPendingCodexToolApproval({
+      codexThread: this,
+      approval,
+      approved,
+      emitEvent: (event) => {
+        this.emitThreadAppServerMessage(event);
+      },
+    });
   }
 
   handleAppServerNotification(method: string, params: JsonObject): void {
