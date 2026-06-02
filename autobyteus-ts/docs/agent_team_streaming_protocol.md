@@ -119,7 +119,7 @@ Recursive events from nested teams.
 
 #### D. Source Type: `TASK_PLAN`
 
-Events related to the native internal task board. These are not the server-owned `delegate_tasks` / `update_task_status` events used by cross-runtime task delegation.
+Events related to the native internal task board. These are not the server-owned explicit task-delegation events used by cross-runtime delegation (`delegate_tasks`, task-agent `mark_task_completed` / `mark_task_failed`, and delegator `accept_task`).
 
 - **TypeScript Type**: `TaskPlanEventPayload` (Union)
 - **Payload (`data`)** (Example: `TasksCreatedEvent`):

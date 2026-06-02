@@ -140,3 +140,27 @@ Pass conditions now met:
 - `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
 - `xcrun stapler validate` passed for the app and DMG.
 - `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
+
+## Post-Latest-Base Delivery Rebuild (1.3.40)
+
+After delivery refreshed the ticket branch to latest `origin/personal` on 2026-06-02, the package version moved to `1.3.40`. Delivery reran the README macOS Electron build and repeated the signing/notarization/stapling verification for the new artifact.
+
+Final current artifact:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.40.dmg`
+
+Verification evidence:
+
+- Final summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-build-final-summary-1.3.40.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-rebuild-signed-notarized-after-origin-personal-1678dc82.log`
+- App verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-signing-notarization-verification-1.3.40.log`
+- DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-dmg-notarize-staple-1.3.40.log`
+- Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-dmg-mounted-final-verification-1.3.40.log`
+- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-build-artifacts-1.3.40.sha256`
+
+Pass conditions met for the current 1.3.40 artifact:
+
+- `codesign --verify --deep --strict --verbose=2` passed for the built app and the app inside the mounted DMG.
+- `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
+- `xcrun stapler validate` passed for the app and DMG.
+- `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.

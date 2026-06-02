@@ -1,136 +1,110 @@
-# Delivery / Release / Deployment Report
+# Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Scope
 
-No release, publication, deployment, version bump, or tag was run. Delivery is ready for user verification after latest-base integration, fresh full Code Review Round 26 pass, API/E2E Round 14 pass, docs sync, post-integration checks, and local macOS Electron packaging evidence.
-
-## Handoff Summary
-
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/handoff-summary.md`
-- Handoff summary status: updated for Round 26 fresh full code-review pass, API/E2E Round 14 validation, latest `origin/personal` freshness/integration check, docs sync, and Electron 1.3.39 artifact paths.
-
-## Integrated-State Refresh
-
-- Ticket branch: `codex/runtime-tool-mcp-unification-analysis`.
+- Ticket: `runtime-tool-mcp-unification-analysis`.
+- Updated (UTC): `2026-06-02T06:31:35Z`.
+- Branch/worktree: `codex/runtime-tool-mcp-unification-analysis` at `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis`.
 - Finalization target: `personal` / `origin/personal`.
-- Latest tracked remote base: `origin/personal` `fb22bc830cdbf78764fef6fc1a47ffd297812149` (`fb22bc83 Merge RPA stream error handling fix`).
-- Safety checkpoint commit before merge: `0ebd9a45` (`chore(ticket): checkpoint round25 validation delivery state`).
-- Latest-base merge commit: `52b2a81bef0a0623160c00ec021726a6d78c225c`.
-- Final fetch after the Round 26 handoff: `git fetch origin personal` on 2026-06-01; `origin/personal` remained `fb22bc830cdbf78764fef6fc1a47ffd297812149` and is contained in `HEAD`.
+- Current stage: pre-finalization delivery handoff, waiting for explicit user verification.
 
-Round 25 merge conflicts: none.
+## Latest Integrated State
 
-Prior delivery conflict context remains recorded at:
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`
+- Latest tracked base: `origin/personal` `1678dc82b705d24c58b073c75f363d96b5d4cc3c` (`1678dc82 docs(ticket): record package skills release completion`).
+- Candidate checkpoint before integration: `e9515f0976035ea840c5ac357fd6a2abca94a602` (`chore(ticket): checkpoint round28 validated delivery state`).
+- Integrated ticket HEAD: `0bc834c2520de0e62ffd6f443a55fb1d8b597424`.
+- Integration method: merge `origin/personal` into ticket branch after checkpoint.
+- Merge conflicts: none.
 
 ## Latest Review / Validation
 
-- Code Review Round 26: Pass, fresh full review, no open findings. Prior CR-001 through CR-013 remain resolved.
-- API/E2E Round 14: Pass.
+- Code Review Round 28: Pass; no open findings. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`.
+- API/E2E Round 16: Pass; no repository-resident durable validation code changed after code review. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`.
 
-API/E2E Round 14 validated:
+API/E2E Round 16 validated the explicit task-delegation tool surface:
 
-- Focused frontend task-agent projection/reopen suite: 3 files / 34 tests.
-- Focused server task-delegation lifecycle/acceptance suite: 4 files / 43 tests.
-- Server build.
-- Live mixed AutoByteus/LMStudio Qwen coordinator -> Codex `gpt-5.5` worker E2E.
-- Browser/API replay for CR-012/CR-013: running and awaiting-acceptance task-agent children remain visible/addressable after active team reopen/hydration, and the concrete child disappears after delegator acceptance plus backend settlement/offline cleanup while the logical worker parent remains stable.
+- `delegate_tasks`
+- `mark_task_completed`
+- `mark_task_failed`
+- `accept_task`
 
-Canonical API/E2E report:
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
-
-Code Review Round 26 representative checks passed: server typecheck/build, focused backend task-delegation/runtime suite, focused frontend task-agent/run-open/run-history/active-context suite, autobyteus-ts task-tool/bootstrap tests, web localization/boundary/build checks, `autobyteus-ts build`, and `git diff --check`.
+It also validated browser cleanup for the Round 15/27 failure: no task-only logical `worker` remains focused/displayed as `Initializing` after `accept_task` and settlement, and stale worker route opening normalizes to coordinator focus.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`
-- Result: Complete against the latest integrated state.
-- Durable docs updated for task-delegation contract, no-dependency task shape, pushed work packets, completed -> `awaiting_acceptance`, original-delegator `accepted` status with exact generated task id, accepted/failed settlement timing, native AutoByteus gating, frontend parent/child task-agent lifecycle, active team reopen/hydration preservation, approval routing, stale-route normalization, and live mixed-runtime validation.
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`.
+- Result: Complete against integrated HEAD `0bc834c2520de0e62ffd6f443a55fb1d8b597424`.
+- Durable docs updated/reviewed for explicit task tools, minimal schema, pushed work packets, completed -> `awaiting_acceptance`, original-delegator `accept_task`, accepted/failed settlement timing, native AutoByteus gating, frontend parent/child task-agent lifecycle, active team reopen/hydration preservation, approval routing, stale-route normalization, and live mixed-runtime validation.
 
 ## Verification Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Final `origin/personal` freshness check after Round 26 handoff | Pass | `origin/personal` remained `fb22bc830cdbf78764fef6fc1a47ffd297812149`; current `HEAD` contains it; no additional base integration was required. |
-| README-guided macOS Electron rebuild | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/electron-rebuild-after-origin-personal-fb22bc83.log` |
-| Delivery rerun of Round 25 frontend task-agent projection/reopen suite | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/post-integration-frontend-task-agent-suite.log` — 3 files / 34 tests |
-| Delivery rerun of Round 25 server task-delegation lifecycle suite | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/post-integration-server-task-delegation-suite.log` — 4 files / 43 tests |
-| `git diff --check` | Pass | Run after final delivery updates and Round 26 review-report refresh. |
-| API/E2E Round 14 validation | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md` |
-| Code Review Round 26 fresh full review | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md` |
-| API/E2E Electron DMG startup triage | Fail / Delivery Local Fix | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-electron-dmg-startup-failure.md` |
-| Delivery Electron signed/notarized rebuild and mounted-DMG verification | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-build-final-summary.md` |
+| Latest `origin/personal` refresh and merge | Pass | Integrated `1678dc82b705d24c58b073c75f363d96b5d4cc3c` into ticket branch at `0bc834c2520de0e62ffd6f443a55fb1d8b597424` with no conflicts. |
+| Post-latest-base server focused suite | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/post-origin-personal-server-focused-suite.log` — 10 files / 49 tests. |
+| Post-latest-base frontend focused suite | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/post-origin-personal-frontend-focused-suite.log` — 11 files / 133 tests. |
+| Post-latest-base server typecheck | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/post-origin-personal-server-tsc.log`. |
+| README-guided macOS Electron rebuild | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-rebuild-signed-notarized-after-origin-personal-1678dc82.log`. |
+| Electron app verification | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-signing-notarization-verification-1.3.40.log`. |
+| DMG notarize/staple | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-dmg-notarize-staple-1.3.40.log`. |
+| Mounted DMG app verification | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-dmg-mounted-final-verification-1.3.40.log`. |
+| `git diff --check` | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/git-diff-check-final.log`. |
 
-Electron rebuild command from `autobyteus-web/README.md` used for the final delivery-local packaging fix:
+## Electron Artifacts Produced
+
+Build command from `autobyteus-web/README.md`:
 
 ```bash
 pnpm build:electron:mac
 ```
 
-The previous Round 25 no-notarization local artifact was superseded after API/E2E identified Gatekeeper-signing failure in the DMG. Delivery rebuilt with Developer ID signing plus Apple notarization, then notarized/stapled the DMG and verified the mounted DMG app.
-
-Observed non-blocking warnings during build:
-
-- Existing Node `MODULE_TYPELESS_PACKAGE_JSON` localization audit warning.
-- Existing Nuxt large chunk warning.
-- Existing pnpm ignored-build-script and deprecated peer warnings.
-
-## Electron Artifacts Produced
-
-- Final build summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-build-final-summary.md`
-- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-build-artifacts.sha256`
+Final local artifacts:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg` | `676af1af7c4051b772f6e509fe4bda778eb882f511d7cf797b4658695ca0d6c4` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg.blockmap` | `c665d3d6cfb88263b0298f4d5031a46a81a986e722fa6a1c1e4e161f3e873d13` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.zip` | `38adc8dad71cbfb5247e320a60e69a322b2965bccbd18a7a02bd0d39ab2a1e06` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.zip.blockmap` | `966f11b8713f0c1fa8b51d1f9edf92451b19cac21109eaaf5050ffd0a8be4974` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/latest-mac.yml` | `f7246ebfe5234b6b309c34cfa29e66a7beaee96ec2458be57b3b58179a98c219` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.40.dmg` | `46db407c4a8858819422e33f16e9f907a37ef1c92760b566a58bd8f817b270e2` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.40.dmg.blockmap` | `41eba8062a1763d9f409f6a77fb3f328763e567c35f0d659c72e67ab20ac377c` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.40.zip` | `52d36574823436068b75234c35e72a1604f695dd088208146c8710cbf933b6fc` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.40.zip.blockmap` | `22d735cd51ce7f3b4fd532dc58d271661d54c6948f98ec400f99833db598ea1d` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/latest-mac.yml` | `bad367605e2cad90faea292ad4d07ebc71f1493eea140beaf4db03e6513eacb9` |
 
-Final packaging verification passed:
+Electron packaging verification result: Pass.
 
-- Built app has `Contents/_CodeSignature/CodeResources`.
-- Built app identity is `com.autobyteus.app` with Developer ID `YU ZHENG (7Y86YBQ7B4)`.
-- Built app has a stapled notarization ticket.
-- DMG has a stapled notarization ticket.
-- `codesign --verify --deep --strict --verbose=2` passed for the built app and app inside mounted DMG.
-- `spctl --assess --type execute --verbose=4` accepted the built app and app inside mounted DMG as `Notarized Developer ID`.
-- `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
+- App bundle has `Contents/_CodeSignature/CodeResources`.
+- App identity is `com.autobyteus.app`.
+- Developer ID authority is `Developer ID Application: YU ZHENG (7Y86YBQ7B4)`.
+- App notarization ticket is stapled.
+- DMG notarization ticket is stapled.
+- Built app and mounted-DMG app pass `codesign --verify --deep --strict --verbose=2`.
+- Built app and mounted-DMG app pass `spctl --assess --type execute --verbose=4` as `Notarized Developer ID`.
+- DMG passes `spctl --assess --type open --context context:primary-signature --verbose=4` as `Notarized Developer ID`.
 
-## User Verification
+Electron evidence:
 
-- Explicit user completion/verification received: No.
-- Verification status: waiting for user inspection/confirmation.
-- Required before finalization: Yes.
+- Summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-build-final-summary-1.3.40.md`
+- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-28/electron-build-artifacts-1.3.40.sha256`
 
 ## Repository Finalization
 
-Not started:
+Not started pending explicit user verification:
 
 - Ticket folder move to `tickets/done/`.
 - Final ticket-branch commit/push.
 - Final target branch refresh/merge/push.
-- Tag/release/publication/deployment.
-- Worktree/branch/artifact/browser-process cleanup.
+- Release publication/deployment/tagging.
+- Worktree/branch/artifact cleanup.
 
 ## Release / Publication / Deployment
 
-- Applicable now: No, not before repository finalization and explicit user verification.
 - Published artifacts: None.
-- Current local Electron artifacts are signed, notarized, stapled, and available for inspection. They have not been uploaded, published as a release, or deployed.
-
-## Running Browser Inspection Setup
-
-API/E2E left Round 25 backend/frontend dev processes running for optional inspection. Delivery did not stop them. Session details are in:
-
-- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/session.env`
+- Current local Electron artifacts are signed, notarized, stapled, and available for inspection.
+- No release upload/deployment has been performed.
 
 ## Environment Or Migration Notes
 
-No database migrations, deployment runtime changes, or cleanup steps were performed by delivery.
+- API/E2E Round 16 stopped its temporary backend/frontend validation processes and confirmed no listeners on localhost:8000 or localhost:3000.
+- Delivery copied a temporary local `.env.local` only for signing/notarization and removed it after the build.
+- No database migrations or deployment runtime changes were performed by delivery.
 
 ## Final Status
 

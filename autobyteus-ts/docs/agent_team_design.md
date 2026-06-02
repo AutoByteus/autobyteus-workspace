@@ -10,7 +10,7 @@ Agent Teams provide the **multi-agent orchestration layer** in Autobyteus. A tea
 - aggregates events into a single team stream,
 - and manages clean shutdown across all nodes.
 
-This document focuses on the **agent-team** package and how it integrates with the runtime and event-driven core. Server-managed bounded task delegation (`delegate_tasks` / `update_task_status`) is owned in `autobyteus-server-ts`; see `agent_team_runtime_and_task_coordination.md` for the boundary between native internal task-plan support and server-owned delegation.
+This document focuses on the **agent-team** package and how it integrates with the runtime and event-driven core. Server-managed bounded task delegation (`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and `accept_task`) is owned in `autobyteus-server-ts`; see `agent_team_runtime_and_task_coordination.md` for the boundary between native internal task-plan support and server-owned delegation.
 
 ---
 
@@ -160,11 +160,15 @@ task tool surface.
 The removed legacy model-facing task-plan tools are `assign_task_to`,
 `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, and the
 old local task-plan `update_task_status`. Server-managed bounded work uses the
-server-owned `delegate_tasks` / `update_task_status` flow, which pushes concrete
-work packets, emits task-delegation events, notifies coordinators on terminal
-status, and handles safe task-agent settlement on supported server team
-backends. Native AutoByteus pure-team exposure is gated until native
-task-agent/per-member settlement exists.
+server-owned explicit task-delegation flow: `delegate_tasks` pushes concrete
+work packets, task-agent workers report results with `mark_task_completed` or
+`mark_task_failed`, and original delegators accept successful work with
+`accept_task`. The server emits task-delegation events, notifies original
+delegators and team/coordinator history on terminal reports, keeps completed
+task-agent instances addressable while awaiting acceptance, and handles safe
+task-agent settlement on supported server team backends. Native AutoByteus
+pure-team exposure is gated until native task-agent/per-member settlement
+exists.
 
 ---
 
