@@ -2039,7 +2039,7 @@ describe('runHistoryStore', () => {
     );
   });
 
-  it('keeps an initializing task-delegation logical worker visible as a parent row', () => {
+  it('filters an initializing task-delegation-only worker from active team rows while keeping coordinator focus', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
@@ -2123,9 +2123,9 @@ describe('runHistoryStore', () => {
 
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-task-delegation-only-1');
 
-    expect(teamNode?.focusedMemberRouteKey).toBe('worker');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
-    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
+    expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
   });
 
   it('selectTreeRun opens persisted team member when local team context is absent', async () => {
@@ -2197,7 +2197,7 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
   });
 
-  it('selectTreeRun can focus a task-delegation logical parent row', async () => {
+  it('selectTreeRun normalizes a task-delegation-only logical parent row to active coordinator focus', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
     const coordinatorNode = {
@@ -2268,10 +2268,10 @@ describe('runHistoryStore', () => {
     }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'worker');
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'coordinator');
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
     expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('worker');
+    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
   });
 
   it('selectTreeRun keeps a local draft temp team context even when it is not subscribed', async () => {
@@ -2669,7 +2669,7 @@ describe('runHistoryStore', () => {
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
   });
 
-  it('openTeamMemberRun preserves a logical parent focus without promoting task-agent-only history', async () => {
+  it('openTeamMemberRun normalizes task-agent-only logical parent focus to the coordinator without promoting task-agent history', async () => {
     queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
       if (query === 'GetTeamRunResumeConfig') {
         return {
@@ -2745,15 +2745,15 @@ describe('runHistoryStore', () => {
     await store.openTeamMemberRun('team-stale-route-1', 'worker');
 
     const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-route-1');
-    expect(hydratedTeam?.focusedMemberRouteKey).toBe('worker');
+    expect(hydratedTeam?.focusedMemberRouteKey).toBe('coordinator');
     expect(hydratedTeam?.members.get('worker')?.state.conversation.messages).toHaveLength(1);
-    expect(store.selectedTeamMemberRouteKey).toBe('worker');
+    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-1');
-    expect(teamNode?.focusedMemberRouteKey).toBe('worker');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
+    expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
   });
 
-  it('openTeamMemberRun preserves logical parent focus for an existing unsubscribed active context', async () => {
+  it('openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context', async () => {
     const existingContext = {
       teamRunId: 'team-stale-route-2',
       config: {},
@@ -2840,10 +2840,10 @@ describe('runHistoryStore', () => {
 
     const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-route-2');
     expect(hydratedTeam).toBe(existingContext);
-    expect(hydratedTeam.focusedMemberRouteKey).toBe('worker');
-    expect(store.selectedTeamMemberRouteKey).toBe('worker');
+    expect(hydratedTeam.focusedMemberRouteKey).toBe('coordinator');
+    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-2');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
   });
 
   it('openTeamMemberRun trusts history active state and reconnects a team stream', async () => {

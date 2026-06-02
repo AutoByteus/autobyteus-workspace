@@ -65,7 +65,19 @@ const createLogicalAgentContext = (memberName: string, runId: string): AgentCont
 };
 
 const createTeamContextWithWorker = () => {
+  const coordinatorContext = createLogicalAgentContext('coordinator', 'coordinator-run-1');
+  coordinatorContext.state.currentStatus = AgentStatus.Running;
   const workerContext = createLogicalAgentContext('worker', 'worker-run-1');
+  const coordinatorNode = {
+    memberKind: 'agent',
+    memberName: 'coordinator',
+    displayName: 'Coordinator',
+    memberPath: ['coordinator'],
+    memberRouteKey: 'coordinator',
+    memberRunId: 'coordinator-run-1',
+    agentDefinitionId: 'coordinator-definition',
+    currentStatus: AgentStatus.Running,
+  };
   const workerNode = {
     memberKind: 'agent',
     memberName: 'worker',
@@ -80,11 +92,13 @@ const createTeamContextWithWorker = () => {
     currentStatus: AgentTeamStatus.Idle,
     focusedMemberRouteKey: 'worker',
     coordinatorMemberRouteKey: 'coordinator',
-    memberTree: [workerNode],
+    memberTree: [coordinatorNode, workerNode],
     memberNodesByRouteKey: new Map([
+      ['coordinator', coordinatorNode],
       ['worker', workerNode],
     ]),
     leafAgentContextsByRouteKey: new Map([
+      ['coordinator', coordinatorContext],
       ['worker', workerContext],
     ]),
   } as any;
@@ -1220,7 +1234,66 @@ describe('TeamStreamingService', () => {
     expect(teamContext.leafAgentContextsByRouteKey.has('task-agent-run-1')).toBe(false);
     expect(teamContext.memberNodesByRouteKey.has('task-agent-run-1')).toBe(false);
     expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).not.toContain('task-agent-run-1');
-    expect(teamContext.focusedMemberRouteKey).toBe('worker');
+    expect(teamContext.focusedMemberRouteKey).toBe('coordinator');
+  });
+
+  it('does not let identity-less task-agent status poison the logical member context before projection exists', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      service.connect('team-1', teamContext);
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'AGENT_STATUS',
+          payload: {
+            status: 'initializing',
+            can_interrupt: false,
+            agent_id: 'team-1__worker__task_0001',
+            agent_name: 'worker',
+            member_route_key: 'worker',
+            member_path: ['worker'],
+            source_route_key: 'worker',
+            source_path: ['worker'],
+          },
+        }),
+      );
+
+      expect(workerContext.state.runId).toBe('worker-run-1');
+      expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
+      expect(workerContext.conversation.messages).toHaveLength(0);
+      expect(teamContext.leafAgentContextsByRouteKey.has('team-1__worker__task_0001')).toBe(false);
+      expect(warnSpy).toHaveBeenCalledWith('No member context found for message, skipping');
+
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'AGENT_STATUS',
+          payload: {
+            status: 'running',
+            can_interrupt: true,
+            agent_id: 'team-1__worker__task_0001',
+            agent_name: 'worker',
+            member_route_key: 'worker',
+            member_path: ['worker'],
+            source_route_key: 'worker',
+            source_path: ['worker'],
+            task_agent_instance_id: 'task-agent-instance-1',
+            task_agent_run_id: 'team-1__worker__task_0001',
+            task_id: 'task_0001',
+          },
+        }),
+      );
+
+      const taskContext = teamContext.leafAgentContextsByRouteKey.get('team-1__worker__task_0001');
+      expect(taskContext).toBeTruthy();
+      expect(taskContext?.state.currentStatus).toBe(AgentStatus.Running);
+      expect(workerContext.state.runId).toBe('worker-run-1');
+      expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it('creates the transient task-agent context from a work-packet echo that carries task-agent identity', () => {

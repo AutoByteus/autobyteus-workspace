@@ -64,7 +64,7 @@ describe("AutoByteusAgentConfigBuilder", () => {
       role: "worker",
       description: "Native AutoByteus worker.",
       instructions: "Do work.",
-      toolNames: ["delegate_tasks", "update_task_status", "read_file"],
+      toolNames: ["delegate_tasks", "mark_task_completed", "mark_task_failed", "accept_task", "update_task_status", "read_file"],
     });
     const builder = new AutoByteusAgentConfigBuilder({
       agentDefinitionService: {

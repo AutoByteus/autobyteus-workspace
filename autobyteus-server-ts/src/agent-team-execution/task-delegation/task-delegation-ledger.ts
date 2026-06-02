@@ -2,9 +2,9 @@ import {
   isTaskDelegationTerminalStatus,
   TaskDelegationError,
   type TaskDelegationDelegatorIdentity,
-  type TaskDelegationExecutionToolStatus,
   type TaskDelegationMemberIdentity,
   type TaskDelegationRecord,
+  type TaskDelegationReportedTerminalStatus,
   type TaskDelegationStatus,
   type TaskDelegationTaskInput,
 } from "./task-delegation-record.js";
@@ -168,7 +168,7 @@ export class TaskDelegationLedger {
 
   updateStatus(input: {
     taskId: string;
-    status: TaskDelegationExecutionToolStatus;
+    status: TaskDelegationReportedTerminalStatus;
     message?: string | null;
     referenceFiles?: string[];
   }): TaskDelegationRecord {
@@ -236,7 +236,7 @@ export class TaskDelegationLedger {
     const records = [...this.recordsById.values()].filter(
       (record) => record.member.memberRouteKey === normalizedRouteKey,
     );
-    if (records.some((record) => record.status === "queued" || record.status === "in_progress")) {
+    if (records.some((record) => record.status === "queued")) {
       return true;
     }
     return records.some((record) => record.status === "not_started");
@@ -252,7 +252,6 @@ export class TaskDelegationLedger {
         record.taskAgentInstance?.taskAgentRunId === normalizedRunId &&
         (
           record.status === "queued" ||
-          record.status === "in_progress" ||
           record.status === "awaiting_acceptance"
         ),
     );
@@ -275,7 +274,6 @@ export class TaskDelegationLedger {
     }
     if (
       record.status === "queued" ||
-      record.status === "in_progress" ||
       record.status === "awaiting_acceptance"
     ) {
       return;

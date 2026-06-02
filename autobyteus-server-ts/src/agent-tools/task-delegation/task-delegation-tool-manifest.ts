@@ -1,25 +1,41 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type {
+  AcceptTaskInput,
+  AcceptTaskResult,
   DelegateTasksInput,
   DelegateTasksResult,
-  UpdateTaskStatusInput,
-  UpdateTaskStatusResult,
+  MarkTaskCompletedInput,
+  MarkTaskCompletedResult,
+  MarkTaskFailedInput,
+  MarkTaskFailedResult,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import {
+  ACCEPT_TASK_TOOL_NAME,
   DELEGATE_TASKS_TOOL_NAME,
-  UPDATE_TASK_STATUS_TOOL_NAME,
+  MARK_TASK_COMPLETED_TOOL_NAME,
+  MARK_TASK_FAILED_TOOL_NAME,
   type TaskDelegationToolContext,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 import {
+  parseAcceptTaskInput,
   parseDelegateTasksInput,
-  parseUpdateTaskStatusInput,
+  parseMarkTaskCompletedInput,
+  parseMarkTaskFailedInput,
 } from "./task-delegation-tool-input-parsers.js";
 import { buildTaskDelegationToolParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
 import type { TaskDelegationToolService } from "./task-delegation-tool-service.js";
 
-type TaskDelegationToolParsedInput = DelegateTasksInput | UpdateTaskStatusInput;
-type TaskDelegationToolExecutionResult = DelegateTasksResult | UpdateTaskStatusResult;
+type TaskDelegationToolParsedInput =
+  | DelegateTasksInput
+  | MarkTaskCompletedInput
+  | MarkTaskFailedInput
+  | AcceptTaskInput;
+type TaskDelegationToolExecutionResult =
+  | DelegateTasksResult
+  | MarkTaskCompletedResult
+  | MarkTaskFailedResult
+  | AcceptTaskResult;
 
 export type TaskDelegationToolManifestEntry = {
   name: TaskDelegationToolName;
@@ -44,13 +60,31 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
       service.delegateTasks(context, input as DelegateTasksInput),
   },
   {
-    name: UPDATE_TASK_STATUS_TOOL_NAME,
+    name: MARK_TASK_COMPLETED_TOOL_NAME,
     description:
-      "Report progress/completion/failure for the delegated task bound to this task-agent instance, or accept a reported completion as the original delegator. Task-agent execution updates must not pass task selectors. Original-delegator acceptance must pass status=\"accepted\" with the framework-generated task_id from the completion notification.",
-    parameterSchema: buildTaskDelegationToolParameterSchema(UPDATE_TASK_STATUS_TOOL_NAME),
-    parseInput: parseUpdateTaskStatusInput,
+      "Report that the delegated task bound to this task-agent instance is completed and ready for the original delegator to accept. This tool is task-agent-only, requires a result message, may include reference_files, and must not pass status, task_id, task_name, title, or any task selector.",
+    parameterSchema: buildTaskDelegationToolParameterSchema(MARK_TASK_COMPLETED_TOOL_NAME),
+    parseInput: parseMarkTaskCompletedInput,
     execute: (service, context, input) =>
-      service.updateTaskStatus(context, input as UpdateTaskStatusInput),
+      service.markTaskCompleted(context, input as MarkTaskCompletedInput),
+  },
+  {
+    name: MARK_TASK_FAILED_TOOL_NAME,
+    description:
+      "Report that the delegated task bound to this task-agent instance failed and cannot be completed. This tool is task-agent-only, requires a failure message, may include reference_files, and must not pass status, task_id, task_name, title, or any task selector.",
+    parameterSchema: buildTaskDelegationToolParameterSchema(MARK_TASK_FAILED_TOOL_NAME),
+    parseInput: parseMarkTaskFailedInput,
+    execute: (service, context, input) =>
+      service.markTaskFailed(context, input as MarkTaskFailedInput),
+  },
+  {
+    name: ACCEPT_TASK_TOOL_NAME,
+    description:
+      "Accept a reported completed delegated task as its original delegator. Use the framework-generated task_id from the completion notification. This tool is not a worker result tool and does not accept status, reference_files, or task-agent result payloads; acceptance schedules settlement after safe idle gates.",
+    parameterSchema: buildTaskDelegationToolParameterSchema(ACCEPT_TASK_TOOL_NAME),
+    parseInput: parseAcceptTaskInput,
+    execute: (service, context, input) =>
+      service.acceptTask(context, input as AcceptTaskInput),
   },
 ];
 

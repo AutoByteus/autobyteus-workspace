@@ -6,7 +6,6 @@ import {
   type TaskDelegationDelegatorIdentity,
   type TaskDelegationMemberIdentity,
   type TaskDelegationTaskInput,
-  type UpdateTaskStatusInput,
 } from "./task-delegation-record.js";
 import type {
   CreateTaskDelegationRecordInput,
@@ -84,12 +83,16 @@ export class TaskDelegationInputResolver {
     }));
   }
 
-  normalizeStatusMessage(message: UpdateTaskStatusInput["message"]): string | null {
+  normalizeStatusMessage(message: string | null | undefined): string | null {
     if (message === undefined || message === null) {
       return null;
     }
     const normalized = message.trim();
     return normalized.length > 0 ? normalized : null;
+  }
+
+  normalizeRequiredResultMessage(message: string, fieldName = "message"): string {
+    return normalizeRequiredTaskDelegationString(message, fieldName);
   }
 
   normalizeReferenceFiles(referenceFiles: readonly string[] | undefined): string[] {

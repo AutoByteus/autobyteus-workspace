@@ -10,6 +10,7 @@ const LEGACY_LOCAL_TASK_TOOL_NAMES = new Set([
   "create_tasks",
   "get_my_tasks",
   "get_task_plan_status",
+  "update_task_status",
 ]);
 
 export const isMixedAutoByteusStandaloneMember = (

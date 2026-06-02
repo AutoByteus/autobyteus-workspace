@@ -16,12 +16,21 @@ describe("autobyteus mixed tool exposure", () => {
           "get_my_tasks",
           "get_task_plan_status",
           "assign_task_to",
-          "delegate_tasks",
           "update_task_status",
+          "delegate_tasks",
+          "mark_task_completed",
+          "mark_task_failed",
+          "accept_task",
           "read_file",
         ],
         memberTeamContext: mixedMemberTeamContext as any,
       }),
-    ).toEqual(["delegate_tasks", "update_task_status", "read_file"]);
+    ).toEqual([
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
+      "read_file",
+    ]);
   });
 });

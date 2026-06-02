@@ -6,7 +6,7 @@ Yes: make this the first ticket, before HTTP/streamable MCP.
 
 The first ticket should not be "MCP server for task tools." It should be "server-owned task-management tool service + current runtime projections + mandatory safe task-agent instance lifecycle." Once task tools have a canonical server owner, exposing them through a general MCP server in a later ticket becomes a transport/adaptor problem instead of a business-logic migration.
 
-2026-05-29 clarification, refined 2026-06-01: final-worker settlement is a hard sub-agent lifecycle invariant for every supported task-delegation runtime path. For successful work, a delegated worker that reports completed must remain addressable while awaiting original-delegator acceptance; after the delegator accepts and no queued/in-progress/runnable delegated work remains bound to that instance, it must settle/exit after its current turn becomes idle. This is not optional "may settle" behavior.
+2026-05-29 clarification, refined 2026-06-01/02: final-worker settlement is a hard sub-agent lifecycle invariant for every supported task-delegation runtime path. For successful work, a delegated worker that reports completed must remain addressable while awaiting original-delegator acceptance; after the delegator accepts and no unaccepted/active/runnable delegated work remains bound to that instance, it must settle/exit after its current turn becomes idle. This is not optional "may settle" behavior.
 
 2026-05-29 parallelism refinement, updated 2026-06-01: a logical team member should be treated as a reusable worker template. A delegated task should be able to start a task-scoped agent instance of that member. If two independent runnable tasks target the same logical member, the framework should be able to run two task-agent instances in parallel, subject to concurrency policy. For successful work, each task-agent instance exits independently after its worker-reported completion is accepted by the original delegator and its current turn is idle.
 
@@ -14,7 +14,7 @@ The first ticket should not be "MCP server for task tools." It should be "server
 
 2026-05-31/2026-06-01 worker-row semantics refinement: the logical team member/template distinction is valid and should remain visible for team transparency. Preferred UX: show the logical member as a stable parent/template row, render active delegated tasks/task-agent instances as indented children under that parent, and remove only the task/task-agent child after settlement. Task-agent packets/tool activity/completed history must belong to the task-agent/completed-task history entity rather than the logical member's normal conversation.
 
-2026-06-01 delegation-authority and acceptance refinement: `delegate_tasks` should not be coordinator-only. Any active team agent context may delegate when the tool is exposed and authorization policy allows the target member. The delegation ledger should record the exact original delegator identity, including concrete task-agent instance identity when applicable, so reported results route back to that delegator and remain visible in team/coordinator history. Do not add a separate review tool: task-agent completion notifications include generated `task_id` and targetable `task_agent_id`; revisions use `send_message_to(task_agent_id)`, while acceptance reuses `update_task_status(status="accepted", task_id)` and then triggers safe settlement.
+2026-06-01/02 delegation-authority, acceptance, and explicit-tool refinement: `delegate_tasks` should not be coordinator-only. Any active team agent context may delegate when the tool is exposed and authorization policy allows the target member. The delegation ledger should record the exact original delegator identity, including concrete task-agent instance identity when applicable, so reported results route back to that delegator and remain visible in team/coordinator history. Do not add a generic review/status tool: task-agent completion notifications include generated `task_id` and targetable `task_agent_id`; revisions use `send_message_to(task_agent_id)`; workers report with `mark_task_completed` / `mark_task_failed`; acceptance uses `accept_task(task_id)` and then triggers safe settlement.
 
 ## Current State
 
@@ -40,7 +40,7 @@ The native AutoByteus team already has the right conceptual loop:
 3. It finds `getNextRunnableTasks()`.
 4. It marks runnable tasks `QUEUED`.
 5. `TaskActivator` ensures the target member node is running and sends a system activation message.
-6. Current local-tool behavior expects the target member to use `get_my_tasks` and later `update_task_status`; the target design should remove that happy-path polling tool and replace it with a richer activation work packet.
+6. Current local-tool behavior expects the target member to use `get_my_tasks` and later generic `update_task_status`; the target design should remove that happy-path polling/status surface and replace it with a richer activation work packet plus explicit worker result tools.
 7. In the legacy task-plan model, status updates emit `TASK_PLAN_STATUS_UPDATED`, which can allow dependent tasks to become runnable. That dependency behavior is not part of the simplified first-ticket model-facing schema.
 
 This loop is valuable; the problem is placement and cross-runtime reach, not the basic algorithm.
@@ -84,14 +84,14 @@ Do not let tool handlers accept arbitrary team IDs without authorization. The ru
 
 Separate task mutation from runtime lifecycle.
 
-`update_task_status` should only update task state and emit events. It should not directly kill the task-agent runtime inline.
+Worker result tools and `accept_task` should only update task state and emit events. They should not directly kill the task-agent runtime inline.
 
 A separate lifecycle coordinator should observe task status changes and task-agent status events, then request task-agent settlement only when safe:
 
 - for successful completion, original delegator has accepted the worker-reported completed task;
 - the updater/member is the bound target member/task-agent instance;
-- no assigned `queued` or `in_progress` tasks remain;
-- no assigned `not_started` tasks are currently runnable;
+- no assigned unaccepted or active tasks remain;
+- no assigned not-started tasks are currently runnable;
 - current member is not protected by policy (for example coordinator/root, unless configured);
 - member's current turn/tool call has become idle or completed.
 
@@ -104,7 +104,7 @@ Add a dynamic task-agent instance layer:
 - `member_name` resolves to a logical team member/template;
 - each selected runnable task gets a `taskAgentInstanceId` and concrete `taskAgentRunId`;
 - task-agent work packets are single-task packets focused on the rich description/reference files; internal task identity and `taskAgentInstanceId` are bound in context/events;
-- `update_task_status` resolves the task from caller instance identity and does not expose task selector fields;
+- `mark_task_completed` / `mark_task_failed` resolve the task from caller instance identity and do not expose task selector fields;
 - events/status expose logical member identity plus task-agent instance identity.
 
 Do not use generic `TeamRun.postMessage` as the task-agent activation primitive. `postMessage` is correct for normal user messages and `send_message_to`, where one logical member conversation should receive a message. Task delegation needs an explicit `startTaskAgentInstance` boundary so multiple concrete runtimes can exist under one logical member.
@@ -119,7 +119,7 @@ Add a cross-runtime member lifecycle boundary, e.g.:
 
 The implementation should use backend-specific member run termination/cleanup. Do not use team-level `terminate()`, and do not rely on `interruptMember` as a substitute for exit.
 
-Every backend path that exposes `delegate_tasks`/`update_task_status` as supported must implement this task-agent/per-member settlement contract. If a backend returns `UNSUPPORTED_RUNTIME_COMMAND` for settlement, task delegation must be gated off for that backend until settlement is implemented. In particular, native AutoByteus pure-team delegation cannot be claimed supported while pure-team settlement remains unsupported.
+Every backend path that exposes `delegate_tasks` plus worker result/acceptance tools as supported must implement this task-agent/per-member settlement contract. If a backend returns `UNSUPPORTED_RUNTIME_COMMAND` for settlement, task delegation must be gated off for that backend until settlement is implemented. In particular, native AutoByteus pure-team delegation cannot be claimed supported while pure-team settlement remains unsupported.
 
 For server-managed Codex/Claude/Mixed backends, the lifecycle boundary should be instance-aware: `startTaskAgentInstance(logicalMemberRouteKey, taskAgentRunId, taskId, message)` and `settleTaskAgentInstance(logicalMemberRouteKey, taskAgentRunId, reason)`. Backend registries should keep normal conversation runs keyed by logical route separately from task-agent runs keyed by concrete run ID.
 
@@ -140,7 +140,9 @@ General external MCP remains a later adapter around the same service.
 For the first ticket, the cleanest model-facing surface is:
 
 1. `delegate_tasks` — an authorized delegator delegates one or more tasks to team members. A one-item list covers single-task delegation.
-2. `update_task_status` — task agent reports `in_progress`, `completed`, or `failed`, plus optional message and reference files with the task inferred from task-agent instance context; original delegator accepts completed work with `status: "accepted"` plus generated `task_id`.
+2. `mark_task_completed` — task agent reports success with required `message` and optional `reference_files`; task is inferred from task-agent instance context.
+3. `mark_task_failed` — task agent reports inability/failure with required `message` and optional `reference_files`; task is inferred from task-agent instance context.
+4. `accept_task` — original delegator accepts completed work with generated `task_id` plus optional message. Internal running/in-progress state is derived from task-agent activation/runtime status events, not from an LLM tool call.
 
 `delegate_tasks` task items should be detailed work-packet envelopes, not name-only records, but the schema should stay simple for reliable model calls. The minimal and intended item is a logical `member_name`, a rich `description`, and optional `reference_files`. Do not add separate model-facing `task_name`, `dependencies`, `completion_criteria`, or `expected_deliverables` fields; the `description` field description should tell the model to include any success conditions, expected outputs, constraints, or context in prose. The server generates internal task identity and may derive a display label from the description when needed.
 
@@ -152,9 +154,9 @@ Do not expose `get_my_tasks` to activated workers. Do not expose `get_task_plan_
 
 Recommended first-ticket model-facing set:
 
-- Include: `delegate_tasks`, `update_task_status`.
+- Include: `delegate_tasks`, `mark_task_completed`, `mark_task_failed`, `accept_task`.
 - Keep internal/UI/debug only if needed: task-plan status query.
-- Remove from new model-facing surface: `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`.
+- Remove from new model-facing surface: `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, generic `update_task_status`.
 - Defer or omit: `assign_task_to`.
 
 Reason: `create_task`/`create_tasks` describe internal record creation, while `delegate_tasks` describes delegation intent; `get_my_tasks` is unnecessary when activation pushes the work packet; `assign_task_to` is not a pure task-plan command. It performs task creation and then sends a direct inter-agent message. That is useful, but it composes two subsystems: TaskPlan and TeamCommunication. It should either be deferred or implemented as a separate orchestration tool that delegates to both canonical services.
@@ -167,7 +169,7 @@ The activation message should carry enough task detail for the task agent to beg
 - optional derived display label;
 - rich description / expected outcome;
 - optional reference files/artifacts;
-- status-update instruction stating that `update_task_status` is bound to this task-agent instance and does not need a task selector;
+- result-reporting instruction stating that `mark_task_completed` and `mark_task_failed` are bound to this task-agent instance and do not need a task selector;
 - guidance that no task-fetch tool is needed; the framework will reactivate/resend work if recovery is required.
 
 This makes task orchestration feel like delegation rather than polling. The framework activates a task-agent instance with a concrete assignment, the task agent performs it, reports completion, remains addressable while the delegator reviews, and then exits after delegator acceptance and idle. Removing `get_my_tasks` from the model-facing surface is consistent with this design. Worker-facing instructions should say the framework will/must settle the final task-agent instance after the acceptance/idle gates pass; they should not say the framework may settle the worker.
@@ -195,11 +197,11 @@ Even with a delegation-first API, the framework still needs internal state. It d
 
 Reasons the internal ledger is still needed:
 
-- correlate `update_task_status` calls to the delegated work by caller task-agent instance identity and internal task ID;
+- correlate `mark_task_completed` / `mark_task_failed` calls to the delegated work by caller task-agent instance identity and internal task ID, and correlate `accept_task` by original delegator plus generated task ID;
 - know which original delegator should receive completion notifications, without assuming every task was created by the coordinator;
 - track target member, worker-reported status, optional message, reference files, acceptance/final result, timestamps, and audit history;
 - prevent duplicate activation/completion handling;
-- decide whether the task-agent instance has remaining queued/in-progress/runnable work before auto-exit;
+- decide whether the task-agent instance has remaining unaccepted/active/runnable work before auto-exit;
 - support UI/history/debug visibility without asking agents to poll.
 
 So the architectural shift is not "no task state." It is: hide the task plan from agents, rename the model-facing operation to delegation, and put the internal task state behind a `TaskDelegationService`/ledger owner.
@@ -215,8 +217,8 @@ Recommended notification payload:
 - internal task ID and derived display label;
 - member name/route/run ID;
 - reported status: `completed` or `failed`;
-- optional message provided through `update_task_status`;
-- reference files provided through `update_task_status`.
+- message provided through `mark_task_completed` or `mark_task_failed`;
+- reference files provided through `mark_task_completed` or `mark_task_failed`.
 
 This notification can be emitted as a team event for UI/history and also delivered as a system/inter-agent message to the original delegator when reachable. This preserves the delegation loop: a delegator assigns; task agent reports completion; framework reports back with task-agent identity; the delegator either sends revisions to that task-agent or accepts; after acceptance, the task agent exits once idle.
 
@@ -261,13 +263,13 @@ For supported frontend/browser UX, backend settlement is necessary but not suffi
 4. Runnable tasks are marked `QUEUED`.
 5. Target task-agent runtime is started/restored from the logical member template and receives an activation input that includes the full task work packet.
 6. Target task-agent starts from that activation message without needing to call `get_my_tasks`.
-7. Target task-agent calls `update_task_status(..., in_progress)` when beginning, if the workflow wants explicit in-progress state.
+7. Framework lifecycle/status projection marks the task-agent internally active/running; the worker does not need to spend a tool call on `in_progress`.
 8. Target task-agent does the work.
-9. Target task-agent calls `update_task_status({ status: "completed", message, reference_files })`.
-10. Task-delegation service updates state and emits worker-reported completion/update events.
+9. Target task-agent calls `mark_task_completed({ message, reference_files })` or `mark_task_failed({ message, reference_files })`.
+10. Task-delegation service updates state and emits worker-reported completion/failure events.
 11. Activation coordinator may activate other independent task records from the same delegation batch according to task-agent concurrency policy; dependent-task activation is deferred out of this simplified first ticket.
 12. Task-agent remains addressable while awaiting delegator acceptance; if changes are needed, delegator sends `send_message_to` to the notification-provided task-agent identity.
-13. When the delegator accepts via `update_task_status({ status: "accepted", task_id })`, lifecycle coordinator records a pending auto-settlement for the accepted task-agent instance.
+13. When the delegator accepts via `accept_task({ task_id, message? })`, lifecycle coordinator records a pending auto-settlement for the accepted task-agent instance.
 14. When that task-agent run reports idle/current turn settled, lifecycle coordinator terminates/settles that task-agent instance only.
 15. Frontend removes the concrete task-agent entity and any task-specific execution row/header from active UI after settlement/offline cleanup while preserving completion history/notification under task-agent/completed-task history.
 
@@ -286,7 +288,7 @@ If server-owned task tools are built first, future MCP support is simple:
 
 ## Main Risks
 
-1. **Turn-safety risk:** exiting inside `update_task_status` can drop the tool result or corrupt stream state.
+1. **Turn-safety risk:** exiting inside `mark_task_completed`, `mark_task_failed`, or `accept_task` can drop the tool result or corrupt stream state.
 2. **Context-binding risk:** task tools must never mutate an arbitrary team run; they must be bound to the caller's member context.
 3. **Backend capability risk:** a backend that cannot settle one member/task-agent instance must not expose supported task delegation, otherwise accepted completed workers remain alive and violate the user's sub-agent model.
 4. **Instance identity risk:** keeping runtime registries keyed only by logical `memberRouteKey` prevents parallel same-member task agents and makes settlement ambiguous.

@@ -38,7 +38,8 @@ the dynamic tool invocation id.
 
 Codex team task delegation is projected as dynamic tools generated from the
 server-owned task-delegation manifest. When an agent definition enables
-`delegate_tasks` and/or `update_task_status`, Codex receives those tools with
+`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and/or
+`accept_task`, Codex receives those tools with
 JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
 `TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
 runtime does not mutate task state directly and must not expose the removed
@@ -268,7 +269,8 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`, `delegate_tasks`, and `update_task_status`.
+  `send_message_to`, `delegate_tasks`, `mark_task_completed`,
+  `mark_task_failed`, and `accept_task`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.

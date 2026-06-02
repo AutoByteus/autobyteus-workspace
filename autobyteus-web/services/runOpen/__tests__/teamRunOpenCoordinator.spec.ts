@@ -295,7 +295,7 @@ describe('openTeamRun', () => {
     });
   });
 
-  it('keeps parent logical member focus when reopening subscribed active execution', async () => {
+  it('normalizes inactive logical member focus when reopening subscribed active execution', async () => {
     const existingContext = {
       teamRunId: 'team-1',
       config: {},
@@ -346,10 +346,10 @@ describe('openTeamRun', () => {
     expect(loadTeamRunContextHydrationPayloadMock).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'member-b',
+        memberRouteKey: 'member-a',
       }),
     );
-    expect(existingContext.focusedMemberRouteKey).toBe('member-b');
+    expect(existingContext.focusedMemberRouteKey).toBe('member-a');
   });
 
   it('reconstructs a missing live task-agent child node when reopening a subscribed active team', async () => {

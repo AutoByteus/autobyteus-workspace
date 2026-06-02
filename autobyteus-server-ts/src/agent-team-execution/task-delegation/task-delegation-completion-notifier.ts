@@ -59,7 +59,7 @@ export class TaskDelegationCompletionNotifier {
       ? [
           "",
           `If changes are needed, call send_message_to with recipient_name="${payload.member.memberName}", task_agent_id="${taskAgentId}", and task_agent_run_id="${taskAgentRunId}".`,
-          `If accepted, call update_task_status with status="accepted" and task_id="${payload.taskId}".`,
+          `If accepted, call accept_task with task_id="${payload.taskId}".`,
         ]
       : [
           "",

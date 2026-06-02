@@ -21,7 +21,9 @@ import type { TeamMemberSelector } from "../../../src/agent-team-execution/domai
 import { TaskDelegationService } from "../../../src/agent-team-execution/task-delegation/task-delegation-service.js";
 import {
   parseDelegateTasksInput,
-  parseUpdateTaskStatusInput,
+  parseAcceptTaskInput,
+  parseMarkTaskCompletedInput,
+  parseMarkTaskFailedInput,
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-input-parsers.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -289,39 +291,13 @@ describe("TaskDelegationService", () => {
     ]);
 
     await expect(() =>
-      parseUpdateTaskStatusInput({
+      parseMarkTaskCompletedInput({
         task_id: "task_0002",
-        status: "in_progress",
         message: "Selectors are not accepted.",
       }),
     ).toThrow(/Unrecognized key/);
 
-    const progressUpdate = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
-      status: "in_progress",
-      message: "Draft started.",
-    });
-
-    expect(progressUpdate).toMatchObject({
-      status: "in_progress",
-      terminal: false,
-      message: "Draft started.",
-      reference_files_count: 0,
-      settlement_requested: false,
-    });
-    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_STATUS_UPDATED")).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          taskId: "task_0001",
-          previousStatus: "queued",
-          status: "in_progress",
-          message: "Draft started.",
-          terminal: false,
-        }),
-      ]),
-    );
-
-    const firstCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
-      status: "completed",
+    const firstCompletion = await service.markTaskCompleted(buildTaskAgentContext(backend, "task_0001"), {
       message: "Draft complete.",
       reference_files: ["/tmp/draft.md"],
     });
@@ -337,7 +313,7 @@ describe("TaskDelegationService", () => {
       expect.arrayContaining([
         expect.objectContaining({
           taskId: "task_0001",
-          previousStatus: "in_progress",
+          previousStatus: "queued",
           status: "awaiting_acceptance",
           message: "Draft complete.",
           referenceFiles: ["/tmp/draft.md"],
@@ -359,8 +335,7 @@ describe("TaskDelegationService", () => {
     publishIdleEvent(backend, "task_0001");
     expect(backend.taskAgentSettlements).toEqual([]);
 
-    const firstAccepted = await service.updateTaskStatus(buildContext(), {
-      status: "accepted",
+    const firstAccepted = await service.acceptTask(buildContext(), {
       task_id: "task_0001",
       message: "Draft accepted.",
     });
@@ -379,8 +354,7 @@ describe("TaskDelegationService", () => {
       ]);
     });
 
-    const secondCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0002"), {
-      status: "completed",
+    const secondCompletion = await service.markTaskCompleted(buildTaskAgentContext(backend, "task_0002"), {
       message: "Polish complete.",
       reference_files: ["/tmp/final.md"],
     });
@@ -395,8 +369,7 @@ describe("TaskDelegationService", () => {
     expect(backend.settlements).toEqual([]);
     expect(backend.taskAgentSettlements).toHaveLength(1);
 
-    const secondAccepted = await service.updateTaskStatus(buildContext(), {
-      status: "accepted",
+    const secondAccepted = await service.acceptTask(buildContext(), {
       task_id: "task_0002",
     });
     expect(secondAccepted).toMatchObject({
@@ -440,7 +413,7 @@ describe("TaskDelegationService", () => {
     );
 
     const childTaskAgent = findTaskAgentIdentity(backend, "task_0002");
-    await service.updateTaskStatus(buildContext({
+    await service.markTaskCompleted(buildContext({
       ...reviewer,
       memberRunId: childTaskAgent.taskAgentRunId,
       taskAgentInstanceId: childTaskAgent.taskAgentInstanceId,
@@ -448,7 +421,6 @@ describe("TaskDelegationService", () => {
       taskId: childTaskAgent.taskId,
       logicalMemberRouteKey: childTaskAgent.logicalMember.memberRouteKey,
     }, members), {
-      status: "completed",
       message: "Child review complete.",
     });
 
@@ -476,8 +448,7 @@ describe("TaskDelegationService", () => {
         content: expect.stringContaining("Child review complete."),
       }),
     ]);
-    const accepted = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
-      status: "accepted",
+    const accepted = await service.acceptTask(buildTaskAgentContext(backend, "task_0001", members), {
       task_id: "task_0002",
     });
     expect(accepted).toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
@@ -503,28 +474,19 @@ describe("TaskDelegationService", () => {
       tasks: [{ member_name: "worker", description: "Prepare a report that may need revision." }],
     });
 
-    await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
-      status: "completed",
+    await service.markTaskCompleted(buildTaskAgentContext(backend, "task_0001", members), {
       message: "Report ready for review.",
       reference_files: ["/tmp/report.md"],
     });
 
     expect(backend.taskAgentSettlements).toEqual([]);
     await expect(
-      service.updateTaskStatus(buildContext(reviewer, members), {
-        status: "accepted",
+      service.acceptTask(buildContext(reviewer, members), {
         task_id: "task_0001",
       }),
     ).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
 
-    const revisionStarted = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
-      status: "in_progress",
-      message: "Applying requested changes.",
-    });
-    expect(revisionStarted).toMatchObject({ status: "in_progress", terminal: false });
-
-    const revisedCompletion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
-      status: "completed",
+    const revisedCompletion = await service.markTaskCompleted(buildTaskAgentContext(backend, "task_0001", members), {
       message: "Revised report ready.",
       reference_files: ["/tmp/report-v2.md"],
     });
@@ -535,15 +497,13 @@ describe("TaskDelegationService", () => {
       settlement_requested: false,
     });
 
-    const accepted = await service.updateTaskStatus(buildContext(coordinator, members), {
-      status: "accepted",
+    const accepted = await service.acceptTask(buildContext(coordinator, members), {
       task_id: "task_0001",
     });
     expect(accepted).toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
 
     await expect(
-      service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001", members), {
-        status: "completed",
+      service.markTaskCompleted(buildTaskAgentContext(backend, "task_0001", members), {
         message: "Too late.",
       }),
     ).rejects.toMatchObject({ code: "TASK_ALREADY_TERMINAL" });
@@ -563,8 +523,7 @@ describe("TaskDelegationService", () => {
       tasks: [{ member_name: "worker", description: "Attempt a risky task." }],
     });
 
-    const failed = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
-      status: "failed",
+    const failed = await service.markTaskFailed(buildTaskAgentContext(backend, "task_0001"), {
       message: "Blocked by missing credentials.",
     });
     expect(failed).toMatchObject({
@@ -574,8 +533,7 @@ describe("TaskDelegationService", () => {
     });
 
     await expect(
-      service.updateTaskStatus(buildContext(), {
-        status: "accepted",
+      service.acceptTask(buildContext(), {
         task_id: "task_0001",
       }),
     ).rejects.toMatchObject({ code: "TASK_NOT_AWAITING_ACCEPTANCE" });
@@ -620,14 +578,12 @@ describe("TaskDelegationService", () => {
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
 
     await expect(
-      service.updateTaskStatus(buildContext(worker), {
-        status: "in_progress",
+      service.markTaskCompleted(buildContext(worker), {
         message: "Rejected activation is not mutable.",
       }),
     ).rejects.toMatchObject({ code: "TASK_AGENT_NOT_BOUND" });
 
-    const completion = await service.updateTaskStatus(buildTaskAgentContext(backend, "task_0001"), {
-      status: "completed",
+    const completion = await service.markTaskCompleted(buildTaskAgentContext(backend, "task_0001"), {
       message: "Draft complete.",
     });
 
@@ -681,7 +637,7 @@ describe("TaskDelegationService", () => {
     service.dispose();
   });
 
-  it("rejects selector-free status updates from contexts not bound to a task-agent instance", async () => {
+  it("rejects selector-free result reports from contexts not bound to a task-agent instance", async () => {
     const backend = new FakeTeamRunBackend();
     const service = new TaskDelegationService(new TeamRun({ backend }));
 
@@ -695,8 +651,7 @@ describe("TaskDelegationService", () => {
     });
 
     await expect(
-      service.updateTaskStatus(buildContext(coordinator), {
-        status: "completed",
+      service.markTaskCompleted(buildContext(coordinator), {
         message: "Not my task.",
       }),
     ).rejects.toMatchObject({ code: "TASK_AGENT_NOT_BOUND" });
@@ -723,8 +678,7 @@ describe("TaskDelegationService", () => {
     const mismatchedContext = buildTaskAgentContext(backend, "task_0001");
     mismatchedContext.caller.taskId = "task_0002";
     await expect(
-      service.updateTaskStatus(mismatchedContext, {
-        status: "completed",
+      service.markTaskCompleted(mismatchedContext, {
         message: "Internal context mismatch.",
       }),
     ).rejects.toMatchObject({ code: "TASK_AGENT_MISMATCH" });
@@ -783,7 +737,7 @@ describe("TaskDelegationService", () => {
     ).toThrow(/description is required/);
   });
 
-  it("rejects stale delegate_tasks and update_task_status fields that are no longer model-facing", () => {
+  it("rejects stale delegate_tasks and generic status fields that are no longer model-facing", () => {
     for (const staleField of ["task_name", "assignee_name", "delegator", "dependencies", "completion_criteria", "expected_deliverables"]) {
       expect(() =>
         parseDelegateTasksInput({
@@ -798,46 +752,60 @@ describe("TaskDelegationService", () => {
       ).toThrow(/Unrecognized key/);
     }
 
-    for (const staleField of ["task_id", "task_name", "summary", "deliverables"]) {
+    for (const staleField of ["status", "task_id", "task_name", "summary", "deliverables"]) {
       expect(() =>
-        parseUpdateTaskStatusInput({
-          status: "completed",
+        parseMarkTaskCompletedInput({
           message: "Done.",
+          [staleField]: staleField === "deliverables" ? [] : "stale",
+        }),
+      ).toThrow(/Unrecognized key/);
+      expect(() =>
+        parseMarkTaskFailedInput({
+          message: "Blocked.",
           [staleField]: staleField === "deliverables" ? [] : "stale",
         }),
       ).toThrow(/Unrecognized key/);
     }
 
-    expect(parseUpdateTaskStatusInput({
-      status: "completed",
+    expect(parseMarkTaskCompletedInput({
       message: "Done.",
       reference_files: ["/tmp/result.md"],
     })).toEqual({
-      status: "completed",
       message: "Done.",
       reference_files: ["/tmp/result.md"],
     });
 
-    expect(parseUpdateTaskStatusInput({
-      status: "accepted",
+    expect(parseMarkTaskFailedInput({
+      message: "Blocked.",
+      reference_files: ["/tmp/failure.md"],
+    })).toEqual({
+      message: "Blocked.",
+      reference_files: ["/tmp/failure.md"],
+    });
+
+    expect(parseAcceptTaskInput({
       task_id: "task_0001",
       message: "Accepted.",
     })).toEqual({
-      status: "accepted",
       task_id: "task_0001",
       message: "Accepted.",
     });
 
     expect(() =>
-      parseUpdateTaskStatusInput({
-        status: "accepted",
+      parseAcceptTaskInput({
+        task_id: "   ",
       }),
-    ).toThrow(/task_id|expected string/);
+    ).toThrow(/task_id is required/);
     expect(() =>
-      parseUpdateTaskStatusInput({
-        status: "accepted",
+      parseAcceptTaskInput({
         task_id: "task_0001",
         reference_files: ["/tmp/not-accepted.md"],
+      }),
+    ).toThrow(/Unrecognized key/);
+    expect(() =>
+      parseAcceptTaskInput({
+        status: "accepted",
+        task_id: "task_0001",
       }),
     ).toThrow(/Unrecognized key/);
   });

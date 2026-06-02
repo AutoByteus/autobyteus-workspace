@@ -1,0 +1,11 @@
+=== 2026-06-01T13:08:28Z signing environment probe ===
+Developer ID identities:
+  1) 37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA "Developer ID Application: YU ZHENG (7Y86YBQ7B4)"
+  2) EE6B4315694B7B689AA4E93CA01329156B1DB9DD "Apple Development: YU ZHENG (WB8QCBB75J)"
+     2 valid identities found
+
+Env credential names present:
+ELECTRON_RUN_AS_NODE
+
+.env.local present?
+no

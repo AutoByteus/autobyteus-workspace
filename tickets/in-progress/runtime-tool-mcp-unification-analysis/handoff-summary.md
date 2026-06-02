@@ -3,82 +3,101 @@
 ## Ticket
 
 - Ticket: `runtime-tool-mcp-unification-analysis`.
-- Current role/stage: delivery ready for user verification after Round 21 code review, API/E2E Round 13 post-conflict pass, latest `origin/personal` check, docs sync, and Electron rebuild evidence.
+- Current role/stage: delivery ready for user verification after fresh full Code Review Round 26 pass, API/E2E Round 14 pass, latest `origin/personal` integration/freshness check, docs sync, post-integration checks, and Electron rebuild evidence.
 - Branch/worktree: `codex/runtime-tool-mcp-unification-analysis` at `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis`.
 - Finalization target from bootstrap context: `personal` / `origin/personal`.
 
 ## Integrated State
 
-- Latest tracked base checked after Round 21 validation handoff: `origin/personal` `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb` (`27f19cde Merge compaction config save button fix`).
-- Local checkpoint before latest-base integration: `cc2151f664f1a87785967cde1087da64bb2fd45d` (`chore(ticket): checkpoint round20 validation delivery state`).
-- Latest-base merge commit on ticket branch: `a64978a3447d49e147be3d5f6bc9398ad1d72ef6` (`Merge remote-tracking branch 'origin/personal' into codex/runtime-tool-mcp-unification-analysis`).
-- Latest `git fetch origin personal` at 2026-05-31 22:06 CEST confirmed `origin/personal` remains `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb` and is contained in current `HEAD`.
+- Latest tracked base checked for this delivery pass: `origin/personal` `fb22bc830cdbf78764fef6fc1a47ffd297812149` (`fb22bc83 Merge RPA stream error handling fix`).
+- Local checkpoint before latest-base integration: `0ebd9a45` (`chore(ticket): checkpoint round25 validation delivery state`).
+- Latest-base merge commit on ticket branch: `52b2a81bef0a0623160c00ec021726a6d78c225c` (`Merge remote-tracking branch 'origin/personal' into codex/runtime-tool-mcp-unification-analysis`).
+- Final `git fetch origin personal` after the Round 26 handoff on 2026-06-01 confirmed `origin/personal` remains `fb22bc830cdbf78764fef6fc1a47ffd297812149` and is contained in current `HEAD`.
 - No final push, merge into `personal`, ticket archive, release, deployment, or cleanup has been run.
 
 ## Latest Review / Validation Status
 
-Code Review Round 21 result: Pass.
+Code Review Round 26 result: Pass.
 
-- Reviewed latest-base conflict local fix in `AgentTeamEventMonitor.spec.ts` and `compactionTypes.ts`.
-- No open findings.
-- Code review concluded conflict resolution preserves task-agent identity inheritance and aligns compaction rendering ownership with latest base.
+- Fresh full review, not delta-only: code review reloaded cumulative requirements, investigation notes, supplemental analysis, design spec, design review, implementation handoff, API/E2E validation report, and prior review report.
+- Re-inspected backend task delegation, runtime projections, frontend task-agent parent/child projection, legacy model-facing task tool removal, and validation context.
+- No open findings; prior CR-001 through CR-013 remain resolved.
+- Representative checks passed: server typecheck/build, focused backend task-delegation/runtime suite, focused frontend task-agent/run-open/run-history/active-context suite, autobyteus-ts task-tool/bootstrap tests, web localization/boundary/build checks, `autobyteus-ts build`, and `git diff --check`.
 
-API/E2E Round 13 result: Pass / targeted no-broad-replay decision.
+API/E2E Round 14 result: Pass.
 
-- No broad live browser/API replay required because the latest-base conflict fix is limited to frontend protocol typing and a team monitor unit-test owner-boundary alignment.
-- Runtime task delegation, task-agent settlement, stale-route hydration/opening, websocket command routing, and backend task-delegation service paths were not changed after Round 12 live proof.
-- API/E2E targeted suite passed: 5 files / 48 tests.
+- Focused frontend task-agent projection/reopen suite passed: 3 files / 34 tests.
+- Focused server task-delegation lifecycle/acceptance suite passed: 4 files / 43 tests.
+- `pnpm -C autobyteus-server-ts build` passed in API/E2E.
+- Live mixed runtime E2E passed with AutoByteus/LMStudio Qwen coordinator and Codex `gpt-5.5` worker.
+- Browser/API replay passed for CR-012/CR-013: running and awaiting-acceptance `worker · task_0001` child stays visible/addressable after active team reopen/hydration; after delegator acceptance and backend settlement/offline cleanup, the concrete child disappears while the logical `worker` parent remains as stable team topology.
+- No repository-resident durable validation code changed after Round 25 code review, so no additional code-review loop was required before delivery.
 
 Canonical reports:
 
 - Code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`
 - API/E2E validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
 
-## Delivery Integration / Conflict Resolution
+## Delivery Integration
 
-`origin/personal` had advanced beyond the previously reviewed/validated branch before this delivery pass. Delivery created a local checkpoint commit and merged latest base into the ticket branch.
+`origin/personal` had advanced beyond the previously integrated delivery state. Delivery created a local checkpoint commit and merged latest base into the ticket branch.
 
-Merge conflicts resolved and then implementation/code reviewed:
+Round 25 latest-base merge result:
 
-- `autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts`: preserves task-delegation active-execution focus regression coverage and removes the obsolete direct `compactionStatus` prop assertion after latest base moved compaction rows to `AgentEventMonitor`/activity-store ownership.
-- `autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts`: preserves `TeamStreamIdentityPayload` inheritance for task-agent/team-stream identity while accepting latest-base compaction status/provenance fields.
+- Merge base integrated: `origin/personal` `fb22bc830cdbf78764fef6fc1a47ffd297812149`.
+- Merge conflicts: none.
+- Current integrated HEAD: `52b2a81bef0a0623160c00ec021726a6d78c225c`.
 
-Reroute artifact retained for context:
+Prior latest-base conflict context retained for traceability:
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`
 
 ## Delivery Checks
 
-- Conflict marker sweep on resolved conflict files — Pass.
-- `git diff --check` — Pass.
-- Delivery rerun of API/E2E-targeted frontend suite — Pass, 5 files / 48 tests:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/post-round21-api-e2e-targeted-vitest.log`
-- Final `origin/personal` freshness check — Pass; `HEAD` contains `27f19cdef8101bb94ed1fad7fae6b9228bfec9fb`.
+- Final `origin/personal` freshness check after Round 26 handoff — Pass; `HEAD` contains `fb22bc830cdbf78764fef6fc1a47ffd297812149`; no additional base integration was required.
+- Delivery rerun of Round 25 frontend task-agent projection/reopen suite — Pass, 3 files / 34 tests:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/post-integration-frontend-task-agent-suite.log`
+- Delivery rerun of Round 25 server task-delegation lifecycle suite — Pass, 4 files / 43 tests:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-25/post-integration-server-task-delegation-suite.log`
+- `git diff --check` — Pass after final delivery updates and Round 26 review-report refresh.
 
-## Electron Rebuild
+## Electron Rebuild / DMG Startup Local Fix
 
-README instruction used from `autobyteus-web/README.md` macOS no-notarization build section:
+README instruction used from `autobyteus-web/README.md`:
 
 ```bash
-NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+pnpm build:electron:mac
 ```
 
-Result: Pass.
+Result: Pass after delivery packaging local fix.
+
+API/E2E reported that the earlier DMG was ad-hoc/invalid for Gatekeeper (`Identifier=Electron`, missing `Contents/_CodeSignature/CodeResources`, `spctl` rejected). Delivery rebuilt with Developer ID signing plus Apple notarization credentials, then manually notarized/stapled the DMG as well.
 
 Evidence:
 
-- Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-rebuild-after-origin-personal-merge.log`
-- Summary/hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-summary.md`
-- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-20/electron-build-artifacts.sha256`
+- Final summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-build-final-summary.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-rebuild-signed-notarized-from-readme.log`
+- App verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-signing-notarization-verification.log`
+- DMG notarize/staple: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-dmg-notarize-staple-python-env.log`
+- Mounted DMG verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-dmg-mounted-final-verification.log`
+- SHA-256 manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-evidence/round-26/electron-build-artifacts.sha256`
 
-The Electron rebuild was performed after the `origin/personal` merge and after the runtime/protocol conflict resolution. It was not rerun after Round 21 because the post-build delta was limited to test/report artifacts; packaging inputs were unchanged. API/E2E and delivery targeted frontend checks passed after that delta.
+Verification passed:
+
+- Built app has `Contents/_CodeSignature/CodeResources`.
+- Built app identity is `com.autobyteus.app` with Developer ID `YU ZHENG (7Y86YBQ7B4)`.
+- Built app has a stapled notarization ticket.
+- DMG has a stapled notarization ticket.
+- `codesign --verify --deep --strict --verbose=2` passed for the built app and the app inside the mounted DMG.
+- `spctl --assess --type execute --verbose=4` accepted the built app and the app inside the mounted DMG as `Notarized Developer ID`.
+- `spctl --assess --type open --context context:primary-signature --verbose=4` accepted the DMG as `Notarized Developer ID`.
 
 ### Current Electron Artifact Paths
 
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.dmg`
-- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.dmg.blockmap`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.zip`
-- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.37.zip.blockmap`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg`
+- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg.blockmap`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.zip`
+- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.zip.blockmap`
 - Update manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/latest-mac.yml`
 
 ## Docs Sync
@@ -86,25 +105,28 @@ The Electron rebuild was performed after the `origin/personal` merge and after t
 Docs sync is complete against the current integrated state.
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/docs-sync-report.md`
-- Updated durable docs cover task-delegation contract, work packets, settlement, frontend transient task-agent lifecycle, approval routing, stale-route normalization, and gated live mixed-runtime validation.
-- Latest-base conflict fix itself had no additional durable docs impact beyond already-recorded delivery artifacts.
+- Updated durable docs cover task-delegation contract, work packets, completed -> awaiting-acceptance state, delegator accepted status with exact generated task id, settlement timing, frontend parent/child transient task-agent lifecycle, active team reopen/hydration preservation, approval routing, stale-route normalization, and gated live mixed-runtime validation.
 
 ## Running Browser Inspection Setup
 
-Round 20 browser/backend/frontend dev processes were intentionally left running by API/E2E for optional inspection. Delivery did not stop them.
+API/E2E Round 14 left backend/frontend dev processes running for optional inspection. Delivery did not stop them.
 
-Known Round 20 evidence roots:
+Known Round 25 evidence roots:
 
-- `/tmp/autobyteus-worker-row-round20-20260531-212249/session.env`
-- `/tmp/autobyteus-worker-row-round20-20260531-212249/team-seed-round20-latest.json`
-- `/tmp/autobyteus-worker-row-round20-20260531-212249/trigger-message.txt`
-- `/tmp/autobyteus-worker-row-round20-20260531-212249/workspace-approval/round20-worker-row-f8d91bf0.txt`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/session.env`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/seed-output.json`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/seed-noaccept-output.json`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/trigger-message.txt`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/trigger-noaccept-message.txt`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/workspace-acceptance/round25-task-agent-reopen-26c5f29c.txt`
+- `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/workspace-acceptance/round25-task-agent-reopen-5f1f4e0b.txt`
 
 Screenshots:
 
-- `/Users/normy/.autobyteus/browser-artifacts/90abc6-1780255728062.png`
-- `/Users/normy/.autobyteus/browser-artifacts/90abc6-1780255804516.png`
-- `/Users/normy/.autobyteus/browser-artifacts/c15b14-1780255942318.png`
+- `/Users/normy/.autobyteus/browser-artifacts/6defbe-1780311196206.png`
+- `/Users/normy/.autobyteus/browser-artifacts/6defbe-1780311699134.png`
+- `/Users/normy/.autobyteus/browser-artifacts/555078-1780311694686.png`
+- `/Users/normy/.autobyteus/browser-artifacts/555078-1780311519227.png`
 
 ## Finalization Hold
 

@@ -5,12 +5,16 @@ import {
   type TaskDelegationRunRegistry,
 } from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import type {
+  AcceptTaskInput,
+  AcceptTaskResult,
   DelegateTasksInput,
   DelegateTasksResult,
+  MarkTaskCompletedInput,
+  MarkTaskCompletedResult,
+  MarkTaskFailedInput,
+  MarkTaskFailedResult,
   TaskDelegationCallerIdentity,
   TaskDelegationMemberIdentity,
-  UpdateTaskStatusInput,
-  UpdateTaskStatusResult,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import {
@@ -73,12 +77,28 @@ export class TaskDelegationToolService {
     return this.getTaskDelegationService(run).delegateTasks(context, input);
   }
 
-  async updateTaskStatus(
+  async markTaskCompleted(
     context: TaskDelegationToolContext,
-    input: UpdateTaskStatusInput,
-  ): Promise<UpdateTaskStatusResult> {
+    input: MarkTaskCompletedInput,
+  ): Promise<MarkTaskCompletedResult> {
     const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).updateTaskStatus(context, input);
+    return this.getTaskDelegationService(run).markTaskCompleted(context, input);
+  }
+
+  async markTaskFailed(
+    context: TaskDelegationToolContext,
+    input: MarkTaskFailedInput,
+  ): Promise<MarkTaskFailedResult> {
+    const run = await this.resolveBoundTeamRun(context);
+    return this.getTaskDelegationService(run).markTaskFailed(context, input);
+  }
+
+  async acceptTask(
+    context: TaskDelegationToolContext,
+    input: AcceptTaskInput,
+  ): Promise<AcceptTaskResult> {
+    const run = await this.resolveBoundTeamRun(context);
+    return this.getTaskDelegationService(run).acceptTask(context, input);
   }
 
   private async resolveBoundTeamRun(

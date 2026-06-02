@@ -268,9 +268,10 @@ describe("member-run-instruction-composer", () => {
     expect(enabled.runtimeInstruction).toContain(
       "Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`",
     );
-    expect(enabled.runtimeInstruction).toContain("does not take task_id or task_name");
-    expect(enabled.runtimeInstruction).toContain("include optional `message` and `reference_files`");
-    expect(enabled.runtimeInstruction).toContain('status="accepted"');
+    expect(enabled.runtimeInstruction).toContain("`mark_task_completed` or `mark_task_failed`");
+    expect(enabled.runtimeInstruction).toContain("do not pass status, task_id, task_name");
+    expect(enabled.runtimeInstruction).toContain("include required `message` and optional `reference_files`");
+    expect(enabled.runtimeInstruction).toContain("Original-delegator acceptance uses `accept_task`");
     expect(enabled.runtimeInstruction).toContain("task_agent_run_id");
     expect(enabled.runtimeInstruction).toContain(
       "must settle or exit the final task-agent instance",

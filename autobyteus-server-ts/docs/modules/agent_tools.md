@@ -25,7 +25,9 @@ Browser-tool support is runtime-gated:
 The server owns the first-party bounded task-delegation surface for team runs:
 
 - `delegate_tasks`
-- `update_task_status`
+- `mark_task_completed`
+- `mark_task_failed`
+- `accept_task`
 
 Canonical contracts, schemas, parsing, result serialization, team-run binding,
 and service lookup live under `src/agent-tools/task-delegation`. The model-facing
@@ -37,10 +39,10 @@ part of the new delegation workflow.
 Runtime projection is explicit and uses the same manifest/service boundary:
 
 - Mixed AutoByteus standalone member/task-agent runs may receive thin
-  server-owned local wrappers for the two canonical tools when configured, and
+  server-owned local wrappers for the canonical explicit-intent tools when configured, and
   they strip the legacy task-management tool names from mixed team contexts.
   Native AutoByteus pure-team agent configs deliberately skip
-  `delegate_tasks` / `update_task_status` until native task-agent/per-member
+  task-delegation tools until native task-agent/per-member
   settlement exists.
 - Codex receives dynamic tool registrations built from the task-delegation
   manifest.
@@ -53,10 +55,15 @@ records from exact `member_name`, ready-to-run rich `description`, and optional
 `reference_files` work-packet inputs, then starts runnable task-agent instances
 with direct work packets. Do not encode dependencies in a task item; dependent
 follow-up work is delegated by the coordinator later after the framework
-terminal/completion notification. `update_task_status` is bound to the calling
-task-agent instance and accepts only `status`, optional `message`, and optional
-`reference_files` from models. Terminal updates can record result context,
-publish framework task-delegation events, notify the delegator/coordinator, and
+terminal/completion notification. Task-agent result tools are explicit and
+selector-free: `mark_task_completed` and `mark_task_failed` are bound to the
+calling task-agent instance, require a result `message`, and may include
+`reference_files`; task agents must not pass status values or task selectors.
+For original-delegator acceptance after a completion notification,
+`accept_task` accepts the exact framework-generated `task_id` and optional
+`message`. Terminal completion records result context and notifies the
+delegator/coordinator while keeping the task-agent addressable until acceptance;
+accepted or failed terminal paths publish framework task-delegation events and
 request safe task-agent settlement after the bound instance becomes idle.
 
 ## Server-Owned Media Tools

@@ -154,16 +154,21 @@ member-scoped active history/snapshot/event, the other members must stay at
 their own member-scoped status, or default to `offline/canInterrupt=false`
 until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
 out aggregate team `running` or `initializing` state to every member row.
-Delegated task-agent instances are task-scoped transient entities. When team
-stream payloads carry `task_agent_run_id` plus logical member metadata,
-`TeamStreamingService` creates a temporary task-agent context/node keyed by the
-task-agent run id. `TeamTaskAgentActivityBar` renders these nodes in an
-**Active task agents** strip, distinct from the logical member row/template, and
-shows pending approvals on the task-agent card when the task-agent runtime is
-waiting for tool approval. When the task-agent emits terminal `offline` status,
-the frontend removes that transient task-agent node/card while preserving the
-logical member row and the coordinator/member history that records the delegated
-task completion.
+Delegated task-agent instances are task-scoped transient child entities under
+their logical member/template. When team stream payloads carry
+`task_agent_run_id` plus logical member metadata, `TeamStreamingService` creates
+a temporary task-agent context/node keyed by the task-agent run id.
+`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
+strip as concrete task children, and shows pending approvals on the task-agent
+card when the task-agent runtime is waiting for tool approval. Running and
+awaiting-acceptance task-agent children must remain visible and addressable
+after active team reopen/hydration, even when server resume metadata only lists
+the stable logical coordinator/member rows. Run-open hydration therefore
+restores concrete children from live task-agent projection/identity instead of
+collapsing them into the logical member parent. After delegator acceptance and
+backend settlement/offline cleanup, the frontend removes the transient child
+node/card while preserving the logical member parent and the
+coordinator/member history that records the delegated task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

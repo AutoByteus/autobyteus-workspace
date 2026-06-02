@@ -19,7 +19,8 @@ canonical task workflow. The removed tool names are:
 - the old local task-plan `update_task_status`
 
 For server-managed team runs, bounded work delegation is now represented by the
-server-owned tools `delegate_tasks` and `update_task_status`.
+server-owned tools `delegate_tasks`, `mark_task_completed`, `mark_task_failed`,
+and `accept_task`.
 
 ---
 
@@ -66,7 +67,7 @@ The cross-runtime task workflow lives in `autobyteus-server-ts` and is owned by
 `TaskDelegationService` plus the server tool manifest under
 `src/agent-tools/task-delegation`. Native `autobyteus-ts` teams do not own this
 model-facing workflow. Native AutoByteus pure-team agent configs currently gate
-`delegate_tasks` / `update_task_status` because native task-agent/per-member
+server-owned task-delegation tools because native task-agent/per-member
 settlement is not available there yet; server-managed Codex, Claude, and Mixed
 team paths own the supported task-agent lifecycle.
 
@@ -97,18 +98,22 @@ description, reference files, and lifecycle instructions. The packet explicitly
 tells the task-agent not to call `get_my_tasks`; all necessary task details are
 pushed with the activation.
 
-### `update_task_status`
+### Task-agent result and acceptance tools
 
-The task-agent reports status for the task bound to its own task-agent instance.
-The model-facing call takes no task selector. Allowed statuses are:
+For task-agent result reporting, the task-agent reports the outcome for the task
+bound to its own task-agent instance. The task-agent model-facing calls take no
+task selector and do not accept a generic `status` field:
 
-- `in_progress`
-- `completed`
-- `failed`
+- `mark_task_completed({ message, reference_files? })`
+- `mark_task_failed({ message, reference_files? })`
 
-Status updates may include a `message` and `reference_files`. Terminal updates
-record result context, emit task-delegation events, and send a
+Result reports record context, emit task-delegation events, and send a
 framework-generated completion/failure notification to the delegator/coordinator.
+Completed work moves to `awaiting_acceptance`; the task-agent child remains
+addressable for rework/acceptance until the original delegator accepts the
+result. For original-delegator acceptance, `accept_task` accepts the exact
+framework-generated `task_id` from the completion notification and optional
+`message`; this acceptance tool is not used by task-agent execution updates.
 
 ---
 
@@ -119,13 +124,18 @@ Server-owned task delegation is event-driven rather than model-polled:
 - accepted work-packet activations emit `TASK_DELEGATION_ACTIVATED`;
 - accepted status mutations emit `TASK_DELEGATION_STATUS_UPDATED`;
 - terminal completion/failure emits `TASK_DELEGATION_TERMINAL_STATUS` and posts
-  a system notification to the delegator plus the coordinator when different.
+  a system notification to the delegator plus the coordinator when different;
+- delegator acceptance emits `TASK_DELEGATION_STATUS_UPDATED` with accepted-work
+  metadata before settlement is requested.
 
-After terminal status, the framework requests settlement for the concrete
-task-agent instance only after the current tool call can finish. The settlement
-coordinator waits for the bound task-agent run to become idle/offline, rechecks
-that no queued or in-progress delegated work remains for that task-agent
-instance, protects the coordinator by default, and calls the team-run
+Completed status records result context and waits for the delegator to accept
+the exact framework-generated `task_id`. Failed status remains a terminal
+failure path. After acceptance, or after terminal failure, the framework
+requests settlement for the concrete task-agent instance only after the current
+tool call can finish. The settlement coordinator waits for the bound task-agent
+run to become idle/offline, rechecks that no queued or in-progress delegated
+work remains for that task-agent instance, protects the coordinator by default,
+and calls the team-run
 `settleTaskAgentInstance(logicalMemberRouteKey, taskAgentRunId, reason)`
 boundary. The task-agent run id is the stale-route guard, so a later replacement
 instance is not accidentally settled.
@@ -135,9 +145,10 @@ instance is not accidentally settled.
 ## 6. Developer Guidance
 
 - Use `send_message_to` for free-form conversation and handoff messages.
-- Use `delegate_tasks` / `update_task_status` for bounded server-managed work
-  with ledger state, status messages/reference files, events, notifications,
-  and safe task-agent settlement on supported server team backends.
+- Use `delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and
+  `accept_task` for bounded server-managed work with ledger state, result
+  messages/reference files, events, notifications, and safe task-agent
+  settlement on supported server team backends.
 - Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
   `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
 - If a future MCP transport is added, it should call the existing server-owned

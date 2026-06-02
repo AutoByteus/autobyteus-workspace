@@ -186,7 +186,8 @@ suppressed as duplicate MCP noise; they must not replace the handler-owned
 canonical lifecycle or create extra Activity rows.
 
 Claude team task delegation tools are also first-party MCP tools on the team
-server. `delegate_tasks` and `update_task_status` are built from the
+server. `delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and
+`accept_task` are built from the
 server-owned task-delegation manifest and call `TaskDelegationToolService` with
 the current member/team context; raw SDK MCP plumbing must not own delegation
 state. Claude inherits the canonical ready-to-run/no-dependencies task guidance

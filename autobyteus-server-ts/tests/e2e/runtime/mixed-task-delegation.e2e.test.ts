@@ -275,14 +275,14 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const coordinatorAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task delegation E2E.",
-      toolNames: ["delegate_tasks", "update_task_status"],
-      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"delegate_tasks","parameters":<exact arguments>}}. When you later receive a framework task completion notification with a Task ID, accept it exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"update_task_status","parameters":{"status":"accepted","task_id":"<Task ID>"}}}. Do not explore the environment.`,
+      toolNames: ["delegate_tasks", "accept_task"],
+      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"delegate_tasks","parameters":<exact arguments>}}. When you later receive a framework task completion notification with a Task ID, accept it exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"accept_task","parameters":{"task_id":"<Task ID>"}}}. Do not explore the environment.`,
     });
     const workerAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-worker-${unique}`,
       description: "Codex worker for live task delegation E2E.",
-      toolNames: ["update_task_status"],
-      instructions: `When you receive a delegated task work packet, immediately call update_task_status exactly once with status="completed", message="${completionToken}", and reference_files=[]. Do not pass task_id or task_name. Do not run shell commands or create files.`,
+      toolNames: ["mark_task_completed", "mark_task_failed"],
+      instructions: `When you receive a delegated task work packet, immediately call mark_task_completed exactly once with message="${completionToken}" and reference_files=[]. Do not pass status, task_id, or task_name. Do not run shell commands or create files.`,
     });
 
     const teamDefinition = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -336,7 +336,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       tasks: [
         {
           member_name: "worker",
-          description: `Complete this delegated validation task by reporting message ${completionToken}. Done condition: call update_task_status once with status="completed", message="${completionToken}", and reference_files=[].`,
+          description: `Complete this delegated validation task by reporting message ${completionToken}. Done condition: call mark_task_completed once with message="${completionToken}" and reference_files=[].`,
         },
       ],
     };
@@ -359,8 +359,8 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       const taskId = (activation.payload.taskIds as string[])[0];
       const taskAgentRunId = extractTaskAgentRunIdFromActivation(activation);
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "update_task_status",
-        "worker update_task_status success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "mark_task_completed",
+        "worker mark_task_completed success", 240_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TASK_PLAN_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
@@ -371,8 +371,8 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "coordinator task completion notification", 120_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "update_task_status",
-        "coordinator acceptance update_task_status success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "accept_task",
+        "coordinator accept_task success", 240_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "AGENT_STATUS" &&

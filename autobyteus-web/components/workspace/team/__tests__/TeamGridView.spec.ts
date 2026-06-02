@@ -99,7 +99,7 @@ describe('TeamGridView', () => {
     expect(wrapper.emitted('select-member')).toEqual([['student']]);
   });
 
-  it('keeps offline task-only logical members visible as parent/template rows', () => {
+  it('filters offline task-only logical members from active execution grid rows', () => {
     const wrapper = mount(TeamGridView, {
       props: {
         teamContext: {
@@ -125,10 +125,48 @@ describe('TeamGridView', () => {
       },
     });
 
-    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator', 'worker']);
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator']);
   });
 
-  it('keeps initializing task-only logical members visible as parent/template rows', () => {
+  it('filters a settled task-agent-only logical worker poisoned with a task-agent run id', () => {
+    const worker = buildMember('Worker', AgentStatus.Initializing);
+    worker.state.conversation.id = 'team-1__worker__task_0001';
+    worker.state.conversation.messages.push({
+      type: 'user',
+      text: 'You have been activated as task agent for task_0001.',
+      timestamp: new Date('2026-06-02T00:00:00.000Z'),
+    } as any);
+    (worker.state as any).runId = 'team-1__worker__task_0001';
+
+    const wrapper = mount(TeamGridView, {
+      props: {
+        teamContext: {
+          coordinatorMemberRouteKey: 'coordinator',
+          memberTree: [
+            buildMemberNode('coordinator', 'Coordinator'),
+            buildMemberNode('worker', 'Worker'),
+          ],
+          leafAgentContextsByRouteKey: new Map([
+            ['coordinator', buildMember('Coordinator', AgentStatus.Running)],
+            ['worker', worker],
+          ]),
+        } as any,
+        focusedMemberRouteKey: 'worker',
+      },
+      global: {
+        stubs: {
+          TeamMemberMonitorTile: {
+            props: ['memberNode'],
+            template: '<div class="tile">{{ memberNode.memberRouteKey }}</div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator']);
+  });
+
+  it('does not treat initializing task-only logical members as active execution rows', () => {
     const wrapper = mount(TeamGridView, {
       props: {
         teamContext: {
@@ -154,7 +192,7 @@ describe('TeamGridView', () => {
       },
     });
 
-    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator', 'worker']);
+    expect(wrapper.findAll('.tile').map((tile) => tile.text())).toEqual(['coordinator']);
   });
 
   it('renders an active task-agent child immediately after its logical parent', () => {

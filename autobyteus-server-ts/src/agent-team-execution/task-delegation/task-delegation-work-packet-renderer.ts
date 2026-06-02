@@ -17,9 +17,9 @@ export class TaskDelegationWorkPacketRenderer {
       ...records.flatMap((record, index) => this.renderRecord(record, index, records.length)),
       "Lifecycle instructions:",
       "1. Work directly from this task packet. Do not call get_my_tasks; that tool is not part of this workflow.",
-      "2. If you need to mark the task started, call update_task_status with status=\"in_progress\". Do not pass task_id or task_name; this tool is bound to the current task-agent instance.",
-      "3. When done, call update_task_status with status=\"completed\" or status=\"failed\".",
-      "4. Include a short message and reference_files, if useful, when reporting completion/failure.",
+      "2. The framework marks this task-agent internally active/running when it starts; do not spend a tool call reporting in_progress.",
+      "3. When done, call mark_task_completed. If unable to complete, call mark_task_failed.",
+      "4. Include a concise message and optional reference_files when reporting completion/failure. Do not pass task_id or task_name; these tools are bound to the current task-agent instance.",
       "5. After you report completed, the framework will notify the delegator and keep this task-agent addressable while awaiting acceptance. If the delegator requests changes, continue the same task and report completed again when revised.",
       "6. After the delegator accepts the task, the framework must settle this task-agent instance once this turn is idle and no delegated work remains for this instance.",
     ].join("\n");

@@ -1,28 +1,14 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 
-export const TASK_DELEGATION_MODEL_TOOL_STATUSES = [
-  "in_progress",
-  "completed",
-  "failed",
-  "accepted",
-] as const;
-
 export const TASK_DELEGATION_LEDGER_STATUSES = [
   "not_started",
   "queued",
-  "in_progress",
   "awaiting_acceptance",
   "accepted",
   "failed",
 ] as const;
 
-export type TaskDelegationModelToolStatus =
-  (typeof TASK_DELEGATION_MODEL_TOOL_STATUSES)[number];
-export type TaskDelegationExecutionToolStatus = Exclude<
-  TaskDelegationModelToolStatus,
-  "accepted"
->;
 export type TaskDelegationStatus =
   (typeof TASK_DELEGATION_LEDGER_STATUSES)[number];
 export type TaskDelegationReportedTerminalStatus = "completed" | "failed";
@@ -69,21 +55,20 @@ export type DelegateTasksInput = {
   tasks: TaskDelegationTaskInput[];
 };
 
-export type UpdateTaskExecutionStatusInput = {
-  status: TaskDelegationExecutionToolStatus;
-  message?: string | null;
+export type MarkTaskCompletedInput = {
+  message: string;
   reference_files?: string[];
 };
 
-export type UpdateTaskAcceptanceStatusInput = {
-  status: "accepted";
+export type MarkTaskFailedInput = {
+  message: string;
+  reference_files?: string[];
+};
+
+export type AcceptTaskInput = {
   task_id: string;
   message?: string | null;
 };
-
-export type UpdateTaskStatusInput =
-  | UpdateTaskExecutionStatusInput
-  | UpdateTaskAcceptanceStatusInput;
 
 export type TaskDelegationRecord = {
   taskId: string;
@@ -162,13 +147,17 @@ export type DelegateTasksResult = {
   activationResults: TaskDelegationActivationResult[];
 };
 
-export type UpdateTaskStatusResult = {
+export type TaskDelegationToolActionResult = {
   status: TaskDelegationStatus;
   terminal: boolean;
   message: string | null;
   reference_files_count: number;
   settlement_requested: boolean;
 };
+
+export type MarkTaskCompletedResult = TaskDelegationToolActionResult;
+export type MarkTaskFailedResult = TaskDelegationToolActionResult;
+export type AcceptTaskResult = TaskDelegationToolActionResult;
 
 export class TaskDelegationError extends Error {
   constructor(

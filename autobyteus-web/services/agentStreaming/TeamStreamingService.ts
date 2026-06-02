@@ -55,6 +55,7 @@ import {
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import { isTaskAgentRunId } from './taskAgentRunIdentity';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -395,6 +396,9 @@ export class TeamStreamingService {
           context: taskAgentContext,
         };
       }
+      if (isTaskAgentRunId(memberRunId)) {
+        return null;
+      }
     }
 
     const canonicalRouteKey = String(sourceRouteKey || routeKeyFromPath || '').trim();
@@ -402,7 +406,7 @@ export class TeamStreamingService {
       ? this.teamContext.leafAgentContextsByRouteKey.get(canonicalRouteKey)
       : null;
     if (routedMatch) {
-      if (memberRunId && routedMatch.state.runId !== memberRunId) {
+      if (memberRunId && !isTaskAgentRunId(memberRunId) && routedMatch.state.runId !== memberRunId) {
         routedMatch.state.runId = memberRunId;
       }
       return {

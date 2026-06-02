@@ -5,13 +5,17 @@ import { buildTaskDelegationDynamicToolRegistrations } from "../../../../src/age
 import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
+  ACCEPT_TASK_TOOL_NAME,
   DELEGATE_TASKS_TOOL_NAME,
-  UPDATE_TASK_STATUS_TOOL_NAME,
+  MARK_TASK_COMPLETED_TOOL_NAME,
+  MARK_TASK_FAILED_TOOL_NAME,
 } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-manifest.js";
 import {
+  buildAcceptTaskParameterSchema,
   buildDelegateTasksParameterSchema,
-  buildUpdateTaskStatusParameterSchema,
+  buildMarkTaskCompletedParameterSchema,
+  buildMarkTaskFailedParameterSchema,
 } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -135,25 +139,69 @@ describe("task delegation runtime descriptions", () => {
     expectReadyToRunGuidance(getDescription(inputSchema.tasks));
   });
 
-  it("exposes the two-mode update_task_status acceptance contract", () => {
-    const entry = getTaskDelegationToolManifestEntry(UPDATE_TASK_STATUS_TOOL_NAME);
-    expect(entry.description).toContain('status="accepted"');
-    expect(entry.description).toContain("framework-generated task_id");
-    expect(entry.description).toContain("Task-agent execution updates must not pass task selectors");
+  it("exposes selector-free task-agent result tools with no generic status field", () => {
+    const completedEntry = getTaskDelegationToolManifestEntry(MARK_TASK_COMPLETED_TOOL_NAME);
+    expect(completedEntry.description).toContain("task-agent-only");
+    expect(completedEntry.description).toContain("requires a result message");
+    expect(completedEntry.description).toContain("must not pass status, task_id");
 
-    const schema = buildUpdateTaskStatusParameterSchema();
-    expect(schema.parameters.map((parameter) => parameter.name)).toEqual([
-      "status",
-      "task_id",
+    const completedSchema = buildMarkTaskCompletedParameterSchema();
+    expect(completedSchema.parameters.map((parameter) => parameter.name)).toEqual([
       "message",
       "reference_files",
     ]);
-    expect(schema.getParameter("status")!.enumValues).toEqual([
-      "in_progress",
-      "completed",
-      "failed",
-      "accepted",
+    expect(completedSchema.getParameter("message")!.required).toBe(true);
+    expect(completedSchema.parameters.some((parameter) => parameter.name === "status")).toBe(false);
+    expect(completedSchema.parameters.some((parameter) => parameter.name === "task_id")).toBe(false);
+
+    const failedEntry = getTaskDelegationToolManifestEntry(MARK_TASK_FAILED_TOOL_NAME);
+    expect(failedEntry.description).toContain("task-agent-only");
+    expect(failedEntry.description).toContain("requires a failure message");
+    expect(failedEntry.description).toContain("must not pass status, task_id");
+
+    const failedSchema = buildMarkTaskFailedParameterSchema();
+    expect(failedSchema.parameters.map((parameter) => parameter.name)).toEqual([
+      "message",
+      "reference_files",
     ]);
-    expect(schema.getParameter("task_id")!.description).toContain("status=accepted");
+    expect(failedSchema.getParameter("message")!.required).toBe(true);
+  });
+
+  it("exposes original-delegator acceptance with generated task_id only", () => {
+    const entry = getTaskDelegationToolManifestEntry(ACCEPT_TASK_TOOL_NAME);
+    expect(entry.description).toContain("original delegator");
+    expect(entry.description).toContain("framework-generated task_id");
+    expect(entry.description).toContain("does not accept status, reference_files");
+
+    const schema = buildAcceptTaskParameterSchema();
+    expect(schema.parameters.map((parameter) => parameter.name)).toEqual([
+      "task_id",
+      "message",
+    ]);
+    expect(schema.getParameter("task_id")!.required).toBe(true);
+    expect(schema.getParameter("task_id")!.description).toContain("original delegator");
+    expect(schema.parameters.some((parameter) => parameter.name === "status")).toBe(false);
+    expect(schema.parameters.some((parameter) => parameter.name === "reference_files")).toBe(false);
+  });
+
+  it("projects explicit task-delegation result and acceptance tools into runtime surfaces", async () => {
+    const enabledToolNames = [
+      MARK_TASK_COMPLETED_TOOL_NAME,
+      MARK_TASK_FAILED_TOOL_NAME,
+      ACCEPT_TASK_TOOL_NAME,
+    ];
+    const codexRegistrations = buildTaskDelegationDynamicToolRegistrations({
+      memberTeamContext: createMemberTeamContext(),
+      enabledToolNames,
+    });
+    expect(codexRegistrations?.map((registration) => registration.spec.name)).toEqual(enabledToolNames);
+
+    const createToolDefinition = vi.fn(async (definition: Record<string, unknown>) => definition);
+    const claudeDefinitions = await buildClaudeTaskDelegationToolDefinitions({
+      sdkClient: { createToolDefinition } as any,
+      memberTeamContext: createMemberTeamContext(),
+      enabledToolNames,
+    });
+    expect(claudeDefinitions?.map((definition) => (definition as Record<string, unknown>).name)).toEqual(enabledToolNames);
   });
 });

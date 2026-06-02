@@ -9,10 +9,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`
-- Current Validation Round: 14
-- Trigger: Round 25 code-review pass for CR-012 / CR-013 local fix after task-agent child preservation and parent-visible semantics alignment.
-- Prior Round Rechecked: Round 13 post-conflict pass, Round 12 live/browser task-agent lifecycle, and the Round 25 child-preservation/acceptance-gated reopen focus.
-- Latest Authoritative Round: 14
+- Current Validation Round: 16
+- Trigger: Round 28 code-review pass for the Round 27 / API-E2E Round 15 local implementation fix.
+- Prior Round Rechecked: Round 15 explicit-intent API/browser failure where the task-only logical `worker` stayed focused/displayed as `Initializing` after `accept_task` and settlement.
+- Latest Authoritative Round: 16
 
 ## Round History
 
@@ -31,19 +31,25 @@
 | 11 | Round 18 code-review pass for stale worker-row local fix | Round 10 residual workspace/history worker-row focus failure | Yes | Fail / Local Fix | No | Normal coordinator-focused post-settlement path now hides task-only worker rows, and composer does not emit from revived worker context, but stale `workspaceExecutionMemberRouteKey=worker` route revives `worker Offline`; clicking it keeps worker focus instead of falling back to active execution. |
 | 12 | Round 20 code-review pass for CR-011 stale route/hydration local fix | Round 11 stale worker-route revival/focus failure | No | Pass | No | Live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E still passes. Browser replay shows transient `worker task task_0001` appears while active, disappears after settlement, stale `workspaceExecutionMemberRouteKey=worker` normalizes to coordinator/active execution without a `W worker` row, and a post-stale-route composer probe targets `coordinator` rather than `worker`. |
 | 13 | Round 21 latest-base integration conflict local fix | Round 12 pass state and conflict impact on task-agent identity/active-execution monitor boundaries | No | Pass / targeted no-broad-replay decision | No | Conflict scope is limited to compaction protocol typing and team monitor unit test alignment. Targeted 5-file frontend suite, conflict-marker sweep, and diff check passed; no broad live browser/API replay is warranted because runtime task-delegation, stale-route hydration, and backend/websocket behavior were not changed. |
-| 14 | Round 25 CR-012 / CR-013 local fix | Round 13 pass state; task-agent child preservation across live reopen/hydration; acceptance-gated child removal | No | Pass | Yes | Focused frontend/server suites, server build, live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E, and browser replay passed. Browser evidence shows the concrete `worker · task_0001` child remains visible/addressable while running and while awaiting acceptance across reopen/hydration, then is removed after delegator acceptance and backend settlement while the logical `worker` parent remains as stable team topology. |
+| 14 | Round 25 CR-012 / CR-013 local fix | Round 13 pass state; task-agent child preservation across live reopen/hydration; acceptance-gated child removal | No | Pass | No | Focused frontend/server suites, server build, live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E, and browser replay passed. Browser evidence shows the concrete `worker · task_0001` child remains visible/addressable while running and while awaiting acceptance across reopen/hydration, then is removed after delegator acceptance and backend settlement while the logical `worker` parent remains as stable team topology. |
+| 15 | Round 27 explicit-intent task-delegation API reconciliation | Round 14 browser/API pass; explicit live mixed-runtime path; post-acceptance worker-row semantics | Yes | Fail / Local Fix | No | Explicit tool API works (`delegate_tasks` -> `mark_task_completed` -> `accept_task`) and stale `update_task_status` is absent from live payloads, but browser UI still focuses/displays the task-only logical `worker` as `Initializing` after `accept_task`/settlement. Routed to implementation. |
+| 16 | Round 28 code-review pass for the Round 15 local fix | AE2E-023 post-acceptance task-only logical worker focus/status failure; explicit API split | No | Pass | Yes | Focused API/frontend suites, builds, live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E, and browser replay all passed. Browser UI no longer shows `worker • Initializing`, no active task-agent child remains after accepted settlement, stale `workspaceExecutionMemberRouteKey=worker` normalizes to coordinator focus, and the explicit tool surface remains `delegate_tasks` / `mark_task_completed` / `mark_task_failed` / `accept_task`. |
 
 ## Validation Basis
 
-Validation was derived from the approved requirements, updated design spec, supplemental task-management migration analysis, implementation handoff, the latest Round 25 code-review report, and direct executable evidence.
+Validation was derived from the approved requirements, updated design spec, supplemental task-management migration analysis, implementation handoff, the latest Round 28 code-review report, and direct executable evidence.
 
 Round 14 validated the Round 25 CR-012 / CR-013 cumulative state against the current review-passed worktree. The mandatory current UX model is parent/child: a logical team member such as `worker` can remain visible as the stable member/template/available assignee, while each concrete delegated task-agent instance appears as an indented child such as `worker · task_0001`. The concrete task-agent child must remain visible/addressable while running or awaiting original-delegator acceptance, survive live active-team reopen/hydration refreshes, and disappear only after acceptance-gated settlement/offline cleanup. The logical parent may remain after settlement, but it must not be the completed task-agent execution entity.
 
-Round 14 also re-ran the live mixed-runtime acceptance path. The AutoByteus/LMStudio Qwen coordinator delegated to a Codex `gpt-5.5` task-agent worker, the worker called selector-free `update_task_status`, the coordinator accepted the completed task via task id, and the task-agent worker settled/offlined with no active task-agent run remaining.
+Round 14 also re-ran the then-current live mixed-runtime acceptance path. That pre-Round-27 path used selector-free `update_task_status` and is retained as historical evidence only.
+
+Round 15 revalidated the current explicit-intent tool surface. The server/API and live mixed-runtime paths now use `delegate_tasks`, worker-side `mark_task_completed` / `mark_task_failed`, and delegator-side `accept_task`; those paths passed and no model-facing `update_task_status` was observed in the Round 15 browser payloads. However, Round 15 found a blocking browser active-execution UI failure: after `accept_task` succeeded and the concrete task-agent child was gone, the task-only logical `worker` could still be focused/displayed as `worker • Initializing`.
+
+Round 16 revalidated the Round 28 local fix. The explicit tool split remains intact, the live mixed-runtime E2E still passes, and browser replay now shows clean post-acceptance active-execution semantics: after `mark_task_completed` plus original-delegator `accept_task`, the concrete task-agent child is removed, no task-only logical `worker` row is shown as `Initializing`/active, and a stale `workspaceExecutionMemberRouteKey=worker` route normalizes back to coordinator focus.
 
 Baseline mandatory behaviors rechecked across the latest validation rounds:
 
-- Live mixed AutoByteus/LMStudio Qwen coordinator -> Codex `gpt-5.5` task-agent worker still performs `delegate_tasks`, selector-free `update_task_status`, terminal coordinator notification, delegator `accepted` update, and task-agent offline/settled/no-active-run behavior.
+- Live mixed AutoByteus/LMStudio Qwen coordinator -> Codex `gpt-5.5` task-agent worker now performs `delegate_tasks`, selector-free task-agent-bound `mark_task_completed`, terminal coordinator notification, delegator `accept_task`, and task-agent offline/settled/no-active-run behavior.
 - Supported browser/frontend UX renders concrete task-agent instances as transient active child entities while active or awaiting acceptance and removes those concrete child entities after backend settlement/offline cleanup.
 - Task-agent child active UI is distinct from the logical `worker` member/template parent row, which may remain visible as stable team topology.
 - Approval-required task-agent tool calls from prior browser validation remain covered by repository/browser evidence and were not changed by the Round 25 local fix.
@@ -65,6 +71,8 @@ Baseline mandatory behaviors rechecked across the latest validation rounds:
 | CR-012: Live active team re-open/hydration could drop a running/awaiting task-agent child while retaining its context | Local Fix | Resolved in Round 14 | Focused frontend tests passed; browser replay showed `worker · task_0001` visible while running, still visible/addressable after live reopen, and still visible/addressable after completion while awaiting acceptance in a no-accept coordinator run. Fresh tab screenshot/probe: `/Users/normy/.autobyteus/browser-artifacts/555078-1780311694686.png`. |
 | CR-013: Focused run-open expectation used stale worker-hidden semantics instead of current parent-visible semantics | Local Fix | Resolved in Round 14 | Round 25 code review accepted parent-visible semantics. Browser replay confirmed the logical `worker` parent can remain in team topology while the concrete task-agent child is the entity that appears, remains awaiting acceptance, and disappears after accepted settlement. |
 
+| Round 15: Browser UI still showed/focused task-only logical `worker` as `Initializing` after explicit `accept_task` and task-agent cleanup | Local Fix | Resolved in Round 16 | Browser replay against the Round 28 fix showed no `worker • Initializing`, no active task-agent bar/row after accepted settlement, and stale `workspaceExecutionMemberRouteKey=worker` normalized to `/workspace` with `coordinator` focused/idle. Evidence: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-validation-summary.json` and screenshot `/Users/normy/.autobyteus/browser-artifacts/3ebe00-1780379322383.png`. |
+
 ## Compatibility / Legacy Scope Check
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
@@ -73,7 +81,7 @@ Baseline mandatory behaviors rechecked across the latest validation rounds:
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
-No invalid compatibility wrapper, dual old/new task surface, or legacy model-facing task-plan polling behavior was newly observed during Round 14.
+No invalid compatibility wrapper, dual old/new model-facing task surface, or legacy model-facing task-plan polling behavior was newly observed during Round 16. The remaining `update_task_status` matches are explicit legacy/gating/native-internal seams or removal tests, not a runtime model-facing tool surface.
 
 ## Validation Surfaces / Modes
 
@@ -89,7 +97,7 @@ No invalid compatibility wrapper, dual old/new task surface, or legacy model-fac
 ## Platform / Runtime Targets
 
 - Host: macOS / Darwin via local shell, Node.js `v22.21.1`, pnpm `10.28.2`.
-- Latest validation date: 2026-06-01 for Round 14 browser/API and live mixed-runtime validation (prior browser rounds include 2026-05-30 and 2026-05-31; Round 13 post-conflict decision was 2026-05-31).
+- Latest validation date: 2026-06-02 for Round 16 browser/API and live mixed-runtime validation (prior browser rounds include 2026-05-30, 2026-05-31, 2026-06-01; Round 13 post-conflict decision was 2026-05-31).
 - Server package: `autobyteus-server-ts`.
 - Frontend package: `autobyteus-web`.
 - Live mixed-runtime path: `RUN_LMSTUDIO_E2E=1`, `RUN_CODEX_E2E=1`, `LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b`, `CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5`.
@@ -107,6 +115,8 @@ No invalid compatibility wrapper, dual old/new task surface, or legacy model-fac
 - Round 14 seeded awaiting-acceptance run: `team_round25-task-agent-reopen-team-5f1f4e0b_b64d6d45`.
 
 ## Coverage Matrix
+
+Historical pre-Round-27 coverage rows that mention `update_task_status` are retained to document prior rounds. The current Round 16 explicit-tool result is captured in AE2E-022 / AE2E-023.
 
 | Scenario ID | Requirement / Acceptance Target | Validation Method | Result | Evidence |
 | --- | --- | --- | --- | --- |
@@ -126,6 +136,9 @@ No invalid compatibility wrapper, dual old/new task surface, or legacy model-fac
 | AE2E-019 | Awaiting-acceptance task-agent child remains visible/addressable after live reopen/hydration even when persisted run metadata lacks the child | Browser replay against a no-accept coordinator run; server metadata checked separately | Pass | After worker completion without delegator acceptance, fresh reopen still showed `worker · task_0001` and clicking it was addressable. Fresh screenshot: `/Users/normy/.autobyteus/browser-artifacts/555078-1780311694686.png`; addressability screenshot: `/Users/normy/.autobyteus/browser-artifacts/555078-1780311519227.png`; metadata `memberTree` contained only logical `coordinator` and `worker`, proving live projection repair/preservation supplied the child. |
 | AE2E-020 | Accepted settlement removes the concrete task-agent child only after delegator acceptance/offline cleanup | Live mixed E2E plus browser accepted-cleanup run | Pass | Live E2E passed with coordinator `accepted` update and no active task-agent run. Browser accepted-cleanup run removed `worker · task_0001` after accepted settlement while retaining the logical `worker` parent. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/6defbe-1780311699134.png`. |
 | AE2E-021 | Round 25 source/test boundaries still pass around task-agent child projection and acceptance lifecycle | Focused frontend/server suites and server build | Pass | Frontend focused suite passed: 3 files / 34 tests. Server focused suite passed: 4 files / 43 tests. `pnpm -C autobyteus-server-ts build` passed. |
+
+| AE2E-022 | Explicit task-delegation tool split works end-to-end without model-facing `update_task_status` | Focused server tests/sweeps, live mixed E2E, and browser GraphQL/websocket run | Pass | Server focused suite passed 10 files / 49 tests; live mixed E2E passed 1 file / 1 test with AutoByteus/LMStudio Qwen coordinator and Codex `gpt-5.5` worker; browser event log showed `delegate_tasks`, `mark_task_completed`, and `accept_task` with no `update_task_status` payload text. |
+| AE2E-023 | After accepted settlement, task-delegation-only logical worker must not masquerade as active/stuck task-agent execution | Browser post-acceptance UI/screenshot and stale worker-route replay against Round 28 state | Pass | Round 15 failure is resolved. After `mark_task_completed` and `accept_task`, browser UI showed no `worker • Initializing`, no `ACTIVE TASK AGENTS`, no `worker · task_0001`, and stale `workspaceExecutionMemberRouteKey=worker` normalized to `/workspace` with `coordinator` focused/idle. Evidence: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-validation-summary.json`. |
 
 ## Commands / Probes Run
 
@@ -236,11 +249,133 @@ Awaiting-acceptance preservation browser run:
 
 Round 14 conclusion: CR-012 and CR-013 are validated. A running or awaiting-acceptance task-agent child remains visible/addressable across live active team reopen/hydration refresh, and the concrete child is removed only after delegator acceptance plus backend settlement/offline cleanup. The logical `worker` parent remains allowed under the user-confirmed parent/child model.
 
+
+## Round 15 Explicit-Intent API / Browser Worker-Initializing Validation
+
+Round 15 revalidated the Round 27 explicit task-delegation API split. The server/API and live mixed-runtime paths passed, but browser validation found a blocking frontend active-execution/status-projection failure after `accept_task`.
+
+Repository and live-runtime checks:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/autobyteus-agent-config-builder.test.ts tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts`
+  - Result: Pass, 10 files / 49 tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - Result: Pass.
+- `pnpm -C autobyteus-server-ts build`
+  - Result: Pass.
+- `pnpm -C autobyteus-ts build`
+  - Result: Pass.
+- Stale-surface sweeps:
+  - Deleted `update-task-status` import/class/builder sweep: no matches.
+  - `update_task_status` matches only explicit legacy/gating/native-internal tests and mixed native exposure constants.
+  - `in_progress` in task-delegation tool/service focused scope: no matches.
+  - `git diff --check`: Pass.
+- `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
+  - Result: Pass, 1 file / 1 test, duration 92.00s.
+  - Behavioral proof: AutoByteus/LMStudio Qwen coordinator called `delegate_tasks`; Codex `gpt-5.5` task-agent run `team_mixed-task-delegation-team-6e25e69d-60b7_6c694249__worker__task_0001` was created; worker called selector-free `mark_task_completed`; coordinator received terminal completion notification and called `accept_task`; task-agent worker settled/offlined and no active task-agent run remained.
+
+Browser/API setup:
+
+- Backend: `http://localhost:8000`, temporary app data `/tmp/autobyteus-explicit-tools-browser-20260602-064026/data`.
+- Frontend: `http://localhost:3000`.
+- Session metadata: `/tmp/autobyteus-explicit-tools-browser-20260602-064026/session.env`.
+- Seed data: `/tmp/autobyteus-explicit-tools-browser-20260602-064026/team-seed-round27-explicit-tools.json`.
+- Team/run: `round27-browser-explicit-tools-e4e9f405` / `team_round27-browser-explicit-tools-e4e9f405_a3d4182e`.
+- Coordinator runtime/model: AutoByteus / `mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@127.0.0.1:1234`.
+- Worker runtime/model: Codex / `gpt-5.5`.
+- Completion token: `BROWSER_EXPLICIT_TOOLS_DONE_e4e9f405`.
+- Websocket event log: `/tmp/autobyteus-explicit-tools-browser-20260602-064026/round27-browser-ws-events.json`.
+- Browser validation summary: `/tmp/autobyteus-explicit-tools-browser-20260602-064026/round27-browser-validation-summary.json`.
+- Post-settlement fresh websocket snapshot: `/tmp/autobyteus-explicit-tools-browser-20260602-064026/post-settlement-snapshot.json`.
+
+Explicit browser/API tool path passed:
+
+- `delegate_tasks` succeeded for coordinator at websocket event index `381`.
+- `TASK_DELEGATION_ACTIVATED` was emitted for `task_0001` and task-agent run `team_round27-browser-explicit-tools-e4e9f405_a3d4182e__worker__task_0001`.
+- `mark_task_completed` succeeded for worker at event index `623` with arguments `{"message":"BROWSER_EXPLICIT_TOOLS_DONE_e4e9f405","reference_files":[]}`.
+- Terminal status and system task notification reached coordinator.
+- `accept_task` succeeded for coordinator at event index `800` with `{"status":"accepted","terminal":true,"settlement_requested":true}`.
+- Round 15 browser event payloads did not contain `update_task_status`, and task-delegation events did not contain model-facing `in_progress`.
+
+Blocking browser failure:
+
+- The concrete task-agent child appeared while active/awaiting acceptance. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/f6088b-1780375923916.png`.
+- After `accept_task` and cleanup, the concrete child was absent, but the browser still displayed/focused the logical `worker` as `worker • Initializing`. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/f6088b-1780375969298.png`; user screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_a70dda770298__image.png`.
+- A fresh post-settlement websocket snapshot showed no task-agent status message for `team_round27-browser-explicit-tools-e4e9f405_a3d4182e__worker__task_0001`, with coordinator `idle`, logical worker `offline`, and team `idle`, confirming the remaining `Initializing` is a frontend live projection/focus/status problem rather than a still-active task-agent.
+- Implementation clue: the live stream emitted an early task-agent `AGENT_STATUS initializing` with `agent_id` equal to the task-agent run id but without `task_agent_run_id`; this can poison the logical `worker` context. Current `teamActiveExecutionMembers.ts` also treats every route-keyed logical node as active, allowing `worker` to remain focusable in active execution after settlement.
+
+Round 15 conclusion: **Fail / Local Fix**. The explicit API split is validated, but delivery is blocked until the post-acceptance browser active-execution UI no longer shows or targets a task-delegation-only logical worker as `Initializing`/stuck after the concrete task-agent has settled. Failure artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`.
+
+## Round 16 Round 28 Fix Revalidation
+
+Round 16 revalidated the Round 28 implementation fix for the Round 15 browser active-execution/status-projection failure.
+
+Focused repository checks:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/autobyteus-agent-config-builder.test.ts tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts`
+  - Result: Pass, 10 files / 49 tests.
+- `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamActiveExecutionMembers.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/activeContextStore.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts stores/__tests__/runHistoryStore.spec.ts`
+  - Result: Pass, 11 files / 133 tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - Result: Pass.
+- `pnpm -C autobyteus-server-ts build`
+  - Result: Pass.
+- `pnpm -C autobyteus-web build`
+  - Result: Pass with existing large chunk warning only.
+- `pnpm -C autobyteus-ts build`
+  - Result: Pass.
+- Stale-surface sweeps:
+  - Deleted `update-task-status` import/class/builder sweep: no matches.
+  - `update_task_status` matches only explicit legacy/gating/native-internal tests and mixed native exposure constants.
+  - `in_progress` in task-delegation model-facing tool/service focused scope: no matches.
+  - `git diff --check`: Pass.
+- `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
+  - Result: Pass, 1 file / 1 test, duration 45.48s.
+  - Behavioral proof: AutoByteus/LMStudio Qwen coordinator called `delegate_tasks`; Codex `gpt-5.5` task-agent run `team_mixed-task-delegation-team-670f6385-5177_2988a34d__worker__task_0001` was created; worker called selector-free `mark_task_completed`; coordinator received terminal completion notification and called `accept_task`; task-agent worker settled/offlined and no active task-agent run remained.
+
+Browser/API replay setup:
+
+- Backend: `http://localhost:8000`, temporary app data `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/data`, `AUTOBYTEUS_STREAM_PARSER=json` to match the live JSON tool-call parser path.
+- Frontend: `http://localhost:3000`.
+- Session metadata: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/session.env`.
+- Seed data: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/team-seed-round28-explicit-tools.json`.
+- Browser validation summary: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-validation-summary.json`.
+- Event/trace evidence summary: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-event-evidence.json`.
+- Post-settlement fresh websocket snapshot: `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/post-settlement-snapshot.json`.
+- Post-settlement screenshot: `/Users/normy/.autobyteus/browser-artifacts/3ebe00-1780379322383.png`.
+- Team/run: `round28-browser-explicit-tools-74c4710d` / `team_round28-browser-explicit-tools-74c4710d_e902abc6`.
+- Coordinator runtime/model: AutoByteus / `mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@127.0.0.1:1234`.
+- Worker runtime/model: Codex / `gpt-5.5`.
+- Task-agent run: `team_round28-browser-explicit-tools-74c4710d_e902abc6__worker__task_0001`.
+- Completion token: `BROWSER_ROUND28_DONE_74c4710d`.
+
+Explicit browser/API tool path passed:
+
+- Frontend composer sent the initial task-delegation request to the coordinator.
+- Coordinator raw trace shows a real `delegate_tasks` tool call with one ready-to-run task for `member_name: "worker"`.
+- Worker raw trace shows a real task-agent work packet for `task_agent_task_0001` and a real `mark_task_completed` tool call with selector-free arguments only: `{"message":"BROWSER_ROUND28_DONE_74c4710d","reference_files":[]}`.
+- Coordinator raw trace shows the framework completion notification with `Task ID: task_0001`, then a real `accept_task` tool call with `{"task_id":"task_0001"}`.
+- Trace/snapshot evidence contains no model-facing `update_task_status`. `in_progress` appears only inside lifecycle instruction text telling the worker not to report it; no tool argument or result uses `in_progress`.
+
+Round 15 failure resolution evidence:
+
+- Fresh post-settlement websocket snapshot has no task-agent status message for `team_round28-browser-explicit-tools-74c4710d_e902abc6__worker__task_0001` and reports coordinator `idle`, logical worker `offline`, and team `idle`.
+- Browser DOM after accepted settlement showed:
+  - `hasWorkerInitializing: false`
+  - `hasActiveTaskAgents: false`
+  - `hasTaskAgentRow: false`
+  - `hasUpdateTaskStatusVisible: false`
+  - `hasMarkTaskCompletedVisible: true`
+  - `hasAcceptTaskVisible: true`
+- Reopening the same run with stale `workspaceExecutionMemberRouteKey=worker` normalized the URL to `http://localhost:3000/workspace`, focused `coordinator Idle`, and showed no plain worker active row and no active task-agent bar.
+
+Round 16 conclusion: **Pass**. The explicit task API remains intact and AE2E-023 is resolved; after accepted settlement the browser no longer shows or targets a task-delegation-only logical `worker` as `Initializing`/active.
+
 ## Durable Validation Added / Updated
 
-- Repository-resident durable validation code added or updated by API/E2E after the Round 25 code-review pass: `No`.
-- API/E2E updated only the validation report artifact:
+- Repository-resident durable validation code added or updated by API/E2E after the Round 28 code-review pass: `No`.
+- API/E2E updated only validation report artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
+  - Prior Round 15 failure artifact remains for historical evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round27-worker-initializing-after-acceptance-failure.md`
 
 ## Untested / Residual Risk
 
@@ -261,9 +396,11 @@ None.
   - `/tmp/autobyteus-browser-task-ui-round13-approval-20260530-142903`
   - `/tmp/autobyteus-worker-row-round20-20260531-212249`
   - `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922`
-- Backend/frontend dev processes were left running for immediate inspection unless the next owner chooses to stop/restart them:
-  - Current Round 14 backend PID/session in `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/session.env`
-  - Current Round 14 frontend PID/session in `/tmp/autobyteus-taskagent-reopen-round25-20260601-124922/session.env`
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535`
+- Round 16 backend/frontend dev processes were stopped after evidence capture.
+  - Backend session: `26310`, clean SIGINT shutdown observed.
+  - Frontend session: `22494`, SIGINT shutdown observed.
+  - Cleanup port check after shutdown found no listeners on `localhost:8000` or `localhost:3000`.
 
 ## Round 9 Reopened UX / Domain Semantics Concern
 
@@ -413,7 +550,7 @@ No additional runtime or browser evidence was required beyond the Round 12 live 
 
 Validation result is `Pass`.
 
-Rationale: Round 14 directly revalidated the current Round 25 cumulative package. Focused frontend/server suites and server build passed. The live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E proved delegate, worker terminal update, delegator acceptance, and final task-agent settlement/no-active-run behavior. Browser replay proved the Round 25-specific requirement: the concrete `worker · task_0001` child persists across live active-team reopen/hydration while running and while awaiting acceptance, and disappears after acceptance-gated settlement while the logical `worker` parent remains as allowed stable team topology.
+Rationale: Round 16 directly revalidated the current Round 28 cumulative package. Focused server/API and frontend active-execution suites passed, server/web/autobyteus-ts builds passed, stale tool-surface sweeps passed, and the live mixed AutoByteus/LMStudio Qwen -> Codex `gpt-5.5` E2E proved `delegate_tasks` -> `mark_task_completed` -> `accept_task` plus final task-agent settlement/no-active-run behavior. Browser replay proved the Round 15 failure is fixed: after accepted settlement, no concrete task-agent child remains, the task-only logical `worker` is not displayed/focused as `Initializing` or as an active execution row, and stale worker-route opening normalizes to coordinator focus.
 
 ## Recommended Recipient
 
@@ -436,10 +573,17 @@ Rationale: Round 14 directly revalidated the current Round 25 cumulative package
   - `/Users/normy/.autobyteus/browser-artifacts/555078-1780311519227.png`
 - Prior Round 12 failure artifact rechecked and remains resolved under current parent/child semantics: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-round18-stale-worker-route-failure.md`.
 - Round 13 conflict reroute artifact remains resolved: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/delivery-latest-base-conflict-reroute.md`.
-- Repository-resident durable validation code added or updated by API/E2E after Round 25 code review: `No`.
+- Round 16 browser/API evidence:
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-validation-summary.json`
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/round28-browser-event-evidence.json`
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/post-settlement-snapshot.json`
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/data/memory/agent_teams/team_round28-browser-explicit-tools-74c4710d_e902abc6/coordinator_a46933713056b021/raw_traces.jsonl`
+  - `/tmp/autobyteus-explicit-tools-browser-round28b-20260602-074535/data/memory/agent_teams/team_round28-browser-explicit-tools-74c4710d_e902abc6/worker_b651f2208b2ecf83/raw_traces.jsonl`
+  - `/Users/normy/.autobyteus/browser-artifacts/3ebe00-1780379322383.png`
+- Repository-resident durable validation code added or updated by API/E2E after Round 28 code review: `No`.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 14 validates the Round 25 CR-012 / CR-013 cumulative package. Live mixed runtime, focused API/frontend tests, and browser reopen/hydration proof all pass. Ready for delivery to resume.
+- Notes: Round 16 validates that the explicit task-delegation tool split still works in focused server checks, live mixed runtime, and browser/API payloads. The Round 15 browser failure is resolved: after `mark_task_completed`, original-delegator `accept_task`, and settlement/offline cleanup, the UI no longer shows or targets the task-delegation-only logical `worker` as `Initializing`/active; stale worker-route opening normalizes to coordinator focus.

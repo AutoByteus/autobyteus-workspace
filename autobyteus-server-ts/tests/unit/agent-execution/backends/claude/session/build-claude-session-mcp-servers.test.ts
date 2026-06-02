@@ -91,7 +91,12 @@ describe("buildClaudeSessionMcpServers", () => {
     const result = await buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: false,
       taskDelegationToolingEnabled: true,
-      enabledTaskDelegationToolNames: ["delegate_tasks", "update_task_status"],
+      enabledTaskDelegationToolNames: [
+        "delegate_tasks",
+        "mark_task_completed",
+        "mark_task_failed",
+        "accept_task",
+      ],
       publishArtifactsToolingEnabled: false,
       runContext: { runId: "run-1" } as any,
       sdkClient: { sdk: true } as any,
@@ -102,7 +107,12 @@ describe("buildClaudeSessionMcpServers", () => {
     expect(buildClaudeTeamMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         sendMessageToToolingEnabled: false,
-        enabledTaskDelegationToolNames: ["delegate_tasks", "update_task_status"],
+        enabledTaskDelegationToolNames: [
+          "delegate_tasks",
+          "mark_task_completed",
+          "mark_task_failed",
+          "accept_task",
+        ],
       }),
     );
     expect(result).toEqual({

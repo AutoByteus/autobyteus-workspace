@@ -274,7 +274,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   it("enables task delegation tools and their autobyteus_team MCP names only when configured", async () => {
     const { session, startQueryTurn } = createSession([
       "delegate_tasks",
-      "update_task_status",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
       "create_task",
     ]);
 
@@ -287,7 +289,12 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         taskDelegationToolingEnabled: true,
-        enabledTaskDelegationToolNames: ["delegate_tasks", "update_task_status"],
+        enabledTaskDelegationToolNames: [
+          "delegate_tasks",
+          "mark_task_completed",
+          "mark_task_failed",
+          "accept_task",
+        ],
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -296,8 +303,12 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         allowedTools: [
           "delegate_tasks",
           "mcp__autobyteus_team__delegate_tasks",
-          "update_task_status",
-          "mcp__autobyteus_team__update_task_status",
+          "mark_task_completed",
+          "mcp__autobyteus_team__mark_task_completed",
+          "mark_task_failed",
+          "mcp__autobyteus_team__mark_task_failed",
+          "accept_task",
+          "mcp__autobyteus_team__accept_task",
         ],
       }),
     );

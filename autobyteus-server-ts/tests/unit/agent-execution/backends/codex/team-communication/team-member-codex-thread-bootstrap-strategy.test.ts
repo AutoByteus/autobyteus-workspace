@@ -105,7 +105,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       agentInstruction: "Solve the task.",
       configuredToolExposure: buildConfiguredAgentToolExposure([
         "delegate_tasks",
-        "update_task_status",
+        "mark_task_completed",
+        "mark_task_failed",
+        "accept_task",
         "create_task",
       ]),
     });
@@ -113,6 +115,11 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.developerInstructions).toContain("Task delegation protocol");
     expect(preparation.developerInstructions).toContain("Do not use `create_task`");
     expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
-      .toEqual(["delegate_tasks", "update_task_status"]);
+      .toEqual([
+        "delegate_tasks",
+        "mark_task_completed",
+        "mark_task_failed",
+        "accept_task",
+      ]);
   });
 });

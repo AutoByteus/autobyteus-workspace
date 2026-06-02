@@ -2,9 +2,9 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { registerToolClass } from "autobyteus-ts/tools/tool-meta.js";
-import { UPDATE_TASK_STATUS_TOOL_NAME } from "./task-delegation-tool-contract.js";
+import { MARK_TASK_COMPLETED_TOOL_NAME } from "./task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "./task-delegation-tool-manifest.js";
-import { buildUpdateTaskStatusParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
+import { buildMarkTaskCompletedParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
 import {
   toTaskDelegationJsonString,
   toTaskDelegationToolErrorPayload,
@@ -15,19 +15,19 @@ import {
   type NativeTaskDelegationToolExecutionContext,
 } from "./task-delegation-autobyteus-context.js";
 
-export class ServerOwnedUpdateTaskStatusTool extends BaseTool<NativeTaskDelegationToolExecutionContext, Record<string, unknown>, string> {
+export class ServerOwnedMarkTaskCompletedTool extends BaseTool<NativeTaskDelegationToolExecutionContext, Record<string, unknown>, string> {
   static CATEGORY = ToolCategory.TASK_MANAGEMENT;
 
   static getName(): string {
-    return UPDATE_TASK_STATUS_TOOL_NAME;
+    return MARK_TASK_COMPLETED_TOOL_NAME;
   }
 
   static getDescription(): string {
-    return getTaskDelegationToolManifestEntry(UPDATE_TASK_STATUS_TOOL_NAME).description;
+    return getTaskDelegationToolManifestEntry(MARK_TASK_COMPLETED_TOOL_NAME).description;
   }
 
   static getArgumentSchema() {
-    return buildUpdateTaskStatusParameterSchema();
+    return buildMarkTaskCompletedParameterSchema();
   }
 
   protected async _execute(
@@ -35,7 +35,7 @@ export class ServerOwnedUpdateTaskStatusTool extends BaseTool<NativeTaskDelegati
     kwargs: Record<string, unknown> = {},
   ): Promise<string> {
     try {
-      const entry = getTaskDelegationToolManifestEntry(UPDATE_TASK_STATUS_TOOL_NAME);
+      const entry = getTaskDelegationToolManifestEntry(MARK_TASK_COMPLETED_TOOL_NAME);
       const toolContext = buildTaskDelegationToolContextFromNativeContext(context);
       const result = await entry.execute(
         getTaskDelegationToolService(),
@@ -49,7 +49,7 @@ export class ServerOwnedUpdateTaskStatusTool extends BaseTool<NativeTaskDelegati
   }
 }
 
-export function registerUpdateTaskStatusTool(): BaseTool {
-  registerToolClass(ServerOwnedUpdateTaskStatusTool);
-  return defaultToolRegistry.createTool(UPDATE_TASK_STATUS_TOOL_NAME) as BaseTool;
+export function registerMarkTaskCompletedTool(): BaseTool {
+  registerToolClass(ServerOwnedMarkTaskCompletedTool);
+  return defaultToolRegistry.createTool(MARK_TASK_COMPLETED_TOOL_NAME) as BaseTool;
 }

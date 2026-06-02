@@ -9,10 +9,16 @@ import {
   TaskDelegationError,
   type DelegateTasksInput,
   type DelegateTasksResult,
+  type AcceptTaskInput,
+  type AcceptTaskResult,
+  type MarkTaskCompletedInput,
+  type MarkTaskCompletedResult,
+  type MarkTaskFailedInput,
+  type MarkTaskFailedResult,
   type TaskDelegationContext,
   type TaskDelegationRecord,
-  type UpdateTaskStatusInput,
-  type UpdateTaskStatusResult,
+  type TaskDelegationReportedTerminalStatus,
+  type TaskDelegationToolActionResult,
 } from "./task-delegation-record.js";
 import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
 
@@ -68,23 +74,35 @@ export class TaskDelegationService {
     };
   }
 
-  async updateTaskStatus(
+  async markTaskCompleted(
     context: TaskDelegationContext,
-    input: UpdateTaskStatusInput,
-  ): Promise<UpdateTaskStatusResult> {
+    input: MarkTaskCompletedInput,
+  ): Promise<MarkTaskCompletedResult> {
+    return this.reportTaskAgentResult(context, "completed", input);
+  }
+
+  async markTaskFailed(
+    context: TaskDelegationContext,
+    input: MarkTaskFailedInput,
+  ): Promise<MarkTaskFailedResult> {
+    return this.reportTaskAgentResult(context, "failed", input);
+  }
+
+  private async reportTaskAgentResult(
+    context: TaskDelegationContext,
+    status: TaskDelegationReportedTerminalStatus,
+    input: MarkTaskCompletedInput | MarkTaskFailedInput,
+  ): Promise<TaskDelegationToolActionResult> {
     this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
-    if (input.status === "accepted") {
-      return this.acceptTaskStatus(context, input);
-    }
 
     const existing = this.resolveCallerBoundRecord(context);
-    const message = this.inputResolver.normalizeStatusMessage(input.message ?? null);
+    const message = this.inputResolver.normalizeRequiredResultMessage(input.message);
     const referenceFiles = this.inputResolver.normalizeReferenceFiles(input.reference_files);
     const previousStatus = existing.status;
     const updated = this.ledger.updateStatus({
       taskId: existing.taskId,
-      status: input.status,
+      status,
       message,
       referenceFiles,
     });
@@ -95,27 +113,25 @@ export class TaskDelegationService {
       record: updated,
     });
 
+    await this.completionNotifier.notifyReportedStatus({
+      teamRun: this.teamRun,
+      payload: {
+        teamRunId: context.teamRunId,
+        taskId: updated.taskId,
+        taskLabel: updated.taskLabel,
+        member: updated.member,
+        delegator: updated.delegator,
+        taskAgentInstance: updated.taskAgentInstance,
+        status,
+        message: updated.statusMessage,
+        referenceFiles: updated.statusReferenceFiles,
+        completedAt: updated.terminalAt ?? updated.updatedAt,
+      },
+      coordinatorMemberRouteKey: context.coordinatorMemberRouteKey ?? null,
+    });
     let settlementRequested = false;
-    if (input.status === "completed" || input.status === "failed") {
-      await this.completionNotifier.notifyReportedStatus({
-        teamRun: this.teamRun,
-        payload: {
-          teamRunId: context.teamRunId,
-          taskId: updated.taskId,
-          taskLabel: updated.taskLabel,
-          member: updated.member,
-          delegator: updated.delegator,
-          taskAgentInstance: updated.taskAgentInstance,
-          status: input.status,
-          message: updated.statusMessage,
-          referenceFiles: updated.statusReferenceFiles,
-          completedAt: updated.terminalAt ?? updated.updatedAt,
-        },
-        coordinatorMemberRouteKey: context.coordinatorMemberRouteKey ?? null,
-      });
-      if (input.status === "failed") {
-        settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
-      }
+    if (status === "failed") {
+      settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
     }
 
     return {
@@ -127,13 +143,15 @@ export class TaskDelegationService {
     };
   }
 
-  private acceptTaskStatus(
+  async acceptTask(
     context: TaskDelegationContext,
-    input: Extract<UpdateTaskStatusInput, { status: "accepted" }>,
-  ): UpdateTaskStatusResult {
+    input: AcceptTaskInput,
+  ): Promise<AcceptTaskResult> {
+    this.assertTeamRunActive();
+    this.inputResolver.assertContext(context);
     const taskId = input.task_id.trim();
     if (!taskId) {
-      throw new TaskDelegationError("VALIDATION_ERROR", "task_id is required for accepted status.");
+      throw new TaskDelegationError("VALIDATION_ERROR", "task_id is required for accept_task.");
     }
     const existing = this.ledger.getRecord(taskId);
     if (!existing) {
@@ -173,7 +191,7 @@ export class TaskDelegationService {
     if (!callerTaskAgentRunId) {
       throw new TaskDelegationError(
         "TASK_AGENT_CONTEXT_REQUIRED",
-        "update_task_status requires a task-agent instance context.",
+        "Worker result tools require a task-agent instance context.",
       );
     }
     const records = this.ledger.listRecordsForTaskAgentRun(callerTaskAgentRunId);
@@ -186,7 +204,7 @@ export class TaskDelegationService {
     if (records.length > 1) {
       throw new TaskDelegationError(
         "TASK_AGENT_AMBIGUOUS",
-        `Task-agent run '${callerTaskAgentRunId}' is bound to ${records.length} delegated tasks; update_task_status requires exactly one bound task.`,
+        `Task-agent run '${callerTaskAgentRunId}' is bound to ${records.length} delegated tasks; worker result tools require exactly one bound task.`,
       );
     }
     const record = records[0]!;

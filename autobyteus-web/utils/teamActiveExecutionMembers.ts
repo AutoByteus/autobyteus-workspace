@@ -1,5 +1,7 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { isTaskAgentRunId } from '~/services/agentStreaming/taskAgentRunIdentity';
 
 export interface TeamActiveExecutionMemberEntry {
   node: TeamMemberNode;
@@ -49,11 +51,63 @@ const collectTaskAgentNodes = (nodes: readonly TeamMemberNode[]): TeamMemberNode
     ...(node.memberKind === 'agent_team' ? collectTaskAgentNodes(node.children) : []),
   ]);
 
+const ACTIVE_MEMBER_STATUSES = new Set<AgentStatus>([
+  AgentStatus.Running,
+  AgentStatus.Error,
+]);
+
+const getMemberStatus = (
+  node: TeamMemberNode,
+  context: AgentContext | null,
+): AgentStatus | null => context?.state?.currentStatus ?? node.currentStatus ?? null;
+
+const isCoordinatorNode = (
+  teamContext: AgentTeamContext,
+  node: TeamMemberNode,
+): boolean => Boolean(
+  node.memberRouteKey &&
+  teamContext.coordinatorMemberRouteKey?.trim() === node.memberRouteKey,
+);
+
+const hasCoordinator = (teamContext: AgentTeamContext): boolean => Boolean(
+  teamContext.coordinatorMemberRouteKey?.trim(),
+);
+
+const hasTaskAgentRunBoundToLogicalMember = (context: AgentContext | null): boolean =>
+  isTaskAgentRunId(context?.state?.runId);
+
+const getLeafContextsByRouteKey = (teamContext: AgentTeamContext): Map<string, AgentContext> => {
+  const candidate = teamContext.leafAgentContextsByRouteKey;
+  if (candidate instanceof Map) {
+    return candidate;
+  }
+  const legacyMembers = (teamContext as unknown as { members?: unknown }).members;
+  return legacyMembers instanceof Map ? legacyMembers as Map<string, AgentContext> : new Map();
+};
+
 export const isActiveExecutionMemberNode = (
-  _teamContext: AgentTeamContext,
+  teamContext: AgentTeamContext,
   node: TeamMemberNode,
 ): boolean => {
-  return Boolean(node.memberRouteKey);
+  if (!node.memberRouteKey) {
+    return false;
+  }
+
+  if (node.isTaskAgentInstance || !hasCoordinator(teamContext) || isCoordinatorNode(teamContext, node)) {
+    return true;
+  }
+
+  const context = getLeafContextsByRouteKey(teamContext).get(node.memberRouteKey) ?? null;
+  if (hasTaskAgentRunBoundToLogicalMember(context)) {
+    return false;
+  }
+
+  if (isTaskAgentOnlyConversation(context)) {
+    return false;
+  }
+
+  return shouldShowMemberConversationPreview(node, context) ||
+    ACTIVE_MEMBER_STATUSES.has(getMemberStatus(node, context) as AgentStatus);
 };
 
 export const flattenActiveExecutionMemberNodesForDisplay = (
