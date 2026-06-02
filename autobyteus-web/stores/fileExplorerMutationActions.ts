@@ -16,7 +16,6 @@ import type {
   CreateFileOrFolderMutationVariables,
 } from '~/generated/graphql'
 import type { FileSystemChangeEvent } from '~/types/fileSystemChangeTypes'
-import type { OpenFileState } from '~/stores/fileExplorerState'
 
 const messagesFromErrors = (errors: readonly { message: string }[] | undefined): string | null => {
   return errors?.length ? errors.map((error) => error.message).join(', ') : null
@@ -38,10 +37,7 @@ export const fileExplorerMutationActions = {
       const message = messagesFromErrors(errors)
       if (message) throw new Error(message)
       if (data?.deleteFileOrFolder) {
-        if (wsState.openFiles.some((file: OpenFileState) => file.path === filePath)) {
-          this.closeFile(filePath, workspaceId)
-        }
-        wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => !file.path.startsWith(`${filePath}/`))
+        this.closePathScopedFiles(filePath, workspaceId)
         this._applyMutationChangeEvent(workspaceId, data.deleteFileOrFolder)
       }
       wsState.deleteLoading[filePath] = false

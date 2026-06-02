@@ -84,51 +84,24 @@
         <FileItem v-for="child in file.children" :key="child.id" :file="child"/>
       </div>
     </transition>
-
-    <!-- Context menu -->
-    <FileContextMenu
-      :visible="showContextMenu"
-      :position="contextMenuPosition"
-      @rename="startRename"
-      @delete="promptDelete"
-      @add-file="promptAddFile"
-      @add-folder="promptAddFolder"
-    />
-
-    <!-- Delete confirmation -->
-    <ConfirmDeleteDialog
-      :show="showDeleteConfirm"
-      :targetName="file.name"
-      @confirm="onDeleteConfirmed"
-      @cancel="onDeleteCanceled"
-    />
-
-    <!-- Add file/folder dialog -->
-    <AddFileOrFolderDialog
-      :show="showAddDialog"
-      :parentPath="file.path"
-      :isFile="addFileMode"
-      @confirm="onAddConfirmed"
-      @cancel="onAddCanceled"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onBeforeUnmount, nextTick, inject } from 'vue'
+import { computed, ref, watch, nextTick, inject } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
-import { TreeNode } from '~/utils/fileExplorer/TreeNode'
+import type { TreeNode } from '~/utils/fileExplorer/TreeNode'
 import { useWorkspaceStore } from '~/stores/workspace'
-import FileContextMenu from './FileContextMenu.vue'
-import ConfirmDeleteDialog from './ConfirmDeleteDialog.vue'
-import AddFileOrFolderDialog from './AddFileOrFolderDialog.vue'
 import type { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer'
+import { createFileExplorerNodeContextTarget } from '~/utils/fileExplorer/contextMenu'
+import type { FileExplorerRenameRequest, RequestFileExplorerContextMenu } from '~/utils/fileExplorer/contextMenu'
 
 const props = defineProps<{ file: TreeNode }>()
 const explorer = inject<ReturnType<typeof useWorkspaceFileExplorer>>('workspaceFileExplorer')!
 if (!explorer) throw new Error("FileItem must be used within a component providing 'workspaceFileExplorer'")
 const panelActive = inject<ComputedRef<boolean>>('fileExplorerPanelActive', computed(() => true))
-const closeContextMenusSignal = inject<Ref<number>>('fileExplorerCloseContextMenusSignal', ref(0))
+const requestFileExplorerContextMenu = inject<RequestFileExplorerContextMenu | null>('requestFileExplorerContextMenu', null)
+const renameRequest = inject<Ref<FileExplorerRenameRequest | null>>('fileExplorerRenameRequest', ref(null))
 const outsideDragSignal = inject<Ref<number>>('fileExplorerOutsideDragSignal', ref(0))
 const globalDragResetSignal = inject<Ref<number>>('fileExplorerGlobalDragResetSignal', ref(0))
 
@@ -141,9 +114,7 @@ const isDragging = ref(false)
 const isRenaming = ref(false)
 const renameInput = ref('')
 const renameInputRef = ref<HTMLInputElement | null>(null)
-const showContextMenu = ref(false)
-const contextMenuPosition = ref({ top: 0, left: 0 })
-const showDeleteConfirm = ref(false)
+let originalName = ''
 
 const isActive = computed(() => {
   return props.file.is_file && explorer.activeFile.value === props.file.path
@@ -155,30 +126,13 @@ const isPreviewable = computed(() => {
   return lower.endsWith('.md') || lower.endsWith('.markdown') || lower.endsWith('.html') || lower.endsWith('.htm') || lower.endsWith('.csv') || lower.endsWith('.pdf')
 })
 
-const showAddDialog = ref(false)
-const addFileMode = ref(true)
-let originalName = ''
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onGlobalClick)
-  document.removeEventListener('keydown', handleEscapeKey)
-})
-
 const isFolderOpen = computed(() => {
   return !props.file.is_file && !!explorer.openFolders.value[props.file.path]
 })
 
 const isValidDropTarget = computed(() => {
-  return !props.file.is_file // Only folders are valid drop targets
+  return !props.file.is_file
 })
-
-function onCloseAllContextMenus() {
-  if (showContextMenu.value) {
-    showContextMenu.value = false
-    document.removeEventListener('click', onGlobalClick)
-    document.removeEventListener('keydown', handleEscapeKey)
-  }
-}
 
 const onGlobalDragEnd = () => {
   isDragging.value = false
@@ -213,39 +167,21 @@ const handleClick = async () => {
   }
 }
 
-
 const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   event.stopPropagation()
-  if (!panelActive.value) return
+  if (!panelActive.value || !requestFileExplorerContextMenu) return
 
-  document.dispatchEvent(new Event('closeAllFileContextMenus'))
-
-  showContextMenu.value = true
-  contextMenuPosition.value = {
-    top: event.clientY,
-    left: event.clientX
-  }
-
-  document.addEventListener('click', onGlobalClick)
-  document.addEventListener('keydown', handleEscapeKey)
-}
-
-const handleEscapeKey = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    showContextMenu.value = false
-    document.removeEventListener('keydown', handleEscapeKey)
-  }
-}
-
-const onGlobalClick = () => {
-  showContextMenu.value = false
-  document.removeEventListener('click', onGlobalClick)
-  document.removeEventListener('keydown', handleEscapeKey)
+  requestFileExplorerContextMenu({
+    target: createFileExplorerNodeContextTarget(props.file),
+    position: {
+      top: event.clientY,
+      left: event.clientX,
+    },
+  })
 }
 
 const startRename = () => {
-  showContextMenu.value = false
   originalName = props.file.name
   renameInput.value = props.file.name
   isRenaming.value = true
@@ -276,58 +212,6 @@ const confirmRename = async () => {
 const cancelRename = () => {
   isRenaming.value = false
   renameInput.value = originalName
-}
-
-const promptDelete = () => {
-  showContextMenu.value = false
-  showDeleteConfirm.value = true
-}
-
-const onDeleteConfirmed = async () => {
-  showDeleteConfirm.value = false
-  try {
-    await explorer.deleteFileOrFolder(props.file.path)
-  } catch (error) {
-    console.error('Failed to delete:', error)
-  }
-}
-
-const onDeleteCanceled = () => {
-  showDeleteConfirm.value = false
-}
-
-const promptAddFile = () => {
-  showContextMenu.value = false
-  addFileMode.value = true
-  showAddDialog.value = true
-}
-
-const promptAddFolder = () => {
-  showContextMenu.value = false
-  addFileMode.value = false
-  showAddDialog.value = true
-}
-
-async function onAddConfirmed(newName: string) {
-  showAddDialog.value = false
-  try {
-    let finalPath: string
-    if (props.file.is_file) {
-      const segments = props.file.path.split('/')
-      segments.pop()
-      const parentPath = segments.join('/')
-      finalPath = parentPath ? `${parentPath}/${newName}` : newName
-    } else {
-      finalPath = props.file.path ? `${props.file.path}/${newName}` : newName
-    }
-    await explorer.createFileOrFolder(finalPath, addFileMode.value)
-  } catch (error) {
-    console.error('Failed to create file/folder:', error)
-  }
-}
-
-function onAddCanceled() {
-  showAddDialog.value = false
 }
 
 const onDragStart = (event: DragEvent) => {
@@ -364,7 +248,6 @@ const onDragEnter = (event: DragEvent) => {
   if (!panelActive.value) return
 
   if (!isValidDropTarget.value) return
-
 }
 
 const onDragOver = (event: DragEvent) => {
@@ -426,8 +309,17 @@ const onDrop = async (event: DragEvent) => {
   }
 }
 
-watch(closeContextMenusSignal, () => {
-  onCloseAllContextMenus()
+const matchesRenameRequest = (request: FileExplorerRenameRequest): boolean => {
+  if (request.nodeId && props.file.id) {
+    return request.nodeId === props.file.id
+  }
+  return request.path === props.file.path
+}
+
+watch(renameRequest, (request) => {
+  if (request && matchesRenameRequest(request)) {
+    startRename()
+  }
 })
 
 watch(outsideDragSignal, () => {
@@ -439,14 +331,12 @@ watch(globalDragResetSignal, () => {
 
 watch(panelActive, (isActive) => {
   if (isActive) return
-  showContextMenu.value = false
-  document.removeEventListener('click', onGlobalClick)
-  document.removeEventListener('keydown', handleEscapeKey)
   onGlobalDragEnd()
 })
 </script>
 
 <style scoped>
+
 .file-item {
   position: relative;
   transition: all 0.2s ease-out;

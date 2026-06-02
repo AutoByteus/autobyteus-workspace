@@ -8,6 +8,12 @@ type SkillDirectoryConfig = {
   getAdditionalSkillsDirs(): string[];
 };
 
+type DefinitionRootConfig = {
+  getAppDataDir(): string;
+  getAdditionalAgentPackageRoots(): string[];
+  getAdditionalSkillsDirs?(): string[];
+};
+
 type SkillDiscoveryDependencies = {
   loader: SkillLoader;
   isReadonlyPath: (skillPath: string) => boolean;
@@ -19,10 +25,152 @@ type SkillDiscoveryDependencies = {
 export const isSkillDirectory = (directory: string): boolean =>
   fs.existsSync(path.join(directory, "SKILL.md"));
 
+const isExistingDirectory = (directory: string): boolean => {
+  try {
+    return fs.statSync(directory).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
+const readSortedDirectoryEntries = (directory: string): fs.Dirent[] => {
+  if (!isExistingDirectory(directory)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .sort((first, second) => first.name.localeCompare(second.name));
+};
+
+export const getAllDefinitionRoots = (config: DefinitionRootConfig): string[] => {
+  const roots = [
+    config.getAppDataDir(),
+    ...config.getAdditionalAgentPackageRoots(),
+    ...(config.getAdditionalSkillsDirs?.() ?? []),
+  ];
+  const seen = new Set<string>();
+
+  return roots.filter((root) => {
+    const resolved = path.resolve(root);
+    if (seen.has(resolved)) {
+      return false;
+    }
+    seen.add(resolved);
+    return true;
+  });
+};
+
 export const getAllSkillDirectories = (config: SkillDirectoryConfig): string[] => [
   config.getSkillsDir(),
   ...config.getAdditionalSkillsDirs(),
 ];
+
+const getSkillFolderDirectories = (skillsDir: string): string[] => {
+  const skillDirectories: string[] = [];
+
+  for (const entry of readSortedDirectoryEntries(skillsDir)) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+
+    const skillDir = path.join(skillsDir, entry.name);
+    if (isSkillDirectory(skillDir)) {
+      skillDirectories.push(skillDir);
+    }
+  }
+
+  return skillDirectories;
+};
+
+const getAgentSkillDirectories = (agentsDir: string): string[] => {
+  const skillDirectories: string[] = [];
+
+  for (const agentEntry of readSortedDirectoryEntries(agentsDir)) {
+    if (!agentEntry.isDirectory()) {
+      continue;
+    }
+
+    const agentDir = path.join(agentsDir, agentEntry.name);
+    if (isSkillDirectory(agentDir)) {
+      skillDirectories.push(agentDir);
+    }
+    skillDirectories.push(...getSkillFolderDirectories(path.join(agentDir, "skills")));
+  }
+
+  return skillDirectories;
+};
+
+export const getBundledSkillDirectoriesFromDefinitionRoot = (
+  definitionRoot: string,
+): string[] => {
+  const skillDirectories = [
+    ...getAgentSkillDirectories(path.join(definitionRoot, "agents")),
+  ];
+
+  const teamRoots = path.join(definitionRoot, "agent-teams");
+  for (const teamEntry of readSortedDirectoryEntries(teamRoots)) {
+    if (!teamEntry.isDirectory()) {
+      continue;
+    }
+
+    const teamDir = path.join(teamRoots, teamEntry.name);
+    skillDirectories.push(
+      ...getAgentSkillDirectories(path.join(teamDir, "agents")),
+      ...getSkillFolderDirectories(path.join(teamDir, "skills")),
+    );
+  }
+
+  return skillDirectories;
+};
+
+export const scanBundledSkillsFromDefinitionRoot = (
+  definitionRoot: string,
+  dependencies: SkillDiscoveryDependencies,
+): Skill[] => {
+  const skills: Skill[] = [];
+
+  for (const skillDir of getBundledSkillDirectoriesFromDefinitionRoot(definitionRoot)) {
+    try {
+      skills.push(
+        dependencies.loader.loadSkill(
+          skillDir,
+          dependencies.isReadonlyPath(skillDir),
+        ),
+      );
+    } catch (error) {
+      dependencies.logger.warn(
+        `Error loading bundled skill at ${skillDir}: ${String(error)}`,
+      );
+    }
+  }
+
+  return skills;
+};
+
+export const searchBundledSkillDirectory = (
+  definitionRoot: string,
+  name: string,
+  dependencies: SkillDiscoveryDependencies,
+): string | null => {
+  for (const skillDir of getBundledSkillDirectoriesFromDefinitionRoot(definitionRoot)) {
+    try {
+      const skill = dependencies.loader.loadSkill(
+        skillDir,
+        dependencies.isReadonlyPath(skillDir),
+      );
+      if (skill.name === name) {
+        return skillDir;
+      }
+    } catch (error) {
+      dependencies.logger.warn(
+        `Error loading bundled skill at ${skillDir}: ${String(error)}`,
+      );
+    }
+  }
+
+  return null;
+};
 
 export const searchDirectoryRecursive = (
   directory: string,
@@ -38,7 +186,7 @@ export const searchDirectoryRecursive = (
   }
 
   const nestedSkills = path.join(directory, "skills");
-  if (fs.existsSync(nestedSkills) && fs.statSync(nestedSkills).isDirectory()) {
+  if (isExistingDirectory(nestedSkills)) {
     return searchDirectoryRecursive(nestedSkills, name);
   }
 
@@ -54,7 +202,7 @@ export const scanSkillDirectory = (
     return skills;
   }
 
-  const entries = fs.readdirSync(directory, { withFileTypes: true });
+  const entries = readSortedDirectoryEntries(directory);
   for (const entry of entries) {
     if (!entry.isDirectory()) {
       continue;
@@ -76,7 +224,7 @@ export const scanSkillDirectory = (
   }
 
   const nestedSkillsDir = path.join(directory, "skills");
-  if (fs.existsSync(nestedSkillsDir) && fs.statSync(nestedSkillsDir).isDirectory()) {
+  if (isExistingDirectory(nestedSkillsDir)) {
     skills.push(...scanSkillDirectory(nestedSkillsDir, dependencies));
   }
 

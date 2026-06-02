@@ -11,8 +11,11 @@ import { SkillLoader } from "../loader.js";
 import { SkillVersioningService } from "./skill-versioning-service.js";
 import type { SkillVersion } from "../domain/skill-version.js";
 import {
+  getAllDefinitionRoots,
   getAllSkillDirectories,
+  scanBundledSkillsFromDefinitionRoot,
   scanSkillDirectory,
+  searchBundledSkillDirectory,
   searchDirectoryRecursive,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
@@ -26,6 +29,7 @@ const logger = {
 type AppConfigLike = {
   getSkillsDir(): string;
   getAdditionalSkillsDirs(): string[];
+  getAdditionalAgentPackageRoots(): string[];
   getAppDataDir(): string;
   get(key: string, defaultValue?: string): string | undefined;
 };
@@ -77,6 +81,41 @@ export class SkillService {
     return null;
   }
 
+  private findCatalogSkillLocation(name: string): string | null {
+    const globalMatch = this.findGlobalSkillLocation(name);
+    if (globalMatch) {
+      return globalMatch;
+    }
+
+    const discoveryDependencies = this.getDiscoveryDependencies();
+    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
+      const bundledMatch = searchBundledSkillDirectory(
+        definitionRoot,
+        name,
+        discoveryDependencies,
+      );
+      if (bundledMatch) {
+        return bundledMatch;
+      }
+    }
+
+    return null;
+  }
+
+  private loadSkillFromPath(skillPath: string): Skill {
+    const skill = this.loader.loadSkill(skillPath, this.isReadonlyPath(skillPath));
+    skill.isDisabled = this.disabledStore.isDisabled(skill.name);
+    return skill;
+  }
+
+  private getGlobalSkill(name: string): Skill | null {
+    const skillPath = this.findGlobalSkillLocation(name);
+    if (!skillPath) {
+      return null;
+    }
+    return this.loadSkillFromPath(skillPath);
+  }
+
   private isReadonlyPath(skillPath: string): boolean {
     try {
       fs.accessSync(skillPath, fs.constants.W_OK);
@@ -111,17 +150,29 @@ export class SkillService {
       }
     }
 
+    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
+      for (const skill of scanBundledSkillsFromDefinitionRoot(
+        definitionRoot,
+        this.getDiscoveryDependencies(),
+      )) {
+        if (seen.has(skill.name)) {
+          continue;
+        }
+        skill.isDisabled = this.disabledStore.isDisabled(skill.name);
+        skills.push(skill);
+        seen.add(skill.name);
+      }
+    }
+
     return skills.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   getSkill(name: string): Skill | null {
-    const skillPath = this.findGlobalSkillLocation(name);
+    const skillPath = this.findCatalogSkillLocation(name);
     if (!skillPath) {
       return null;
     }
-    const skill = this.loader.loadSkill(skillPath, this.isReadonlyPath(skillPath));
-    skill.isDisabled = this.disabledStore.isDisabled(skill.name);
-    return skill;
+    return this.loadSkillFromPath(skillPath);
   }
 
   getSkills(skillNames: string[]): Skill[] {
@@ -152,7 +203,7 @@ export class SkillService {
     const resolver = new ConfiguredAgentSkillResolver({
       loader: this.loader,
       isReadonlyPath: this.isReadonlyPath.bind(this),
-      resolveGlobalSkill: this.getSkill.bind(this),
+      resolveGlobalSkill: this.getGlobalSkill.bind(this),
       isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
       logger,
     });
@@ -321,44 +372,42 @@ export class SkillService {
     return true;
   }
 
+  private countSkillsInSourceDirectory(directory: string): number {
+    if (!fs.existsSync(directory)) {
+      return 0;
+    }
+
+    try {
+      const seen = new Set<string>();
+      for (const skill of [
+        ...scanSkillDirectory(directory, this.getDiscoveryDependencies()),
+        ...scanBundledSkillsFromDefinitionRoot(directory, this.getDiscoveryDependencies()),
+      ]) {
+        seen.add(skill.name);
+      }
+      return seen.size;
+    } catch {
+      return 0;
+    }
+  }
+
   getSkillSources(): SkillSourceInfo[] {
     const sources: SkillSourceInfo[] = [];
-
-    let defaultCount = 0;
-    if (fs.existsSync(this.skillsDir)) {
-      try {
-        defaultCount = scanSkillDirectory(
-          this.skillsDir,
-          this.getDiscoveryDependencies(),
-        ).length;
-      } catch {
-        defaultCount = 0;
-      }
-    }
 
     sources.push(
       new SkillSourceInfo({
         path: this.skillsDir,
-        skillCount: defaultCount,
+        skillCount: this.countSkillsInSourceDirectory(this.skillsDir),
         isDefault: true,
       }),
     );
 
     const additionalDirs = this.config.getAdditionalSkillsDirs();
     for (const directory of additionalDirs) {
-      let count = 0;
-      if (fs.existsSync(directory)) {
-        try {
-          count = scanSkillDirectory(directory, this.getDiscoveryDependencies()).length;
-        } catch {
-          count = 0;
-        }
-      }
-
       sources.push(
         new SkillSourceInfo({
           path: directory,
-          skillCount: count,
+          skillCount: this.countSkillsInSourceDirectory(directory),
           isDefault: false,
         }),
       );

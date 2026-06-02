@@ -1,20 +1,22 @@
 <template>
   <Teleport to="body">
-    <div 
-      v-if="visible" 
+    <div
+      v-if="visible"
       ref="menuRef"
       class="fixed bg-gray-50 rounded-lg shadow-lg border border-gray-200 z-[9999] py-2 min-w-[200px] overflow-hidden"
       :style="menuStyle"
+      @click.stop
+      @contextmenu.prevent.stop
     >
       <ul class="text-gray-700">
-        <li 
-          v-for="(item, index) in menuItems" 
-          :key="index"
+        <li
+          v-for="item in items"
+          :key="item.id"
           class="menu-item flex items-center px-5 py-2.5 hover:bg-blue-50 cursor-pointer transition-colors duration-150"
-          @click="item.action"
+          @click.stop="emit('select', item.id)"
         >
-          <Icon 
-            :icon="item.icon" 
+          <Icon
+            :icon="item.icon"
             class="w-5 h-5 mr-3 text-gray-500"
           />
           <span>{{ item.label }}</span>
@@ -25,67 +27,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { Icon } from '@iconify/vue'
-
-interface ContextMenuPosition {
-  top: number
-  left: number
-}
+import type {
+  FileExplorerContextActionId,
+  FileExplorerContextMenuItem,
+  FileExplorerContextMenuPosition,
+} from '~/utils/fileExplorer/contextMenu'
 
 interface Props {
   visible: boolean
-  position: ContextMenuPosition
+  position: FileExplorerContextMenuPosition
+  items: FileExplorerContextMenuItem[]
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'rename'): void
-  (e: 'delete'): void
-  (e: 'add-file'): void
-  (e: 'add-folder'): void
+  (e: 'select', actionId: FileExplorerContextActionId): void
 }>()
 
 const menuRef = ref<HTMLElement | null>(null)
-
-// We build the menu dynamically to conditionally include Preview
-const menuItems = computed(() => {
-  const items = [] as Array<{ label: string; icon: string; action: () => void }>
-
-  /* Open Preview option removed */
-
-  items.push(
-    {
-      label: 'Add File',
-      icon: 'heroicons:plus',
-      action: () => emit('add-file')
-    },
-    {
-      label: 'Add Folder',
-      icon: 'heroicons:plus',
-      action: () => emit('add-folder')
-    },
-    {
-      label: 'Rename',
-      icon: 'heroicons:pencil-square',
-      action: () => emit('rename')
-    },
-    {
-      label: 'Delete',
-      icon: 'heroicons:trash',
-      action: () => emit('delete')
-    }
-  )
-
-  return items
-})
 
 const menuStyle = computed(() => {
   if (!menuRef.value) {
     return {
       top: `${props.position.top}px`,
       left: `${props.position.left}px`,
-      opacity: 0
+      opacity: 0,
     }
   }
 
@@ -97,12 +65,10 @@ const menuStyle = computed(() => {
   let top = props.position.top
   let left = props.position.left
 
-  // Adjust if menu would go off bottom of screen
   if (top + menuRect.height > windowHeight) {
     top = top - menuRect.height
   }
 
-  // Adjust if menu would go off right of screen
   if (left + menuRect.width > windowWidth) {
     left = left - menuRect.width
   }
@@ -110,7 +76,7 @@ const menuStyle = computed(() => {
   return {
     top: `${top}px`,
     left: `${left}px`,
-    opacity: 1
+    opacity: 1,
   }
 })
 
@@ -120,10 +86,6 @@ watch(() => props.visible, (newVisible) => {
     menuRef.value.style.top = top
     menuRef.value.style.left = left
   }
-})
-
-onUnmounted(() => {
-  // Clean up if needed
 })
 </script>
 

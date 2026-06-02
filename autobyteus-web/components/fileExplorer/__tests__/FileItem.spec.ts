@@ -45,7 +45,10 @@ describe('FileItem - Lazy Loading', () => {
     )
   }
 
-  const mountComponent = async (file: TreeNode) => {
+  const mountComponent = async (file: TreeNode, options: {
+    requestContextMenu?: ReturnType<typeof vi.fn>
+    panelActive?: boolean
+  } = {}) => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true })
     setActivePinia(pinia)
 
@@ -83,6 +86,8 @@ describe('FileItem - Lazy Loading', () => {
         plugins: [pinia],
         provide: {
           workspaceFileExplorer: explorer,
+          fileExplorerPanelActive: ref(options.panelActive ?? true),
+          requestFileExplorerContextMenu: options.requestContextMenu,
         },
         stubs: {
           // Stub child components to avoid deep rendering issues
@@ -190,5 +195,34 @@ describe('FileItem - Lazy Loading', () => {
     expect(addDocumentListener).not.toHaveBeenCalledWith('closeAllFileContextMenus', expect.any(Function))
     expect(addDocumentListener).not.toHaveBeenCalledWith('dragover', expect.any(Function))
     expect(addDocumentListener).not.toHaveBeenCalledWith('dragend', expect.any(Function))
+  })
+
+  it('requests the explorer-owned context menu without dispatching the legacy close event', async () => {
+    const requestContextMenu = vi.fn()
+    const dispatchEvent = vi.spyOn(document, 'dispatchEvent')
+    const file = createMockFile()
+    const { wrapper } = await mountComponent(file, { requestContextMenu })
+
+    await wrapper.trigger('contextmenu', {
+      clientX: 18,
+      clientY: 24,
+    })
+
+    expect(requestContextMenu).toHaveBeenCalledWith({
+      target: {
+        kind: 'node',
+        nodeId: 'file-id',
+        path: 'root/test-file.txt',
+        name: 'test-file.txt',
+        isFile: true,
+      },
+      position: {
+        left: 18,
+        top: 24,
+      },
+    })
+    expect(dispatchEvent).not.toHaveBeenCalledWith(expect.objectContaining({
+      type: 'closeAllFileContextMenus',
+    }))
   })
 })
