@@ -21,7 +21,7 @@ type RawJsonSchema = {
   required?: string[];
 };
 
-export type UiModelConfigSchema = Record<string, {
+export type UiModelConfigParameterSchema = {
   type?: string;
   title?: string;
   description?: string;
@@ -31,7 +31,9 @@ export type UiModelConfigSchema = Record<string, {
   maximum?: number | null;
   pattern?: string | null;
   required?: boolean;
-}>;
+};
+
+export type UiModelConfigSchema = Record<string, UiModelConfigParameterSchema>;
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
@@ -50,13 +52,7 @@ const firstString = (...values: unknown[]): string | undefined => {
 
 const isValidValueForParam = (
   value: unknown,
-  param: {
-    type?: string;
-    enum?: unknown[];
-    minimum?: number | null;
-    maximum?: number | null;
-    pattern?: string | null;
-  },
+  param: UiModelConfigParameterSchema,
 ): boolean => {
   if (value === null || value === undefined) {
     return false;
@@ -106,6 +102,25 @@ const isValidValueForParam = (
   }
 
   return true;
+};
+
+export const getValidSchemaDefault = (
+  param: UiModelConfigParameterSchema | null | undefined,
+): unknown | undefined => {
+  if (!param || param.default === undefined) {
+    return undefined;
+  }
+  return isValidValueForParam(param.default, param) ? param.default : undefined;
+};
+
+export const resolveEffectiveConfigValue = (
+  param: UiModelConfigParameterSchema,
+  explicitValue: unknown,
+): unknown | undefined => {
+  if (explicitValue !== undefined && isValidValueForParam(explicitValue, param)) {
+    return explicitValue;
+  }
+  return getValidSchemaDefault(param);
 };
 
 export const normalizeModelConfigSchema = (schema: unknown): UiModelConfigSchema | null => {
