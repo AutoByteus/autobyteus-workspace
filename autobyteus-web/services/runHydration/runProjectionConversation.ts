@@ -271,6 +271,10 @@ export const buildConversationFromProjection = (
   dedupeProjectionEntries(entries).forEach((entry, index) => {
     const timestamp = toDate(entry.ts);
 
+    if (entry.kind === 'compaction') {
+      return;
+    }
+
     if (entry.kind === 'message' && entry.role === 'user') {
       flushPendingAIMessage();
       messages.push({

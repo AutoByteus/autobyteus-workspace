@@ -6,6 +6,7 @@ import type { NormalizedCompactionResult } from './compaction-result-normalizer.
 import type { CompactionAgentExecutionMetadata } from './compaction-agent-runner.js';
 import { Summarizer } from './summarizer.js';
 import { MemoryStore } from '../store/base-store.js';
+import { WorkingContextCompactor } from './working-context-compactor.js';
 
 export type CompactionExecutionOutcome = {
   result: NormalizedCompactionResult;
@@ -16,15 +17,13 @@ export type CompactionExecutionOutcome = {
   compactionMetadata: CompactionAgentExecutionMetadata | null;
 };
 
-export class Compactor {
-  private readonly normalizer: CompactionResultNormalizer;
-
+export class Compactor extends WorkingContextCompactor {
   constructor(
-    private readonly store: MemoryStore,
-    private readonly summarizer: Summarizer,
+    store: MemoryStore,
+    summarizer: Summarizer,
     normalizer: CompactionResultNormalizer = new CompactionResultNormalizer(),
   ) {
-    this.normalizer = normalizer;
+    super(store, summarizer, normalizer);
   }
 
   async compact(plan: CompactionPlan): Promise<CompactionExecutionOutcome | null> {
@@ -73,7 +72,7 @@ export class Compactor {
     };
   }
 
-  getLastCompactionExecutionMetadata(): CompactionAgentExecutionMetadata | null {
-    return this.summarizer.getLastCompactionExecutionMetadata();
+  override getLastCompactionExecutionMetadata(): CompactionAgentExecutionMetadata | null {
+    return super.getLastCompactionExecutionMetadata();
   }
 }

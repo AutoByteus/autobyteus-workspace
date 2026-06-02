@@ -28,6 +28,7 @@ export interface AgentCompactionStatus {
   providerEventId?: string | null;
   providerSessionId?: string | null;
   errorMessage?: string | null;
+  centerTimelineTimestamp?: Date | null;
 }
 
 export class AgentRunState {

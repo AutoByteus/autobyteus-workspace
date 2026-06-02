@@ -34,11 +34,17 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     }
 
     if (message.senderType === SenderType.TOOL) {
-      const isNativeApiContinuation = getToolContinuationMode(message) === NATIVE_API_TOOL_CONTINUATION_MODE;
+      const continuationMode = getToolContinuationMode(message);
+      const isNativeApiContinuation = continuationMode === NATIVE_API_TOOL_CONTINUATION_MODE;
+      const isToolHistoryContinuation = continuationMode !== null;
       memoryManager.ingestToolContinuationBoundary(
         turnId,
-        isNativeApiContinuation ? 'ToolContinuationReadyEvent' : 'ToolContinuationInput',
-        isNativeApiContinuation ? 'Native API tool continuation' : 'Tool continuation'
+        isToolHistoryContinuation ? 'ToolContinuationReadyEvent' : 'ToolContinuationInput',
+        isNativeApiContinuation
+          ? 'Native API tool continuation'
+          : isToolHistoryContinuation
+            ? 'Tool history continuation'
+            : 'Tool continuation'
       );
       console.debug(`MemoryIngestInputProcessor stored tool continuation boundary with turnId ${turnId}`);
       return message;

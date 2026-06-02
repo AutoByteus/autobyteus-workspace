@@ -252,4 +252,71 @@ describe('runProjectionConversation', () => {
       { type: 'user', text: 'repeat this' },
     ]);
   });
+
+  it('ignores compaction projection entries while preserving ordered work trace replay', () => {
+    const conversation = buildConversationFromProjection(
+      'run-6',
+      [
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'start the task',
+          ts: 200,
+        },
+        {
+          kind: 'message',
+          role: 'assistant',
+          content: 'I will call the tool.',
+          ts: 201,
+        },
+        {
+          kind: 'tool_call',
+          invocationId: 'tool-6',
+          toolName: 'read_file',
+          toolArgs: { path: 'notes.md' },
+          toolResult: { content: 'notes' },
+          ts: 202,
+        },
+        {
+          kind: 'compaction',
+          content: 'Memory compacted',
+          ts: 203,
+        },
+        {
+          kind: 'reasoning',
+          content: 'continue from the tool result',
+          ts: 204,
+        },
+        {
+          kind: 'message',
+          role: 'assistant',
+          content: 'Here is the final answer.',
+          ts: 205,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-6',
+        agentName: 'Agent',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(2);
+    expect(conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'start the task',
+    });
+    if (conversation.messages[1]?.type !== 'ai') {
+      throw new Error('expected AI message');
+    }
+    expect(conversation.messages[1].segments.map((segment) => segment.type)).toEqual([
+      'text',
+      'tool_call',
+      'think',
+      'text',
+    ]);
+    expect(conversation.messages[1].text).toContain('I will call the tool.');
+    expect(conversation.messages[1].text).toContain('Here is the final answer.');
+    expect(conversation.messages[1].text).not.toContain('Memory compacted');
+  });
 });

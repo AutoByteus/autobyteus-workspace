@@ -1,5 +1,5 @@
 import { LLMUserMessage } from '../llm/user-message.js';
-import { ToolCallSpec } from '../llm/utils/messages.js';
+import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
@@ -16,6 +16,8 @@ import { WorkingContextSnapshotSerializer } from './working-context-snapshot-ser
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
 import { projectLlmSafeWorkingContext } from './working-context-llm-safe-projector.js';
+import { getMessageProvenance, setMessageProvenance, type MessageProvenance } from './message-provenance.js';
+import { buildToolIntentTraces, buildToolResultTraces } from './raw-trace-ingestion.js';
 
 export type ToolIntentIngestionOptions = {
   appendToWorkingContext?: boolean;
@@ -26,6 +28,10 @@ export type ToolIntentIngestionOptions = {
 export type ToolResultIngestionOptions = {
   source?: string;
   appendToWorkingContext?: boolean;
+};
+
+export type WorkingContextAppendOptions = MessageProvenance & {
+  persist?: boolean;
 };
 
 export type MemoryProjectionScope = {
@@ -165,6 +171,52 @@ export class MemoryManager {
     this.store.add([trace]);
   }
 
+  ensureWorkingContextSystemMessage(content: string, options: WorkingContextAppendOptions = {}): boolean {
+    if (!content.trim() || this.getWorkingContextMessages().length) {
+      return false;
+    }
+    this.appendWorkingContextMessage(
+      new Message(MessageRole.SYSTEM, { content }),
+      { sourceKind: 'system_prompt', ...options }
+    );
+    return true;
+  }
+
+  appendWorkingContextUserMessage(
+    input: Message | LLMUserMessage | string,
+    options: WorkingContextAppendOptions = {}
+  ): void {
+    const message = input instanceof Message
+      ? input
+      : input instanceof LLMUserMessage
+        ? new Message(MessageRole.USER, {
+            content: input.content,
+            image_urls: input.image_urls,
+            audio_urls: input.audio_urls,
+            video_urls: input.video_urls,
+          })
+        : new Message(MessageRole.USER, { content: String(input) });
+    const rawTraceIds = options.rawTraceIds ?? this.findRecentRawTraceIds(options.turnId, 'user', message.content);
+    this.appendWorkingContextMessage(message, { sourceKind: 'user_input', ...options, rawTraceIds });
+  }
+
+  appendWorkingContextAssistantMessage(
+    response: CompleteResponse,
+    turnId: string,
+    options: WorkingContextAppendOptions = {}
+  ): void {
+    if (!response.content && !response.reasoning) {
+      return;
+    }
+    this.appendWorkingContextMessage(
+      new Message(MessageRole.ASSISTANT, {
+        content: response.content ?? null,
+        reasoning_content: response.reasoning ?? null,
+      }),
+      { sourceKind: 'assistant_response', turnId, ...options }
+    );
+  }
+
   ingestToolIntent(
     toolInvocation: ToolInvocation,
     turnId?: string,
@@ -182,49 +234,57 @@ export class MemoryManager {
       return;
     }
 
-    const traces: RawTraceItem[] = [];
-    const toolCalls: ToolCallSpec[] = [];
-    let effectiveTurnId: string | null = null;
-
-    for (const invocation of toolInvocations) {
-      const invocationTurnId = invocation.turnId ?? turnId;
-      if (!invocationTurnId) {
-        throw new Error('turnId is required to ingest tool intent');
-      }
-      if (!effectiveTurnId) {
-        effectiveTurnId = invocationTurnId;
-      } else if (effectiveTurnId !== invocationTurnId) {
-        throw new Error('All tool intents in a batch must belong to the same turnId');
-      }
-
-      traces.push(
-        new RawTraceItem({
-          id: `rt_${Date.now()}_${invocation.id}`,
-          ts: Date.now() / 1000,
-          turnId: invocationTurnId,
-          seq: this.nextSeq(invocationTurnId),
-          traceType: 'tool_call',
-          content: '',
-          sourceEvent: 'PendingToolInvocationEvent',
-          toolName: invocation.name,
-          toolCallId: invocation.id,
-          toolArgs: invocation.arguments
-        })
-      );
-      toolCalls.push({
-        id: invocation.id,
-        name: invocation.name,
-        arguments: invocation.arguments,
-        nativeToolCallContext: invocation.nativeToolCallContext
-      } as ToolCallSpec);
-    }
+    const { traces, toolCalls, effectiveTurnId } = buildToolIntentTraces(
+      toolInvocations,
+      turnId,
+      (id) => this.nextSeq(id),
+    );
 
     this.store.add(traces);
     if (options?.appendToWorkingContext !== false) {
-      this.workingContextSnapshot.appendToolCalls(toolCalls, {
-        content: options?.assistantContent ?? null,
-        reasoningContent: options?.assistantReasoning ?? null
+      this.appendWorkingContextMessage(
+        new Message(MessageRole.ASSISTANT, {
+          content: options?.assistantContent ?? null,
+          reasoning_content: options?.assistantReasoning ?? null,
+          tool_payload: new ToolCallPayload(toolCalls),
+        }),
+        {
+          sourceKind: 'assistant_tool_response',
+          turnId: effectiveTurnId,
+          rawTraceIds: traces.map((trace) => trace.id),
+          toolCallIds: toolCalls.map((call) => call.id),
+        }
+      );
+    }
+  }
+
+  ingestAssistantToolResponse(
+    response: CompleteResponse,
+    toolInvocations: ToolInvocation[],
+    turnId: string,
+    sourceEvent = 'LlmPhase'
+  ): void {
+    if (!toolInvocations.length) {
+      this.ingestAssistantResponse(response, turnId, sourceEvent);
+      return;
+    }
+    this.ingestAssistantResponse(response, turnId, sourceEvent, { appendToWorkingContext: false });
+    const assistantTraceIds = this.findRecentRawTraceIds(turnId, 'assistant', response.content ?? '') ?? [];
+    this.ingestToolIntents(toolInvocations, turnId, {
+      assistantContent: response.content ?? null,
+      assistantReasoning: response.reasoning ?? null,
+    });
+    const messages = this.workingContextSnapshot.buildMessages();
+    const latest = messages[messages.length - 1];
+    if (latest?.tool_payload instanceof ToolCallPayload && assistantTraceIds.length) {
+      setMessageProvenance(latest, {
+        ...(getMessageProvenance(latest) ?? {}),
+        rawTraceIds: [
+          ...assistantTraceIds,
+          ...this.findRecentToolCallRawTraceIds(turnId, toolInvocations.map((invocation) => invocation.id)),
+        ],
       });
+      this.persistWorkingContextSnapshot();
     }
   }
 
@@ -241,53 +301,19 @@ export class MemoryManager {
       return;
     }
 
-    const traces: RawTraceItem[] = [];
-    const ingestedEvents: ToolResultEvent[] = [];
-    let effectiveTurnId: string | null = null;
     const sourceEvent = options?.source ?? 'ToolResultEvent';
     const existingToolResultIds = new Set(
       this.listRawTracesOrdered()
         .filter((item) => item.traceType === 'tool_result' && item.toolCallId)
         .map((item) => `${item.turnId}:${item.toolCallId}`)
     );
-
-    for (const event of events) {
-      const eventTurnId = event.turnId ?? turnId;
-      if (!eventTurnId) {
-        throw new Error('turnId is required to ingest tool result');
-      }
-      if (!effectiveTurnId) {
-        effectiveTurnId = eventTurnId;
-      } else if (effectiveTurnId !== eventTurnId) {
-        throw new Error('All tool results in a batch must belong to the same turnId');
-      }
-
-      const resultIdentity = event.toolInvocationId ? `${eventTurnId}:${event.toolInvocationId}` : null;
-      if (resultIdentity && existingToolResultIds.has(resultIdentity)) {
-        continue;
-      }
-      if (resultIdentity) {
-        existingToolResultIds.add(resultIdentity);
-      }
-
-      traces.push(
-        new RawTraceItem({
-          id: `rt_${Date.now()}_${event.toolInvocationId ?? traces.length}`,
-          ts: Date.now() / 1000,
-          turnId: eventTurnId,
-          seq: this.nextSeq(eventTurnId),
-          traceType: 'tool_result',
-          content: '',
-          sourceEvent,
-          toolName: event.toolName,
-          toolCallId: event.toolInvocationId ?? null,
-          toolArgs: event.toolArgs ?? null,
-          toolResult: event.result,
-          toolError: event.error ?? null
-        })
-      );
-      ingestedEvents.push(event);
-    }
+    const { traces, ingestedEvents } = buildToolResultTraces(
+      events,
+      turnId,
+      sourceEvent,
+      existingToolResultIds,
+      (id) => this.nextSeq(id),
+    );
 
     if (traces.length) {
       this.store.add(traces);
@@ -295,14 +321,25 @@ export class MemoryManager {
     if (options?.appendToWorkingContext === false || !ingestedEvents.length) {
       return;
     }
-    this.workingContextSnapshot.appendToolResults(
-      ingestedEvents.map((event) => ({
-        toolCallId: event.toolInvocationId ?? '',
-        toolName: event.toolName,
-        toolResult: event.result,
-        toolError: event.error ?? null
-      }))
-    );
+    for (const { event, trace } of ingestedEvents) {
+      this.appendWorkingContextMessage(
+        new Message(MessageRole.TOOL, {
+          content: null,
+          tool_payload: new ToolResultPayload(
+            event.toolInvocationId ?? '',
+            event.toolName,
+            event.result,
+            event.error ?? null
+          ),
+        }),
+        {
+          sourceKind: 'tool_result',
+          turnId: event.turnId ?? turnId ?? null,
+          rawTraceIds: [trace.id],
+          toolCallIds: event.toolInvocationId ? [event.toolInvocationId] : undefined,
+        }
+      );
+    }
   }
 
   ingestAssistantResponse(
@@ -323,7 +360,11 @@ export class MemoryManager {
     });
     this.store.add([trace]);
     if (appendToWorkingContext && (response.content || response.reasoning)) {
-      this.workingContextSnapshot.appendAssistant(response.content ?? null, response.reasoning ?? null);
+      this.appendWorkingContextAssistantMessage(response, turnId, {
+        sourceKind: 'assistant_response',
+        rawTraceIds: [trace.id],
+        persist: false,
+      });
     }
     this.persistWorkingContextSnapshot();
   }
@@ -417,6 +458,49 @@ export class MemoryManager {
       last_compaction_ts: this.workingContextSnapshot.lastCompactionTs
     });
     this.workingContextSnapshotStore.write(agentId, payload);
+  }
+
+  private appendWorkingContextMessage(message: Message, options: WorkingContextAppendOptions = {}): void {
+    setMessageProvenance(message, options);
+    this.workingContextSnapshot.appendMessage(message);
+    if (options.persist !== false) {
+      this.persistWorkingContextSnapshot();
+    }
+  }
+
+  private findRecentRawTraceIds(
+    turnId: string | null | undefined,
+    traceType: string,
+    content?: string | null
+  ): string[] | undefined {
+    if (!turnId) {
+      return undefined;
+    }
+    const match = [...this.listRawTracesOrdered()]
+      .reverse()
+      .find((trace) =>
+        trace.turnId === turnId &&
+        trace.traceType === traceType &&
+        (!content || trace.content === content)
+      );
+    return match ? [match.id] : undefined;
+  }
+
+  private findRecentToolCallRawTraceIds(turnId: string, toolCallIds: string[]): string[] {
+    const pending = new Set(toolCallIds);
+    const traceIds: string[] = [];
+    for (const trace of [...this.listRawTracesOrdered()].reverse()) {
+      if (trace.turnId !== turnId || trace.traceType !== 'tool_call' || !trace.toolCallId) {
+        continue;
+      }
+      if (pending.delete(trace.toolCallId)) {
+        traceIds.unshift(trace.id);
+      }
+      if (!pending.size) {
+        break;
+      }
+    }
+    return traceIds;
   }
 
   getToolInteractions(turnId?: string | null) {

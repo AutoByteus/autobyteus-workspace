@@ -56,11 +56,19 @@ and can be layered above.
 
 The memory system is defined by its implemented operations:
 
-- **ingest(event)**: store trace as RAW_TRACE and append to the Working Context Snapshot
-- **compact(turn_ids)**: summarize old traces into EPISODIC + SEMANTIC and prune RAW_TRACE
-- **retrieve(max_episodic, max_semantic)**: return a MemoryBundle for snapshot building
-- **build_snapshot(system_prompt, bundle, plan/frontier)**: produce a Compaction Snapshot message list with typed semantic sections plus `[RAW_FRONTIER]`
-- **resetWorkingContextSnapshot(snapshot)**: reset Working Context Snapshot to the snapshot baseline
+- **ingest(event)**: store trace as `RAW_TRACE` and append the same
+  LLM-facing event to the Working Context Snapshot.
+- **compact working context**: select budget-eligible settled message units from
+  the Working Context Snapshot, summarize those units into EPISODIC + SEMANTIC
+  memory, and archive only the raw traces referenced by the compacted units.
+- **retrieve(max_episodic, max_semantic)**: return a MemoryBundle for snapshot
+  rebuilding.
+- **rebuild working context snapshot**: produce a natural message list from the
+  system prompt, compacted-memory message, and retained recent/protected
+  working-context messages. Runtime compaction does not render raw trace text
+  back into the LLM prompt.
+- **resetWorkingContextSnapshot(snapshot)**: reset Working Context Snapshot to
+  the rebuilt baseline.
 
 ---
 
@@ -179,17 +187,26 @@ The memory module is **event-driven**. It is triggered by:
 
 ### Ingest
 - **Primary user ingest:** `LLMUserMessageReadyEvent` (processed input)
-- **Tool call intent:** `PendingToolInvocationEvent` (LLM decision to act)
-- `LLMCompleteResponseReceivedEvent`
-- `ToolResultEvent`
+- **Tool call intent:** parsed assistant tool calls inside `LlmPhase`
+- `CompleteResponse` ingestion for normal assistant responses
+- `ToolResultEvent` batches accepted by `ToolResultContinuationBuilder`
 
 ### Consolidation / Extraction
-- When input prompt exceeds token budget (post-response usage)
+- When provider-reported post-response prompt usage crosses the compaction
+  threshold.
+- For a no-tool assistant response, `LlmPhase` appends the assistant message,
+  requests compaction, and executes compaction immediately in the same LLM
+  lifecycle.
+- For a tool-call response, `LlmPhase` appends the assistant tool-call message
+  and records a pending compaction request; tool execution and tool-result
+  ingestion happen first, then the next same-turn tool continuation request runs
+  compaction before provider dispatch.
 
 ### Retrieval (every LLM call)
-Before sending a user message to the LLM, memory prepares a **Working Context Snapshot**
-for the current compaction epoch. If compaction is triggered, memory builds a
-**Compaction Snapshot** and resets the working context snapshot to that snapshot before the call.
+Before sending a user or tool-continuation request to the LLM,
+`LLMRequestAssembler` ensures the system prompt is present, executes any pending
+compaction, and renders the current **Working Context Snapshot** through the
+provider prompt renderer.
 
 ---
 
@@ -199,44 +216,46 @@ The memory layer maintains a **Working Context Snapshot**: a generic, append-onl
 message list that grows between compaction boundaries. This is what the LLM
 receives on each call.
 
-When compaction triggers, memory builds a **Compaction Snapshot** (a compact,
-curated baseline) and **resets** the Working Context Snapshot to that snapshot.
+When compaction runs, memory compacts selected settled working-context message
+units and **resets** the Working Context Snapshot to a rebuilt natural baseline.
 
 ### Working Context Snapshot (per-epoch)
 The working context snapshot is a list of generic messages that includes:
 
-1. System prompt (bootstrapped)
-2. Prior user / assistant messages (since last compaction)
-3. Tool call intents and tool results (as messages or structured entries)
-4. Current user input
+1. System prompt (bootstrapped by memory)
+2. Prior user / assistant messages retained since the last compaction
+3. Structured tool call intents and tool results
+4. Current user input, or same-turn tool continuation history
 
 ### Compaction Snapshot (handoff baseline)
 The snapshot is a compact replacement for the working context snapshot base:
 
-1. System prompt (bootstrapped)
-2. Memory bundle (episodic + semantic)
-3. Formatted `RAW_FRONTIER` blocks selected by the deterministic planner
+1. System prompt (existing system message, or the current system prompt)
+2. One natural compacted-memory message built from retrieved EPISODIC + SEMANTIC
+   memory when that bundle is non-empty
+3. Retained recent/protected working-context messages selected by the
+   message-window planner
 
-After compaction, the working context snapshot is reset to this snapshot, then new turns
-append again. The preserved suffix is block-based rather than a fixed N-turn tail: at least
-one frontier block stays raw so unresolved or live context is carried into the next request.
+After compaction, new turns append to this rebuilt message list. The preserved
+suffix is based on working-context message units and token budget, not a fixed
+number of turns and not raw trace rendering. A trailing tool protocol group is
+protected so native provider tool-call/result continuity remains intact.
 
 ### Prompt Renderer (provider adaptation)
-LLMs consume provider-specific payloads, so the generic working context snapshot is rendered
-by a **Prompt Renderer** per provider (OpenAI, Anthropic, etc.). This keeps the
-memory layer canonical and makes LLMs stateless executors.
+LLMs consume provider-specific payloads, so the generic working context snapshot
+is rendered by a **Prompt Renderer** per provider (OpenAI, Anthropic, etc.). This
+keeps the memory layer canonical and makes LLMs stateless executors.
 
-**Note (TypeScript today):** system prompts are configured on the LLM instance
-during bootstrap. In memory-centric mode, the system prompt can be injected
-directly into the working context snapshot to make the LLM fully stateless.
+**Note:** system prompts are configured on the LLM instance during bootstrap.
+Memory now also ensures the system prompt exists in the working context snapshot
+so the provider call remains stateless.
 
 ---
 
 ## 10. Compaction and Token Budget
 
-Compaction is triggered by **token pressure** using **exact post-response usage**
-and evaluated **before the next LLM leg**. The runtime does not interrupt an
-in-flight stream to compact mid-response.
+Compaction is triggered by **token pressure** using **exact post-response usage**.
+The runtime does not interrupt an in-flight stream to compact mid-response.
 
 **Inputs**
 
@@ -268,23 +287,29 @@ in-flight stream to compact mid-response.
 
 **Trigger (post-response)**
 
-- If the **last response** reports `prompt_tokens > input_budget`, mark
-  compaction required and rebuild the working context snapshot **before the next call**
-  via Compaction Snapshot.
-- Early trigger: `prompt_tokens > compaction_ratio * input_budget`
-- If a threshold-crossing response already emitted tool calls, those tool calls
-  are still allowed to run; compaction executes before the next LLM continuation leg.
+- `LlmPhase` evaluates provider-reported `prompt_tokens` after every completed
+  response and calls `MemoryManager.requestCompaction(activeTurnId)` when the
+  threshold is crossed.
+- If the response does **not** emit tool calls, `LlmPhase` executes
+  `PendingCompactionExecutor.executeIfRequired(...)` immediately after the
+  assistant response is appended to memory.
+- If the response emits tool calls, compaction remains pending until accepted
+  tool results are ingested. `LLMRequestAssembler.prepareToolContinuationRequest(...)`
+  then executes pending compaction before rendering the same-turn continuation.
+- Normal user requests still execute any leftover pending compaction before
+  appending the next user message.
 
 Compaction policy:
 
-- Build deterministic `InteractionBlock`s rooted by `user` and persisted
-  `tool_continuation` boundary traces.
-- Compact only settled eligible blocks; keep frontier blocks raw.
-- If there is a trailing incomplete suffix, that suffix remains frontier.
-  Otherwise the planner keeps the active turn's last block raw, and bootstrap
-  fallback with no active turn conservatively keeps the final block raw.
-- When raw frontier lines are rendered into the snapshot, each line is bounded
-  by `CompactionPolicy.maxItemChars` (default `2000`).
+- Plan over ordered Working Context Snapshot messages, not ordered raw traces.
+- Build message units for system, compacted-memory, normal natural messages, and
+  tool protocol groups.
+- Compact only budget-eligible settled units; retain a recent natural suffix and
+  always protect the trailing tool protocol group when present.
+- Archive raw traces only through provenance carried on compacted messages; raw
+  traces remain the audit/store substrate, not the LLM-facing compaction source.
+- Rebuild the snapshot through `WorkingContextSnapshotRebuilder` so the next LLM
+  request contains natural compacted memory plus retained messages.
 
 ---
 
@@ -297,39 +322,42 @@ Working Context Snapshot bounded and useful.
 
 Compaction produces **structured memory artifacts** and a new working context snapshot base:
 
-1. **EPISODIC summary** of eligible settled interaction blocks
-2. **Typed SEMANTIC entries** extracted into critical issues, unresolved work, user preferences, durable facts, and important artifacts
-3. **`RAW_FRONTIER` blocks** preserved as the unsettled or live suffix
-4. **Eligible RAW_TRACE entries pruned/archived by trace ID**
-5. **Compaction Snapshot** (new base for the Working Context Snapshot)
+1. **EPISODIC summary** of eligible settled working-context message units
+2. **Typed SEMANTIC entries** extracted into critical issues, unresolved work,
+   user preferences, durable facts, and important artifacts
+3. **Retained working-context suffix** that stays as provider-renderable
+   structured messages
+4. **Eligible RAW_TRACE entries archived by provenance-derived trace ID**
+5. **Rebuilt Working Context Snapshot** (new base for future provider payloads)
 
 ### Compaction Flow (Agent-driven)
 
 1. Default server-backed `AgentFactory` runtime composition injects a
    `CompactionAgentRunner`; `AgentCompactionSummarizer` delegates selected
-   settled blocks to the configured visible compactor agent.
-2. `PendingCompactionExecutor` runs before the next provider dispatch whenever
-   `memoryManager.compactionRequired` is set.
-3. `CompactionWindowPlanner` reads ordered `RAW_TRACE` and builds
-   `InteractionBlock`s:
-   - `user` and `tool_continuation` traces start blocks
-   - subsequent assistant/tool_call/tool_result traces stay inside that block
-   - orphaned suffix traces become `recovery` blocks
-4. Frontier resolution is deterministic:
-   - any trailing incomplete suffix remains frontier
-   - otherwise the last block for the active turn remains frontier
-   - bootstrap fallback with `activeTurnId = null` conservatively keeps the
-     final block frontier
-5. Eligible settled blocks receive tool-result digests for summarization;
-   frontier blocks intentionally keep full raw traces.
+   settled working-context units to the configured visible compactor agent.
+2. `PendingCompactionExecutor` runs whenever `memoryManager.compactionRequired`
+   is set and the current lifecycle point is allowed to compact (immediate
+   no-tool post-response, pre-tool-continuation dispatch, or pre-next-user
+   dispatch).
+3. `WorkingContextMessageWindowPlanner` reads `memoryManager.getWorkingContextMessages()`
+   and builds message units:
+   - system units are carried as head messages;
+   - prior compacted-memory units are not summarized again;
+   - normal natural messages are budgeted as compactable/retained candidates;
+   - a trailing tool protocol group is protected as the live provider suffix.
+4. `MessageBudgetStrategy` calculates recent-suffix and compaction target budgets
+   from the effective input budget. The planner retains a recent natural suffix
+   and selects an older compactable prefix.
+5. `WorkingContextCompactor.compactWorkingContext(...)` asks the summarizer to
+   compact selected message units. `AgentCompactionSummarizer` renders a
+   `[WORKING_CONTEXT_TRANSCRIPT]` task that avoids turn IDs, raw trace IDs,
+   source events, and other runtime internals.
 6. Resolve the configured compactor agent from
-   `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and
-   selects `autobyteus-memory-compactor` when the setting is blank. The
-   selected agent's default launch config supplies explicit runtime/model
-   overrides and model config. Blank or invalid selected runtime/model fields
-   inherit from the triggering parent run's effective runtime/model; compaction
-   fails if the selected definition is missing or a required runtime/model field
-   is absent from both the selected compactor and parent fallback context.
+   `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and selects
+   `autobyteus-memory-compactor` when the setting is blank. Blank or invalid
+   selected runtime/model fields inherit from the triggering parent run's
+   effective runtime/model; compaction fails if the selected definition is
+   missing or a required runtime/model field is absent from both sources.
 7. Create a normal visible compactor agent run, post one compaction task, collect
    the final JSON-only assistant output, terminate the run, and leave the run in
    history for inspection. The task output contract remains:
@@ -341,31 +369,32 @@ Compaction produces **structured memory artifacts** and a new working context sn
    - `important_artifacts[]`
    Semantic array entries are facts-only objects: `{ "fact": "..." }`.
 8. Parse and validate the structured response, then run deterministic
-   normalization (dedupe, low-value filtering, category caps, fact
-   cleanup, and salience assignment) before persisting EPISODIC + SEMANTIC
-   items.
-9. `MemoryStore.pruneRawTracesById(plan.eligibleTraceIds, true)` archives and
-   removes only the compacted raw traces.
-10. Rebuild the working-context snapshot baseline from:
-    - system prompt
-    - retrieved episodic/semantic bundle
-    - formatted `[RAW_FRONTIER]` lines
+   normalization (dedupe, low-value filtering, category caps, fact cleanup, and
+   salience assignment) before persisting EPISODIC + SEMANTIC items.
+9. `MemoryStore.pruneRawTracesById(plan.rawTraceIdsToArchive, true)` archives
+   only the raw traces referenced by compacted message provenance.
+10. `WorkingContextSnapshotRebuilder` rebuilds the snapshot from:
+    - system prompt / existing system head messages;
+    - retrieved episodic/semantic bundle rendered as one natural compacted-memory
+      message when available;
+    - retained non-system working-context messages.
 11. Reset the working-context snapshot to that baseline, clear the
     pending-compaction flag, and emit completed status. Failures stop before the
-    next LLM dispatch and leave targeted raw traces intact.
+    next applicable LLM dispatch and leave targeted raw traces intact.
 
-### Planner / Frontier / Store Rules
+### Planner / Store Rules
 
-- `InteractionBlockKind` is `user`, `tool_continuation`, or `recovery`.
-- A block is structurally complete only when it is not a recovery block, has
-  more than one trace, contains no malformed tool trace, and every tool call in
-  the block has a matching tool result.
-- `CompactionPlan.eligibleTraceIds` and `frontierTraceIds` are explicit, so
-  pruning and snapshot rendering do not have to rediscover the same window.
-- Raw frontier rendering is intentionally block-based (`[RAW_FRONTIER]`) rather
-  than a flat “last 4 turns” tail.
+- `WorkingContextMessageUnit` kinds are `system`, `compacted_memory`, `normal`,
+  and `tool_protocol_group`.
+- Tool-call assistant messages and matching tool-result messages stay together as
+  a protocol group and are protected when they form the live suffix.
+- The retained suffix is budget/minimum based rather than a fixed raw-tail size.
 - Raw-trace prune/archive ownership lives in the `MemoryStore` boundary, not in
   `MemoryManager` or higher runtime handlers.
+- The older `CompactionWindowPlanner` and `Compactor.compact(plan)` APIs remain
+  exported for legacy raw-trace block tests/compatibility, but the live runtime
+  compaction path uses `WorkingContextMessageWindowPlanner` and
+  `compactWorkingContext(...)`.
 
 ### Runtime Settings Surface
 
@@ -380,29 +409,29 @@ Compaction produces **structured memory artifacts** and a new working context sn
 
 The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
 
-Automated compaction still includes the current exact JSON output contract in every task envelope before `[SETTLED_BLOCKS]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata.
+Automated compaction still includes the current exact JSON output contract in every task envelope before `[WORKING_CONTEXT_TRANSCRIPT]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata.
 
-### Snapshot Cache / Schema-3 Bootstrap
+### Snapshot Cache / Schema-4 Bootstrap
 
-- `WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION` remains `3`.
-- `COMPACTED_MEMORY_SCHEMA_VERSION` is now `3` for persisted semantic-memory +
-  manifest state.
+- `WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION` is `4`.
+- `COMPACTED_MEMORY_SCHEMA_VERSION` remains the current persisted semantic-memory
+  + manifest schema version.
 - `WorkingContextSnapshotBootstrapper` runs
   `CompactedMemorySchemaGate.ensureCurrentSchema(...)` before any snapshot
   validation or restore attempt.
 - If persisted semantic records fail current-schema validation, the schema gate
-  clears stale `semantic.jsonl`, writes manifest v2 reset metadata, invalidates
-  the cached working-context snapshot, and forces bootstrap to rebuild from
-  canonical sources or start clean.
+  clears stale `semantic.jsonl`, writes reset metadata, invalidates the cached
+  working-context snapshot, and forces bootstrap to rebuild from canonical
+  sources or start clean.
 - If semantic memory is already current-schema but the manifest is missing or
   stale, the gate backfills the current manifest without forcing a reset.
 - Direct snapshot restore now happens only when the schema gate did not reset
-  and the cached payload validates against schema `3`.
-- Missing or stale payloads rebuild through `CompactionWindowPlanner.plan(...,
-  null)` plus `CompactionSnapshotBuilder`, so bootstrap uses the same frontier
-  rules as live compaction.
-- The rebuild path keeps the final block raw conservatively when there is no
-  active turn, instead of retaining a multi-schema compatibility layer.
+  and the cached payload validates against schema `4`.
+- Missing or stale payloads rebuild through `WorkingContextRecoveryProjector`
+  plus `WorkingContextSnapshotRebuilder`: the projector turns the latest raw
+  traces into natural recovery messages and the rebuilder prepends system prompt
+  plus compacted memory. Bootstrap must not recreate raw frontier prompt text or
+  preserve stale renderer-specific labels from old snapshots.
 
 ### Local Provider Runtime Notes
 
@@ -443,27 +472,29 @@ Automated compaction still includes the current exact JSON output contract in ev
 ## 10.1A Accumulation Phase (Raw Trace Capture)
 
 Before compaction, the system is in an **accumulation phase** where it captures
-processed traces as RAW_TRACE. This ensures memory is the canonical record of
-what actually reaches the LLM.
+processed traces as `RAW_TRACE` and simultaneously appends canonical messages to
+the Working Context Snapshot. Raw traces are the durable audit/provenance corpus;
+the Working Context Snapshot is the provider-facing source used for prompt
+rendering and compaction planning.
 
 **Primary capture points**
 
 - `LLMUserMessageReadyEvent` (processed user input)
-- `PendingToolInvocationEvent` (tool intent)
-- `ToolResultEvent` (tool outcome)
-- `LLMCompleteResponseReceivedEvent` (assistant response)
+- Assistant tool-call payloads parsed by `LlmPhase`
+- Accepted `ToolResultEvent` batches from `ToolResultContinuationBuilder`
+- Final assistant `CompleteResponse` values from `LlmPhase`
 
 **Preferred mechanism**
 
 Use **processors** where possible to ingest traces and keep handlers clean:
 
 - Input processor (runs last): capture processed user input
-- Tool result processor: capture tool outcomes
+- Tool result processor: capture tool outcomes when a non-native path supplies
+  processed tool events
 
-Assistant responses are ingested by `LlmPhase` / `AgentTurnRunner` after the
-LLM stream completes (no separate response processor yet).
-
-This keeps accumulation consistent and centralizes memory ingestion.
+Assistant responses and native tool-call payloads are ingested by `LlmPhase` so
+structured provider tool payloads remain paired with their Working Context
+Snapshot messages.
 
 ### Suggested processor classes and ordering
 
@@ -537,37 +568,37 @@ Legacy text-parser continuations may use `source_event: "ToolContinuationInput"`
 
 ### Turn / Boundary Aggregation (Compaction Unit)
 
-Raw traces are stored line-by-line, but compaction plans them into
-**interaction blocks**.
+Raw traces remain line-by-line audit records. Runtime compaction plans over
+**Working Context Snapshot message units** instead:
 
 **Turn definition**
 
 - One processed non-tool user message still creates one `turn_id`.
-- `turn_id` is generated when `AgentRuntimeState.startActiveTurn()` calls `MemoryManager.startTurn()` at outer turn start.
-- Tool call intents and tool results inherit the `turn_id` stored on the
-  `ToolInvocation`, even if the result arrives later.
-- Tool continuation does **not** mint a new turn; it reuses the active
-  `turn_id` and writes a lightweight `tool_continuation` boundary trace. Legacy
-  text-parser modes reach this through `SenderType.TOOL` continuation input;
-  native `api_tool_call` mode writes the boundary from the internal
-  `ToolContinuationReadyEvent` path without appending provider-visible user
-  input.
+- `turn_id` is generated when `AgentRuntimeState.startActiveTurn()` calls
+  `MemoryManager.startTurn()` at outer turn start.
+- Tool call intents and tool results inherit the active `turn_id`, even if the
+  result arrives later.
+- Tool continuation does **not** mint a new turn; it reuses the active `turn_id`.
+  Native `api_tool_call` mode keeps the provider continuation as tool history;
+  legacy text-parser modes may represent the continuation as TOOL-origin input.
 
-**Interaction-block rules**
+**Working-context unit rules**
 
-- `user` and `tool_continuation` traces start new blocks.
-- Following assistant/tool_call/tool_result traces stay inside that block until
-  the next boundary trace.
-- If non-boundary traces appear before any boundary trace, the planner creates a
-  `recovery` block and never treats it as a settled compaction block.
+- System messages form head units and are never summarized.
+- Existing compacted-memory messages are not summarized again.
+- Natural user/assistant messages form normal candidate units.
+- Assistant tool-call messages and their result messages form protocol groups;
+  a trailing protocol group is protected so provider-native continuation remains
+  valid.
 
 **Compaction behavior**
 
-- Compaction consumes eligible settled blocks, **not** whole turns.
-- The same `turn_id` can therefore produce multiple blocks when tool
-  continuation cycles occur.
-- The unresolved frontier remains raw; bootstrap fallback with no active turn
-  conservatively keeps the final block raw.
+- Compaction consumes eligible settled message units, **not** whole turns.
+- The same `turn_id` can therefore include compacted older messages and retained
+  current tool protocol messages.
+- Bootstrap fallback from invalid/missing snapshots projects recent raw traces
+  into natural recovery messages; it does not rebuild raw trace text as prompt
+  sections.
 
 ---
 
@@ -580,36 +611,34 @@ UserMessageReceivedEvent
 AgentTurnRunner / AgentInputPipeline
    │   (input processors run here)
    └─► MemoryIngestInputProcessor (order 900)
-   │      ├─► MemoryManager.ingestUserMessage(...)
-   │      └─► MemoryManager.ingestToolContinuationBoundary(...) for legacy TOOL-origin continuation input
+   │      └─► MemoryManager.ingestUserMessage(...)
    ▼
 LLMUserMessageReadyEvent
    ▼
 AgentTurnRunner / LlmPhase
-
-Native api_tool_call tool-result continuation skips AgentTurnRunner / AgentInputPipeline:
-ToolPhase / AgentRuntimeState ─► validate active batch/invocation/turn before processors
-   └─► accepted result processors ─► MemoryManager.ingestToolResult(...)
-   └─► ToolContinuationReadyEvent ─► AgentTurnRunner / LlmPhase
-   ├─► LLMRequestAssembler.prepareToolContinuationRequest(...)
-   │      └─► PendingCompactionExecutor.executeIfRequired(...)
-   │            ├─► CompactionWindowPlanner.plan(...)
-   │            ├─► Compactor.compact(...)
-   │            ├─► FileMemoryStore.pruneRawTracesById(...)
-   │            └─► CompactionSnapshotBuilder.build(...)
+   ├─► LLMRequestAssembler.prepareRequest(...)
+   │      └─► PendingCompactionExecutor.executeIfRequired(...) if already pending
+   │            ├─► WorkingContextMessageWindowPlanner.plan(...)
+   │            ├─► WorkingContextCompactor.compactWorkingContext(...)
+   │            ├─► MemoryStore.pruneRawTracesById(...)
+   │            └─► WorkingContextSnapshotRebuilder.rebuild(...)
    ├─► LLM.streamMessages(Working Context Snapshot)
-   ├─► PendingToolInvocationEvent
-   └─► MemoryManager.ingestAssistantResponse(...)
+   ├─► MemoryManager.ingestAssistantToolResponse(...) or ingestAssistantResponse(...)
+   ├─► evaluateLlmPhaseCompaction(...)
+   └─► if no tool calls and compactionRequired:
+          PendingCompactionExecutor.executeIfRequired(...) immediately
 
-ToolResultEvent
-   └─► ToolPhase / AgentRuntimeState
-         └─► MemoryIngestToolResultProcessor (order 900)
-               └─► MemoryManager.ingestToolResult(...)
+Native api_tool_call tool-result continuation:
+ToolPhase / AgentRuntimeState ─► validate active batch/invocation/turn
+   └─► ToolResultContinuationBuilder.ingestToolResults(...)
+   └─► ToolContinuationReadyEvent ─► AgentTurnRunner / LlmPhase
+         └─► LLMRequestAssembler.prepareToolContinuationRequest(...)
+               └─► PendingCompactionExecutor.executeIfRequired(...) before dispatch
 
 MemoryManager
-   ├─► RAW_TRACE accumulation (+ tool_continuation boundaries)
-   ├─► Working Context Snapshot persistence (schema 3)
-   └─► pending-compaction flag / snapshot reset
+   ├─► RAW_TRACE accumulation (+ provenance for archiving)
+   ├─► Working Context Snapshot persistence (schema 4)
+   └─► pending-compaction request / snapshot reset
 ```
 
 ---
@@ -632,27 +661,37 @@ src/memory/
 │   └── working-context-snapshot-store.ts
 ├── restore/
 │   ├── compacted-memory-schema-gate.ts
+│   ├── working-context-recovery-projector.ts
 │   └── working-context-snapshot-bootstrapper.ts
 ├── compaction/
-│   ├── compaction-plan.ts
 │   ├── agent-compaction-summarizer.ts
 │   ├── compaction-agent-runner.ts
-│   ├── compaction-task-prompt-builder.ts
+│   ├── compacted-memory-message-builder.ts
+│   ├── compaction-plan.ts               # legacy raw-trace planner API shape
 │   ├── compaction-response-parser.ts
 │   ├── compaction-result.ts
 │   ├── compaction-result-normalizer.ts
 │   ├── compaction-runtime-settings.ts
-│   ├── compaction-window-planner.ts
-│   ├── compactor.ts
-│   ├── frontier-formatter.ts
+│   ├── compaction-task-prompt-builder.ts # legacy block prompt contract
+│   ├── compaction-window-planner.ts      # legacy raw-trace block planner
+│   ├── compactor.ts                      # bridges legacy compact(...) and working-context compaction
 │   ├── interaction-block.ts
 │   ├── interaction-block-builder.ts
+│   ├── message-budget-strategy.ts
 │   ├── pending-compaction-executor.ts
 │   ├── summarizer.ts
 │   ├── tool-result-digest.ts
-│   └── tool-result-digest-builder.ts
-├── compaction-snapshot-builder.ts       # Builds compact snapshot baseline from bundle + RAW_FRONTIER
+│   ├── tool-result-digest-builder.ts
+│   ├── working-context-compaction-prompt-builder.ts
+│   ├── working-context-compactor.ts
+│   ├── working-context-message-unit.ts
+│   ├── working-context-message-unit-builder.ts
+│   ├── working-context-message-window-planner.ts
+│   └── working-context-snapshot-rebuilder.ts
+├── compaction-snapshot-builder.ts       # natural compacted-memory baseline for compatibility/bootstrap use
 ├── compaction-snapshot-recent-turn-formatter.ts
+├── message-provenance.ts
+├── raw-trace-ingestion.ts
 ├── tool-interaction-builder.ts
 ├── turn-tracker.ts
 ├── working-context-snapshot.ts
@@ -661,37 +700,48 @@ src/memory/
 
 src/agent/
 ├── llm-request-assembler.ts             # memory + renderer + pending-compaction orchestration
-├── handlers/llm-user-message-ready-event-handler.ts
+├── loop/llm-phase.ts                    # post-response compaction timing
+├── loop/tool-result-continuation-builder.ts
 └── input-processor/memory-ingest-input-processor.ts
 ```
 
 ### Responsibility Map
 
 - **MemoryManager**: receives events, persists user/tool/assistant traces,
-  records `tool_continuation` boundaries, exposes ordered raw traces, and owns
-  working-context snapshot reset/persistence.
-- **PendingCompactionExecutor**: runs the pre-dispatch compaction sequence,
-  resolves runtime settings/model selection, and converts failures into a clean
-  pre-dispatch error boundary.
-- **CompactionWindowPlanner**: builds `InteractionBlock`s, decides
-  eligible-vs-frontier ownership, and emits explicit trace-id selections.
-- **Compactor**: asks the summarizer for episodic/typed-semantic output
-  and commits it before delegating prune/archive to the store.
+  appends canonical working-context messages, records provenance metadata, and
+  owns working-context snapshot reset/persistence.
+- **LlmPhase**: evaluates post-response token usage, requests compaction, runs
+  immediate no-tool compaction, and defers tool-call compaction until tool
+  results are ingested.
+- **LLMRequestAssembler**: ensures system prompt presence, runs pending
+  compaction before provider dispatch, appends normal user input only for normal
+  user requests, and renders provider payloads.
+- **PendingCompactionExecutor**: runs the working-context compaction sequence,
+  resolves runtime settings/model selection, reports lifecycle status, and
+  converts failures into a clean pre-dispatch error boundary.
+- **WorkingContextMessageWindowPlanner**: groups provider-facing messages into
+  units, protects live tool protocol suffixes, chooses a budgeted retained
+  suffix, and selects compactable older units.
+- **WorkingContextCompactor / Compactor**: asks the summarizer for episodic /
+  typed-semantic output from message units, persists normalized memory, and
+  delegates raw-trace prune/archive to the store using provenance.
 - **CompactionResultNormalizer**: owns typed semantic-entry cleanup, dedupe,
-  low-value filtering, per-category caps, and deterministic salience
-  assignment before persistence.
+  low-value filtering, per-category caps, and deterministic salience assignment
+  before persistence.
 - **MemoryStore / FileMemoryStore**: own raw-trace append order,
   prune/archive-by-trace-id semantics, semantic reset helpers, and
   compacted-memory manifest reads/writes.
 - **CompactedMemorySchemaGate**: owns current-schema enforcement, destructive
-  reset-on-mismatch behavior for persisted semantic memory, manifest-v2 reset
-  metadata writes, and cached-snapshot invalidation triggers.
+  reset-on-mismatch behavior for persisted semantic memory, reset metadata
+  writes, and cached-snapshot invalidation triggers.
 - **WorkingContextSnapshotBootstrapper / Serializer**: own gate-first startup
-  restore decisions, schema-3 cache validation, and planner-driven rebuild
+  restore decisions, schema-4 cache validation, and natural recovery rebuild
   fallback.
-- **FrontierFormatter / CompactionSnapshotBuilder**: render `[RAW_FRONTIER]`
-  lines plus category-priority semantic sections into the compact snapshot
-  baseline.
+- **WorkingContextRecoveryProjector**: projects recent raw traces into natural
+  recovery messages only when no valid working-context snapshot exists.
+- **WorkingContextSnapshotRebuilder / CompactedMemoryMessageBuilder**: rebuild
+  the compacted-memory baseline and retained message suffix for provider
+  rendering.
 - **CompactionPolicy**: defines trigger ratio, safety margin, and rendered line
   limits (`maxItemChars`) rather than a fixed raw-tail size.
 - **ToolInteractionBuilder**: derives human-friendly tool interaction views from
@@ -708,9 +758,13 @@ src/agent/
   is blank and the definition resolves.
 - Agent runtime composition creates `MemoryManager` with an optional
   `CompactionAgentRunner` supplied by server-backed `AgentFactory` wiring.
-- Ingest processors (user/tool/assistant) append to the Working Context Snapshot.
-- The pre-LLM request assembler requests a working context snapshot render and
-  runs pending compaction before the next provider dispatch.
+- Ingest processors and `LlmPhase` append canonical provider-facing messages to
+  the Working Context Snapshot.
+- `LlmPhase` owns post-response compaction timing: immediate after no-tool
+  threshold crossings, deferred until same-turn tool continuation after
+  tool-call threshold crossings.
+- `LLMRequestAssembler` runs pending compaction before provider dispatch and
+  renders the current Working Context Snapshot.
 - Tool results and messages flow into memory ingest; compaction summarization
   delegates through the selected visible compactor agent instead of a direct
   model call.
@@ -718,7 +772,7 @@ src/agent/
 **Migration path**
 
 1. **Hybrid epoch mode**: append to LLM history until compaction, then reset
-   from Compaction Snapshot.
+   from Compaction Snapshot. (Historical only.)
 2. **Memory-centric mode**: LLM history becomes stateless; memory owns working context snapshot.
 3. **Full core mode**: all history and context sourced from memory store.
 
@@ -734,21 +788,19 @@ src/agent/
 ## 13. Memory-Centric Architecture (LLM as a Service)
 
 In memory-centric mode, the LLM does **not** own history. Memory is the source
-of truth and the LLM is invoked with a **Working Context Snapshot** built from memory
-state (and reset from Compaction Snapshot when needed).
+of truth and the LLM is invoked with a **Working Context Snapshot** built from
+memory state and reset by working-context compaction when needed.
 
 ```
 User/Event
    │
    ▼
-MemoryManager (ingest)
-   │
-   ├─► Compactor (if compaction_required)
-   │      └─► AgentCompactionSummarizer
-   │             └─► visible compactor-agent run
+MemoryManager (ingest + provenance)
    │
    ├─► Working Context Snapshot (append or reset)
-   │      └─► Compaction Snapshot (if needed)
+   │      └─► WorkingContextMessageWindowPlanner (if compaction required)
+   │             └─► AgentCompactionSummarizer / visible compactor-agent run
+   │                    └─► WorkingContextSnapshotRebuilder
    │
    └─► Prompt Renderer (provider payload)
            │
@@ -756,7 +808,7 @@ MemoryManager (ingest)
         LLM Invoke
            │
            ▼
-MemoryManager (ingest response)
+LlmPhase evaluates usage and MemoryManager ingests response/tool payloads
 ```
 
 Key idea: **the LLM is a stateless generator**, and memory constructs the
@@ -768,8 +820,8 @@ of selecting a hidden/direct compaction model itself.
 
 ## 14. Trigger Implementation (Compaction)
 
-Compaction is triggered **after an LLM response** based on **exact usage** and
-is executed **before the next LLM call**.
+Compaction is triggered **after an LLM response** based on **exact usage**. The
+execution point depends on whether the response emitted tools.
 
 **Token budget check (post-response)**
 
@@ -788,16 +840,21 @@ if prompt_tokens > 0.8 * input_budget:
 
 ### Where the trigger lives
 
-- **LlmPhase / AgentTurnRunner** (post-response):
+- **LlmPhase** (post-response):
   1. Receives `TokenUsage` from the provider (exact prompt tokens)
   2. Evaluates the compaction policy
-  3. Sets `MemoryManager.compaction_required = True`
+  3. Calls `MemoryManager.requestCompaction(activeTurnId)` and emits a
+     `requested` lifecycle status when the threshold is crossed
+  4. Executes compaction immediately when there are no tool calls
+  5. Leaves compaction pending when tool calls exist so tool results can be
+     ingested before the next continuation prompt is built
 
-- **LLMRequestAssembler.prepareRequest(...)** (pre-next-call):
-  1. Checks `compaction_required`
-  2. Runs compaction + snapshot reset when requested
-  3. Appends the new user/tool input to the working context snapshot
-  4. Renders provider payload
+- **LLMRequestAssembler.prepareRequest(...) / prepareToolContinuationRequest(...)**:
+  1. Ensures the system prompt is present in memory
+  2. Runs `PendingCompactionExecutor.executeIfRequired(...)` when a pending
+     request exists
+  3. Appends the new user message only for normal user requests
+  4. Renders provider payload from the Working Context Snapshot
 
 This keeps compaction centralized **without token estimation** and avoids
 provider-specific counting logic in the request path.
@@ -822,7 +879,7 @@ This path has been removed in favor of fully stateless LLM execution.
 
 ### 15.3 Memory-centric integration (implemented)
 
-Refactor the LLM call site to delegate prompt construction to memory:
+The LLM call site delegates prompt construction to memory:
 
 ```
 UserMessageReceivedEvent
@@ -830,34 +887,43 @@ UserMessageReceivedEvent
         └─► LLMUserMessageReadyEvent (processed input)
               └─► MemoryManager.ingestUserMessage(...)
                     └─► AgentTurnRunner / LlmPhase
-                          ├─► LLMRequestAssembler.prepareRequest(processed_user)
-                          ├─► LLM.streamMessages(messages, rendered_payload)
-                          └─► MemoryManager.ingestAssistantResponse(...)
+                          ├─► LLMRequestAssembler.prepareRequest(processedUser)
+                          ├─► LLM.streamMessages(messages, renderedPayload, ...)
+                          ├─► MemoryManager.ingestAssistantToolResponse(...)
+                          │     or MemoryManager.ingestAssistantResponse(...)
+                          └─► evaluateLlmPhaseCompaction(...)
 ```
 
 Key changes:
 
-- Add `memory_manager` to `AgentRuntimeState`
-- Ingest **processed** user input (LLMUserMessageReadyEvent), plus tool intent,
-  tool results, and assistant response events
-- Build or reset Working Context Snapshot before every LLM call (via assembler)
-- Keep LLM stateless (no internal history ownership)
+- `AgentRuntimeState` owns a `MemoryManager`.
+- Ingest **processed** user input, assistant tool payloads, tool results, and
+  assistant responses into both raw trace storage and Working Context Snapshot.
+- Build or reset Working Context Snapshot before every LLM call via
+  `LLMRequestAssembler` and `PendingCompactionExecutor`.
+- Trigger compaction from post-response token usage; no-tool threshold crossings
+  compact immediately, while tool-call threshold crossings compact before the
+  same-turn tool continuation.
+- Keep LLM stateless (no internal history ownership).
 
 ### 15.4 Refactor targets (files)
 
 Primary touch points:
 
-- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
-- `src/agent/handlers/user-input-message-event-handler.ts`
-- `src/agent/handlers/tool-result-event-handler.ts`
-- `src/agent/handlers/tool-invocation-request-event-handler.ts`
+- `src/agent/loop/llm-phase.ts`
+- `src/agent/llm-request-assembler.ts`
+- `src/agent/loop/tool-result-continuation-builder.ts`
+- `src/agent/input-processor/memory-ingest-input-processor.ts`
 - `src/agent/context/agent-runtime-state.ts`
+- `src/memory/memory-manager.ts`
+- `src/memory/compaction/*`
+- `src/memory/restore/*`
 
 ### 15.5 LLM API adjustment (implemented)
 
 LLM providers now accept explicit message lists via:
 
-- `streamMessages(messages: Message[], kwargs?: Record<string, unknown>)`
+- `streamMessages(messages: Message[], renderedPayload?: unknown, kwargs?: Record<string, unknown>)`
 
 This keeps memory as the single source of truth and removes hidden prompt
 mutation.
@@ -896,7 +962,7 @@ messages and renders provider payloads via Prompt Renderers.
 **Goal:** LLMs accept explicit message lists; no `self.messages` usage.
 
 - Add to `BaseLLM`:
-  - `streamMessages(messages: Message[], kwargs?: Record<string, unknown>)`
+  - `streamMessages(messages: Message[], renderedPayload?: unknown, kwargs?: Record<string, unknown>)`
   - `sendMessages(messages: Message[], kwargs?: Record<string, unknown>)`
 - Remove reliance on `addUserMessage` / `addAssistantMessage` in call flow.
 - Remove `LLMUserMessage` from core execution paths. (Input processors can
@@ -1181,18 +1247,21 @@ LlmPhase.run(...)
         ├─► PendingCompactionExecutor.executeIfRequired(...)
         │     at src/memory/compaction/pending-compaction-executor.ts
         │     └─► (no compaction when flag is clear)
+        ├─► append current user message to WorkingContextSnapshot
+        │     at src/memory/memory-manager.ts
         ├─► WorkingContextSnapshot.buildMessages()
         │     at src/memory/working-context-snapshot.ts
-        ├─► PromptRenderer.render(...)
-        │     at src/llm/prompt-renderers/openai-responses-renderer.ts
-        └─► append current user message to working context snapshot
-  └─► LLM.streamMessages(messages, tools?)
+        └─► PromptRenderer.render(...)
+              at src/llm/prompt-renderers/*
+  └─► LLM.streamMessages(messages, renderedPayload, ...)
         at src/llm/base.ts
         └─► Provider call
   └─► MemoryManager.ingestAssistantResponse(...)
         at src/memory/memory-manager.ts
         └─► WorkingContextSnapshot.appendAssistant(...)
-              at src/memory/working-context-snapshot.ts
+  └─► evaluateLlmPhaseCompaction(...)
+        at src/agent/loop/llm-phase-compaction.ts
+        └─► if required and no tools: PendingCompactionExecutor.executeIfRequired(...)
 ```
 
 **Gap check**
@@ -1212,33 +1281,26 @@ LlmPhase.run(...)
   at src/agent/loop/llm-phase.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
-  └─► LLM.streamMessages(messages, tools)
+  └─► LLM.streamMessages(messages, renderedPayload, tools)
         at src/llm/base.ts
         └─► Streaming parser detects tool call(s)
               at src/agent/streaming/*
-              └─► MemoryManager.ingestToolIntent(...)
+              └─► MemoryManager.ingestAssistantToolResponse(...)
                     at src/memory/memory-manager.ts
                     └─► WorkingContextSnapshot.appendToolCalls(...)
-                          at src/memory/working-context-snapshot.ts
+              └─► evaluateLlmPhaseCompaction(...)
+                    └─► request pending compaction when threshold is crossed
               └─► PendingToolInvocationEvent
                     at src/agent/events/agent-events.ts
                     └─► ToolPhase.executeInvocation(...)
                           at src/agent/loop/tool-phase.ts
                           └─► ToolResultEvent
-                                at src/agent/events/agent-events.ts
-                                └─► ToolPhase / AgentRuntimeState validate active batch/invocation/turn
-                                      before native memory mutation
-                                      └─► MemoryIngestToolResultProcessor.process(...)
-                                            at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
-                                            └─► MemoryManager.ingestToolResult(...)
-                                                  at src/memory/memory-manager.ts
-                                                  └─► WorkingContextSnapshot.appendToolResult(...)
-                                                        at src/memory/working-context-snapshot.ts
-                                └─► Tool continuation arrives on the same turn
-                                      ├─► native api_tool_call: ToolResultContinuationBuilder records `tool_continuation`
-                                      │     and AgentTurnRunner emits ToolContinuationReadyEvent
-                                      └─► legacy text mode: MemoryIngestInputProcessor records `tool_continuation`
-                                            for aggregate TOOL-origin input
+                                └─► ToolResultContinuationBuilder.build(...)
+                                      ├─► MemoryManager.ingestToolResults(...)
+                                      │     └─► WorkingContextSnapshot.appendToolResult(...)
+                                      └─► ToolContinuationReadyEvent
+                                            └─► LLMRequestAssembler.prepareToolContinuationRequest(...)
+                                                  └─► PendingCompactionExecutor.executeIfRequired(...)
 ```
 
 **Gap check**
@@ -1249,37 +1311,33 @@ Requires structured tool messages + renderer support for tool roles.
 ### 16.3 Compaction boundary (token pressure)
 
 **Scenario**
-Previous LLM response reports prompt tokens above budget; compaction is executed
-before the next LLM call.
+Previous LLM response reports prompt tokens above budget; compaction executes
+immediately for a no-tool response or before the same-turn tool continuation for
+a tool-call response.
 
 **Call stack (debug-trace style)**
 
 ```
-LlmPhase.run(...)
-  at src/agent/loop/llm-phase.ts
-  └─► LLMRequestAssembler.prepareRequest(...)
-        at src/agent/llm-request-assembler.ts
-        ├─► PendingCompactionExecutor.executeIfRequired(...)
-        │     at src/memory/compaction/pending-compaction-executor.ts
-        │     ├─► CompactionWindowPlanner.plan(...)
-        │     │     at src/memory/compaction/compaction-window-planner.ts
-        │     ├─► Compactor.compact(plan)
-        │     │     at src/memory/compaction/compactor.ts
-        │     │     └─► Summarizer.summarize(plan.eligibleBlocks)
-        │     │           at src/memory/compaction/summarizer.ts
-        │     ├─► FileMemoryStore.pruneRawTracesById(plan.eligibleTraceIds)
-        │     │     at src/memory/store/file-store.ts
-        │     ├─► CompactionSnapshotBuilder.build(...)
-        │     │     at src/memory/compaction-snapshot-builder.ts
-        │     └─► WorkingContextSnapshot.reset(snapshot)
-        │           at src/memory/working-context-snapshot.ts
-        └─► PromptRenderer.render(messages)
-              at src/llm/prompt-renderers/openai-responses-renderer.ts
-  └─► LLM.streamMessages(compacted working context snapshot)
+PendingCompactionExecutor.executeIfRequired(...)
+  at src/memory/compaction/pending-compaction-executor.ts
+  ├─► WorkingContextMessageWindowPlanner.plan(...)
+  │     at src/memory/compaction/working-context-message-window-planner.ts
+  │     ├─► WorkingContextMessageUnitBuilder.build(...)
+  │     ├─► MessageBudgetStrategy.calculate(...)
+  │     └─► select compactable units + retained/protected suffix
+  ├─► Compactor.compactWorkingContext(plan)
+  │     at src/memory/compaction/working-context-compactor.ts
+  │     └─► Summarizer.summarizeMessageUnits(plan.compactableUnits)
+  │           at src/memory/compaction/summarizer.ts
+  ├─► MemoryStore.pruneRawTracesById(plan.rawTraceIdsToArchive, true)
+  ├─► WorkingContextSnapshotRebuilder.rebuild(...)
+  │     at src/memory/compaction/working-context-snapshot-rebuilder.ts
+  └─► MemoryManager.resetWorkingContextSnapshot(snapshotMessages)
+        at src/memory/memory-manager.ts
 ```
 
 **Gap check**
-Requires deterministic snapshot formatting + model token budget fields.
+Requires deterministic message-unit planning + model token budget fields.
 
 ---
 
@@ -1291,6 +1349,8 @@ Use this “debug-trace simulation” as a review checklist:
 - No hidden mutation of LLM history.
 - Tool calls/results are structured messages.
 - Compaction resets working context snapshot and changes the next prompt.
+- Raw traces are archived by provenance only; they are not rendered as the live
+  compaction suffix.
 
 **Tests**
 
@@ -1341,23 +1401,36 @@ without reintroducing direct-model compaction summarization.
 - `src/memory/memory-manager.ts`
   - Event-driven entry point
   - Persists user/tool/assistant traces and `tool_continuation` boundaries
-  - Exposes ordered raw traces and forwards prune-by-id to the store
+  - Appends provider-facing working-context messages with memory provenance
+  - Owns direct working-context snapshot append/reset authority
 
 - `src/agent/llm-request-assembler.ts`
   - Ensures the system prompt is present
-  - Runs `PendingCompactionExecutor` before appending the next user message
+  - Runs `PendingCompactionExecutor` before normal user or tool-continuation
+    provider dispatch when compaction is pending
+  - Appends the new user message for normal user input only
   - Returns final messages/rendered payload for LLM execution
+
+- `src/agent/loop/llm-phase.ts`
+  - Owns post-response compaction timing
+  - Runs immediate compaction after no-tool threshold crossings
+  - Defers tool-call threshold crossings until tool results have been ingested
 
 - `src/memory/working-context-snapshot.ts`
   - Append/reset/build message list per compaction epoch
 
 - `src/memory/working-context-snapshot-serializer.ts`
-  - Serializes snapshot payloads with schema `3`
+  - Serializes snapshot payloads with schema `4`
   - Validates current-schema-only cache payloads
 
 - `src/memory/restore/working-context-snapshot-bootstrapper.ts`
   - Uses valid cached snapshots when present
-  - Rebuilds stale or missing caches through planner + snapshot builder
+  - Rebuilds stale or missing caches through natural recovery projection plus
+    compacted-memory snapshot rebuild
+
+- `src/memory/restore/working-context-recovery-projector.ts`
+  - Converts recent raw traces into natural recovery messages only for bootstrap
+    fallback
 
 ### Storage
 
@@ -1371,19 +1444,25 @@ without reintroducing direct-model compaction summarization.
 ### Compaction
 
 - `src/memory/compaction/pending-compaction-executor.ts`
-  - Pre-dispatch compaction sequencing and runtime status reporting
+  - Compaction sequencing and runtime status reporting
 
-- `src/memory/compaction/compaction-window-planner.ts`
-  - Deterministic eligible/frontier planning from ordered raw traces
+- `src/memory/compaction/working-context-message-window-planner.ts`
+  - Deterministic message-unit planning from provider-facing working-context
+    messages
 
-- `src/memory/compaction/interaction-block*.ts`
-  - Shared block model and block construction logic
+- `src/memory/compaction/working-context-message-unit-builder.ts`
+  - Builds normal/system/compacted-memory/tool-protocol units
 
-- `src/memory/compaction/frontier-formatter.ts`
-  - Formats raw frontier blocks for the snapshot baseline
+- `src/memory/compaction/message-budget-strategy.ts`
+  - Estimates unit costs and splits compacted-vs-retained budgets
+
+- `src/memory/compaction/working-context-compactor.ts`
+  - Summarizes compactable message units, stores outputs, and archives
+    provenance-linked raw traces
 
 - `src/memory/compaction/compactor.ts`
-  - Summarizes eligible blocks, stores outputs, and requests prune/archive by ID
+  - Compatibility subclass that keeps the legacy `compact(plan)` path while
+    supporting working-context compaction
 
 - `src/memory/compaction/agent-compaction-summarizer.ts`
   - Builds a compaction task, delegates to the configured compactor-agent runner,
@@ -1393,8 +1472,12 @@ without reintroducing direct-model compaction summarization.
   - Defines the boundary between memory compaction and server/runtime-specific
     visible compactor-agent execution
 
+- `src/memory/compaction/working-context-compaction-prompt-builder.ts`
+  - Builds the JSON-only compactor-agent task prompt from settled
+    working-context transcript units
+
 - `src/memory/compaction/compaction-task-prompt-builder.ts`
-  - Builds the JSON-only compactor-agent task prompt
+  - Retained legacy block prompt builder for raw-trace block compatibility
 
 - `src/memory/compaction/compaction-response-parser.ts`
   - Parses and validates summarizer output
@@ -1438,10 +1521,16 @@ without reintroducing direct-model compaction summarization.
   - Container for episodic + semantic
 
 - `src/memory/retrieval/retriever.ts`
-  - Loads bundle for snapshot building
+  - Loads bundle for snapshot rebuilding
 
 - `src/memory/compaction-snapshot-builder.ts`
-  - Builds the Compaction Snapshot from bundle + `[RAW_FRONTIER]`
+  - Builds a natural system + compacted-memory snapshot baseline for
+    compatibility/bootstrap paths; it never renders raw trace text into the LLM
+    prompt.
+
+- `src/memory/compaction/working-context-snapshot-rebuilder.ts`
+  - Builds the live runtime snapshot from system head, compacted memory, and
+    retained working-context messages.
 
 - `src/memory/tool-interaction-builder.ts`
   - Derives tool interaction views from `RAW_TRACE`
@@ -1450,10 +1539,10 @@ without reintroducing direct-model compaction summarization.
 
 - `src/agent/input-processor/memory-ingest-input-processor.ts`
   - Captures processed user input
-  - Persists `tool_continuation` boundaries for TOOL-origin continuation cycles
+  - Persists legacy `tool_continuation` boundaries for TOOL-origin continuation cycles
 
 - `src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts`
-  - Captures tool results as `RAW_TRACE` entries
+  - Captures tool results as `RAW_TRACE` entries when that pipeline path is used
 
 ## 17. Data Flow Summary (Memory-Centric)
 
@@ -1462,45 +1551,41 @@ UserMessageReceivedEvent
   └─► AgentTurnRunner / AgentInputPipeline
         └─► Input processors
         └─► MemoryIngestInputProcessor (order 900)
-              ├─► MemoryManager.ingestUserMessage(...)
-              └─► MemoryManager.ingestToolContinuationBoundary(...) for legacy TOOL sender
+              └─► MemoryManager.ingestUserMessage(...)
         └─► LLMUserMessageReadyEvent
-
-ToolPhase / ToolResultContinuationBuilder (native api_tool_call)
-  └─► validate active batch/invocation/turn identity
-  └─► accepted tool result processors
-        └─► MemoryIngestToolResultProcessor (order 900)
-              └─► MemoryManager.ingestToolResult(...)
-  └─► MemoryManager.ingestToolContinuationBoundary(...)
-  └─► ToolContinuationReadyEvent
 
 AgentTurnRunner / LlmPhase
   ├─► request = LLMRequestAssembler.prepareRequest(...) or prepareToolContinuationRequest(...)
   │     ├─► PendingCompactionExecutor.executeIfRequired(...)
-  │     │     ├─► CompactionWindowPlanner.plan(listRawTracesOrdered(), activeTurnId)
-  │     │     ├─► Compactor.compact(plan)
-  │     │     │     ├─► Summarizer.summarize(plan.eligibleBlocks)
-  │     │     │     └─► MemoryStore.pruneRawTracesById(plan.eligibleTraceIds)
-  │     │     └─► CompactionSnapshotBuilder.build(systemPrompt, bundle, plan)
+  │     │     ├─► WorkingContextMessageWindowPlanner.plan(getWorkingContextMessages())
+  │     │     ├─► Compactor.compactWorkingContext(plan)
+  │     │     │     ├─► Summarizer.summarizeMessageUnits(plan.compactableUnits)
+  │     │     │     └─► MemoryStore.pruneRawTracesById(plan.rawTraceIdsToArchive)
+  │     │     └─► WorkingContextSnapshotRebuilder.rebuild(...)
   │     ├─► append user message only for normal user input
   │     └─► Prompt Renderer.render(messages)
   ├─► LLM.streamMessages(request.messages, request.renderedPayload)
-  ├─► MemoryManager.ingestToolIntents(...)
-  ├─► PendingToolInvocationEvent
-  └─► MemoryManager.ingestAssistantResponse(...)
+  ├─► MemoryManager.ingestAssistantToolResponse(...) when tool calls are parsed
+  ├─► MemoryManager.ingestAssistantResponse(...) when no tool calls are parsed
+  ├─► evaluateLlmPhaseCompaction(...)
+  └─► immediate no-tool compaction if threshold crossed
 
-ToolPhase / AgentRuntimeState
-  └─► Tool result processors
-        └─► MemoryIngestToolResultProcessor (order 900)
-              └─► MemoryManager.ingestToolResult(...)
+ToolPhase / ToolResultContinuationBuilder
+  └─► validate active batch/invocation/turn identity
+  └─► MemoryManager.ingestToolResults(...)
+  └─► ToolContinuationReadyEvent with tool-history-only metadata
+        └─► AgentTurnRunner / LlmPhase
+              └─► LLMRequestAssembler.prepareToolContinuationRequest(...)
+                    └─► pending compaction executes before provider dispatch
 
 WorkingContextSnapshotBootstrapper
-  ├─► use cache only if schema `3` validates
-  └─► otherwise rebuild through planner + snapshot builder with `activeTurnId = null`
+  ├─► use cache only if schema `4` validates
+  └─► otherwise rebuild through WorkingContextRecoveryProjector +
+      WorkingContextSnapshotRebuilder
 
 Memory Store (file-backed)
   ├─► RAW_TRACE (ordered traces + tool_continuation boundaries)
-  ├─► RAW_TRACE archive (eligible trace IDs pruned out of active file)
+  ├─► RAW_TRACE archive (eligible provenance trace IDs pruned out of active file)
   ├─► EPISODIC (summaries)
   └─► SEMANTIC (facts/preferences/decisions)
 ```
@@ -1513,48 +1598,57 @@ Memory Store (file-backed)
 startTurn(): string
 ingestUserMessage(llmUserMessage, turnId: string, sourceEvent): void
 ingestToolContinuationBoundary(turnId: string, sourceEvent: string, content?): void
-ingestToolIntent(toolInvocation, turnId?: string): void
-ingestToolIntents(toolInvocations, turnId?: string): void
+ensureWorkingContextSystemMessage(content: string, options?): boolean
+appendWorkingContextUserMessage(message: Message, options?): void
+appendWorkingContextAssistantMessage(message: Message, turnId: string, options?): void
+ingestToolIntent(toolInvocation, turnId?: string, options?): void
+ingestToolIntents(toolInvocations, turnId?: string, options?): void
+ingestAssistantToolResponse(completeResponse, toolInvocations, turnId: string, sourceEvent): void
 ingestToolResult(toolResultEvent, turnId?: string): void
+ingestToolResults(toolResultEvents, turnId?: string, options?): void
 ingestAssistantResponse(completeResponse, turnId: string, sourceEvent, options?): void
-requestCompaction(): void
+requestCompaction(requestedTurnId?: string | null): CompactionOperationId
 clearCompactionRequest(): void
+requirePendingCompactionRequest(): PendingCompactionRequest
 listRawTracesOrdered(limit?: number): RawTraceItem[]
 pruneRawTracesById(traceIds: Iterable<string>, archive?: boolean): void
 getWorkingContextMessages(): Message[]
-resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>): void
+resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>, lastCompactionTs?: number | null): void
 getToolInteractions(turnId?: string): ToolInteraction[]
 ```
 
 ### LLMRequestAssembler
 
 ```
-prepareRequest(processedUserInput, currentTurnId?: string | null, systemPrompt?: string | null, activeModelIdentifier?: string | null): Promise<RequestPackage>
+prepareRequest(processedUserInput, currentTurnId?: string | null, systemPrompt?: string | null): Promise<RequestPackage>
+prepareToolContinuationRequest(currentTurnId?: string | null, systemPrompt?: string | null): Promise<RequestPackage>
 renderPayload(messages: Message[]): Promise<ProviderPayload>
 ```
 
 ### PendingCompactionExecutor
 
 ```
-executeIfRequired({ turnId?: string | null, systemPrompt: string, activeModelIdentifier?: string | null }): Promise<boolean>
+executeIfRequired({ turnId?: string | null, systemPrompt: string, inputBudgetTokens?: number | null }): Promise<boolean>
 ```
 
-### CompactionWindowPlanner
+### WorkingContextMessageWindowPlanner
 
 ```
-plan(rawTraces: RawTraceItem[], activeTurnId?: string | null): CompactionPlan
+plan({ messages: Message[], inputBudgetTokens?: number | null, minRecentNaturalUnits?: number }): MessageCompactionPlan
 ```
 
-### Compactor
+### WorkingContextCompactor / Compactor
 
 ```
-compact(plan: CompactionPlan): Promise<CompactionExecutionOutcome | null>
+compactWorkingContext(plan: MessageCompactionPlan): Promise<WorkingContextCompactionExecutionOutcome | null>
+compact(plan: CompactionPlan): Promise<CompactionExecutionOutcome | null> // legacy raw-trace block path
 ```
 
 ### Summarizer
 
 ```
 summarize(blocks: InteractionBlock[]): Promise<CompactionResult>
+summarizeMessageUnits(units: WorkingContextMessageUnit[]): Promise<CompactionResult>
 ```
 
 ### MemoryStore
@@ -1574,46 +1668,55 @@ bootstrap(memoryManager: MemoryManager, systemPrompt: string, options: WorkingCo
 
 ## 19. Compaction Snapshot Assembly Rules
 
-The Compaction Snapshot is used only at the **compaction boundary** to reset
-the Working Context Snapshot.
+The Compaction Snapshot is used at the **compaction boundary** to reset the
+Working Context Snapshot. Runtime compaction assembles it from provider-facing
+messages, not from raw trace text.
 
 ### Ordering
 
-1. System prompt
-2. Memory bundle (episodic + semantic)
-3. `[RAW_FRONTIER]` block rendering
+1. System prompt / existing system head message
+2. Natural compacted-memory message built from the retrieved EPISODIC + SEMANTIC
+   bundle, when non-empty
+3. Retained recent/protected working-context messages selected by the planner
 
 ### Limits (defaults)
 
-- At least one frontier block stays raw
+- Retain a recent natural suffix; default minimum is four recent natural units
+  when possible.
+- Protect a trailing tool protocol group so native provider continuation remains
+  valid.
 - `max_episodic_items = 3`
 - `max_semantic_items = 20`
-- `max_item_chars = 2000` (via `CompactionPolicy.maxItemChars`)
+- `max_item_chars = 2000` (via `CompactionPolicy.maxItemChars`) for compactor
+  task transcript and recovery projection line clamps
 
 ### Formatting (recommended, deterministic)
 
-```
-[MEMORY:EPISODIC]
-1) ...
-2) ...
+Compacted memory is rendered as a natural message, for example:
 
-[MEMORY:SEMANTIC]
-- ...
-- ...
-
-[RAW_FRONTIER]
-[BLOCK block_0002] turn=turn_0012 kind=tool_continuation
-(turn_0012:5) TOOL_CONTINUATION: Tool continuation
-(turn_0012:6) ASSISTANT: ...
-(turn_0012:7) TOOL_CALL: write_file {"path":"notes.md"}
 ```
+Here is the relevant compacted memory for this agent:
+
+Recent progress:
+1. ...
+2. ...
+
+Important facts and preferences:
+- ...
+```
+
+Retained user/assistant/tool messages stay as structured `Message` objects and
+are rendered only by the provider prompt renderer.
 
 ### Token Budget
 
 - Compaction is triggered by provider-reported `prompt_tokens` **after** a response.
-- When compaction is requested, the next request rebuilds the snapshot before calling the LLM.
-- The compacted portion is chosen by the planner/frontier rules, not by a fixed
-  raw-tail-turn count.
+- A no-tool threshold crossing compacts immediately after the assistant response
+  is appended.
+- A tool-call threshold crossing compacts after tool results are ingested and
+  before the same-turn continuation request is rendered.
+- The compacted portion is chosen by working-context message units and budget,
+  not by a fixed raw-tail-turn count.
 
 ## 20. Turn ID Assignment
 

@@ -32,7 +32,7 @@ export class LLMRequestAssembler {
         })
       : false;
 
-    this.memoryManager.workingContextSnapshot.appendMessage(userMessage);
+    this.memoryManager.appendWorkingContextUserMessage(userMessage, { turnId });
     const finalMessages = this.memoryManager.getWorkingContextMessages();
     const renderedPayload = await this.renderPayload(finalMessages);
 
@@ -86,11 +86,6 @@ export class LLMRequestAssembler {
     if (!systemPrompt) {
       return;
     }
-    const existing = this.memoryManager.getWorkingContextMessages();
-    if (!existing.length) {
-      this.memoryManager.workingContextSnapshot.appendMessage(
-        new Message(MessageRole.SYSTEM, { content: systemPrompt })
-      );
-    }
+    this.memoryManager.ensureWorkingContextSystemMessage(systemPrompt);
   }
 }

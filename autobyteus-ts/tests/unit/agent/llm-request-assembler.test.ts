@@ -17,6 +17,20 @@ class FakeMemoryManager {
   getWorkingContextMessages(): Message[] {
     return this.workingContextSnapshot.buildMessages();
   }
+
+  ensureWorkingContextSystemMessage(content: string): boolean {
+    if (this.getWorkingContextMessages().length) return false;
+    this.workingContextSnapshot.appendMessage(new Message(MessageRole.SYSTEM, { content }));
+    return true;
+  }
+
+  appendWorkingContextUserMessage(message: Message): void {
+    this.workingContextSnapshot.appendMessage(message);
+  }
+
+  resetWorkingContextSnapshot(messages: Message[]): void {
+    this.workingContextSnapshot.reset(messages);
+  }
 }
 
 describe('LLMRequestAssembler', () => {
@@ -37,9 +51,9 @@ describe('LLMRequestAssembler', () => {
     const executor = {
       executeIfRequired: async (input: Record<string, unknown>) => {
         executorCalls.push(input);
-        memoryManager.workingContextSnapshot.reset([
+        memoryManager.resetWorkingContextSnapshot([
           new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
-          new Message(MessageRole.USER, { content: '[MEMORY:EPISODIC]\n1) Durable summary' }),
+          new Message(MessageRole.USER, { content: 'Earlier progress:\n1. Durable summary' }),
         ]);
         return true;
       }
