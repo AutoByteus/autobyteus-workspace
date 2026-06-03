@@ -1,35 +1,24 @@
 import { randomUUID } from 'node:crypto';
-import { BaseTaskPlanEventSchema } from '../../task-management/events.js';
 import {
   AgentTeamStatusUpdateData,
   AgentEventRebroadcastPayload,
-  SubTeamEventRebroadcastPayload,
-  type TaskPlanEventPayload
+  SubTeamEventRebroadcastPayload
 } from './agent-team-stream-event-payloads.js';
 
 export {
   AgentTeamStatusUpdateData,
   AgentEventRebroadcastPayload,
-  SubTeamEventRebroadcastPayload,
-  type TaskPlanEventPayload
+  SubTeamEventRebroadcastPayload
 } from './agent-team-stream-event-payloads.js';
 
-export type AgentTeamStreamEventSourceType = 'TEAM' | 'AGENT' | 'SUB_TEAM' | 'TASK_PLAN';
+export type AgentTeamStreamEventSourceType = 'TEAM' | 'AGENT' | 'SUB_TEAM';
 
 export type TeamSpecificPayload = AgentTeamStatusUpdateData;
 
 export type AgentTeamStreamDataPayload =
   | TeamSpecificPayload
   | AgentEventRebroadcastPayload
-  | SubTeamEventRebroadcastPayload
-  | TaskPlanEventPayload;
-
-const isTaskPlanPayload = (data: unknown): boolean => {
-  if (typeof data !== 'object' || data === null) {
-    return false;
-  }
-  return BaseTaskPlanEventSchema.safeParse(data).success;
-};
+  | SubTeamEventRebroadcastPayload;
 
 export class AgentTeamStreamEvent {
   event_id: string;
@@ -64,9 +53,6 @@ export class AgentTeamStreamEvent {
     const isTeamEvent = this.event_source_type === 'TEAM';
     const isTeamPayload = this.data instanceof AgentTeamStatusUpdateData;
 
-    const isTaskPlanEvent = this.event_source_type === 'TASK_PLAN';
-    const hasTaskPlanPayload = isTaskPlanPayload(this.data);
-
     if (isAgentEvent && !isAgentPayload) {
       throw new Error("event_source_type is 'AGENT' but data is not an AgentEventRebroadcastPayload");
     }
@@ -77,10 +63,6 @@ export class AgentTeamStreamEvent {
 
     if (isTeamEvent && !isTeamPayload) {
       throw new Error("event_source_type is 'TEAM' but data is not a valid team-specific payload");
-    }
-
-    if (isTaskPlanEvent && !hasTaskPlanPayload) {
-      throw new Error("event_source_type is 'TASK_PLAN' but data is not a BaseTaskPlanEvent instance");
     }
   }
 }

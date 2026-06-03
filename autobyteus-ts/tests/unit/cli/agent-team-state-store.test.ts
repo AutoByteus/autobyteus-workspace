@@ -9,7 +9,6 @@ import {
   AgentTeamStreamEvent
 } from '../../../src/agent-team/streaming/agent-team-stream-events.js';
 import { AgentTeamStatus } from '../../../src/agent-team/status/agent-team-status.js';
-import { TaskStatus } from '../../../src/task-management/base-task-plan.js';
 import { TuiStateStore } from '../../../src/cli/agent-team/state-store.js';
 
 const buildTeam = (): AgentTeam => {
@@ -103,49 +102,8 @@ describe('TuiStateStore', () => {
     expect(store.speakingAgents.AgentOne).toBe(false);
   });
 
-  it('tracks task plan updates and sub-team status changes', () => {
+  it('tracks sub-team status changes', () => {
     const store = new TuiStateStore(buildTeam());
-    const tasksEvent = new AgentTeamStreamEvent({
-      team_id: 'team_alpha',
-      event_source_type: 'TASK_PLAN',
-      data: {
-        team_id: 'team_alpha',
-        tasks: [
-          {
-            task_name: 'setup',
-            task_id: 'task_1',
-            assignee_name: 'AgentOne',
-            description: 'Setup repo',
-            dependencies: [],
-            file_deliverables: []
-          }
-        ]
-      }
-    });
-    store.processEvent(tasksEvent);
-
-    const statusEvent = new AgentTeamStreamEvent({
-      team_id: 'team_alpha',
-      event_source_type: 'TASK_PLAN',
-      data: {
-        team_id: 'team_alpha',
-        task_id: 'task_1',
-        new_status: TaskStatus.COMPLETED,
-        agent_name: 'AgentOne',
-        deliverables: [
-          {
-            file_path: '/tmp/report.txt',
-            summary: 'Done',
-            author_agent_name: 'AgentOne',
-            timestamp: new Date()
-          }
-        ]
-      }
-    });
-    store.processEvent(statusEvent);
-
-    expect(store.getTaskPlanTasks('Alpha')).toHaveLength(1);
-    expect(store.getTaskPlanStatuses('Alpha')?.task_1).toBe(TaskStatus.COMPLETED);
 
     const subTeamInner = new AgentTeamStreamEvent({
       team_id: 'sub_team',

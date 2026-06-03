@@ -1,6 +1,5 @@
 import { AgentStatus } from '../../../agent/status/status-enum.js';
 import { AgentTeamStatus } from '../../../agent-team/status/agent-team-status.js';
-import { TaskStatus } from '../../../task-management/base-task-plan.js';
 
 export const AGENT_STATUS_ICONS: Record<AgentStatus, string> = {
   [AgentStatus.UNINITIALIZED]: '⚪',
@@ -29,14 +28,6 @@ export const TEAM_STATUS_ICONS: Record<AgentTeamStatus, string> = {
   [AgentTeamStatus.ERROR]: '❗'
 };
 
-export const TASK_STATUS_ICONS: Record<TaskStatus, string> = {
-  [TaskStatus.NOT_STARTED]: '⚪',
-  [TaskStatus.QUEUED]: '🕒',
-  [TaskStatus.IN_PROGRESS]: '⏳',
-  [TaskStatus.COMPLETED]: '✅',
-  [TaskStatus.FAILED]: '❌',
-  [TaskStatus.BLOCKED]: '🔒'
-};
 
 export const SUB_TEAM_ICON = '📂';
 export const TEAM_ICON = '🏁';

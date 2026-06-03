@@ -41,7 +41,6 @@ import {
   handleTeamCommunicationMessage,
   handleSystemTaskNotification,
   handleTeamStatus,
-  handleTaskPlanEvent,
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
@@ -433,8 +432,11 @@ export class TeamStreamingService {
       return;
     }
 
-    if (message.type === 'TASK_PLAN_EVENT') {
-      handleTaskPlanEvent(message.payload, teamContext);
+    if (message.type === 'TASK_DELEGATION_EVENT') {
+      const taskAgentIdentity = extractTaskAgentIdentity(message);
+      if (taskAgentIdentity) {
+        ensureTaskAgentContext(teamContext, taskAgentIdentity);
+      }
       return;
     }
 

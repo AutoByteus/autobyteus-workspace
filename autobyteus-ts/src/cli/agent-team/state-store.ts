@@ -10,14 +10,6 @@ import { StreamEventType } from '../../agent/streaming/events/stream-events.js';
 import { ToolApprovalRequestedData } from '../../agent/streaming/events/stream-event-payloads.js';
 import type { StreamEvent } from '../../agent/streaming/stream-events.js';
 import { AgentStatus } from '../../agent/status/status-enum.js';
-import type { Task } from '../../task-management/task.js';
-import { TaskStatus } from '../../task-management/base-task-plan.js';
-import {
-  TasksCreatedEventSchema,
-  TaskStatusUpdatedEventSchema,
-  type TasksCreatedEvent,
-  type TaskStatusUpdatedEvent
-} from '../../task-management/events.js';
 
 const isAgentEventPayload = (data: unknown): data is AgentEventRebroadcastPayload => {
   if (!data || typeof data !== 'object') {
@@ -81,8 +73,6 @@ export class TuiStateStore {
   teamEventHistory: Record<string, AgentTeamStreamEvent[]> = {};
   pendingApprovals: Record<string, ToolApprovalRequestedData> = {};
   speakingAgents: Record<string, boolean> = {};
-  taskPlans: Record<string, Task[]> = {};
-  taskStatuses: Record<string, Record<string, TaskStatus>> = {};
   private dirty = false;
 
   constructor(team: AgentTeam) {
@@ -122,13 +112,6 @@ export class TuiStateStore {
     return this.pendingApprovals[agentName] ?? null;
   }
 
-  getTaskPlanTasks(teamName: string): Task[] | null {
-    return this.taskPlans[teamName] ?? null;
-  }
-
-  getTaskPlanStatuses(teamName: string): Record<string, TaskStatus> | null {
-    return this.taskStatuses[teamName] ?? null;
-  }
 
   clearPendingApproval(agentName: string): void {
     delete this.pendingApprovals[agentName];
@@ -230,10 +213,6 @@ export class TuiStateStore {
     }
     this.teamEventHistory[parentName].push(event);
 
-    if (event.event_source_type === 'TASK_PLAN') {
-      this.processTaskPlanEvent(event.data, parentName);
-      return;
-    }
 
     if (isAgentEventPayload(event.data)) {
       const agentName = String(event.data.agent_name ?? '');
@@ -282,42 +261,6 @@ export class TuiStateStore {
 
       if (subTeamEvent) {
         this.processEventRecursively(subTeamEvent, subTeamName);
-      }
-    }
-  }
-
-  private processTaskPlanEvent(eventData: unknown, teamName: string): void {
-    const created = TasksCreatedEventSchema.safeParse(eventData);
-    if (created.success) {
-      const data = created.data as TasksCreatedEvent;
-      if (!this.taskPlans[teamName]) {
-        this.taskPlans[teamName] = [];
-      }
-      if (!this.taskStatuses[teamName]) {
-        this.taskStatuses[teamName] = {};
-      }
-      this.taskPlans[teamName].push(...data.tasks);
-      for (const task of data.tasks) {
-        this.taskStatuses[teamName][task.task_id] = TaskStatus.NOT_STARTED;
-      }
-      return;
-    }
-
-    const updated = TaskStatusUpdatedEventSchema.safeParse(eventData);
-    if (updated.success) {
-      const data = updated.data as TaskStatusUpdatedEvent;
-      if (!this.taskStatuses[teamName]) {
-        this.taskStatuses[teamName] = {};
-      }
-      this.taskStatuses[teamName][data.task_id] = data.new_status;
-
-      if (data.deliverables && this.taskPlans[teamName]) {
-        for (const task of this.taskPlans[teamName]) {
-          if (task.task_id === data.task_id) {
-            task.file_deliverables = data.deliverables;
-            break;
-          }
-        }
       }
     }
   }

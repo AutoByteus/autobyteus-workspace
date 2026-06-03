@@ -1,6 +1,5 @@
 import { AgentTeamStatus } from '../status/agent-team-status.js';
 import { StreamEvent } from '../../agent/streaming/stream-events.js';
-import type { TasksCreatedEvent, TaskStatusUpdatedEvent } from '../../task-management/events.js';
 
 const assertRequiredKeys = (data: Record<string, unknown>, keys: string[], name: string): void => {
   const missing = keys.filter((key) => !(key in data));
@@ -52,5 +51,3 @@ export class SubTeamEventRebroadcastPayload {
     this.sub_team_event = data.sub_team_event;
   }
 }
-
-export type TaskPlanEventPayload = TasksCreatedEvent | TaskStatusUpdatedEvent;

@@ -39,7 +39,6 @@ export {
   handleTeamCommunicationMessage,
   handleSystemTaskNotification,
   handleTeamStatus,
-  handleTaskPlanEvent,
 } from './teamHandler';
 
 

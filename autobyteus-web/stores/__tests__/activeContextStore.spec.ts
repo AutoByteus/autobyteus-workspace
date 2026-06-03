@@ -66,8 +66,6 @@ const buildTeamContext = (
     focusedMemberRouteKey,
     currentStatus: AgentTeamStatus.Running,
     isSubscribed: true,
-    taskPlan: null,
-    taskStatuses: null,
   };
 };
 

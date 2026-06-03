@@ -1,0 +1,22 @@
+# active legacy task-plan search
+command: rg -n --hidden -S legacy terms active source surfaces
+autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:150:    expect(wrapper.find('[data-test="team-task-plan-toggle"]').exists()).toBe(false);
+autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:151:    expect(wrapper.find('[data-test="team-task-plan-section"]').exists()).toBe(false);
+autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:152:    expect(wrapper.find('[data-test="team-task-plan-compact-empty"]').exists()).toBe(false);
+autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:154:    expect(wrapper.text()).not.toContain('No task plan yet');
+autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts:67:    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:12:  "get_task_plan_status",
+
+# protocol rename search active protocol/test surfaces
+autobyteus-server-ts/src/services/agent-streaming/models.ts:33:  TASK_DELEGATION_EVENT = "TASK_DELEGATION_EVENT",
+autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:111:    return new ServerMessage(ServerMessageType.TASK_DELEGATION_EVENT, {
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:44:  | 'TASK_DELEGATION_EVENT'
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:343:  | { type: 'TASK_DELEGATION_EVENT'; payload: TaskDelegationEventPayload }
+autobyteus-web/services/agentStreaming/TeamStreamingService.ts:435:    if (message.type === 'TASK_DELEGATION_EVENT') {
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:356:        message.type === "TASK_DELEGATION_EVENT" && message.payload.event_type === "TASK_DELEGATION_ACTIVATED" && Array.isArray(message.payload.taskIds) && message.payload.taskIds.length === 1,
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:366:        message.type === "TASK_DELEGATION_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:409:    expect(terminalSocketMessage.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
+
+# deleted module import search
+autobyteus-ts/tickets/file_naming_ticket/FILE_NAMING_PROGRESS.md:96:- 2026-01-31: Renamed `src/agent_team/bootstrap_steps/team_context_initialization_step.ts` -> `src/agent_team/bootstrap_steps/team-context-initialization-step.ts`; updated imports in bootstrapper test. Ran `pnpm exec vitest --run tests/unit/agent_team/bootstrap_steps/agent_team_bootstrapper.test.ts` (passed).
+autobyteus-ts/tickets/file_naming_ticket/FILE_NAMING_PROGRESS.md:98:- 2026-01-31: Renamed `src/agent_team/bootstrap_steps/task_notifier_initialization_step.ts` -> `src/agent_team/bootstrap_steps/task-notifier-initialization-step.ts`; updated imports in bootstrapper/tests. Ran `pnpm exec vitest --run tests/unit/agent_team/bootstrap_steps/task_notifier_initialization_step.test.ts tests/unit/agent_team/bootstrap_steps/agent_team_bootstrapper.test.ts` (passed).

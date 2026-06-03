@@ -23,7 +23,7 @@ export type {
   ToolExecutionInterruptedPayload,
   ToolLogPayload,
   TodoListUpdatePayload,
-  TaskPlanEventPayload,
+  TaskDelegationEventPayload,
   InterAgentMessagePayload,
   SystemTaskNotificationPayload,
   FileChangePayload,

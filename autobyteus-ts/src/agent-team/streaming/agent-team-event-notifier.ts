@@ -8,7 +8,6 @@ import {
   AgentTeamStatusUpdateData,
   SubTeamEventRebroadcastPayload
 } from './agent-team-stream-events.js';
-import type { TaskPlanEventPayload } from './agent-team-stream-events.js';
 
 export class AgentTeamExternalEventNotifier extends EventEmitter {
   teamId: string;
@@ -65,15 +64,6 @@ export class AgentTeamExternalEventNotifier extends EventEmitter {
       team_id: this.teamId,
       event_source_type: 'SUB_TEAM',
       data: new SubTeamEventRebroadcastPayload({ sub_team_node_name: subTeamNodeName, sub_team_event: subTeamEvent })
-    });
-    this.emitEvent(event);
-  }
-
-  handleAndPublishTaskPlanEvent(payload: TaskPlanEventPayload): void {
-    const event = new AgentTeamStreamEvent({
-      team_id: this.teamId,
-      event_source_type: 'TASK_PLAN',
-      data: payload
     });
     this.emitEvent(event);
   }
