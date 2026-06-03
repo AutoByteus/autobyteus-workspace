@@ -1,0 +1,6 @@
+Worktree status after signed build/verification:
+?? tickets/in-progress/task-agent-identity-projection-refactor/delivery-evidence/round-2-latest-origin-personal-electron/
+
+Ignored electron-dist artifacts:
+autobyteus-web/.gitignore:7:electron-dist	/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+autobyteus-web/.gitignore:7:electron-dist	/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip

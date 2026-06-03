@@ -1,0 +1,21 @@
+Command: codesign --verify --deep --strict --verbose=2 /tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/private/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app: valid on disk
+/tmp/autobyteus-electron-dmg-verify-53883/AutoByteus.app: satisfies its Designated Requirement
