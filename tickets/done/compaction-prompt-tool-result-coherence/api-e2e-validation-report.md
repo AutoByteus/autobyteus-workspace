@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/code-review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review passed and requested API/E2E validation for compaction prompt/tool-result coherence.
 - Prior Round Reviewed: N/A
@@ -53,7 +53,7 @@ Validation was derived from the approved requirements, reviewed design, implemen
 - Node.js: `v22.21.1`.
 - pnpm: `10.28.2`.
 - Vitest: `4.0.18`.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Branch: `codex/compaction-prompt-tool-result-coherence`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
@@ -76,7 +76,7 @@ Validation was derived from the approved requirements, reviewed design, implemen
 
 ## Test Scope
 
-Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`:
+Commands run from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`:
 
 - `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/working-context-compaction-prompt-builder.test.ts tests/unit/memory/compaction-task-prompt-builder.test.ts tests/unit/memory/agent-compaction-summarizer.test.ts tests/unit/memory/compaction-snapshot-builder.test.ts` — passed, 13 tests.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/built-in-agents/built-in-agent-templates.test.ts tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` — passed, 6 tests.
@@ -92,7 +92,7 @@ Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-p
 - No real LLM/API/network dependency was used by the validation scenarios.
 - Fake compaction-agent runners and temp `FileMemoryStore` directories were used where runtime execution needed deterministic compaction output.
 - Server bootstrap tests reset a temporary SQLite test database as part of normal setup.
-- Detailed command output is recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`.
+- Detailed command output is recorded in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`.
 
 ## Tests Implemented Or Updated
 
@@ -109,8 +109,8 @@ Existing durable tests added/updated by implementation and already reviewed by c
 
 ## Other Validation Artifacts
 
-- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
-- This validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
+- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
+- This validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -197,7 +197,7 @@ No reroute classification is needed. The only failing executable check reproduce
 
 ## Evidence / Notes
 
-- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
+- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
 - The branch contains existing implementation/test changes from prior stages plus the ticket artifacts; no source or durable test changes were made during API/E2E validation.
 - Delivery should explicitly call out the user-edited compactor definition residual risk.
 

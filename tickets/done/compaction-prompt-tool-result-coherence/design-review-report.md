@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
 - Current Review Round: 2
 - Trigger: Re-review after `solution_designer` addressed round-1 findings AR-001 and AR-002.
 - Prior Review Round Reviewed: 1
@@ -20,7 +20,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`, revised after round-1 architecture review.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`, revised after round-1 architecture review.
 
 ## Task Design Health Assessment Verdict
 

@@ -1,12 +1,12 @@
 # Validation Evidence Log
 Date: 2026-06-03T08:18:42Z
-Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence
+Worktree: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
 Branch: codex/compaction-prompt-tool-result-coherence
 HEAD: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
 
 ## Focused unit memory checks
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/unit/memory/compaction-task-prompt-builder.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
@@ -41,10 +41,10 @@ stdout | tests/unit/memory/compaction-snapshot-builder.test.ts
 
 ## Server built-in compactor template/bootstrap checks
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
 
 Applying migration `20260203074245_init`
 Applying migration `20260208094000_add_external_channel_tables`
@@ -122,12 +122,12 @@ AgentTeamFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
-App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-0yglUb
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
@@ -149,7 +149,7 @@ Agent definition cache populated with 1 items.
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-cRih9p
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
@@ -165,7 +165,7 @@ Agent definition cache populated with 1 items.
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-ILZndt
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
@@ -184,7 +184,7 @@ Agent definition cache populated with 1 items.
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-om0oKP
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
@@ -193,7 +193,7 @@ Initialized server settings service with 16 predefined settings
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-TIXhXv
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
@@ -233,7 +233,7 @@ Agent definition cache populated with 1 items.
 
 ## Integration/API-E2E compaction runtime checks
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/integration/agent/memory-compaction-quality-flow.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
@@ -510,7 +510,7 @@ AssertionError: expected [ { …(6) }, { …(6) } ] to have a length of 1 but go
 
 ## Rerun failed runtime compaction integration file in isolation
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
@@ -655,7 +655,7 @@ AssertionError: expected [ { …(6) }, { …(6) } ] to have a length of 1 but go
 ## Temporary API/E2E runtime probe for focused scenarios
 Temporary test file: autobyteus-ts/tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
@@ -716,7 +716,7 @@ Temporary probe exit status: 1
 ## Temporary API/E2E runtime probe rerun with long retained tail
 Temporary test file: autobyteus-ts/tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
@@ -735,7 +735,7 @@ Temporary probe exit status: 0
 
 ## Passing targeted integration/API-E2E compaction checks rerun (excluding pre-existing failing runtime file)
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 
 stdout | tests/integration/agent/memory-compaction-quality-flow.test.ts
 [dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
@@ -929,7 +929,7 @@ compaction_result_summary {
 ## Build and diff checks
 ### autobyteus-ts build
 
-> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
 > tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
 
 [verify:runtime-deps] OK

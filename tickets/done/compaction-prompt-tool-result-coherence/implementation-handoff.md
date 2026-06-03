@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
 
 ## What Changed
 

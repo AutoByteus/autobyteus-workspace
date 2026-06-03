@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
 - Current Review Round: 1
 - Trigger: Implementation handoff from `implementation_engineer` after local implementation completion.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
 - Validation Report Reviewed As Context: N/A
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`
@@ -24,7 +24,7 @@
 
 ## Review Scope
 
-Reviewed the implementation diff on branch `codex/compaction-prompt-tool-result-coherence` in worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence` against the full artifact chain and canonical design principles. Scope included:
+Reviewed the implementation diff on branch `codex/compaction-prompt-tool-result-coherence` in worktree `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` against the full artifact chain and canonical design principles. Scope included:
 
 - Active working-context compaction prompt copy and transcript rendering in `WorkingContextCompactionPromptBuilder`.
 - Legacy raw-block prompt alignment in `CompactionTaskPromptBuilder`.

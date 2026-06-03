@@ -3,7 +3,7 @@
 ## Status
 
 - Ticket: `compaction-prompt-tool-result-coherence`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/compaction-prompt-tool-result-coherence`
 - Finalization target / bootstrap base: `origin/personal`
 - Latest tracked base checked: `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`
@@ -34,10 +34,10 @@ Upstream validation passed for the scoped behavior. Key evidence from API/E2E:
 - `git diff --check` passed in API/E2E and passed again in delivery after docs sync.
 - Refreshed local macOS Electron build passed for testing on merged `origin/personal` `f45ded9f73e9327b770c976f698afc3cb1a93941`: `AUTOBYTEUS_BUILD_FLAVOR=personal AUTOBYTEUS_UPDATER_REPOSITORY=AutoByteus/autobyteus-workspace NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac` from `autobyteus-web`.
 - Electron test artifacts rebuilt at 2026-06-03 12:09 Europe/Berlin:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.zip`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Build evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/electron-build-after-latest-origin-personal.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/electron-build-after-latest-origin-personal.log`
 - Grep audit found no removed old LLM-facing strings in generated compaction prompt/template/message files.
 
 Delivery integration refresh:
@@ -48,7 +48,7 @@ Delivery integration refresh:
 - Merged latest `origin/personal` with no conflicts; merge commit: `bebd49c182a8dfdea27c39c9e08df34d3a75b6b5`.
 - Post-merge `git rev-list --left-right --count HEAD...origin/personal` returned `2 0`; the branch is based on latest tracked `origin/personal` and ahead only by the ticket checkpoint plus merge commit.
 - Post-merge checks: `git diff --check` passed, and the macOS Electron build passed on the merged state.
-- Integration evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`.
+- Integration evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`.
 
 ## Residual Risks / Notes
 
@@ -58,18 +58,18 @@ Delivery integration refresh:
 
 ## Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/code-review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
-- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/release-deployment-report.md`
-- Latest-base integration log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`
-- Refreshed Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/electron-build-after-latest-origin-personal.log`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/code-review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
+- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/release-deployment-report.md`
+- Latest-base integration log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`
+- Refreshed Electron build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/electron-build-after-latest-origin-personal.log`
 
 ## Finalization Note
 

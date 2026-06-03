@@ -19,10 +19,10 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_s
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence`
 - Current Branch: `codex/compaction-prompt-tool-result-coherence`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-06-03; `origin/personal` advanced from `462151c5` to `2e78e6b7`.
 - Task Branch: `codex/compaction-prompt-tool-result-coherence`
@@ -36,7 +36,7 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_s
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-06-03 | Setup | `git fetch origin --prune` | Refresh tracked remote before creating a dedicated task branch. | Fetch succeeded; `origin/personal` updated to `2e78e6b7`. | No |
-| 2026-06-03 | Setup | `git worktree add -b codex/compaction-prompt-tool-result-coherence /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence origin/personal` | Create dedicated task worktree/branch. | Worktree created from `origin/personal`, HEAD `2e78e6b7`. | No |
+| 2026-06-03 | Setup | `git worktree add -b codex/compaction-prompt-tool-result-coherence /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task worktree/branch. | Worktree created from `origin/personal`, HEAD `2e78e6b7`. | No |
 | 2026-06-03 | Other | User-provided screenshot path `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_769fcc62/solution_designer_5327851c3447deef/context_files/ctx_2af07c0b952c__image.png` | Capture observed compactor prompt wording. | Screenshot shows compactor user message with “AutoByteus memory”, `[WORKING_CONTEXT_TRANSCRIPT]`, and “Assistant reasoning”. | Compare with code-generated prompt. |
 | 2026-06-03 | Command | `rg -n "AutoByteus memory|WORKING_CONTEXT_TRANSCRIPT|Memory Compactor|compaction|tool_call_id" ...` | Locate prompt strings and tool-result identity paths. | Found active prompt builder, legacy prompt builder, built-in template, serializer, and tests. | No |
 | 2026-06-03 | Code | `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` lines 16-25, 36-50, 80-84 | Verify screenshot prompt and transcript renderer. | The builder emits the screenshot wording, renders tool call IDs, but omits `ToolResultPayload.toolCallId` from result lines. | Change prompt copy and result renderer. |
@@ -112,7 +112,7 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_s
 - Required config, feature flags, env vars, or accounts: None for static investigation.
 - External repos, samples, or artifacts cloned/downloaded for investigation: None.
 - Setup commands that materially affected the investigation: Git fetch/worktree setup commands above.
-- Cleanup notes for temporary investigation-only setup: Dedicated worktree remains at `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`.
+- Cleanup notes for temporary investigation-only setup: Dedicated worktree remains at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 
 ## Findings From Code / Docs / Data / Logs
 

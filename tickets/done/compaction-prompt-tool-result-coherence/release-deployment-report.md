@@ -8,7 +8,7 @@ User verification was received on 2026-06-03 via: “lets finalize and no need t
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summary records integrated-base status, docs sync, validation evidence, residual risks, refreshed Electron build artifacts, and the no-release finalization decision.
 
@@ -27,7 +27,7 @@ User verification was received on 2026-06-03 via: “lets finalize and no need t
 - Delivery edits started only after integrated state was current: `Yes` for original docs sync; after the later base advance, delivery artifacts were updated only after the refreshed merge/build completed.
 - Handoff state current with latest tracked remote base: `Yes`; `git rev-list --left-right --count HEAD...origin/personal` returned `2 0` after merge.
 - Blocker (if applicable): N/A
-- Integration evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`
+- Integration evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`
 
 ## User Verification
 
@@ -39,7 +39,7 @@ User verification was received on 2026-06-03 via: “lets finalize and no need t
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-ts/docs/agent_memory_design.md`
@@ -50,7 +50,7 @@ User verification was received on 2026-06-03 via: “lets finalize and no need t
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence`
 
 ## Version / Tag / Release Commit
 
@@ -58,7 +58,7 @@ No version bump, release commit, tag, release artifact publication, or deploymen
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
 - Ticket branch: `codex/compaction-prompt-tool-result-coherence`
 - Ticket branch commit result: `Completed`
 - Ticket branch push result: `Completed`
@@ -116,8 +116,8 @@ N/A.
 
 ## Verification Checks
 
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
-- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
+- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
 - Delivery integration refresh:
   - `git fetch origin personal --prune` — passed.
   - Latest tracked base: `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`.
