@@ -8,7 +8,7 @@
 - Finalization target / bootstrap base: `origin/personal`
 - Latest tracked base checked: `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`
 - Integration method: local safety checkpoint `88d88787`, then merge latest `origin/personal` into the ticket branch; merge commit `bebd49c182a8dfdea27c39c9e08df34d3a75b6b5`.
-- Current delivery status: User verification received on 2026-06-03. Ticket archival is complete; repository finalization is being completed through the ticket-branch-to-`personal` merge path. No release, deployment, tag, or version bump is in scope per user request.
+- Current delivery status: User verification received on 2026-06-03. Ticket archival and repository finalization to `personal` are complete. The user later tested the main-repo Electron build successfully and requested a new release, so release `v1.3.42` is being published from `personal`.
 
 ## What Changed
 
@@ -74,3 +74,17 @@ Delivery integration refresh:
 ## Finalization Note
 
 User verification was received on 2026-06-03 via: “lets finalize and no need to release a new version.” The local Electron build artifacts were preserved outside the cleanup target at `/Users/normy/autobyteus_org/autobyteus-local-builds/compaction-prompt-tool-result-coherence/`. Release/version publication remains skipped by request.
+
+## Release Addendum - v1.3.42
+
+User verification for release was received on 2026-06-03 via: “i tested, all works. could you please release a new version for me”.
+
+Release preparation uses the documented repo helper from `README.md`:
+
+```bash
+pnpm release 1.3.42 -- --release-notes /tmp/autobyteus-compaction-v1.3.42-release-notes.md --no-push
+```
+
+The release bumps `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` to `1.3.42`, syncs `.github/release-notes/release-notes.md`, updates the managed messaging release manifest for `v1.3.42`, and creates annotated tag `v1.3.42`. The branch and tag are then pushed to start the documented GitHub release workflows for desktop, Android, messaging gateway, and server Docker publication.
+
+Archived release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/release-notes.md`
