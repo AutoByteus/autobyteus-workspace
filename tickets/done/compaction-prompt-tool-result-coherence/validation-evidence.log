@@ -957,4 +957,4 @@ v22.21.1
  M autobyteus-ts/tests/unit/memory/compaction-snapshot-builder.test.ts
  M autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts
  M autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts
-?? tickets/in-progress/compaction-prompt-tool-result-coherence/
+?? tickets/done/compaction-prompt-tool-result-coherence/

@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `compaction-prompt-tool-result-coherence`
-- Trigger: API/E2E validation passed; delivery-stage latest-base refresh found the branch already current with `origin/personal`.
+- Trigger: API/E2E validation passed, then the user reported `origin/personal` advanced and requested the ticket branch be based on the latest tracked base before another Electron build.
 - Bootstrap base reference: `origin/personal` at `2e78e6b7530544979aaffc76fa153e5a8edfec1e`
-- Integrated base reference used for docs sync: `origin/personal` at `2e78e6b7530544979aaffc76fa153e5a8edfec1e` (no merge/rebase required; ahead/behind `0/0` after fetch)
-- Post-integration verification reference: `git diff --check` passed after delivery docs edits; no post-merge executable rerun was required because no base commits were integrated.
+- Integrated base reference used for docs sync: latest `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`, integrated into the ticket branch by merge commit `bebd49c182a8dfdea27c39c9e08df34d3a75b6b5` after local safety checkpoint `88d88787`.
+- Post-integration verification reference: `git diff --check` passed after the latest-base merge; macOS Electron build passed on the merged state. Evidence logs: `delivery-logs/latest-origin-personal-integration-refresh.log`, `delivery-logs/electron-build-after-latest-origin-personal.log`.
 
 ## Why Docs Were Updated
 
@@ -57,7 +57,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed on the latest tracked base state. Delivery remains in the pre-verification hold: no ticket archival, push, merge, release, deployment, or cleanup has been performed.
+- Notes: Docs sync remains aligned after integrating latest `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`; no additional long-lived docs changes were required by the base merge. Delivery remains in the pre-verification hold: no ticket archival, push, target-branch finalization, release, deployment, or cleanup has been performed.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

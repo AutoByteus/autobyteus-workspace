@@ -20,7 +20,7 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_s
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/in-progress/compaction-prompt-tool-result-coherence`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/compaction-prompt-tool-result-coherence`
 - Current Branch: `codex/compaction-prompt-tool-result-coherence`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
 - Bootstrap Base Branch: `origin/personal`
@@ -52,7 +52,7 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_s
 | 2026-06-03 | Other | User follow-up approval in chat | Confirm requirements and wording direction. | User agreed to grouped tool-call/result rendering in the compaction prompt and keeping storage unchanged; user questioned `settled`, confirming it should not appear in LLM-facing copy if it does not add clarity. | Use `earlier conversation history` style wording. |
 | 2026-06-03 | Other | User follow-up refinement in chat | Clarify vocabulary standard. | User broadened the requirement: all LLM-facing internal jargon that does not help the model should be updated/refined/removed in the prompt/user message and in constructed memory content. | Add compacted-memory message builder and LLM-facing vocabulary audit to scope. |
 | 2026-06-03 | Code | `autobyteus-ts/src/memory/compaction/compacted-memory-message-builder.ts` lines 19-20 | Check constructed compacted-memory message shown to future LLM calls. | The message currently says “You are continuing an ongoing task after compacting earlier working memory,” which is LLM-facing internal process wording. | Replace with natural resume/context wording and add tests. |
-| 2026-06-03 | Review | `tickets/in-progress/compaction-prompt-tool-result-coherence/design-review-report.md` | Architecture review of revised package. | Failed with AR-001: prompt guardrail itself used disallowed internal jargon; AR-002: post-compaction rebuild/resume-context path must be first-class in the spine. | Revise requirements/design and resend. |
+| 2026-06-03 | Review | `tickets/done/compaction-prompt-tool-result-coherence/design-review-report.md` | Architecture review of revised package. | Failed with AR-001: prompt guardrail itself used disallowed internal jargon; AR-002: post-compaction rebuild/resume-context path must be first-class in the spine. | Revise requirements/design and resend. |
 
 ## Current Behavior / Current Flow
 
