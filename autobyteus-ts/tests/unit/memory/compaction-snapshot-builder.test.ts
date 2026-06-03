@@ -71,7 +71,8 @@ describe('CompactionSnapshotBuilder', () => {
     const snapshot = messages[1]?.content ?? '';
 
     expect(messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
-    expect(snapshot).toContain('You are continuing an ongoing task after compacting earlier working memory.');
+    expect(snapshot).toContain('You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.');
+    expect(snapshot).not.toContain('after compacting earlier working memory');
     expect(snapshot).toContain('Earlier progress:');
     expect(snapshot).toContain('Critical issues:');
     expect(snapshot).toContain('Durable facts:');

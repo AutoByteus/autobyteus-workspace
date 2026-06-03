@@ -349,9 +349,9 @@ Compaction produces **structured memory artifacts** and a new working context sn
    from the effective input budget. The planner retains a recent natural suffix
    and selects an older compactable prefix.
 5. `WorkingContextCompactor.compactWorkingContext(...)` asks the summarizer to
-   compact selected message units. `AgentCompactionSummarizer` renders a
-   `[WORKING_CONTEXT_TRANSCRIPT]` task that avoids turn IDs, raw trace IDs,
-   source events, and other runtime internals.
+   summarize selected message units. `AgentCompactionSummarizer` renders a
+   natural context-refresh task with `[CONVERSATION_HISTORY_TO_SUMMARIZE]`,
+   preserving useful conversation facts while omitting low-level bookkeeping.
 6. Resolve the configured compactor agent from
    `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and selects
    `autobyteus-memory-compactor` when the setting is blank. Blank or invalid
@@ -409,7 +409,7 @@ Compaction produces **structured memory artifacts** and a new working context sn
 
 The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
 
-Automated compaction still includes the current exact JSON output contract in every task envelope before `[WORKING_CONTEXT_TRANSCRIPT]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata.
+Automated compaction still includes the current exact JSON output contract in every task envelope before `[CONVERSATION_HISTORY_TO_SUMMARIZE]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata. Existing user-edited compactor definitions are preserved by bootstrap and may keep older wording until an operator edits them.
 
 ### Snapshot Cache / Schema-4 Bootstrap
 
@@ -1472,8 +1472,8 @@ without reintroducing direct-model compaction summarization.
     visible compactor-agent execution
 
 - `src/memory/compaction/working-context-compaction-prompt-builder.ts`
-  - Builds the JSON-only compactor-agent task prompt from settled
-    working-context transcript units
+  - Builds the JSON-only compactor-agent context-summary task prompt from
+    compactable working-context message units
 
 - `src/memory/compaction/compaction-task-prompt-builder.ts`
   - Retained legacy block prompt builder for raw-trace block compatibility

@@ -241,7 +241,7 @@ describe('Agent runtime compaction integration', () => {
       expect(memoryManager?.getPendingCompactionRequest()).toBeNull();
 
       expect(compactionRunner.tasks).toHaveLength(1);
-      expect(compactionRunner.tasks[0]?.prompt).toContain('[SETTLED_BLOCKS]');
+      expect(compactionRunner.tasks[0]?.prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 1');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 2');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Please remember the first turn.');

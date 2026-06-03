@@ -200,7 +200,7 @@ describe('memory compaction runtime API/E2E validation', () => {
       expect(statuses[2].execution_turn_id).toBe(turn.turnId);
       expect(memoryManager.compactionRequired).toBe(false);
       const compactedText = memoryManager.getWorkingContextMessages().map((message) => message.content ?? '').join('\n');
-      expect(compactedText).toContain('You are continuing an ongoing task after compacting earlier working memory.');
+      expect(compactedText).toContain('You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.');
       expect(compactedText).not.toContain('[RAW_FRONTIER]');
       expect(compactedText).not.toContain('[BLOCK');
       expect(compactedText).not.toContain('source_event');
