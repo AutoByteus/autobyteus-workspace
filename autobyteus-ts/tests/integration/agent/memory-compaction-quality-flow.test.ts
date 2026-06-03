@@ -104,7 +104,7 @@ describe('Memory compaction quality integration', () => {
       expect(semanticItems[0].category).toBe('user_preference');
 
       const snapshot = request.messages[1].content ?? '';
-      expect(snapshot).toContain('You are continuing an ongoing task after compacting earlier working memory.');
+      expect(snapshot).toContain('You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.');
       expect(snapshot).toContain('Earlier progress:');
       expect(snapshot).toContain('turn 0 user');
       expect(snapshot).toContain('User preferences:');

@@ -12,8 +12,13 @@ describe("built-in agent templates", () => {
 
     expect(content).toContain("name: Memory Compactor");
     expect(content).toContain("Manual testing");
-    expect(content).toContain("Automated compaction tasks");
+    expect(content).toContain("Automated context-summary tasks");
+    expect(content).toContain("[CONVERSATION_HISTORY_TO_SUMMARIZE]");
     expect(content).toContain("When an automated task supplies an exact output contract, that contract wins");
+    expect(content).not.toContain("AutoByteus Memory Compactor");
+    expect(content).not.toContain("AutoByteus conversation");
+    expect(content).not.toContain("[SETTLED_BLOCKS]");
+    expect(content).not.toMatch(/\bsettled\b/i);
 
     for (const category of [
       "episodic_summary",

@@ -10,7 +10,7 @@ import type {
   ToolProtocolMessageUnit,
 } from './working-context-message-unit.js';
 
-const COMPACTED_MEMORY_PREFIX = 'You are continuing an ongoing task after compacting earlier working memory.';
+const COMPACTED_MEMORY_PREFIX = 'You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.';
 
 export class WorkingContextMessageUnitBuilder {
   build(messages: Message[]): WorkingContextMessageUnit[] {
