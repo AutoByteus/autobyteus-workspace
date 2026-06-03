@@ -1,0 +1,272 @@
+[
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_b8abf03c",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "running",
+    "isActive": true,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_9d74beaa",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_fa10eacd",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_89989caf",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_df37e679",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_c23502de",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_56706128",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_41c3adaa",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_36cd04cf",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_8b7d44ed",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "offline",
+    "isActive": false,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  }
+]

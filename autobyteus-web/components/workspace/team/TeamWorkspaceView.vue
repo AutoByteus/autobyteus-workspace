@@ -44,19 +44,19 @@
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
         <TeamSpotlightView
           v-else
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeExecutionFocusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
       </div>
 
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ headerTitle }}</span>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
         </p>
         <AgentUserInputForm v-if="focusedMemberContext" />
         <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
@@ -124,11 +124,24 @@ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamM
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
+const rosterFocusedMemberRouteKey = computed(() =>
+  resolveDisplayFocusedMemberRouteKey(activeTeamContext.value?.focusedMemberRouteKey),
+);
 const focusedMemberContext = computed(() => {
   return teamContextsStore.activeExecutionFocusedMemberContext;
 });
 const focusedMemberNode = computed(() => {
   return teamContextsStore.activeExecutionFocusedMemberNode;
+});
+const rosterFocusedMemberContext = computed(() => {
+  const team = activeTeamContext.value;
+  const routeKey = rosterFocusedMemberRouteKey.value;
+  return team && routeKey ? team.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+});
+const rosterFocusedMemberNode = computed(() => {
+  const team = activeTeamContext.value;
+  const routeKey = rosterFocusedMemberRouteKey.value;
+  return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
 });
 
 const currentMode = computed<TeamWorkspaceViewMode>(() => {
@@ -148,8 +161,8 @@ const showSharedComposer = computed(() => {
 });
 
 const headerStatus = computed(() => {
-  return focusedMemberContext.value?.state.currentStatus
-    ?? focusedMemberNode.value?.currentStatus
+  return rosterFocusedMemberContext.value?.state.currentStatus
+    ?? rosterFocusedMemberNode.value?.currentStatus
     ?? activeTeamContext.value?.currentStatus
     ?? AgentStatus.Offline;
 });
@@ -160,9 +173,22 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberRouteKey = activeExecutionFocusedMemberRouteKey.value;
+  const focusedMemberRouteKey = rosterFocusedMemberRouteKey.value;
   if (!focusedMemberRouteKey) {
     return team.config.teamDefinitionName || 'Team';
+  }
+
+  return rosterFocusedMemberNode.value?.displayName
+    || getMemberDisplayName(focusedMemberRouteKey, rosterFocusedMemberContext.value)
+    || team.config.teamDefinitionName
+    || 'Team';
+});
+
+const composerTargetTitle = computed(() => {
+  const team = activeTeamContext.value;
+  const focusedMemberRouteKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!team || !focusedMemberRouteKey) {
+    return headerTitle.value;
   }
 
   return focusedMemberNode.value?.displayName
@@ -173,12 +199,12 @@ const headerTitle = computed(() => {
 
 const headerAvatarUrl = computed(() => {
   const team = activeTeamContext.value;
-  const focusedRouteKey = activeExecutionFocusedMemberRouteKey.value;
-  if (!team || !focusedRouteKey || focusedMemberNode.value?.memberKind === 'agent_team') {
+  const focusedRouteKey = rosterFocusedMemberRouteKey.value;
+  if (!team || !focusedRouteKey || rosterFocusedMemberNode.value?.memberKind === 'agent_team') {
     return '';
   }
 
-  return getMemberAvatarUrl(focusedRouteKey, focusedMemberContext.value);
+  return getMemberAvatarUrl(focusedRouteKey, rosterFocusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
@@ -187,6 +213,23 @@ const headerAvatarInitials = computed(() => getMemberInitials(headerTitle.value)
 watch(headerAvatarUrl, () => {
   headerAvatarLoadError.value = false;
 });
+
+function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefined): string {
+  const team = activeTeamContext.value;
+  const normalizedCandidate = candidate?.trim() || '';
+  if (
+    team &&
+    normalizedCandidate &&
+    (
+      team.memberNodesByRouteKey.has(normalizedCandidate) ||
+      team.leafAgentContextsByRouteKey.has(normalizedCandidate)
+    )
+  ) {
+    return normalizedCandidate;
+  }
+
+  return activeExecutionFocusedMemberRouteKey.value;
+}
 
 const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
   if (!activeTeamContext.value) {

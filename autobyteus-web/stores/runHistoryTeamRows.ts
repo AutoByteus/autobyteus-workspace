@@ -7,7 +7,6 @@ import type {
   TeamRunMetadataMember,
 } from '~/stores/runHistoryTypes';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
-import { isActiveExecutionMemberNode } from '~/utils/teamActiveExecutionMembers';
 
 const toTeamMemberRunStatus = (
   status: AgentStatus,
@@ -111,22 +110,6 @@ export const buildTeamRowsFromHistoryItem = (
     .sort((a, b) => a.memberName.localeCompare(b.memberName));
 };
 
-const filterActiveExecutionMemberTree = (
-  teamContext: AgentTeamContext,
-  nodes: readonly TeamMemberNode[],
-): TeamMemberNode[] =>
-  nodes.flatMap((node): TeamMemberNode[] => {
-    if (node.memberKind === 'agent_team') {
-      const children = filterActiveExecutionMemberTree(teamContext, node.children);
-      if (!isActiveExecutionMemberNode(teamContext, node) && children.length === 0) {
-        return [];
-      }
-      return [{ ...node, children }];
-    }
-
-    return isActiveExecutionMemberNode(teamContext, node) ? [node] : [];
-  });
-
 export const buildTeamRowsFromContext = (
   teamContext: AgentTeamContext,
   summary: string,
@@ -141,7 +124,7 @@ export const buildTeamRowsFromContext = (
         : new Map<string, AgentContext>();
   const hasStructuredMemberTree = Array.isArray(teamContext.memberTree) && teamContext.memberTree.length > 0;
   const sourceTree = hasStructuredMemberTree
-    ? filterActiveExecutionMemberTree(teamContext, teamContext.memberTree)
+    ? teamContext.memberTree
     : Array.from(leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, memberContext]) => ({
       memberKind: 'agent' as const,
       memberRouteKey,

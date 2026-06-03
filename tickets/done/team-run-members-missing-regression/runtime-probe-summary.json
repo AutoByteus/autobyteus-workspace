@@ -1,0 +1,29 @@
+[
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "teamRunId": "team_software-engineering-team_b8abf03c",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "status": "running",
+    "isActive": true,
+    "coordinatorMemberRouteKey": "solution_designer",
+    "memberTreeCount": 6,
+    "memberTreeRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "membersCount": 6,
+    "membersRouteKeys": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  }
+]

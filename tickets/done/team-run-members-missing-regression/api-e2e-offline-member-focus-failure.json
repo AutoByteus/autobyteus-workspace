@@ -1,0 +1,99 @@
+{
+  "scenario": "Inactive/all-offline Software Engineering Team history row member click focus switching",
+  "date": "2026-06-03",
+  "frontend_url": "http://127.0.0.1:3033/workspace",
+  "frontend_under_test": "Current ticket worktree Nuxt dev server on branch codex/team-run-members-missing-regression",
+  "backend_base_url": "http://localhost:29695",
+  "backend_runtime": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+  "tested_runs": [
+    {
+      "team_run_id": "team_software-engineering-team_9d74beaa",
+      "status_from_backend_probe": "offline",
+      "selected_run_text": "i would like to integrate the antigravity cli as another runtime. currently we have AutoByteus, C...",
+      "visible_member_rows": [
+        "S solution_designer 1d",
+        "A architecture_reviewer 1d",
+        "I implementation_engineer 1d",
+        "C code_reviewer 1d",
+        "A api_e2e_engineer 1d",
+        "D delivery_engineer 1d"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "delivery_engineer"
+      },
+      "result": "Fail"
+    },
+    {
+      "team_run_id": "team_software-engineering-team_fa10eacd",
+      "status_from_backend_probe": "offline",
+      "selected_run_text": "Can you search on the internet that are there any, it's like more like a MCP gateway, you know, i...",
+      "visible_member_rows": [
+        "S solution_designer 1d",
+        "A architecture_reviewer 1d",
+        "I implementation_engineer 1d",
+        "C code_reviewer 1d",
+        "A api_e2e_engineer 1d",
+        "D delivery_engineer 1d"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "delivery_engineer"
+      },
+      "result": "Fail"
+    },
+    {
+      "team_run_id": "team_software-engineering-team_89989caf",
+      "status_from_backend_probe": "offline",
+      "selected_run_text": "Can you please check in the autobyteus-ts, do we have todolist tool? please have a look",
+      "visible_member_rows": [
+        "S solution_designer 1d",
+        "A architecture_reviewer 1d",
+        "I implementation_engineer 1d",
+        "C code_reviewer 1d",
+        "A api_e2e_engineer 1d",
+        "D delivery_engineer 1d"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "solution_designer",
+        "highlighted_member_row": "solution_designer",
+        "expected_focus_header_h4": "delivery_engineer"
+      },
+      "result": "Fail"
+    }
+  ],
+  "control_case": {
+    "team_run_id": "team_software-engineering-team_b8abf03c",
+    "status_from_backend_probe": "running",
+    "result": "Pass",
+    "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json",
+    "summary": "Running team member clicks switched focus to api_e2e_engineer and offline delivery_engineer."
+  },
+  "observed_failure_pattern": "For inactive/offline historical team runs, the roster is visible but clicking non-coordinator members does not move the selected highlight or Focus header away from solution_designer.",
+  "suspected_source_location": {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/autobyteus-web/stores/runHistorySelectionActions.ts",
+    "details": "selectTreeRunFromHistory computes localTargetMemberRouteKey using resolveActiveExecutionFocusedMemberRouteKey(localTeamContext, row.memberRouteKey). For all-offline team contexts, the active-execution projection only includes the coordinator, so the selected roster member is normalized back to solution_designer before focusMemberAndEnsureHydrated is called.",
+    "design_boundary": "The reviewed design says roster/history callers must not use active-execution projection to decide roster membership or visual focus; active-execution fallback belongs to composer/send/task-agent safety surfaces."
+  },
+  "classification": "Local Fix",
+  "recommended_recipient": "implementation_engineer",
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.png",
+  "result": "Fail"
+}

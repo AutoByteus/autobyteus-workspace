@@ -225,6 +225,9 @@ const {
         if (teamContext?.members?.has(memberName)) {
           teamContext.focusedMemberName = memberName;
         }
+        if (teamContext?.memberNodesByRouteKey?.has(memberName)) {
+          teamContext.focusedMemberRouteKey = memberName;
+        }
       }),
       ensureHistoricalMembersHydratedForView: vi.fn().mockResolvedValue(undefined),
     },
@@ -2039,7 +2042,7 @@ describe('runHistoryStore', () => {
     );
   });
 
-  it('filters an initializing task-delegation-only worker from active team rows while keeping coordinator focus', () => {
+  it('keeps an initializing task-delegation-only worker in roster rows with roster visual focus', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
@@ -2123,9 +2126,9 @@ describe('runHistoryStore', () => {
 
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-task-delegation-only-1');
 
-    expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
-    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.focusedMemberRouteKey).toBe('worker');
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
+    expect(teamNode?.memberTree.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('selectTreeRun opens persisted team member when local team context is absent', async () => {
@@ -2197,7 +2200,7 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
   });
 
-  it('selectTreeRun normalizes a task-delegation-only logical parent row to active coordinator focus', async () => {
+  it('selectTreeRun keeps a clicked roster member as visual focus instead of active-execution-normalizing to coordinator', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
     const coordinatorNode = {
@@ -2268,10 +2271,126 @@ describe('runHistoryStore', () => {
     }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'coordinator');
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'worker');
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
     expect(store.selectedTeamRunId).toBe('team-1');
-    expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
+    expect(store.selectedTeamMemberRouteKey).toBe('worker');
+    expect(teamContextsStoreMock.teams.get('team-1')?.focusedMemberRouteKey).toBe('worker');
+  });
+
+  it('selectTreeRun switches inactive all-offline historical Software Engineering Team roster focus between non-coordinator members', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
+    ];
+    workspaceStoreMock.workspaces = {
+      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
+    };
+    const routeKeys = [
+      'solution_designer',
+      'architecture_reviewer',
+      'implementation_engineer',
+      'code_reviewer',
+      'api_e2e_engineer',
+      'delivery_engineer',
+    ];
+    const memberTree = routeKeys.map((memberRouteKey) => ({
+      memberKind: 'agent',
+      memberRouteKey,
+      memberPath: [memberRouteKey],
+      memberName: memberRouteKey,
+      displayName: memberRouteKey,
+      memberRunId: `${memberRouteKey}-run`,
+      agentDefinitionId: `${memberRouteKey}-def`,
+    }));
+    const teamContext = {
+      teamRunId: 'team-software-engineering-offline-1',
+      config: {
+        teamDefinitionId: 'software-engineering-team',
+        teamDefinitionName: 'Software Engineering Team',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      coordinatorMemberRouteKey: 'solution_designer',
+      memberTree,
+      memberNodesByRouteKey: new Map(memberTree.map((node) => [node.memberRouteKey, node])),
+      leafAgentContextsByRouteKey: new Map(routeKeys.map((memberRouteKey) => [
+        memberRouteKey,
+        {
+          config: { workspaceId: 'ws-1', agentDefinitionName: memberRouteKey },
+          state: {
+            runId: `${memberRouteKey}-run`,
+            currentStatus: 'offline',
+            conversation: {
+              id: `${memberRouteKey}-run`,
+              messages: [],
+              createdAt: '2026-06-01T00:00:00.000Z',
+              updatedAt: '2026-06-01T00:00:00.000Z',
+            },
+          },
+        },
+      ])),
+      focusedMemberRouteKey: 'solution_designer',
+      currentStatus: 'offline',
+      isSubscribed: false,
+      historicalHydration: {
+        createdAt: '2026-06-01T00:00:00.000Z',
+        updatedAt: '2026-06-01T00:00:00.000Z',
+        memberMetadataByRouteKey: {} as any,
+        memberProjectionLoadStateByRouteKey: Object.fromEntries(
+          routeKeys.map((memberRouteKey) => [memberRouteKey, 'loaded']),
+        ),
+        memberWorkspaceMetadatasByRouteKey: {} as any,
+      },
+      taskPlan: null,
+      taskStatuses: null,
+    };
+    teamContextsStoreMock.teams.set(teamContext.teamRunId, teamContext);
+
+    await store.selectTreeRun(asTeamMemberTreeRow({
+      teamRunId: teamContext.teamRunId,
+      memberRouteKey: 'api_e2e_engineer',
+      memberName: 'api_e2e_engineer',
+      memberRunId: 'api_e2e_engineer-run',
+      workspaceRootPath: '/ws/a',
+      summary: 'Historical team task',
+      lastActivityAt: '2026-06-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    }));
+
+    let teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === teamContext.teamRunId);
+    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenLastCalledWith(teamContext.teamRunId, 'api_e2e_engineer');
+    expect(teamContext.focusedMemberRouteKey).toBe('api_e2e_engineer');
+    expect(store.selectedTeamMemberRouteKey).toBe('api_e2e_engineer');
+    expect(teamNode?.focusedMemberRouteKey).toBe('api_e2e_engineer');
+
+    await store.selectTreeRun(asTeamMemberTreeRow({
+      teamRunId: teamContext.teamRunId,
+      memberRouteKey: 'delivery_engineer',
+      memberName: 'delivery_engineer',
+      memberRunId: 'delivery_engineer-run',
+      workspaceRootPath: '/ws/a',
+      summary: 'Historical team task',
+      lastActivityAt: '2026-06-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    }));
+
+    teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === teamContext.teamRunId);
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenLastCalledWith(teamContext.teamRunId, 'delivery_engineer');
+    expect(teamContext.focusedMemberRouteKey).toBe('delivery_engineer');
+    expect(store.selectedTeamMemberRouteKey).toBe('delivery_engineer');
+    expect(teamNode?.focusedMemberRouteKey).toBe('delivery_engineer');
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(routeKeys);
   });
 
   it('selectTreeRun keeps a local draft temp team context even when it is not subscribed', async () => {
@@ -2750,7 +2869,7 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-1');
     expect(teamNode?.focusedMemberRouteKey).toBe('coordinator');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context', async () => {
@@ -2843,7 +2962,7 @@ describe('runHistoryStore', () => {
     expect(hydratedTeam.focusedMemberRouteKey).toBe('coordinator');
     expect(store.selectedTeamMemberRouteKey).toBe('coordinator');
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-stale-route-2');
-    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator']);
+    expect(teamNode?.members.map((member) => member.memberRouteKey)).toEqual(['coordinator', 'worker']);
   });
 
   it('openTeamMemberRun trusts history active state and reconnects a team stream', async () => {

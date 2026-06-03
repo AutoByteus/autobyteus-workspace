@@ -131,8 +131,9 @@ export class AgentInputPipeline {
 
     const originalToolContinuationMode = getToolContinuationMode(originalMessage);
     const processedToolContinuationMode = getToolContinuationMode(processedMessage) ?? originalToolContinuationMode;
+    const hasToolContinuationContextFiles = isToolContinuation && (processedMessage.contextFiles?.length ?? 0) > 0;
     const llmRequestMode: LlmRequestMode =
-      isToolContinuation && processedToolContinuationMode !== null
+      isToolContinuation && processedToolContinuationMode !== null && !hasToolContinuationContextFiles
         ? 'tool_history_only'
         : 'append_user_message';
 
