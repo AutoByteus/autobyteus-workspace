@@ -13,6 +13,7 @@ import {
   type TeamRunEvent,
   type TeamRunStatusUpdateData,
 } from "../domain/team-run-event.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 
 export type TeamMemberCommandStatusInput = {
   teamRunId: string;
@@ -21,6 +22,7 @@ export type TeamMemberCommandStatusInput = {
   memberRunId: string;
   memberPath: string[];
   memberRouteKey: string;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
   status: AgentApiStatus;
   errorMessage?: string | null;
 };
@@ -57,6 +59,9 @@ export const buildAgentMemberCommandStatusPayload = (
     memberPath: input.memberPath,
     sourceRouteKey: input.memberRouteKey,
     sourcePath: input.memberPath,
+    taskAgentInstanceId: input.taskAgentInstance?.taskAgentInstanceId ?? null,
+    taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
+    taskId: input.taskAgentInstance?.taskId ?? null,
   });
 
 export const buildAgentMemberCommandStartStatusEvent = (
@@ -82,6 +87,7 @@ export const buildAgentMemberCommandStartStatusEvent = (
         },
         statusHint: statusHintFor(input.status),
       },
+      taskAgentInstance: input.taskAgentInstance ?? null,
     },
   };
 };

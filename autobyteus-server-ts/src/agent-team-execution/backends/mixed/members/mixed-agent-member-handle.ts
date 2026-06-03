@@ -75,11 +75,12 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   getStatusSnapshot() {
     const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
       memberContext: this.context,
+      taskAgentInstance: this.options.taskAgentInstance ?? null,
       fallback: () => this.agentRun?.getStatusSnapshot() ?? {
-      status: "offline" as const,
-      can_interrupt: false,
-      agent_id: this.context.memberRunId,
-      agent_name: this.context.memberName,
+        status: "offline" as const,
+        can_interrupt: false,
+        agent_id: this.context.memberRunId,
+        agent_name: this.context.memberName,
       },
     });
     return {
@@ -375,6 +376,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.commandStatusOverlayStore.publishMemberCommandStatus({
       runtimeKind: this.context.runtimeKind,
       memberContext: this.context,
+      taskAgentInstance: this.options.taskAgentInstance ?? null,
       status,
       errorMessage,
       currentStatus: () => this.getStatusSnapshot().status,

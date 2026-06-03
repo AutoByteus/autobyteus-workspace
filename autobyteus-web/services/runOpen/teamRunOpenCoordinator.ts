@@ -1,5 +1,4 @@
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
@@ -14,7 +13,10 @@ import {
   loadTeamRunContextHydrationPayload,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
-import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  applyMemberOrHistoryStatusSnapshot,
+  preserveCanonicalAgentStatus,
+} from '~/services/runStatus/agentRuntimeStatusState';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
@@ -23,19 +25,6 @@ import {
   getTaskAgentIdentityFromContext,
   restoreTaskAgentContextProjections,
 } from '~/services/agentStreaming/teamTaskAgentContextProjection';
-
-const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
-  if (
-    status === AgentStatus.Running ||
-    status === AgentStatus.Initializing ||
-    status === AgentStatus.Idle ||
-    status === AgentStatus.Error ||
-    status === AgentStatus.Offline
-  ) {
-    return status;
-  }
-  return AgentStatus.Offline;
-};
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -76,7 +65,7 @@ const mergeHydratedMembers = (
       applyMemberOrHistoryStatusSnapshot(
         existingMemberContext,
         options.preserveMemberStatus
-          ? preserveCanonicalMemberStatus(existingMemberContext.state.currentStatus)
+          ? preserveCanonicalAgentStatus(existingMemberContext.state.currentStatus)
           : memberContext.state.currentStatus,
         { preserveLiveInterrupt: false },
       );

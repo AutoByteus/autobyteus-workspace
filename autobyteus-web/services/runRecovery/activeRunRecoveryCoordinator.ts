@@ -1,4 +1,3 @@
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type {
@@ -21,21 +20,9 @@ import {
 import {
   applyActiveRuntimePlaceholder,
   applyMemberOrHistoryStatusSnapshot,
+  preserveCanonicalAgentStatus,
 } from '~/services/runStatus/agentRuntimeStatusState';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-
-const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
-  if (
-    status === AgentStatus.Running ||
-    status === AgentStatus.Initializing ||
-    status === AgentStatus.Idle ||
-    status === AgentStatus.Error ||
-    status === AgentStatus.Offline
-  ) {
-    return status;
-  }
-  return AgentStatus.Offline;
-};
 
 export interface RecoverActiveRunsFromHistoryInput {
   workspaceGroups: RunHistoryWorkspaceGroup[];
@@ -84,7 +71,7 @@ const applyTeamHistoryStatusToExistingContext = (
       statusByRunId.get(memberContext.state.runId);
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
-      matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalMemberStatus(memberContext.state.currentStatus),
+      matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalAgentStatus(memberContext.state.currentStatus),
       {
         preserveLiveInterrupt: existingTeamContext.isSubscribed,
         preserveCurrentStatus: preserveCurrentMemberStatuses,

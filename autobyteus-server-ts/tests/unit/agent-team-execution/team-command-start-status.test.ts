@@ -17,6 +17,7 @@ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-ru
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { TeamCommandStatusOverlayStore } from "../../../src/agent-team-execution/services/team-command-status-overlay-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { convertTeamRunEventToServerMessage } from "../../../src/services/agent-streaming/team-run-event-websocket-message-mapper.js";
 
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
@@ -40,6 +41,20 @@ describe("TeamCommandStatusOverlayStore", () => {
     memberPath: ["Worker"],
     memberRouteKey: "Worker",
     memberRunId: "member-run-1",
+  };
+  const taskAgentInstance = {
+    taskAgentInstanceId: "task-agent-instance-1",
+    taskAgentRunId: "task-agent-run-1",
+    teamRunId: "team-run-1",
+    taskId: "task-0001",
+    logicalMember: {
+      memberName: "Worker",
+      memberPath: ["Worker"],
+      memberRouteKey: "Worker",
+      templateMemberRunId: "member-run-1",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    },
+    createdAt: "2026-06-03T00:00:00.000Z",
   };
 
   const createStore = () => {
@@ -152,6 +167,119 @@ describe("TeamCommandStatusOverlayStore", () => {
       memberContext,
       fallback: () => ({ status: "offline", can_interrupt: false }),
     })).toEqual({ status: "offline", can_interrupt: false });
+  });
+
+  it("keeps task-agent command overlays keyed by concrete task-agent identity", () => {
+    const { store, events } = createStore();
+    const taskMemberContext = {
+      ...memberContext,
+      memberRunId: taskAgentInstance.taskAgentRunId,
+    };
+
+    expect(store.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberContext: taskMemberContext,
+      taskAgentInstance,
+      status: "initializing",
+      currentStatus: () => "offline",
+    })).toBe(true);
+
+    expect(events[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      sourcePath: ["Worker"],
+      data: {
+        memberRunId: "task-agent-run-1",
+        taskAgentInstance: {
+          taskAgentInstanceId: "task-agent-instance-1",
+          taskAgentRunId: "task-agent-run-1",
+          taskId: "task-0001",
+        },
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "task-agent-run-1",
+          payload: {
+            status: "initializing",
+            agent_id: "task-agent-run-1",
+            member_route_key: "Worker",
+            task_agent_instance_id: "task-agent-instance-1",
+            task_agent_run_id: "task-agent-run-1",
+            task_id: "task-0001",
+          },
+        },
+      },
+    });
+    expect(convertTeamRunEventToServerMessage(events[0], {
+      map: () => ({
+        type: "AGENT_STATUS",
+        payload: (events[0].data as any).agentEvent.payload,
+      } as any),
+    } as any).payload).toMatchObject({
+      agent_id: "task-agent-run-1",
+      member_route_key: "Worker",
+      member_path: ["Worker"],
+      source_route_key: "Worker",
+      source_path: ["Worker"],
+      task_agent_instance_id: "task-agent-instance-1",
+      task_agent_run_id: "task-agent-run-1",
+      task_id: "task-0001",
+    });
+
+    expect(store.getMemberStatusSnapshot({
+      memberContext,
+      fallback: () => ({ status: "offline", can_interrupt: false, agent_id: "member-run-1" }),
+    })).toMatchObject({ status: "offline", agent_id: "member-run-1" });
+    expect(store.getMemberStatusSnapshot({
+      memberContext: taskMemberContext,
+      taskAgentInstance,
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toMatchObject({
+      status: "initializing",
+      agent_id: "task-agent-run-1",
+      task_agent_run_id: "task-agent-run-1",
+    });
+
+    expect(store.applyMemberStatusOverlays([
+      { status: "offline", can_interrupt: false, agent_id: "member-run-1", member_route_key: "Worker" },
+      {
+        status: "offline",
+        can_interrupt: false,
+        agent_id: "task-agent-run-1",
+        member_route_key: "Worker",
+        task_agent_run_id: "task-agent-run-1",
+      },
+    ])).toEqual([
+      expect.objectContaining({ status: "offline", agent_id: "member-run-1" }),
+      expect.objectContaining({ status: "initializing", agent_id: "task-agent-run-1" }),
+    ]);
+
+    expect(store.recordReplacementEvents([{
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-run-1",
+      sourcePath: ["Worker"],
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: "Worker",
+        memberRunId: "task-agent-run-1",
+        memberPath: ["Worker"],
+        memberRouteKey: "Worker",
+        taskAgentInstance,
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "task-agent-run-1",
+          payload: {
+            status: "running",
+            can_interrupt: false,
+            task_agent_run_id: "task-agent-run-1",
+          },
+          statusHint: "ACTIVE",
+        },
+      },
+    }])).toBe(true);
+    expect(store.getMemberStatusSnapshot({
+      memberContext: taskMemberContext,
+      taskAgentInstance,
+      fallback: () => ({ status: "running", can_interrupt: false, agent_id: "task-agent-run-1" }),
+    })).toMatchObject({ status: "running", agent_id: "task-agent-run-1" });
   });
 
   it("keeps root and sub-team source-path overlays isolated and clears all on dispose", () => {

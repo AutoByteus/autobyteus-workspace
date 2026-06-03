@@ -6,7 +6,6 @@
  * after route resolution for runtime correlation.
  */
 
-import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
@@ -46,16 +45,14 @@ import {
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import {
-  ensureTaskAgentContext,
   extractTaskAgentIdentity,
-  getTaskAgentContextByRunId,
   removeTaskAgentContext,
   shouldRemoveTaskAgentAfterMessage,
 } from './teamTaskAgentContextProjection';
+import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
-import { isTaskAgentRunId } from './taskAgentRunIdentity';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -81,10 +78,6 @@ export interface TeamStreamingServiceOptions {
 export interface TeamInterruptGenerationTarget {
   targetMemberRouteKey: string;
   targetMemberRunId?: string | null;
-}
-
-interface MemberContextResolution {
-  context: AgentContext;
 }
 
 export class TeamStreamingService {
@@ -358,75 +351,6 @@ export class TeamStreamingService {
     };
   }
 
-  /**
-   * Route message to the appropriate team member using canonical source route/path identity.
-   */
-  private getMemberContextResolution(message: ServerMessage): MemberContextResolution | null {
-    if (!this.teamContext) return null;
-
-    // Use type assertion since route/source metadata is present only on team-scoped payloads.
-    const taskAgentIdentity = extractTaskAgentIdentity(message);
-    if (taskAgentIdentity) {
-      return {
-        context: ensureTaskAgentContext(this.teamContext, taskAgentIdentity),
-      };
-    }
-
-    const payload = 'payload' in message ? message.payload as {
-      agent_id?: string;
-      agent_name?: string;
-      member_route_key?: string;
-      source_route_key?: string;
-      source_path?: string[];
-      member_path?: string[];
-    } : null;
-    const sourceRouteKey = payload?.source_route_key || payload?.member_route_key;
-    const sourcePath = Array.isArray(payload?.source_path) && payload.source_path.length > 0
-      ? payload.source_path
-      : Array.isArray(payload?.member_path)
-        ? payload.member_path
-        : null;
-    const routeKeyFromPath = sourcePath?.map((segment) => String(segment).trim()).filter(Boolean).join('/') || '';
-    const memberRunId = payload?.agent_id;
-
-    if (memberRunId) {
-      const taskAgentContext = getTaskAgentContextByRunId(this.teamContext, memberRunId);
-      if (taskAgentContext) {
-        return {
-          context: taskAgentContext,
-        };
-      }
-      if (isTaskAgentRunId(memberRunId)) {
-        return null;
-      }
-    }
-
-    const canonicalRouteKey = String(sourceRouteKey || routeKeyFromPath || '').trim();
-    const routedMatch = canonicalRouteKey
-      ? this.teamContext.leafAgentContextsByRouteKey.get(canonicalRouteKey)
-      : null;
-    if (routedMatch) {
-      if (memberRunId && !isTaskAgentRunId(memberRunId) && routedMatch.state.runId !== memberRunId) {
-        routedMatch.state.runId = memberRunId;
-      }
-      return {
-        context: routedMatch,
-      };
-    }
-
-    if (memberRunId) {
-      for (const memberContext of this.teamContext.leafAgentContextsByRouteKey.values()) {
-        if (memberContext.state.runId === memberRunId) {
-          return {
-            context: memberContext,
-          };
-        }
-      }
-    }
-
-    return null;
-  }
-
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
     if (message.type === 'TEAM_STATUS') {
       handleTeamStatus(message.payload, teamContext);
@@ -445,7 +369,7 @@ export class TeamStreamingService {
 
     const taskAgentIdentity = extractTaskAgentIdentity(message);
     const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
-    const memberResolution = this.getMemberContextResolution(message);
+    const memberResolution = resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
       if (message.type === 'AGENT_STATUS') {
