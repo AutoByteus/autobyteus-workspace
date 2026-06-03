@@ -194,8 +194,6 @@ describe('openTeamRun', () => {
       focusedMemberRouteKey: 'member-a',
       currentStatus: 'Processing',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     };
     const projectedMembers = new Map([
       ['member-a', createMemberContext('run-a', 'projected-conversation')],
@@ -266,8 +264,6 @@ describe('openTeamRun', () => {
       focusedMemberRouteKey: 'member-a',
       currentStatus: 'Processing',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     };
     const projectedMembers = new Map([
       ['member-a', createMemberContext('run-a', 'projected-a')],
@@ -324,8 +320,6 @@ describe('openTeamRun', () => {
       focusedMemberRouteKey: 'member-a',
       currentStatus: 'running',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     };
     const projectedMembers = new Map([
       ['member-a', createMemberContext('run-a', 'projected-a')],
@@ -367,8 +361,6 @@ describe('openTeamRun', () => {
       focusedMemberRouteKey: 'task-agent-run-1',
       currentStatus: 'running',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     } as any;
     const existingTaskAgentContext = ensureTaskAgentContext(existingContext, {
       taskAgentInstanceId: 'task-agent-instance-1',
@@ -431,8 +423,6 @@ describe('openTeamRun', () => {
       focusedMemberRouteKey: 'member-a',
       currentStatus: 'offline',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     };
     const projectedMembers = new Map([
       ['member-a', createMemberContext('run-a', 'projected-conversation')],

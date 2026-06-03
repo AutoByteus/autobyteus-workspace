@@ -49,9 +49,7 @@ const messages = {
     "团队",
   "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
     "暂无描述",
-  "workspace.components.workspace.team.TeamOverviewPanel.task_plan": "任务计划",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",
-  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "任务",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":

@@ -4,7 +4,6 @@ import {
   AgentTeamStatusUpdateData,
   AgentTeamStreamEvent,
   SubTeamEventRebroadcastPayload,
-  type TaskPlanEventPayload,
 } from "autobyteus-ts";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import {
@@ -23,7 +22,6 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
   type TeamRunStatusUpdateData,
-  type TeamRunTaskPlanEventPayload,
 } from "../../domain/team-run-event.js";
 import {
   buildInterAgentMessageReferenceFileEntries,
@@ -102,15 +100,6 @@ export class AutoByteusTeamRunEventProcessor {
       }];
     }
 
-    if (nativeEvent.event_source_type === "TASK_PLAN") {
-      return [{
-        eventSourceType: TeamRunEventSourceType.TASK_PLAN,
-        teamRunId: this.teamRunId,
-        sourcePath: this.resolveTeamSourcePath(subTeamNodeName),
-        data: asRecord(nativeEvent.data as TaskPlanEventPayload) as TeamRunTaskPlanEventPayload,
-        subTeamNodeName,
-      }];
-    }
 
     if (
       nativeEvent.event_source_type === "SUB_TEAM" &&

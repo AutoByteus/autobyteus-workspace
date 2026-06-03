@@ -1,6 +1,5 @@
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { AgentContext } from './AgentContext';
-import type { Task, TaskStatus } from '~/types/taskManagement';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
@@ -70,6 +69,4 @@ export interface AgentTeamContext {
   currentStatus: AgentTeamStatus;
   isSubscribed: boolean;
   unsubscribe?: () => void;
-  taskPlan: Task[] | null;
-  taskStatuses: Record<string, TaskStatus> | null;
 }

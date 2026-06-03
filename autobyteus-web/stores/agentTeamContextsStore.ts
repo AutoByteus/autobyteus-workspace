@@ -189,8 +189,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         focusedMemberRouteKey,
         currentStatus: AgentTeamStatus.Offline,
         isSubscribed: false,
-        taskPlan: null,
-        taskStatuses: null,
       };
 
       this.teams.set(teamRunId, newContext);

@@ -155,8 +155,6 @@ export const AgentTeamApp: React.FC<{ team: AgentTeam }> = ({ team }) => {
     focusedType === 'agent' ? store.getLastUserMessage(focusedName) : null;
   const pendingApproval =
     focusedType === 'agent' ? store.getPendingApprovalForAgent(focusedName) : null;
-  const taskPlan = focusedType !== 'agent' ? store.getTaskPlanTasks(focusedName) : null;
-  const taskStatuses = focusedType !== 'agent' ? store.getTaskPlanStatuses(focusedName) : null;
 
   const handleSubmitMessage = (agentName: string, text: string): void => {
     store.appendUserMessage(agentName, text);
@@ -204,8 +202,6 @@ export const AgentTeamApp: React.FC<{ team: AgentTeam }> = ({ team }) => {
           history={history}
           lastUserMessage={lastUserMessage}
           pendingApproval={pendingApproval}
-          tasks={taskPlan}
-          taskStatuses={taskStatuses}
           availableHeight={bodyHeight}
           availableWidth={focusWidth}
           onSubmitMessage={handleSubmitMessage}

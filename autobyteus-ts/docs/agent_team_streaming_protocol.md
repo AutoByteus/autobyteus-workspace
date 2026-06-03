@@ -1,187 +1,45 @@
 # Agent Team Streaming Protocol
 
-**Date:** 2026-01-06  
-**Status:** Implemented  
-**Scope:** Agent Teams (Runtime, Streaming, Multiplexing)
+The native `autobyteus-ts` team stream multiplexes runtime events for native
+teams. It no longer carries native task-plan events.
 
-## 1. Overview
-
-Agent Teams in Autobyteus expose a **single, unified event stream** (`AgentTeamEventStream`) that acts as a multiplexer for all activity within the team. This stream aggregates events from:
-
-1.  **TEAM**: The coordinator itself (status updates).
-2.  **AGENT**: Individual agents running in the team (streamed responses, tool calls).
-3.  **SUB_TEAM**: Nested sub-teams (recursive aggregation).
-4.  **TASK_PLAN**: Native internal TaskPlan events (task creation, status updates). Server-owned task-delegation events are documented in `autobyteus-server-ts/docs/modules/agent_team_execution.md`.
-
-This document defines the **JSON wire format** and **data flow** for this stream.
-
----
-
-## 2. Data Flow Architecture
-
-The journey of an event from an individual agent to the final team stream involves three stages:
-
-### Stage 1: Source (Agent Emission)
-
-- **Component**: `AgentEventStream` (inside the Agent's runtime).
-- **Action**: The agent emits a raw `StreamEvent` (e.g., a `SEGMENT_EVENT` from the streaming parser).
-- **Payload**: A concise, agent-centric object.
-  ```ts
-  const event = new StreamEvent({
-    event_type: 'segment_event',
-    agent_id: 'researcher_1',
-    data: { /* ... */ }
-  });
-  ```
-
-### Stage 2: Bridge (Multiplexing)
-
-- **Component**: `AgentEventBridge` (managed by `AgentEventMultiplexer`).
-- **Action**: Development of a dedicated bridge task for each agent.
-- **Process**: The bridge consumes the `StreamEvent` and forwards it to the team's central notifier.
-
-### Stage 3: Sink (Team Notification)
-
-- **Component**: `AgentTeamExternalEventNotifier`.
-- **Action**: Wraps the original `StreamEvent` into an **envelope** (`AgentTeamStreamEvent`) that identifies the source category (`AGENT`, `TEAM`, etc.).
-- **Result**: The final JSON object sent over WebSocket.
-
----
-
-## 3. JSON Protocol Specification
-
-The top-level object for every message in the team stream is the `AgentTeamStreamEvent`.
-
-### 3.1 Envelope Structure
+## Event Envelope
 
 ```json
 {
-  "event_id": "uuid-string-1234",
-  "timestamp": "2026-01-06T12:00:00Z",
-  "team_id": "team-primary",
-  "event_source_type": "TEAM | AGENT | SUB_TEAM | TASK_PLAN",
-  "data": { ... } // Payload depends on event_source_type
+  "event_id": "uuid",
+  "timestamp": "2026-06-03T00:00:00.000Z",
+  "team_id": "team-id",
+  "event_source_type": "TEAM | AGENT | SUB_TEAM",
+  "data": {}
 }
 ```
 
-### 3.2 Payload Schemas
+## Source Types
 
-#### A. Source Type: `TEAM`
+### `TEAM`
 
-Used for status updates of the team coordinator itself.
+Team status updates. Data is `AgentTeamStatusUpdateData`.
 
-- **TypeScript Type**: `AgentTeamStatusUpdateData`
-- **Payload (`data`)**:
-  ```json
-  {
-    "status": "IDLE", // Enum: IDLE, RUNNING, PAUSED, ERROR, SHUTTING_DOWN
-    "previous_status": "STARTING", // Optional
-    "error_message": null // Optional string
-  }
-  ```
+### `AGENT`
 
-#### B. Source Type: `AGENT`
+A member agent stream event rebroadcast. Data is `AgentEventRebroadcastPayload`
+with `agent_name` and `agent_event`.
 
-Multiplexed events from member agents.
+### `SUB_TEAM`
 
-- **TypeScript Type**: `AgentEventRebroadcastPayload`
-- **Payload (`data`)**:
-  ```json
-  {
-    "agent_name": "Researcher_1", // Friendly node name from Team Configuration
-    "agent_event": {
-      // The original StreamEvent from the agent
-      "event_id": "evt-5678",
-      "timestamp": "...",
-      "agent_id": "agent-uuid-001", // The agent's internal UUID
-      "event_type": "segment_event",
-      "data": {
-        "type": "SEGMENT_CONTENT",
-        "payload": { "delta": "Analysis " }
-      }
-    }
-  }
-  ```
-  > **Note**: The nested `agent_event` preserves the full fidelity of the original agent stream, including the `agent_id`.
+A nested team stream event rebroadcast. Data is `SubTeamEventRebroadcastPayload`
+with `sub_team_node_name` and `sub_team_event`.
 
-#### C. Source Type: `SUB_TEAM`
+## Dedicated Task Delegation
 
-Recursive events from nested teams.
+Server-owned dedicated task delegation is not part of this native stream source
+set. Server team runs publish dedicated task domain events through
+`TeamRunEventSourceType.TASK_DELEGATION`, which the server WebSocket layer
+exposes as `TASK_DELEGATION_EVENT`. See
+`autobyteus-server-ts/docs/modules/agent_team_execution.md`.
 
-- **TypeScript Type**: `SubTeamEventRebroadcastPayload`
-- **Payload (`data`)**:
-  ```json
-  {
-    "sub_team_node_name": "backend_team",
-    "sub_team_event": { ... } // Recursive AgentTeamStreamEvent
-  }
-  ```
+## Personal ToDo
 
-#### D. Source Type: `TASK_PLAN`
-
-Events related to the native internal task board. These are not the server-owned explicit task-delegation events used by cross-runtime delegation (`delegate_tasks`, task-agent `mark_task_completed` / `mark_task_failed`, and delegator `accept_task`).
-
-- **TypeScript Type**: `TaskPlanEventPayload` (Union)
-- **Payload (`data`)** (Example: `TasksCreatedEvent`):
-  ```json
-  {
-    "tasks": [{ "id": "t1", "description": "Research protocol" }]
-  }
-  ```
-
----
-
-## 4. Class Reference
-
-| JSON Field         | TypeScript Type                  | File Location                                              |
-| :----------------- | :------------------------------- | :--------------------------------------------------------- |
-| **Envelope**       | `AgentTeamStreamEvent`           | `src/agent-team/streaming/agent-team-stream-events.ts`         |
-| **`data` (AGENT)** | `AgentEventRebroadcastPayload`   | `src/agent-team/streaming/agent-team-stream-event-payloads.ts` |
-| **`data` (TEAM)**  | `AgentTeamStatusUpdateData`      | `src/agent-team/streaming/agent-team-stream-event-payloads.ts` |
-| **`reader`**       | `AgentTeamExternalEventNotifier` | `src/agent-team/streaming/agent-team-event-notifier.ts`        |
-
----
-
-## 5. Wire Protocol (WebSocket)
-
-**Note:** The JSON structure described above is the **internal server-side protocol**. Before being sent over the WebSocket to the frontend, these events are **flattened** by the `AgentTeamStreamHandler`.
-
-### Transformation Logic (`AgentTeamStreamHandler`)
-
-When an `AGENT` event (`AgentEventRebroadcastPayload`) is processed:
-
-1.  The inner `agent_event` is extracted.
-2.  It is converted to a standard `ServerMessage` (same as single-agent mode).
-3.  The `agent_name` (friendly node name) and `agent_id` (unique instance ID) are **injected** into the top-level payload.
-
-### Final Client-Side JSON Example
-
-```json
-{
-  "type": "SEGMENT_CONTENT",
-  "payload": {
-    "id": "seg_uuid_1",
-    "segment_type": "text",
-    "delta": "Hello world",
-    "agent_name": "Researcher_1", // Injected by handler
-    "agent_id": "agent-123" // Injected by handler
-  }
-}
-```
-
-This flattening ensures that the frontend can reuse existing single-agent components while simply checking for the extra `agent_name` field to attribute the activity.
-
-### Team Communication References
-
-For accepted inter-agent messages, the server emits the source
-`INTER_AGENT_MESSAGE` with stable message identity and any explicit
-`payload.reference_files` represented as child reference metadata. Message prose
-is not scanned for paths; paths mentioned only in content remain ordinary
-non-clickable text.
-
-The server-side event pipeline converts that source event into one normalized
-`TEAM_COMMUNICATION_MESSAGE` for the Team tab store. The Team tab shows
-focused-member sent/received message perspectives grouped by counterpart, and
-reference files are rendered beneath the message that carried them. Clients must
-not make raw message paths clickable or add those rows to the produced-file
-`FILE_CHANGE` projection.
+Personal ToDo updates remain agent-level events and continue to use
+`TODO_LIST_UPDATE` in the agent WebSocket/streaming protocol.

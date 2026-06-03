@@ -49,7 +49,7 @@ Mobile Chat owns a fixed viewport-height work frame. The transcript/feed is the 
 
 For team runs, Chat/Files/Artifacts/Activity can expose a compact target picker with the focused member name and a symbolic chevron/dropdown affordance instead of a visible `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
 
-Mobile Activity exposes concrete category filters: Tasks, Messages, and Tools. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Do not add separate mobile-only issue filters such as Errors or Approvals; error and approval state should remain visible on the relevant tool/activity rows instead of through extra filter controls.
+Mobile Activity exposes concrete category filters for Messages and Activity. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Do not add separate mobile-only issue filters such as Errors or Approvals; error and approval state should remain visible on the relevant tool/activity rows instead of through extra filter controls.
 
 Do not reintroduce mobile Tools/Terminal/VNC copy or controls in Phase One. Any future mobile tool surface must go through a separate security and UX design.
 

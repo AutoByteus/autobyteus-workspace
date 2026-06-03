@@ -8,7 +8,6 @@ import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   TEAM = "TEAM",
-  TASK_PLAN = "TASK_PLAN",
   TASK_DELEGATION = "TASK_DELEGATION",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
@@ -29,7 +28,6 @@ export type TeamRunAgentEventPayload = {
   taskAgentInstance?: TaskAgentInstanceIdentity | null;
 };
 
-export type TeamRunTaskPlanEventPayload = Record<string, unknown>;
 
 export type TeamRunTaskDelegationEventPayload = {
   eventType:
@@ -102,7 +100,6 @@ export type TeamRunMemberInputEventPayload = {
 export type TeamRunEventData =
   | TeamRunStatusUpdateData
   | TeamRunAgentEventPayload
-  | TeamRunTaskPlanEventPayload
   | TeamRunTaskDelegationEventPayload
   | TeamRunCommunicationEventPayload
   | TeamRunMemberInputEventPayload;

@@ -161,8 +161,6 @@ export const openTeamRun = async (
       ? AgentTeamStatus.Running
       : AgentTeamStatus.Offline,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   };
   (hydratedContext as any).members = members;
   const resolvedFocusedMemberRouteKey = shouldTreatAsLive
@@ -220,8 +218,6 @@ export const openTeamRun = async (
       existingTeamContext.currentStatus = hydratedContext.currentStatus;
       existingTeamContext.isSubscribed = false;
       existingTeamContext.unsubscribe = undefined;
-      existingTeamContext.taskPlan = null;
-      existingTeamContext.taskStatuses = null;
     }
     (existingTeamContext as any).members = existingTeamContext.leafAgentContextsByRouteKey;
 

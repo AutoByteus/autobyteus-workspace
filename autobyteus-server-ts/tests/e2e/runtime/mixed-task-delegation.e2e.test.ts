@@ -353,7 +353,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "coordinator delegate_tasks success", 240_000,
       );
       const activation = await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TASK_PLAN_EVENT" && message.payload.event_type === "TASK_DELEGATION_ACTIVATED" && Array.isArray(message.payload.taskIds) && message.payload.taskIds.length === 1,
+        message.type === "TASK_DELEGATION_EVENT" && message.payload.event_type === "TASK_DELEGATION_ACTIVATED" && Array.isArray(message.payload.taskIds) && message.payload.taskIds.length === 1,
         "task delegation activation event", 120_000,
       );
       const taskId = (activation.payload.taskIds as string[])[0];
@@ -363,7 +363,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "worker mark_task_completed success", 240_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TASK_PLAN_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
+        message.type === "TASK_DELEGATION_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
         "task delegation terminal event", 120_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>

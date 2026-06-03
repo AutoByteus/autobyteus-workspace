@@ -6,7 +6,6 @@ import {
   type TeamRunMemberInputEventPayload,
   type TeamRunStatusUpdateData,
   type TeamRunTaskDelegationEventPayload,
-  type TeamRunTaskPlanEventPayload,
   getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
 import type { AgentRunEventMessageMapper } from "./agent-run-event-message-mapper.js";
@@ -18,6 +17,51 @@ import {
 import { serializePayload } from "./payload-serialization.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
+
+const asRecord = (value: unknown): Record<string, unknown> => (
+  value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {}
+);
+
+const normalizePath = (value: unknown): string[] => (
+  Array.isArray(value)
+    ? value.map((part) => String(part).trim()).filter(Boolean)
+    : []
+);
+
+const flattenTaskDelegationIdentity = (
+  payload: Record<string, unknown>,
+): Record<string, unknown> => {
+  const taskAgentInstance = asRecord(payload.taskAgentInstance);
+  const member = asRecord(payload.member);
+  const logicalMember = asRecord(taskAgentInstance.logicalMember);
+  const memberPath = normalizePath(member.memberPath).length > 0
+    ? normalizePath(member.memberPath)
+    : normalizePath(logicalMember.memberPath);
+  const memberRouteKey = typeof member.memberRouteKey === "string" && member.memberRouteKey.trim()
+    ? member.memberRouteKey.trim()
+    : typeof logicalMember.memberRouteKey === "string" && logicalMember.memberRouteKey.trim()
+      ? logicalMember.memberRouteKey.trim()
+      : null;
+
+  return {
+    ...(typeof taskAgentInstance.taskAgentInstanceId === "string" ? {
+      task_agent_instance_id: taskAgentInstance.taskAgentInstanceId,
+    } : {}),
+    ...(typeof taskAgentInstance.taskAgentRunId === "string" ? {
+      task_agent_run_id: taskAgentInstance.taskAgentRunId,
+      agent_id: taskAgentInstance.taskAgentRunId,
+    } : {}),
+    ...(typeof taskAgentInstance.taskId === "string" ? {
+      task_id: taskAgentInstance.taskId,
+    } : typeof payload.taskId === "string" ? {
+      task_id: payload.taskId,
+    } : {}),
+    ...(memberRouteKey ? { member_route_key: memberRouteKey } : {}),
+    ...(memberPath.length > 0 ? { member_path: memberPath } : {}),
+  };
+};
 
 export const convertTeamRunEventToServerMessage = (
   event: TeamRunEvent,
@@ -61,25 +105,13 @@ export const convertTeamRunEventToServerMessage = (
     });
   }
 
-  if (event.eventSourceType === TeamRunEventSourceType.TASK_PLAN) {
-    const payload = serializePayload(event.data as TeamRunTaskPlanEventPayload);
-    const eventType = Array.isArray(payload.tasks)
-      ? "TASKS_CREATED"
-      : typeof payload.task_id === "string"
-        ? "TASK_STATUS_UPDATED"
-        : "TASK_PLAN_EVENT";
-    return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
-      event_type: eventType,
-      ...payload,
-      ...sourcePayload,
-    });
-  }
-
   if (event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION) {
     const payload = event.data as TeamRunTaskDelegationEventPayload;
-    return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
+    const serializedPayload = serializePayload(payload.payload);
+    return new ServerMessage(ServerMessageType.TASK_DELEGATION_EVENT, {
       event_type: payload.eventType,
-      ...serializePayload(payload.payload),
+      ...serializedPayload,
+      ...flattenTaskDelegationIdentity(serializedPayload),
       ...sourcePayload,
     });
   }

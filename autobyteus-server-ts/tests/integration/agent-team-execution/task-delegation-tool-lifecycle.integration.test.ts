@@ -406,7 +406,7 @@ describe("task delegation tool lifecycle integration", () => {
     expect(harness.backend.messages.some((message) => message.targetRouteKey === "coordinator" && message.content.includes("reported completed") && message.content.includes("task_0001"))).toBe(true);
 
     const terminalSocketMessage = websocketMessageFor(taskDelegationEvents(harness.backend, "TASK_DELEGATION_TERMINAL_STATUS")[0]);
-    expect(terminalSocketMessage.type).toBe(ServerMessageType.TASK_PLAN_EVENT);
+    expect(terminalSocketMessage.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
     expect(terminalSocketMessage.payload).toMatchObject({
       event_type: "TASK_DELEGATION_TERMINAL_STATUS",
       taskId: "task_0001",
