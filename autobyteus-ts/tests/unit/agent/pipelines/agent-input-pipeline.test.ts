@@ -99,6 +99,28 @@ describe('AgentInputPipeline', () => {
     expect(result.llmRequestMode).toBe('tool_history_only');
   });
 
+  it('appends canonical tool continuations when they carry media context files', async () => {
+    const { context, turn } = makeContextAndTurn();
+    const pipeline = new AgentInputPipeline();
+    const toolMessage = new AgentInputUserMessage(
+      'tool history continuation',
+      SenderType.TOOL,
+      [
+        new ContextFile('/tmp/sample.mp3', ContextFileType.AUDIO),
+        new ContextFile('/tmp/clip.mp4', ContextFileType.VIDEO)
+      ],
+      {
+        [TOOL_CONTINUATION_MODE_METADATA_KEY]: TOOL_HISTORY_ONLY_CONTINUATION_MODE,
+      }
+    );
+
+    const result = await pipeline.processToolContinuation(toolMessage, context, turn);
+
+    expect(result.llmRequestMode).toBe('append_user_message');
+    expect(result.llmUserMessage.audio_urls).toEqual(['/tmp/sample.mp3']);
+    expect(result.llmUserMessage.video_urls).toEqual(['/tmp/clip.mp4']);
+  });
+
   it('rejects SenderType.TOOL as a new external turn trigger', async () => {
     const { context, turn } = makeContextAndTurn();
     const pipeline = new AgentInputPipeline();
