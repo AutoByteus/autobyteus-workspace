@@ -83,7 +83,7 @@
     "all_six_member_rows_remained_visible_in_roster_order": true
   },
   "result": "Pass",
-  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-member-focus-delivery-validation.png",
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-member-focus-delivery-validation.png",
   "notes": [
     "The user-reported failure was not reproduced on the current ticket frontend served from the worktree against the existing Electron backend.",
     "Round 1 API/E2E did not explicitly include this click-to-focus transition; this rerun adds that coverage as a non-durable ticket evidence artifact.",

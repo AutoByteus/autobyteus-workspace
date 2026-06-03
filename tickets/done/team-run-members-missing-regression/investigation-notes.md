@@ -21,7 +21,7 @@ User reports that when the frontend is started against backend servers started b
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression`
 - Current Branch: `codex/team-run-members-missing-regression`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression`
 - Bootstrap Base Branch: `origin/personal`
@@ -99,9 +99,9 @@ User reports that when the frontend is started against backend servers started b
 | Date | Method | Exact Command / Method | Observation | Implication |
 | --- | --- | --- | --- | --- |
 | 2026-06-02 | Repro | Browser: `http://127.0.0.1:3033/workspace` -> expand `autobyteus-workspace-superrepo` -> expand `Software Engineering Team` -> click active bug-report row | Only `solution_designer` is visible for the selected team run. | Reproduces user report. |
-| 2026-06-02 | Screenshot | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/reproduction-only-solution-designer.png` | Screenshot shows selected team run with `solution_designer` only. | Durable visual evidence for reviewers. |
+| 2026-06-02 | Screenshot | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/reproduction-only-solution-designer.png` | Screenshot shows selected team run with `solution_designer` only. | Durable visual evidence for reviewers. |
 | 2026-06-02 | Probe | GraphQL `listWorkspaceRunHistory(limitPerAgent:20)` against Electron backend | Active run `team_software-engineering-team_b8abf03c` has six member route keys in `memberTree` and `members`. | UI loss is frontend-side. |
-| 2026-06-02 | Data | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/runtime-probe-summary.json` | Counts and route keys recorded without full conversation payload. | Downstream can verify backend payload finding without re-querying. |
+| 2026-06-02 | Data | `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/runtime-probe-summary.json` | Counts and route keys recorded without full conversation payload. | Downstream can verify backend payload finding without re-querying. |
 
 ## External / Public Source Findings
 

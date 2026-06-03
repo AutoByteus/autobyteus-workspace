@@ -2,17 +2,17 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/design-review-report.md`
-- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/review-report.md`
-- API/E2E validation report with Local Fix failure: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-validation-report.md`
-- Reproduction screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/reproduction-only-solution-designer.png`
-- Backend runtime probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/runtime-probe-summary.json`
-- API/E2E active-run focus control evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json`
-- API/E2E inactive/offline focus failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.json`
-- API/E2E inactive/offline focus failure screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.png`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/design-review-report.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/review-report.md`
+- API/E2E validation report with Local Fix failure: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-validation-report.md`
+- Reproduction screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/reproduction-only-solution-designer.png`
+- Backend runtime probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/runtime-probe-summary.json`
+- API/E2E active-run focus control evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json`
+- API/E2E inactive/offline focus failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.json`
+- API/E2E inactive/offline focus failure screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.png`
 
 ## What Changed
 

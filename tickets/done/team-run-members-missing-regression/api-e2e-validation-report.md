@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/implementation-handoff.md`
-- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/review-report.md`
-- Latest Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/implementation-handoff.md`
+- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/review-report.md`
+- Latest Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/code-review-report.md`
 - Current Validation Round: `4`
 - Trigger: Refreshed code-review pass after implementation-owned Local Fix rework for inactive/all-offline historical team member focus switching.
 - Prior Round Reviewed: `3`
@@ -102,7 +102,7 @@ Executed validation commands:
 
 No repository-resident durable tests were implemented or updated by API/E2E in Round 4.
 
-The implementation rework added/updated durable tests before the refreshed code review; those tests were reviewed in `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/code-review-report.md` and were rerun by API/E2E.
+The implementation rework added/updated durable tests before the refreshed code review; those tests were reviewed in `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/code-review-report.md` and were rerun by API/E2E.
 
 ## Durable Validation Added To The Codebase
 
@@ -113,15 +113,15 @@ The implementation rework added/updated durable tests before the refreshed code 
 
 ## Other Validation Artifacts
 
-- Round 4 focused rerun evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-round4-focus-rerun-evidence.json`
-- Round 4 Spotlight/composer split screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-round4-offline-spotlight-composer-split.png`
-- Round 4 offline delivery Focus screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-round4-offline-delivery-focus.png`
-- Round 3 inactive/offline failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.json`
-- Round 2 active-run focus click evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json`
-- Prior backend probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-backend-probe-summary.json`
-- Prior UI DOM evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-ui-dom-evidence.json`
-- Prior Grid screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-grid-validation.png`
-- Prior Spotlight screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-spotlight-validation.png`
+- Round 4 focused rerun evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-focus-rerun-evidence.json`
+- Round 4 Spotlight/composer split screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-spotlight-composer-split.png`
+- Round 4 offline delivery Focus screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-delivery-focus.png`
+- Round 3 inactive/offline failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.json`
+- Round 2 active-run focus click evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json`
+- Prior backend probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-backend-probe-summary.json`
+- Prior UI DOM evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-ui-dom-evidence.json`
+- Prior Grid screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-grid-validation.png`
+- Prior Spotlight screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-spotlight-validation.png`
 
 ## Temporary Validation Methods / Scaffolding
 

@@ -152,8 +152,8 @@
     "interpretation": "The UI intentionally displays roster focus on api_e2e_engineer while the composer target remains the safe active-execution coordinator solution_designer for the all-offline run."
   },
   "screenshots": {
-    "spotlight_composer_split": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-round4-offline-spotlight-composer-split.png",
-    "delivery_focus": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-round4-offline-delivery-focus.png"
+    "spotlight_composer_split": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-spotlight-composer-split.png",
+    "delivery_focus": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-delivery-focus.png"
   },
   "round3_failure_resolution": {
     "previous_failure": "Inactive/all-offline historical rows stayed focused on solution_designer after clicks on api_e2e_engineer and delivery_engineer.",

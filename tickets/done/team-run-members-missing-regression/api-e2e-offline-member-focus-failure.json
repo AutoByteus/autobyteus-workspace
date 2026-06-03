@@ -83,7 +83,7 @@
     "team_run_id": "team_software-engineering-team_b8abf03c",
     "status_from_backend_probe": "running",
     "result": "Pass",
-    "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json",
+    "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-member-focus-click-evidence.json",
     "summary": "Running team member clicks switched focus to api_e2e_engineer and offline delivery_engineer."
   },
   "observed_failure_pattern": "For inactive/offline historical team runs, the roster is visible but clicking non-coordinator members does not move the selected highlight or Focus header away from solution_designer.",
@@ -94,6 +94,6 @@
   },
   "classification": "Local Fix",
   "recommended_recipient": "implementation_engineer",
-  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.png",
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-offline-member-focus-failure.png",
   "result": "Fail"
 }
