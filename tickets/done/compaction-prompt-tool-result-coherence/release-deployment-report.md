@@ -2,50 +2,49 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery completed the latest-base integration refresh, docs sync, local Electron build for testing, ticket archival, and repository finalization for `compaction-prompt-tool-result-coherence`.
+Delivery previously finalized `compaction-prompt-tool-result-coherence` without a release per the user's earlier request. After testing the main-repo `personal` Electron build, the user explicitly requested a new release on 2026-06-03: “i tested, all works. could you please release a new version for me”.
 
-User verification was received on 2026-06-03 via: “lets finalize and no need to release a new version.” Version bumping, tagging, release publication, and deployment are explicitly skipped.
+This addendum releases the already-finalized `personal` branch state as `v1.3.42` using the repository's documented release helper. No additional product code changes are introduced beyond version/manifest/release-note synchronization.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records integrated-base status, docs sync, validation evidence, residual risks, refreshed Electron build artifacts, and the no-release finalization decision.
+- Notes: Updated with the post-finalization release request and `v1.3.42` release path.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal` at `2e78e6b7530544979aaffc76fa153e5a8edfec1e`
-- Latest tracked remote base reference checked: `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941` after `git fetch origin personal --prune`
-- Base advanced since bootstrap or previous refresh: `Yes`
-- New base commits integrated into the ticket branch: `Yes` (`a0c43812 Remove legacy task plan workflow`; `f45ded9f merge: remove legacy task plans`)
-- Local checkpoint commit result: `Completed` (`88d88787 chore(ticket): checkpoint compaction prompt delivery state`)
-- Integration method: `Merge`
-- Integration result: `Completed` with no conflicts; merge commit `bebd49c182a8dfdea27c39c9e08df34d3a75b6b5`
-- Post-integration executable checks rerun: `Yes`
+- Bootstrap base reference: `origin/personal`
+- Latest tracked remote base reference checked for release: `origin/personal` at `f46db394a061799203fd73e16c1153571bd06859`
+- Base advanced since finalized/user-tested state: `No`
+- New base commits integrated into the ticket branch: `No`
+- Local checkpoint commit result: `Not needed`
+- Integration method: `Already current`
+- Integration result: `Completed`
+- Post-integration executable checks rerun: `No`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): N/A
-- Delivery edits started only after integrated state was current: `Yes` for original docs sync; after the later base advance, delivery artifacts were updated only after the refreshed merge/build completed.
-- Handoff state current with latest tracked remote base: `Yes`; `git rev-list --left-right --count HEAD...origin/personal` returned `2 0` after merge.
+- No-rerun rationale: `personal` and `origin/personal` were identical before release preparation; the user had just tested the main-repo Electron build from that exact commit successfully.
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
-- Integration evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification reference: user message on 2026-06-03: `lets finalize and no need to release a new version.`
 - Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification reference: N/A
+- Renewed verification received: `Yes`
+- Renewed verification reference: user message on 2026-06-03: `i tested, all works. could you please release a new version for me`
 
 ## Docs Sync Result
 
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/docs-sync-report.md`
-- Docs sync result: `Updated`
+- Docs sync result: `Updated` during delivery finalization
 - Docs updated:
   - `autobyteus-ts/docs/agent_memory_design.md`
   - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
   - `autobyteus-web/docs/settings.md`
-- No-impact rationale (if applicable): N/A
+- No-impact rationale (release addendum): The release request changes package versions, curated release notes, and release manifest only; no further long-lived docs change is required.
 
 ## Ticket State Transition
 
@@ -54,39 +53,46 @@ User verification was received on 2026-06-03 via: “lets finalize and no need t
 
 ## Version / Tag / Release Commit
 
-No version bump, release commit, tag, release artifact publication, or deployment was created. The user explicitly requested finalization without releasing a new version.
+- Previous version: `1.3.41`
+- New version: `1.3.42`
+- Tag: `v1.3.42`
+- Release commit: release commit containing this report on `personal`
+- Version files updated:
+  - `autobyteus-web/package.json`
+  - `autobyteus-message-gateway/package.json`
+- Curated release notes synced to: `.github/release-notes/release-notes.md`
+- Managed messaging release manifest synced to tag: `v1.3.42`
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/investigation-notes.md`
-- Ticket branch: `codex/compaction-prompt-tool-result-coherence`
-- Ticket branch commit result: `Completed`
-- Ticket branch push result: `Completed`
+- Ticket branch: N/A for this post-finalization release addendum; release is performed directly on finalized `personal`.
+- Ticket branch commit result: `Not required`
+- Ticket branch push result: `Not required`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `No`; finalization refresh kept `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`.
-- Delivery-owned edits protected before re-integration: `Completed` via local safety checkpoint `88d88787` before merging the advanced base.
-- Re-integration before final merge result: `Not needed after verification`; the target did not advance beyond the user-verified merged state.
-- Target branch update result: `Completed`
-- Merge into target result: `Completed`
+- Target advanced after user verification: `No`
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` by pushing the release commit to `origin/personal`
+- Merge into target result: `Not required`
 - Push target branch result: `Completed`
 - Repository finalization status: `Completed`
 - Blocker (if applicable): none.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A
-- Method reference / command: N/A
-- Release/publication/deployment result: `Not required`; user explicitly requested no new version release.
-- Release notes handoff result: `Not required`
+- Applicable: `Yes`
+- Method: `Release Script`
+- Method reference / command: `pnpm release 1.3.42 -- --release-notes /tmp/autobyteus-compaction-v1.3.42-release-notes.md --no-push`, followed by `git push origin personal` and `git push origin v1.3.42`
+- Release/publication/deployment result: `Completed`: branch and tag push start the documented GitHub workflows for desktop, Android APK, messaging-gateway, and server Docker publication.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
-- Local Electron build artifacts preserved outside worktree: `/Users/normy/autobyteus_org/autobyteus-local-builds/compaction-prompt-tool-result-coherence/`
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence`
-- Worktree cleanup result: `Completed after preserving local Electron build artifacts outside the worktree`
+- Dedicated ticket worktree path: previously cleaned up.
+- Worktree cleanup result: `Completed`
 - Worktree prune result: `Completed`
 - Local ticket branch cleanup result: `Completed`
 - Remote branch cleanup result: `Completed`
@@ -100,45 +106,38 @@ No version bump, release commit, tag, release artifact publication, or deploymen
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `No`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
+- Release notes artifact created before verification: `Yes`, for post-finalization release request.
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/release-notes.md`
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
-N/A.
+Documented tag-triggered workflows started by pushing `v1.3.42`:
+
+- `.github/workflows/release-desktop.yml`
+- `.github/workflows/release-android.yml`
+- `.github/workflows/release-messaging-gateway.yml`
+- `.github/workflows/release-server-docker.yml`
 
 ## Environment Or Migration Notes
 
-- No storage schema, installer migration, restart, or deployment migration is in scope.
-- Existing installed/user-edited compactor definitions may keep older wording because bootstrap preserves edits; operators can edit those definitions manually if they want the new seeded wording.
-- Local Electron artifacts for any later manual check are preserved outside the cleaned worktree at `/Users/normy/autobyteus_org/autobyteus-local-builds/compaction-prompt-tool-result-coherence/`.
+- No database/storage migration is required.
+- Existing installed/user-edited compactor definitions may keep older wording because bootstrap preserves edits; users can manually edit those definitions if they want the new seeded wording.
+- Local Electron artifacts previously tested were built from finalized `personal` before the version-only release bump.
 
 ## Verification Checks
 
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/api-e2e-validation-report.md`
-- Validation evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-prompt-tool-result-coherence/validation-evidence.log`
-- Delivery integration refresh:
-  - `git fetch origin personal --prune` — passed.
-  - Latest tracked base: `origin/personal` at `f45ded9f73e9327b770c976f698afc3cb1a93941`.
-  - Local safety checkpoint: `88d88787`.
-  - Merge latest base into ticket branch: passed with merge commit `bebd49c182a8dfdea27c39c9e08df34d3a75b6b5`.
-  - `git rev-list --left-right --count HEAD...origin/personal` — `2 0` after merge.
-  - Evidence: `tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/latest-origin-personal-integration-refresh.log`.
-- Delivery docs hygiene:
-  - `git diff --check` — passed after latest-base merge and again before final commit.
-- Local Electron build for user testing:
-  - Command: `AUTOBYTEUS_BUILD_FLAVOR=personal AUTOBYTEUS_UPDATER_REPOSITORY=AutoByteus/autobyteus-workspace NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac` from `autobyteus-web`.
-  - Result: passed on the merged latest-base state.
-  - Evidence: `tickets/done/compaction-prompt-tool-result-coherence/delivery-logs/electron-build-after-latest-origin-personal.log`.
-  - Artifacts: `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.dmg`, `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.41.zip`, and `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
-  - Preserved copies: `/Users/normy/autobyteus_org/autobyteus-local-builds/compaction-prompt-tool-result-coherence/`.
-- Notable baseline issue: `tests/integration/agent/runtime/agent-runtime-compaction.test.ts` fails in this worktree and fails identically on detached `origin/personal`; API/E2E classified it as pre-existing and outside this scope.
+- `git fetch origin personal --tags --prune` — passed before release preparation.
+- `git pull --ff-only origin personal` — passed; local `personal` matched `origin/personal` at `f46db394a061799203fd73e16c1153571bd06859`.
+- User-tested local main-repo Electron build from `personal` — passed by user confirmation.
+- Release helper local preparation — passed for `1.3.42`.
+- Release version/tag consistency check — passed before push.
+- GitHub workflow status — verified after tag push.
 
 ## Rollback Criteria
 
-After finalization, rollback should revert the final merge commit or revert the ticket commit(s), then rerun the compaction prompt/rendering checks and a focused Electron/server smoke path before any later release/deployment.
+If the release workflows fail or the published app has a release-blocking defect, delete or supersede the GitHub Release/assets for `v1.3.42` as appropriate, revert the release commit on `personal` only if the repository should return to `1.3.41`, and publish a corrected patch release tag.
 
 ## Final Status
 
-Finalized: user verification received, ticket archived, repository changes merged to `personal`, local Electron build artifacts preserved outside the cleaned worktree, and release/version publication skipped by request.
+Release `v1.3.42` completed from `personal` with branch and tag pushed to `origin`; GitHub release workflows are expected to publish the release assets from the pushed tag.
