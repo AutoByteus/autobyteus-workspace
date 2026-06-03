@@ -460,8 +460,6 @@ describe('runHistoryStore', () => {
         focusedMemberRouteKey: 'super_agent',
         currentStatus: 'offline',
         isSubscribed: false,
-        taskPlan: null,
-        taskStatuses: null,
       },
       projectionByMemberRouteKey: new Map(),
     }));
@@ -704,8 +702,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'solution_designer',
       currentStatus: 'offline',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const store = useRunHistoryStore();
@@ -1848,8 +1844,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'super_agent',
       currentStatus: 'idle',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const teamNodes = store.getTeamNodes('/ws/a');
@@ -1915,8 +1909,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'worker',
       currentStatus: 'processing',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const teamNodes = store.getTeamNodes('/ws/a');
@@ -2016,8 +2008,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'professor',
       currentStatus: 'processing',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const teamNodes = store.getTeamNodes('/ws/a');
@@ -2120,8 +2110,6 @@ describe('runHistoryStore', () => {
       currentStatus: 'running',
       isSubscribed: true,
       historicalHydration: null,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const teamNode = store.getTeamNodes('/ws/a').find((team) => team.teamRunId === 'team-task-delegation-only-1');
@@ -2176,8 +2164,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'super_agent',
       currentStatus: 'idle',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await store.selectTreeRun(asTeamMemberTreeRow({
@@ -2253,8 +2239,6 @@ describe('runHistoryStore', () => {
       focusedMemberRouteKey: 'worker',
       currentStatus: 'running',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await store.selectTreeRun(asTeamMemberTreeRow({
@@ -2347,8 +2331,6 @@ describe('runHistoryStore', () => {
         ),
         memberWorkspaceMetadatasByRouteKey: {} as any,
       },
-      taskPlan: null,
-      taskStatuses: null,
     };
     teamContextsStoreMock.teams.set(teamContext.teamRunId, teamContext);
 
@@ -2418,8 +2400,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'super_agent',
       currentStatus: 'idle',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await store.selectTreeRun(asTeamMemberTreeRow({
@@ -2474,8 +2454,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'api_e2e_engineer',
       currentStatus: 'idle',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await store.selectTreeRun(asTeamMemberTreeRow({
@@ -2544,8 +2522,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'api_e2e_engineer',
       currentStatus: 'idle',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     const selectionPromise = store.selectTreeRun(asTeamMemberTreeRow({
@@ -2597,8 +2573,6 @@ describe('runHistoryStore', () => {
       focusedMemberName: 'super_agent',
       currentStatus: 'idle',
       isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await store.selectTreeRun(asTeamMemberTreeRow({
@@ -2893,8 +2867,6 @@ describe('runHistoryStore', () => {
       currentStatus: 'offline',
       isSubscribed: false,
       historicalHydration: null,
-      taskPlan: null,
-      taskStatuses: null,
     };
     teamContextsStoreMock.teams.set('team-stale-route-2', existingContext);
     queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
@@ -3165,8 +3137,6 @@ describe('runHistoryStore', () => {
       currentStatus: 'idle',
       isSubscribed: true,
       unsubscribe: existingTeamContextUnsubscribeSpy,
-      taskPlan: { steps: ['stale'] },
-      taskStatuses: { stale: 'done' },
     };
     teamContextsStoreMock.teams.set('team-1', existingTeamContext);
 
@@ -3185,8 +3155,6 @@ describe('runHistoryStore', () => {
     expect(existingTeamContext.members.get('implementation_engineer')?.requirement).toBe('');
     expect(existingTeamContext.members.get('implementation_engineer')?.contextFilePaths).toEqual([]);
     expect(existingTeamContext.focusedMemberName).toBe('implementation_engineer');
-    expect(existingTeamContext.taskPlan).toBeNull();
-    expect(existingTeamContext.taskStatuses).toBeNull();
     expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);
     expect(existingTeamContext.unsubscribe).toBeUndefined();
     expect(existingTeamContext.isSubscribed).toBe(false);

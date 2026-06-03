@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-0 flex-1 space-y-3 overflow-y-auto p-5" data-testid="mobile-activity-digest">
-    <div class="grid grid-cols-3 gap-2" data-testid="mobile-activity-filters">
+    <div class="grid grid-cols-2 gap-2" data-testid="mobile-activity-filters">
       <button
         v-for="filter in primaryFilters"
         :key="filter.id"
@@ -13,24 +13,6 @@
         {{ filter.label }} · {{ filter.count }}
       </button>
     </div>
-
-    <article v-if="showTasks" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-testid="mobile-activity-task-plan">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <h3 class="font-bold text-slate-950">Task plan</h3>
-          <p class="mt-1 text-sm text-slate-500">{{ taskPlanSummary }}</p>
-        </div>
-        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{{ taskCards.length }}</span>
-      </div>
-      <div v-if="taskCards.length" class="mt-3 space-y-2">
-        <div v-for="task in taskCards.slice(0, 6)" :key="task.id" class="rounded-2xl bg-slate-50 p-3" data-testid="mobile-task-plan-row">
-          <div class="flex items-start justify-between gap-3">
-            <p class="min-w-0 line-clamp-1 font-semibold text-slate-900">{{ task.name }}</p>
-            <span class="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-500">{{ task.status }}</span>
-          </div>
-        </div>
-      </div>
-    </article>
 
     <article v-if="showMessages" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-testid="mobile-activity-team-messages">
       <div class="flex items-start justify-between gap-3">
@@ -91,13 +73,13 @@ defineEmits<{
   chooseWork: [];
 }>();
 
-type ActivityFilter = 'tasks' | 'messages' | 'activity';
+type ActivityFilter = 'messages' | 'activity';
 
 const activityStore = useAgentActivityStore();
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
-const activeFilter = ref<ActivityFilter>('tasks');
+const activeFilter = ref<ActivityFilter>('messages');
 const showTeamMessages = ref(false);
 
 const { focusedRunId } = useMobileFocusedRunIdentity(toRef(props, 'context'));
@@ -108,15 +90,6 @@ const activeTeamContext = computed(() => {
   return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
 });
 const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.context?.kind === 'team-run'));
-const taskCards = computed(() => {
-  const tasks = activeTeamContext.value?.taskPlan ?? [];
-  const statuses = activeTeamContext.value?.taskStatuses ?? {};
-  return tasks.map((task) => ({
-    id: task.taskId,
-    name: task.taskName,
-    status: statuses[task.taskId] || 'not_started',
-  }));
-});
 const teamMessages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
@@ -129,20 +102,13 @@ const teamMessages = computed(() => {
 });
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [
-  { id: 'tasks' as const, label: 'Tasks', count: taskCards.value.length },
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
   { id: 'activity' as const, label: 'Activity', count: runActivities.value.length },
 ]);
-const primaryFilters = computed(() => filters.value.filter((filter) => ['tasks', 'messages', 'activity'].includes(filter.id)));
-const showTasks = computed(() => activeFilter.value === 'tasks');
+const primaryFilters = computed(() => filters.value);
 const showMessages = computed(() => activeFilter.value === 'messages');
 const showActivity = computed(() => activeFilter.value === 'activity');
 const visibleActivityCount = computed(() => runActivities.value.length);
-const taskPlanSummary = computed(() => {
-  if (!hasTeamContext.value) return 'Select a team run to see task activity.';
-  if (!taskCards.value.length) return 'No task plan updates yet.';
-  return `${taskCards.value.length} task update${taskCards.value.length === 1 ? '' : 's'}.`;
-});
 const messageSummary = computed(() => {
   if (!hasTeamContext.value) return 'Select a team run to see team messages.';
   if (!teamMessages.value.length) return 'No team messages yet for the focused member.';

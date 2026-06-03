@@ -43,6 +43,7 @@ function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
     llmModelIdentifier: 'test-model',
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
+    workspaceMetadata: null,
     autoExecuteTools: false,
     skillAccessMode: 'GLOBAL_DISCOVERY',
     isLocked: false,
@@ -106,6 +107,7 @@ function seedActiveTeamRun(): AgentTeamContext {
       teamDefinitionName: 'Software Team',
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId: 'workspace-1',
+      workspaceMetadata: null,
       llmModelIdentifier: 'test-model',
       llmConfig: null,
       autoExecuteTools: false,
@@ -127,8 +129,6 @@ function seedActiveTeamRun(): AgentTeamContext {
     focusedMemberRouteKey: 'lead',
     currentStatus: AgentTeamStatus.Offline,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   };
   useAgentTeamContextsStore().teams.set(context.teamRunId, context);
   useAgentSelectionStore().selectRunWithoutShellNavigation(context.teamRunId, 'team');

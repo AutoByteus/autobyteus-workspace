@@ -4,8 +4,6 @@ import { AgentStatus } from '../../../agent/status/status-enum.js';
 import { AgentTeamStatus } from '../../../agent-team/status/agent-team-status.js';
 import { ToolApprovalRequestedData } from '../../../agent/streaming/events/stream-event-payloads.js';
 import type { HistoryEvent } from '../state-store.js';
-import type { Task } from '../../../task-management/task.js';
-import { TaskStatus } from '../../../task-management/base-task-plan.js';
 import {
   AGENT_STATUS_ICONS,
   TEAM_STATUS_ICONS,
@@ -15,7 +13,6 @@ import {
   USER_ICON
 } from './shared.js';
 import { buildHistoryLines, wrapHistoryLines } from './focus-pane-history.js';
-import { TaskPlanPanel } from './task-plan-panel.js';
 import type { NodeData } from '../state-store.js';
 
 
@@ -26,8 +23,6 @@ export const FocusPane: React.FC<{
   history: HistoryEvent[];
   lastUserMessage: string | null;
   pendingApproval: ToolApprovalRequestedData | null;
-  tasks: Task[] | null;
-  taskStatuses: Record<string, TaskStatus> | null;
   availableHeight: number;
   availableWidth: number;
   onSubmitMessage: (agentName: string, text: string) => void;
@@ -39,8 +34,6 @@ export const FocusPane: React.FC<{
   history,
   lastUserMessage,
   pendingApproval,
-  tasks,
-  taskStatuses,
   availableHeight,
   availableWidth,
   onSubmitMessage,
@@ -187,7 +180,6 @@ export const FocusPane: React.FC<{
               </Text>
             );
           })}
-          <TaskPlanPanel tasks={tasks} statuses={taskStatuses} />
         </Box>
       )}
     </Box>

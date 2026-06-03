@@ -8,11 +8,8 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 
 const labels: Record<string, string> = {
-  'workspace.components.workspace.team.TeamOverviewPanel.task_plan': 'Task Plan',
   'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
-  'workspace.components.workspace.team.TeamOverviewPanel.tasks': 'Tasks',
   'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
-  'workspace.components.workspace.team.TaskPlanDisplay.no_task_plan_yet': 'No task plan yet',
 };
 
 const TeamCommunicationPanelStub = defineComponent({
@@ -41,8 +38,6 @@ const seedActiveTeam = () => {
     focusedMemberRouteKey: 'implementation_engineer',
     currentStatus: 'idle',
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   } as any);
   useAgentSelectionStore().$patch({ selectedRunId: 'team-1', selectedType: 'team' });
   useTeamCommunicationStore().replaceProjection('team-1', [
@@ -106,8 +101,6 @@ const seedFocusedSubteam = () => {
     focusedMemberRouteKey: 'BuildSquad',
     currentStatus: 'idle',
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   } as any);
   useAgentSelectionStore().$patch({ selectedRunId: 'team-subteam', selectedType: 'team' });
   useTeamCommunicationStore().replaceProjection('team-subteam', [
@@ -136,7 +129,6 @@ const seedFocusedSubteam = () => {
 const mountSubject = () => mount(TeamOverviewPanel, {
   global: {
     stubs: {
-      TaskPlanDisplay: { template: '<div data-test="task-plan-display" />' },
       TeamCommunicationPanel: TeamCommunicationPanelStub,
     },
     mocks: {
@@ -151,21 +143,17 @@ describe('TeamOverviewPanel.vue', () => {
     seedActiveTeam();
   });
 
-  it('renders compact collapsible Task Plan and default-expanded Messages without an internal Team header', async () => {
+  it('renders Messages without the removed Task Plan section', () => {
     const wrapper = mountSubject();
 
     expect(wrapper.text()).not.toContain('Engineering Team');
-    expect(wrapper.get('[data-test="team-task-plan-toggle"]').attributes('aria-expanded')).toBe('false');
-    expect(wrapper.get('[data-test="team-messages-toggle"]').attributes('aria-expanded')).toBe('true');
-    expect(wrapper.get('[data-test="team-messages-toggle"]').text()).toContain('1 Messages');
+    expect(wrapper.find('[data-test="team-task-plan-toggle"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-task-plan-section"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-task-plan-compact-empty"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Task Plan');
+    expect(wrapper.text()).not.toContain('No task plan yet');
+    expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
     expect(wrapper.find('[data-test="team-communication-panel"]').isVisible()).toBe(true);
-
-    await wrapper.get('[data-test="team-task-plan-toggle"]').trigger('click');
-
-    expect(wrapper.get('[data-test="team-task-plan-toggle"]').attributes('aria-expanded')).toBe('true');
-    expect(wrapper.get('[data-test="team-messages-toggle"]').attributes('aria-expanded')).toBe('false');
-    expect(wrapper.get('[data-test="team-task-plan-compact-empty"]').text()).toBe('No task plan yet');
-    expect(wrapper.find('[data-test="task-plan-display"]').exists()).toBe(false);
   });
 
   it('counts and passes route/path identity for a focused subteam without a member run id', () => {
@@ -174,7 +162,7 @@ describe('TeamOverviewPanel.vue', () => {
     const wrapper = mountSubject();
     const panel = wrapper.getComponent({ name: 'TeamCommunicationPanel' });
 
-    expect(wrapper.get('[data-test="team-messages-toggle"]').text()).toContain('1 Messages');
+    expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
     expect(panel.props('teamRunId')).toBe('team-subteam');
     expect(panel.props('focusedMemberRunId')).toBe('');
     expect(panel.props('focusedMemberRouteKey')).toBe('BuildSquad');

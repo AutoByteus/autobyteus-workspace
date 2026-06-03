@@ -27,7 +27,7 @@ describe('EventType', () => {
     expect(EventType.AGENT_COMPACTION_STATUS_UPDATED).toBe('agent_compaction_status_updated');
   });
 
-  it('includes system-level and task plan events', () => {
+  it('includes system-level events without legacy task-plan events', () => {
     const values = Object.values(EventType);
 
     expect(values).toContain('weibo_post_completed');
@@ -36,8 +36,8 @@ describe('EventType', () => {
     expect(values).toContain('create_shared_session');
     expect(values).toContain('team_stream_event');
     expect(values).toContain('workflow_stream_event');
-    expect(values).toContain('task_plan.tasks.created');
-    expect(values).toContain('task_plan.status.updated');
-    expect(values.length).toBe(30);
+    expect(values).not.toContain('task_plan.tasks.created');
+    expect(values).not.toContain('task_plan.status.updated');
+    expect(values.length).toBe(28);
   });
 });

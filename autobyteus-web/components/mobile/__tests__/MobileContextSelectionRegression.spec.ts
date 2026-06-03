@@ -154,8 +154,6 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
     focusedMemberRouteKey: "lead",
     currentStatus: AgentTeamStatus.Offline,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   };
   useAgentTeamContextsStore().teams.set(context.teamRunId, context);
   useAgentSelectionStore().selectRunWithoutShellNavigation(

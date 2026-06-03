@@ -41,7 +41,7 @@ export type ServerMessageType =
   | 'TOOL_LOG'
   | 'ASSISTANT_COMPLETE'
   | 'TODO_LIST_UPDATE'
-  | 'TASK_PLAN_EVENT'
+  | 'TASK_DELEGATION_EVENT'
   | 'INTER_AGENT_MESSAGE'
   | 'TEAM_COMMUNICATION_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
@@ -202,31 +202,18 @@ export interface TodoListUpdatePayload extends TeamStreamIdentityPayload {
   todos: TodoItem[];
 }
 
-export interface TaskPlanDeliverablePayload {
-  file_path: string;
-  summary: string;
-  author_agent_name: string;
-  timestamp?: string;
-}
-
-export interface TaskPlanTaskPayload {
-  task_id: string;
-  task_name: string;
-  assignee_name: string;
-  description: string;
-  dependencies: string[];
-  file_deliverables?: TaskPlanDeliverablePayload[];
-}
-
-export interface TaskPlanEventPayload {
-  event_type: 'TASKS_CREATED' | 'TASK_STATUS_UPDATED' | string;
-  team_id?: string;
-  tasks?: TaskPlanTaskPayload[];
-  task_id?: string;
-  new_status?: string;
-  agent_name?: string;
-  deliverables?: TaskPlanDeliverablePayload[];
-  sub_team_node_name?: string | null;
+export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
+  event_type:
+    | 'TASK_DELEGATION_ACTIVATED'
+    | 'TASK_DELEGATION_STATUS_UPDATED'
+    | 'TASK_DELEGATION_TERMINAL_STATUS'
+    | string;
+  teamRunId?: string;
+  taskId?: string;
+  taskIds?: string[];
+  status?: string;
+  message?: string | null;
+  [key: string]: any;
 }
 
 export interface TeamCommunicationReferenceFilePayload {
@@ -353,7 +340,7 @@ export type ServerMessage =
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }
   | { type: 'ASSISTANT_COMPLETE'; payload: AssistantCompletePayload }
   | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
-  | { type: 'TASK_PLAN_EVENT'; payload: TaskPlanEventPayload }
+  | { type: 'TASK_DELEGATION_EVENT'; payload: TaskDelegationEventPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'TEAM_COMMUNICATION_MESSAGE'; payload: TeamCommunicationMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }

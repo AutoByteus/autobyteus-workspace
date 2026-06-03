@@ -11,14 +11,7 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
-import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 
-vi.mock('../../../../src/agent-team/bootstrap-steps/team-context-initialization-step.js', () => ({
-  TeamContextInitializationStep: vi.fn().mockImplementation(function () {})
-}));
-vi.mock('../../../../src/agent-team/bootstrap-steps/task-notifier-initialization-step.js', () => ({
-  TaskNotifierInitializationStep: vi.fn().mockImplementation(function () {})
-}));
 vi.mock('../../../../src/agent-team/bootstrap-steps/agent-configuration-preparation-step.js', () => ({
   AgentConfigurationPreparationStep: vi.fn().mockImplementation(function () {})
 }));
@@ -26,8 +19,6 @@ vi.mock('../../../../src/agent-team/bootstrap-steps/coordinator-initialization-s
   CoordinatorInitializationStep: vi.fn().mockImplementation(function () {})
 }));
 
-import { TeamContextInitializationStep } from '../../../../src/agent-team/bootstrap-steps/team-context-initialization-step.js';
-import { TaskNotifierInitializationStep } from '../../../../src/agent-team/bootstrap-steps/task-notifier-initialization-step.js';
 import { AgentConfigurationPreparationStep } from '../../../../src/agent-team/bootstrap-steps/agent-configuration-preparation-step.js';
 import { CoordinatorInitializationStep } from '../../../../src/agent-team/bootstrap-steps/coordinator-initialization-step.js';
 
@@ -78,14 +69,12 @@ class MockStep2 extends BaseAgentTeamBootstrapStep {
 }
 
 describe('AgentTeamBootstrapper', () => {
-  it('initializes with default steps', () => {
+  it('initializes with default runtime-only steps', () => {
     const bootstrapper = new AgentTeamBootstrapper();
 
-    expect(TeamContextInitializationStep).toHaveBeenCalledTimes(1);
-    expect(TaskNotifierInitializationStep).toHaveBeenCalledTimes(1);
     expect(AgentConfigurationPreparationStep).toHaveBeenCalledTimes(1);
     expect(CoordinatorInitializationStep).toHaveBeenCalledTimes(1);
-    expect(bootstrapper.bootstrapSteps.length).toBe(4);
+    expect(bootstrapper.bootstrapSteps.length).toBe(2);
   });
 
   it('initializes with custom steps', () => {
