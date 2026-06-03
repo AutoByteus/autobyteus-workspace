@@ -154,4 +154,28 @@ describe('activeContextStore interrupt routing', () => {
       targetMemberRunId: 'team-1::solution_designer',
     });
   });
+
+  it('keeps composer context on the safe active-execution target when roster focus is an all-offline member', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const activeContextStore = useActiveContextStore();
+
+    const solutionDesigner = createAgentContext('team-1::solution_designer');
+    const deliveryEngineer = createAgentContext('team-1::delivery_engineer');
+    solutionDesigner.state.currentStatus = AgentStatus.Offline;
+    deliveryEngineer.state.currentStatus = AgentStatus.Offline;
+    teamContextsStore.addTeamContext({
+      ...buildTeamContext([
+        ['solution_designer', solutionDesigner],
+        ['delivery_engineer', deliveryEngineer],
+      ], 'delivery_engineer'),
+      currentStatus: AgentTeamStatus.Offline,
+      isSubscribed: false,
+    });
+    selectionStore.selectRun('team-1', 'team');
+
+    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('delivery_engineer');
+    expect(teamContextsStore.activeExecutionFocusedMemberRouteKey).toBe('solution_designer');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
+  });
 });

@@ -10,7 +10,6 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -79,9 +78,7 @@ export const selectTreeRunFromHistory = async (
     const shouldReuseLocalTeamContext = Boolean(
       localTeamContext && memberNodesByRouteKey?.has(row.memberRouteKey),
     );
-    const localTargetMemberRouteKey = localTeamContext
-      ? resolveActiveExecutionFocusedMemberRouteKey(localTeamContext, row.memberRouteKey) || row.memberRouteKey
-      : row.memberRouteKey;
+    const localTargetMemberRouteKey = row.memberRouteKey;
     const localMemberProjectionLoadState =
       localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[localTargetMemberRouteKey]
       ?? null;

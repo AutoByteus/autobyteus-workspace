@@ -1,0 +1,92 @@
+{
+  "scenario": "History-tree member click focus validation for offline/unmessaged Software Engineering Team members",
+  "date": "2026-06-03",
+  "frontend_url": "http://127.0.0.1:3033/workspace",
+  "frontend_under_test": "Current ticket worktree Nuxt dev server",
+  "backend_base_url": "http://localhost:29695",
+  "backend_runtime": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+  "clarification": "The installed Electron app was used as the existing backend provider only; the renderer under test was the current ticket frontend worktree, not the old installed Electron renderer.",
+  "target_run": {
+    "data_test": "workspace-team-row-team_software-engineering-team_b8abf03c",
+    "visible_text": "i currently have a bug, if you start the frontend against teh backend servers tarted by teh elect...",
+    "team_run_id": "team_software-engineering-team_b8abf03c"
+  },
+  "expected_roster_order": [
+    "solution_designer",
+    "architecture_reviewer",
+    "implementation_engineer",
+    "code_reviewer",
+    "api_e2e_engineer",
+    "delivery_engineer"
+  ],
+  "click_sequence": [
+    {
+      "label": "target bug run row",
+      "data_test": "workspace-team-row-team_software-engineering-team_b8abf03c"
+    },
+    {
+      "label": "Focus mode button",
+      "text": "Focus"
+    },
+    {
+      "label": "member solution_designer",
+      "data_test": "workspace-team-member-team_software-engineering-team_b8abf03c-solution_designer",
+      "visible_text": "S solution_designer 10h"
+    },
+    {
+      "label": "member api_e2e_engineer",
+      "data_test": "workspace-team-member-team_software-engineering-team_b8abf03c-api_e2e_engineer",
+      "visible_text": "A api_e2e_engineer 10h"
+    },
+    {
+      "label": "member delivery_engineer",
+      "data_test": "workspace-team-member-team_software-engineering-team_b8abf03c-delivery_engineer",
+      "visible_text": "D delivery_engineer 10h"
+    }
+  ],
+  "results": {
+    "after_click_solution_designer": {
+      "focus_header_h4": "solution_designer",
+      "status_text": "Offline",
+      "selected_member_row": "workspace-team-member-team_software-engineering-team_b8abf03c-solution_designer",
+      "selected_member_class": "bg-indigo-50 text-indigo-900",
+      "history_excerpt_starts_with": "S solution_designer Offline Focus Grid Spotlight You i currently have a bug..."
+    },
+    "after_click_api_e2e_engineer": {
+      "focus_header_h4": "api_e2e_engineer",
+      "status_text": "Running",
+      "selected_member_row": "workspace-team-member-team_software-engineering-team_b8abf03c-api_e2e_engineer",
+      "selected_member_class": "bg-indigo-50 text-indigo-900",
+      "history_excerpt_starts_with": "A api_e2e_engineer Running Focus Grid Spotlight You You received a message from sender name: code_reviewer..."
+    },
+    "after_click_delivery_engineer": {
+      "focus_header_h4": "delivery_engineer",
+      "status_text": "Offline",
+      "selected_member_row": "workspace-team-member-team_software-engineering-team_b8abf03c-delivery_engineer",
+      "selected_member_class": "bg-indigo-50 text-indigo-900",
+      "history_excerpt_starts_with": "D delivery_engineer Offline Focus Grid Spotlight You You received a message from sender name: api_e2e_engineer..."
+    }
+  },
+  "visible_roster_texts_observed": [
+    "S solution_designer 10h",
+    "A architecture_reviewer 10h",
+    "I implementation_engineer 10h",
+    "C code_reviewer 10h",
+    "A api_e2e_engineer 10h",
+    "D delivery_engineer 10h"
+  ],
+  "pass_conditions": {
+    "api_e2e_click_changed_focus_header_from_solution_designer_to_api_e2e_engineer": true,
+    "delivery_click_changed_focus_header_to_offline_delivery_engineer": true,
+    "delivery_history_loaded_non_empty_member_history": true,
+    "left_tree_selected_highlight_moved_to_clicked_member": true,
+    "all_six_member_rows_remained_visible_in_roster_order": true
+  },
+  "result": "Pass",
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/in-progress/team-run-members-missing-regression/api-e2e-member-focus-delivery-validation.png",
+  "notes": [
+    "The user-reported failure was not reproduced on the current ticket frontend served from the worktree against the existing Electron backend.",
+    "Round 1 API/E2E did not explicitly include this click-to-focus transition; this rerun adds that coverage as a non-durable ticket evidence artifact.",
+    "No repository-resident durable validation was added or modified in this rerun."
+  ]
+}

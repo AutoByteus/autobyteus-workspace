@@ -239,7 +239,7 @@ describe('TeamWorkspaceView', () => {
     expect(wrapper.find('h4').text()).toBe('Class Room Simulation');
   });
 
-  it('falls back from an initializing task-only logical worker focus to active coordinator execution', () => {
+  it('shows roster focus in the header when active execution falls back to the coordinator', () => {
     const context = buildTeamContext({
       coordinatorMemberRouteKey: 'professor',
       focusedMemberRouteKey: 'student',
@@ -250,11 +250,11 @@ describe('TeamWorkspaceView', () => {
 
     const wrapper = mountComponent();
 
-    expect(wrapper.find('h4').text()).toBe('Professor');
-    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
+    expect(wrapper.find('h4').text()).toBe('Student');
+    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('passes roster focus to roster views while header and composer use active execution focus', () => {
+  it('passes roster focus to roster views and labels the shared composer with active execution focus', () => {
     state.currentMode = 'grid';
     state.activeTeamContext = buildTeamContext({
       coordinatorMemberRouteKey: 'professor',
@@ -264,7 +264,7 @@ describe('TeamWorkspaceView', () => {
 
     const wrapper = mountComponent();
 
-    expect(wrapper.find('h4').text()).toBe('Professor');
+    expect(wrapper.find('h4').text()).toBe('Student');
     expect(wrapper.get('[data-test="team-grid"]').attributes('data-focused-route-key')).toBe('student');
     expect(wrapper.text()).toContain('Replying to');
     expect(wrapper.text()).toContain('Professor');

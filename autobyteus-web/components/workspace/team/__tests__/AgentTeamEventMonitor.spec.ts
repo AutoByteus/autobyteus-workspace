@@ -197,7 +197,7 @@ describe('AgentTeamEventMonitor.vue', () => {
     expect(monitor.props('agentAvatarUrl')).toBe('https://example.com/professor.png');
   });
 
-  it('uses active-execution focus instead of stale raw logical focus', () => {
+  it('uses roster focus for displayed Focus history while active execution can remain on the coordinator', () => {
     state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
     state.focusedMemberContext = state.activeTeamContext.leafAgentContextsByRouteKey.get('sub-team/Student');
     state.focusedMemberNode = state.activeTeamContext.memberNodesByRouteKey.get('sub-team/Student');
@@ -217,8 +217,8 @@ describe('AgentTeamEventMonitor.vue', () => {
 
     const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
     expect(monitor.exists()).toBe(true);
-    expect(monitor.props('agentName')).toBe('Professor');
-    expect((monitor.props('conversation') as any).id).toBe('team-1::professor');
+    expect(monitor.props('agentName')).toBe('Student');
+    expect((monitor.props('conversation') as any).id).toBe('team-1::student');
   });
 
   it('does not render task-agent work packets as the logical parent conversation', () => {
@@ -229,6 +229,7 @@ describe('AgentTeamEventMonitor.vue', () => {
       timestamp: new Date('2026-05-30T00:00:00.000Z'),
     });
     state.activeExecutionFocusedMemberRouteKey = 'sub-team/Student';
+    state.activeTeamContext.focusedMemberRouteKey = 'sub-team/Student';
 
     const wrapper = shallowMount(AgentTeamEventMonitor, {
       global: {
