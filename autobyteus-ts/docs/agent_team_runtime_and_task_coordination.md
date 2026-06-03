@@ -97,6 +97,12 @@ task label, logical member identity, task-agent instance/run identity, rich
 description, reference files, and lifecycle instructions. The packet explicitly
 tells the task-agent not to call `get_my_tasks`; all necessary task details are
 pushed with the activation.
+Server team streams preserve the same identity as explicit metadata on
+task-agent status/activity payloads: `task_agent_instance_id`,
+`task_agent_run_id`, `task_id`, logical `member_path` / `member_route_key`, and
+canonical `source_path` / `source_route_key`. Frontend and integration clients
+should use those fields for task-agent child projection and approval routing
+instead of reconstructing identity from run-id naming conventions.
 
 ### Task-agent result and acceptance tools
 

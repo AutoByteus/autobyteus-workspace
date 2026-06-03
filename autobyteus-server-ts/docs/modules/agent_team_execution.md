@@ -194,9 +194,13 @@ task-agent instance identity, status, optional message/reference files, and
 accepted-work metadata such as acceptance message/time when present, plus
 canonical `source_path` / `source_route_key` metadata from the logical member.
 Member-scoped stream/status/tool-approval payloads for task-agent activity also
-carry concrete task-agent identity, including `task_agent_run_id`, so clients can
-project transient task-agent UI entities and route approvals to the task-scoped
-runtime.
+carry concrete task-agent identity: `task_agent_instance_id`,
+`task_agent_run_id`, `task_id`, logical `member_path` / `member_route_key`, and
+canonical `source_path` / `source_route_key`. Clients must use that explicit
+identity to project transient task-agent UI entities, distinguish parallel
+task-agent executions for the same logical member, and route approvals to the
+task-scoped runtime instead of inferring task-agent identity from generated run
+id formats.
 
 Current settlement support is backend-specific. Codex and Claude team managers
 use the server-managed task-agent registry for task-agent instance start/settle
