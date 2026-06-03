@@ -1,0 +1,960 @@
+# Validation Evidence Log
+Date: 2026-06-03T08:18:42Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence
+Branch: codex/compaction-prompt-tool-result-coherence
+HEAD: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+
+## Focused unit memory checks
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/unit/memory/compaction-task-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/agent-compaction-summarizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-snapshot-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compaction-task-prompt-builder.test.ts (3 tests) 2ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (5 tests) 3ms
+ ✓ tests/unit/memory/compaction-snapshot-builder.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (3 tests) 4ms
+
+ Test Files  4 passed (4)
+      Tests  13 passed (13)
+   Start at  10:18:42
+   Duration  184ms (transform 261ms, setup 99ms, import 258ms, tests 13ms, environment 0ms)
+
+
+## Server built-in compactor template/bootstrap checks
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60057) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-0yglUb
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Initialized server settings service with 16 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-cRih9p
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'custom-memory-compactor'
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-ILZndt
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-om0oKP
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-TIXhXv
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+In-memory cache: Updated agent definition with ID autobyteus-memory-compactor.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent Definition with ID autobyteus-memory-compactor updated successfully.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent definition cache populated with 1 items.
+
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (5 tests) 35ms
+ ✓ tests/unit/built-in-agents/built-in-agent-templates.test.ts (1 test) 2ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  10:18:49
+   Duration  4.45s (transform 2.57s, setup 22ms, import 3.91s, tests 37ms, environment 0ms)
+
+
+## Integration/API-E2E compaction runtime checks
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/integration/agent/memory-compaction-quality-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/integration/agent/memory-compaction-quality-flow.test.ts (1 test) 8ms
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'agent-1',
+  phase: 'requested',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8l_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+compaction_execution_context {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8l_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  pending_compaction: true,
+  selected_unit_count: 2,
+  protected_suffix_unit_count: 0,
+  retained_unit_count: 4,
+  working_context_message_count: 6,
+  raw_trace_count: 1
+}
+compaction_started {
+  agent_id: 'agent-1',
+  phase: 'started',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8l_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+compaction_completed {
+  agent_id: 'agent-1',
+  phase: 'completed',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8l_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  raw_trace_count: 1,
+  semantic_fact_count: 1
+}
+compaction_result_summary {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8l_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  episodic_summary_length: 44,
+  semantic_fact_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stderr | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+Tool 'lookup' not found in registry.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'agent-1',
+  phase: 'requested',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8v_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+compaction_execution_context {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8v_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  pending_compaction: true,
+  selected_unit_count: 1,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 7,
+  raw_trace_count: 0
+}
+compaction_started {
+  agent_id: 'agent-1',
+  phase: 'started',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8v_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+compaction_completed {
+  agent_id: 'agent-1',
+  phase: 'completed',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8v_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  raw_trace_count: 0,
+  semantic_fact_count: 1
+}
+compaction_result_summary {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsow8v_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  episodic_summary_length: 18,
+  semantic_fact_count: 1
+}
+
+ ✓ tests/integration/agent/memory-compaction-runtime-e2e.test.ts (3 tests) 23ms
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_7141'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_7141'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_5877'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_5877'.
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (2 tests | 2 failed) 10303ms
+     × uses the injected compaction agent runner to compact memory before the next LLM leg 10131ms
+     × keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid 171ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:197:10
+    195|         () => mainLLM.requests.length === 4 && agent.context.state.mem…
+    196|         10000
+    197|       )).toBe(true);
+       |          ^
+    198|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    199| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+AssertionError: expected [ { …(6) }, { …(6) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:327:38
+    325| 
+    326|       expect(mainLLM.requests).toHaveLength(4);
+    327|       expect(compactionRunner.tasks).toHaveLength(1);
+       |                                      ^
+    328|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    329|       const failedOperationId = compactionEvents[0]?.compaction_operat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 4 passed (6)
+   Start at  10:19:02
+   Duration  11.28s (transform 1.15s, setup 72ms, import 1.64s, tests 10.33s, environment 0ms)
+
+
+## Rerun failed runtime compaction integration file in isolation
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_7062'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_7062'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_5820'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_5820'.
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (2 tests | 2 failed) 10304ms
+     × uses the injected compaction agent runner to compact memory before the next LLM leg 10133ms
+     × keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid 170ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:197:10
+    195|         () => mainLLM.requests.length === 4 && agent.context.state.mem…
+    196|         10000
+    197|       )).toBe(true);
+       |          ^
+    198|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    199| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+AssertionError: expected [ { …(6) }, { …(6) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:327:38
+    325| 
+    326|       expect(mainLLM.requests).toHaveLength(4);
+    327|       expect(compactionRunner.tasks).toHaveLength(1);
+       |                                      ^
+    328|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    329|       const failedOperationId = compactionEvents[0]?.compaction_operat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  10:19:21
+   Duration  11.44s (transform 755ms, setup 25ms, import 1.03s, tests 10.30s, environment 0ms)
+
+
+## Baseline comparison for failing agent-runtime-compaction integration file
+Command: detached origin/personal worktree + pnpm install --offline --frozen-lockfile + pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Result: failed on origin/personal with the same two assertions as the task worktree (pre-existing outside this implementation).
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:197:10
+    195|         () => mainLLM.requests.length === 4 && agent.context.state.mem…
+    196|         10000
+    197|       )).toBe(true);
+       |          ^
+    198|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    199| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+AssertionError: expected [ { …(6) }, { …(6) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:327:38
+    325| 
+    326|       expect(mainLLM.requests).toHaveLength(4);
+    327|       expect(compactionRunner.tasks).toHaveLength(1);
+       |                                      ^
+    328|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    329|       const failedOperationId = compactionEvents[0]?.compaction_operat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  10:20:50
+   Duration  11.44s (transform 717ms, setup 24ms, import 1.03s, tests 10.30s, environment 0ms)
+
+
+## Temporary API/E2E runtime probe for focused scenarios
+Temporary test file: autobyteus-ts/tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ❯ tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts (2 tests | 1 failed) 13ms
+     × captures a realistic active compaction prompt with two tool calls/results and rebuilds natural resume context 12ms
+     ✓ renders partial/orphan tool results as unmatched results with call IDs 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts > temporary API/E2E compaction validation probe > captures a realistic active compaction prompt with two tool calls/results and rebuilds natural resume context
+AssertionError: expected 'Summarize the earlier conversation hi…' to contain 'Tool interaction call_count:'
+
+- Expected
++ Received
+
+- Tool interaction call_count:
++ Summarize the earlier conversation history below so future work can continue with refreshed context.
++ Preserve user goals, decisions, progress, findings, artifacts, tool outcomes, open questions, and next steps.
++ Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.
++
++ [OUTPUT_CONTRACT]
++ Return JSON only with this shape:
++ {
++   "episodic_summary": "string",
++   "critical_issues": [{ "fact": "string" }],
++   "unresolved_work": [{ "fact": "string" }],
++   "durable_facts": [{ "fact": "string" }],
++   "user_preferences": [{ "fact": "string" }],
++   "important_artifacts": [{ "fact": "string" }]
++ }
++ The output contract is mandatory. Do not return prose outside the JSON object.
++
++ [CONVERSATION_HISTORY_TO_SUMMARIZE]
++ User: Check SKU A-1 inventory and price before deciding.
+
+ ❯ tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts:111:22
+    109|       const prompt = runner.tasks[0]?.prompt ?? '';
+    110|       expect(prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
+    111|       expect(prompt).toContain('Tool interaction call_count:');
+       |                      ^
+    112|       expect(prompt).toContain('- Request for call call_count: invento…
+    113|       expect(prompt).toContain('- Result for call call_count from inve…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  10:22:28
+   Duration  289ms (transform 156ms, setup 23ms, import 172ms, tests 13ms, environment 0ms)
+
+Temporary probe cleanup: removed autobyteus-ts/tests/tmp-api-e2e-validation
+Temporary probe exit status: 1
+
+## Temporary API/E2E runtime probe rerun with long retained tail
+Temporary test file: autobyteus-ts/tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/tmp-api-e2e-validation/compaction-runtime-probe.test.ts (2 tests) 13ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  10:23:36
+   Duration  291ms (transform 157ms, setup 25ms, import 174ms, tests 13ms, environment 0ms)
+
+Temporary probe cleanup: removed autobyteus-ts/tests/tmp-api-e2e-validation
+Temporary probe exit status: 0
+
+## Passing targeted integration/API-E2E compaction checks rerun (excluding pre-existing failing runtime file)
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+
+stdout | tests/integration/agent/memory-compaction-quality-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/integration/agent/memory-compaction-quality-flow.test.ts (1 test) 8ms
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'agent-1',
+  phase: 'requested',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5f8_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+compaction_execution_context {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5f8_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  pending_compaction: true,
+  selected_unit_count: 2,
+  protected_suffix_unit_count: 0,
+  retained_unit_count: 4,
+  working_context_message_count: 6,
+  raw_trace_count: 1
+}
+compaction_started {
+  agent_id: 'agent-1',
+  phase: 'started',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5f8_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+compaction_completed {
+  agent_id: 'agent-1',
+  phase: 'completed',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5f8_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  raw_trace_count: 1,
+  semantic_fact_count: 1
+}
+compaction_result_summary {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5f8_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  episodic_summary_length: 44,
+  semantic_fact_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stderr | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+Tool 'lookup' not found in registry.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'agent-1',
+  phase: 'requested',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5fi_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+compaction_execution_context {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5fi_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  pending_compaction: true,
+  selected_unit_count: 1,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 7,
+  raw_trace_count: 0
+}
+compaction_started {
+  agent_id: 'agent-1',
+  phase: 'started',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5fi_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+compaction_completed {
+  agent_id: 'agent-1',
+  phase: 'completed',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5fi_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  raw_trace_count: 0,
+  semantic_fact_count: 1
+}
+compaction_result_summary {
+  agent_id: 'agent-1',
+  turn_id: 'turn_0003',
+  compaction_operation_id: 'compaction_operation_mpxsv5fi_1',
+  requested_turn_id: 'turn_0003',
+  execution_turn_id: 'turn_0003',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  episodic_summary_length: 18,
+  semantic_fact_count: 1
+}
+
+ ✓ tests/integration/agent/memory-compaction-runtime-e2e.test.ts (3 tests) 22ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  10:23:54
+   Duration  647ms (transform 570ms, setup 52ms, import 769ms, tests 30ms, environment 0ms)
+
+
+## Build and diff checks
+### autobyteus-ts build
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-tool-result-coherence/autobyteus-ts
+> tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+### git diff --check
+
+## LLM-facing prompt/template grep audit
+Command: rg over compaction prompt/message builders and built-in compactor template for removed LLM-facing strings.
+Audit result: no removed LLM-facing strings found in target generated prompt/template/message files.
+
+## Platform/runtime versions
+Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+v22.21.1
+10.28.2
+ M autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts
+ M autobyteus-ts/src/memory/compaction/compacted-memory-message-builder.ts
+ M autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts
+ M autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts
+ M autobyteus-ts/src/memory/compaction/working-context-message-unit-builder.ts
+ M autobyteus-ts/tests/integration/agent/memory-compaction-quality-flow.test.ts
+ M autobyteus-ts/tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+ M autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+ M autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts
+ M autobyteus-ts/tests/unit/memory/compaction-snapshot-builder.test.ts
+ M autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+?? tickets/done/compaction-prompt-tool-result-coherence/

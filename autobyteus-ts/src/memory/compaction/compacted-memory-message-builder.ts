@@ -16,8 +16,8 @@ const CATEGORY_LABELS: Record<CompactedMemoryCategory, string> = {
 export class CompactedMemoryMessageBuilder {
   build(bundle: MemoryBundle): string | null {
     const parts: string[] = [
-      'You are continuing an ongoing task after compacting earlier working memory.',
-      'Treat this as your own concise memory of earlier reasoning, actions, findings, decisions, constraints, and open work.',
+      'You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.',
+      'Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.',
     ];
 
     if (bundle.episodic.length) {
