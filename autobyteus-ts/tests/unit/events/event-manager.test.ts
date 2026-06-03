@@ -17,14 +17,14 @@ describe('EventManager', () => {
     const manager = resetManager();
     const listener = vi.fn();
 
-    manager.subscribe(new Subscription('sub-1', listener), new Topic(EventType.TASK_PLAN_TASKS_CREATED, null));
-    manager.emit(EventType.TASK_PLAN_TASKS_CREATED, 'origin-1', { payload: 'data', extra: 'value' });
+    manager.subscribe(new Subscription('sub-1', listener), new Topic(EventType.AGENT_TURN_STARTED, null));
+    manager.emit(EventType.AGENT_TURN_STARTED, 'origin-1', { payload: 'data', extra: 'value' });
 
     expect(listener).toHaveBeenCalledTimes(1);
     const [payload, meta] = listener.mock.calls[0];
     expect(payload).toBe('data');
     expect(meta.object_id).toBe('origin-1');
-    expect(meta.event_type).toBe(EventType.TASK_PLAN_TASKS_CREATED);
+    expect(meta.event_type).toBe(EventType.AGENT_TURN_STARTED);
     expect(meta.extra).toBe('value');
   });
 
@@ -32,12 +32,12 @@ describe('EventManager', () => {
     const manager = resetManager();
     const listener = vi.fn();
 
-    manager.subscribe(new Subscription('sub-1', listener), new Topic(EventType.TASK_PLAN_STATUS_UPDATED, 'sender-1'));
+    manager.subscribe(new Subscription('sub-1', listener), new Topic(EventType.AGENT_STATUS, 'sender-1'));
 
-    manager.emit(EventType.TASK_PLAN_STATUS_UPDATED, 'sender-2', { payload: 'skip' });
+    manager.emit(EventType.AGENT_STATUS, 'sender-2', { payload: 'skip' });
     expect(listener).not.toHaveBeenCalled();
 
-    manager.emit(EventType.TASK_PLAN_STATUS_UPDATED, 'sender-1', { payload: 'hit' });
+    manager.emit(EventType.AGENT_STATUS, 'sender-1', { payload: 'hit' });
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener.mock.calls[0][0]).toBe('hit');
   });
@@ -46,12 +46,12 @@ describe('EventManager', () => {
     const manager = resetManager();
     const listener = vi.fn();
     const subscription = new Subscription('sub-1', listener);
-    const topic = new Topic(EventType.TASK_PLAN_STATUS_UPDATED, null);
+    const topic = new Topic(EventType.AGENT_STATUS, null);
 
     manager.subscribe(subscription, topic);
     manager.unsubscribe(subscription, topic);
 
-    manager.emit(EventType.TASK_PLAN_STATUS_UPDATED, 'origin', { payload: 'value' });
+    manager.emit(EventType.AGENT_STATUS, 'origin', { payload: 'value' });
     expect(listener).not.toHaveBeenCalled();
   });
 
@@ -60,13 +60,13 @@ describe('EventManager', () => {
     const listenerA = vi.fn();
     const listenerB = vi.fn();
 
-    manager.subscribe(new Subscription('sub-1', listenerA), new Topic(EventType.TASK_PLAN_TASKS_CREATED, null));
-    manager.subscribe(new Subscription('sub-1', listenerB), new Topic(EventType.TASK_PLAN_STATUS_UPDATED, null));
+    manager.subscribe(new Subscription('sub-1', listenerA), new Topic(EventType.AGENT_TURN_STARTED, null));
+    manager.subscribe(new Subscription('sub-1', listenerB), new Topic(EventType.AGENT_STATUS, null));
 
     manager.unsubscribeAllForSubscriber('sub-1');
 
-    manager.emit(EventType.TASK_PLAN_TASKS_CREATED, 'origin', { payload: 'a' });
-    manager.emit(EventType.TASK_PLAN_STATUS_UPDATED, 'origin', { payload: 'b' });
+    manager.emit(EventType.AGENT_TURN_STARTED, 'origin', { payload: 'a' });
+    manager.emit(EventType.AGENT_STATUS, 'origin', { payload: 'b' });
 
     expect(listenerA).not.toHaveBeenCalled();
     expect(listenerB).not.toHaveBeenCalled();
@@ -76,12 +76,12 @@ describe('EventManager', () => {
     const manager = resetManager();
     const listener = vi.fn();
     const subscription = new Subscription('sub-1', listener);
-    const topic = new Topic(EventType.TASK_PLAN_TASKS_CREATED, null);
+    const topic = new Topic(EventType.AGENT_TURN_STARTED, null);
 
     manager.subscribe(subscription, topic);
     manager.subscribe(subscription, topic);
 
-    manager.emit(EventType.TASK_PLAN_TASKS_CREATED, 'origin', { payload: 'data' });
+    manager.emit(EventType.AGENT_TURN_STARTED, 'origin', { payload: 'data' });
     expect(listener).toHaveBeenCalledTimes(1);
   });
 });

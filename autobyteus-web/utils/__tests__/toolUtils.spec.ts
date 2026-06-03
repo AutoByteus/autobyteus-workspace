@@ -20,7 +20,7 @@ describe('toolUtils', () => {
 
     // NEW TEST CASE ADDED FOR THE PRODUCTION XML SCENARIO
     it('should generate a deterministic ID for the complex production XML case', () => {
-      const toolName = "PublishTaskPlan";
+      const toolName = "PublishWorkPlan";
       const args = {
         "plan": {
           "overall_goal": "Develop a complete Snake game in Python from scratch",
@@ -55,7 +55,7 @@ describe('toolUtils', () => {
       const generatedId = generateBaseInvocationId(toolName, args);
       
       // We can also assert the actual value if we know it from the backend test run
-      const expectedHash = "6e7a1f08f143518a8375c8a33868bef43d8c649dae8b5c13c4ef31ca285f9744";
+      const expectedHash = "5b7014c189f7a0084a31b82201b7dcd0f9808cd1f00e1c62bf2767e5f65f6355";
       expect(generatedId).toBe(`call_${expectedHash}`);
     });
   });

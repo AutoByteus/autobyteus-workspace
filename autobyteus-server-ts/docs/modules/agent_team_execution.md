@@ -25,7 +25,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
-| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves native task-plan-aware team behavior while server-owned task-delegation wrappers share the canonical explicit task-delegation command boundary. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
+| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves native team member/status/event behavior while server-owned task-delegation wrappers share the canonical explicit task-delegation command boundary. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
 | Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation dynamic tools. |
 | Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex, with task-delegation tools projected as first-party team MCP tools when configured. |
 | Mixed or nested-topology team | `MixedTeamManager` | Top-level member handles; agent handles own `AgentRun`s and subteam handles own child `TeamRun`s | Server-owned path for mixed-runtime and nested definitions. A top-level subteam is a first-class member, not a flattened leaf alias. |
@@ -186,7 +186,7 @@ The happy path is push-based:
    is not accidentally settled.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
-domain stream and are flattened to WebSocket `TASK_PLAN_EVENT` messages with
+domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages with
 `event_type` set to `TASK_DELEGATION_ACTIVATED`,
 `TASK_DELEGATION_STATUS_UPDATED`, or `TASK_DELEGATION_TERMINAL_STATUS`. Event
 payloads carry `teamRunId`, internal task identity, member/delegator identity,

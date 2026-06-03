@@ -49,10 +49,7 @@ const messages = {
     "Teams",
   "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
     "No description",
-  "workspace.components.workspace.team.TeamOverviewPanel.task_plan":
-    "Task Plan",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",
-  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "Tasks",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "Messages",
   "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":

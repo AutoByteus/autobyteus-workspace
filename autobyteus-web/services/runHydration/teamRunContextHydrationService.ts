@@ -200,8 +200,6 @@ const buildHydratedTeamContext = (params: {
     focusedMemberRouteKey: params.focusedMemberRouteKey,
     currentStatus: normalizeTeamRuntimeStatus(params.currentStatus),
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
     members: params.members,
     focusedMemberName: params.focusedMemberRouteKey,
   };
@@ -265,8 +263,6 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     focusedMemberRouteKey: fallbackFocusKey,
     currentStatus: AgentTeamStatus.Running,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   }, fallbackFocusKey) || fallbackFocusKey;
 
   if (!focusedMemberRouteKey) {

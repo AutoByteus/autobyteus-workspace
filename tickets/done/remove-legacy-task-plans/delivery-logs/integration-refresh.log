@@ -1,0 +1,139 @@
+# Delivery integration refresh evidence
+Date: 2026-06-03
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans
+Command: git fetch --all --prune (already executed successfully before this log was written)
+
+## Branch/upstream
+Current branch: codex/remove-legacy-task-plans
+Upstream: origin/personal
+HEAD: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Upstream SHA: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Merge base: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Ahead/behind HEAD...@{u}: 0	0
+
+## Upstream commits not in HEAD
+
+## Branch commits not in upstream
+
+## Status
+## codex/remove-legacy-task-plans...origin/personal
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts
+ M autobyteus-server-ts/src/services/agent-streaming/models.ts
+ M autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-ts/docs/agent_team_design.md
+ M autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+ M autobyteus-ts/docs/agent_team_streaming_protocol.md
+ M autobyteus-ts/docs/nodejs_architecture.md
+ M autobyteus-ts/examples/agent-team/README.md
+ D autobyteus-ts/examples/agent-team/event-driven/run-software-engineering-team.ts
+ M autobyteus-ts/src/agent-team/bootstrap-steps/agent-team-bootstrapper.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/task-notifier-initialization-step.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/team-context-initialization-step.ts
+ M autobyteus-ts/src/agent-team/context/agent-team-config.ts
+ M autobyteus-ts/src/agent-team/context/agent-team-runtime-state.ts
+ M autobyteus-ts/src/agent-team/streaming/agent-team-event-notifier.ts
+ M autobyteus-ts/src/agent-team/streaming/agent-team-stream-event-payloads.ts
+ M autobyteus-ts/src/agent-team/streaming/agent-team-stream-events.ts
+ M autobyteus-ts/src/agent-team/streaming/index.ts
+ D autobyteus-ts/src/agent-team/task-notification/activation-policy.ts
+ D autobyteus-ts/src/agent-team/task-notification/system-event-driven-agent-task-notifier.ts
+ D autobyteus-ts/src/agent-team/task-notification/task-activator.ts
+ D autobyteus-ts/src/agent-team/task-notification/task-notification-mode.ts
+ M autobyteus-ts/src/cli/agent-team/app.tsx
+ M autobyteus-ts/src/cli/agent-team/state-store.ts
+ M autobyteus-ts/src/cli/agent-team/widgets/focus-pane.tsx
+ M autobyteus-ts/src/cli/agent-team/widgets/shared.ts
+ D autobyteus-ts/src/cli/agent-team/widgets/task-plan-panel.tsx
+ M autobyteus-ts/src/events/event-types.ts
+ M autobyteus-ts/src/index.ts
+ D autobyteus-ts/src/task-management/base-task-plan.ts
+ D autobyteus-ts/src/task-management/converters/index.ts
+ D autobyteus-ts/src/task-management/converters/task-plan-converter.ts
+ D autobyteus-ts/src/task-management/deliverable.ts
+ D autobyteus-ts/src/task-management/deliverables/file-deliverable.ts
+ D autobyteus-ts/src/task-management/deliverables/index.ts
+ D autobyteus-ts/src/task-management/events.ts
+ D autobyteus-ts/src/task-management/in-memory-task-plan.ts
+ M autobyteus-ts/src/task-management/index.ts
+ D autobyteus-ts/src/task-management/schemas/deliverable-schema.ts
+ M autobyteus-ts/src/task-management/schemas/index.ts
+ D autobyteus-ts/src/task-management/schemas/task-definition.ts
+ D autobyteus-ts/src/task-management/schemas/task-status-report.ts
+ D autobyteus-ts/src/task-management/task.ts
+ M autobyteus-ts/src/task-management/tools/index.ts
+ D autobyteus-ts/src/task-management/tools/task-tools/index.ts
+ M autobyteus-ts/tests/unit/agent-team/bootstrap-steps/agent-team-bootstrapper.test.ts
+ D autobyteus-ts/tests/unit/agent-team/bootstrap-steps/task-notifier-initialization-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/task-notification/activation-policy.test.ts
+ D autobyteus-ts/tests/unit/agent-team/task-notification/system-event-driven-agent-task-notifier.test.ts
+ D autobyteus-ts/tests/unit/agent-team/task-notification/task-activator.test.ts
+ D autobyteus-ts/tests/unit/agent-team/task-notification/task-notification-mode.test.ts
+ M autobyteus-ts/tests/unit/cli/agent-team-state-store.test.ts
+ M autobyteus-ts/tests/unit/events/event-emitter.test.ts
+ M autobyteus-ts/tests/unit/events/event-manager.test.ts
+ M autobyteus-ts/tests/unit/events/event-types.test.ts
+ D autobyteus-ts/tests/unit/task-management/base-task-plan.test.ts
+ D autobyteus-ts/tests/unit/task-management/converters/task-plan-converter.test.ts
+ D autobyteus-ts/tests/unit/task-management/deliverable.test.ts
+ D autobyteus-ts/tests/unit/task-management/events.test.ts
+ D autobyteus-ts/tests/unit/task-management/in-memory-task-plan.test.ts
+ D autobyteus-ts/tests/unit/task-management/schemas/deliverable-schema.test.ts
+ D autobyteus-ts/tests/unit/task-management/schemas/task-definition.test.ts
+ D autobyteus-ts/tests/unit/task-management/schemas/task-status-report.test.ts
+ D autobyteus-ts/tests/unit/task-management/task.test.ts
+ M autobyteus-ts/tests/unit/task-management/tools/task-tools/legacy-task-tools-removed.test.ts
+ M autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+ M autobyteus-web/components/mobile/MobileActivityDigest.vue
+ M autobyteus-web/components/mobile/__tests__/MobileArtifacts.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts
+ D autobyteus-web/components/workspace/team/TaskPlanDisplay.vue
+ M autobyteus-web/components/workspace/team/TeamOverviewPanel.vue
+ M autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+ M autobyteus-web/composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/localization/messages/en/workspace.generated.ts
+ M autobyteus-web/localization/messages/en/workspace.ts
+ M autobyteus-web/localization/messages/zh-CN/workspace.generated.ts
+ M autobyteus-web/localization/messages/zh-CN/workspace.ts
+ M autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+ M autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+ M autobyteus-web/services/agentStreaming/handlers/index.ts
+ M autobyteus-web/services/agentStreaming/handlers/teamHandler.ts
+ M autobyteus-web/services/agentStreaming/protocol/index.ts
+ M autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+ M autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+ M autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+ M autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+ M autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+ M autobyteus-web/stores/__tests__/activeContextStore.spec.ts
+ M autobyteus-web/stores/__tests__/agentTeamContextsStore.spec.ts
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+ M autobyteus-web/stores/agentTeamContextsStore.ts
+ M autobyteus-web/types/agent/AgentTeamContext.ts
+ D autobyteus-web/types/taskManagement.ts
+ M autobyteus-web/utils/__tests__/toolUtils.spec.ts
+?? tickets/in-progress/remove-legacy-task-plans/
+
+## Resume refetch after user-reported poweroff
+Date: 2026-06-03
+Command: git fetch --all --prune
+HEAD: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Upstream SHA: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Ahead/behind HEAD...@{u}: 0	0
+Upstream commits not in HEAD:
+
+## Delivery refresh after Round 2 API/E2E validation update
+Date: 2026-06-03
+Command: git fetch --all --prune
+HEAD: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Upstream SHA: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Ahead/behind HEAD...@{u}: 0	0
+Upstream commits not in HEAD:

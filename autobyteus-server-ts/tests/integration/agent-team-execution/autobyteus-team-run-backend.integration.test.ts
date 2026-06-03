@@ -322,7 +322,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     });
   });
 
-  it("rebroadcasts agent, team, task-plan, and sub-team events into TeamRunEvent", async () => {
+  it("rebroadcasts agent, team, and sub-team events into TeamRunEvent", async () => {
     const { backend, team } = createBackend();
     const observed: Array<Parameters<Parameters<typeof backend.subscribeToEvents>[0]>[0]> = [];
     const unsubscribe = backend.subscribeToEvents((event) => {
@@ -363,17 +363,6 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
     );
 
-    team.notifier.emit(
-      EventType.TEAM_STREAM_EVENT,
-      new AgentTeamStreamEvent({
-        team_id: team.teamId,
-        event_source_type: "TASK_PLAN",
-        data: {
-          team_id: team.teamId,
-          tasks: [],
-        },
-      }),
-    );
 
     const nestedAgentEvent = new StreamEvent({
       agent_id: "agent-sub-7",
@@ -404,7 +393,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
     );
 
-    await waitForCondition(() => observed.length >= 4);
+    await waitForCondition(() => observed.length >= 3);
     unsubscribe();
 
     const workerSegmentEvent = observed.find((event) =>
@@ -443,17 +432,6 @@ describe("AutoByteusTeamRunBackend integration", () => {
       subTeamNodeName: null,
     });
 
-    const taskPlanEvent = observed.find((event) => event.eventSourceType === TeamRunEventSourceType.TASK_PLAN);
-    expect(taskPlanEvent).toMatchObject({
-      eventSourceType: TeamRunEventSourceType.TASK_PLAN,
-      teamRunId: "team-auto-1",
-      sourcePath: [],
-      data: {
-        team_id: "team-auto-1",
-        tasks: [],
-      },
-      subTeamNodeName: null,
-    });
 
     const subTeamToolEvent = observed.find((event) =>
       event.eventSourceType === TeamRunEventSourceType.AGENT &&

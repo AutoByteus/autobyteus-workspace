@@ -106,8 +106,6 @@ const buildTeamContext = (params: {
     focusedMemberRouteKey: params.focusedMemberRouteKey,
     currentStatus: 'idle' as any,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   }
 }
 

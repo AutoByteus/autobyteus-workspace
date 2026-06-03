@@ -5,8 +5,6 @@ import type { AgentTeamEventStore } from '../events/event-store.js';
 import type { AgentTeamStatusManager } from '../status/agent-team-status-manager.js';
 import type { AgentTeamStatusDeriver } from '../status/status-deriver.js';
 import type { AgentEventMultiplexer } from '../streaming/agent-event-multiplexer.js';
-import type { BaseTaskPlan } from '../../task-management/base-task-plan.js';
-import type { SystemEventDrivenAgentTaskNotifier } from '../task-notification/system-event-driven-agent-task-notifier.js';
 import type { TeamManager } from './team-manager.js';
 
 export type AgentTeamRuntimeStateOptions = {
@@ -23,15 +21,12 @@ export class AgentTeamRuntimeState {
   finalAgentConfigs: Record<string, AgentConfig> = {};
 
   teamManager: TeamManagerLike | null = null;
-  taskNotifier: SystemEventDrivenAgentTaskNotifier | null = null;
 
   inputEventQueues: AgentTeamInputEventQueueManager | null = null;
   statusManagerRef: AgentTeamStatusManager | null = null;
   multiplexerRef: AgentEventMultiplexer | null = null;
   eventStore: AgentTeamEventStore | null = null;
   statusDeriver: AgentTeamStatusDeriver | null = null;
-
-  taskPlan: BaseTaskPlan | null = null;
 
   constructor(options: AgentTeamRuntimeStateOptions) {
     this.teamId = options.teamId;

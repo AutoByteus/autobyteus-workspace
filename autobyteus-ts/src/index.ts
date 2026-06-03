@@ -11,8 +11,6 @@ export * from './multimedia/image/api/index.js';
 export * from './multimedia/utils/index.js';
 export * from './task-management/index.js';
 export * from './task-management/schemas/index.js';
-export * from './task-management/converters/index.js';
-export * from './task-management/deliverables/index.js';
 export * from './task-management/tools/index.js';
 export * from './external-channel/index.js';
 export * from './llm/index.js';

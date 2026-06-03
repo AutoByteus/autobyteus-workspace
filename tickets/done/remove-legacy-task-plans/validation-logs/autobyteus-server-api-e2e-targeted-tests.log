@@ -1,0 +1,258 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts > AutoByteusTeamRunBackend integration > persists AutoByteus explicit team communication references from enriched team events
+[team-communication] projection inserted teamRunId=team-auto-1 messageId=teammsg_L2XeTgFrT3Xw2p3a35GgCmjYqJ2vNL0f senderRunId=professor-run receiverRunId=student-run referenceCount=1 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-message-refs-5vkj5H/agent_teams/team-auto-1/team_communication_messages.json
+
+ ✓ tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts (8 tests) 96ms
+ ✓ tests/unit/agent-team-execution/task-delegation-service.test.ts (12 tests) 16ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:4885) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> work packet -> mark_task_completed -> accept_task -> idle settlement path
+AgentTeamRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> work packet -> mark_task_completed -> accept_task -> idle settlement path
+Successfully created codex_app_server team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and sends child completion to the original task-agent run with coordinator fallback
+AgentTeamRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and sends child completion to the original task-agent run with coordinator fallback
+Successfully created codex_app_server team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of queued tasks and websocket activation events
+AgentTeamRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of queued tasks and websocket activation events
+Successfully created codex_app_server team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > settles only the bound task-agent run after idle and ignores stale run-id events
+AgentTeamRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > settles only the bound task-agent run after idle and ignores stale run-id events
+Successfully created codex_app_server team run 'task-delegation-codex-run'.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (5 tests) 14ms
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-legacy-task-plans/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-api-appdata-2QNXy9
+AppConfig instance created.
+
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+AgentTeamFactory (Singleton) initialized.
+
+(node:4900) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+[2026-06-03T08:34:22.416Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+
+ ❯ tests/integration/api/team-communication-api.integration.test.ts (2 tests | 1 failed) 1991ms
+     × hydrates historical messages through GraphQL and serves reference content through the message-owned REST route 42ms
+     ✓ maps unreadable reference content failures to a graceful 403 REST response 2ms
+ ✓ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts (5 tests) 3ms
+stderr | tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > skips raw inter-agent messages without required message metadata
+[team-communication] skipped TEAM_COMMUNICATION_MESSAGE derivation runId=receiver-run-1 reason=missing_required_metadata
+
+ ✓ tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts (3 tests) 4ms
+stdout | tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts (5 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration > hydrates historical messages through GraphQL and serves reference content through the message-owned REST route
+AssertionError: expected [ { …(3) } ] to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+[
+  {
+    "locations": [
+      {
+        "column": 9,
+        "line": 2,
+      },
+    ],
+    "message": "Unsupported legacy team run metadata for 'team-comm-1780475662462': flat memberMetadata/runVersion schema would lose topology.",
+    "path": [
+      "getTeamCommunicationMessages",
+    ],
+  },
+]
+
+ ❯ execGraphql tests/integration/api/team-communication-api.integration.test.ts:148:25
+    146|     expect(response.statusCode).toBe(200);
+    147|     const body = response.json() as GraphqlResponse<T>;
+    148|     expect(body.errors).toBeUndefined();
+       |                         ^
+    149|     if (!body.data) {
+    150|       throw new Error("Expected GraphQL response data.");
+ ❯ tests/integration/api/team-communication-api.integration.test.ts:210:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 41 passed (42)
+   Start at  10:34:15
+   Duration  8.47s (transform 3.02s, setup 67ms, import 5.28s, tests 2.13s, environment 1ms)
+

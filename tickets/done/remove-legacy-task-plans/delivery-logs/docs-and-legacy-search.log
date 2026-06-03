@@ -1,0 +1,154 @@
+== Active source/protocol legacy search (corrected: excludes all ticket archives) ==
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:17:- no `TaskPlan`, `BaseTaskPlan`, or `InMemoryTaskPlan` public API;
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:19:- no task-plan bootstrap step or task-notification mode/env var;
+autobyteus-web/components/conversation/segments/SystemTaskNotificationSegment.vue:2:  <div class="system-task-notification my-4 p-4 border rounded-lg bg-purple-50 border-purple-200 dark:bg-gray-800 dark:border-purple-800">
+autobyteus-ts/docs/agent_team_design.md:21:There is no task-plan bootstrap step, task-notification mode, or task notifier.
+
+== Active docs/task terminology review ==
+autobyteus-ts/examples/agent-team/README.md:5:internal team task-plan workflow or event-driven task notifier examples.
+autobyteus-ts/examples/agent-team/README.md:7:For bounded team work, use server-owned dedicated task delegation in
+autobyteus-ts/examples/agent-team/README.md:12:`create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or the
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:7:Server-managed bounded task delegation (`delegate_tasks`,
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:15:The old native team task-plan subsystem has been removed from active source:
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:17:- no `TaskPlan`, `BaseTaskPlan`, or `InMemoryTaskPlan` public API;
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:18:- no task-plan schemas, reports, deliverables, converters, or stream payloads;
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:19:- no task-plan bootstrap step or task-notification mode/env var;
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:20:- no native team stream source for task plans;
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:21:- no CLI task-plan panel.
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:24:`create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or the
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:39:delegation data, not from a native `autobyteus-ts` task plan.
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:51:not native team task-plan events.
+autobyteus-ts/docs/agent_team_streaming_protocol.md:4:teams. It no longer carries native task-plan events.
+autobyteus-ts/docs/agent_team_streaming_protocol.md:34:## Dedicated Task Delegation
+autobyteus-ts/docs/agent_team_streaming_protocol.md:36:Server-owned dedicated task delegation is not part of this native stream source
+autobyteus-ts/docs/agent_team_streaming_protocol.md:39:exposes as `TASK_DELEGATION_EVENT`. See
+autobyteus-server-ts/docs/modules/agent_tools.md:23:## Server-Owned Task Delegation Tools
+autobyteus-server-ts/docs/modules/agent_tools.md:34:surface is intentionally smaller than the legacy native task-plan tools:
+autobyteus-server-ts/docs/modules/agent_tools.md:36:`get_task_plan_status`, and the old local task-plan `update_task_status` are not
+autobyteus-server-ts/docs/modules/agent_tools.md:41:- Mixed AutoByteus standalone member/task-agent runs may receive thin
+autobyteus-server-ts/docs/modules/agent_tools.md:45:  task-delegation tools until native task-agent/per-member
+autobyteus-server-ts/docs/modules/agent_tools.md:55:`reference_files` work-packet inputs, then starts runnable task-agent instances
+autobyteus-server-ts/docs/modules/agent_tools.md:58:terminal/completion notification. Task-agent result tools are explicit and
+autobyteus-server-ts/docs/modules/agent_tools.md:60:calling task-agent instance, require a result `message`, and may include
+autobyteus-server-ts/docs/modules/agent_tools.md:61:`reference_files`; task agents must not pass status values or task selectors.
+autobyteus-server-ts/docs/modules/agent_tools.md:65:delegator/coordinator while keeping the task-agent addressable until acceptance;
+autobyteus-server-ts/docs/modules/agent_tools.md:67:request safe task-agent settlement after the bound instance becomes idle.
+autobyteus-ts/docs/agent_team_design.md:7:Server-managed bounded task delegation (`delegate_tasks`,
+autobyteus-ts/docs/agent_team_design.md:21:There is no task-plan bootstrap step, task-notification mode, or task notifier.
+autobyteus-ts/docs/agent_team_design.md:27:not contain task-plan or task-notifier fields.
+autobyteus-ts/docs/agent_team_design.md:37:Native `TASK_PLAN` stream events have been removed. Dedicated task events are
+autobyteus-ts/docs/agent_team_design.md:39:`TASK_DELEGATION_EVENT`.
+autobyteus-ts/docs/agent_team_design.md:45:resurrect old task-plan semantics.
+autobyteus-ts/docs/agent_team_design.md:51:`get_task_plan_status`, or the old local team-task `update_task_status`.
+autobyteus-ts/docs/agent_team_design.md:53:Use server-managed dedicated task delegation for bounded team work and personal
+autobyteus-web/docs/agent_execution_architecture.md:87:route key/path. When the pending approval belongs to a delegated task-agent run,
+autobyteus-web/docs/agent_execution_architecture.md:161:Delegated task-agent instances are task-scoped transient child entities under
+autobyteus-web/docs/agent_execution_architecture.md:164:a temporary task-agent context/node keyed by the task-agent run id.
+autobyteus-web/docs/agent_execution_architecture.md:165:`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
+autobyteus-web/docs/agent_execution_architecture.md:166:strip as concrete task children, and shows pending approvals on the task-agent
+autobyteus-web/docs/agent_execution_architecture.md:167:card when the task-agent runtime is waiting for tool approval. Running and
+autobyteus-web/docs/agent_execution_architecture.md:168:awaiting-acceptance task-agent children must remain visible and addressable
+autobyteus-web/docs/agent_execution_architecture.md:171:restores concrete children from live task-agent projection/identity instead of
+autobyteus-web/docs/agent_execution_architecture.md:419:| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with task-agent identity update the transient task-agent context and remove its card after terminal `offline`. |
+autobyteus-web/docs/agent_execution_architecture.md:425:| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id for card-level approve/deny routing. |
+autobyteus-server-ts/docs/modules/agent_team_execution.md:56:  approval request event. For delegated task-agent tool calls, approval
+autobyteus-server-ts/docs/modules/agent_team_execution.md:58:  approval/denial command routes to the active task-agent runtime rather than
+autobyteus-server-ts/docs/modules/agent_team_execution.md:120:## Server-Owned Task Delegation Lifecycle
+autobyteus-server-ts/docs/modules/agent_team_execution.md:122:Team task delegation is owned by `TaskDelegationService`, not by runtime-specific
+autobyteus-server-ts/docs/modules/agent_team_execution.md:123:handlers, legacy model-facing task-plan tools, or future MCP transport code. The
+autobyteus-server-ts/docs/modules/agent_team_execution.md:130:- `mark_task_completed`: a task-agent instance reports completed worker output
+autobyteus-server-ts/docs/modules/agent_team_execution.md:132:  `reference_files`; the task identity is inferred from task-agent context.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:133:- `mark_task_failed`: a task-agent instance reports failed worker output for
+autobyteus-server-ts/docs/modules/agent_team_execution.md:135:  the task identity is inferred from task-agent context.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:140:Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
+autobyteus-server-ts/docs/modules/agent_team_execution.md:141:`get_my_tasks`, `get_task_plan_status`, and the old local task-plan
+autobyteus-server-ts/docs/modules/agent_team_execution.md:157:   starts one concrete task-agent instance per task through
+autobyteus-server-ts/docs/modules/agent_team_execution.md:159:   label, rich `description`, optional reference files, task-agent instance/run
+autobyteus-server-ts/docs/modules/agent_team_execution.md:161:   to task-agent result tools.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:165:5. Accepted task-agent result reports emit `TASK_DELEGATION_STATUS_UPDATED`
+autobyteus-server-ts/docs/modules/agent_team_execution.md:178:   and then request task-agent settlement.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:182:   the bound task-agent run, verifies the task-agent instance still has no
+autobyteus-server-ts/docs/modules/agent_team_execution.md:185:   The task-agent run id is a stale-route guard so a later replacement instance
+autobyteus-server-ts/docs/modules/agent_team_execution.md:189:domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages with
+autobyteus-server-ts/docs/modules/agent_team_execution.md:193:task-agent instance identity, status, optional message/reference files, and
+autobyteus-server-ts/docs/modules/agent_team_execution.md:196:Member-scoped stream/status/tool-approval payloads for task-agent activity also
+autobyteus-server-ts/docs/modules/agent_team_execution.md:197:carry concrete task-agent identity, including `task_agent_run_id`, so clients can
+autobyteus-server-ts/docs/modules/agent_team_execution.md:198:project transient task-agent UI entities and route approvals to the task-scoped
+autobyteus-server-ts/docs/modules/agent_team_execution.md:202:use the server-managed task-agent registry for task-agent instance start/settle
+autobyteus-server-ts/docs/modules/agent_team_execution.md:204:task-agent lifecycle across Codex, Claude, and AutoByteus member runtimes. The
+autobyteus-server-ts/docs/modules/agent_team_execution.md:206:for per-member/task-agent settlement, so native pure-team agent configs gate
+autobyteus-server-ts/docs/modules/agent_team_execution.md:208:exists. Mixed AutoByteus task-agent runs are supported because the mixed manager
+autobyteus-server-ts/docs/modules/agent_team_execution.md:209:owns task-agent lifecycle and the AutoByteus adapter preserves
+autobyteus-server-ts/docs/modules/agent_team_execution.md:214:### Task Delegation Validation Notes
+autobyteus-server-ts/docs/modules/codex_integration.md:39:Codex team task delegation is projected as dynamic tools generated from the
+autobyteus-server-ts/docs/modules/codex_integration.md:46:legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
+autobyteus-server-ts/docs/modules/codex_integration.md:47:`get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
+autobyteus-server-ts/docs/modules/codex_integration.md:50:terminal/completion notification. Activation details are pushed to task-agent
+autobyteus-server-ts/docs/modules/agent_execution.md:190:Claude team task delegation tools are also first-party MCP tools on the team
+autobyteus-server-ts/docs/modules/agent_execution.md:200:task-plan polling and creation tool names are not exposed through this MCP
+autobyteus-web/docs/agent_teams.md:195:it is normalized through the active runtime/member context so stale task-agent
+
+== Release docs review ==
+scripts/desktop-release.sh:15:  scripts/desktop-release.sh release <version> --release-notes <file> [--branch <branch>] [--no-push]
+scripts/desktop-release.sh:16:  scripts/desktop-release.sh test [--ref <git-ref>]
+scripts/desktop-release.sh:17:  scripts/desktop-release.sh manual-dispatch <tag> [--ref <git-ref>] [--prerelease]
+scripts/desktop-release.sh:20:  release   Bump autobyteus-web/package.json version, sync curated release notes,
+scripts/desktop-release.sh:29:  scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md
+scripts/desktop-release.sh:30:  scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md --no-push
+scripts/desktop-release.sh:31:  scripts/desktop-release.sh test --ref personal
+scripts/desktop-release.sh:32:  scripts/desktop-release.sh manual-dispatch v1.2.7 --ref personal
+scripts/desktop-release.sh:101:    echo "Error: release requires --release-notes <file>." >&2
+scripts/desktop-release.sh:105:    echo "Error: release notes file '$file' does not exist." >&2
+scripts/desktop-release.sh:109:    echo "Error: release notes file '$file' is empty." >&2
+scripts/desktop-release.sh:118:  echo "Synced curated release notes to $RELEASE_NOTES_OUTPUT_REL"
+scripts/desktop-release.sh:137:      --release-notes)
+scripts/desktop-release.sh:146:        echo "Error: unknown option for release: $1" >&2
+README.md:297:## Release workflow
+README.md:321:- Android APK release:
+README.md:347:# Normal new personal release:
+README.md:348:# 1) Write short functional release notes in the ticket, for example:
+README.md:352:pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
+README.md:355:pnpm release:test --ref personal
+README.md:359:pnpm release:manual-dispatch v1.2.7 --ref personal
+README.md:364:- Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
+README.md:366:- `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
+README.md:367:- Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
+README.md:370:- `scripts/desktop-release.sh`
+.github/workflows/release-messaging-gateway.yml:9:      publish_release:
+.github/workflows/release-messaging-gateway.yml:22:      prerelease:
+.github/workflows/release-messaging-gateway.yml:36:  prepare-release:
+.github/workflows/release-messaging-gateway.yml:42:      prerelease: ${{ steps.meta.outputs.prerelease }}
+.github/workflows/release-messaging-gateway.yml:162:  publish-release:
+.github/workflows/release-messaging-gateway.yml:185:      - name: Resolve release notes mode
+.github/workflows/release-messaging-gateway.yml:195:              echo "Using curated release notes from \`$CURATED_PATH\`."
+.github/workflows/release-messaging-gateway.yml:202:              echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."
+.github/workflows/release-messaging-gateway.yml:213:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+.github/workflows/release-messaging-gateway.yml:228:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+.github/workflows/release-server-docker.yml:38:  prepare-release:
+.github/workflows/release-server-docker.yml:46:      is_prerelease: ${{ steps.meta.outputs.is_prerelease }}
+.github/workflows/release-server-docker.yml:126:            echo "Prerelease: \`${{ steps.meta.outputs.is_prerelease }}\`"
+.github/workflows/release-server-docker.yml:209:            echo "Prerelease: \`${{ needs.prepare-release.outputs.is_prerelease }}\`"
+.github/workflows/release-desktop.yml:9:      publish_release:
+.github/workflows/release-desktop.yml:18:      prerelease:
+.github/workflows/release-desktop.yml:28:  group: desktop-release-${{ github.ref }}
+.github/workflows/release-desktop.yml:32:  prepare-release:
+.github/workflows/release-desktop.yml:38:      prerelease: ${{ steps.meta.outputs.prerelease }}
+.github/workflows/release-desktop.yml:405:  publish-release:
+.github/workflows/release-desktop.yml:445:      - name: Resolve release notes mode
+.github/workflows/release-desktop.yml:455:              echo "Using curated release notes from \`$CURATED_PATH\`."
+.github/workflows/release-desktop.yml:462:              echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."
+.github/workflows/release-desktop.yml:473:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+.github/workflows/release-desktop.yml:494:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+.github/workflows/release-android.yml:9:      publish_release:
+.github/workflows/release-android.yml:22:      prerelease:
+.github/workflows/release-android.yml:36:  prepare-release:
+.github/workflows/release-android.yml:44:      prerelease: ${{ steps.meta.outputs.prerelease }}
+.github/workflows/release-android.yml:45:      publish_release: ${{ steps.meta.outputs.publish_release }}
+.github/workflows/release-android.yml:235:            echo "Publish release: \`${{ steps.meta.outputs.publish_release }}\`"
+.github/workflows/release-android.yml:236:            echo "Prerelease: \`${{ steps.meta.outputs.prerelease }}\`"
+.github/workflows/release-android.yml:357:  publish-release:
+.github/workflows/release-android.yml:394:      - name: Resolve release notes mode
+.github/workflows/release-android.yml:406:              echo "Using curated release notes from \`$CURATED_PATH\`."
+.github/workflows/release-android.yml:413:              echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."
+.github/workflows/release-android.yml:424:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+.github/workflows/release-android.yml:437:          prerelease: ${{ needs.prepare-release.outputs.prerelease }}

@@ -1603,6 +1603,7 @@ describe('TeamStreamingService', () => {
       compactionRunId: null,
       compactionTaskId: null,
       errorMessage: null,
+      centerTimelineTimestamp: expect.any(Date),
     });
     expect(studentContext.state.compactionStatus).toBeNull();
   });

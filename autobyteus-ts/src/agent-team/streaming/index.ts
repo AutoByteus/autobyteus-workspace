@@ -5,7 +5,6 @@ export {
   AgentTeamStatusUpdateData,
   AgentEventRebroadcastPayload,
   SubTeamEventRebroadcastPayload,
-  type TaskPlanEventPayload,
   type AgentTeamStreamEventSourceType,
   type AgentTeamStreamDataPayload,
   type TeamSpecificPayload

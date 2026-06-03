@@ -98,8 +98,6 @@ const buildTeamContext = (params: {
     historicalHydration: null,
     currentStatus: params.currentStatus ?? AgentTeamStatus.Idle,
     unsubscribe: params.unsubscribe,
-    taskPlan: null,
-    taskStatuses: null,
   };
 };
 

@@ -1,0 +1,4 @@
+Round 2 isolated data directory prepared: /tmp/autobyteus-round2-data.2KSDdr
+Round 2 isolated workspace directory prepared: /tmp/autobyteus-round2-workspace.vBMXtj
+DeepSeek key source: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/.env.test (value intentionally redacted)
+Ports: backend=18180 frontend=13102

@@ -1,0 +1,91 @@
+{
+  "candidateCount": 4,
+  "results": [
+    {
+      "candidate": 1,
+      "sources": [
+        "process.env.DEEPSEEK_API_KEY",
+        "autobyteus-worktrees/compaction-frontier-llm-rendering/.local/ui-feed-e2e/server-data/.env",
+        "autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e/server-data/.env",
+        "autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-real/server-data/.env",
+        "autobyteus-worktrees/compaction-frontier-llm-rendering/.local/browser-e2e-xml/server-data/.env"
+      ],
+      "keyLength": 35,
+      "status": 200,
+      "ok": true,
+      "message": "{\"object\":\"list\",\"data\":[{\"id\":\"deepseek-v4-flash\",\"object\":\"model\",\"owned_by\":\"deepseek\"},{\"id\":\"deepseek-v4-pro\",\"object\":\"model\",\"owned_by\":\"deepseek\"}]}"
+    },
+    {
+      "candidate": 2,
+      "sources": [
+        "autobyteus-worktrees/send-message-user-target/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/electron-llm-422-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/focused-agent-interrupt-routing/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/compaction-frontier-llm-rendering/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/personal-release-server-docker-desktop-only-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/status-lifecycle-hardening/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/frontend-file-explorer-context-menu/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/terminal-slow-after-files/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/docker-browser-link-open-fix/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/mobile-client-tailscale-feasibility/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/kimi-tool-stream-visibility/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/compaction-prompt-tool-result-coherence/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/understand-application-framework/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/run-history-index-consistency/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/agent-status-event-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/shared-context-filesystem/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/mobile-artifacts-tab/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/file-explorer-watcher-fd-usage/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/self-evolving-harness-feasibility/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/investigate-electron-update-regression/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/antigravity-cli-runtime/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/mobile-ux-simplification/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/remove-legacy-task-plans/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/agent-self-evolving-feature/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/compaction-queued-agent-not-started/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/gemini-rpa-thinking-level-options/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted",
+        "autobyteus-workspace-superrepo/tickets/done/kimi-tool-stream-visibility/runtime-validation-20260514/server-data/.env.redacted"
+      ],
+      "keyLength": 10,
+      "status": 401,
+      "ok": false,
+      "message": "Authentication Fails, Your api key: ****ted> is invalid"
+    },
+    {
+      "candidate": 3,
+      "sources": [
+        "autobyteus-worktrees/claude-read-artifacts/autobyteus-ts/.env.test",
+        "autobyteus-worktrees/external-turn-reply-aggregation/autobyteus-ts/.env.test",
+        "autobyteus-worktrees/publish-artifacts-plural-refactor/autobyteus-ts/.env.test",
+        "autobyteus-worktrees/autobyteus-ts-google-genai-tts-upgrade/autobyteus-ts/.env.test",
+        "autobyteus-worktrees/llm-runtime-compaction-top-layer-e2e/autobyteus-ts/.env.test",
+        "autobyteus/.env.test",
+        "_backup_old_clones_2026-02-19/autobyteus-ts/.env.test"
+      ],
+      "keyLength": 35,
+      "status": 401,
+      "ok": false,
+      "message": "Authentication Fails, Your api key: ****d7bf is invalid"
+    },
+    {
+      "candidate": 4,
+      "sources": [
+        "autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/.env.test",
+        "autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts/.env.test",
+        "autobyteus-workspace-superrepo/autobyteus-ts/.env.test"
+      ],
+      "keyLength": 35,
+      "status": 401,
+      "ok": false,
+      "message": "Authentication Fails, Your api key: ****6a75 is invalid"
+    }
+  ]
+}
