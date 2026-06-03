@@ -55,8 +55,8 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., native task-plan updates, server task-delegation lifecycle events, status changes) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to a specific focused member. After validation, it immediately begins a local submission for that member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
-  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
+  - `sendMessageToFocusedMember()`: Routes user input to the active-execution focused member, which can intentionally differ from the roster/history member selected for visual Focus display. After validation, it immediately begins a local submission for that command member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
+  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member selected by the same active-execution command focus as the shared composer, without locally clearing that member's `isSending` flag. The member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
 ### Stopped-Run Follow-Up Recovery
@@ -134,12 +134,16 @@ and active `uninitialized` project as active non-interruptible
 `initializing`; they keep send readiness blocked without granting the red
 interrupt affordance. Active processing/tool/LLM tokens project as `running`.
 When the selected context is a team, stop/interrupt dispatch must resolve the
-same focused member as the composer send path at click time. The frontend sends
-team `INTERRUPT_GENERATION` with `target_member_route_key` set to the focused
-member route key and `target_member_run_id` set only as an optional focused
-member run-id guard. If there is no focused leaf member, the focused context is
-stale, or no active team streaming service exists, the frontend must not send a
-team interrupt command.
+same active-execution command member as the composer send path at click time.
+That command member can intentionally differ from roster/history visual focus:
+for example, an all-offline historical team row can show `api_e2e_engineer` in
+Focus/Grid/Spotlight while the composer remains safely targeted at the
+coordinator. The frontend sends team `INTERRUPT_GENERATION` with
+`target_member_route_key` set to the active-execution command member route key
+and `target_member_run_id` set only as an optional member run-id guard. If there
+is no command-eligible focused leaf member, the focused context is stale, or no
+active team streaming service exists, the frontend must not send a team
+interrupt command.
 Run-history refresh, active recovery, and run-open hydration must preserve an
 already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
 single run or focused team member while that live stream remains authoritative,
@@ -262,6 +266,14 @@ agent or team-definition group, and for selected team runs also opens that team
 run's member row. After the selected path has been revealed for the stable
 selection key, later quiet refreshes must not reopen the same path if the user
 manually collapses it.
+
+For team-run member rows, selection state uses roster/history visual focus, not
+active-execution command focus. Clicking a member row whose route key exists in
+the team's `memberTree` should keep that route key selected in the history tree
+and Focus display even when the member is offline or has no active runtime
+context. Live/hydrated team-context merges must preserve the persisted history
+row's workspace grouping and use this roster focus for selected-row
+highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace History Archive And Delete Actions
 

@@ -100,7 +100,50 @@ describe('TeamSpotlightView', () => {
     expect(wrapper.emitted('select-member')).toEqual([['professor']]);
   });
 
-  it('falls back from an offline task-only logical parent focus to active coordinator spotlight', () => {
+  it('renders the full Software Engineering Team roster and can place an inactive member in the primary slot', () => {
+    const routeKeys = [
+      'solution_designer',
+      'architecture_reviewer',
+      'implementation_engineer',
+      'code_reviewer',
+      'api_e2e_engineer',
+      'delivery_engineer',
+    ];
+    const wrapper = mount(TeamSpotlightView, {
+      props: {
+        teamContext: {
+          coordinatorMemberRouteKey: 'solution_designer',
+          memberTree: routeKeys.map((routeKey) => buildMemberNode(routeKey, routeKey)),
+          leafAgentContextsByRouteKey: new Map([
+            ['solution_designer', buildMember('solution_designer', AgentStatus.Running)],
+          ]),
+        } as any,
+        focusedMemberRouteKey: 'implementation_engineer',
+      },
+      global: {
+        stubs: {
+          TeamMemberMonitorTile: {
+            props: ['memberNode', 'memberContext', 'variant'],
+            template: '<div class="tile" :data-has-context="Boolean(memberContext)" :data-variant="variant || `compact`">{{ memberNode.memberRouteKey }}</div>',
+          },
+        },
+      },
+    });
+
+    const tiles = wrapper.findAll('.tile');
+    expect(tiles.map((tile) => tile.text())).toEqual([
+      'implementation_engineer',
+      'solution_designer',
+      'architecture_reviewer',
+      'code_reviewer',
+      'api_e2e_engineer',
+      'delivery_engineer',
+    ]);
+    expect(tiles[0].attributes('data-variant')).toBe('primary');
+    expect(tiles[0].attributes('data-has-context')).toBe('false');
+  });
+
+  it('keeps an offline task-only logical parent visible under roster spotlight focus', () => {
     const wrapper = mount(TeamSpotlightView, {
       props: {
         teamContext: {
@@ -127,7 +170,7 @@ describe('TeamSpotlightView', () => {
     });
 
     const tiles = wrapper.findAll('.tile');
-    expect(tiles.map((tile) => tile.text())).toEqual(['coordinator']);
+    expect(tiles.map((tile) => tile.text())).toEqual(['worker', 'coordinator']);
     expect(tiles[0].attributes('data-variant')).toBe('primary');
   });
 

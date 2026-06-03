@@ -1,0 +1,163 @@
+{
+  "scenario": "API/E2E Round 4 rerun after inactive/offline Local Fix rework",
+  "date": "2026-06-03",
+  "frontend_url": "http://127.0.0.1:3033/workspace",
+  "frontend_under_test": "Current ticket worktree Nuxt dev server on branch codex/team-run-members-missing-regression",
+  "backend_base_url": "http://localhost:29695",
+  "backend_runtime": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+  "expected_roster_order": [
+    "solution_designer",
+    "architecture_reviewer",
+    "implementation_engineer",
+    "code_reviewer",
+    "api_e2e_engineer",
+    "delivery_engineer"
+  ],
+  "durable_checks": [
+    {
+      "command": "git diff --check",
+      "result": "Pass"
+    },
+    {
+      "command": "NUXT_TEST=true pnpm --dir autobyteus-web exec vitest run stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts stores/__tests__/activeContextStore.spec.ts utils/__tests__/teamActiveExecutionMembers.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamTaskAgentActivityBar.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+      "result": "Pass",
+      "files": 13,
+      "tests": 107
+    }
+  ],
+  "browser_plugin_note": "Browser plugin iab backend was unavailable, so local frontend tab tooling was used for browser-style DOM validation.",
+  "focus_results": [
+    {
+      "team_run_id": "team_software-engineering-team_9d74beaa",
+      "status_class": "inactive/offline historical row",
+      "row_text": "i would like to integrate the antigravity cli as another runtime. currently we have AutoByteus, C...",
+      "visible_roster_order": [
+        "solution_designer",
+        "architecture_reviewer",
+        "implementation_engineer",
+        "code_reviewer",
+        "api_e2e_engineer",
+        "delivery_engineer"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "api_e2e_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_9d74beaa-api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "delivery_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_9d74beaa-delivery_engineer"
+      },
+      "result": "Pass"
+    },
+    {
+      "team_run_id": "team_software-engineering-team_fa10eacd",
+      "status_class": "inactive/offline historical row",
+      "row_text": "Can you search on the internet that are there any, it's like more like a MCP gateway, you know, i...",
+      "visible_roster_order": [
+        "solution_designer",
+        "architecture_reviewer",
+        "implementation_engineer",
+        "code_reviewer",
+        "api_e2e_engineer",
+        "delivery_engineer"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "api_e2e_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_fa10eacd-api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "delivery_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_fa10eacd-delivery_engineer"
+      },
+      "result": "Pass"
+    },
+    {
+      "team_run_id": "team_software-engineering-team_89989caf",
+      "status_class": "inactive/offline historical row",
+      "row_text": "Can you please check in the autobyteus-ts, do we have todolist tool? please have a look",
+      "visible_roster_order": [
+        "solution_designer",
+        "architecture_reviewer",
+        "implementation_engineer",
+        "code_reviewer",
+        "api_e2e_engineer",
+        "delivery_engineer"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "api_e2e_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_89989caf-api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "delivery_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_89989caf-delivery_engineer"
+      },
+      "result": "Pass"
+    },
+    {
+      "team_run_id": "team_software-engineering-team_b8abf03c",
+      "status_class": "active/running control row",
+      "row_text": "i currently have a bug, if you start the frontend against teh backend servers tarted by teh elect...",
+      "visible_roster_order": [
+        "solution_designer",
+        "architecture_reviewer",
+        "implementation_engineer",
+        "code_reviewer",
+        "api_e2e_engineer",
+        "delivery_engineer"
+      ],
+      "after_click_api_e2e_engineer": {
+        "focus_header_h4": "api_e2e_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_b8abf03c-api_e2e_engineer"
+      },
+      "after_click_delivery_engineer": {
+        "focus_header_h4": "delivery_engineer",
+        "selected_row": "workspace-team-member-team_software-engineering-team_b8abf03c-delivery_engineer"
+      },
+      "result": "Pass"
+    }
+  ],
+  "grid_spotlight_results": {
+    "offline_split_run_id": "team_software-engineering-team_9d74beaa",
+    "visual_roster_focus": "api_e2e_engineer",
+    "grid": {
+      "focus_header_h4": "api_e2e_engineer",
+      "tile_headers": [
+        "S solution_designer Offline MEMBER",
+        "A architecture_reviewer Offline MEMBER",
+        "I implementation_engineer Offline MEMBER",
+        "C code_reviewer Offline MEMBER",
+        "A api_e2e_engineer Offline MEMBER FOCUSED",
+        "D delivery_engineer Offline MEMBER"
+      ],
+      "tile_count": 6,
+      "all_six_roster_tiles_visible": true,
+      "focused_tile": "A api_e2e_engineer Offline MEMBER FOCUSED",
+      "composer_target_excerpt": "REPLYING TO:SOLUTION_DESIGNER"
+    },
+    "spotlight": {
+      "focus_header_h4": "api_e2e_engineer",
+      "tile_headers": [
+        "A api_e2e_engineer Offline MEMBER FOCUSED",
+        "S solution_designer Offline MEMBER",
+        "A architecture_reviewer Offline MEMBER",
+        "I implementation_engineer Offline MEMBER",
+        "C code_reviewer Offline MEMBER",
+        "D delivery_engineer Offline MEMBER"
+      ],
+      "tile_count": 6,
+      "all_six_roster_tiles_visible": true,
+      "focused_tile": "A api_e2e_engineer Offline MEMBER FOCUSED",
+      "composer_target_excerpt": "REPLYING TO:SOLUTION_DESIGNER"
+    },
+    "interpretation": "The UI intentionally displays roster focus on api_e2e_engineer while the composer target remains the safe active-execution coordinator solution_designer for the all-offline run."
+  },
+  "screenshots": {
+    "spotlight_composer_split": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-spotlight-composer-split.png",
+    "delivery_focus": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression/tickets/done/team-run-members-missing-regression/api-e2e-round4-offline-delivery-focus.png"
+  },
+  "round3_failure_resolution": {
+    "previous_failure": "Inactive/all-offline historical rows stayed focused on solution_designer after clicks on api_e2e_engineer and delivery_engineer.",
+    "current_resolution": "Resolved: all three previously failing offline rows now move Focus header and selected-row highlighting to the clicked roster member."
+  },
+  "result": "Pass"
+}

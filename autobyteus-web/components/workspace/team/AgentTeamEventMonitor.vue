@@ -67,9 +67,30 @@ defineProps<{
 }>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
-const focusedMember = computed(() => teamContextsStore.activeExecutionFocusedMemberContext);
-const focusedMemberNode = computed(() => teamContextsStore.activeExecutionFocusedMemberNode);
+const focusedMemberRouteKey = computed(() => {
+  const team = activeTeam.value;
+  const candidate = team?.focusedMemberRouteKey?.trim() || '';
+  if (
+    team &&
+    candidate &&
+    (
+      team.memberNodesByRouteKey.has(candidate) ||
+      team.leafAgentContextsByRouteKey.has(candidate)
+    )
+  ) {
+    return candidate;
+  }
+
+  return teamContextsStore.activeExecutionFocusedMemberRouteKey;
+});
+const focusedMember = computed(() => {
+  const routeKey = focusedMemberRouteKey.value;
+  return routeKey ? activeTeam.value?.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+});
+const focusedMemberNode = computed(() => {
+  const routeKey = focusedMemberRouteKey.value;
+  return routeKey ? activeTeam.value?.memberNodesByRouteKey.get(routeKey) || null : null;
+});
 const conversationOfFocusedMember = computed(() => (
   shouldShowMemberConversation(focusedMemberNode.value, focusedMember.value)
     ? focusedMember.value?.state.conversation
@@ -77,7 +98,7 @@ const conversationOfFocusedMember = computed(() => (
 ));
 
 const focusedMemberDisplayName = computed(() => {
-  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  const routeKey = focusedMemberRouteKey.value;
   if (!routeKey) {
     return '';
   }
@@ -86,7 +107,7 @@ const focusedMemberDisplayName = computed(() => {
 });
 
 const focusedMemberAvatarUrl = computed(() => {
-  const routeKey = activeExecutionFocusedMemberRouteKey.value;
+  const routeKey = focusedMemberRouteKey.value;
   if (!routeKey || !focusedMember.value) {
     return null;
   }

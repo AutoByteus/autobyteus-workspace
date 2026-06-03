@@ -32,7 +32,7 @@
 import { computed } from 'vue';
 import TeamMemberMonitorTile from '~/components/workspace/team/TeamMemberMonitorTile.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { flattenActiveExecutionMemberNodesForDisplay } from '~/utils/teamActiveExecutionMembers';
+import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
 
 const props = defineProps<{
   teamContext: AgentTeamContext;
@@ -44,7 +44,7 @@ defineEmits<{
 }>();
 
 const displayEntries = computed(() =>
-  flattenActiveExecutionMemberNodesForDisplay(props.teamContext),
+  flattenTeamMemberNodesForDisplay(props.teamContext.memberTree),
 );
 
 const gridColumnClasses = computed(() => {
