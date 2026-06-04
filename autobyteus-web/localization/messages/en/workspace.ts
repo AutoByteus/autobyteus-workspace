@@ -126,6 +126,8 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_skills_from_run": "Improve skills from this run",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_member_skills_from_run": "Improve member skills from this run",
 } satisfies TranslationCatalog;
 
 export default messages;

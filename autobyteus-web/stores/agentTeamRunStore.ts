@@ -329,6 +329,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             variables: {
               input: {
                 teamDefinitionId: activeTeam.config.teamDefinitionId,
+                selfEvolution: activeTeam.config.selfEvolution ?? null,
                 memberConfigs: memberConfigs ?? [],
               }
             }

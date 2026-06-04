@@ -15,6 +15,8 @@ import {
   isLegacyTeamRunMetadataUpgradeRequiredError,
   isUnsupportedLegacyTeamRunMetadataError,
 } from "../../../run-history/store/team-run-metadata-store.js";
+import { toDomainSelfEvolutionConfigOverride } from "./self-evolution-graphql-converters.js";
+import { GraphqlSelfEvolutionConfigOverrideInput } from "./self-evolution-graphql-types.js";
 
 registerEnumType(SkillAccessMode, {
   name: "SkillAccessModeEnum",
@@ -90,6 +92,9 @@ export class TeamMemberConfigInput {
 
   @Field(() => String, { nullable: true })
   runtimeKind?: string | null;
+
+  @Field(() => GraphqlSelfEvolutionConfigOverrideInput, { nullable: true })
+  selfEvolution?: GraphqlSelfEvolutionConfigOverrideInput | null;
 }
 
 @InputType()
@@ -99,6 +104,9 @@ export class CreateAgentTeamRunInput {
 
   @Field(() => [TeamMemberConfigInput])
   memberConfigs!: TeamMemberConfigInput[];
+
+  @Field(() => GraphqlSelfEvolutionConfigOverrideInput, { nullable: true })
+  selfEvolution?: GraphqlSelfEvolutionConfigOverrideInput | null;
 }
 
 @Resolver()
@@ -113,7 +121,11 @@ export class AgentTeamRunResolver {
     try {
       const run = await this.teamRunService.createTeamRun({
         teamDefinitionId: input.teamDefinitionId,
-        memberConfigs: input.memberConfigs,
+        selfEvolution: toDomainSelfEvolutionConfigOverride(input.selfEvolution),
+        memberConfigs: input.memberConfigs.map((memberConfig) => ({
+          ...memberConfig,
+          selfEvolution: toDomainSelfEvolutionConfigOverride(memberConfig.selfEvolution),
+        })),
       });
       return {
         success: true,

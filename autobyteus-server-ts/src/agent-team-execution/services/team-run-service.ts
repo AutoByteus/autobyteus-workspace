@@ -2,6 +2,7 @@ import { TeamRun } from "../domain/team-run.js";
 import {
   type TeamMemberRunConfig,
   TeamRunConfig,
+  type TeamRunMemberConfig,
   type TeamRunMemberConfigInput as DomainTeamRunMemberConfigInput,
 } from "../domain/team-run-config.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
@@ -31,6 +32,9 @@ import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/models.js";
+import { normalizeSelfEvolutionConfigOverride } from "../../self-evolution/domain/config.js";
+import { SelfEvolutionEffectiveConfigResolver } from "../../self-evolution/services/self-evolution-effective-config-resolver.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 
 export interface TeamRunPresetInput {
@@ -57,11 +61,13 @@ type TeamRunMemberConfigInput = {
   llmConfig?: Record<string, unknown> | null;
   runtimeKind?: RuntimeKind | string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
+  selfEvolution?: SelfEvolutionConfigOverride | null;
 };
 
 export interface CreateTeamRunInput {
   teamDefinitionId: string;
   memberConfigs: TeamRunMemberConfigInput[];
+  selfEvolution?: SelfEvolutionConfigOverride | null;
 }
 
 export class TeamRunService {
@@ -247,7 +253,11 @@ export class TeamRunService {
       teamDefinitionId: input.teamDefinitionId,
       memberConfigs: memberConfigs as DomainTeamRunMemberConfigInput[],
     });
-    const run = await this.agentTeamRunManager.createTeamRun(plan.config);
+    const config = await this.attachSelfEvolutionSnapshots(
+      plan.config,
+      normalizeSelfEvolutionConfigOverride(input.selfEvolution),
+    );
+    const run = await this.agentTeamRunManager.createTeamRun(config);
     const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
 
     await this.teamRunHistoryCatalogService.recordTeamRunCreated({
@@ -257,6 +267,51 @@ export class TeamRunService {
     });
 
     return run;
+  }
+
+  private async attachSelfEvolutionSnapshots(
+    config: TeamRunConfig,
+    teamRunOverride: SelfEvolutionConfigOverride | null,
+  ): Promise<TeamRunConfig> {
+    return new TeamRunConfig({
+      teamDefinitionId: config.teamDefinitionId,
+      teamBackendKind: config.teamBackendKind,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
+      selfEvolution: teamRunOverride,
+      memberTree: await this.attachSelfEvolutionSnapshotsToMembers(
+        config.memberTree,
+        teamRunOverride,
+      ),
+    });
+  }
+
+  private async attachSelfEvolutionSnapshotsToMembers(
+    memberTree: readonly TeamRunMemberConfig[],
+    teamRunOverride: SelfEvolutionConfigOverride | null,
+  ): Promise<TeamRunMemberConfig[]> {
+    return Promise.all(memberTree.map(async (member): Promise<TeamRunMemberConfig> => {
+      if (member.memberKind === "agent_team") {
+        return {
+          ...member,
+          memberConfigs: await this.attachSelfEvolutionSnapshotsToMembers(
+            member.memberConfigs,
+            teamRunOverride,
+          ),
+        };
+      }
+
+      const memberOverride = normalizeSelfEvolutionConfigOverride(member.selfEvolution);
+      const selfEvolutionEffective = new SelfEvolutionEffectiveConfigResolver().resolveForTeamMember({
+        teamRunOverride,
+        teamMemberOverride: memberOverride,
+      });
+      return {
+        ...member,
+        selfEvolution: memberOverride,
+        selfEvolutionEffective,
+      };
+    }));
   }
 
   async restoreTeamRun(teamRunId: string): Promise<TeamRun> {

@@ -17,6 +17,7 @@ import {
 } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/models.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { AgentRunEventType, isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
@@ -31,6 +32,7 @@ export interface CreateAgentRunInput {
   skillAccessMode: SkillAccessMode;
   runtimeKind: string;
   applicationExecutionContext?: ApplicationExecutionContext | null;
+  selfEvolution?: SelfEvolutionConfigOverride | null;
 }
 
 export interface CreateAgentRunResult {
@@ -301,6 +303,7 @@ export class AgentRunService {
           llmConfig: metadata.llmConfig,
           skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
           applicationExecutionContext: metadata.applicationExecutionContext ?? null,
+          selfEvolution: metadata.selfEvolutionEffective ?? null,
         }),
         runtimeContext: this.buildRestoreRuntimeContext(metadata),
       }),

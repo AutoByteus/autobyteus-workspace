@@ -124,6 +124,8 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_skills_from_run": "从此运行改进技能",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_member_skills_from_run": "从此成员运行改进技能",
 } satisfies TranslationCatalog;
 
 export default messages;

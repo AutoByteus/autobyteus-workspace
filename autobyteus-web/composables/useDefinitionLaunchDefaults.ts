@@ -72,6 +72,7 @@ export const buildAgentRunTemplate = (
     skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
+    selfEvolution: null,
   }
 }
 
@@ -90,6 +91,7 @@ export const buildTeamRunTemplate = (
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
     autoExecuteTools: false,
     skillAccessMode: 'PRELOADED_ONLY',
+    selfEvolution: null,
     memberOverrides: {},
     isLocked: false,
   }

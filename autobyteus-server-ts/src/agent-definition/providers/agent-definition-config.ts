@@ -64,7 +64,10 @@ export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigR
 export const mergeAgentConfigRecord = (
   existingConfig: Record<string, unknown>,
   domainObj: AgentDefinition,
-): Record<string, unknown> => ({
-  ...existingConfig,
-  ...buildAgentConfigRecord(domainObj),
-});
+): Record<string, unknown> => {
+  const { selfEvolution: _selfEvolution, ...retainedConfig } = existingConfig;
+  return {
+    ...retainedConfig,
+    ...buildAgentConfigRecord(domainObj),
+  };
+};

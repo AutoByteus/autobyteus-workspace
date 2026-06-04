@@ -22,7 +22,7 @@ type AgentDefinitionLookup = {
 
 type BuiltInAgentSettingsPersistence = Pick<
   ServerSettingsService,
-  "getCompactionAgentDefinitionId" | "updateSetting"
+  "getSettingValue" | "updateSetting"
 >;
 
 type Logger = {
@@ -205,7 +205,7 @@ export class BuiltInAgentBootstrapper {
     }
 
     const settings = this.getServerSettingsService();
-    const currentValue = settings.getCompactionAgentDefinitionId();
+    const currentValue = settings.getSettingValue(settingDefault.key);
     if (currentValue) {
       return false;
     }

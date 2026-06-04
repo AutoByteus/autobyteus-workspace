@@ -131,6 +131,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           autoExecuteTools: memberRecord.autoExecuteTools,
           skillAccessMode: memberRecord.skillAccessMode,
           llmConfig: memberRecord.llmConfig,
+          selfEvolution: memberRecord.selfEvolution ?? null,
           isLocked: false,
         };
 

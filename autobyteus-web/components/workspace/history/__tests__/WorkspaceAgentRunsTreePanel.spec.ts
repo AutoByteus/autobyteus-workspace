@@ -48,6 +48,10 @@ const {
   teamRunStoreMock,
   agentDefinitionStoreMock,
   agentTeamDefinitionStoreMock,
+  selfEvolutionCapabilityState,
+  selfEvolutionCapabilityStoreMock,
+  selfEvolutionState,
+  selfEvolutionStoreMock,
   workspaceCenterViewStoreMock,
   windowNodeContextStoreMock,
   pickFolderPathMock,
@@ -124,6 +128,13 @@ const {
         ],
       },
     ] as any[],
+  };
+  const selfEvolutionCapabilityState = {
+    isEnabled: false,
+  };
+  const selfEvolutionState = {
+    eligibilityByKey: {} as Record<string, any>,
+    loadingKeys: {} as Record<string, boolean>,
   };
 
   return {
@@ -202,6 +213,46 @@ const {
       ],
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
     },
+    selfEvolutionCapabilityState,
+    selfEvolutionCapabilityStoreMock: {
+      get isEnabled() {
+        return selfEvolutionCapabilityState.isEnabled;
+      },
+      ensureResolved: vi.fn().mockResolvedValue(null),
+    },
+    selfEvolutionState,
+    selfEvolutionStoreMock: {
+      get eligibilityByKey() {
+        return selfEvolutionState.eligibilityByKey;
+      },
+      get loadingKeys() {
+        return selfEvolutionState.loadingKeys;
+      },
+      agentKey: (runId: string) => `agent:${runId}`,
+      teamMemberKey: (teamRunId: string, memberRunId: string) => `team-member:${teamRunId}:${memberRunId}`,
+      fetchAgentRunEligibility: vi.fn(async (runId: string) => {
+        const key = `agent:${runId}`;
+        return selfEvolutionState.eligibilityByKey[key] ?? {
+          eligible: false,
+          reasons: ['No eligibility was cached.'],
+          warnings: [],
+          skillTargets: [],
+          effectiveConfig: null,
+        };
+      }),
+      fetchTeamMemberEligibility: vi.fn(async (teamRunId: string, memberRunId: string) => {
+        const key = `team-member:${teamRunId}:${memberRunId}`;
+        return selfEvolutionState.eligibilityByKey[key] ?? {
+          eligible: false,
+          reasons: ['No eligibility was cached.'],
+          warnings: [],
+          skillTargets: [],
+          effectiveConfig: null,
+        };
+      }),
+      startAgentRunSelfEvolution: vi.fn().mockResolvedValue({ evolutionRunId: 'evolution-1', record: { evolutionRunId: 'evolution-1', status: 'requested', errors: [] } }),
+      startTeamMemberSelfEvolution: vi.fn().mockResolvedValue({ evolutionRunId: 'evolution-1', record: { evolutionRunId: 'evolution-1', status: 'requested', errors: [] } }),
+    },
     workspaceCenterViewStoreMock: {
       showChat: vi.fn(),
       showConfig: vi.fn(),
@@ -240,6 +291,14 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
+}));
+
+vi.mock('~/stores/selfEvolutionCapabilityStore', () => ({
+  useSelfEvolutionCapabilityStore: () => selfEvolutionCapabilityStoreMock,
+}));
+
+vi.mock('~/stores/selfEvolutionStore', () => ({
+  useSelfEvolutionStore: () => selfEvolutionStoreMock,
 }));
 
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
@@ -331,6 +390,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       },
     ];
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
+    selfEvolutionCapabilityState.isEnabled = false;
+    selfEvolutionState.eligibilityByKey = {};
+    selfEvolutionState.loadingKeys = {};
+    selfEvolutionCapabilityStoreMock.ensureResolved.mockClear();
+    selfEvolutionStoreMock.fetchAgentRunEligibility.mockClear();
+    selfEvolutionStoreMock.fetchTeamMemberEligibility.mockClear();
+    selfEvolutionStoreMock.startAgentRunSelfEvolution.mockClear();
+    selfEvolutionStoreMock.startTeamMemberSelfEvolution.mockClear();
     pickFolderPathMock.mockResolvedValue(null);
     workspaceCenterViewStoreMock.showChat.mockReset();
     workspaceCenterViewStoreMock.showConfig.mockReset();
@@ -544,6 +611,52 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const configButton = wrapper.find('[data-test="workspace-run-config-run-1"]');
     expect(configButton.exists()).toBe(false);
+  });
+
+  it('uses backend self-evolution eligibility state before enabling run actions', async () => {
+    selfEvolutionCapabilityState.isEnabled = true;
+    selfEvolutionState.eligibilityByKey = {
+      'agent:run-1': {
+        eligible: false,
+        reasons: ['Run was created before self-evolution effective-config snapshots were recorded.'],
+        warnings: [],
+        skillTargets: [],
+        effectiveConfig: null,
+      },
+      'agent:run-2': {
+        eligible: true,
+        reasons: [],
+        warnings: [],
+        skillTargets: [],
+        effectiveConfig: {
+          enabled: true,
+          triggerStrategy: 'manual_only',
+          evolverStrategy: 'single_agent',
+          evolverAgentDefinitionId: null,
+          resolvedAt: '2026-01-01T00:00:00.000Z',
+          sourceTrace: [],
+        },
+      },
+    };
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const ineligibleButton = wrapper.find(
+      'button[title="Run was created before self-evolution effective-config snapshots were recorded."]',
+    );
+    expect(ineligibleButton.exists()).toBe(true);
+    expect(ineligibleButton.attributes('disabled')).toBeDefined();
+
+    const eligibleButton = wrapper.find('button[title="Improve skills from run"]');
+    expect(eligibleButton.exists()).toBe(true);
+    expect(eligibleButton.attributes('disabled')).toBeUndefined();
+
+    await eligibleButton.trigger('click');
+    await flushPromises();
+
+    expect(selfEvolutionStoreMock.startAgentRunSelfEvolution).toHaveBeenCalledWith('run-2');
   });
 
   it('renders grouped team rows under workspace and selects the team run when clicked', async () => {

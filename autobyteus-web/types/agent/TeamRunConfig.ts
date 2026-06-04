@@ -3,6 +3,7 @@ import type {
   SkillAccessMode,
 } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+import type { SelfEvolutionConfigOverride } from '~/types/agent/SelfEvolutionConfig'
 
 export interface MemberConfigOverride {
   agentDefinitionId: string
@@ -10,6 +11,7 @@ export interface MemberConfigOverride {
   llmModelIdentifier?: string
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null
+  selfEvolution?: SelfEvolutionConfigOverride | null
 }
 
 export interface TeamRunConfig {
@@ -22,6 +24,7 @@ export interface TeamRunConfig {
   llmConfig?: Record<string, unknown> | null
   autoExecuteTools: boolean
   skillAccessMode: SkillAccessMode
+  selfEvolution?: SelfEvolutionConfigOverride | null
   /** Member overrides keyed by canonical member route key. */
   memberOverrides: Record<string, MemberConfigOverride>
   isLocked: boolean

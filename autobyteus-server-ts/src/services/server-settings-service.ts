@@ -1,6 +1,10 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
 import {
+  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+  SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
+} from "../self-evolution/domain/settings.js";
+import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
@@ -50,6 +54,7 @@ type ServerSettingValueValidation = {
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
+export { AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID, SELF_EVOLUTION_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -117,6 +122,16 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       "Controls whether the Applications module is available for this node at runtime.",
+    );
+
+    this.registerPredefinedSetting(
+      SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
+      "Controls whether manual skill self-evolution is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+      "Agent definition id for the skill self-evolver agent. Blank runtime/model fields on the selected evolver inherit from the target run.",
     );
 
     this.registerPredefinedSetting(
@@ -343,6 +358,22 @@ export class ServerSettingsService {
     );
   }
 
+  getSelfEvolutionEnabledSetting(): boolean | null {
+    const rawValue = appConfigProvider.config.get(SELF_EVOLUTION_CAPABILITY_SETTING_KEY)?.trim();
+    if (!rawValue) {
+      return null;
+    }
+
+    return rawValue.toLowerCase() === "true";
+  }
+
+  setSelfEvolutionEnabledSetting(enabled: boolean): void {
+    appConfigProvider.config.set(
+      SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
+      enabled ? "true" : "false",
+    );
+  }
+
   getSettingValue(key: string): string | null {
     const rawValue = appConfigProvider.config.get(key);
     if (typeof rawValue !== "string") {
@@ -354,6 +385,10 @@ export class ServerSettingsService {
 
   getCompactionAgentDefinitionId(): string | null {
     return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
+  }
+
+  getSelfEvolutionDefaultEvolverAgentDefinitionId(): string | null {
+    return this.getSettingValue(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID);
   }
 
   getFeaturedCatalogItemsSettingValue(): string | null {

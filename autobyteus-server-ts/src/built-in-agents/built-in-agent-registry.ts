@@ -1,10 +1,13 @@
-import { AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID } from "../services/server-settings-service.js";
+import {
+  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+} from "../services/server-settings-service.js";
 
 export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+export const SKILL_EVOLVER_AGENT_DEFINITION_ID = "autobyteus-skill-evolver";
 
 export type BuiltInAgentSettingDefault = {
-  key: typeof AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID;
-  currentValue: "compactionAgentDefinitionId";
+  key: typeof AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID | typeof AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID;
 };
 
 export type BuiltInAgentDefinition = {
@@ -21,7 +24,14 @@ export const BUILT_IN_AGENT_DEFINITIONS = [
     displayName: "Memory Compactor",
     settingDefault: {
       key: AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      currentValue: "compactionAgentDefinitionId",
+    },
+  },
+  {
+    id: SKILL_EVOLVER_AGENT_DEFINITION_ID,
+    templateDirName: "skill-evolver",
+    displayName: "Skill Self-Evolver",
+    settingDefault: {
+      key: AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
     },
   },
 ] as const satisfies readonly BuiltInAgentDefinition[];

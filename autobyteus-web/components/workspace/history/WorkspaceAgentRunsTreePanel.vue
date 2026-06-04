@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
@@ -122,6 +122,9 @@ import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceH
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspaceHistoryWorkspaceCreation';
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
+import { useSelfEvolutionCapabilityStore } from '~/stores/selfEvolutionCapabilityStore';
+import { useSelfEvolutionStore } from '~/stores/selfEvolutionStore';
+import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
 
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
@@ -138,15 +141,151 @@ const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
+const selfEvolutionCapabilityStore = useSelfEvolutionCapabilityStore();
+const selfEvolutionStore = useSelfEvolutionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
+const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => {
+  addToast(message, type === 'warning' ? 'info' : type);
+};
 
 const treeState = useWorkspaceHistoryTreeState({
   runHistoryStore,
   selectionStore,
 });
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
+const selfEvolutionStartingKeys = ref<Record<string, boolean>>({});
+
+type VisibleSelfEvolutionTarget =
+  | { kind: 'agent'; key: string; runId: string }
+  | { kind: 'team-member'; key: string; teamRunId: string; memberRunId: string };
+
+const setSelfEvolutionStarting = (key: string, value: boolean): void => {
+  selfEvolutionStartingKeys.value = { ...selfEvolutionStartingKeys.value, [key]: value };
+};
+
+const flattenTeamMembersForEligibility = (members: TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
+  members.flatMap((member) => [member, ...flattenTeamMembersForEligibility(member.children)]);
+
+const visibleSelfEvolutionTargets = computed<VisibleSelfEvolutionTarget[]>(() => {
+  if (!selfEvolutionCapabilityStore.isEnabled) {
+    return [];
+  }
+  const targets: VisibleSelfEvolutionTarget[] = [];
+  for (const workspace of workspaceNodes.value) {
+    if (!treeState.isWorkspaceExpanded(workspace.workspaceRootPath)) {
+      continue;
+    }
+    for (const agent of workspace.agents) {
+      if (!treeState.isAgentExpanded(workspace.workspaceRootPath, agent.agentDefinitionId)) {
+        continue;
+      }
+      for (const run of agent.runs) {
+        if (run.source === 'draft') {
+          continue;
+        }
+        targets.push({ kind: 'agent', key: selfEvolutionStore.agentKey(run.runId), runId: run.runId });
+      }
+    }
+    for (const team of workspaceTeams(workspace.workspaceRootPath)) {
+      if (!treeState.isTeamExpanded(team.teamRunId)) {
+        continue;
+      }
+      for (const member of flattenTeamMembersForEligibility(team.memberTree.length > 0 ? team.memberTree : team.members)) {
+        if (member.memberKind !== 'agent' || !member.memberRunId) {
+          continue;
+        }
+        targets.push({
+          kind: 'team-member',
+          key: selfEvolutionStore.teamMemberKey(member.teamRunId, member.memberRunId),
+          teamRunId: member.teamRunId,
+          memberRunId: member.memberRunId,
+        });
+      }
+    }
+  }
+  return targets;
+});
+
+const visibleSelfEvolutionTargetSignature = computed(() =>
+  visibleSelfEvolutionTargets.value.map((target) => target.key).sort().join('|'),
+);
+
+const ensureVisibleSelfEvolutionEligibility = (): void => {
+  for (const target of visibleSelfEvolutionTargets.value) {
+    if (
+      selfEvolutionStore.eligibilityByKey[target.key] ||
+      selfEvolutionStore.loadingKeys[target.key]
+    ) {
+      continue;
+    }
+    if (target.kind === 'agent') {
+      void selfEvolutionStore.fetchAgentRunEligibility(target.runId).catch(() => undefined);
+      continue;
+    }
+    void selfEvolutionStore.fetchTeamMemberEligibility(target.teamRunId, target.memberRunId)
+      .catch(() => undefined);
+  }
+};
+
+const selfEvolutionEligibilityTitle = (key: string, fallback: string): string => {
+  const eligibility = selfEvolutionStore.eligibilityByKey[key];
+  if (selfEvolutionStore.loadingKeys[key] || !eligibility) {
+    return 'Checking self-evolution eligibility...';
+  }
+  if (!eligibility.eligible) {
+    return eligibility.reasons[0] || 'This run is not eligible for self-evolution.';
+  }
+  if (eligibility.warnings.length > 0) {
+    return `${fallback} (${eligibility.warnings[0]})`;
+  }
+  return fallback;
+};
+
+watch(visibleSelfEvolutionTargetSignature, () => {
+  ensureVisibleSelfEvolutionEligibility();
+}, { immediate: true });
+
+const onStartRunSelfEvolution = async (run: Parameters<WorkspaceHistorySectionActions['onSelectRun']>[0]): Promise<void> => {
+  const key = selfEvolutionStore.agentKey(run.runId);
+  setSelfEvolutionStarting(key, true);
+  try {
+    const eligibility = await selfEvolutionStore.fetchAgentRunEligibility(run.runId);
+    if (!eligibility.eligible) {
+      addToast(eligibility.reasons[0] || 'This run is not eligible for self-evolution.', 'error');
+      return;
+    }
+    const result = await selfEvolutionStore.startAgentRunSelfEvolution(run.runId);
+    addToast(`Self-evolution started: ${result.evolutionRunId}`, 'success');
+  } catch (error) {
+    addToast(error instanceof Error ? error.message : String(error), 'error');
+  } finally {
+    setSelfEvolutionStarting(key, false);
+  }
+};
+
+const onStartTeamMemberSelfEvolution = async (member: Parameters<WorkspaceHistorySectionActions['onSelectTeamMember']>[0]): Promise<void> => {
+  if (!member.memberRunId) {
+    return;
+  }
+  const key = selfEvolutionStore.teamMemberKey(member.teamRunId, member.memberRunId);
+  setSelfEvolutionStarting(key, true);
+  try {
+    const eligibility = await selfEvolutionStore.fetchTeamMemberEligibility(member.teamRunId, member.memberRunId);
+    if (!eligibility.eligible) {
+      addToast(eligibility.reasons[0] || 'This team member run is not eligible for self-evolution.', 'error');
+      return;
+    }
+    const result = await selfEvolutionStore.startTeamMemberSelfEvolution(member.teamRunId, member.memberRunId);
+    addToast(`Self-evolution started: ${result.evolutionRunId}`, 'success');
+  } catch (error) {
+    addToast(error instanceof Error ? error.message : String(error), 'error');
+  } finally {
+    setSelfEvolutionStarting(key, false);
+  }
+};
+
 
 const {
   getAgentInitials,
@@ -214,7 +353,7 @@ const {
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
-  addToast,
+  addToast: addWorkspaceToast,
   canTerminateTeam: treeState.canTerminateTeam,
 });
 
@@ -228,7 +367,13 @@ const {
   selectionStore,
   setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
-  emitRunSelected: (payload) => emit('run-selected', payload),
+  emitRunSelected: (payload) => {
+    if (payload.type === 'agent') {
+      emit('run-selected', { type: 'agent', runId: payload.runId });
+      return;
+    }
+    emit('run-selected', { type: 'team', runId: payload.runId });
+  },
   emitRunCreated: (payload) => emit('run-created', payload),
 });
 
@@ -254,6 +399,15 @@ const sectionState: WorkspaceHistorySectionState = {
   runStatusClass: treeState.runStatusClass,
   teamStatusClass: treeState.teamStatusClass,
   canTerminateTeam: treeState.canTerminateTeam,
+  get isSelfEvolutionEnabled() {
+    return selfEvolutionCapabilityStore.isEnabled;
+  },
+  isSelfEvolutionEligible: (key: string) => selfEvolutionStore.eligibilityByKey[key]?.eligible === true,
+  isSelfEvolutionEligibilityLoading: (key: string) =>
+    Boolean(selfEvolutionStore.loadingKeys[key]) ||
+    (selfEvolutionCapabilityStore.isEnabled && !selfEvolutionStore.eligibilityByKey[key]),
+  selfEvolutionEligibilityTitle,
+  isSelfEvolutionStarting: (key: string) => Boolean(selfEvolutionStartingKeys.value[key]),
 };
 
 const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
@@ -282,6 +436,8 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onArchiveTeam,
   onDeleteTeam,
   onSelectTeamMember,
+  onStartRunSelfEvolution,
+  onStartTeamMemberSelfEvolution,
 };
 
 let refreshTimerId: ReturnType<typeof setInterval> | null = null;
@@ -291,10 +447,14 @@ onMounted(async () => {
     workspaceStore.fetchAllWorkspaces().catch(() => undefined),
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
+    selfEvolutionCapabilityStore.ensureResolved().catch(() => undefined),
   ]);
   await runHistoryStore.fetchTree();
+  ensureVisibleSelfEvolutionEligibility();
   refreshTimerId = setInterval(() => {
-    void runHistoryStore.refreshTreeQuietly();
+    void runHistoryStore.refreshTreeQuietly().finally(() => {
+      ensureVisibleSelfEvolutionEligibility();
+    });
   }, HISTORY_REFRESH_INTERVAL_MS);
 });
 

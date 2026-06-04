@@ -95,6 +95,17 @@
               </span>
             </div>
             <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+
+              <button
+                v-if="state.isSelfEvolutionEnabled && run.source !== 'draft'"
+                type="button"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-emerald-50 hover:text-emerald-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                :title="state.selfEvolutionEligibilityTitle(`agent:${run.runId}`, $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_skills_from_run'))"
+                :disabled="state.isSelfEvolutionStarting(`agent:${run.runId}`) || state.isSelfEvolutionEligibilityLoading(`agent:${run.runId}`) || !state.isSelfEvolutionEligible(`agent:${run.runId}`)"
+                @click.stop="actions.onStartRunSelfEvolution(run)"
+              >
+                <Icon icon="heroicons:sparkles-20-solid" class="h-3.5 w-3.5" />
+              </button>
               <button
                 v-if="run.isActive"
                 type="button"
@@ -293,6 +304,17 @@
                       class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
                     >Team</span>
                   </div>
+
+                  <button
+                    v-if="state.isSelfEvolutionEnabled && member.memberKind === 'agent' && member.memberRunId"
+                    type="button"
+                    class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    :title="state.selfEvolutionEligibilityTitle(`team-member:${member.teamRunId}:${member.memberRunId}`, $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_member_skills_from_run'))"
+                    :disabled="state.isSelfEvolutionStarting(`team-member:${member.teamRunId}:${member.memberRunId}`) || state.isSelfEvolutionEligibilityLoading(`team-member:${member.teamRunId}:${member.memberRunId}`) || !state.isSelfEvolutionEligible(`team-member:${member.teamRunId}:${member.memberRunId}`)"
+                    @click.stop="actions.onStartTeamMemberSelfEvolution(member)"
+                  >
+                    <Icon icon="heroicons:sparkles-20-solid" class="h-3.5 w-3.5" />
+                  </button>
                   <span class="ml-2 text-xs text-gray-400">
                     {{ state.formatRelativeTime(team.lastActivityAt) }}
                   </span>
