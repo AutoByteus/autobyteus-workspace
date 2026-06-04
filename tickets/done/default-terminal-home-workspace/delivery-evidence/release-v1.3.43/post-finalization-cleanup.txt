@@ -1,0 +1,4 @@
+worktree_cleanup=completed_after_force_remove_left_generated_files
+worktree_prune=completed
+local_ticket_branch_cleanup=completed
+remote_ticket_branch_cleanup=completed

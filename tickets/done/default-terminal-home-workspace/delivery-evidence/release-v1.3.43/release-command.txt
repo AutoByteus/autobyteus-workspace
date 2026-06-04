@@ -1,0 +1,6 @@
+timestamp_utc=2026-06-04T13:59:04Z
+worktree=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch=personal
+head_before=00949ec39e2ae43b82b37b547c6c6132cb151598
+origin_personal_before=00949ec39e2ae43b82b37b547c6c6132cb151598
+command=pnpm release 1.3.43 -- --release-notes tickets/done/default-terminal-home-workspace/release-notes.md

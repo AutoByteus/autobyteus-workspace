@@ -3,10 +3,10 @@
 ## Ticket
 
 - Ticket: `default-terminal-home-workspace`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/default-terminal-home-workspace`
 - Finalization target: `personal` / `origin/personal`
-- Current delivery status: User verified; ticket archived to done; finalization and release are in progress.
+- Current delivery status: Finalized and released as v1.3.43.
 
 ## Latest-Base Integration Status
 
@@ -38,16 +38,16 @@ Upstream code review and API/E2E validation passed, including re-review of the a
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `git diff --check` after integration | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/git-diff-check-post-integration.log` |
-| `pnpm -C autobyteus-web exec vitest run components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts` | Pass, 2 files / 15 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/frontend-terminal-targeted-tests-post-integration.log` |
-| `pnpm -C autobyteus-server-ts exec vitest run tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts` | Pass, 2 files / 9 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/backend-terminal-targeted-tests-post-integration.log` |
-| `git diff --check` + temporary-index candidate `git diff --cached --check` after docs sync / handoff artifacts | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/git-diff-check-after-docs-sync.log` |
+| `git diff --check` after integration | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/git-diff-check-post-integration.log` |
+| `pnpm -C autobyteus-web exec vitest run components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts` | Pass, 2 files / 15 tests | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/frontend-terminal-targeted-tests-post-integration.log` |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts` | Pass, 2 files / 9 tests | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/backend-terminal-targeted-tests-post-integration.log` |
+| `git diff --check` + temporary-index candidate `git diff --cached --check` after docs sync / handoff artifacts | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1/git-diff-check-after-docs-sync.log` |
 
 ## Docs Sync
 
 Docs sync was completed and recorded here:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/docs-sync-report.md`
 
 Long-lived docs updated or verified:
 
@@ -59,16 +59,16 @@ Long-lived docs updated or verified:
 
 ## Cumulative Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/code-review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/release-deployment-report.md`
-- Delivery evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/code-review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/release-deployment-report.md`
+- Delivery evidence directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/round-1`
 
 ## Residual Risks / Out Of Scope
 
@@ -84,11 +84,11 @@ User requested a local Electron application build after delivery handoff. I read
 - Command run: `NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac`
 - Build result: Pass, exit code `0`.
 - Flavor: `personal` (explicitly set because the ticket branch name is not `personal`).
-- DMG for testing: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.zip`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/electron-test-build-20260604/electron-test-build-summary.txt`
-- SHA256 file: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace/tickets/done/default-terminal-home-workspace/delivery-evidence/electron-test-build-20260604/electron-test-build-artifacts.sha256`
+- DMG for testing: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/electron-test-build-20260604/electron-test-build-summary.txt`
+- SHA256 file: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/electron-test-build-20260604/electron-test-build-artifacts.sha256`
 - `hdiutil verify` on the DMG: Pass, exit code `0`.
 - Signing/notarization: `APPLE_SIGNING_IDENTITY` was not configured in this worktree environment, so electron-builder skipped macOS code signing; this is a local unsigned/no-notarization test build, not a release artifact. `codesign --verify` failed as expected for the unsigned local build.
 
@@ -101,3 +101,21 @@ Repository finalization is intentionally paused now proceeding after explicit us
 3. Move the ticket folder from `tickets/done/default-terminal-home-workspace` to `tickets/done/default-terminal-home-workspace`.
 4. Commit delivery artifacts and the archived ticket state.
 5. Push the ticket branch, update/merge into `personal`, push `personal`, and then clean up the dedicated worktree/branch if safe.
+
+## Repository Finalization And Release Completion
+
+- Ticket branch pushed: `origin/codex/default-terminal-home-workspace` at `08d9e0e1`.
+- Finalization target merge commit pushed to `origin/personal`: `00949ec39e2ae43b82b37b547c6c6132cb151598`.
+- Release helper command: `pnpm release 1.3.43 -- --release-notes tickets/done/default-terminal-home-workspace/release-notes.md`.
+- Release commit pushed to `origin/personal`: `34ebe58d70439aa498b083dff0128068777a47d0`.
+- Release tag pushed: `v1.3.43` (tag object `37d08305987fba724ae20144e8b671a2fe4be7c9`, commit `34ebe58d70439aa498b083dff0128068777a47d0`).
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.43
+- Tag-triggered workflows all completed successfully: Desktop Release, Android APK Release, Server Docker Release, and Release Messaging Gateway.
+- Release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/default-terminal-home-workspace/delivery-evidence/release-v1.3.43/release-v1.3.43-summary.txt`.
+
+## Post-Finalization Cleanup Completion
+
+- Dedicated ticket worktree removed: `/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace`.
+- Local ticket branch deleted: `codex/default-terminal-home-workspace`.
+- Remote ticket branch deleted: `origin/codex/default-terminal-home-workspace`.
+- Main `personal` worktree local pre-existing changes were protected during finalization and restored afterward.
