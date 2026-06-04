@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  getValidSchemaDefault,
   normalizeModelConfigSchema,
+  resolveEffectiveConfigValue,
   sanitizeModelConfigAgainstSchema,
 } from '~/utils/llmConfigSchema';
 
@@ -79,6 +81,39 @@ describe('normalizeModelConfigSchema', () => {
       minimum: 1024,
       required: false,
     });
+  });
+});
+
+describe('schema default helpers', () => {
+  it('returns schema defaults only when they are valid for type and enum constraints', () => {
+    expect(getValidSchemaDefault({
+      type: 'string',
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    })).toBe('medium');
+
+    expect(getValidSchemaDefault({
+      type: 'string',
+      enum: ['low', 'medium', 'high'],
+      default: 'xhigh',
+    })).toBeUndefined();
+
+    expect(getValidSchemaDefault({
+      type: 'integer',
+      default: 0.5,
+    })).toBeUndefined();
+  });
+
+  it('resolves explicit config values before valid schema defaults', () => {
+    const schema = {
+      type: 'string',
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    };
+
+    expect(resolveEffectiveConfigValue(schema, 'high')).toBe('high');
+    expect(resolveEffectiveConfigValue(schema, undefined)).toBe('medium');
+    expect(resolveEffectiveConfigValue(schema, 'xhigh')).toBe('medium');
   });
 });
 

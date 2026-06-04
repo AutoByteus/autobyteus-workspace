@@ -54,9 +54,9 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
-  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to a specific focused member. After validation, it immediately begins a local submission for that member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
-  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
+  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., server task-delegation lifecycle events, status changes, member events) via WebSocket.
+  - `sendMessageToFocusedMember()`: Routes user input to the active-execution focused member, which can intentionally differ from the roster/history member selected for visual Focus display. After validation, it immediately begins a local submission for that command member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
+  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member selected by the same active-execution command focus as the shared composer, without locally clearing that member's `isSending` flag. The member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
 ### Stopped-Run Follow-Up Recovery
@@ -84,8 +84,12 @@ shown only for `awaiting-approval` rows, and backend rejection remains
 authoritative when a stale client attempts to approve an active-but-not-pending
 tool invocation. For team streams, approval dispatch must use the structured
 `ToolApprovalTarget` captured from the backend approval event, such as a member
-route key/path. The frontend must not rebuild approval targets from the current
-focused member, scalar aliases, or invocation-id fallbacks after focus changes.
+route key/path. When the pending approval belongs to a delegated task-agent run,
+the target must also carry the concrete `task_agent_run_id` emitted by the
+backend so approval/denial routes to that task-scoped runtime rather than the
+logical member template. The frontend must not rebuild approval targets from the
+current focused member, scalar aliases, or invocation-id fallbacks after focus
+changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
@@ -130,12 +134,16 @@ and active `uninitialized` project as active non-interruptible
 `initializing`; they keep send readiness blocked without granting the red
 interrupt affordance. Active processing/tool/LLM tokens project as `running`.
 When the selected context is a team, stop/interrupt dispatch must resolve the
-same focused member as the composer send path at click time. The frontend sends
-team `INTERRUPT_GENERATION` with `target_member_route_key` set to the focused
-member route key and `target_member_run_id` set only as an optional focused
-member run-id guard. If there is no focused leaf member, the focused context is
-stale, or no active team streaming service exists, the frontend must not send a
-team interrupt command.
+same active-execution command member as the composer send path at click time.
+That command member can intentionally differ from roster/history visual focus:
+for example, an all-offline historical team row can show `api_e2e_engineer` in
+Focus/Grid/Spotlight while the composer remains safely targeted at the
+coordinator. The frontend sends team `INTERRUPT_GENERATION` with
+`target_member_route_key` set to the active-execution command member route key
+and `target_member_run_id` set only as an optional member run-id guard. If there
+is no command-eligible focused leaf member, the focused context is stale, or no
+active team streaming service exists, the frontend must not send a team
+interrupt command.
 Run-history refresh, active recovery, and run-open hydration must preserve an
 already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
 single run or focused team member while that live stream remains authoritative,
@@ -150,12 +158,59 @@ member-scoped active history/snapshot/event, the other members must stay at
 their own member-scoped status, or default to `offline/canInterrupt=false`
 until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
 out aggregate team `running` or `initializing` state to every member row.
+Delegated task-agent instances are task-scoped transient child entities under
+their logical member/template. When team stream payloads carry explicit
+task-agent identity (`task_agent_instance_id`, `task_agent_run_id`, `task_id`)
+plus logical member metadata (`member_path` / `member_route_key` and
+`source_path` / `source_route_key`), `TeamStreamingService` creates a temporary
+task-agent context/node keyed by the task-agent run id.
+`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
+strip as concrete task children, and shows pending approvals on the task-agent
+card when the task-agent runtime is waiting for tool approval. Running and
+awaiting-acceptance task-agent children must remain visible and addressable
+after active team reopen/hydration, even when server resume metadata only lists
+the stable logical coordinator/member rows. Run-open hydration therefore
+restores concrete children from live task-agent projection/identity instead of
+collapsing them into the logical member parent. Stream message routing is owned
+by the team-stream member context resolver: task-agent identity wins first,
+then exact logical route/path identity, then compatible run-id fallback. The
+frontend must not recreate the removed `isTaskAgentRunId` generated-run-id
+heuristic or any other run-id-format parser as a routing authority. After
+delegator acceptance and backend settlement/offline cleanup, the frontend
+removes the transient child node/card while preserving the logical member
+parent and the coordinator/member history that records the delegated task
+completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
 stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
+
+### Compaction Lifecycle Activity And Center Feed
+
+Native AutoByteus memory compaction status is projected as Activity lifecycle
+state first. The right-side Activity panel should retain the full compaction
+operation identity and phase progression, including requested/queued,
+execution, terminal success/failure, timestamps, and surrounding tool-result
+detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+LLM-facing text and must not replace the backend memory artifact contract.
+
+The center conversation feed is narrower. Requested/queued compaction phases are
+internal scheduling states and stay out of the center feed so a pending
+tool-call turn is not split before tool results arrive. The first
+center-eligible execution phase for a compaction operation marks the current
+frontend assistant visual block complete, allowing the `Memory compacted` row to
+appear after the tool-call/result block and before the post-compaction assistant
+continuation. Completed/failed execution rows may be shown in the center feed;
+requested/queued rows must not.
+
+Historical run reopen uses the backend replay bundle as the display source for
+actual user, assistant, reasoning, and tool trace content. Native compaction
+projection cards are intentionally live-only center feedback in this slice:
+reopened historical conversations should replay the real work trace from active
+plus archived raw traces and should not synthesize center compaction cards from
+compaction lifecycle/status entries.
 
 ### Run Reopen Projection Hydration
 
@@ -218,6 +273,14 @@ agent or team-definition group, and for selected team runs also opens that team
 run's member row. After the selected path has been revealed for the stable
 selection key, later quiet refreshes must not reopen the same path if the user
 manually collapses it.
+
+For team-run member rows, selection state uses roster/history visual focus, not
+active-execution command focus. Clicking a member row whose route key exists in
+the team's `memberTree` should keep that route key selected in the history tree
+and Focus display even when the member is offline or has no active runtime
+context. Live/hydrated team-context merges must preserve the persisted history
+row's workspace grouping and use this roster focus for selected-row
+highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace History Archive And Delete Actions
 
@@ -283,13 +346,32 @@ not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
 
-The model-config surface is schema-driven, not thinking-only. Thinking controls
-such as `reasoning_effort` use the basic/advanced thinking presentation when the
-schema marks them as supported, while non-thinking runtime/model parameters
-render through the same advanced schema component. For Codex, a fast-capable
-model can therefore expose `service_tier` with the user-facing label **Fast
-mode** beside reasoning settings, and a non-thinking schema can still render its
-parameters directly.
+The model-config surface is schema-driven, not thinking-only. It renders
+explicit `llmConfig` values first and valid schema defaults second; showing a
+default does not write that value into the launch buffer. The top-level
+**Thinking** state is computed from provider schema keys such as
+`reasoning_effort`, `thinking_enabled`, `thinking_type`, `thinking_level`, and
+`include_thoughts`, not from model/display names. If a schema-backed model has
+reasoning enabled by default but no supported off value, the UI can show
+**Thinking** on in a non-disable-capable state instead of emitting an unsupported
+off payload.
+
+Editable primary/global agent and team launch config initializes **Advanced**
+from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
+by default so users can see defaults such as Codex `reasoning_effort: "medium"`
+or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
+unavailable leaves **Advanced** collapsed initially, but still openable.
+Toggling a supported **Thinking** control ON opens **Advanced** automatically;
+toggling OFF after inspection does not force-collapse the section.
+
+Compact member override rows may stay collapsed to avoid expanding large team
+forms. They still display inherited/effective defaults when expanded, and
+explicit member-local runtime or model selections that resolve to an effective-ON
+model can open only that member's **Advanced** controls. Display-only inherited
+or schema-default values must not create member overrides. Non-thinking
+runtime/model parameters render through the same advanced schema component; for
+Codex, a fast-capable model can therefore expose `service_tier` with the
+user-facing label **Fast mode** beside reasoning settings.
 
 ### New Run From Existing Run
 
@@ -341,13 +423,13 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent identity update the transient task-agent context and remove its card after terminal `offline`; resolver-owned routing must not depend on generated run-id patterns. |
 | `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
 | `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
-| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`.                     |
+| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id and logical member route/path for card-level approve/deny routing. |
 | `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
 | `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
 | `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |

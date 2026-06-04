@@ -27,6 +27,11 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerBrowserTools",
   },
   {
+    name: "Task Delegation Tools",
+    modulePath: "../agent-tools/task-delegation/register-task-delegation-tools.js",
+    exportName: "registerTaskDelegationTools",
+  },
+  {
     name: "Published Artifact Tools",
     modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js",
     exportName: "registerPublishedArtifactTools",

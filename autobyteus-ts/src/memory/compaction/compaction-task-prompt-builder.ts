@@ -22,16 +22,29 @@ export const COMPACTION_OUTPUT_CONTRACT = [
 
 const safeStringify = (value: unknown): string => formatToCleanString(value);
 
-const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): string => {
-  const prefix = `(${trace.turnId}:${trace.seq}) ${trace.traceType.toUpperCase()}:`;
+const renderToolCallId = (toolCallId: string | null | undefined): string | null => {
+  const normalized = toolCallId?.trim();
+  return normalized ? normalized : null;
+};
 
+const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): string => {
   let line: string;
   if (trace.traceType === 'tool_call') {
-    line = `${prefix} ${safeStringify(trace.toolName ?? 'unknown_tool')} ${safeStringify(trace.toolArgs ?? {})}`;
+    const toolCallId = renderToolCallId(trace.toolCallId);
+    line = toolCallId
+      ? `Tool interaction ${toolCallId} request: ${safeStringify(trace.toolName ?? 'unknown_tool')} with arguments ${safeStringify(trace.toolArgs ?? {})}.`
+      : `Tool request from ${safeStringify(trace.toolName ?? 'unknown_tool')} with arguments ${safeStringify(trace.toolArgs ?? {})}.`;
   } else if (trace.traceType === 'tool_result') {
-    line = `${prefix} ${safeStringify(trace.toolName ?? 'unknown_tool')} ${safeStringify(trace.toolError ?? trace.toolResult)}`;
+    const toolCallId = renderToolCallId(trace.toolCallId);
+    line = toolCallId
+      ? `Tool result for call ${toolCallId} from ${safeStringify(trace.toolName ?? 'unknown_tool')}: ${safeStringify(trace.toolError ?? trace.toolResult)}`
+      : `Tool result from ${safeStringify(trace.toolName ?? 'unknown_tool')}: ${safeStringify(trace.toolError ?? trace.toolResult)}`;
+  } else if (trace.traceType === 'user') {
+    line = `User: ${safeStringify(trace.content)}`;
+  } else if (trace.traceType === 'assistant') {
+    line = `Assistant: ${safeStringify(trace.content)}`;
   } else {
-    line = `${prefix} ${safeStringify(trace.content)}`;
+    line = `Context note: ${safeStringify(trace.content)}`;
   }
 
   return clampRenderedLine(line, maxItemChars);
@@ -40,13 +53,14 @@ const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): stri
 export class CompactionTaskPromptBuilder {
   buildTaskPrompt(blocks: InteractionBlock[], options: CompactionTaskPromptBuildOptions = {}): string {
     return [
-      'Compact the settled blocks below into durable AutoByteus memory.',
+      'Summarize the earlier conversation history below so future work can continue with refreshed context.',
       'Use the current output contract exactly.',
+      'Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.',
       '',
       '[OUTPUT_CONTRACT]',
       COMPACTION_OUTPUT_CONTRACT,
       '',
-      '[SETTLED_BLOCKS]',
+      '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
       ...this.renderBlocks(blocks, options.maxItemChars),
     ].join('\n');
   }
@@ -55,13 +69,14 @@ export class CompactionTaskPromptBuilder {
     const lines: string[] = [];
 
     for (const block of blocks) {
-      lines.push(`[BLOCK ${block.blockId}] turn=${block.turnId ?? 'unknown'} kind=${block.blockKind}`);
       const digestByTraceId = new Map(block.toolResultDigests.map((digest) => [digest.traceId, digest]));
 
       for (const trace of block.traces) {
         const digest = digestByTraceId.get(trace.id);
         if (trace.traceType === 'tool_result' && digest) {
-          const digestLine = `(${trace.turnId}:${trace.seq}) TOOL_RESULT_DIGEST: ${digest.toolName ?? 'unknown_tool'} status=${digest.status} summary=${digest.summary}`;
+          const digestLine = digest.toolCallId
+            ? `Tool result digest for call ${digest.toolCallId} from ${digest.toolName ?? 'unknown_tool'} (${digest.status}): ${digest.summary}`
+            : `Tool result digest from ${digest.toolName ?? 'unknown_tool'} (${digest.status}): ${digest.summary}`;
           lines.push(clampRenderedLine(digestLine, maxItemChars));
           continue;
         }

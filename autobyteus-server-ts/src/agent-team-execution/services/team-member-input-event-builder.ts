@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { MixedAgentMemberContext } from "../backends/mixed/mixed-team-run-context.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import type {
   TeamRunMemberInputContextFile,
   TeamRunMemberInputEventPayload,
@@ -122,6 +123,7 @@ export const buildTeamMemberInputEventPayload = (input: {
   memberContext: MixedAgentMemberContext;
   message: AgentInputUserMessage;
   receivedAt?: string | null;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 }): TeamRunMemberInputEventPayload => {
   const receivedAt = normalizeString(input.receivedAt) ?? new Date().toISOString();
   const metadata = readMetadata(input.message);
@@ -168,5 +170,6 @@ export const buildTeamMemberInputEventPayload = (input: {
       normalizeStringArray(metadata.sender_member_path) ??
       normalizeStringArray(metadata.sender_path),
     parentCommunicationMessageId,
+    ...(input.taskAgentInstance ? { taskAgentInstance: input.taskAgentInstance } : {}),
   };
 };

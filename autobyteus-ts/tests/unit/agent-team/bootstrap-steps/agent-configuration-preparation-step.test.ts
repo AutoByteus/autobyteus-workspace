@@ -11,9 +11,9 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { CreateTasks } from '../../../../src/task-management/tools/task-tools/create-tasks.js';
 import { SendMessageTo } from '../../../../src/agent/message/send-message-to.js';
 import { TeamManifestInjectorProcessor } from '../../../../src/agent-team/system-prompt-processor/team-manifest-injector-processor.js';
+import { ReadUrl } from '../../../../src/tools/web/read-url-tool.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
@@ -60,7 +60,7 @@ describe('AgentConfigurationPreparationStep', () => {
     const context = makeContext();
 
     const coordinatorDef = makeAgentConfig('Coordinator');
-    coordinatorDef.tools = [new CreateTasks(), new SendMessageTo()];
+    coordinatorDef.tools = [new ReadUrl(), new SendMessageTo()];
     coordinatorDef.systemPrompt = 'Coordinator prompt';
 
     const memberDef = makeAgentConfig('Member');
@@ -98,7 +98,7 @@ describe('AgentConfigurationPreparationStep', () => {
     const coordConfig = finalConfigs[coordinatorNode.name];
     expect(coordConfig).toBeInstanceOf(AgentConfig);
     const coordToolNames = coordConfig.tools.map((tool: any) => tool.constructor.getName());
-    expect(coordToolNames).toContain(CreateTasks.getName());
+    expect(coordToolNames).toContain(ReadUrl.getName());
     expect(coordToolNames).toContain(SendMessageTo.getName());
     expect(coordToolNames.length).toBe(2);
     expect(coordConfig.systemPrompt).toBe(coordinatorDef.systemPrompt);

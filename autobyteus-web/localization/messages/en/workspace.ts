@@ -15,6 +15,10 @@ const messages = {
     "New Team Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "Configuration",
+  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
+    "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
+    "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -45,10 +49,7 @@ const messages = {
     "Teams",
   "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
     "No description",
-  "workspace.components.workspace.team.TeamOverviewPanel.task_plan":
-    "Task Plan",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",
-  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "Tasks",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "Messages",
   "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":
@@ -88,6 +89,22 @@ const messages = {
     "Focused subteam",
   "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
     "Subteam members",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
+    "Task agent",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
+    "Member",
+  "workspace.components.workspace.team.TeamMembersPanel.team_members":
+    "Team roster",
+  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
+    "No team roster members.",
+  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
+    "Logical roster, not active task execution.",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
+    "Active task agents",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
+    "Task agent",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
+    "Approval required",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
@@ -110,8 +127,6 @@ const messages = {
     "Agent Artifacts",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "Retry workspace load",
-  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
-    "No workspace root path is selected for the terminal.",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
     "LLM config",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":

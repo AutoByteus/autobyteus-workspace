@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import os from "node:os";
 import type { FastifyInstance } from "fastify";
 import {
   TerminalHandler,
@@ -42,7 +43,11 @@ const isRemoteAccessWebSocketRejection = (error: unknown): boolean => {
 };
 
 const resolveTerminalCwd = async (query: TerminalQuery): Promise<string> => {
-  const rawCwd = query.cwd ?? query.rootPath ?? "";
+  const hasExplicitCwd =
+    query.cwd !== undefined || query.rootPath !== undefined;
+  const rawCwd = hasExplicitCwd
+    ? (query.cwd ?? query.rootPath ?? "")
+    : os.homedir();
   const cwd = canonicalizeWorkspaceRootPath(rawCwd);
   const stats = await fs.stat(cwd);
   if (!stats.isDirectory()) {

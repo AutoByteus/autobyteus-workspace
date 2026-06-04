@@ -11,6 +11,8 @@ import type { CompactionStatusPayload } from './compactionTypes';
 export type { CompactionStatusPayload } from './compactionTypes';
 import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
 export type { ExternalUserMessageContextFilePathPayload, ExternalUserMessagePayload } from './externalUserMessageTypes';
+import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
+export type { TaskAgentIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
 // Server → Client Message Types
@@ -39,7 +41,7 @@ export type ServerMessageType =
   | 'TOOL_LOG'
   | 'ASSISTANT_COMPLETE'
   | 'TODO_LIST_UPDATE'
-  | 'TASK_PLAN_EVENT'
+  | 'TASK_DELEGATION_EVENT'
   | 'INTER_AGENT_MESSAGE'
   | 'TEAM_COMMUNICATION_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
@@ -64,41 +66,23 @@ export interface ConnectedPayload {
   session_id: string;
 }
 
-export interface SegmentStartPayload {
+export interface SegmentStartPayload extends TeamStreamIdentityPayload {
   id: string;
   turn_id: string | null;
   segment_type: SegmentType;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
   metadata?: Record<string, any>;
 }
 
-export interface SegmentContentPayload {
+export interface SegmentContentPayload extends TeamStreamIdentityPayload {
   id: string;
   turn_id: string | null;
   delta: string;
   segment_type?: SegmentType;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
 }
 
-export interface SegmentEndPayload {
+export interface SegmentEndPayload extends TeamStreamIdentityPayload {
   id: string;
   turn_id: string | null;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
   metadata?: Record<string, any>;
   interrupted?: boolean;
   reason?: string | null;
@@ -106,15 +90,9 @@ export interface SegmentEndPayload {
   error?: string | null;
 }
 
-export interface AgentStatusPayload {
+export interface AgentStatusPayload extends TeamStreamIdentityPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   can_interrupt: boolean;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;
@@ -129,38 +107,28 @@ export interface TeamStatusPayload {
   source_path?: string[];
 }
 
-export interface ToolApprovalRequestedPayload {
+export interface ToolApprovalRequestedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments: Record<string, any>;
   approval_token?: ToolApprovalTokenPayload;
-  agent_name?: string;
-  agent_id?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
 }
 
-export interface ToolApprovedPayload {
+export interface ToolApprovedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   reason?: string | null;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ToolDeniedPayload {
+export interface ToolDeniedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
   reason?: string | null;
   error?: string | null;
-  agent_name?: string;
-  agent_id?: string;
 }
 
 export interface ToolApprovalTokenPayload {
@@ -171,71 +139,57 @@ export interface ToolApprovalTokenPayload {
   targetMemberPath?: string[];
 }
 
-export interface ToolExecutionStartedPayload {
+export interface ToolExecutionStartedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ToolExecutionSucceededPayload {
+export interface ToolExecutionSucceededPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
   result?: any;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ToolExecutionFailedPayload {
+export interface ToolExecutionFailedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
   error: string;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ToolExecutionInterruptedPayload {
+export interface ToolExecutionInterruptedPayload extends TeamStreamIdentityPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
   reason: string;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ToolLogPayload {
+export interface ToolLogPayload extends TeamStreamIdentityPayload {
   log_entry: string;
   tool_invocation_id: string;
   tool_name: string;
   turn_id: string | null;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface AssistantCompletePayload {
+export interface AssistantCompletePayload extends TeamStreamIdentityPayload {
   content?: string | null;
   reasoning?: string | null;
   usage?: Record<string, any>;
   image_urls?: string[];
   audio_urls?: string[];
   video_urls?: string[];
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface TurnLifecyclePayload {
+export interface TurnLifecyclePayload extends TeamStreamIdentityPayload {
   turn_id: string | null;
   reason?: string | null;
   interrupted?: boolean;
-  agent_name?: string;
-  agent_id?: string;
 }
 
 export interface TodoItem {
@@ -244,37 +198,22 @@ export interface TodoItem {
   status: string;
 }
 
-export interface TodoListUpdatePayload {
+export interface TodoListUpdatePayload extends TeamStreamIdentityPayload {
   todos: TodoItem[];
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface TaskPlanDeliverablePayload {
-  file_path: string;
-  summary: string;
-  author_agent_name: string;
-  timestamp?: string;
-}
-
-export interface TaskPlanTaskPayload {
-  task_id: string;
-  task_name: string;
-  assignee_name: string;
-  description: string;
-  dependencies: string[];
-  file_deliverables?: TaskPlanDeliverablePayload[];
-}
-
-export interface TaskPlanEventPayload {
-  event_type: 'TASKS_CREATED' | 'TASK_STATUS_UPDATED' | string;
-  team_id?: string;
-  tasks?: TaskPlanTaskPayload[];
-  task_id?: string;
-  new_status?: string;
-  agent_name?: string;
-  deliverables?: TaskPlanDeliverablePayload[];
-  sub_team_node_name?: string | null;
+export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
+  event_type:
+    | 'TASK_DELEGATION_ACTIVATED'
+    | 'TASK_DELEGATION_STATUS_UPDATED'
+    | 'TASK_DELEGATION_TERMINAL_STATUS'
+    | string;
+  teamRunId?: string;
+  taskId?: string;
+  taskIds?: string[];
+  status?: string;
+  message?: string | null;
+  [key: string]: any;
 }
 
 export interface TeamCommunicationReferenceFilePayload {
@@ -325,7 +264,7 @@ export interface TeamCommunicationMessagePayload {
   sub_team_node_name?: string | null;
 }
 
-export interface InterAgentMessagePayload {
+export interface InterAgentMessagePayload extends TeamStreamIdentityPayload {
   message_id?: string;
   team_run_id?: string;
   sender_agent_id: string;
@@ -339,18 +278,14 @@ export interface InterAgentMessagePayload {
   reference_file_entries?: TeamCommunicationReferenceFilePayload[];
   created_at?: string;
   updated_at?: string;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface SystemTaskNotificationPayload {
+export interface SystemTaskNotificationPayload extends TeamStreamIdentityPayload {
   sender_id: string;
   content: string;
-  agent_name?: string;
-  agent_id?: string;
 }
 
-export interface ArtifactPersistedPayload {
+export interface ArtifactPersistedPayload extends TeamStreamIdentityPayload {
   id: string;
   runId: string;
   path: string;
@@ -360,11 +295,9 @@ export interface ArtifactPersistedPayload {
   revisionId: string;
   createdAt: string;
   updatedAt: string;
-  agent_id?: string;
-  agent_name?: string;
 }
 
-export interface FileChangePayload {
+export interface FileChangePayload extends TeamStreamIdentityPayload {
   id: string;
   runId: string;
   path: string;
@@ -375,11 +308,9 @@ export interface FileChangePayload {
   content?: string | null;
   createdAt: string;
   updatedAt: string;
-  agent_id?: string;
-  agent_name?: string;
 }
 
-export interface ErrorPayload {
+export interface ErrorPayload extends TeamStreamIdentityPayload {
   code: string;
   message: string;
 }
@@ -409,7 +340,7 @@ export type ServerMessage =
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }
   | { type: 'ASSISTANT_COMPLETE'; payload: AssistantCompletePayload }
   | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
-  | { type: 'TASK_PLAN_EVENT'; payload: TaskPlanEventPayload }
+  | { type: 'TASK_DELEGATION_EVENT'; payload: TaskDelegationEventPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'TEAM_COMMUNICATION_MESSAGE'; payload: TeamCommunicationMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
@@ -453,6 +384,10 @@ export interface ToolActionPayload {
   target_member_path?: string[];
   targetMemberRouteKey?: string;
   targetMemberPath?: string[];
+  task_agent_run_id?: string;
+  taskAgentRunId?: string;
+  target_member_run_id?: string;
+  targetMemberRunId?: string;
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }

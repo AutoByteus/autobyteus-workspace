@@ -66,8 +66,6 @@ const buildTeamContext = (
     focusedMemberRouteKey,
     currentStatus: AgentTeamStatus.Running,
     isSubscribed: true,
-    taskPlan: null,
-    taskStatuses: null,
   };
 };
 
@@ -128,7 +126,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(interruptTeam).not.toHaveBeenCalled();
   });
 
-  it('rejects ambiguous focused team targets before sending a backend interrupt', () => {
+  it('routes stale logical focus through the active-execution team target', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
     const teamRunStore = useAgentTeamRunStore();
@@ -142,9 +140,40 @@ describe('activeContextStore interrupt routing', () => {
 
     const activeTeam = teamContextsStore.activeTeamContext!;
     activeTeam.focusedMemberRouteKey = 'missing_member';
-    const interruptFocusedMember = vi.spyOn(teamRunStore, 'interruptFocusedMemberGeneration');
+    const interruptFocusedMember = vi
+      .spyOn(teamRunStore, 'interruptFocusedMemberGeneration')
+      .mockReturnValue(true);
 
-    expect(() => activeContextStore.interruptGeneration()).toThrow('No active agent context');
-    expect(interruptFocusedMember).not.toHaveBeenCalled();
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
+    expect(activeContextStore.interruptGeneration()).toBe(true);
+    expect(interruptFocusedMember).toHaveBeenCalledWith({
+      teamRunId: 'team-1',
+      targetMemberRouteKey: 'solution_designer',
+      targetMemberRunId: 'team-1::solution_designer',
+    });
+  });
+
+  it('keeps composer context on the safe active-execution target when roster focus is an all-offline member', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const activeContextStore = useActiveContextStore();
+
+    const solutionDesigner = createAgentContext('team-1::solution_designer');
+    const deliveryEngineer = createAgentContext('team-1::delivery_engineer');
+    solutionDesigner.state.currentStatus = AgentStatus.Offline;
+    deliveryEngineer.state.currentStatus = AgentStatus.Offline;
+    teamContextsStore.addTeamContext({
+      ...buildTeamContext([
+        ['solution_designer', solutionDesigner],
+        ['delivery_engineer', deliveryEngineer],
+      ], 'delivery_engineer'),
+      currentStatus: AgentTeamStatus.Offline,
+      isSubscribed: false,
+    });
+    selectionStore.selectRun('team-1', 'team');
+
+    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('delivery_engineer');
+    expect(teamContextsStore.activeExecutionFocusedMemberRouteKey).toBe('solution_designer');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
   });
 });

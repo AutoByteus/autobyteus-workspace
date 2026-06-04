@@ -24,6 +24,7 @@ import {
   ensureHistoricalTeamMemberHydrated,
   ensureHistoricalTeamMembersHydrated,
 } from '~/services/runHydration/teamRunContextHydrationService';
+import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 interface AgentTeamContextsState {
   /** All active agent team runs, indexed by team run ID. */
@@ -61,6 +62,25 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       const activeTeam = this.activeTeamContext as AgentTeamContext | null;
       if (!activeTeam) return null;
       return activeTeam.memberNodesByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
+    },
+
+    activeExecutionFocusedMemberRouteKey(): string {
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
+      return activeTeam ? resolveActiveExecutionFocusedMemberRouteKey(activeTeam) : '';
+    },
+
+    activeExecutionFocusedMemberContext(): AgentContext | null {
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
+      if (!activeTeam) return null;
+      const routeKey = resolveActiveExecutionFocusedMemberRouteKey(activeTeam);
+      return routeKey ? activeTeam.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+    },
+
+    activeExecutionFocusedMemberNode() {
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
+      if (!activeTeam) return null;
+      const routeKey = resolveActiveExecutionFocusedMemberRouteKey(activeTeam);
+      return routeKey ? activeTeam.memberNodesByRouteKey.get(routeKey) || null : null;
     },
 
     /** Returns all leaf agent contexts for the active team. */
@@ -170,8 +190,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         focusedMemberRouteKey,
         currentStatus: AgentTeamStatus.Offline,
         isSubscribed: false,
-        taskPlan: null,
-        taskStatuses: null,
       };
 
       this.teams.set(teamRunId, newContext);
@@ -286,6 +304,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       }
 
       if (targetNode.memberKind !== 'agent') {
+        return;
+      }
+      if (targetNode.isTaskAgentInstance) {
         return;
       }
 

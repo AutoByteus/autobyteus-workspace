@@ -1,0 +1,92 @@
+=== 2026-06-01T13:23:59Z mounted DMG app verification ===
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.39.dmg
+--- hdiutil attach ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $3FE4D9A9
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $0EBC022F
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $8D92CEBC
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $36A8F227
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $8D92CEBC
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $650042C7
+Die überprüfte CRC32-Prüfsumme ist $1CAA0B05
+/dev/disk8          	GUID_partition_scheme          	
+/dev/disk8s1        	Apple_APFS                     	
+/dev/disk9          	EF57347C-0000-11AA-AA11-0030654	
+/dev/disk9s1        	41504653-0000-11AA-AA11-0030654	/Volumes/AutoByteus 1.3.39-arm64
+hdiutil_attach_exit=0
+volume=/Volumes/AutoByteus 1.3.39-arm64
+mounted_app=/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app
+
+--- _CodeSignature presence ---
+total 25144
+drwxr-xr-x@ 3 normy  staff        96 Jun  1 15:20 .
+drwxr-xr-x@ 8 normy  staff       256 Jun  1 15:20 ..
+-rw-r--r--@ 1 normy  staff  12873544 Jun  1 15:20 CodeResources
+CodeResources: present
+
+--- codesign -dv mounted app ---
+Executable=/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=com.autobyteus.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=446 flags=0x10000(runtime) hashes=3+7 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1703936
+Hash type=sha256 size=32
+CandidateCDHash sha256=4d62886fa99a95d8e2f1a9e178fb5d600aadfad3
+CandidateCDHashFull sha256=4d62886fa99a95d8e2f1a9e178fb5d600aadfad3504db1828383dd607cd7030e
+Hash choices=sha256
+CMSDigest=4d62886fa99a95d8e2f1a9e178fb5d600aadfad3504db1828383dd607cd7030e
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=16384
+CDHash=4d62886fa99a95d8e2f1a9e178fb5d600aadfad3
+Signature size=9036
+Authority=Developer ID Application: YU ZHENG (7Y86YBQ7B4)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=1. Jun 2026 at 15:20:19
+Info.plist entries=31
+TeamIdentifier=7Y86YBQ7B4
+Runtime Version=26.0.0
+Sealed Resources version=2 rules=13 files=31454
+Internal requirements count=1 size=180
+
+--- codesign verify mounted app ---
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app: valid on disk
+/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app: satisfies its Designated Requirement
+codesign_verify_mounted_app_exit=0
+
+--- spctl assess mounted app ---
+/Volumes/AutoByteus 1.3.39-arm64/AutoByteus.app: rejected
+source=Unnotarized Developer ID
+spctl_assess_mounted_app_exit=3

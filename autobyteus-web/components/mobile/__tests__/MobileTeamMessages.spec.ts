@@ -44,8 +44,6 @@ function seedTeamContext(): void {
     focusedMemberRouteKey: 'lead',
     currentStatus: AgentTeamStatus.Offline,
     isSubscribed: false,
-    taskPlan: null,
-    taskStatuses: null,
   } as any);
   useAgentSelectionStore().selectRunWithoutShellNavigation('team-1', 'team');
 }

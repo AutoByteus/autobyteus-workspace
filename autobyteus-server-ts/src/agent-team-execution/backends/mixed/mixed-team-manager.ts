@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
+import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import {
   buildDeliveryEndpointForParticipant,
   buildTeamMemberAddress,
@@ -28,8 +29,10 @@ import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-run-context.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 import { MixedTeamMemberRegistry } from "./members/mixed-team-member-registry.js";
+import { buildServerManagedMemberStatusSnapshots } from "../common/server-managed-team-member-projections.js";
 import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
 import {
+  buildInterAgentDeliveryInputMessage,
   buildInterAgentMessageReferenceFileEntries,
   buildRecipientVisibleInterAgentMessageContent,
 } from "../../services/inter-agent-message-runtime-builders.js";
@@ -37,6 +40,7 @@ import {
   buildTeamMemberInputDedupeKey,
   buildTeamMemberInputMessageId,
 } from "../../services/team-member-input-event-builder.js";
+import { settleRegistryTeamMember } from "../common/team-member-lifecycle-commands.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -116,24 +120,17 @@ export class MixedTeamManager implements TeamManager {
       return [];
     }
 
-    return runtimeContext.memberContexts.map((memberContext) => {
-      const handle = this.memberRegistry.listHandles().find(
-        (candidate) => candidate.context.memberRouteKey === memberContext.memberRouteKey,
-      ) ?? null;
-      const snapshot = handle?.getStatusSnapshot() ?? {
-        status: "offline" as const,
-        can_interrupt: false,
-      };
-      return {
-        ...snapshot,
-        agent_id: memberContext.memberRunId,
-        agent_name: memberContext.memberName,
-        member_route_key: memberContext.memberRouteKey,
-        member_path: memberContext.memberPath,
-        source_route_key: memberContext.memberRouteKey,
-        source_path: memberContext.memberPath,
-      };
-    });
+    const memberSnapshots = buildServerManagedMemberStatusSnapshots(
+      runtimeContext.memberContexts,
+      (memberContext) =>
+        this.memberRegistry.listHandles().find(
+          (candidate) => candidate.context.memberRouteKey === memberContext.memberRouteKey,
+        )?.getStatusSnapshot() ?? { status: "offline" as const, can_interrupt: false },
+    );
+    return [
+      ...memberSnapshots,
+      ...this.memberRegistry.listTaskAgentHandles().map((handle) => handle.getStatusSnapshot()),
+    ];
   }
 
   getStatusSnapshot() {
@@ -144,10 +141,7 @@ export class MixedTeamManager implements TeamManager {
     };
   }
 
-  async postMessage(
-    message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-  ): Promise<AgentOperationResult> {
+  async postMessage(message: AgentInputUserMessage, target: TeamMemberSelector, targetMemberRunId: string | null = null): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
@@ -155,6 +149,8 @@ export class MixedTeamManager implements TeamManager {
     if (isOperationResult(resolved)) {
       return resolved;
     }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) return this.memberRegistry.postMessageToTaskAgent(resolved.memberRouteKey, taskAgentRunId, message);
     const result = await this.memberRegistry.getOrCreate(resolved).postMessage(message);
     this.publishTeamStatusIfChanged();
     return result;
@@ -175,6 +171,7 @@ export class MixedTeamManager implements TeamManager {
     if (isOperationResult(resolvedRecipient)) {
       return resolvedRecipient;
     }
+    if (request.recipient.participant.taskAgentRunId?.trim()) return this.memberRegistry.postMessageToTaskAgent(resolvedRecipient.memberRouteKey, request.recipient.participant.taskAgentRunId.trim(), buildInterAgentDeliveryInputMessage(request));
     const normalizedRequest = this.normalizeDeliveryRequest(request, senderContext, resolvedRecipient);
     const communicationPayload = this.buildCommunicationPayload(normalizedRequest);
     const tracedRequest = this.attachRecipientInputTrace(
@@ -201,6 +198,7 @@ export class MixedTeamManager implements TeamManager {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -208,6 +206,10 @@ export class MixedTeamManager implements TeamManager {
     const resolved = this.memberRegistry.resolveContext(target);
     if (isOperationResult(resolved)) {
       return resolved;
+    }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) {
+      return this.memberRegistry.approveTaskAgentToolInvocation(resolved.memberRouteKey, taskAgentRunId, invocationId, approved, reason ?? null);
     }
     return this.memberRegistry.getOrCreate(resolved).approveToolInvocation(target, invocationId, approved, reason ?? null);
   }
@@ -262,10 +264,48 @@ export class MixedTeamManager implements TeamManager {
     return result;
   }
 
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return settleRegistryTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      resolveContext: (selector) => this.memberRegistry.resolveContext(selector),
+      getMemberRun: (routeKey) =>
+        this.memberRegistry.listHandles()
+          .find((handle) => handle.context.memberRouteKey === routeKey) ?? null,
+      removeMember: (routeKey) => { this.memberRegistry.remove(routeKey); },
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+  }
+
+  async startTaskAgentInstance(request: StartTaskAgentInstanceRequest): Promise<AgentOperationResult> {
+    if (!this.teamContext) {
+      return buildRunNotFoundResult("unknown");
+    }
+    return this.memberRegistry.startTaskAgentInstance(request);
+  }
+
+  async settleTaskAgentInstance(logicalMemberRouteKey: string, taskAgentRunId: string, _reason: string | null = null): Promise<AgentOperationResult> {
+    if (!this.teamContext) {
+      return buildRunNotFoundResult("unknown");
+    }
+    const result = await this.memberRegistry.settleTaskAgentInstance(logicalMemberRouteKey, taskAgentRunId);
+    if (result.accepted) {
+      this.publishTeamStatusIfChanged();
+    }
+    return result;
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
+    const taskAgentTermination = await this.memberRegistry.terminateTaskAgentInstances();
+    if (!taskAgentTermination.accepted) return taskAgentTermination;
     for (const handle of this.memberRegistry.listHandles()) {
       const result = await handle.terminate();
       if (!result.accepted) {
@@ -278,6 +318,8 @@ export class MixedTeamManager implements TeamManager {
     this.lastTeamStatus = null;
     return { accepted: true };
   }
+
+  publishEvent(event: TeamRunEvent): void { this.publish(event); }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
     this.eventListeners.add(listener);
@@ -376,6 +418,12 @@ export class MixedTeamManager implements TeamManager {
       if (!("accepted" in resolved)) {
         return resolved;
       }
+    }
+    const taskAgentSender = this.memberRegistry.resolveTaskAgentLogicalContext(
+      request.sender.participant.memberRunId,
+    );
+    if (taskAgentSender) {
+      return taskAgentSender;
     }
     return runtimeContext.memberContexts.find(
       (memberContext) =>

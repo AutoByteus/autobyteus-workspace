@@ -1,0 +1,401 @@
+# Round 2 API readiness and schema probe
+UTC 2026-06-03T09:11:35Z
+## GraphQL endpoint probe
+HTTP 200
+{"data":{"__typename":"Query"}}
+## CreateAgentDefinitionInput fields
+{
+  "data": {
+    "__type": {
+      "inputFields": [
+        {
+          "name": "name",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "role",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "instructions",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "category",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "avatarUrl",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "toolNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "inputProcessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "llmResponseProcessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "systemPromptProcessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "toolExecutionResultProcessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "toolInvocationPreprocessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "lifecycleProcessorNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "skillNames",
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          }
+        },
+        {
+          "name": "defaultLaunchConfig",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "DefaultLaunchConfigInput",
+            "ofType": null
+          }
+        }
+      ]
+    }
+  }
+}
+## AgentRunCreateInput fields
+{
+  "data": {
+    "__type": {
+      "inputFields": [
+        {
+          "name": "agentDefinitionId",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "workspaceRootPath",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "workspaceId",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "llmModelIdentifier",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "autoExecuteTools",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "llmConfig",
+          "type": {
+            "kind": "SCALAR",
+            "name": "JSON",
+            "ofType": null
+          }
+        },
+        {
+          "name": "skillAccessMode",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "ENUM",
+              "name": "ExternalChannelSkillAccessModeEnum",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "runtimeKind",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "initialSummary",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        }
+      ]
+    }
+  }
+}
+## Query fields containing llm/providers/models
+agentDefinition
+agentDefinitions
+availableAudioProvidersWithModels
+availableImageProvidersWithModels
+availableLlmProvidersWithModels
+availableOptionalLlmResponseProcessorNames
+getLlmProviderApiKeyConfigured
+listWorkspaceRunHistory
+workspaceMetadata
+workspaces
+## DefaultLaunchConfigInput fields
+{
+  "data": {
+    "__type": {
+      "inputFields": [
+        {
+          "name": "llmModelIdentifier",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "runtimeKind",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          }
+        },
+        {
+          "name": "llmConfig",
+          "type": {
+            "kind": "SCALAR",
+            "name": "JSON",
+            "ofType": null
+          }
+        }
+      ]
+    }
+  }
+}
+## Skill access enum values
+{
+  "data": {
+    "__type": {
+      "enumValues": [
+        {
+          "name": "GLOBAL_DISCOVERY"
+        },
+        {
+          "name": "PRELOADED_ONLY"
+        },
+        {
+          "name": "NONE"
+        }
+      ]
+    }
+  }
+}
+## Available LLM providers with autobyteus runtimeKind filtered for deepseek models
+jq: error (at <stdin>:0): Cannot iterate over null (null)
+{
+  "provider": {
+    "id": "DEEPSEEK",
+    "name": "DeepSeek",
+    "apiKeyConfigured": true,
+    "status": "NOT_APPLICABLE"
+  },
+  "modelIdentifiers": [
+    "deepseek-v4-flash",
+    "deepseek-v4-pro"
+  ],
+  "agentDefinition": {
+    "id": "round2-deepseek-browser-validation-agent-20260603091238",
+    "name": "Round2 DeepSeek Browser Validation Agent 20260603091238",
+    "role": "browser_validation_agent",
+    "description": "Temporary Round 2 browser validation agent seeded for Autobyteus runtime + DeepSeek Flash validation.",
+    "category": "validation",
+    "defaultLaunchConfig": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "llmConfig": {
+        "temperature": 0,
+        "maxTokens": 64
+      }
+    },
+    "toolNames": [],
+    "skillNames": []
+  },
+  "workspaceRoot": "/tmp/autobyteus-round2-workspace.vBMXtj"
+}

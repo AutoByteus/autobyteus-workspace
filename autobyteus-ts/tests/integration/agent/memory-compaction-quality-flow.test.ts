@@ -5,6 +5,9 @@ import path from 'node:path';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
+import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
+import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { CompactionResult } from '../../../src/memory/compaction/compaction-result.js';
 import { Compactor } from '../../../src/memory/compaction/compactor.js';
 import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
@@ -61,32 +64,21 @@ describe('Memory compaction quality integration', () => {
       const memoryManager = new MemoryManager({ store, compactionPolicy: policy, compactor });
 
       const turn0 = memoryManager.startTurn();
-      store.add([
-        makeTrace({ turnId: turn0, seq: 1, traceType: 'user', content: 'turn 0 user' }),
-        makeTrace({ turnId: turn0, seq: 2, traceType: 'assistant', content: 'turn 0 assistant' })
-      ]);
+      memoryManager.appendWorkingContextUserMessage('turn 0 user', { turnId: turn0 });
+      memoryManager.ingestAssistantResponse(new CompleteResponse({ content: 'turn 0 assistant' }), turn0, 'test');
 
       const turn1 = memoryManager.startTurn();
-      store.add([
-        makeTrace({ turnId: turn1, seq: 1, traceType: 'user', content: 'turn 1 user' }),
-        makeTrace({
-          turnId: turn1,
-          seq: 2,
-          traceType: 'tool_call',
-          toolName: 'write_file',
-          toolCallId: 'call_1',
-          toolArgs: { path: 'hello.py' }
-        }),
-        makeTrace({
-          turnId: turn1,
-          seq: 3,
-          traceType: 'tool_result',
-          toolName: 'write_file',
-          toolCallId: 'call_1',
-          toolResult: 'ok'
-        }),
-        makeTrace({ turnId: turn1, seq: 4, traceType: 'assistant', content: 'turn 1 assistant' })
-      ]);
+      memoryManager.appendWorkingContextUserMessage('turn 1 user', { turnId: turn1 });
+      memoryManager.ingestAssistantToolResponse(
+        new CompleteResponse({ content: 'I will write hello.py.' }),
+        [new ToolInvocation('write_file', { path: 'hello.py' }, 'call_1', turn1)],
+        turn1,
+        'test'
+      );
+      memoryManager.ingestToolResults([
+        new ToolResultEvent('write_file', 'ok', 'call_1', undefined, { path: 'hello.py' }, turn1)
+      ], turn1);
+      memoryManager.ingestAssistantResponse(new CompleteResponse({ content: 'turn 1 assistant' }), turn1, 'test');
 
       const currentTurn = memoryManager.startTurn();
       const currentUser = new LLMUserMessage({ content: 'Please respond with pong.' });
@@ -112,12 +104,13 @@ describe('Memory compaction quality integration', () => {
       expect(semanticItems[0].category).toBe('user_preference');
 
       const snapshot = request.messages[1].content ?? '';
-      expect(snapshot).toContain('[MEMORY:EPISODIC]');
-      expect(snapshot).toContain('turn 0 assistant');
-      expect(snapshot).toContain('[MEMORY:USER_PREFERENCES]');
+      expect(snapshot).toContain('You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.');
+      expect(snapshot).toContain('Earlier progress:');
+      expect(snapshot).toContain('turn 0 user');
+      expect(snapshot).toContain('User preferences:');
       expect(snapshot).toContain('user wants pong');
-      expect(snapshot).toContain('[RAW_FRONTIER]');
-      expect(snapshot).toContain('Please respond with pong.');
+      expect(snapshot).not.toContain('[RAW_FRONTIER]');
+      expect(request.messages.at(-1)?.content).toBe('Please respond with pong.');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

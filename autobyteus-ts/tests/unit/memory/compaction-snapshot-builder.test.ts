@@ -36,7 +36,7 @@ const makeBlock = (blockId: string, traces: RawTraceItem[]): InteractionBlock =>
 });
 
 describe('CompactionSnapshotBuilder', () => {
-  it('rebuilds the snapshot with prioritized compacted memory and the unresolved frontier', () => {
+  it('rebuilds the snapshot with natural compacted memory and no raw frontier metadata', () => {
     const builder = new CompactionSnapshotBuilder();
     const frontierBlock = makeBlock('block_0002', [
       makeTrace('rt_3', 'turn_0002', 1, 'user', 'latest user message'),
@@ -71,22 +71,26 @@ describe('CompactionSnapshotBuilder', () => {
     const snapshot = messages[1]?.content ?? '';
 
     expect(messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
-    expect(snapshot).toContain('[MEMORY:EPISODIC]');
-    expect(snapshot).toContain('[MEMORY:CRITICAL_ISSUES]');
-    expect(snapshot).toContain('[MEMORY:DURABLE_FACTS]');
-    expect(snapshot).toContain('[MEMORY:IMPORTANT_ARTIFACTS]');
-    expect(snapshot).toContain('[RAW_FRONTIER]');
-    expect(snapshot.indexOf('[MEMORY:CRITICAL_ISSUES]')).toBeLessThan(snapshot.indexOf('[MEMORY:DURABLE_FACTS]'));
+    expect(snapshot).toContain('You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.');
+    expect(snapshot).not.toContain('after compacting earlier working memory');
+    expect(snapshot).toContain('Earlier progress:');
+    expect(snapshot).toContain('Critical issues:');
+    expect(snapshot).toContain('Durable facts:');
+    expect(snapshot).toContain('Important artifacts:');
+    expect(snapshot).not.toContain('[RAW_FRONTIER]');
+    expect(snapshot).not.toContain('[BLOCK');
+    expect(snapshot).not.toContain('turn_000');
+    expect(snapshot).not.toContain('seq');
+    expect(snapshot.indexOf('Critical issues:')).toBeLessThan(snapshot.indexOf('Durable facts:'));
     expect(snapshot).toContain('/tmp/implementation-handoff.md');
     expect(snapshot).not.toContain('(ref:');
-    expect(snapshot).toContain('latest user message');
+    expect(snapshot).not.toContain('latest user message');
   });
 
-  it('applies maxItemChars when formatting the frontier', () => {
+  it('returns only the system message when no compacted memory exists', () => {
     const builder = new CompactionSnapshotBuilder();
-    const longLine = 'x'.repeat(120);
     const frontierBlock = makeBlock('block_0001', [
-      makeTrace('rt_1', 'turn_0001', 1, 'user', longLine),
+      makeTrace('rt_1', 'turn_0001', 1, 'user', 'latest user message'),
     ]);
     const plan = new CompactionPlan({
       blocks: [frontierBlock],
@@ -99,6 +103,7 @@ describe('CompactionSnapshotBuilder', () => {
     });
 
     const messages = builder.build('System prompt', new MemoryBundle(), plan, { maxItemChars: 40 });
-    expect(messages[1]?.content).toContain('…[truncated]');
+    expect(messages).toHaveLength(1);
+    expect(messages[0]?.content).toBe('System prompt');
   });
 });

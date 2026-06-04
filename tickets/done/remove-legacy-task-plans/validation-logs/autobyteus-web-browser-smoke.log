@@ -1,0 +1,7 @@
+Command: pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3100
+Browser: in-app Browser opened http://127.0.0.1:3100/ on 2026-06-03.
+Observed route after redirect: http://127.0.0.1:3100/agents
+Observed visible text prefix: "Open menu\nAutoByteus\nAgents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\nLoading task history...\nSettings\nReload\nCreate Agent\n\nError loading agent definitions:\n\nBound backend is not ready"
+DOM probe: document.body.innerText.match(/Task Plan|No task plan yet|0 Tasks/g) => null
+DOM probe: document.querySelectorAll('[data-test^="team-task-plan"],[data-testid="mobile-activity-task-plan"],[data-testid="mobile-activity-filter-tasks"]') => []
+Note: app shell loaded; backend-dependent data unavailable in this smoke because the Electron/backend service was not running. Component/unit tests provide seeded Team tab/mobile assertions.

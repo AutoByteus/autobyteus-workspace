@@ -50,6 +50,8 @@ export const buildSendMessageToDynamicToolRegistrations = (input: {
           content,
           messageType: parsed.messageType,
           referenceFiles: parsed.referenceFiles,
+          taskAgentRunId: parsed.taskAgentRunId,
+          taskAgentInstanceId: parsed.taskAgentInstanceId,
         });
         if (!requestResult.ok) {
           return createCodexDynamicToolTextResult(requestResult.message, false);

@@ -271,6 +271,49 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
+  it("enables task delegation tools and their autobyteus_team MCP names only when configured", async () => {
+    const { session, startQueryTurn } = createSession([
+      "delegate_tasks",
+      "mark_task_completed",
+      "mark_task_failed",
+      "accept_task",
+      "create_task",
+    ]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskDelegationToolingEnabled: true,
+        enabledTaskDelegationToolNames: [
+          "delegate_tasks",
+          "mark_task_completed",
+          "mark_task_failed",
+          "accept_task",
+        ],
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining("Task delegation protocol"),
+        allowedTools: [
+          "delegate_tasks",
+          "mcp__autobyteus_team__delegate_tasks",
+          "mark_task_completed",
+          "mcp__autobyteus_team__mark_task_completed",
+          "mark_task_failed",
+          "mcp__autobyteus_team__mark_task_failed",
+          "accept_task",
+          "mcp__autobyteus_team__accept_task",
+        ],
+      }),
+    );
+  });
+
   it("does not enable artifact publication for old singular-only Claude configs", async () => {
     const { session, startQueryTurn } = createSession(["publish_artifact"]);
 

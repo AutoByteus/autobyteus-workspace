@@ -1,5 +1,5 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type {
   TeamMemberTreeRow,
@@ -122,7 +122,8 @@ export const buildTeamRowsFromContext = (
       : (teamContext as unknown as { members?: unknown }).members instanceof Map
         ? (teamContext as unknown as { members: Map<string, AgentContext> }).members
         : new Map<string, AgentContext>();
-  const sourceTree = Array.isArray(teamContext.memberTree) && teamContext.memberTree.length > 0
+  const hasStructuredMemberTree = Array.isArray(teamContext.memberTree) && teamContext.memberTree.length > 0;
+  const sourceTree = hasStructuredMemberTree
     ? teamContext.memberTree
     : Array.from(leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, memberContext]) => ({
       memberKind: 'agent' as const,

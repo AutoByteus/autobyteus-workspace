@@ -1,0 +1,49 @@
+{
+  "url": "http://127.0.0.1:3033/workspace",
+  "frontendWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-members-missing-regression",
+  "backend": "Electron-started AutoByteus backend at http://localhost:29695",
+  "selectedTeamRun": "team_software-engineering-team_b8abf03c",
+  "historyTree": {
+    "excerpt": "i currently have a bug, if you start the frontend against teh backend servers tarted by teh elect...\n43m\nS\nsolution_designer\n43m\nA\narchitecture_reviewer\n43m\nI\nimplementation_engineer\n43m\nC\ncode_reviewer\n43m\nA\napi_e2e_engineer\n43m\nD\ndelivery_engineer\n43m\n",
+    "routeKeysInOrder": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  "grid": {
+    "childCount": 6,
+    "routeKeysInOrder": [
+      "solution_designer",
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ],
+    "cards": [
+      { "index": 0, "routeKey": "solution_designer", "headerText": "S | solution_designer" },
+      { "index": 1, "routeKey": "architecture_reviewer", "headerText": "A | architecture_reviewer" },
+      { "index": 2, "routeKey": "implementation_engineer", "headerText": "I | implementation_engineer" },
+      { "index": 3, "routeKey": "code_reviewer", "headerText": "C | code_reviewer" },
+      { "index": 4, "routeKey": "api_e2e_engineer", "headerText": "A | api_e2e_engineer" },
+      { "index": 5, "routeKey": "delivery_engineer", "headerText": "D | delivery_engineer" }
+    ]
+  },
+  "spotlight": {
+    "primaryRouteKey": "solution_designer",
+    "secondaryCount": 5,
+    "secondaryRouteKeysInOrder": [
+      "architecture_reviewer",
+      "implementation_engineer",
+      "code_reviewer",
+      "api_e2e_engineer",
+      "delivery_engineer"
+    ]
+  },
+  "composerTargetText": "REPLYING TO:SOLUTION_DESIGNER",
+  "notes": "Evidence extracted from the local frontend DOM after opening /workspace, expanding autobyteus-workspace-superrepo > Software Engineering Team, selecting the active bug-report team row, and toggling Grid and Spotlight modes. The initial Browser plugin iab runtime was unavailable, so local frontend tab tooling was used for this DOM evidence."
+}

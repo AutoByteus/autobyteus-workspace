@@ -1,0 +1,10 @@
+Command: codesign -dv --verbose=2 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none

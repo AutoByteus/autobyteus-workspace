@@ -1,0 +1,110 @@
+{"ts":"2026-06-03T09:26:37.564Z","event":"fresh_run_start","agentDefinitionId":"round2-deepseek-browser-validation-agent-20260603091238","workspaceRootPath":"/tmp/autobyteus-round2-workspace.vBMXtj","model":"deepseek-v4-flash","runtimeKind":"autobyteus","token":"BROWSER_VALIDATION_FRESH_RUN_20260603092637"}
+{"ts":"2026-06-03T09:26:37.595Z","event":"fresh_run_fail","error":"Error: {\n  \"status\": 400,\n  \"errors\": [\n    {\n      \"message\": \"Unknown type \\\"PrepareAgentRunInput\\\". Did you mean \\\"CreateAgentRunInput\\\", \\\"PrepareAgentRunResult\\\", \\\"CreateAgentRunResult\\\", \\\"CreateAgentTeamRunInput\\\", or \\\"RestoreAgentRunResult\\\"?\",\n      \"locations\": [\n        {\n          \"line\": 1,\n          \"column\": 17\n        }\n      ]\n    }\n  ],\n  \"data\": null\n}\n    at gql (/private/tmp/round2_fresh_run_ws.cjs:23:37)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async /private/tmp/round2_fresh_run_ws.cjs:28:16"}
+{"ts":"2026-06-03T09:26:57.791Z","event":"fresh_run_start","agentDefinitionId":"round2-deepseek-browser-validation-agent-20260603091238","workspaceRootPath":"/tmp/autobyteus-round2-workspace.vBMXtj","model":"deepseek-v4-flash","runtimeKind":"autobyteus","token":"BROWSER_VALIDATION_FRESH_RUN_20260603092657"}
+{"ts":"2026-06-03T09:26:57.847Z","event":"prepare_agent_run_result","success":true,"message":"Agent run prepared successfully.","runId":"round2_deepseek_browser_validation_agent_20260603091238_browser_validation_agent_2419","activationState":"PREPARED","preparedExpiresAt":"2026-06-04T09:26:57.815Z"}
+{"ts":"2026-06-03T09:26:57.852Z","event":"ws_open","runId":"round2_deepseek_browser_validation_agent_20260603091238_browser_validation_agent_2419"}
+{"ts":"2026-06-03T09:26:57.852Z","event":"ws_message","type":"CONNECTED"}
+{"ts":"2026-06-03T09:26:57.853Z","event":"ws_sent_message","runId":"round2_deepseek_browser_validation_agent_20260603091238_browser_validation_agent_2419","prompt":"Reply exactly with BROWSER_VALIDATION_FRESH_RUN_20260603092657"}
+{"ts":"2026-06-03T09:26:57.853Z","event":"ws_message","type":"AGENT_STATUS","status":"offline"}
+{"ts":"2026-06-03T09:26:57.853Z","event":"ws_message","type":"AGENT_STATUS","status":"initializing"}
+{"ts":"2026-06-03T09:26:57.876Z","event":"ws_message","type":"AGENT_STATUS","status":"initializing"}
+{"ts":"2026-06-03T09:26:57.886Z","event":"ws_message","type":"TURN_STARTED"}
+{"ts":"2026-06-03T09:26:57.886Z","event":"ws_message","type":"AGENT_STATUS","status":"running"}
+{"ts":"2026-06-03T09:26:57.886Z","event":"ws_message","type":"AGENT_STATUS","status":"running"}
+{"ts":"2026-06-03T09:26:57.886Z","event":"ws_message","type":"AGENT_STATUS","status":"running"}
+{"ts":"2026-06-03T09:26:57.888Z","event":"ws_message","type":"AGENT_COMMAND_ACK","status":{"status":"running","can_interrupt":true,"agent_id":"round2_deepseek_browser_validation_agent_20260603091238_browser_validation_agent_2419"}}
+{"ts":"2026-06-03T09:26:58.817Z","event":"ws_message","type":"SEGMENT_START"}
+{"ts":"2026-06-03T09:26:58.817Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"We"}
+{"ts":"2026-06-03T09:26:59.078Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" are"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" asked"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" to"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" reply"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" exactly"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" with"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":":"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" BRO"}
+{"ts":"2026-06-03T09:26:59.089Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"WS"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ER"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_V"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"AL"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ID"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ATION"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_F"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"RES"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"H"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_R"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"UN"}
+{"ts":"2026-06-03T09:26:59.090Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_"}
+{"ts":"2026-06-03T09:26:59.111Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"202"}
+{"ts":"2026-06-03T09:26:59.111Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"606"}
+{"ts":"2026-06-03T09:26:59.111Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"030"}
+{"ts":"2026-06-03T09:26:59.111Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"926"}
+{"ts":"2026-06-03T09:26:59.111Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"57"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"\n\n"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"The"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" user"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" instruction"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" says"}
+{"ts":"2026-06-03T09:26:59.166Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":":"}
+{"ts":"2026-06-03T09:26:59.177Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" \""}
+{"ts":"2026-06-03T09:26:59.197Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"Reply"}
+{"ts":"2026-06-03T09:26:59.197Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" exactly"}
+{"ts":"2026-06-03T09:26:59.197Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" with"}
+{"ts":"2026-06-03T09:26:59.197Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" BRO"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"WS"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ER"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_V"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"AL"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ID"}
+{"ts":"2026-06-03T09:26:59.219Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ATION"}
+{"ts":"2026-06-03T09:26:59.252Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_F"}
+{"ts":"2026-06-03T09:26:59.252Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"RES"}
+{"ts":"2026-06-03T09:26:59.252Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"H"}
+{"ts":"2026-06-03T09:26:59.253Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_R"}
+{"ts":"2026-06-03T09:26:59.253Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"UN"}
+{"ts":"2026-06-03T09:26:59.253Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"202"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"606"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"030"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"926"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"57"}
+{"ts":"2026-06-03T09:26:59.274Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"\"."}
+{"ts":"2026-06-03T09:26:59.305Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" So"}
+{"ts":"2026-06-03T09:26:59.305Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" I"}
+{"ts":"2026-06-03T09:26:59.305Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" should"}
+{"ts":"2026-06-03T09:26:59.305Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" output"}
+{"ts":"2026-06-03T09:26:59.305Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" that"}
+{"ts":"2026-06-03T09:26:59.338Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" exact"}
+{"ts":"2026-06-03T09:26:59.339Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" string"}
+{"ts":"2026-06-03T09:26:59.339Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":".\n\n"}
+{"ts":"2026-06-03T09:26:59.339Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"No"}
+{"ts":"2026-06-03T09:26:59.360Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" extra"}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":" prose"}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"."}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_START"}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"B"}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"RO"}
+{"ts":"2026-06-03T09:26:59.392Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"WS"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ER"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_V"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"AL"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ID"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"ATION"}
+{"ts":"2026-06-03T09:26:59.424Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_F"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"RES"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"H"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_R"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"UN"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"_"}
+{"ts":"2026-06-03T09:26:59.447Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"202"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"606"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"030"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"926"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_CONTENT","deltaSample":"57"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_END"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"SEGMENT_END"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"AGENT_STATUS","status":"running"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"ASSISTANT_COMPLETE","contentSample":"BROWSER_VALIDATION_FRESH_RUN_20260603092657"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"assistant_complete_observed","runId":"round2_deepseek_browser_validation_agent_20260603091238_browser_validation_agent_2419","assistantContent":"BROWSER_VALIDATION_FRESH_RUN_20260603092657","containsToken":true}
+{"ts":"2026-06-03T09:26:59.479Z","event":"ws_message","type":"TURN_COMPLETED"}
+{"ts":"2026-06-03T09:26:59.479Z","event":"fresh_run_pass","token":"BROWSER_VALIDATION_FRESH_RUN_20260603092657"}

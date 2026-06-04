@@ -21,7 +21,11 @@ const createBackend = () => ({
   deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
+  settleMember: vi.fn().mockResolvedValue({ accepted: true }),
+  startTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
+  settleTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
+  publishEvent: vi.fn(),
 });
 
 describe("TeamRun", () => {
@@ -48,6 +52,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "Coordinator" },
+      null,
     );
   });
 
@@ -74,6 +79,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "Coordinator" },
+      null,
     );
   });
 
@@ -101,6 +107,7 @@ describe("TeamRun", () => {
     expect(backend.postMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "ReviewTeam/Reviewer" },
+      null,
     );
   });
 

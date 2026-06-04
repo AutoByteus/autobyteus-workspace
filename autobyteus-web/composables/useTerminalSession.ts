@@ -21,9 +21,11 @@ import {
 import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected";
+export type TerminalDefaultCwd = "server-home";
 
 export interface TerminalSessionOptions {
   target: MaybeRef<TerminalTarget | null | undefined>;
+  defaultCwd?: TerminalDefaultCwd;
   sessionId?: string;
 }
 
@@ -53,19 +55,43 @@ export function useTerminalSession(
   const isConnected = computed(() => connectionStatus.value === "connected");
   const isConnecting = computed(() => connectionStatus.value === "connecting");
 
-  const getTarget = (): TerminalTarget | null => {
+  type TerminalConnectionTarget =
+    | {
+        mode: "explicit";
+        target: TerminalTarget;
+      }
+    | {
+        mode: "server-home";
+      };
+
+  const getConnectionTarget = (): TerminalConnectionTarget | null => {
     const target = unref(options.target);
-    return target?.rootPath ? target : null;
+    if (target) {
+      return {
+        mode: "explicit",
+        target,
+      };
+    }
+    if (options.defaultCwd === "server-home") {
+      return {
+        mode: "server-home",
+      };
+    }
+    return null;
   };
 
-  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+  const buildTerminalWebSocketUrl = (
+    connectionTarget: TerminalConnectionTarget,
+  ): string => {
     const windowNodeContextStore = useWindowNodeContextStore();
     const wsBaseUrl = windowNodeContextStore.getBoundEndpoints().terminalWs;
     const endpoint = new URL(
       `${wsBaseUrl.replace(/\/+$/, "")}/${encodeURIComponent(sessionId.value)}`,
       typeof window !== "undefined" ? window.location.href : "http://localhost",
     );
-    endpoint.searchParams.set("cwd", target.rootPath);
+    if (connectionTarget.mode === "explicit") {
+      endpoint.searchParams.set("cwd", connectionTarget.target.rootPath);
+    }
     return endpoint.toString();
   };
 
@@ -75,14 +101,14 @@ export function useTerminalSession(
       return;
     }
 
-    const target = getTarget();
-    if (!target) {
+    const connectionTarget = getConnectionTarget();
+    if (!connectionTarget) {
       errorMessage.value = "No terminal root path provided";
       console.error("[useTerminalSession] No terminal root path");
       return;
     }
 
-    const baseWsUrl = buildTerminalWebSocketUrl(target);
+    const baseWsUrl = buildTerminalWebSocketUrl(connectionTarget);
     const credential = getActiveRemoteAccessCredential();
     const wsUrl = credential
       ? buildAuthenticatedWebSocketUrl(baseWsUrl, credential)

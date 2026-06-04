@@ -34,6 +34,7 @@ import {
   RunFileChangeService,
   getRunFileChangeService,
 } from "../../services/run-file-changes/run-file-change-service.js";
+import { getTaskDelegationRunRegistry } from "../task-delegation/task-delegation-run-registry.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -187,6 +188,7 @@ export class AgentTeamRunManager {
     this.activeRuns.delete(teamRunId);
     this.unregisterTeamCommunication(teamRunId);
     this.unregisterRunFileChanges(teamRunId);
+    getTaskDelegationRunRegistry().detach(teamRunId);
   }
 
   private unregisterTeamCommunication(teamRunId: string): void {

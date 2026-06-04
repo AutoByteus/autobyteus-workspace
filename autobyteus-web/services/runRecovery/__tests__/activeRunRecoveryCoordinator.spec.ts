@@ -128,8 +128,6 @@ describe('recoverActiveRunsFromHistory', () => {
       focusedMemberRouteKey: 'solution_designer',
       currentStatus: 'offline',
       isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
     });
 
     await recoverActiveRunsFromHistory({

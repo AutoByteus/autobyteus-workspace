@@ -1,0 +1,5 @@
+# active runtime/source legacy search excluding tests/docs/tickets
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:12:  "get_task_plan_status",
+autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts:67:    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
+
+# specific frontend mobile/desktop removed selectors/search

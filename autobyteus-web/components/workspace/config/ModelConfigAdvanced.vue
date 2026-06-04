@@ -18,12 +18,12 @@
         <select
           v-else-if="paramSchema.enum"
           :id="inputId(key)"
-          :value="selectValue(key, paramSchema.enum)"
+          :value="selectValue(key, paramSchema)"
           :disabled="disabled"
           class="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
           @change="handleSelectChange(key, ($event.target as HTMLSelectElement).value)"
         >
-          <option v-if="paramSchema.default === undefined" :value="DEFAULT_OPTION">{{ $t('workspace.components.workspace.config.ModelConfigAdvanced.default') }}</option>
+          <option v-if="shouldRenderDefaultOption(paramSchema)" :value="DEFAULT_OPTION">{{ $t('workspace.components.workspace.config.ModelConfigAdvanced.default') }}</option>
           <option v-for="option in paramSchema.enum" :key="String(option)" :value="option">
             {{ option }}
           </option>
@@ -72,7 +72,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { UiModelConfigSchema } from '~/utils/llmConfigSchema';
+import {
+  getValidSchemaDefault,
+  resolveEffectiveConfigValue,
+  type UiModelConfigSchema,
+} from '~/utils/llmConfigSchema';
 
 const DEFAULT_OPTION = '__default__';
 
@@ -116,13 +120,13 @@ const inputId = (key: string) => {
 
 const configValue = (key: string) => normalizedConfig.value[key];
 
-const selectValue = (key: string, options: unknown[]) => {
-  const value = normalizedConfig.value[key];
-  if (value === undefined && !options.includes(DEFAULT_OPTION)) {
-    return DEFAULT_OPTION;
-  }
-  return value as unknown;
-};
+const shouldRenderDefaultOption = (paramSchema: UiModelConfigSchema[string]) =>
+  getValidSchemaDefault(paramSchema) === undefined;
+
+const selectValue = (
+  key: string,
+  paramSchema: UiModelConfigSchema[string],
+) => resolveEffectiveConfigValue(paramSchema, normalizedConfig.value[key]) ?? DEFAULT_OPTION;
 
 const emitConfig = (nextConfig: Record<string, unknown>) => {
   emit('update:config', Object.keys(nextConfig).length > 0 ? nextConfig : null);

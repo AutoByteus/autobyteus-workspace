@@ -14,6 +14,7 @@ export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from 
 export { Summarizer } from './compaction/summarizer.js';
 export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
 export { CompactionTaskPromptBuilder, COMPACTION_OUTPUT_CONTRACT } from './compaction/compaction-task-prompt-builder.js';
+export { WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
 export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
 export type {
   CompactionAgentExecutionMetadata,
@@ -25,8 +26,15 @@ export { CompactionResponseParser, CompactionResponseParseError } from './compac
 export { CompactionRuntimeSettingsResolver } from './compaction/compaction-runtime-settings.js';
 export type { CompactionRuntimeSettings } from './compaction/compaction-runtime-settings.js';
 export { PendingCompactionExecutor } from './compaction/pending-compaction-executor.js';
+export { WorkingContextMessageWindowPlanner } from './compaction/working-context-message-window-planner.js';
+export { WorkingContextMessageUnitBuilder } from './compaction/working-context-message-unit-builder.js';
+export { EstimatedMessageBudgetStrategy } from './compaction/message-budget-strategy.js';
+export { WorkingContextSnapshotRebuilder } from './compaction/working-context-snapshot-rebuilder.js';
+export { CompactedMemoryMessageBuilder } from './compaction/compacted-memory-message-builder.js';
+export { WorkingContextCompactor } from './compaction/working-context-compactor.js';
+export type { MessageBudgetStrategy, MessageBudgetStrategyResult } from './compaction/message-budget-strategy.js';
+export type { MessageCompactionPlan, WorkingContextMessageUnit } from './compaction/working-context-message-unit.js';
 export { CompactionWindowPlanner } from './compaction/compaction-window-planner.js';
-export { FrontierFormatter } from './compaction/frontier-formatter.js';
 export { InteractionBlockBuilder } from './compaction/interaction-block-builder.js';
 export type { InteractionBlock, InteractionBlockKind } from './compaction/interaction-block.js';
 export { ToolResultDigestBuilder } from './compaction/tool-result-digest-builder.js';
@@ -63,3 +71,6 @@ export type { CompactedMemoryManifest } from './store/compacted-memory-manifest.
 export { resolveMemoryBaseDir, resolveAgentMemoryDir } from './path-resolver.js';
 
 export { CompactedMemorySchemaGate } from './restore/compacted-memory-schema-gate.js';
+export { WorkingContextRecoveryProjector } from './restore/working-context-recovery-projector.js';
+export { setMessageProvenance, getMessageProvenance, collectMessageRawTraceIds } from './message-provenance.js';
+export type { MessageProvenance } from './message-provenance.js';

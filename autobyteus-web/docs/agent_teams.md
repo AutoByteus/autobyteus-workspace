@@ -51,10 +51,12 @@ that child to a canonical team-local team id. Shared nested teams stay
 `refScope: 'APPLICATION_OWNED'` when the containing team belongs to an
 application bundle. Missing nested-team scope is invalid in current team config.
 
-`defaultLaunchConfig.llmConfig` carries schema-driven runtime/model parameters
-for the selected model. This includes thinking settings such as
+`defaultLaunchConfig.llmConfig` carries explicit schema-driven runtime/model
+parameters for the selected model. This includes thinking settings such as
 `reasoning_effort` and runtime-specific non-thinking settings such as Codex
 `service_tier: "fast"` for models whose catalog schema exposes **Fast mode**.
+Launch-time UI may display valid schema defaults as effective values, but those
+defaults are not stored in `llmConfig` merely because the form renders them.
 
 ## Ownership Behavior
 
@@ -108,9 +110,16 @@ overrides. Each leaf member can:
 - carry an explicit member `llmConfig` (including explicit `null`) only when that row truly owns the divergence.
 
 Member `llmConfig` values use the same schema-driven shape as the team default.
-For Codex members, `service_tier: "fast"` is valid only while the selected or
-inherited Codex model schema exposes **Fast mode**; stale values are cleared when
-the owning runtime/model context changes.
+The team-global model config initializes **Advanced** from effective **Thinking**
+state: ON opens by default, while OFF or unavailable starts collapsed. Compact
+member override rows stay collapsed until the user expands or explicitly
+configures that member. Inherited member controls may display effective schema
+defaults such as a reasoning effort value, but display-only defaults do not
+create member overrides. Explicit member-local runtime/model selections that
+resolve to an effective-ON model may open only that member's **Advanced**
+controls. For Codex members, `service_tier: "fast"` is valid only while the
+selected or inherited Codex model schema exposes **Fast mode**; stale values are
+cleared when the owning runtime/model context changes.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 
@@ -177,12 +186,23 @@ representatives such as `review_lead`, which routes to `BuildSquad/review_lead`,
 while that represented coordinator can report upward to exposed immediate
 parent-boundary recipients such as `program_manager`.
 
-The focused-member routing contract also applies to the shared composer stop
-control. Text send and team interrupt both resolve the current
-`focusedMemberRouteKey` at action time. Team interrupt dispatch sends
-`target_member_route_key` as that member route key, includes
-`target_member_run_id` only as a stale-target guard, and does not use a
-team-run-only fallback when the member target is missing or stale.
+Team member focus has two related, intentionally separate meanings. Roster or
+history visual focus is the route key currently selected for display in the
+history tree, Focus pane, Grid, and Spotlight surfaces; it is resolved from the
+recursive `memberTree` and can point at inactive or all-offline logical members
+so users can inspect their saved member history. Active-execution command focus
+is the safe route key used by the shared composer, send path, and stop control;
+it is normalized through the active runtime/member context so stale task-agent
+or inactive logical rows are not accidentally used as command targets.
+
+The active-execution routing contract also applies to the shared composer stop
+control. Text send and team interrupt resolve the active-execution-focused
+member at action time. Team interrupt dispatch sends `target_member_route_key`
+as that command member route key, includes `target_member_run_id` only as a
+stale-target guard, and does not use a team-run-only fallback when the command
+member target is missing or stale. As a result, a selected inactive roster
+member can be visible in the Focus header while the composer still labels a safe
+active-execution target such as the coordinator.
 
 For focused-member sends to an offline or idle member, the backend status stream
 is the visible-status authority: once the command is accepted and the member
@@ -237,6 +257,14 @@ Route-key/path identity from metadata remains authoritative for reconnect,
 stream attribution, focus changes, and command targeting. Stream payloads for
 nested activity can include `member_path`, `member_route_key`, `source_path`,
 and `source_route_key`; one-name aliases are display compatibility only.
+Delegated task-agent stream payloads add concrete `task_agent_instance_id`,
+`task_agent_run_id`, and `task_id` fields. The web client projects those
+payloads as transient task-agent child nodes under the stable logical member,
+uses the explicit task-agent run id for child execution identity, and removes
+the child after accepted settlement/offline cleanup. Logical member parents
+remain part of the stable team topology. Active-execution focus, send,
+interrupt, and run-open hydration use this explicit parent/child projection
+instead of parsing generated run-id formats.
 
 Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
 shows the subteam Team Messages perspective, while focusing a leaf such as

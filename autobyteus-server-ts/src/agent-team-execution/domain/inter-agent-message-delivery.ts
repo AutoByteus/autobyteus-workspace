@@ -32,6 +32,10 @@ export type InterAgentMessageParticipant = {
   platformRunId?: string | null;
   teamDefinitionId?: string | null;
   representedSubTeam?: TeamRepresentedSubTeam | null;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
 };
 
 export type InterAgentMessageDeliveryEndpoint = {

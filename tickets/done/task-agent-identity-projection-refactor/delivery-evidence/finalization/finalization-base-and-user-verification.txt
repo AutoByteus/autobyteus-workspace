@@ -1,0 +1,8 @@
+Finalization base check at 2026-06-04T06:13:26Z
+branch=codex/task-agent-identity-projection-refactor
+head=3f9d4c9920bb143ec0fe3a3daa663d9737b9d957
+origin_personal=d86b027eb59589d23026f9fede2e0cc072efb1a2
+ahead_behind_HEAD_origin_personal=8	0
+origin/personal is contained in HEAD
+user_verification=confirmed working clean/sanitized Electron DMG
+release_requested=no

@@ -3,7 +3,7 @@ import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
 import { resolveTeamCommunicationContext } from '../../agent-team/context/team-communication-context.js';
-import { getToolContinuationMode, NATIVE_API_TOOL_CONTINUATION_MODE } from '../message/tool-continuation-metadata.js';
+import { getToolContinuationMode } from '../message/tool-continuation-metadata.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
 import type { AgentContext } from '../context/agent-context.js';
@@ -131,8 +131,9 @@ export class AgentInputPipeline {
 
     const originalToolContinuationMode = getToolContinuationMode(originalMessage);
     const processedToolContinuationMode = getToolContinuationMode(processedMessage) ?? originalToolContinuationMode;
+    const hasToolContinuationContextFiles = isToolContinuation && (processedMessage.contextFiles?.length ?? 0) > 0;
     const llmRequestMode: LlmRequestMode =
-      isToolContinuation && processedToolContinuationMode === NATIVE_API_TOOL_CONTINUATION_MODE
+      isToolContinuation && processedToolContinuationMode !== null && !hasToolContinuationContextFiles
         ? 'tool_history_only'
         : 'append_user_message';
 

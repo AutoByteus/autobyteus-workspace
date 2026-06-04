@@ -3,7 +3,6 @@ import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import {
   isAgentRunEvent,
-  type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
@@ -22,7 +21,6 @@ import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
-  type TeamRunAgentEventPayload,
   type TeamRunStatusUpdateData,
   type TeamRunEventListener,
   type TeamRunEventUnsubscribe,
@@ -44,6 +42,21 @@ import {
   selectorToDisplayString,
   type TeamMemberSelector,
 } from "../../domain/team-run-member-identity.js";
+import {
+  interruptServerManagedTeamMember,
+  settleServerManagedTeamMember,
+} from "../common/team-member-lifecycle-commands.js";
+import {
+  ServerManagedTaskAgentInstanceRegistry,
+} from "../common/server-managed-task-agent-instance-registry.js";
+import {
+  buildServerManagedMemberStatusSnapshots,
+  buildServerManagedTeamAgentEvent,
+} from "../common/server-managed-team-member-projections.js";
+import type {
+  StartTaskAgentInstanceRequest,
+  TaskAgentInstanceIdentity,
+} from "../../domain/task-agent-instance.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -55,23 +68,6 @@ const buildTargetMemberNotFoundResult = (target: string): AgentOperationResult =
   accepted: false,
   code: "TARGET_MEMBER_NOT_FOUND",
   message: `Team member '${target}' was not found.`,
-});
-
-const buildTargetMemberRunMismatchResult = (
-  targetMemberRouteKey: string,
-  targetMemberRunId: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "TARGET_MEMBER_RUN_MISMATCH",
-  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
-});
-
-const buildTargetMemberRunInactiveResult = (
-  targetMemberRouteKey: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
 });
 
 const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
@@ -94,6 +90,7 @@ export class CodexTeamManager implements TeamManager {
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
   private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly taskAgentRegistry: ServerManagedTaskAgentInstanceRegistry<CodexTeamMemberContext>;
   private readonly eventListeners = new Set<TeamRunEventListener>();
   private lastTeamStatus: string | null = "INITIALIZING";
 
@@ -113,6 +110,13 @@ export class CodexTeamManager implements TeamManager {
       publishEvent: (event) => this.publish(event),
       publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
     });
+    this.taskAgentRegistry = new ServerManagedTaskAgentInstanceRegistry({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentRunManager: this.agentRunManager,
+      getTeamRunId: () => this.teamContext?.runId ?? null, isTeamActive: () => Boolean(this.teamContext),
+      findLogicalMemberByRouteKey: (routeKey) => this.findMemberContextByRouteKey(routeKey),
+      buildRunConfig: (memberContext, identity) => this.buildMemberRunConfig(memberContext, identity),
+      publish: (event) => this.publish(event), publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
   }
 
   hasActiveMembers(): boolean {
@@ -125,22 +129,17 @@ export class CodexTeamManager implements TeamManager {
       return [];
     }
 
-    return runtimeContext.memberContexts.map((memberContext) => {
-      const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
-      const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
+    const memberSnapshots = buildServerManagedMemberStatusSnapshots(
+      runtimeContext.memberContexts,
+      (memberContext) => {
+        const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
+        return this.commandStatusOverlayStore.getMemberStatusSnapshot({
         memberContext,
         fallback: () => memberRun?.getStatusSnapshot() ?? { status: "offline" as const, can_interrupt: false },
-      });
-      return {
-        ...snapshot,
-        agent_name: memberContext.memberName,
-        agent_id: memberContext.memberRunId,
-        member_route_key: memberContext.memberRouteKey,
-        member_path: memberContext.memberPath,
-        source_route_key: memberContext.memberRouteKey,
-        source_path: memberContext.memberPath,
-      };
-    });
+        });
+      },
+    );
+    return [...memberSnapshots, ...this.taskAgentRegistry.listStatusSnapshots()];
   }
 
   getStatusSnapshot() {
@@ -151,10 +150,7 @@ export class CodexTeamManager implements TeamManager {
     };
   }
 
-  async postMessage(
-    message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-  ): Promise<AgentOperationResult> {
+  async postMessage(message: AgentInputUserMessage, target: TeamMemberSelector, targetMemberRunId: string | null = null): Promise<AgentOperationResult> {
     const teamContext = this.teamContext;
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -163,6 +159,8 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, taskAgentRunId, message);
     this.publishMemberCommandStatus(memberContext, "initializing");
     let result: AgentOperationResult;
     try { const memberRun = await this.ensureMemberReady(memberContext); result = await memberRun.postUserMessage(message); memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId; }
@@ -183,6 +181,7 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
+    if (request.recipient.participant.taskAgentRunId?.trim()) return this.taskAgentRegistry.postMessage(memberContext.memberRouteKey, request.recipient.participant.taskAgentRunId.trim(), buildInterAgentDeliveryInputMessage(request));
     this.publishMemberCommandStatus(memberContext, "initializing");
     let memberRun: AgentRun;
     let result: AgentOperationResult;
@@ -225,6 +224,7 @@ export class CodexTeamManager implements TeamManager {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -232,6 +232,10 @@ export class CodexTeamManager implements TeamManager {
     const memberContext = this.resolveTargetMemberContext(target);
     if ("accepted" in memberContext) {
       return memberContext;
+    }
+    const taskAgentRunId = targetMemberRunId?.trim();
+    if (taskAgentRunId) {
+      return this.taskAgentRegistry.approveToolInvocation(memberContext.memberRouteKey, taskAgentRunId, invocationId, approved, reason ?? null);
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     return memberRun.approveToolInvocation(invocationId, approved, reason ?? null);
@@ -241,41 +245,44 @@ export class CodexTeamManager implements TeamManager {
     targetMemberRouteKey: string,
     targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
-    if (!this.teamContext) {
-      return buildRunNotFoundResult("unknown");
-    }
-    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
-    const memberContext = this.findMemberContextByRouteKey(normalizedTargetMemberRouteKey);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(normalizedTargetMemberRouteKey);
-    }
-    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
-    if (
-      normalizedTargetMemberRunId &&
-      normalizedTargetMemberRunId !== memberContext.memberRunId
-    ) {
-      return buildTargetMemberRunMismatchResult(
-        normalizedTargetMemberRouteKey,
-        normalizedTargetMemberRunId,
-      );
-    }
+    return interruptServerManagedTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      findMemberContextByRouteKey: (routeKey) => this.findMemberContextByRouteKey(routeKey),
+      getMemberRun: (routeKey) => this.memberRuns.get(routeKey) ?? null,
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+  }
 
-    const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
-    if (!memberRun?.isActive()) {
-      return buildTargetMemberRunInactiveResult(normalizedTargetMemberRouteKey);
-    }
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return settleServerManagedTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      findMemberContextByRouteKey: (routeKey) => this.findMemberContextByRouteKey(routeKey),
+      getMemberRun: (routeKey) => this.memberRuns.get(routeKey) ?? null,
+      clearMemberRun: (routeKey) => this.clearSettledMemberRun(routeKey),
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+  }
 
-    const result = await memberRun.interrupt();
-    if (result.accepted) {
-      this.publishTeamStatusIfChanged();
-    }
-    return result;
+  async startTaskAgentInstance(request: StartTaskAgentInstanceRequest): Promise<AgentOperationResult> { return this.taskAgentRegistry.start(request); }
+
+  async settleTaskAgentInstance(logicalMemberRouteKey: string, taskAgentRunId: string, _reason: string | null = null): Promise<AgentOperationResult> {
+    return this.taskAgentRegistry.settle(logicalMemberRouteKey, taskAgentRunId);
   }
 
   async terminate(): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
+    const taskAgentTermination = await this.taskAgentRegistry.terminateAll();
+    if (!taskAgentTermination.accepted) return taskAgentTermination;
     for (const memberRun of this.memberRuns.values()) {
       const result = await memberRun.terminate();
       if (!result.accepted) {
@@ -283,6 +290,7 @@ export class CodexTeamManager implements TeamManager {
       }
     }
     this.clearMemberSubscriptions();
+    this.taskAgentRegistry.dispose();
     this.memberRuns.clear();
     this.commandStatusOverlayStore.clear();
     this.teamContext = null;
@@ -367,6 +375,10 @@ export class CodexTeamManager implements TeamManager {
     if (configuredMatch) {
       return configuredMatch;
     }
+    const taskAgentMatch = this.taskAgentRegistry.resolveLogicalMemberForRunId(senderRunId);
+    if (taskAgentMatch) {
+      return taskAgentMatch;
+    }
 
     for (const [memberRouteKey, memberRun] of this.memberRuns.entries()) {
       if (
@@ -404,7 +416,7 @@ export class CodexTeamManager implements TeamManager {
     }) ?? null;
   }
 
-  private async buildMemberRunConfig(memberContext: CodexTeamMemberContext): Promise<AgentRunConfig> {
+  private async buildMemberRunConfig(memberContext: CodexTeamMemberContext, taskAgentInstance: TaskAgentInstanceIdentity | null = null): Promise<AgentRunConfig> {
     const teamContext = this.teamContext;
     const config = teamContext?.config;
     if (!teamContext || !config) {
@@ -418,16 +430,13 @@ export class CodexTeamManager implements TeamManager {
       currentMemberName: memberContext.memberName,
       currentMemberPath: memberContext.memberPath,
       currentMemberRouteKey: memberContext.memberRouteKey,
-      currentMemberRunId: memberContext.memberRunId,
+      currentMemberRunId: taskAgentInstance?.taskAgentRunId ?? memberContext.memberRunId,
       members: this.getRuntimeContext().memberContexts.map((member) => ({
-        memberKind: "agent" as const,
-        memberName: member.memberName,
-        memberPath: member.memberPath,
-        memberRouteKey: member.memberRouteKey,
-        memberRunId: member.memberRunId,
-        runtimeKind: member.agentRunConfig.runtimeKind,
+        memberKind: "agent" as const, memberName: member.memberName, memberPath: member.memberPath,
+        memberRouteKey: member.memberRouteKey, memberRunId: member.memberRunId, runtimeKind: member.agentRunConfig.runtimeKind,
       })),
       deliverInterAgentMessage: (request) => this.deliverInterAgentMessage(request),
+      taskAgentInstance,
     });
 
     return new AgentRunConfig({
@@ -459,32 +468,18 @@ export class CodexTeamManager implements TeamManager {
         return;
       }
       memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
-      const teamEvent = this.buildMemberAgentEvent(memberContext, event);
+      const teamEvent = buildServerManagedTeamAgentEvent({
+        teamRunId: this.teamContext.runId,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberContext,
+        agentEvent: event,
+      });
       this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);
       this.publish(teamEvent);
       this.publishTeamStatusIfChanged();
     });
 
     this.memberRunUnsubscribers.set(memberContext.memberRouteKey, unsubscribe);
-  }
-
-  private buildMemberAgentEvent(
-    memberContext: CodexTeamMemberContext,
-    agentEvent: AgentRunEvent,
-  ): TeamRunEvent {
-    return {
-      eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: this.teamContext?.runId ?? "",
-      sourcePath: memberContext.memberPath,
-      data: {
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        memberName: memberContext.memberName,
-        memberRunId: memberContext.memberRunId,
-        memberPath: memberContext.memberPath,
-        memberRouteKey: memberContext.memberRouteKey,
-        agentEvent,
-      } satisfies TeamRunAgentEventPayload,
-    };
   }
 
   private publishTeamStatusIfChanged(): void {
@@ -527,6 +522,14 @@ export class CodexTeamManager implements TeamManager {
       unsubscribe();
     }
     this.memberRunUnsubscribers.clear();
+  }
+
+  publishEvent(event: TeamRunEvent): void { this.publish(event); }
+
+  private clearSettledMemberRun(memberRouteKey: string): void {
+    this.memberRuns.delete(memberRouteKey);
+    this.memberRunUnsubscribers.get(memberRouteKey)?.();
+    this.memberRunUnsubscribers.delete(memberRouteKey);
   }
 
   private publish(event: TeamRunEvent): void {

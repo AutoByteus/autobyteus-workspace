@@ -84,7 +84,7 @@
       :read-only="disabled"
       :compact="true"
       :id-prefix="`config-${inputIdSuffix}`"
-      :advanced-initially-expanded="advancedInitiallyExpanded"
+      :advanced-initially-expanded="effectiveAdvancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
       @update:config="emitOverrideWithConfig"
     />
@@ -92,8 +92,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRef, watch } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
 import { useLocalization } from '~/composables/useLocalization'
@@ -110,6 +111,8 @@ import {
   resolveEffectiveMemberLlmConfig,
   resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
+import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
+import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
 
 const props = defineProps<{
   memberName: string
@@ -145,6 +148,7 @@ const {
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
 const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
+const memberAdvancedExplicitlyExpanded = ref(false)
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
 const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(props.override))
@@ -192,6 +196,49 @@ const effectiveModelConfig = computed(() => {
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(effectiveModelIdentifier.value),
 )
+const effectiveAdvancedInitiallyExpanded = computed(() =>
+  props.advancedInitiallyExpanded === true || memberAdvancedExplicitlyExpanded.value,
+)
+
+const shouldOpenAdvancedForSchema = (
+  schema: UiModelConfigSchema | null,
+  config: Record<string, unknown> | null | undefined,
+) => {
+  const thinkingState = getThinkingControlState(schema, config)
+  return thinkingState.supported && thinkingState.enabled
+}
+
+const modelConfigSchemaFromRows = (
+  rows: ProviderWithModels[],
+  modelIdentifier: string | null | undefined,
+): UiModelConfigSchema | null => {
+  const normalizedIdentifier = (modelIdentifier || '').trim()
+  if (!normalizedIdentifier) {
+    return null
+  }
+
+  for (const row of rows) {
+    const model = row.models.find((entry) => entry.modelIdentifier === normalizedIdentifier)
+    if (!model?.configSchema) {
+      continue
+    }
+    const normalized = normalizeModelConfigSchema(model.configSchema)
+    if (normalized && Object.keys(normalized).length > 0) {
+      return normalized
+    }
+  }
+
+  return null
+}
+
+const maybeOpenMemberAdvancedForSchema = (
+  schema: UiModelConfigSchema | null,
+  config: Record<string, unknown> | null | undefined,
+) => {
+  if (shouldOpenAdvancedForSchema(schema, config)) {
+    memberAdvancedExplicitlyExpanded.value = true
+  }
+}
 
 const modelPlaceholder = computed(() =>
   isUnresolvedInheritedModel.value
@@ -273,6 +320,15 @@ const handleRuntimeChange = async (value: string) => {
   const retainedExplicitModel = explicitModelIdentifier.value && nextModelIdentifiers.includes(explicitModelIdentifier.value)
     ? explicitModelIdentifier.value
     : undefined
+  const effectiveNextModel = retainedExplicitModel ||
+    (nextModelIdentifiers.includes(globalModelIdentifier.value) ? globalModelIdentifier.value : undefined)
+  const retainedExplicitConfig =
+    !runtimeChanged &&
+    retainedExplicitModel &&
+    hasExplicitMemberLlmConfigOverride(props.override)
+      ? (props.override?.llmConfig ?? null)
+      : undefined
+  const effectiveNextConfig = retainedExplicitConfig ?? (props.globalLlmConfig ?? null)
 
   emit(
     'update:override',
@@ -287,6 +343,13 @@ const handleRuntimeChange = async (value: string) => {
           : undefined,
     }),
   )
+
+  if (runtimeChanged) {
+    maybeOpenMemberAdvancedForSchema(
+      modelConfigSchemaFromRows(nextRows, effectiveNextModel),
+      effectiveNextConfig,
+    )
+  }
 }
 
 const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
@@ -310,6 +373,12 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
 const handleModelChange = (value: string) => {
   if (props.disabled) return
   const modelChanged = value !== explicitModelIdentifier.value
+  if (modelChanged && value) {
+    maybeOpenMemberAdvancedForSchema(
+      modelConfigSchemaByIdentifier(value),
+      props.globalLlmConfig ?? null,
+    )
+  }
 
   emit(
     'update:override',

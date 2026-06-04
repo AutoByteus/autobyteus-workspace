@@ -87,6 +87,6 @@ The Node.js CLI uses **Ink** for the interactive TUI and a lightweight console r
 - **Agent team TUI** (`src/cli/agent-team`):
   - `state-store.ts`: reducer-style state store (team/agent/task status, approvals, history).
   - `app.tsx`: Ink composition root (sidebar + focus pane + status bar).
-  - `widgets/*`: pure components (sidebar, focus pane, task plan panel, status bar, logo).
+  - `widgets/*`: pure components (sidebar, focus pane, status bar, logo).
 
 This mirrors the Python Textual/TUI architecture while keeping renderer logic testable and UI components reactive.

@@ -15,6 +15,10 @@ const messages = {
     "新建团队配置",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "配置",
+  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
+    "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
+    "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -45,9 +49,7 @@ const messages = {
     "团队",
   "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
     "暂无描述",
-  "workspace.components.workspace.team.TeamOverviewPanel.task_plan": "任务计划",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",
-  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "任务",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":
@@ -86,6 +88,22 @@ const messages = {
     "当前聚焦的子团队",
   "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
     "子团队成员",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
+    "任务智能体",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
+    "成员",
+  "workspace.components.workspace.team.TeamMembersPanel.team_members":
+    "团队名册",
+  "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
+    "没有团队名册成员。",
+  "workspace.components.workspace.team.TeamMembersPanel.roster_non_execution_note":
+    "逻辑成员名册，不代表活跃任务执行。",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.active_task_agents":
+    "活跃任务智能体",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
+    "任务智能体",
+  "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
+    "需要审批",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
@@ -108,8 +126,6 @@ const messages = {
     "智能体产物",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "重试加载工作区",
-  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
-    "未为终端选择工作区根路径。",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
     "LLM 配置",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":

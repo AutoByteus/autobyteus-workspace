@@ -1,0 +1,47 @@
+{
+  "run_id": "ui_compaction_feed_e2e_8f21973a_assistant_9879",
+  "agent_definition_id": "ui-compaction-feed-e2e-8f21973a",
+  "runtime_kind": "autobyteus",
+  "model": "deepseek-v4-flash",
+  "auto_execute_tools": true,
+  "raw_trace_seq_types": [
+    [
+      2,
+      "assistant",
+      null,
+      null
+    ],
+    [
+      3,
+      "tool_call",
+      "run_bash",
+      "call_00_qGoiqOsZXtFdqzBkNQMo8684"
+    ],
+    [
+      4,
+      "tool_result",
+      "run_bash",
+      "call_00_qGoiqOsZXtFdqzBkNQMo8684"
+    ],
+    [
+      5,
+      "tool_continuation",
+      null,
+      null
+    ],
+    [
+      6,
+      "assistant",
+      null,
+      null
+    ]
+  ],
+  "tool_stdout": "TOOL_RESULT_BEFORE_COMPACTION\n",
+  "assistant_final": "The compaction UI ordering validation command completed successfully, confirming readiness for the live compaction timeline. UI-COMPACTION-CONTINUED",
+  "compaction_artifacts": [
+    ".local/ui-feed-e2e/server-data/memory/agents/ui_compaction_feed_e2e_8f21973a_assistant_9879/raw_traces_archive_manifest.json",
+    ".local/ui-feed-e2e/server-data/memory/agents/ui_compaction_feed_e2e_8f21973a_assistant_9879/semantic.jsonl",
+    ".local/ui-feed-e2e/server-data/memory/agents/ui_compaction_feed_e2e_8f21973a_assistant_9879/episodic.jsonl",
+    ".local/ui-feed-e2e/server-data/memory/agents/ui_compaction_feed_e2e_8f21973a_assistant_9879/working_context_snapshot.json"
+  ]
+}

@@ -1,0 +1,6 @@
+timestamp_utc=2026-06-04T13:42:06Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/default-terminal-home-workspace
+branch=codex/default-terminal-home-workspace
+head=7461e9c1351bcd30bb8dc28f7f92d655ed70c4c7
+origin_personal=bfd33cc36f7086c92ebe4b954e2d298a0f26f3d8
+command=NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac

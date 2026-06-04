@@ -1,4 +1,6 @@
-export interface CompactionStatusPayload {
+import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
+
+export interface CompactionStatusPayload extends TeamStreamIdentityPayload {
   phase?: 'requested' | 'started' | 'completed' | 'failed' | null;
   kind?: string | null;
   status?: string | null;
@@ -29,10 +31,4 @@ export interface CompactionStatusPayload {
   trigger?: string | null;
   pre_tokens?: number | null;
   rotation_eligible?: boolean | null;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
 }

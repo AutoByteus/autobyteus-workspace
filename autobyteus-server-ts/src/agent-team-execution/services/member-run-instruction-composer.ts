@@ -9,6 +9,7 @@ type MemberRunInstructionComposerInput = {
   agentInstruction: string | null;
   memberTeamContext: MemberTeamContext | null;
   sendMessageToEnabled: boolean;
+  taskDelegationEnabled?: boolean;
 };
 
 export type MemberRunInstructionComposition = {
@@ -23,6 +24,7 @@ export const composeMemberRunInstructions = (
   const memberTeamContext = input.memberTeamContext;
   const communicationRecipients = memberTeamContext?.communicationRecipients ?? [];
   const sendMessageToAvailable = input.sendMessageToEnabled && communicationRecipients.length > 0;
+  const taskDelegationAvailable = input.taskDelegationEnabled === true && Boolean(memberTeamContext);
 
   const runtimeLines: string[] = [];
   if (memberTeamContext?.memberName) {
@@ -54,6 +56,21 @@ export const composeMemberRunInstructions = (
     runtimeLines.push(
       "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
     );
+  }
+
+  if (taskDelegationAvailable) {
+    if (runtimeLines.length > 0) {
+      runtimeLines.push("");
+    }
+    runtimeLines.push("Task delegation protocol");
+    runtimeLines.push("- Use `delegate_tasks` to assign bounded work to exact logical team members; use a one-item `tasks` list for a single task. The framework derives you as the delegator from tool context; do not pass delegator.");
+    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
+    runtimeLines.push("- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.");
+    runtimeLines.push("- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
+    runtimeLines.push("- Task-agent execution uses `mark_task_completed` or `mark_task_failed`; include required `message` and optional `reference_files`, and do not pass status, task_id, task_name, title, or other selectors.");
+    runtimeLines.push("- Original-delegator acceptance uses `accept_task` with the generated `task_id` from the completion notification.");
+    runtimeLines.push("- A completed report remains awaiting acceptance; if changes are needed, use `send_message_to` with the notification's target member plus `task_agent_id` and `task_agent_run_id` so revision feedback reaches the same task-agent instance.");
+    runtimeLines.push("- After the original delegator accepts the task, the framework must settle or exit the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");
   }
 
   return {

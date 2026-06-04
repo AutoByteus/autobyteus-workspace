@@ -203,6 +203,53 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
+  it('hydrates request_permissions approval cards with requested access context', () => {
+    const invocationId = 'perm-request-1';
+    const segment = buildToolCallSegment(invocationId);
+    segment.toolName = 'unknown_tool';
+    const context = buildContextWithSegment(segment);
+    const requestedArguments = {
+      permissions: {
+        fileSystem: {
+          read: ['/tmp/codex-validation'],
+        },
+        network: {
+          enabled: true,
+        },
+      },
+      cwd: '/tmp/codex-validation',
+      reason: 'Need validation access',
+    };
+
+    const payload: ToolApprovalRequestedPayload = {
+      invocation_id: invocationId,
+      tool_name: 'request_permissions',
+      turn_id: 'turn-1',
+      arguments: requestedArguments,
+    };
+
+    handleToolApprovalRequested(payload, context);
+
+    expect(segment.status).toBe('awaiting-approval');
+    expect(segment.toolName).toBe('request_permissions');
+    expect(segment.arguments).toEqual(requestedArguments);
+    expect(mockActivityStore.updateToolActivityToolName).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      'request_permissions',
+    );
+    expect(mockActivityStore.updateToolActivityArguments).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      requestedArguments,
+    );
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      'awaiting-approval',
+    );
+  });
+
   it('applies TOOL_APPROVED then TOOL_EXECUTION_STARTED progression', () => {
     const invocationId = 'bash-1';
     const segment = buildTerminalSegment(invocationId);

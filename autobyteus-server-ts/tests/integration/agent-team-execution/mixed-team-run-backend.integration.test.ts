@@ -132,7 +132,7 @@ describe("MixedTeamRunBackend integration", () => {
     expect(manager.postMessage).toHaveBeenCalledWith(userMessage, {
       kind: "route_key",
       memberRouteKey: "coord-route",
-    });
+    }, null);
 
     await expect(
       backend.deliverInterAgentMessage({
@@ -178,6 +178,7 @@ describe("MixedTeamRunBackend integration", () => {
       "inv-1",
       true,
       "approved",
+      null,
     );
 
     await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toEqual({ accepted: true });

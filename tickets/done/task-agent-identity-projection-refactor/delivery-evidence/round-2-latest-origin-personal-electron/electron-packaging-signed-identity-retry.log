@@ -1,0 +1,66 @@
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: enterprise
+Artifact base name: AutoByteus_enterprise
+Requested architecture: AUTO
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.2.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=38.8.2 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=38.8.2 appOutDir=electron-dist/mac-arm64
+
+Signing extra resources (server binaries)...
+  Found 21 binaries to sign
+  Signing: rg
+  Signing: rg
+  Signing: esbuild
+  Signing: sharp-darwin-arm64.node
+  Signing: libvips-cpp.8.17.3.dylib
+  Signing: node-pty.node
+  Signing: pty.node
+  Signing: spawn-helper
+  Signing: pty.node
+  Signing: spawn-helper
+  Signing: pty.node
+  Signing: spawn-helper
+  Signing: libquery_engine-darwin-arm64.dylib.node
+  Signing: libquery_engine-darwin.dylib.node
+  Signing: libquery_engine-darwin-arm64.dylib.node
+  Signing: schema-engine-darwin-arm64
+  Signing: rollup.darwin-arm64.node
+  Signing: esbuild
+  Signing: fsevents.node
+  Signing: libquery_engine-darwin-arm64.dylib.node
+  Signing: libquery_engine-darwin.dylib.node
+[OK] Signed 21 server binaries
+
+  • signing         file=electron-dist/mac-arm64/AutoByteus.app platform=darwin type=distribution identity=37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA provisioningProfile=none
+  • skipped macOS notarization  reason=`notarize` options were set explicitly `false`
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip'
+]

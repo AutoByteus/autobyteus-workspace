@@ -19,4 +19,4 @@ Terminal interactions are exposed through a single websocket-facing terminal ser
 
 ## Notes
 
-Terminal behavior remains workspace-aware and integrates with workspace lifecycle from `src/workspaces`.
+Terminal behavior is rooted in the resolved filesystem cwd, not workspace materialization. Callers may provide an explicit `cwd` / `rootPath` for a workspace/root target; when both are omitted, the WebSocket route resolves the cwd to the backend server process user's home directory. Terminal sessions remain independent of File Explorer watcher lifecycle and do not create workspace metadata for the default-home path.

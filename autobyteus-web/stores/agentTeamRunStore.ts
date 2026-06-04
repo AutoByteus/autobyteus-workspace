@@ -38,6 +38,9 @@ import {
   finalizeLocalSubmissionAttachments,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
+import {
+  reconcileTeamContextMemberRunIdsFromBackend,
+} from '~/services/runHydration/teamRunMemberIdentityReconciler';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -264,14 +267,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const runHistoryStore = useRunHistoryStore();
       const contextFileUploadStore = useContextFileUploadStore();
       const activeTeam = teamContextsStore.activeTeamContext;
-      const focusedMember = teamContextsStore.focusedMemberContext;
-      const focusedNode = teamContextsStore.focusedMemberNode;
+      const focusedMember = teamContextsStore.activeExecutionFocusedMemberContext;
+      const focusedNode = teamContextsStore.activeExecutionFocusedMemberNode;
 
       if (!activeTeam || !focusedNode) throw new Error('No active team context.');
 
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey;
+      const targetMemberRouteKey = teamContextsStore.activeExecutionFocusedMemberRouteKey;
+      if (!targetMemberRouteKey) {
+        throw new Error('No active team execution target.');
+      }
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;
@@ -355,6 +361,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
           finalTeamRunId = permanentTeamRunId;
           teamContextsStore.promoteTemporaryTeamRunId(activeTeam.teamRunId, permanentTeamRunId);
+          const promotedTeamContext = teamContextsStore.getTeamContextById(permanentTeamRunId);
+          if (!promotedTeamContext) {
+            throw new Error(`Team context '${permanentTeamRunId}' not found after creation.`);
+          }
+          await reconcileTeamContextMemberRunIdsFromBackend({
+            teamContext: promotedTeamContext,
+            teamRunId: permanentTeamRunId,
+          });
         } else if (teamResumeConfig && !teamResumeConfig.isActive) {
           const client = getApolloClient();
           const { data, errors } = await client.mutate<RestoreAgentTeamRunMutationPayload>({

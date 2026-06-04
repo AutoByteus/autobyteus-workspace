@@ -13,6 +13,8 @@ export type SendMessageToToolArguments = {
   content: string | null;
   messageType: string;
   referenceFiles: string[];
+  taskAgentRunId: string | null;
+  taskAgentInstanceId: string | null;
   referenceFilesError: ExplicitTeamCommunicationReferenceFileValidationError | null;
 };
 
@@ -44,6 +46,14 @@ export const parseSendMessageToToolArguments = (
       readString(toolArguments.messageType) ??
       "agent_message",
     referenceFiles: referenceFilesResult.ok ? referenceFilesResult.referenceFiles : [],
+    taskAgentRunId:
+      readString(toolArguments.task_agent_run_id) ??
+      readString(toolArguments.taskAgentRunId) ??
+      readString(toolArguments.target_task_agent_run_id),
+    taskAgentInstanceId:
+      readString(toolArguments.task_agent_id) ??
+      readString(toolArguments.task_agent_instance_id) ??
+      readString(toolArguments.taskAgentInstanceId),
     referenceFilesError: referenceFilesResult.ok ? null : referenceFilesResult.error,
   };
 };

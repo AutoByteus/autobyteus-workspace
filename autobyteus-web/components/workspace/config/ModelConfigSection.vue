@@ -1,7 +1,7 @@
 <template>
   <div v-if="hasSchema" class="mt-4">
     <!-- Thinking Toggle Row -->
-    <template v-if="thinkingSupported">
+    <template v-if="thinkingControlState.supported">
       <div
         v-if="showMissingHistoricalConfig"
         class="flex items-center justify-between gap-4 rounded-md border border-dashed border-gray-200 bg-gray-50 px-3 py-2"
@@ -16,15 +16,18 @@
       <ModelConfigBasic
         v-else
         v-model:enabled="thinkingEnabled"
-        :disabled="disabled"
+        :disabled="thinkingToggleDisabled"
         :label="thinkingLabel"
         :description="thinkingDescription"
+        :read-only-reason="thinkingControlState.enabled && !thinkingControlState.canDisable
+          ? $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model')
+          : undefined"
         :compact="compact"
       />
     </template>
 
     <!-- Advanced Expand Button -->
-    <div v-if="thinkingSupported && hasAdvancedSchema" class="mt-4 text-left">
+    <div v-if="usesAdvancedDisclosure" class="mt-4 text-left">
       <button
         type="button"
         data-testid="advanced-params-toggle"
@@ -44,8 +47,9 @@
     <!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
     <div
       v-if="hasAdvancedSchema"
-      v-show="!thinkingSupported || showAdvancedParams"
-      :class="thinkingSupported ? 'mt-2' : ''"
+      v-show="!usesAdvancedDisclosure || showAdvancedParams"
+      data-testid="advanced-params-container"
+      :class="usesAdvancedDisclosure ? 'mt-2' : ''"
     >
       <ModelConfigAdvanced
         :schema="advancedSchema"
@@ -67,10 +71,9 @@ import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import {
   applyThinkingToggle,
+  getThinkingControlState,
   getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
-  getThinkingToggleState,
-  hasThinkingSupport,
 } from '~/utils/llmThinkingConfigAdapter';
 import ModelConfigBasic from './ModelConfigBasic.vue';
 import ModelConfigAdvanced from './ModelConfigAdvanced.vue';
@@ -93,11 +96,13 @@ const emit = defineEmits<{
   (e: 'update:config', value: Record<string, unknown> | null): void;
 }>();
 
-const showAdvancedParams = ref(props.advancedInitiallyExpanded === true);
+const showAdvancedParams = ref(false);
 
 const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
 
-const thinkingSupported = computed(() => hasThinkingSupport(props.schema ?? null));
+const thinkingControlState = computed(() =>
+  getThinkingControlState(props.schema ?? null, props.modelConfig ?? null),
+);
 
 const advancedSchema = computed<UiModelConfigSchema>(() => {
   const schema = props.schema ?? {};
@@ -108,6 +113,17 @@ const advancedSchema = computed<UiModelConfigSchema>(() => {
 });
 
 const hasAdvancedSchema = computed(() => Object.keys(advancedSchema.value).length > 0);
+const usesAdvancedDisclosure = computed(() => hasAdvancedSchema.value);
+const shouldDefaultAdvancedOpen = computed(() =>
+  props.advancedInitiallyExpanded === true ||
+  (
+    hasAdvancedSchema.value &&
+    props.compact !== true &&
+    !showMissingHistoricalConfig.value &&
+    thinkingControlState.value.supported &&
+    thinkingControlState.value.enabled
+  ),
+);
 
 const thinkingLabel = computed(() => props.thinkingLabel ?? 'Thinking');
 // Simpler default description
@@ -123,9 +139,21 @@ const emitConfig = (nextConfig: Record<string, unknown> | null) => {
   emit('update:config', nextConfig ?? null);
 };
 
+const configsEqual = (
+  left: Record<string, unknown> | null | undefined,
+  right: Record<string, unknown> | null | undefined,
+) => JSON.stringify(left ?? null) === JSON.stringify(right ?? null);
+
+const thinkingToggleDisabled = computed(() => {
+  if (props.disabled) return true;
+  return thinkingControlState.value.enabled
+    ? !thinkingControlState.value.canDisable
+    : !thinkingControlState.value.canEnable;
+});
+
 const thinkingEnabled = computed({
   get() {
-    return getThinkingToggleState(props.schema ?? null, props.modelConfig ?? null);
+    return thinkingControlState.value.enabled;
   },
   set(value: boolean) {
     const updatedConfig = applyThinkingToggle(
@@ -133,14 +161,18 @@ const thinkingEnabled = computed({
       value,
       props.modelConfig ?? null,
     );
+    if (configsEqual(updatedConfig ?? null, props.modelConfig ?? null)) {
+      if (value) {
+        showAdvancedParams.value = true;
+      }
+      return;
+    }
     emitConfig(updatedConfig ?? null);
+    if (value) {
+      showAdvancedParams.value = true;
+    }
   },
 });
-
-const configsEqual = (
-  left: Record<string, unknown> | null | undefined,
-  right: Record<string, unknown> | null | undefined,
-) => JSON.stringify(left ?? null) === JSON.stringify(right ?? null);
 
 const applyDefaultsIfNeeded = () => {
   if (!hasSchema.value) return;
@@ -158,7 +190,7 @@ const applyDefaultsIfNeeded = () => {
     }
   }
 
-  if (thinkingEnabled.value && props.schema?.thinking_budget_tokens?.default !== undefined) {
+  if (props.modelConfig?.thinking_enabled === true && props.schema?.thinking_budget_tokens?.default !== undefined) {
     if (nextConfig.thinking_budget_tokens === undefined) {
       nextConfig.thinking_budget_tokens = props.schema.thinking_budget_tokens.default;
       changed = true;
@@ -191,12 +223,17 @@ watch(
   { immediate: true },
 );
 
-// Collapse advanced section when schema changes
 watch(
-  () => props.schema,
+  () => [
+    props.schema,
+    props.compact,
+    props.readOnly,
+    props.missingHistoricalConfig,
+  ],
   () => {
-    showAdvancedParams.value = props.advancedInitiallyExpanded === true;
+    showAdvancedParams.value = shouldDefaultAdvancedOpen.value;
   },
+  { immediate: true },
 );
 
 watch(

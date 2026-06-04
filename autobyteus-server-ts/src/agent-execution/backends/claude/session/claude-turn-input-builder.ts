@@ -7,6 +7,7 @@ export const buildClaudeTurnInput = (options: {
   runContext: ClaudeRunContext;
   content: string;
   sendMessageToEnabled: boolean;
+  taskDelegationEnabled?: boolean;
 }): string => {
   const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
   const instructionComposition = composeMemberRunInstructions({
@@ -14,6 +15,7 @@ export const buildClaudeTurnInput = (options: {
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
     memberTeamContext: memberTeamContext ?? null,
     sendMessageToEnabled: options.sendMessageToEnabled,
+    taskDelegationEnabled: options.taskDelegationEnabled,
   });
   if (
     !instructionComposition.teamInstruction &&

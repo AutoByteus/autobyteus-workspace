@@ -17,8 +17,8 @@ describe('EventEmitter', () => {
     const emitter = new EventEmitter();
     const listener = vi.fn();
 
-    emitter.subscribe(EventType.TASK_PLAN_TASKS_CREATED, listener);
-    emitter.emit(EventType.TASK_PLAN_TASKS_CREATED, { payload: 'data' });
+    emitter.subscribe(EventType.AGENT_TURN_STARTED, listener);
+    emitter.emit(EventType.AGENT_TURN_STARTED, { payload: 'data' });
 
     expect(listener).toHaveBeenCalledTimes(1);
     const [payload, meta] = listener.mock.calls[0];
@@ -31,12 +31,12 @@ describe('EventEmitter', () => {
     const emitterB = new EventEmitter();
     const listener = vi.fn();
 
-    emitterA.subscribeFrom(emitterB, EventType.TASK_PLAN_STATUS_UPDATED, listener);
+    emitterA.subscribeFrom(emitterB, EventType.AGENT_STATUS, listener);
 
-    emitterA.emit(EventType.TASK_PLAN_STATUS_UPDATED, { payload: 'skip' });
+    emitterA.emit(EventType.AGENT_STATUS, { payload: 'skip' });
     expect(listener).not.toHaveBeenCalled();
 
-    emitterB.emit(EventType.TASK_PLAN_STATUS_UPDATED, { payload: 'hit' });
+    emitterB.emit(EventType.AGENT_STATUS, { payload: 'hit' });
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener.mock.calls[0][0]).toBe('hit');
   });
@@ -46,10 +46,10 @@ describe('EventEmitter', () => {
     const emitterB = new EventEmitter();
     const listener = vi.fn();
 
-    emitterA.subscribeFrom(emitterB, EventType.TASK_PLAN_STATUS_UPDATED, listener);
-    emitterA.unsubscribeFrom(emitterB, EventType.TASK_PLAN_STATUS_UPDATED, listener);
+    emitterA.subscribeFrom(emitterB, EventType.AGENT_STATUS, listener);
+    emitterA.unsubscribeFrom(emitterB, EventType.AGENT_STATUS, listener);
 
-    emitterB.emit(EventType.TASK_PLAN_STATUS_UPDATED, { payload: 'hit' });
+    emitterB.emit(EventType.AGENT_STATUS, { payload: 'hit' });
     expect(listener).not.toHaveBeenCalled();
   });
 
@@ -57,9 +57,9 @@ describe('EventEmitter', () => {
     const emitter = new EventEmitter();
     const listener = vi.fn();
 
-    emitter.subscribe(EventType.TASK_PLAN_TASKS_CREATED, listener);
+    emitter.subscribe(EventType.AGENT_TURN_STARTED, listener);
     emitter.unsubscribeAllListeners();
-    emitter.emit(EventType.TASK_PLAN_TASKS_CREATED, { payload: 'data' });
+    emitter.emit(EventType.AGENT_TURN_STARTED, { payload: 'data' });
 
     expect(listener).not.toHaveBeenCalled();
   });

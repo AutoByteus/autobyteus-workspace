@@ -1,0 +1,19 @@
+Electron build completed at 2026-06-03T07:37:58Z
+Branch: codex/task-agent-identity-projection-refactor
+HEAD: d37ab097f38f1f934752d812a7e6ff191dc92800
+origin/personal: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Ahead/behind HEAD...origin/personal: 3	0
+Command: pnpm -C autobyteus-web build:electron:mac
+README references read: autobyteus-web/README.md; autobyteus-web/docs/electron_packaging.md
+
+Artifacts:
+-rw-r--r--@ 1 normy  staff   362M Jun  3 09:36 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+-rw-r--r--@ 1 normy  staff   388K Jun  3 09:36 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M Jun  3 09:37 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip
+-rw-r--r--@ 1 normy  staff   379K Jun  3 09:37 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap
+
+Checksums:
+76c713201c4ca69320738065a468d6623e669fe4b540714c6d08cd07a36a6400  /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+3f1c2147433dfab1a64a708bdea72bc0da559803b6ca6080bb3d159e9cdff70f  /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap
+0b5616de5b250775f92a57a51d61c08ed0b2438093f567654624558b55680005  /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip
+bc069700fda4cb8f38d2d9d68437d4fbd970e787c0d518d5fbb058e4166775a4  /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap

@@ -1,0 +1,3 @@
+Command: spctl --assess --type execute --verbose=4 /tmp/autobyteus-electron-round3-dmg-verify-1567/AutoByteus.app
+/tmp/autobyteus-electron-round3-dmg-verify-1567/AutoByteus.app: rejected
+source=Unnotarized Developer ID

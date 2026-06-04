@@ -34,24 +34,29 @@
     </div>
 
     <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
+      <TeamTaskAgentActivityBar
+        :team-context="activeTeamContext"
+        @select-member="setFocusedMember"
+      />
+
       <div class="flex-grow min-h-0">
         <AgentTeamEventMonitor v-if="currentMode === 'focus'" />
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
         <TeamSpotlightView
           v-else
           :team-context="activeTeamContext"
-          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
+          :focused-member-route-key="rosterFocusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
       </div>
 
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ headerTitle }}</span>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
         </p>
         <AgentUserInputForm v-if="focusedMemberContext" />
         <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
@@ -99,6 +104,7 @@ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
 import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
+import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
@@ -117,19 +123,25 @@ const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
+const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
+const rosterFocusedMemberRouteKey = computed(() =>
+  resolveDisplayFocusedMemberRouteKey(activeTeamContext.value?.focusedMemberRouteKey),
+);
 const focusedMemberContext = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey) {
-    return null;
-  }
-  return team.leafAgentContextsByRouteKey.get(team.focusedMemberRouteKey) ?? null;
+  return teamContextsStore.activeExecutionFocusedMemberContext;
 });
 const focusedMemberNode = computed(() => {
+  return teamContextsStore.activeExecutionFocusedMemberNode;
+});
+const rosterFocusedMemberContext = computed(() => {
   const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey) {
-    return null;
-  }
-  return team.memberNodesByRouteKey.get(team.focusedMemberRouteKey) ?? null;
+  const routeKey = rosterFocusedMemberRouteKey.value;
+  return team && routeKey ? team.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+});
+const rosterFocusedMemberNode = computed(() => {
+  const team = activeTeamContext.value;
+  const routeKey = rosterFocusedMemberRouteKey.value;
+  return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
 });
 
 const currentMode = computed<TeamWorkspaceViewMode>(() => {
@@ -137,14 +149,20 @@ const currentMode = computed<TeamWorkspaceViewMode>(() => {
 });
 
 const showSharedComposer = computed(() => {
+  if (!activeExecutionFocusedMemberRouteKey.value) {
+    return false;
+  }
+  if (focusedMemberNode.value?.isTaskAgentInstance) {
+    return false;
+  }
   return Boolean(activeTeamContext.value) && (
     currentMode.value !== 'focus' || focusedMemberNode.value?.memberKind === 'agent_team'
   );
 });
 
 const headerStatus = computed(() => {
-  return focusedMemberContext.value?.state.currentStatus
-    ?? focusedMemberNode.value?.currentStatus
+  return rosterFocusedMemberContext.value?.state.currentStatus
+    ?? rosterFocusedMemberNode.value?.currentStatus
     ?? activeTeamContext.value?.currentStatus
     ?? AgentStatus.Offline;
 });
@@ -155,9 +173,22 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberRouteKey = team.focusedMemberRouteKey?.trim();
+  const focusedMemberRouteKey = rosterFocusedMemberRouteKey.value;
   if (!focusedMemberRouteKey) {
     return team.config.teamDefinitionName || 'Team';
+  }
+
+  return rosterFocusedMemberNode.value?.displayName
+    || getMemberDisplayName(focusedMemberRouteKey, rosterFocusedMemberContext.value)
+    || team.config.teamDefinitionName
+    || 'Team';
+});
+
+const composerTargetTitle = computed(() => {
+  const team = activeTeamContext.value;
+  const focusedMemberRouteKey = activeExecutionFocusedMemberRouteKey.value;
+  if (!team || !focusedMemberRouteKey) {
+    return headerTitle.value;
   }
 
   return focusedMemberNode.value?.displayName
@@ -168,11 +199,12 @@ const headerTitle = computed(() => {
 
 const headerAvatarUrl = computed(() => {
   const team = activeTeamContext.value;
-  if (!team?.focusedMemberRouteKey || focusedMemberNode.value?.memberKind === 'agent_team') {
+  const focusedRouteKey = rosterFocusedMemberRouteKey.value;
+  if (!team || !focusedRouteKey || rosterFocusedMemberNode.value?.memberKind === 'agent_team') {
     return '';
   }
 
-  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMemberContext.value);
+  return getMemberAvatarUrl(focusedRouteKey, rosterFocusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
@@ -181,6 +213,23 @@ const headerAvatarInitials = computed(() => getMemberInitials(headerTitle.value)
 watch(headerAvatarUrl, () => {
   headerAvatarLoadError.value = false;
 });
+
+function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefined): string {
+  const team = activeTeamContext.value;
+  const normalizedCandidate = candidate?.trim() || '';
+  if (
+    team &&
+    normalizedCandidate &&
+    (
+      team.memberNodesByRouteKey.has(normalizedCandidate) ||
+      team.leafAgentContextsByRouteKey.has(normalizedCandidate)
+    )
+  ) {
+    return normalizedCandidate;
+  }
+
+  return activeExecutionFocusedMemberRouteKey.value;
+}
 
 const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
   if (!activeTeamContext.value) {

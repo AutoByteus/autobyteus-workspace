@@ -1,0 +1,2 @@
+rm -rf autobyteus-web/.nuxt autobyteus-web/dist autobyteus-web/electron-dist/mac-arm64 and current 1.3.42 artifacts
+env -u ELECTRON_RUN_AS_NODE -u AUTOBYTEUS_SERVER_HOST -u AUTOBYTEUS_INTERNAL_SERVER_BASE_URL -u AUTOBYTEUS_DATA_DIR -u AUTOBYTEUS_MEMORY_DIR NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac

@@ -29,7 +29,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       return agentContextsStore.activeRun || null;
     }
     if (selectionStore.selectedType === 'team') {
-      return agentTeamContextsStore.focusedMemberContext || null;
+      return agentTeamContextsStore.activeExecutionFocusedMemberContext || null;
     }
     return null;
   });
@@ -183,7 +183,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       if (!activeTeam) {
         throw new Error('Cannot interrupt generation: No active team context.');
       }
-      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey?.trim() ?? '';
+      const targetMemberRouteKey = agentTeamContextsStore.activeExecutionFocusedMemberRouteKey?.trim() ?? '';
       if (!targetMemberRouteKey || !activeTeam.leafAgentContextsByRouteKey.has(targetMemberRouteKey)) {
         throw new Error('Cannot interrupt generation: No focused team member target.');
       }

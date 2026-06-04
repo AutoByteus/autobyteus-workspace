@@ -7,7 +7,10 @@ describe('WorkingContextSnapshotSerializer', () => {
   it('serializes and deserializes tool payloads with the current schema version', () => {
     const snapshot = new WorkingContextSnapshot();
     snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
-    snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
+    snapshot.appendMessage(new Message(MessageRole.USER, {
+      content: 'Hello',
+      metadata: { autobyteus_memory_provenance: { sourceKind: 'user_input', rawTraceIds: ['rt_1'] } },
+    }));
     snapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
       content: 'Hi',
       reasoning_content: 'Because',
@@ -55,6 +58,9 @@ describe('WorkingContextSnapshotSerializer', () => {
       MessageRole.TOOL,
     ]);
     expect(messages[2].reasoning_content).toBe('Because');
+    expect(messages[1].metadata).toEqual({
+      autobyteus_memory_provenance: { sourceKind: 'user_input', rawTraceIds: ['rt_1'] }
+    });
     expect(messages[2].image_urls).toEqual(['img://1']);
     expect(messages[3].content).toBe('I will search.');
     expect(messages[3].reasoning_content).toBe('Need search results before answering.');

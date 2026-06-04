@@ -4,6 +4,60 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
 
 describe('runHistoryTeamRows', () => {
+  it('builds live context rows from the full structured member tree without active-execution filtering', () => {
+    const routeKeys = [
+      'solution_designer',
+      'architecture_reviewer',
+      'implementation_engineer',
+      'code_reviewer',
+      'api_e2e_engineer',
+      'delivery_engineer',
+    ];
+    const teamContext = {
+      teamRunId: 'team-software-engineering-1',
+      currentStatus: AgentTeamStatus.Running,
+      coordinatorMemberRouteKey: 'solution_designer',
+      focusedMemberRouteKey: 'solution_designer',
+      memberTree: routeKeys.map((memberRouteKey) => ({
+        memberKind: 'agent',
+        memberName: memberRouteKey,
+        displayName: memberRouteKey,
+        memberPath: [memberRouteKey],
+        memberRouteKey,
+        memberRunId: `${memberRouteKey}-run`,
+        agentDefinitionId: `${memberRouteKey}-def`,
+      })),
+      leafAgentContextsByRouteKey: new Map([
+        [
+          'solution_designer',
+          {
+            config: {
+              agentDefinitionName: 'solution_designer',
+              workspaceId: 'ws-1',
+            },
+            state: {
+              runId: 'solution_designer-run',
+              currentStatus: AgentStatus.Running,
+              conversation: { createdAt: '2026-06-02T00:00:00.000Z', updatedAt: '2026-06-02T00:01:00.000Z' },
+            },
+          },
+        ],
+      ]),
+    } as any;
+
+    const rows = buildTeamRowsFromContext(
+      teamContext,
+      'summary',
+      '2026-06-02T00:00:00.000Z',
+      () => '/workspace',
+    );
+
+    expect(rows.map((row) => row.memberRouteKey)).toEqual(routeKeys);
+    expect(rows.map((row) => row.displayName)).toEqual(routeKeys);
+    expect(rows[0]?.currentStatus).toBe(AgentStatus.Running);
+    expect(rows.slice(1).every((row) => row.currentStatus === AgentStatus.Offline)).toBe(true);
+  });
+
   it('uses membership labels instead of agent definition names for active team rows', () => {
     const teamContext = {
       teamRunId: 'team-1',

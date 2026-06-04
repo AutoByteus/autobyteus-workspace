@@ -1,6 +1,5 @@
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { AgentContext } from './AgentContext';
-import type { Task, TaskStatus } from '~/types/taskManagement';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
@@ -15,6 +14,12 @@ export interface TeamMemberNodeBase {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId?: string | null;
+  /** True for transient frontend projections of concrete delegated task-agent instances. */
+  isTaskAgentInstance?: boolean;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
   /** Backend-owned canonical status for structural/non-leaf members. */
   currentStatus?: AgentStatus | null;
   role?: string | null;
@@ -64,6 +69,4 @@ export interface AgentTeamContext {
   currentStatus: AgentTeamStatus;
   isSubscribed: boolean;
   unsubscribe?: () => void;
-  taskPlan: Task[] | null;
-  taskStatuses: Record<string, TaskStatus> | null;
 }

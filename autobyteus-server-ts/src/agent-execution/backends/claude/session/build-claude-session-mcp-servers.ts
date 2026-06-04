@@ -29,6 +29,8 @@ const mergeMcpServerMaps = (
 
 export const buildClaudeSessionMcpServers = async (options: {
   sendMessageToToolingEnabled: boolean;
+  taskDelegationToolingEnabled?: boolean;
+  enabledTaskDelegationToolNames?: Iterable<string> | null;
   enabledBrowserToolNames?: Iterable<string> | null;
   enabledMediaToolNames?: Iterable<string> | null;
   publishArtifactsToolingEnabled: boolean;
@@ -37,16 +39,20 @@ export const buildClaudeSessionMcpServers = async (options: {
   requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
   emitEvent: (runContext: ClaudeRunContext, event: ClaudeSessionEvent) => void;
 }): Promise<Record<string, unknown> | null> => {
-  const teamMcpServers = options.sendMessageToToolingEnabled
+  const teamToolingEnabled =
+    options.sendMessageToToolingEnabled || options.taskDelegationToolingEnabled === true;
+  const teamMcpServers = teamToolingEnabled
     ? await buildClaudeTeamMcpServers({
         runContext: options.runContext,
         sdkClient: options.sdkClient,
         requestToolApproval: options.requestToolApproval,
         emitEvent: options.emitEvent,
+        sendMessageToToolingEnabled: options.sendMessageToToolingEnabled,
+        enabledTaskDelegationToolNames: options.enabledTaskDelegationToolNames,
       })
     : null;
 
-  if (options.sendMessageToToolingEnabled && !teamMcpServers) {
+  if (teamToolingEnabled && !teamMcpServers) {
     throw new Error(
       "CLAUDE_QUERY_MCP_UNAVAILABLE: Unable to build team MCP server configuration.",
     );

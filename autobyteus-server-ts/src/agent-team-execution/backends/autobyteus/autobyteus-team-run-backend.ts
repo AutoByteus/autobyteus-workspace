@@ -4,6 +4,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
+import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { AutoByteusTeamMemberContext } from "./autobyteus-team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
@@ -113,9 +114,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   async postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
+    targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.team.postMessage || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);
+    }
+    if (targetMemberRunId?.trim()) {
+      return { accepted: false, code: "TASK_AGENT_RUN_NOT_SUPPORTED", message: "Native AutoByteus team postMessage does not support task-agent run targeting." };
     }
     const memberContext = target ? this.resolveTargetMemberContext(target) : null;
     if (memberContext && "accepted" in memberContext) {
@@ -138,6 +143,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
+    _targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.team.postToolExecutionApproval || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -170,6 +176,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       const recipientContext = this.resolveTargetMemberContext(request.recipient.selector);
       if ("accepted" in recipientContext) {
         return recipientContext;
+      }
+      if (request.recipient.participant.taskAgentRunId?.trim()) {
+        return { accepted: false, code: "UNSUPPORTED_RUNTIME_COMMAND", message: "Native AutoByteus team runs do not support task-agent-targeted inter-agent messages." };
       }
       this.publishMemberCommandStatus(recipientContext, "initializing");
       await this.team.postMessage(buildInterAgentDeliveryInputMessage(request), recipientContext.memberName);
@@ -254,6 +263,40 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 
+  async settleMember(
+    _targetMemberRouteKey: string,
+    _targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose per-member settlement.",
+    };
+  }
+
+  async startTaskAgentInstance(
+    _request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose task-agent instance start.",
+    };
+  }
+
+  async settleTaskAgentInstance(
+    _logicalMemberRouteKey: string,
+    _taskAgentRunId: string,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose task-agent instance settlement.",
+    };
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     try {
       const removed = await this.options.removeTeamRun(this.runId);
@@ -265,6 +308,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     } catch (error) {
       return buildCommandFailure("terminate team run", error);
     }
+  }
+
+  publishEvent(event: TeamRunEvent): void {
+    this.publishEvents([event]);
   }
 
   private ensureNativeEventBridge(): void {

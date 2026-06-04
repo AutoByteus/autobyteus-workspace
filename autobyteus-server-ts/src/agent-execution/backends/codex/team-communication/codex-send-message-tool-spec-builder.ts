@@ -11,7 +11,7 @@ export const buildSendMessageToToolSpec = (options: {
 
   return {
     name: SEND_MESSAGE_TO_TOOL_NAME,
-    description: "Send a self-contained message to another member in the same team run. When sharing files, keep content as the detailed email-like body and also list those absolute paths in reference_files so they appear under Team Communication messages.",
+    description: "Send a self-contained message to another member in the same team run. For task-delegation revisions, use recipient_name for the target member and task_agent_run_id from the completion notification so the message reaches the same task-agent instance.",
     inputSchema: {
       type: "object",
       properties: {
@@ -36,6 +36,14 @@ export const buildSendMessageToToolSpec = (options: {
           type: "array",
           description: "Optional attachment/reference list of absolute local file paths the recipient may need to inspect and that should appear in Team Communication messages. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ['/Users/me/project/implementation-handoff.md', '/Users/me/project/test.log'].",
           items: { type: "string" },
+        },
+        task_agent_run_id: {
+          type: "string",
+          description: "Optional concrete task-agent run ID from a task-delegation completion notification. Use this for revision feedback to an awaiting-acceptance task-agent.",
+        },
+        task_agent_id: {
+          type: "string",
+          description: "Optional task-agent instance ID from a task-delegation completion notification, included for traceability when task_agent_run_id targets a revision.",
         },
       },
       required: ["recipient_name", "content"],

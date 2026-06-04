@@ -78,7 +78,8 @@ export function useTeamMemberPresentation() {
       if (!memberRunId || mapping[memberRunId]) {
         return;
       }
-      mapping[memberRunId] = getMemberDisplayName(memberRouteKey, memberContext);
+      const memberNode = team.memberNodesByRouteKey.get(memberRouteKey) || null;
+      mapping[memberRunId] = memberNode?.displayName || getMemberDisplayName(memberRouteKey, memberContext);
     });
 
     return mapping;
