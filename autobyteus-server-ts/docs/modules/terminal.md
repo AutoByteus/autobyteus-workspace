@@ -16,7 +16,7 @@ Terminal WebSocket session management, interactive PTY stream forwarding, and li
 
 ## Runtime Model
 
-The frontend opens `/ws/terminal/{sessionId}?cwd={encodedRootPath}` or `/ws/terminal/{sessionId}?rootPath={encodedRootPath}` for an explicit filesystem root. The backend canonicalizes the requested path and rejects the connection before creating a terminal session if the path is unavailable or is not a directory.
+The frontend opens `/ws/terminal/{sessionId}?cwd={encodedRootPath}` or `/ws/terminal/{sessionId}?rootPath={encodedRootPath}` for an explicit filesystem root. If both `cwd` and `rootPath` are omitted, the backend resolves the terminal cwd to `os.homedir()` for the server process. The backend canonicalizes and validates the resolved path and rejects the connection before creating a terminal session if that path is unavailable or is not a directory.
 
 Terminal sessions are root-path scoped. They are not tied to file-explorer tree materialization and do not start file-explorer watchers. The `workspaceId` value passed through the streaming service is the resolved root path used to group and close sessions; it is not a request to create or initialize a workspace.
 
@@ -25,7 +25,7 @@ File Explorer watcher physical close is isolated in the File Explorer watcher ru
 ## WebSocket Lifecycle
 
 1. The route authorizes remote access for the WebSocket request.
-2. It resolves and validates `cwd` / `rootPath`.
+2. It resolves and validates `cwd` / `rootPath`; omitted query values resolve to the server process home directory.
 3. `TerminalHandler.connect()` asks `PtySessionManager` to create the PTY session.
 4. The handler starts a read loop that forwards PTY output as base64 JSON messages.
 5. Client input and resize messages are forwarded to the active session.
@@ -36,7 +36,8 @@ Important cleanup guarantees:
 - A session is registered before async startup and removed if startup fails or is aborted.
 - Closing before startup completes aborts startup, closes any partial session, and disconnects any late-created session.
 - Disconnect removes the read-loop task, closes the PTY backend, and waits for the loop to exit.
-- Invalid or missing cwd closes the WebSocket without creating a PTY session.
+- Invalid explicit cwd/rootPath closes the WebSocket without creating a PTY session.
+- Unavailable server home for an omitted-cwd request closes the WebSocket without creating a PTY session.
 
 ## Interactive Backend Selection
 
@@ -74,6 +75,7 @@ Server-to-client messages:
 Durable validation should keep covering:
 
 - invalid cwd rejection before PTY creation;
+- omitted cwd/rootPath resolution to the server process home directory;
 - attached terminal command output and normal disconnect cleanup;
 - close-before-connect / early-close cleanup;
 - macOS descriptor pressure for repeated Terminal WebSocket churn;

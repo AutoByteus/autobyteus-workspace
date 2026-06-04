@@ -127,8 +127,6 @@ const messages = {
     "Agent Artifacts",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "Retry workspace load",
-  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
-    "No workspace root path is selected for the terminal.",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
     "LLM config",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":

@@ -156,6 +156,37 @@ describe('Terminal.vue', () => {
       workspaceId: 'workspace-1',
       displayName: 'workspace-1',
     });
+    expect(sessionOptions[0].defaultCwd).toBe('server-home');
+    expect(terminalInstances[0].writeln).toHaveBeenCalledWith(
+      '\x1b[1m➜ Terminal initialized\x1b[0m',
+    );
+    expect(workspaceStoreState.ensureWorkspaceMetadata).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+  });
+
+  it('connects with the server-home default when no workspace metadata is active', async () => {
+    workspaceStoreState.activeWorkspaceMetadata = null as any;
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionOptions[0].target.value).toBeNull();
+    expect(sessionOptions[0].defaultCwd).toBe('server-home');
+    expect(sessionMock.connect).toHaveBeenCalledTimes(1);
+    expect(wrapper.text()).not.toContain(
+      'No workspace root path is selected for the terminal.',
+    );
     expect(workspaceStoreState.ensureWorkspaceMetadata).not.toHaveBeenCalled();
 
     wrapper.unmount();
@@ -190,6 +221,42 @@ describe('Terminal.vue', () => {
     });
     expect(sessionMock.connect).toHaveBeenCalledTimes(1);
     expect(workspaceStoreState.ensureWorkspaceMetadata).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+  });
+
+  it('reconnects when switching from an explicit terminal target to server home', async () => {
+    workspaceStoreState.activeWorkspaceMetadata = null as any;
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      props: {
+        target: {
+          rootPath: '/tmp/explicit-terminal-root',
+          workspaceId: 'explicit_ws',
+          displayName: 'Explicit root',
+        },
+      },
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionMock.connect).toHaveBeenCalledTimes(1);
+
+    await wrapper.setProps({ target: null });
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionMock.disconnect).toHaveBeenCalledTimes(1);
+    expect(sessionMock.connect).toHaveBeenCalledTimes(2);
+    expect(sessionOptions[0].target.value).toBeNull();
 
     wrapper.unmount();
   });
