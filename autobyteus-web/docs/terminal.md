@@ -1,12 +1,13 @@
 # Terminal Module - Frontend
 
-This document describes the design and implementation of the **Terminal** module in the autobyteus-web frontend, which provides an interactive command-line interface for executing terminal commands within workspace context.
+This document describes the design and implementation of the **Terminal** module in the autobyteus-web frontend, which provides an interactive command-line interface for executing terminal commands in an explicit workspace/root path when one is active, or in the backend server user's home directory when no terminal target is selected.
 
 ## Overview
 
 The Terminal module enables users to:
 
-- Execute terminal commands in the active workspace directory
+- Execute terminal commands in the active workspace/root directory when available
+- Start in the backend server user's home directory when no workspace/root target is active
 - View command output with syntax-highlighted results
 - Navigate command history with arrow keys
 - Use keyboard shortcuts (Ctrl+C for interrupt)
@@ -63,7 +64,7 @@ Main terminal component using xterm.js for rich terminal emulation.
 
 **Key Features:**
 
-- **Workspace-aware prompt**: Displays active workspace name in colored prompt
+- **Backend PTY prompt**: Uses the shell prompt from the resolved backend cwd
 - **Command history**: Navigate with Up/Down arrow keys
 - **Input handling**: Backspace, Enter, character input
 - **Ctrl+C support**: Interrupt current input
@@ -85,8 +86,8 @@ terminalInstance.value = new Terminal({
     background: "#ffffff",
     foreground: "#383a42",
     cursor: "#528bff",
-    green: "#50a14f", // Workspace name
-    blue: "#4078f2", // Prompt path
+    green: "#50a14f",
+    blue: "#4078f2",
   },
   scrollback: 5000,
 });
@@ -119,7 +120,7 @@ Manages the terminal WebSocket session and streaming I/O.
 
 **Key Responsibilities:**
 
-- Connect/disconnect WebSocket sessions for an explicit terminal root path
+- Connect/disconnect WebSocket sessions for an explicit terminal root path or the backend server-home default
 - Send input and resize events to the backend
 - Receive output streams and forward to xterm.js
 
@@ -153,7 +154,9 @@ Phase One Android pairing removes the mobile Tools/Terminal/VNC page entirely. T
 
 ## WebSocket Protocol (Summary)
 
-The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` and communicates via WebSocket using JSON messages:
+The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` for an explicit root path. When no workspace/root target is selected, it connects to `/ws/terminal/{sessionId}` without `cwd` or `rootPath`; the backend resolves that omitted cwd to the server process user's home directory after authorization.
+
+Both modes communicate via WebSocket using JSON messages:
 
 - **Input**: `{ "type": "input", "data": "<base64>" }`
 - **Resize**: `{ "type": "resize", "rows": number, "cols": number }`
@@ -187,22 +190,18 @@ The Terminal uses a light theme matching the application design:
 
 ## Usage Example
 
-The Terminal is automatically available when a workspace is active:
+The Terminal is automatically available from the workspace page. If no agent/team/run workspace is active, it starts in the backend server user's home directory. If an active workspace root exists, it starts in that explicit workspace root.
 
-1. Open a workspace
+1. Open the workspace page
 2. Click the "Terminal" tab in the right panel (or the Terminal icon in the collapsed sidebar)
 3. Type commands and press Enter
 4. View output directly in the terminal
 
-**Prompt Format:**
-
-```
-workspace-name:~$ <your-command>
-```
+The shell prompt is produced by the backend PTY and reflects the resolved cwd.
 
 ## Backend Runtime Notes
 
-The frontend Terminal connects to the backend with an explicit cwd/root path. Backend validation rejects an unavailable path before creating a PTY session. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process.
+The frontend Terminal connects to the backend with either an explicit cwd/root path or an omitted-cwd default request. The backend owns server-home resolution and path validation. Explicit unavailable paths are rejected before PTY creation; an unavailable server home is rejected through the same terminal-unavailable path. The default-home terminal does not create workspace metadata and does not start File Explorer watchers. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process.
 
 See `autobyteus-server-ts/docs/modules/terminal.md` and `autobyteus-ts/docs/terminal_tools.md` for backend lifecycle details.
 

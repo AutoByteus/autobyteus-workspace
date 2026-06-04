@@ -67,7 +67,40 @@ describe("useTerminalSession", () => {
     expect(url.pathname).toContain("/ws/terminal/");
     expect(url.pathname).not.toContain("/ws-123/");
     expect(url.searchParams.get("cwd")).toBe("/tmp/project");
+    expect(url.searchParams.has("rootPath")).toBe(false);
     expect(session.connectionStatus.value).toBe("connecting");
+  });
+
+  it("connects without cwd or rootPath query params when server-home default is enabled", () => {
+    const session = useTerminalSession({
+      target: null,
+      defaultCwd: "server-home",
+    });
+
+    session.connect();
+
+    expect(global.WebSocket).toHaveBeenCalledTimes(1);
+    const url = new URL(mockWs.url);
+    expect(url.origin).toBe("ws://test-host:8000");
+    expect(url.pathname).toContain("/ws/terminal/");
+    expect(url.searchParams.has("cwd")).toBe(false);
+    expect(url.searchParams.has("rootPath")).toBe(false);
+    expect(session.connectionStatus.value).toBe("connecting");
+  });
+
+  it("keeps explicit empty root paths explicit instead of falling back to server home", () => {
+    const session = useTerminalSession({
+      target: terminalTarget({ rootPath: "" }),
+      defaultCwd: "server-home",
+    });
+
+    session.connect();
+
+    expect(global.WebSocket).toHaveBeenCalledTimes(1);
+    const url = new URL(mockWs.url);
+    expect(url.searchParams.has("cwd")).toBe(true);
+    expect(url.searchParams.get("cwd")).toBe("");
+    expect(url.searchParams.has("rootPath")).toBe(false);
   });
 
   it("updates status to connected on open", () => {

@@ -1,17 +1,6 @@
 <template>
   <div class="terminal-container h-full flex flex-col" ref="terminalContainer">
     <div
-      v-if="terminalTargetError"
-      class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2"
-    >
-      <p class="text-sm">{{ terminalTargetError }}</p>
-      <button @click="connectTerminal" class="text-xs underline mt-1">
-        {{
-          $t("workspace.components.workspace.tools.Terminal.retry_connection")
-        }}
-      </button>
-    </div>
-    <div
       v-if="session.errorMessage.value"
       class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2"
     >
@@ -64,16 +53,23 @@ const { resolvedMetrics } = storeToRefs(appFontSizeStore);
 const terminalFontPx = computed(() => resolvedMetrics.value.terminalFontPx);
 const workspaceStore = useWorkspaceStore();
 const { t: $t } = useLocalization();
-const terminalTargetError = ref<string | null>(null);
 const effectiveTerminalTarget = computed<TerminalTarget | null>(
   () =>
     props.target ||
     terminalTargetFromWorkspaceMetadata(workspaceStore.activeWorkspaceMetadata),
 );
+const terminalConnectionKey = computed(() => {
+  const target = effectiveTerminalTarget.value;
+  if (!target) {
+    return "server-home";
+  }
+  return `explicit:${target.rootPath}:${target.workspaceId || ""}`;
+});
 
 // Initialize the terminal session composable
 const session = useTerminalSession({
   target: effectiveTerminalTarget,
+  defaultCwd: "server-home",
 });
 
 let resizeObserver: ResizeObserver | null = null;
@@ -214,10 +210,8 @@ const initializeTerminal = () => {
     terminalInstance.value?.write(data);
   });
 
-  // Clear welcome message - Simple Bold Black text
-  terminalInstance.value.writeln(
-    "\x1b[1m➜ Connected to Workspace Terminal\x1b[0m",
-  );
+  // Startup message - Simple Bold Black text
+  terminalInstance.value.writeln("\x1b[1m➜ Terminal initialized\x1b[0m");
 };
 
 const connectTerminal = async () => {
@@ -226,13 +220,6 @@ const connectTerminal = async () => {
     scheduleInitializeTerminal();
     return;
   }
-  if (!effectiveTerminalTarget.value?.rootPath) {
-    terminalTargetError.value = $t(
-      "workspace.components.workspace.tools.Terminal.no_terminal_root_path",
-    );
-    return;
-  }
-  terminalTargetError.value = null;
   session.connect();
 };
 
@@ -260,8 +247,7 @@ onMounted(() => {
 
   // Watch for workspace changes to reconnect
   watch(
-    () =>
-      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,
+    () => terminalConnectionKey.value,
     async () => {
       session.disconnect();
       await connectTerminal();

@@ -126,8 +126,6 @@ const messages = {
     "智能体产物",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "重试加载工作区",
-  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
-    "未为终端选择工作区根路径。",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
     "LLM 配置",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":

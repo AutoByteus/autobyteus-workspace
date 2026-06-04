@@ -148,6 +148,13 @@ describe("Terminal websocket lifecycle e2e", () => {
     return url.toString();
   };
 
+  const terminalUrlWithoutCwd = (sessionId: string): string => {
+    const url = new URL(
+      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+    );
+    return url.toString();
+  };
+
   beforeEach(async () => {
     workspaceRoot = await fs.mkdtemp(
       path.join(os.tmpdir(), "autobyteus-terminal-e2e-"),
@@ -200,6 +207,34 @@ describe("Terminal websocket lifecycle e2e", () => {
 
     expect(output).toContain("__AB_TERMINAL_CWD_OK__");
     expect(output).toContain("workspace with spaces");
+
+    socket.close();
+    await waitForClose(socket);
+    await waitForSessionCount(manager, 0);
+  }, 20_000);
+
+  it("opens a real PTY in server home when cwd and rootPath are omitted", async () => {
+    const sessionId = "real-pty-server-home-default";
+    const expectedCwd = canonicalizeWorkspaceRootPath(os.homedir());
+    const socket = new WebSocket(terminalUrlWithoutCwd(sessionId));
+
+    await waitForOpen(socket);
+    await waitForSession(manager, sessionId);
+    expect(manager.listSessions()[sessionId]).toBe(expectedCwd);
+
+    const outputPromise = waitForDecodedOutput(
+      socket,
+      (output) =>
+        output.includes("__AB_TERMINAL_HOME_OK__") &&
+        output.includes(expectedCwd),
+    );
+    sendTerminalInput(
+      socket,
+      'printf "__AB_TERMINAL_HOME_OK__:%s\\n" "$PWD"\n',
+    );
+    const output = await outputPromise;
+
+    expect(output).toContain(`__AB_TERMINAL_HOME_OK__:${expectedCwd}`);
 
     socket.close();
     await waitForClose(socket);

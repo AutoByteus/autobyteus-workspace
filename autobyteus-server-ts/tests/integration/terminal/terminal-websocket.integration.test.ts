@@ -12,6 +12,7 @@ import {
   type WebSocketConnection,
 } from "../../../src/services/terminal-streaming/index.js";
 import { registerTerminalWebsocket } from "../../../src/api/websocket/terminal.js";
+import { canonicalizeWorkspaceRootPath } from "../../../src/workspaces/workspace-path-utils.js";
 
 class FakePtySession implements TerminalSession {
   sessionId: string;
@@ -225,6 +226,13 @@ describe("Terminal websocket integration", () => {
     return url.toString();
   };
 
+  const terminalUrlWithoutCwd = (sessionId: string): string => {
+    const url = new URL(
+      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+    );
+    return url.toString();
+  };
+
   beforeEach(async () => {
     workspaceRoot = await createTempWorkspace();
     manager = new PtySessionManager(FakePtySession);
@@ -268,6 +276,22 @@ describe("Terminal websocket integration", () => {
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(session.resizeCalls).toEqual([[40, 120]]);
     expect(session.cwd).toBe(workspaceRoot);
+
+    socket.close();
+    await waitForSessionClose(manager, sessionId);
+  });
+
+  it("uses server home when cwd and rootPath are omitted", async () => {
+    const sessionId = "server-home-default";
+    const socket = new WebSocket(terminalUrlWithoutCwd(sessionId));
+
+    await waitForOpen(socket);
+    const session = (await waitForSession(
+      manager,
+      sessionId,
+    )) as FakePtySession;
+
+    expect(session.cwd).toBe(canonicalizeWorkspaceRootPath(os.homedir()));
 
     socket.close();
     await waitForSessionClose(manager, sessionId);
