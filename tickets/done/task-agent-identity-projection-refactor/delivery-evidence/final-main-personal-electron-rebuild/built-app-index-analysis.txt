@@ -1,0 +1,9 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="importmap">{"imports":{"#entry":"./_nuxt/entry.BPx4dC4t.js"}}</script>
+<link rel="stylesheet" href="./_nuxt/entry.r8d0yB3p.css" crossorigin>
+<link rel="modulepreload" as="script" crossorigin href="./_nuxt/entry.BPx4dC4t.js">
+<script type="module" src="./_nuxt/entry.BPx4dC4t.js" crossorigin></script></head><body><div id="__nuxt"></div><div id="teleports"></div><script>window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:"http://127.0.0.1:29695/graphql",restBaseUrl:"http://127.0.0.1:29695/rest",defaultNodeBaseUrl:"http://127.0.0.1:29695",agentWsEndpoint:"ws://127.0.0.1:29695/ws/agent",teamWsEndpoint:"ws://127.0.0.1:29695/ws/agent-team",graphqlWsEndpoint:"ws://127.0.0.1:29695/graphql",terminalWsEndpoint:"ws://127.0.0.1:29695/ws/terminal",fileExplorerWsEndpoint:"ws://127.0.0.1:29695/ws/file-explorer",mobileRemoteAccessBuild:false,googleSpeechApiKey:"",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:"ws://127.0.0.1:29695/transcribe",constraints:{echoCancellation:true
+refs=['./_nuxt/entry.r8d0yB3p.css', './_nuxt/entry.BPx4dC4t.js', './_nuxt/entry.BPx4dC4t.js']
+has_vite_client=False
+has_node_modules_path=False

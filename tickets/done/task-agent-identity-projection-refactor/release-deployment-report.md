@@ -169,3 +169,22 @@ Delivery handoff is ready for user verification. Repository finalization, ticket
 - Release/publication/deployment result: Not required; no version bump, tag, notarization, or release was performed.
 - Post-finalization cleanup: dedicated ticket worktree intentionally retained so the user-tested local Electron artifact remains available.
 - Protected local main-worktree changes: pre-existing `index.html` and `test.txt` edits in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` were stashed during merge/push and restored afterward.
+
+## Main Repo Personal Electron Rebuild Record
+
+- Timestamp: `2026-06-04T06:25:07Z`.
+- User request: clean up the finalized ticket worktree, update the main/manual repo `personal` branch to latest `origin/personal`, and rebuild Electron from that main repo branch for local testing.
+- Dedicated ticket worktree cleanup: Completed. Removed `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor` and local branch `codex/task-agent-identity-projection-refactor`.
+- Main repo: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Main repo branch: `personal`.
+- Main repo refresh result: local `personal` reset to latest `origin/personal` at `e0b59ddf98f629cca6f28c8480be44b5d6bb5026` before build.
+- Protected local changes: pre-existing local `index.html` and `test.txt` were stashed before refresh/build and restored afterward.
+- Build command source: `autobyteus-web/README.md` local macOS verbose/no-notarization command.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`.
+- Build hygiene: cleaned `autobyteus-web/.nuxt`, `autobyteus-web/dist`, `autobyteus-web/electron-dist/mac-arm64`, and current `1.3.42` artifacts before building; also unset Electron/runtime environment variables that previously contributed to a bad renderer build.
+- Build result: Pass, exit code `0`.
+- Artifact DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg`.
+- Artifact ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.zip`.
+- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agent-identity-projection-refactor/delivery-evidence/final-main-personal-electron-rebuild`.
+- Verification: `hdiutil verify` passed; built-app and mounted-DMG renderer indexes contain no `@vite/client` and no local `node_modules` path.
+- Release/publication/deployment: Not performed; this remains a local rebuild only.

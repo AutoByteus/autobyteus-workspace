@@ -138,3 +138,13 @@ Repository finalization is intentionally paused pending explicit user verificati
 - Finalization target pushed: `origin/personal` via merge commit `1d9ab743bcb5302e0b22088cf5bf603872a1c717`.
 - Release decision: no new release/version/tag, per user request.
 - Worktree cleanup: not performed so the locally tested Electron DMG remains available.
+
+## Main Repo Personal Electron Rebuild Record
+
+- Timestamp: `2026-06-04T06:25:07Z`.
+- Ticket worktree cleanup: completed; removed dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor` and local ticket branch.
+- Main repo `personal` was refreshed to latest `origin/personal` before build.
+- Built from main repo: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Working DMG for local testing: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agent-identity-projection-refactor/delivery-evidence/final-main-personal-electron-rebuild/main-personal-electron-build-summary.txt`.
+- Release/version: no new release/version/tag.
