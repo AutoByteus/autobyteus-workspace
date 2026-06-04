@@ -1,0 +1,2 @@
+$ git diff --check
+$ GIT_INDEX_FILE=<tmp> git read-tree HEAD && git add candidate delivery files && git diff --cached --check

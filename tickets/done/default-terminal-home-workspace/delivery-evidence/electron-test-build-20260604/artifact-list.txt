@@ -1,0 +1,8 @@
+Artifacts generated after build:
+-rw-r--r--@ 1 normy  staff   362M Jun  4 15:44 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg
+-rw-r--r--@ 1 normy  staff   385K Jun  4 15:44 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M Jun  4 15:45 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.zip
+-rw-r--r--@ 1 normy  staff   378K Jun  4 15:45 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.42.zip.blockmap
+
+App bundle:
+drwxr-xr-x@ 3 normy  staff  96 Jun  4 15:43 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app

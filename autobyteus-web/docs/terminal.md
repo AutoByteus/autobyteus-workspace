@@ -1,12 +1,13 @@
 # Terminal Module - Frontend
 
-This document describes the design and implementation of the **Terminal** module in the autobyteus-web frontend, which provides an interactive command-line interface for executing terminal commands within workspace context.
+This document describes the design and implementation of the **Terminal** module in the autobyteus-web frontend, which provides an interactive command-line interface for executing terminal commands in an explicit workspace/root path when one is active, or in the backend server user's home directory when no terminal target is selected.
 
 ## Overview
 
 The Terminal module enables users to:
 
-- Execute terminal commands in the active workspace directory
+- Execute terminal commands in the active workspace/root directory when available
+- Start in the backend server user's home directory when no workspace/root target is active
 - View command output with syntax-highlighted results
 - Navigate command history with arrow keys
 - Use keyboard shortcuts (Ctrl+C for interrupt)
@@ -63,7 +64,7 @@ Main terminal component using xterm.js for rich terminal emulation.
 
 **Key Features:**
 
-- **Workspace-aware prompt**: Displays active workspace name in colored prompt
+- **Backend PTY prompt**: Uses the shell prompt from the resolved backend cwd
 - **Command history**: Navigate with Up/Down arrow keys
 - **Input handling**: Backspace, Enter, character input
 - **Ctrl+C support**: Interrupt current input
@@ -85,8 +86,8 @@ terminalInstance.value = new Terminal({
     background: "#ffffff",
     foreground: "#383a42",
     cursor: "#528bff",
-    green: "#50a14f", // Workspace name
-    blue: "#4078f2", // Prompt path
+    green: "#50a14f",
+    blue: "#4078f2",
   },
   scrollback: 5000,
 });
