@@ -1,7 +1,6 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { isTaskAgentRunId } from '~/services/agentStreaming/taskAgentRunIdentity';
 
 export interface TeamActiveExecutionMemberEntry {
   node: TeamMemberNode;
@@ -73,9 +72,6 @@ const hasCoordinator = (teamContext: AgentTeamContext): boolean => Boolean(
   teamContext.coordinatorMemberRouteKey?.trim(),
 );
 
-const hasTaskAgentRunBoundToLogicalMember = (context: AgentContext | null): boolean =>
-  isTaskAgentRunId(context?.state?.runId);
-
 const getLeafContextsByRouteKey = (teamContext: AgentTeamContext): Map<string, AgentContext> => {
   const candidate = teamContext.leafAgentContextsByRouteKey;
   if (candidate instanceof Map) {
@@ -98,10 +94,6 @@ export const isActiveExecutionMemberNode = (
   }
 
   const context = getLeafContextsByRouteKey(teamContext).get(node.memberRouteKey) ?? null;
-  if (hasTaskAgentRunBoundToLogicalMember(context)) {
-    return false;
-  }
-
   if (isTaskAgentOnlyConversation(context)) {
     return false;
   }

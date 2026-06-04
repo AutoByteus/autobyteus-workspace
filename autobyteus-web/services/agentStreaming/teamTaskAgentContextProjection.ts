@@ -1,13 +1,13 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentContext as AgentContextModel } from '~/types/agent/AgentContext';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, AgentTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { Conversation } from '~/types/conversation';
 import type { ServerMessage } from './protocol';
-import type { TeamStreamIdentityPayload } from './protocol';
+import type { TeamStreamIdentityPayload } from './protocol/teamStreamIdentityTypes';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 export interface TaskAgentStreamIdentity {
@@ -136,17 +136,17 @@ const buildTaskAgentFallbackConfig = (
 };
 
 const insertTaskAgentNodeNearParent = (
-  nodes: readonly AgentTeamContext['memberTree'][number][],
+  nodes: readonly TeamMemberNode[],
   taskAgentNode: AgentTeamMemberNode,
   parentRouteKey: string | null,
-): AgentTeamContext['memberTree'] => {
+): TeamMemberNode[] => {
   if (!parentRouteKey) {
     return [...nodes, taskAgentNode];
   }
   let inserted = false;
-  const visit = (source: readonly AgentTeamContext['memberTree'][number][]): AgentTeamContext['memberTree'] =>
+  const visit = (source: readonly TeamMemberNode[]): TeamMemberNode[] =>
     source.flatMap((node) => {
-      const withChildren = node.memberKind === 'agent_team'
+      const withChildren: TeamMemberNode = node.memberKind === 'agent_team'
         ? { ...node, children: visit(node.children) }
         : node;
       if (node.memberRouteKey !== parentRouteKey) {
@@ -160,18 +160,26 @@ const insertTaskAgentNodeNearParent = (
 };
 
 const removeTaskAgentNodeFromTree = (
-  nodes: readonly AgentTeamContext['memberTree'][number][],
+  nodes: readonly TeamMemberNode[],
   taskAgentRunId: string,
-): AgentTeamContext['memberTree'] =>
-  nodes.flatMap((node) => {
+): TeamMemberNode[] => {
+  const retained: TeamMemberNode[] = [];
+  for (const node of nodes) {
     if (node.memberRouteKey === taskAgentRunId) {
-      return [];
+      continue;
     }
     if (node.memberKind !== 'agent_team') {
-      return [node];
+      retained.push(node);
+      continue;
     }
-    return [{ ...node, children: removeTaskAgentNodeFromTree(node.children, taskAgentRunId) }];
-  });
+    const retainedNode: TeamMemberNode = {
+      ...node,
+      children: removeTaskAgentNodeFromTree(node.children, taskAgentRunId),
+    };
+    retained.push(retainedNode);
+  }
+  return retained;
+};
 
 const buildTaskAgentNode = (
   teamContext: AgentTeamContext,

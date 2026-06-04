@@ -426,7 +426,7 @@ describe('TeamStreamingService', () => {
           content: 'hello from telegram',
           received_at: '2026-03-10T20:15:00.000Z',
           agent_name: 'Professor',
-          agent_id: 'prof-run-2',
+          agent_id: 'prof-run-1',
           member_route_key: 'Professor',
           member_path: ['Professor'],
           source_route_key: 'Professor',
@@ -441,7 +441,7 @@ describe('TeamStreamingService', () => {
       text: 'hello from telegram',
     });
     expect(professorConversation.messages[0].timestamp.toISOString()).toBe('2026-03-10T20:15:00.000Z');
-    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).state.runId).toBe('prof-run-2');
+    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).state.runId).toBe('prof-run-1');
     expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).isSending).toBe(true);
     expect(studentConversation.messages).toHaveLength(0);
   });
@@ -1237,7 +1237,7 @@ describe('TeamStreamingService', () => {
     expect(teamContext.focusedMemberRouteKey).toBe('coordinator');
   });
 
-  it('does not let identity-less task-agent status poison the logical member context before projection exists', () => {
+  it('does not let identity-less mismatched status poison the logical member context before projection exists', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
@@ -1251,7 +1251,7 @@ describe('TeamStreamingService', () => {
           payload: {
             status: 'initializing',
             can_interrupt: false,
-            agent_id: 'team-1__worker__task_0001',
+            agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
             member_path: ['worker'],
@@ -1264,7 +1264,7 @@ describe('TeamStreamingService', () => {
       expect(workerContext.state.runId).toBe('worker-run-1');
       expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
       expect(workerContext.conversation.messages).toHaveLength(0);
-      expect(teamContext.leafAgentContextsByRouteKey.has('team-1__worker__task_0001')).toBe(false);
+      expect(teamContext.leafAgentContextsByRouteKey.has('opaque-mismatched-run')).toBe(false);
       expect(warnSpy).toHaveBeenCalledWith('No member context found for message, skipping');
 
       callbacks.get('onMessage')?.(
@@ -1273,20 +1273,20 @@ describe('TeamStreamingService', () => {
           payload: {
             status: 'running',
             can_interrupt: true,
-            agent_id: 'team-1__worker__task_0001',
+            agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
             member_path: ['worker'],
             source_route_key: 'worker',
             source_path: ['worker'],
             task_agent_instance_id: 'task-agent-instance-1',
-            task_agent_run_id: 'team-1__worker__task_0001',
+            task_agent_run_id: 'opaque-mismatched-run',
             task_id: 'task_0001',
           },
         }),
       );
 
-      const taskContext = teamContext.leafAgentContextsByRouteKey.get('team-1__worker__task_0001');
+      const taskContext = teamContext.leafAgentContextsByRouteKey.get('opaque-mismatched-run');
       expect(taskContext).toBeTruthy();
       expect(taskContext?.state.currentStatus).toBe(AgentStatus.Running);
       expect(workerContext.state.runId).toBe('worker-run-1');
@@ -1334,6 +1334,48 @@ describe('TeamStreamingService', () => {
       logicalMemberRouteKey: 'worker',
       taskId: 'task-from-packet',
     });
+    expect(workerContext.conversation.messages).toHaveLength(0);
+    expect(workerContext.state.runId).toBe('worker-run-1');
+  });
+
+  it('creates the transient task-agent context from a task-delegation event with task-agent identity', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+
+    service.connect('team-1', teamContext);
+
+    expect(() => callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TASK_DELEGATION_EVENT',
+        payload: {
+          event_type: 'TASK_DELEGATION_ACTIVATED',
+          teamRunId: 'team-1',
+          taskId: 'task-from-delegation-event',
+          agent_id: 'task-agent-run-from-delegation-event',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-from-delegation-event',
+          task_agent_run_id: 'task-agent-run-from-delegation-event',
+          task_id: 'task-from-delegation-event',
+        },
+      } satisfies ServerMessage),
+    )).not.toThrow();
+
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-from-delegation-event');
+    expect(taskContext).toBeTruthy();
+    expect(taskContext?.conversation.messages).toHaveLength(0);
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-from-delegation-event')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'worker',
+      taskAgentRunId: 'task-agent-run-from-delegation-event',
+      taskAgentInstanceId: 'task-agent-instance-from-delegation-event',
+      taskId: 'task-from-delegation-event',
+    });
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-from-delegation-event');
     expect(workerContext.conversation.messages).toHaveLength(0);
     expect(workerContext.state.runId).toBe('worker-run-1');
   });
@@ -1574,7 +1616,7 @@ describe('TeamStreamingService', () => {
           selected_block_count: 3,
           compacted_block_count: 2,
           agent_name: 'Professor',
-          agent_id: 'prof-run-2',
+          agent_id: 'prof-run-1',
           member_route_key: 'Professor',
           member_path: ['Professor'],
           source_route_key: 'Professor',
@@ -1583,9 +1625,9 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(professorContext.state.runId).toBe('prof-run-2');
-    expect(professorContext.state.compactionStatus).toEqual({
-      activityId: 'compaction:turn:prof-run-2:turn-9',
+    expect(professorContext.state.runId).toBe('prof-run-1');
+    expect(professorContext.state.compactionStatus).toMatchObject({
+      activityId: 'compaction:turn:prof-run-1:turn-9',
       phase: 'completed',
       message: 'Memory compacted',
       turnId: 'turn-9',

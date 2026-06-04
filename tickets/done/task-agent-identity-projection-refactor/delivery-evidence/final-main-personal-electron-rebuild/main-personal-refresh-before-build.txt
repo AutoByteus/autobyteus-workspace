@@ -1,0 +1,5 @@
+before_origin_personal=e0b59ddf98f629cca6f28c8480be44b5d6bb5026
+after_origin_personal=e0b59ddf98f629cca6f28c8480be44b5d6bb5026
+main_head=e0b59ddf98f629cca6f28c8480be44b5d6bb5026
+ahead_behind=0	0
+stashed_local_changes=1

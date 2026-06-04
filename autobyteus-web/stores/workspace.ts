@@ -392,9 +392,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         workspaceId = config?.workspaceId || null;
       } else if (selectionStore.selectedType === 'team') {
         const teamContext = teamContextsStore.activeTeamContext;
-        const focusedConfig = teamContext
-          ? teamContext.leafAgentContextsByRouteKey.get(teamContext.focusedMemberRouteKey)?.config || null
-          : null;
+        const focusedConfig = teamContextsStore.activeExecutionFocusedMemberContext?.config || null;
         metadata = focusedConfig?.workspaceMetadata || teamContext?.config.workspaceMetadata || null;
         workspaceId = focusedConfig?.workspaceId || teamContext?.config.workspaceId || null;
       } else {

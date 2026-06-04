@@ -1,0 +1,15 @@
+Clean rebuild requested at 2026-06-03T09:16:44Z
+Branch: codex/task-agent-identity-projection-refactor
+HEAD: 3d134666701424a4e87d474e4887733ad161b376
+origin/personal: 2e78e6b7530544979aaffc76fa153e5a8edfec1e
+Ahead/behind: 4	0
+
+Before cleanup electron-dist contents:
+autobyteus-web/electron-dist/.DS_Store
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.dmg.blockmap
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.41.zip.blockmap
+autobyteus-web/electron-dist/builder-debug.yml
+autobyteus-web/electron-dist/latest-mac.yml
+autobyteus-web/electron-dist/mac-arm64/.DS_Store

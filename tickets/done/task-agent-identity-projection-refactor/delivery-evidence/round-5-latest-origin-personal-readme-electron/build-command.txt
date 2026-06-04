@@ -1,0 +1,7 @@
+Command from README: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Started: 2026-06-03T10:05:38Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor
+Branch: codex/task-agent-identity-projection-refactor
+HEAD: db637b268dc860a49bed86a1248957e0b5effd47
+origin/personal: f45ded9f73e9327b770c976f698afc3cb1a93941
+Ahead/behind HEAD...origin/personal: 5	0

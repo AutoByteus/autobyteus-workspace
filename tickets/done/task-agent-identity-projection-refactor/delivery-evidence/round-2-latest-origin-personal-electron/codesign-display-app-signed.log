@@ -1,0 +1,29 @@
+Command: codesign -dv --verbose=4 /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=com.autobyteus.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=446 flags=0x10000(runtime) hashes=3+7 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1703936
+Hash type=sha256 size=32
+CandidateCDHash sha256=4801317d2ea22854e16fb8af5f8e7ca621192c1b
+CandidateCDHashFull sha256=4801317d2ea22854e16fb8af5f8e7ca621192c1b034af4cbd5a2b6b597d937c9
+Hash choices=sha256
+CMSDigest=4801317d2ea22854e16fb8af5f8e7ca621192c1b034af4cbd5a2b6b597d937c9
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=16384
+CDHash=4801317d2ea22854e16fb8af5f8e7ca621192c1b
+Signature size=9036
+Authority=Developer ID Application: YU ZHENG (7Y86YBQ7B4)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=3. Jun 2026 at 09:44:04
+Info.plist entries=31
+TeamIdentifier=7Y86YBQ7B4
+Runtime Version=26.0.0
+Sealed Resources version=2 rules=13 files=31502
+Internal requirements count=1 size=180

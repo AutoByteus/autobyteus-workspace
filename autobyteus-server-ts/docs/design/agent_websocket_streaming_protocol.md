@@ -72,7 +72,13 @@ type TeamStatusPayload = {
 `AGENT_STATUS` is emitted for single-agent runs and for team members. Team
 member messages include `agent_id` and/or `agent_name` when the handler can
 resolve that identity, and member `can_interrupt` is the authority for the
-frontend stop/interrupt affordance.
+frontend stop/interrupt affordance. When the status belongs to a delegated
+task-agent execution, the payload also carries explicit task-agent identity:
+`task_agent_instance_id`, `task_agent_run_id`, `task_id`, the logical
+`member_path` / `member_route_key`, and canonical `source_path` /
+`source_route_key`. Clients must key the transient task-agent execution by
+`task_agent_run_id` and must not infer task-agent identity from generated run id
+formats.
 
 Startup lifecycle tokens such as `bootstrapping`, `starting`, `startup`,
 `initializing`, and active `uninitialized` normalize to `initializing`, not to
@@ -156,6 +162,9 @@ Team events expose path-aware member identity:
 - `source_route_key` is the slash-delimited normalized form of `source_path`.
 - agent-sourced events also carry `member_path` and `member_route_key` for the
   producing member.
+- delegated task-agent events and member-status overlays also carry
+  `task_agent_instance_id`, `task_agent_run_id`, and `task_id` for the concrete
+  task-scoped child execution under that logical member.
 - `sub_team_node_name` is a deprecated display alias only and must not be used
   as routing identity.
 

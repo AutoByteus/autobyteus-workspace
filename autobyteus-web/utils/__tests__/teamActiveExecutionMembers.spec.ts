@@ -89,9 +89,15 @@ describe('teamActiveExecutionMembers', () => {
     expect(resolveActiveExecutionFocusedMemberRouteKey(teamContext, 'team-1__worker__task_0001')).toBe('team-1__worker__task_0001');
   });
 
-  it('does not treat a logical member poisoned with a task-agent run id as active execution', () => {
-    const poisonedWorker = buildContext('team-1__worker__task_0001', AgentStatus.Initializing);
-    const teamContext = buildTeamContext(poisonedWorker);
+  it('does not treat a task-agent-only logical member conversation as active execution', () => {
+    const taskOnlyWorker = buildContext('worker-run', AgentStatus.Initializing, [
+      {
+        type: 'user',
+        text: 'Task-agent run: opaque-run-id',
+        timestamp: new Date('2026-06-02T00:00:00.000Z'),
+      },
+    ]);
+    const teamContext = buildTeamContext(taskOnlyWorker);
 
     expect(routeKeys(teamContext)).toEqual(['coordinator']);
     expect(resolveActiveExecutionFocusedMemberRouteKey(teamContext, 'worker')).toBe('coordinator');

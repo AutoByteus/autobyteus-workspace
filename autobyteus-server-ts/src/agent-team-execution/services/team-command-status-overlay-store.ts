@@ -11,6 +11,7 @@ import {
   type TeamRunAgentEventPayload,
   type TeamRunEvent,
 } from "../domain/team-run-event.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 import {
   buildAgentMemberCommandStartStatusEvent,
@@ -26,7 +27,7 @@ export type TeamCommandStatusMemberIdentity = {
 };
 
 export class TeamCommandStatusOverlayStore {
-  private readonly memberStatusesByRouteKey = new Map<string, AgentStatusPayload>();
+  private readonly memberStatusesByExecutionKey = new Map<string, AgentStatusPayload>();
   private readonly teamStatusesBySourcePathKey = new Map<string, AgentApiStatus>();
 
   constructor(private readonly options: {
@@ -38,6 +39,7 @@ export class TeamCommandStatusOverlayStore {
   publishMemberCommandStatus(input: {
     runtimeKind: RuntimeKind;
     memberContext: TeamCommandStatusMemberIdentity;
+    taskAgentInstance?: TaskAgentInstanceIdentity | null;
     currentStatus: () => unknown;
     status: "initializing" | "error";
     errorMessage?: string | null;
@@ -58,11 +60,15 @@ export class TeamCommandStatusOverlayStore {
       memberRunId: input.memberContext.memberRunId,
       memberPath: [...input.memberContext.memberPath],
       memberRouteKey: input.memberContext.memberRouteKey,
+      taskAgentInstance: input.taskAgentInstance ?? null,
       status: input.status,
       errorMessage: input.errorMessage ?? null,
     };
-    this.memberStatusesByRouteKey.set(
-      input.memberContext.memberRouteKey,
+    this.memberStatusesByExecutionKey.set(
+      this.memberStatusExecutionKey({
+        memberRouteKey: input.memberContext.memberRouteKey,
+        taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
+      }),
       buildAgentMemberCommandStatusPayload(eventInput),
     );
     this.options.publishEvent(buildAgentMemberCommandStartStatusEvent(eventInput));
@@ -103,33 +109,37 @@ export class TeamCommandStatusOverlayStore {
 
   getMemberStatusSnapshot(input: {
     memberContext: TeamCommandStatusMemberIdentity;
+    taskAgentInstance?: TaskAgentInstanceIdentity | null;
     fallback: () => AgentStatusPayload;
   }): AgentStatusPayload {
-    return this.memberStatusesByRouteKey.get(input.memberContext.memberRouteKey)
+    return this.memberStatusesByExecutionKey.get(this.memberStatusExecutionKey({
+      memberRouteKey: input.memberContext.memberRouteKey,
+      taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
+    }))
       ?? input.fallback();
   }
 
   applyMemberStatusOverlays(snapshots: AgentStatusPayload[]): AgentStatusPayload[] {
-    if (this.memberStatusesByRouteKey.size === 0) {
+    if (this.memberStatusesByExecutionKey.size === 0) {
       return snapshots;
     }
 
-    const appliedRouteKeys = new Set<string>();
+    const appliedExecutionKeys = new Set<string>();
     const resolved = snapshots.map((snapshot) => {
-      const routeKey = this.resolveSnapshotRouteKey(snapshot);
-      if (!routeKey) {
+      const executionKey = this.resolveSnapshotExecutionKey(snapshot);
+      if (!executionKey) {
         return snapshot;
       }
-      const overlay = this.memberStatusesByRouteKey.get(routeKey);
+      const overlay = this.memberStatusesByExecutionKey.get(executionKey);
       if (!overlay) {
         return snapshot;
       }
-      appliedRouteKeys.add(routeKey);
+      appliedExecutionKeys.add(executionKey);
       return { ...snapshot, status: overlay.status, can_interrupt: overlay.can_interrupt };
     });
 
-    for (const [routeKey, overlay] of this.memberStatusesByRouteKey.entries()) {
-      if (!appliedRouteKeys.has(routeKey)) {
+    for (const [executionKey, overlay] of this.memberStatusesByExecutionKey.entries()) {
+      if (!appliedExecutionKeys.has(executionKey)) {
         resolved.push(overlay);
       }
     }
@@ -178,7 +188,7 @@ export class TeamCommandStatusOverlayStore {
   }
 
   clear(): void {
-    this.memberStatusesByRouteKey.clear();
+    this.memberStatusesByExecutionKey.clear();
     this.teamStatusesBySourcePathKey.clear();
   }
 
@@ -198,23 +208,33 @@ export class TeamCommandStatusOverlayStore {
       return false;
     }
 
-    const routeKeys = new Set<string>();
-    this.addRouteKey(routeKeys, payload.memberRouteKey);
-    this.addRouteKey(routeKeys, payload.agentEvent.payload.member_route_key);
-    this.addRouteKey(routeKeys, payload.agentEvent.payload.source_route_key);
-    if (Array.isArray(payload.memberPath) && payload.memberPath.length > 0) {
-      this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.memberPath));
-    }
-    if (Array.isArray(payload.agentEvent.payload.member_path) && payload.agentEvent.payload.member_path.length > 0) {
-      this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.agentEvent.payload.member_path));
-    }
-    if (Array.isArray(payload.agentEvent.payload.source_path) && payload.agentEvent.payload.source_path.length > 0) {
-      this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.agentEvent.payload.source_path));
-    }
+    const taskAgentRunId = this.normalizeIdentity(
+      payload.taskAgentInstance?.taskAgentRunId,
+    ) ?? this.normalizeIdentity(payload.agentEvent.payload.task_agent_run_id);
 
     let changed = false;
-    for (const routeKey of routeKeys) {
-      changed = this.memberStatusesByRouteKey.delete(routeKey) || changed;
+    if (taskAgentRunId) {
+      changed = this.memberStatusesByExecutionKey.delete(
+        this.taskAgentExecutionKey(taskAgentRunId),
+      ) || changed;
+    } else {
+      const routeKeys = new Set<string>();
+      this.addRouteKey(routeKeys, payload.memberRouteKey);
+      this.addRouteKey(routeKeys, payload.agentEvent.payload.member_route_key);
+      this.addRouteKey(routeKeys, payload.agentEvent.payload.source_route_key);
+      if (Array.isArray(payload.memberPath) && payload.memberPath.length > 0) {
+        this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.memberPath));
+      }
+      if (Array.isArray(payload.agentEvent.payload.member_path) && payload.agentEvent.payload.member_path.length > 0) {
+        this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.agentEvent.payload.member_path));
+      }
+      if (Array.isArray(payload.agentEvent.payload.source_path) && payload.agentEvent.payload.source_path.length > 0) {
+        this.addRouteKey(routeKeys, buildMemberRouteKeyFromPath(payload.agentEvent.payload.source_path));
+      }
+
+      for (const routeKey of routeKeys) {
+        changed = this.memberStatusesByExecutionKey.delete(this.logicalMemberExecutionKey(routeKey)) || changed;
+      }
     }
     if (changed) {
       return true;
@@ -224,9 +244,9 @@ export class TeamCommandStatusOverlayStore {
     this.addIdentity(identities, payload.memberRunId);
     this.addIdentity(identities, payload.agentEvent.runId);
     this.addIdentity(identities, payload.agentEvent.payload.agent_id);
-    for (const [routeKey, status] of this.memberStatusesByRouteKey.entries()) {
+    for (const [executionKey, status] of this.memberStatusesByExecutionKey.entries()) {
       if (status.agent_id && identities.has(status.agent_id)) {
-        this.memberStatusesByRouteKey.delete(routeKey);
+        this.memberStatusesByExecutionKey.delete(executionKey);
         changed = true;
       }
     }
@@ -237,25 +257,46 @@ export class TeamCommandStatusOverlayStore {
     return this.teamStatusesBySourcePathKey.delete(this.sourcePathKey(sourcePath));
   }
 
-  private resolveSnapshotRouteKey(snapshot: AgentStatusPayload): string | null {
+  private resolveSnapshotExecutionKey(snapshot: AgentStatusPayload): string | null {
+    if (snapshot.task_agent_run_id) {
+      return this.taskAgentExecutionKey(snapshot.task_agent_run_id);
+    }
     if (snapshot.member_route_key) {
-      return snapshot.member_route_key;
+      return this.logicalMemberExecutionKey(snapshot.member_route_key);
     }
     if (snapshot.source_route_key) {
-      return snapshot.source_route_key;
+      return this.logicalMemberExecutionKey(snapshot.source_route_key);
     }
     if (Array.isArray(snapshot.member_path) && snapshot.member_path.length > 0) {
-      return buildMemberRouteKeyFromPath(snapshot.member_path);
+      return this.logicalMemberExecutionKey(buildMemberRouteKeyFromPath(snapshot.member_path));
     }
     if (Array.isArray(snapshot.source_path) && snapshot.source_path.length > 0) {
-      return buildMemberRouteKeyFromPath(snapshot.source_path);
+      return this.logicalMemberExecutionKey(buildMemberRouteKeyFromPath(snapshot.source_path));
     }
-    for (const [routeKey, status] of this.memberStatusesByRouteKey.entries()) {
+    for (const [executionKey, status] of this.memberStatusesByExecutionKey.entries()) {
       if (snapshot.agent_id && status.agent_id === snapshot.agent_id) {
-        return routeKey;
+        return executionKey;
       }
     }
     return null;
+  }
+
+  private memberStatusExecutionKey(input: {
+    memberRouteKey: string;
+    taskAgentRunId?: string | null;
+  }): string {
+    const taskAgentRunId = this.normalizeIdentity(input.taskAgentRunId);
+    return taskAgentRunId
+      ? this.taskAgentExecutionKey(taskAgentRunId)
+      : this.logicalMemberExecutionKey(input.memberRouteKey);
+  }
+
+  private taskAgentExecutionKey(taskAgentRunId: string): string {
+    return `task-agent:${taskAgentRunId.trim()}`;
+  }
+
+  private logicalMemberExecutionKey(memberRouteKey: string): string {
+    return `member:${memberRouteKey.trim()}`;
   }
 
   private sourcePathKey(sourcePath: readonly string[]): string {
@@ -269,8 +310,15 @@ export class TeamCommandStatusOverlayStore {
   }
 
   private addIdentity(identities: Set<string>, value: unknown): void {
-    if (typeof value === "string" && value.trim().length > 0) {
-      identities.add(value.trim());
+    const normalized = this.normalizeIdentity(value);
+    if (normalized) {
+      identities.add(normalized);
     }
+  }
+
+  private normalizeIdentity(value: unknown): string | null {
+    return typeof value === "string" && value.trim().length > 0
+      ? value.trim()
+      : null;
   }
 }

@@ -1,0 +1,9 @@
+Notarization environment availability during Round 2 Electron build:
+- APPLE_ID: not set
+- APPLE_APP_SPECIFIC_PASSWORD: not set
+- APPLE_TEAM_ID: not set in ambient shell; set explicitly to 7Y86YBQ7B4 for signed packaging retry
+- APPLE_SIGNING_IDENTITY: not set in ambient shell; set explicitly to YU ZHENG (7Y86YBQ7B4) for signed packaging retry
+
+Result:
+- Developer ID signing succeeded on retry.
+- electron-builder skipped notarization because notarization credentials were not available.
