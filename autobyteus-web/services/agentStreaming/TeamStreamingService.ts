@@ -44,6 +44,7 @@ import {
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import {
+  ensureTaskAgentContext,
   extractTaskAgentIdentity,
   removeTaskAgentContext,
   shouldRemoveTaskAgentAfterMessage,

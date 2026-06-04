@@ -38,6 +38,9 @@ import {
   finalizeLocalSubmissionAttachments,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
+import {
+  reconcileTeamContextMemberRunIdsFromBackend,
+} from '~/services/runHydration/teamRunMemberIdentityReconciler';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -357,6 +360,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
           finalTeamRunId = permanentTeamRunId;
           teamContextsStore.promoteTemporaryTeamRunId(activeTeam.teamRunId, permanentTeamRunId);
+          const promotedTeamContext = teamContextsStore.getTeamContextById(permanentTeamRunId);
+          if (!promotedTeamContext) {
+            throw new Error(`Team context '${permanentTeamRunId}' not found after creation.`);
+          }
+          await reconcileTeamContextMemberRunIdsFromBackend({
+            teamContext: promotedTeamContext,
+            teamRunId: permanentTeamRunId,
+          });
         } else if (teamResumeConfig && !teamResumeConfig.isActive) {
           const client = getApolloClient();
           const { data, errors } = await client.mutate<RestoreAgentTeamRunMutationPayload>({

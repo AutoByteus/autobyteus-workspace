@@ -1338,6 +1338,48 @@ describe('TeamStreamingService', () => {
     expect(workerContext.state.runId).toBe('worker-run-1');
   });
 
+  it('creates the transient task-agent context from a task-delegation event with task-agent identity', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+
+    service.connect('team-1', teamContext);
+
+    expect(() => callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TASK_DELEGATION_EVENT',
+        payload: {
+          event_type: 'TASK_DELEGATION_ACTIVATED',
+          teamRunId: 'team-1',
+          taskId: 'task-from-delegation-event',
+          agent_id: 'task-agent-run-from-delegation-event',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-from-delegation-event',
+          task_agent_run_id: 'task-agent-run-from-delegation-event',
+          task_id: 'task-from-delegation-event',
+        },
+      } satisfies ServerMessage),
+    )).not.toThrow();
+
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-from-delegation-event');
+    expect(taskContext).toBeTruthy();
+    expect(taskContext?.conversation.messages).toHaveLength(0);
+    expect(teamContext.memberNodesByRouteKey.get('task-agent-run-from-delegation-event')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'worker',
+      taskAgentRunId: 'task-agent-run-from-delegation-event',
+      taskAgentInstanceId: 'task-agent-instance-from-delegation-event',
+      taskId: 'task-from-delegation-event',
+    });
+    expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-from-delegation-event');
+    expect(workerContext.conversation.messages).toHaveLength(0);
+    expect(workerContext.state.runId).toBe('worker-run-1');
+  });
+
   it('repairs a missing task-agent node when the task-agent context already exists', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();

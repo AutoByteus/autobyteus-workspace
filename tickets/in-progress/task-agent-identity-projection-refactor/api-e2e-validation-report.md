@@ -8,16 +8,17 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/review-report.md`
-- Current Validation Round: `1`
-- Trigger: Code review Round 2 pass for `task-agent-identity-projection-refactor`.
-- Prior Round Reviewed: N/A.
-- Latest Authoritative Round: `1`
+- Current Validation Round: `2`
+- Trigger: Code review Round 4 pass after the ClassRoomSimulation direct-send reconciliation fix.
+- Prior Round Reviewed: Round 1 plus the user-reported packaged Electron regression reroute.
+- Latest Authoritative Round: `2`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review Round 2 pass | N/A | No | Pass | Yes | Focused server/frontend checks, live mixed-runtime E2E, and browser/API replay validate explicit task-agent identity propagation and active-execution projection behavior. |
+| 1 | Code review Round 2 pass | N/A | No | Pass | No | Focused server/frontend checks, live mixed-runtime E2E, and browser/API replay validate explicit task-agent identity propagation and active-execution projection behavior. |
+| 2 | Code review Round 4 pass after direct-send reconciliation fix | User-reported packaged Electron/ClassRoomSimulation direct-send regression rechecked | No | Pass | Yes | Normal temporary ClassRoomSimulation create/send path was exercised through the browser against the Electron embedded backend; professor/student live execution rendered and backend IDs were reconciled before streaming/send. |
 
 ## Validation Basis
 
@@ -77,6 +78,7 @@ No native desktop install/update lifecycle or data migration was in scope for th
 | AE2E-005 | Mixed task-delegation E2E still works with task-agent settlement and no command status collapse onto logical parent. | Gated live E2E and browser replay. | Pass | `mixed-task-delegation.e2e.test.ts` passed 1 live test; browser final DOM shows coordinator idle, no active task-agent row, no worker initializing/offline active header. |
 | AE2E-006 | Active execution projection and run-history helper split remain green. | Focused frontend suites and source sweeps. | Pass | `runHistoryTeamMemberProjectionHydrator`, `runHistoryStore`, `teamRunOpenCoordinator`, active context/store/composer/running row suites passed. |
 | AE2E-007 | No legacy heuristic/repository/event rename scope leaks into changed files. | Source sweeps. | Pass | `rg -n "isTaskAgentRunId|taskAgentRunIdentity|preserveCanonicalMemberStatus" autobyteus-web` returned no matches; `rg -n "TaskDelegationRepository|TASK_DELEGATION_EVENT" autobyteus-server-ts/src autobyteus-web` returned no matches. |
+| AE2E-008 | Normal UI ClassRoomSimulation direct-send path reconciles temporary frontend member IDs to backend member run IDs before stream/send so pure AutoByteus professor/student execution renders. | Browser automation against current ticket frontend connected to the Electron embedded backend, plus backend GraphQL projection checks. | Pass | Team run `team_classroomsimulation_d9794184` promoted from temporary run IDs to `professor_789bd6355c3d7fa4` / `student_ad11c769be863101`; screenshot `/Users/normy/.autobyteus/browser-artifacts/22e2c0-1780549006207.png`; evidence root `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452`. |
 
 ## Test Scope
 
@@ -184,7 +186,9 @@ None. Live validation used real local LMStudio model discovery and real Codex `g
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
-N/A for API/E2E Round 1.
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| User-reported regression after Round 1 | Packaged Electron `ClassRoomSimulation` normal UI send showed `professor • Offline` and no response after sending `give student a hard math problem to solve`. | `Unclear / Design Impact candidate`; routed to solution designer. | Resolved in Round 2 validation after implementation fix. The browser path started with temporary member run IDs, promoted to backend run `team_classroomsimulation_d9794184`, reconciled backend member run IDs, streamed professor work, created a direct professor→student team message, and showed student answer/idle state. | `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/browser-dom-summary.json`; `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/graphql-projections-summary.json`; screenshot `/Users/normy/.autobyteus/browser-artifacts/22e2c0-1780549006207.png`. | Native packaged window automation remained constrained by the already-running app/fixed backend port; validation used current-source browser frontend against the Electron embedded backend and exercised the exact temporary team create/send store path that failed. |
 
 ## Scenarios Checked
 
@@ -280,9 +284,200 @@ Rationale: all reviewed acceptance targets were exercised at the relevant bounda
 - Browser screenshots:
   - `/Users/normy/.autobyteus/browser-artifacts/109625-1780460842536.png`
   - `/Users/normy/.autobyteus/browser-artifacts/109625-1780460898929.png`
-- Repository-resident durable validation code added or updated by API/E2E after Round 2 code review: `No`.
+- Repository-resident durable validation code added or updated by API/E2E after Round 4 code review: `No`.
 
 ## Latest Authoritative Result
+
+- Result values: `Pass` / `Fail` / `Blocked`
+- Result: `Pass`
+- Notes: Delivery may resume. No API/E2E-added repository-resident validation requires another code-review loop.
+
+---
+
+## User-Requested Classroom Browser Recheck — 2026-06-03
+
+### Trigger
+
+User reported that a `ClassRoomSimulation` run using AutoByteus runtime with `deepseek-v4-flash` showed `professor • Offline` while the professor had sent a message to the student, and requested that API/E2E read the project READMEs, start the backend/frontend accordingly, and re-test in the browser.
+
+### Startup Path Used
+
+- Server README path followed by verifying the running Electron embedded backend described by the web README:
+  - Backend process: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data`
+  - Health check: `curl http://localhost:29695/rest/health` returned `{"status":"ok","message":"Server is running"}`.
+- Web README path followed with `pnpm dev`; to avoid conflicting with the user's active Electron app, the separate dev frontend was run on `127.0.0.1:3012` and pointed at the embedded backend:
+  - `BACKEND_NODE_BASE_URL=http://localhost:29695 pnpm -C autobyteus-web dev --port 3012 --host 127.0.0.1`
+
+### Scenario
+
+- Team run: `team_classroomsimulation_ff5394b9`
+- Team definition: `classroomsimulation`
+- Members:
+  - `professor`: runtime `autobyteus`, model `deepseek-v4-flash`
+  - `student`: runtime `autobyteus`, model `deepseek-v4-flash`
+- Prompt sent through the frontend composer: `give student a hard math problem to solve`
+- Frontend URL: `http://localhost:3012/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=team_classroomsimulation_ff5394b9&workspaceExecutionMemberRouteKey=professor`
+
+### Evidence
+
+Temporary evidence root: `/tmp/autobyteus-classroom-readme-latest`
+
+- Session file: `/tmp/autobyteus-classroom-readme-latest/session.env`
+- Websocket log: `/tmp/autobyteus-classroom-readme-latest/ws-events.jsonl`
+- Observation summary: `/tmp/autobyteus-classroom-readme-latest/observations.json`
+- Browser screenshots:
+  - Loaded before send: `/tmp/autobyteus-classroom-readme-latest/01-loaded.png`
+  - Professor running after send: `/tmp/autobyteus-classroom-readme-latest/02-after-send-3s.png`
+  - Final professor-focused state: `/tmp/autobyteus-classroom-readme-latest/03-progress-90000s.png`
+  - Student-focused answer state: `/tmp/autobyteus-classroom-readme-latest/04-student-after-run.png`
+  - Student Activity panel after completion: `/tmp/autobyteus-classroom-readme-latest/05-activity-panel.png`
+  - Professor Activity panel after completion: `/tmp/autobyteus-classroom-readme-latest/06-professor-activity-panel.png`
+  - In-app browser reopened on the student run: `/Users/normy/.autobyteus/browser-artifacts/2b419f-1780512270072.png`
+
+### Observed Result
+
+Pass for live classroom execution:
+
+- Browser showed `professor Running` shortly after the user message was sent.
+- Websocket event stream included two real turns: professor turn and student turn.
+- Professor sent an inter-agent message to student; the Team Messages panel showed the direct message.
+- Student received the message and produced an answer; student-focused browser state showed the received professor message plus the student's solution.
+- Professor Activity panel showed the `send_message_to` tool call as `SUCCESS` with `1 Events`.
+- Student Activity panel showed `0 Events`, which is expected for this scenario because the student did not call any tools; the student's work appears in the conversation body, not as a tool/activity event.
+- Final statuses settled to idle as expected after each member completed:
+  - professor: `idle`
+  - student: `idle`
+  - team: `idle`
+
+Relevant event counts from websocket capture:
+
+```json
+{
+  "CONNECTED": 1,
+  "AGENT_STATUS": 21,
+  "TEAM_STATUS": 8,
+  "TURN_STARTED": 2,
+  "INTER_AGENT_MESSAGE": 1,
+  "TEAM_COMMUNICATION_MESSAGE": 1,
+  "ASSISTANT_COMPLETE": 2,
+  "TURN_COMPLETED": 2
+}
+```
+
+### Important Interpretation
+
+Seeing `professor • Offline` or `professor • Idle` after the professor sends the assignment can be expected depending on the exact timing/focus: the professor's work is finished, and the active work has moved to the student. To verify the complete flow, switch/focus the `student` member; the student transcript contains the professor message and the student's answer. For the Activity panel, select the member that actually called a tool: `professor` shows the `send_message_to` event, while `student` can correctly show `0 Events` because it answered without tools.
+
+### Follow-Up Observation
+
+AutoByteus direct team communication persistence still records `senderMemberRouteKey`, `senderMemberPath`, `receiverMemberRouteKey`, and `receiverMemberPath` as `null` for this run, while the live websocket status/turn events carry correct `member_route_key`, `member_path`, `source_route_key`, and `source_path`. This did not block the classroom browser flow above and is outside the task-agent-specific acceptance criteria for this ticket, but it may be worth tracking separately if message-history route/path identity becomes a requirement for pure AutoByteus team messages.
+
+---
+
+## User-Reported Packaged Electron Regression — Rerouted To Solution Designer
+
+After the classroom browser recheck, the user provided new screenshots from the packaged Electron app built from the current ticket branch showing a normal `ClassRoomSimulation` direct send path where `professor` remains `Offline`, only the user message appears in the conversation, and no professor response/tool/message is shown. The user states this does not happen on `origin/personal`.
+
+API/E2E classification: `Unclear / Design Impact candidate`.
+
+Authoritative reroute artifact:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/api-e2e-classroom-electron-direct-send-reroute.md`
+
+User screenshots:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_c0d736cd0c78__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_ce21d098e9ad__image.png`
+
+Resolved by API/E2E Round 2 after the code-reviewed local fix. Delivery may resume; see the Round 2 section below for the authoritative recheck evidence.
+
+---
+
+## API/E2E Round 2 — ClassRoomSimulation Direct-Send Recheck After Code Review Round 4
+
+### Trigger
+
+Code review Round 4 passed the implementation fix for `task-agent-identity-projection-refactor` and asked API/E2E to prioritize the normal UI path: create/start `ClassRoomSimulation`, send `give student a hard math problem to solve` to `professor`, and verify live professor/student activity and stream routing without relying only on GraphQL-created/dev-frontend runs.
+
+### Environment
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor`
+- Electron embedded backend: `http://localhost:29695`; health check returned `{"status":"ok","message":"Server is running"}` and evidence is saved at `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/backend-health.json`.
+- Browser frontend: current ticket source dev frontend at `http://127.0.0.1:3012/workspace`, configured from the project README to use the Electron embedded backend endpoints.
+- Native packaged Electron window automation note: the packaged app/backend uses a fixed port already occupied by the user's running app, and native window automation was not reliable in this environment. Therefore the recheck used Browser automation against the current ticket frontend source connected to the same Electron embedded backend/data root. This still exercised the normal frontend temporary-team create/send path that solution design identified as the failing path.
+
+### Scenario Executed
+
+- Team definition: `ClassRoomSimulation` / `classroomsimulation`
+- Runtime/model for both members: AutoByteus runtime with `deepseek-v4-flash` selected in the team run configuration.
+- Prompt sent through the visible composer: `give student a hard math problem to solve`
+- Before send, the browser-created run had temporary member run IDs: `temp-team-1780548691572-964::professor` and `temp-team-1780548691572-964::student`.
+- After send, the run was promoted to backend team run `team_classroomsimulation_d9794184`, and the frontend state showed reconciled backend member IDs: `professor_789bd6355c3d7fa4` and `student_ad11c769be863101`.
+
+### Evidence
+
+- Temporary evidence root: `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452`
+- Browser final screenshot: `/Users/normy/.autobyteus/browser-artifacts/22e2c0-1780549006207.png`
+- Browser DOM/state summary: `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/browser-dom-summary.json`
+- Backend team communication query: `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/graphql-team-communication.json`
+- Backend member projection summary: `/tmp/autobyteus-classroom-round4-direct-send-20260604-0452/graphql-projections-summary.json`
+
+Observed backend projections:
+
+```json
+{
+  "teamRunId": "team_classroomsimulation_d9794184",
+  "professor": {
+    "agentRunId": "professor_789bd6355c3d7fa4",
+    "summary": "**[User Requirement]** give student a hard math problem to solve",
+    "activityCount": 1,
+    "activityNames": ["send_message_to"]
+  },
+  "student": {
+    "agentRunId": "student_ad11c769be863101",
+    "summary": "**[Message From Agent]** You received a message from sender name: professor, sender id: professor...",
+    "activityCount": 0
+  }
+}
+```
+
+Observed UI state after completion:
+
+- The selected `student` member header showed `student Idle`.
+- The student transcript visibly contained `From Professor:` and the professor's hard math problem.
+- The student answer/solution was visible in the transcript.
+- The backend `getTeamCommunicationMessages` query returned one direct message from professor run `professor_789bd6355c3d7fa4` to student run `student_ad11c769be863101`.
+- The previous stuck symptom (`professor • Offline` with only the user message and no professor/student output) was not reproduced.
+
+### Executable Checks Run In Round 2
+
+```bash
+pnpm -C autobyteus-web exec vitest run \
+  stores/__tests__/agentTeamRunStore.spec.ts \
+  services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts \
+  services/agentStreaming/__tests__/TeamStreamingService.spec.ts \
+  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+```
+
+Result: Pass, 4 files / 53 tests.
+
+```bash
+pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-command-start-status.test.ts
+git diff --check
+```
+
+Results: Pass. The server unit test passed 1 file / 8 tests.
+
+### Round 2 Result
+
+Pass. The code-reviewed reconciliation fix is validated at the normal browser UI/API boundary against the Electron embedded backend. The user-reported ClassRoomSimulation direct-send failure is resolved in this validation environment, and no new API/E2E blocker was found.
+
+### Durable Validation Added By API/E2E In Round 2
+
+No repository-resident durable validation or source code was added or updated by API/E2E in Round 2. Only this validation report was updated.
+
+## Latest Authoritative Result — Round 2
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`

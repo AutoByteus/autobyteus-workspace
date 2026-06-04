@@ -294,3 +294,67 @@ No current requirement demands recovery/history. The in-memory delegation ledger
 - The main required code change is not a broad task-delegation redesign; it is to close the task-agent command-status identity gap and remove frontend heuristics through a concrete resolver/projection refactor.
 - The design intentionally defers durable task repository and `TASK_PLAN_EVENT` transport rename.
 - Please scrutinize the proposed active-execution projection boundary: raw logical topology should remain allowed for roster/definition/history metadata, but not for active execution subject selection.
+
+---
+
+## Downstream Reroute Investigation — Packaged Electron ClassRoomSimulation Direct Send (2026-06-04)
+
+### Trigger
+
+API/E2E rerouted a user-reported packaged Electron regression: a newly-created `ClassRoomSimulation` run showed `professor • Offline` and only the local user message after sending `give student a hard math problem to solve`. The user stated the same flow works on `origin/personal`.
+
+Reroute artifact:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/api-e2e-classroom-electron-direct-send-reroute.md`
+
+Screenshots inspected:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_c0d736cd0c78__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_software-engineering-team_36cd04cf/api_e2e_engineer_7a52be060fdd9214/context_files/ctx_ce21d098e9ad__image.png`
+
+### Evidence Consulted
+
+- Packaged Electron backend health: `curl http://localhost:29695/rest/health` returned ok.
+- Recent classroom run data under `/Users/normy/.autobyteus/server-data/memory/agent_teams/team_classroomsimulation_b3bb4088`.
+- Electron app logs under `/Users/normy/.autobyteus/logs/app.log` around `2026-06-04T03:20:14Z` to `2026-06-04T03:20:18Z`.
+- Live GraphQL queries against packaged backend `localhost:29695`:
+  - `getTeamMemberRunProjection(teamRunId: "team_classroomsimulation_b3bb4088", memberRouteKey: "professor")`
+  - `getTeamCommunicationMessages(teamRunId: "team_classroomsimulation_b3bb4088")`
+  - `listWorkspaceRunHistory(limitPerAgent: 20)`
+- Frontend source paths:
+  - `autobyteus-web/stores/agentTeamContextsStore.ts`
+  - `autobyteus-web/stores/agentTeamRunStore.ts`
+  - `autobyteus-web/services/agentStreaming/teamStreamMemberContextResolver.ts`
+  - `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
+  - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+
+### Finding
+
+The reported packaged Electron run did execute successfully on the backend. Evidence:
+
+- `team_communication_messages.json` contains the professor → student message.
+- Professor raw trace contains the user input, `send_message_to` call, successful tool result, and professor assistant completion.
+- Student raw trace contains the received professor message and student assistant solution.
+- Electron app logs show the student runtime started on-demand, direct message posted successfully, team communication projection inserted, and professor turn completed.
+- GraphQL projection returns the full professor conversation and activity.
+- Run history reports the run as active/idle with both members idle.
+
+The frontend symptom is caused by stale/mismatched local member identity after temporary team-run promotion:
+
+1. Temporary team creation initializes `memberContext.state.runId` from local conversation ID, e.g. `temp-team-...::professor`.
+2. `promoteTemporaryTeamRunId(...)` currently only replaces the team prefix, leaving `state.runId = team_classroomsimulation_b3bb4088::professor`.
+3. Backend metadata and websocket events use the real logical member run ID, e.g. `professor_50e0abe1bfe7eb6d`.
+4. The new strict `resolveTeamStreamMemberContext(...)` correctly rejects identity-less logical messages when routed context run ID differs from payload `agent_id`.
+5. Therefore live events are skipped in the newly-created packaged UI context, leaving only the optimistic user message.
+
+### Classification
+
+Local implementation defect exposed by the current strict identity refactor. No broad design rewrite is required.
+
+The strict resolver behavior remains correct and should not be weakened. The implementation must reconcile frontend temporary member contexts with backend-assigned member run IDs after `createAgentTeamRun` succeeds and before connecting/sending or before live events route.
+
+### Decision Artifact
+
+Focused decision and implementation guidance written to:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-identity-projection-refactor/tickets/in-progress/task-agent-identity-projection-refactor/solution-design-electron-direct-send-decision.md`
