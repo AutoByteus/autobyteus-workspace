@@ -8,7 +8,7 @@ import {
   buildLiveTeamMemberContexts,
   fetchTeamMemberProjection,
   fetchTeamMemberProjections,
-} from '~/stores/runHistoryTeamHelpers';
+} from '~/stores/runHistoryTeamMemberProjectionHydrator';
 import type { AgentTeamContext, HistoricalTeamHydrationState, TeamMemberProjectionLoadState } from '~/types/agent/AgentTeamContext';
 import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
