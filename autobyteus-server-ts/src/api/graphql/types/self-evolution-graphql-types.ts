@@ -118,12 +118,6 @@ export class GraphqlSelfEvolutionSkillTarget {
 
   @Field(() => Boolean)
   isWritable!: boolean;
-
-  @Field(() => String, { nullable: true })
-  gitRootPath?: string | null;
-
-  @Field(() => String)
-  rollbackMode!: string;
 }
 
 @ObjectType()
@@ -157,138 +151,6 @@ export class GraphqlSelfEvolutionTargetRef {
 
   @Field(() => String, { nullable: true })
   memberRunId?: string | null;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionChangeSummary {
-  @Field(() => String)
-  detectionMode!: string;
-
-  @Field(() => [String])
-  changedSkillPaths!: string[];
-
-  @Field(() => [String])
-  offTargetChangePaths!: string[];
-
-  @Field(() => [String])
-  gitRoots!: string[];
-
-  @Field(() => String, { nullable: true })
-  diffStat?: string | null;
-
-  @Field(() => [String])
-  warnings!: string[];
-
-  @Field(() => [String])
-  policyViolations!: string[];
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionUpdateMetrics {
-  @Field(() => Boolean)
-  evolverRunCompleted!: boolean;
-
-  @Field(() => String)
-  evolverRunStatus!: string;
-
-  @Field(() => Boolean)
-  noOp!: boolean;
-
-  @Field(() => Number)
-  changedSkillCount!: number;
-
-  @Field(() => [String])
-  changedSkillPaths!: string[];
-
-  @Field(() => Number)
-  offTargetChangeCount!: number;
-
-  @Field(() => [String])
-  offTargetChangePaths!: string[];
-
-  @Field(() => Number)
-  policyViolationCount!: number;
-
-  @Field(() => Number)
-  gitBackedTargetCount!: number;
-
-  @Field(() => Number)
-  unversionedTargetCount!: number;
-
-  @Field(() => Number)
-  warningCount!: number;
-
-  @Field(() => Number)
-  errorCount!: number;
-
-  @Field(() => String, { nullable: true })
-  notificationStatus?: string | null;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionBenefitSkillActivation {
-  @Field(() => String)
-  status!: string;
-
-  @Field(() => Number, { nullable: true })
-  loadSkillToolUseCount?: number | null;
-
-  @Field(() => Boolean, { nullable: true })
-  configuredSkillPreloaded?: boolean | null;
-
-  @Field(() => Number, { nullable: true })
-  directSkillReferenceCount?: number | null;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionBenefitSkillAdherence {
-  @Field(() => String)
-  status!: string;
-
-  @Field(() => Number, { nullable: true })
-  supportingTraceCount?: number | null;
-
-  @Field(() => Number, { nullable: true })
-  contradictoryTraceCount?: number | null;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionBenefitMetrics {
-  @Field(() => [String])
-  linkedPostEvolutionRunIds!: string[];
-
-  @Field(() => String)
-  linkMethod!: string;
-
-  @Field(() => Number)
-  completedLinkedRuns!: number;
-
-  @Field(() => Number)
-  failedLinkedRuns!: number;
-
-  @Field(() => Number, { nullable: true })
-  userPositiveFeedbackCount?: number | null;
-
-  @Field(() => Number, { nullable: true })
-  userNegativeFeedbackCount?: number | null;
-
-  @Field(() => Number, { nullable: true })
-  validationPassedCount?: number | null;
-
-  @Field(() => Number, { nullable: true })
-  validationFailedCount?: number | null;
-
-  @Field(() => GraphqlSelfEvolutionBenefitSkillActivation)
-  skillActivation!: GraphqlSelfEvolutionBenefitSkillActivation;
-
-  @Field(() => GraphqlSelfEvolutionBenefitSkillAdherence)
-  skillAdherence!: GraphqlSelfEvolutionBenefitSkillAdherence;
-
-  @Field(() => String)
-  assessment!: string;
-
-  @Field(() => [String])
-  notes!: string[];
 }
 
 @ObjectType()
@@ -353,15 +215,6 @@ export class GraphqlSelfEvolutionRunRecord {
   @Field(() => String, { nullable: true })
   evidenceSummaryHash?: string | null;
 
-  @Field(() => GraphqlSelfEvolutionChangeSummary, { nullable: true })
-  changeSummary?: GraphqlSelfEvolutionChangeSummary | null;
-
-  @Field(() => GraphqlSelfEvolutionUpdateMetrics, { nullable: true })
-  updateMetrics?: GraphqlSelfEvolutionUpdateMetrics | null;
-
-  @Field(() => GraphqlSelfEvolutionBenefitMetrics, { nullable: true })
-  benefitMetrics?: GraphqlSelfEvolutionBenefitMetrics | null;
-
   @Field(() => GraphqlSelfEvolutionNotificationSummary, { nullable: true })
   notificationSummary?: GraphqlSelfEvolutionNotificationSummary | null;
 
@@ -373,9 +226,6 @@ export class GraphqlSelfEvolutionRunRecord {
 export class StartAgentRunSelfEvolutionInput {
   @Field(() => String)
   runId!: string;
-
-  @Field(() => String, { nullable: true })
-  requestedByUserId?: string | null;
 }
 
 @InputType()
@@ -385,9 +235,6 @@ export class StartTeamMemberSelfEvolutionInput {
 
   @Field(() => String)
   memberRunId!: string;
-
-  @Field(() => String, { nullable: true })
-  requestedByUserId?: string | null;
 }
 
 @ObjectType()
@@ -400,16 +247,4 @@ export class GraphqlSelfEvolutionStartResult {
 
   @Field(() => GraphqlSelfEvolutionRunRecord)
   record!: GraphqlSelfEvolutionRunRecord;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionMetricsReport {
-  @Field(() => String)
-  evolutionRunId!: string;
-
-  @Field(() => GraphqlSelfEvolutionUpdateMetrics)
-  updateMetrics!: GraphqlSelfEvolutionUpdateMetrics;
-
-  @Field(() => GraphqlSelfEvolutionBenefitMetrics)
-  benefitMetrics!: GraphqlSelfEvolutionBenefitMetrics;
 }

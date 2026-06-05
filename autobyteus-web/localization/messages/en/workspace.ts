@@ -17,8 +17,16 @@ const messages = {
     "Configuration",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
+    "Self-evolution eligibility",
+  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
+    "Allow this run to offer “Improve skills from this run” after work completes. The setting is snapshotted at launch.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
+    "Self-evolution eligibility",
+  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
+    "Allow this team run’s members to offer skill improvement actions after work completes. Member overrides can refine this before launch.",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -37,6 +45,16 @@ const messages = {
     "Auto-execute: ON",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
     "Auto-execute: OFF",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_override":
+    "Self-evolution override",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default":
+    "Use team default",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled":
+    "Eligible",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled":
+    "Not eligible",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_help":
+    "Optional launch-time override for this member’s self-evolution eligibility snapshot.",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

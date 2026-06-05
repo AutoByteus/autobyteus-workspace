@@ -215,6 +215,24 @@ describe('agentRunStore', () => {
         );
     });
 
+    it('sendUserInputAndSubscribe includes the visible self-evolution launch override when preparing a new run', async () => {
+        mockAgentContext.config.selfEvolution = { enabled: true };
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        expect(mutateMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            mutation: PrepareAgentRun,
+            variables: expect.objectContaining({
+              input: expect.objectContaining({
+                selfEvolution: { enabled: true },
+              }),
+            }),
+          }),
+        );
+    });
+
     it('acknowledges a new agent send locally before backend creation resolves', () => {
         let resolveCreate: (value: any) => void = () => {};
         mutateMock.mockReturnValueOnce(new Promise((resolve) => {

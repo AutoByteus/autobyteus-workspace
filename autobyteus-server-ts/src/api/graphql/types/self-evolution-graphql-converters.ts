@@ -1,7 +1,5 @@
 import { normalizeSelfEvolutionConfigOverride } from "../../../self-evolution/domain/config.js";
 import type {
-  SelfEvolutionBenefitMetrics,
-  SelfEvolutionChangeSummary,
   SelfEvolutionConfigOverride,
   SelfEvolutionEffectiveConfig,
   SelfEvolutionEligibility,
@@ -10,11 +8,8 @@ import type {
   SelfEvolutionSkillTarget,
   SelfEvolutionStrategyCatalog,
   SelfEvolutionTargetRef,
-  SelfEvolutionUpdateMetrics,
 } from "../../../self-evolution/domain/models.js";
 import {
-  GraphqlSelfEvolutionBenefitMetrics,
-  GraphqlSelfEvolutionChangeSummary,
   GraphqlSelfEvolutionConfigOverride,
   GraphqlSelfEvolutionConfigOverrideInput,
   GraphqlSelfEvolutionEffectiveConfig,
@@ -24,7 +19,6 @@ import {
   GraphqlSelfEvolutionSkillTarget,
   GraphqlSelfEvolutionStrategyCatalog,
   GraphqlSelfEvolutionTargetRef,
-  GraphqlSelfEvolutionUpdateMetrics,
 } from "./self-evolution-graphql-types.js";
 
 export const toDomainSelfEvolutionConfigOverride = (
@@ -63,46 +57,11 @@ const toGraphqlSkillTarget = (value: SelfEvolutionSkillTarget): GraphqlSelfEvolu
   skillMdPath: value.skillMdPath,
   sourceLabel: value.sourceLabel ?? null,
   isWritable: value.isWritable,
-  gitRootPath: value.gitRootPath ?? null,
-  rollbackMode: value.rollbackMode,
 });
 
 const toGraphqlTarget = (value: SelfEvolutionTargetRef): GraphqlSelfEvolutionTargetRef => value.kind === "agent_run"
   ? { kind: value.kind, runId: value.runId, teamRunId: null, memberRunId: null }
   : { kind: value.kind, runId: null, teamRunId: value.teamRunId, memberRunId: value.memberRunId };
-
-const toGraphqlChangeSummary = (
-  value?: SelfEvolutionChangeSummary | null,
-): GraphqlSelfEvolutionChangeSummary | null => value
-  ? { ...value, diffStat: value.diffStat ?? null }
-  : null;
-
-export const toGraphqlUpdateMetrics = (
-  value?: SelfEvolutionUpdateMetrics | null,
-): GraphqlSelfEvolutionUpdateMetrics | null => value
-  ? { ...value, notificationStatus: value.notificationStatus ?? null }
-  : null;
-
-export const toGraphqlBenefitMetrics = (
-  value?: SelfEvolutionBenefitMetrics | null,
-): GraphqlSelfEvolutionBenefitMetrics | null => value ? {
-  ...value,
-  userPositiveFeedbackCount: value.userPositiveFeedbackCount ?? null,
-  userNegativeFeedbackCount: value.userNegativeFeedbackCount ?? null,
-  validationPassedCount: value.validationPassedCount ?? null,
-  validationFailedCount: value.validationFailedCount ?? null,
-  skillActivation: {
-    status: value.skillActivation.status,
-    loadSkillToolUseCount: value.skillActivation.loadSkillToolUseCount ?? null,
-    configuredSkillPreloaded: value.skillActivation.configuredSkillPreloaded ?? null,
-    directSkillReferenceCount: value.skillActivation.directSkillReferenceCount ?? null,
-  },
-  skillAdherence: {
-    status: value.skillAdherence.status,
-    supportingTraceCount: value.skillAdherence.supportingTraceCount ?? null,
-    contradictoryTraceCount: value.skillAdherence.contradictoryTraceCount ?? null,
-  },
-} : null;
 
 const toGraphqlNotificationSummary = (
   value?: SelfEvolutionNotificationSummary | null,
@@ -142,9 +101,6 @@ export const toGraphqlRecord = (value: SelfEvolutionRunRecord): GraphqlSelfEvolu
   workspaceRootPath: value.workspaceRootPath ?? null,
   skillTargets: value.skillTargets.map(toGraphqlSkillTarget),
   evidenceSummaryHash: value.evidenceSummaryHash ?? null,
-  changeSummary: toGraphqlChangeSummary(value.changeSummary),
-  updateMetrics: toGraphqlUpdateMetrics(value.updateMetrics),
-  benefitMetrics: toGraphqlBenefitMetrics(value.benefitMetrics),
   notificationSummary: toGraphqlNotificationSummary(value.notificationSummary),
   errors: value.errors,
 });

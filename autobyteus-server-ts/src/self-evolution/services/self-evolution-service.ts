@@ -8,7 +8,6 @@ import type {
   SelfEvolutionTargetRef,
 } from "../domain/models.js";
 import { SelfEvolutionCapabilityService } from "./self-evolution-capability-service.js";
-import { SelfEvolutionChangeRecorder } from "./self-evolution-change-recorder.js";
 import { SelfEvolutionEvidenceBuilder } from "./self-evolution-evidence-builder.js";
 import { SelfEvolutionSkillTargetResolver } from "./self-evolution-skill-target-resolver.js";
 import {
@@ -31,7 +30,6 @@ type SelfEvolutionServiceDeps = {
   targetContextResolver?: SelfEvolutionTargetContextResolver;
   skillTargetResolver?: SelfEvolutionSkillTargetResolver;
   evidenceBuilder?: SelfEvolutionEvidenceBuilder;
-  changeRecorder?: SelfEvolutionChangeRecorder;
   manualTriggerStrategy?: ManualTriggerStrategy;
   evolverStrategy?: SingleAgentEvolverStrategy;
   eligibilityEvaluator?: SelfEvolutionEligibilityEvaluator;
@@ -117,7 +115,6 @@ export class SelfEvolutionService {
         targetContext: context,
         skillTargets,
       });
-      const before = await this.changeRecorder.captureBefore(skillTargets);
       record = await this.recordLifecycle.patchRecord(record, {
         status: "launching_evolver",
         evidenceSummaryHash,
@@ -129,19 +126,13 @@ export class SelfEvolutionService {
         editableSkillTargets: editableTargets,
       });
       record = await this.recordLifecycle.patchRecord(record, {
-        status: "recording_changes",
         evolverRunId: result.evolverRunId || null,
         evolverAgentDefinitionId: result.evolverAgentDefinitionId,
         runtimeKind: result.runtimeKind,
         llmModelIdentifier: result.llmModelIdentifier,
       });
 
-      const changeSummary = await this.changeRecorder.summarizeChanges({
-        before,
-        auditedSkillTargets: skillTargets,
-        editableSkillTargets: editableTargets,
-      });
-      record = await this.recordLifecycle.finalizeRecord(record, result.status, changeSummary);
+      record = await this.recordLifecycle.finalizeRecord(record, result.status);
       return {
         evolutionRunId: record.evolutionRunId,
         evolverRunId: record.evolverRunId ?? null,
@@ -218,10 +209,6 @@ export class SelfEvolutionService {
 
   private get evidenceBuilder(): SelfEvolutionEvidenceBuilder {
     return this.deps.evidenceBuilder ?? new SelfEvolutionEvidenceBuilder();
-  }
-
-  private get changeRecorder(): SelfEvolutionChangeRecorder {
-    return this.deps.changeRecorder ?? new SelfEvolutionChangeRecorder();
   }
 
   private get manualTriggerStrategy(): ManualTriggerStrategy {

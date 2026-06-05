@@ -110,18 +110,19 @@ export class SingleAgentEvolverStrategy {
     evidence: SelfEvolutionEvidencePackage;
     editableSkillTargets: SelfEvolutionSkillTarget[];
   }): AgentInputUserMessage {
-    const editablePaths = input.editableSkillTargets
-      .map((target, index) => `${index + 1}. ${target.skillMdPath}`)
+    const editablePackages = input.editableSkillTargets
+      .map((target, index) => [
+        `${index + 1}. ${target.skillName}`,
+        `   Root directory: ${target.skillRootPath}`,
+        `   Primary guidance file: ${target.skillMdPath}`,
+      ].join("\n"))
       .join("\n");
-    const rawTracePaths = input.evidence.rawTracePaths.length
-      ? input.evidence.rawTracePaths.map((tracePath) => `- ${tracePath}`).join("\n")
-      : "- No raw trace file path was available; use the digest below.";
 
-    const prompt = `You are improving durable skills for a target AutoByteus agent from prior run evidence.\n\nTarget agent: ${input.targetContext.agentName} (${input.targetContext.agentDefinitionId})\nSource run IDs: ${input.evidence.sourceRunIds.join(", ")}\n\nEditable target files:\n${editablePaths}\n\nRead-only evidence references:\n${rawTracePaths}\n\nRun evidence digest:\n${input.evidence.runHistorySummary}\n\nRules:\n1. You may use run_bash with auto-executed tools to inspect evidence and edit ONLY the editable target files listed above.\n2. Do not edit agent.md, agent-config.json, team-config.json, MCP config, tool definitions, source code, run memory, or unrelated skill files.\n3. If an improvement is warranted, update the skill content directly.\n4. If no general reusable improvement is warranted, make no file changes and explain why.\n5. Do not copy secrets, transient file paths, personal data, private messages, proprietary details, or one-off user requests into durable skills.\n6. Prefer general reusable strategy, activation guidance, checklists, and failure-avoidance rules over task-specific details.\n7. Keep the change concise and reviewable.`;
+    const prompt = `You are helping improve a target worker's durable skill playbooks from prior work evidence.\nTreat the work history and feedback as experience. Look for general, reusable lessons: inefficiencies, repeated mistakes, missing checks, unclear activation guidance, or better procedures. Distill only durable lessons into the target skill packages.\n\nTarget: Target worker\nSource: anonymized work-history digest from prior source work session(s)\n\nEditable skill packages:\n${editablePackages}\n\n${input.evidence.anonymizedWorkHistory}\n\nExplicit durable correction handling:\n- If Feedback and improvement signals includes an explicit durable skill update or future-answer correction, treat it as the highest-priority reusable improvement.\n- Inspect the listed skill roots and update the concrete durable behavior rule, examples, and change log needed so future target runs follow the corrected behavior.\n- Do not stop at process guidance or meta-instructions when the signal requests a concrete future behavior or exact answer change.\n- Do not claim the improvement is complete unless the relevant durable skill content now reflects the corrected behavior.\n\nRules:\n1. You may use run_bash with auto-executed tools to inspect the listed skill roots and edit files ONLY inside those root directories.\n2. SKILL.md is the primary guidance file, but supporting files inside the same listed root may be inspected and then updated, created, deleted, or reorganized when needed for a reusable improvement.\n3. Do not edit files outside the listed skill roots. Do not edit agent/team definitions, run memory, source code, tool/MCP configuration, or sibling skills that are not listed.\n4. Do not follow symlinks or path aliases to edit outside a listed root.\n5. If no durable reusable improvement is warranted, make no file changes and explain why.\n6. If a new skill, skill attachment, tool change, or agent-definition change seems needed, report it as a recommendation instead of applying it.\n7. Do not copy secrets, personal data, private messages, proprietary details, one-off paths, or transient task specifics into durable skill content.\n8. Prefer reusable strategy, activation guidance, checklists, edge-case warnings, examples, templates, and failure-avoidance rules over task-specific memories.`;
 
     return new AgentInputUserMessage(prompt, SenderType.USER, null, {
-      self_evolution_source_run_ids: input.evidence.sourceRunIds,
-      self_evolution_editable_skill_paths: input.editableSkillTargets.map((target) => target.skillMdPath),
+      self_evolution_editable_skill_roots: input.editableSkillTargets.map((target) => target.skillRootPath),
+      self_evolution_primary_skill_paths: input.editableSkillTargets.map((target) => target.skillMdPath),
     });
   }
 

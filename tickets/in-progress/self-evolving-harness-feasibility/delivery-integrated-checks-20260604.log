@@ -1,0 +1,683 @@
+================================================================================
+COMMAND: pnpm -C autobyteus-server-ts exec vitest run tests/self-evolution/self-evolution-effective-config-resolver.test.ts tests/self-evolution/self-evolution-metrics-service.test.ts tests/self-evolution/manual-trigger-strategy.test.ts tests/self-evolution/self-evolution-change-recorder.test.ts tests/self-evolution/self-evolution-graphql-converters.test.ts tests/self-evolution/self-evolution-graphql-resolver.test.ts tests/self-evolution/single-agent-evolver-strategy.test.ts tests/self-evolution/self-evolution-service.integration.test.ts
+START: 2026-06-04T16:31:31Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+ ✓ tests/self-evolution/self-evolution-change-recorder.test.ts (5 tests) 1266ms
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:62648) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/self-evolution-service.integration.test.ts (2 tests) 839ms
+     ✓ records a Git-backed editable SKILL.md mutation as a valid harness update  432ms
+     ✓ fails the evolution record when the helper mutates an off-target path  406ms
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:63045) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts > SelfEvolutionResolver GraphQL boundary > enforces the disabled global capability gate before a manual start mutation resolves a target
+Initialized server settings service with 18 predefined settings
+
+ ✓ tests/self-evolution/self-evolution-graphql-resolver.test.ts (3 tests) 79ms
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:63064) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/single-agent-evolver-strategy.test.ts (1 test) 5ms
+ ✓ tests/self-evolution/manual-trigger-strategy.test.ts (2 tests) 4ms
+ ✓ tests/self-evolution/self-evolution-effective-config-resolver.test.ts (2 tests) 4ms
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:63077) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/self-evolution-metrics-service.test.ts (2 tests) 3ms
+ ✓ tests/self-evolution/self-evolution-graphql-converters.test.ts (1 test) 1ms
+
+ Test Files  8 passed (8)
+      Tests  18 passed (18)
+   Start at  18:31:31
+   Duration  11.89s (transform 3.60s, setup 73ms, import 8.56s, tests 2.20s, environment 1ms)
+
+END: 2026-06-04T16:31:43Z
+EXIT_CODE: 0
+RESULT: server self-evolution focused vitest PASSED
+================================================================================
+COMMAND: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+START: 2026-06-04T16:31:43Z
+END: 2026-06-04T16:31:48Z
+EXIT_CODE: 0
+RESULT: server build TypeScript check PASSED
+================================================================================
+COMMAND: pnpm -C autobyteus-server-ts build
+START: 2026-06-04T16:31:48Z
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 66ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+(node:63436) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+END: 2026-06-04T16:32:00Z
+EXIT_CODE: 0
+RESULT: server build PASSED
+================================================================================
+COMMAND: pnpm -C autobyteus-web test:nuxt --run components/settings/__tests__/SelfEvolutionFeatureToggleCard.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+START: 2026-06-04T16:32:00Z
+
+> autobyteus@1.3.43 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/settings/__tests__/SelfEvolutionFeatureToggleCard.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/SelfEvolutionFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/SelfEvolutionFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/SelfEvolutionFeatureToggleCard.spec.ts (3 tests) 26ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests) 89ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (36 tests) 399ms
+
+ Test Files  3 passed (3)
+      Tests  43 passed (43)
+   Start at  18:32:02
+   Duration  5.65s (transform 2.79s, setup 12.97s, collect 606ms, tests 514ms, environment 664ms, prepare 504ms)
+
+END: 2026-06-04T16:32:08Z
+EXIT_CODE: 0
+RESULT: focused web Nuxt tests PASSED
+================================================================================
+COMMAND: bash -lc pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals
+START: 2026-06-04T16:32:08Z
+
+> autobyteus@1.3.43 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.3.43 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.3.43 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:63975) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+END: 2026-06-04T16:32:09Z
+EXIT_CODE: 0
+RESULT: web boundary and localization guards PASSED
+================================================================================
+TOTAL_FAILURES: 0
+================================================================================
+COMMAND: git diff --check
+START: 2026-06-04T16:41:00Z
+END: 2026-06-04T16:41:00Z
+EXIT_CODE: 0
+RESULT: delivery diff whitespace check PASSED
+================================================================================
+COMMAND: git fetch origin personal --prune (post-round-5 reconciliation)
+START: 2026-06-04T17:17:50Z
+RESULT: origin/personal remained bd4803d457a1a0ba681cc2b7ccac63486f677a34; merge-base with HEAD is bd4803d457a1a0ba681cc2b7ccac63486f677a34; ahead/behind 2	0
+END: 2026-06-04T17:17:50Z
+EXIT_CODE: 0
+RESULT: post-round-5 latest-base check PASSED
+================================================================================
+COMMAND: rm -rf .tmp_external
+START: 2026-06-04T17:17:50Z
+END: 2026-06-04T17:17:50Z
+EXIT_CODE: 0
+RESULT: unrelated temp material cleanup PASSED
+================================================================================
+COMMAND: git diff --check (post-round-5 reconciliation)
+START: 2026-06-04T17:17:50Z
+END: 2026-06-04T17:17:50Z
+EXIT_CODE: 0
+RESULT: post-round-5 delivery diff whitespace check PASSED
+================================================================================
+COMMAND: git diff --check (final artifact wording update)
+START: 2026-06-04T17:18:04Z
+END: 2026-06-04T17:18:04Z
+EXIT_CODE: 0
+RESULT: final artifact wording diff whitespace check PASSED
+================================================================================
+DELIVERY_ROUND4_RECONCILIATION_START: 2026-06-04T19:31:09Z
+HEAD: ac1d98e3e2f4fceb8c794f5c2e45025e2cf55760
+origin/personal: bd4803d457a1a0ba681cc2b7ccac63486f677a34
+ahead_behind_HEAD_vs_origin_personal: 2	0
+================================================================================
+COMMAND: pnpm -C autobyteus-server-ts exec vitest run tests/self-evolution/self-evolution-effective-config-resolver.test.ts tests/self-evolution/self-evolution-metrics-service.test.ts tests/self-evolution/manual-trigger-strategy.test.ts tests/self-evolution/self-evolution-change-recorder.test.ts tests/self-evolution/self-evolution-graphql-converters.test.ts tests/self-evolution/self-evolution-graphql-resolver.test.ts tests/self-evolution/single-agent-evolver-strategy.test.ts tests/self-evolution/self-evolution-service.integration.test.ts
+START: 2026-06-04T19:31:09Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+ ✓ tests/self-evolution/self-evolution-change-recorder.test.ts (6 tests) 1739ms
+     ✓ does not treat realpath-aliased editable skill changes as off-target  390ms
+     ✓ treats Git-backed read-only configured skill mutations as policy violations only  332ms
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:57469) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-service.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/self-evolution-service.integration.test.ts (2 tests) 931ms
+     ✓ records a Git-backed editable SKILL.md mutation as a valid harness update  487ms
+     ✓ fails the evolution record when the helper mutates an off-target path  443ms
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:57862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+stdout | tests/self-evolution/self-evolution-graphql-resolver.test.ts > SelfEvolutionResolver GraphQL boundary > enforces the disabled global capability gate before a manual start mutation resolves a target
+Initialized server settings service with 18 predefined settings
+
+ ✓ tests/self-evolution/self-evolution-graphql-resolver.test.ts (3 tests) 97ms
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:57891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/single-agent-evolver-strategy.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/single-agent-evolver-strategy.test.ts (1 test) 6ms
+ ✓ tests/self-evolution/manual-trigger-strategy.test.ts (2 tests) 4ms
+ ✓ tests/self-evolution/self-evolution-effective-config-resolver.test.ts (2 tests) 4ms
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:57912) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/self-evolution/self-evolution-metrics-service.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/autobyteus-server-ts
+
+ ✓ tests/self-evolution/self-evolution-metrics-service.test.ts (2 tests) 3ms
+ ✓ tests/self-evolution/self-evolution-graphql-converters.test.ts (1 test) 2ms
+
+ Test Files  8 passed (8)
+      Tests  19 passed (19)
+   Start at  21:31:10
+   Duration  13.63s (transform 3.72s, setup 83ms, import 9.50s, tests 2.79s, environment 1ms)
+
+END: 2026-06-04T19:31:23Z
+EXIT_CODE: 0
+RESULT: server self-evolution focused vitest after round4 PASSED
+================================================================================
+COMMAND: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+START: 2026-06-04T19:31:23Z
+END: 2026-06-04T19:31:28Z
+EXIT_CODE: 0
+RESULT: server build TypeScript check after round4 PASSED
+================================================================================
+COMMAND: git diff --check
+START: 2026-06-04T19:31:28Z
+END: 2026-06-04T19:31:28Z
+EXIT_CODE: 0
+RESULT: delivery diff whitespace check after round4 PASSED
+================================================================================
+DELIVERY_ROUND4_TOTAL_FAILURES: 0
+================================================================================
+COMMAND: git diff --check (final round4 delivery artifact reconciliation)
+START: 2026-06-04T19:34:01Z
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round3-real-loop-20260604/skill-before.SKILL.md:17: new blank line at EOF.
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round3-real-loop-20260604/skill.diff:8: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round3-real-loop-20260604/skill.diff:11: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round3-real-loop-20260604/skill.diff:13: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round3-real-loop-20260604/skill.diff:17: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round4-real-loop-rerun-20260604/skill-before.SKILL.md:17: new blank line at EOF.
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round4-real-loop-rerun-20260604/skill.diff:8: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round4-real-loop-rerun-20260604/skill.diff:11: trailing whitespace.
++
+tickets/in-progress/self-evolving-harness-feasibility/browser-e2e-evidence/round4-real-loop-rerun-20260604/skill.diff:13: trailing whitespace.
++
+END: 2026-06-04T19:34:01Z
+EXIT_CODE: 2
+RESULT: final round4 delivery artifact diff whitespace check FAILED
+================================================================================
+COMMAND: normalize round3/round4 diff-evidence whitespace for repository diff check
+START: 2026-06-04T19:34:35Z
+END: 2026-06-04T19:34:35Z
+EXIT_CODE: 0
+RESULT: evidence whitespace normalization PASSED
+================================================================================
+COMMAND: git diff --check (after evidence whitespace normalization)
+START: 2026-06-04T19:34:35Z
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:623: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:625: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:627: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:629: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:632: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:634: trailing whitespace.
+++
+tickets/in-progress/self-evolving-harness-feasibility/delivery-integrated-checks-20260604.log:636: trailing whitespace.
+++
+END: 2026-06-04T19:34:35Z
+EXIT_CODE: 2
+RESULT: post-normalization diff whitespace check FAILED
+================================================================================
+COMMAND: strip trailing whitespace from delivery log after failed evidence check output
+START: 2026-06-04T19:34:50Z
+END: 2026-06-04T19:34:50Z
+EXIT_CODE: 0
+RESULT: delivery log whitespace normalization PASSED
+================================================================================
+COMMAND: git diff --check (final after delivery log normalization)
+START: 2026-06-04T19:34:50Z
+END: 2026-06-04T19:34:50Z
+EXIT_CODE: 0
+RESULT: final delivery diff whitespace check after log normalization PASSED
+================================================================================
+COMMAND: git diff --check (after delivery report evidence-normalization note)
+START: 2026-06-04T19:35:05Z
+END: 2026-06-04T19:35:06Z
+EXIT_CODE: 0
+RESULT: delivery report normalization-note diff whitespace check PASSED

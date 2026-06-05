@@ -92,6 +92,20 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `providers/`
 - `services/`
 
+
+## Self-Evolution Runtime
+
+The self-evolution subsystem is a control-plane workflow under `src/self-evolution`.
+It is globally disabled by default through `ENABLE_SELF_EVOLUTION`, then run-owned
+when enabled: launch APIs snapshot the effective self-evolution config into
+standalone run metadata or team agent-member metadata. Agent/team definitions do
+not own self-evolution eligibility. Manual starts use the stored snapshot, launch
+a separate visible helper `AgentRun`, provide anonymized work-history evidence,
+list exact editable skill root directories, and persist minimal provenance plus
+notification outcome. The MVP intentionally has no product change-audit or
+metrics/reporting service; Git/manual inspection remains the review surface. See
+`modules/self_evolution.md` for the detailed contract.
+
 ## External-Channel Messaging Runtime
 
 The external-channel subsystem is receipt-owned for inbound ingress and

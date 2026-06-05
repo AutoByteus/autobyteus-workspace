@@ -69,16 +69,12 @@ export type SelfEvolutionSkillTarget = {
   skillMdPath: string;
   sourceLabel?: string | null;
   isWritable: boolean;
-  gitRootPath?: string | null;
-  rollbackMode: "git" | "unversioned" | "none";
 };
 
 export type SelfEvolutionEvidencePackage = {
   target: SelfEvolutionTargetRef;
   sourceRunIds: string[];
-  runMetadataPath?: string | null;
-  rawTracePaths: string[];
-  runHistorySummary: string;
+  anonymizedWorkHistory: string;
   feedbackSignals: string[];
   privacyWarnings: string[];
 };
@@ -88,70 +84,11 @@ export type SelfEvolutionRunStatus =
   | "resolving_target"
   | "launching_evolver"
   | "running_evolver"
-  | "recording_changes"
   | "notifying_target"
   | "completed"
   | "failed"
   | "cancelled"
   | "timed_out";
-
-export type SelfEvolutionChangeSummary = {
-  detectionMode: "git" | "file_hash" | "file_metadata_uncertain" | "none";
-  changedSkillPaths: string[];
-  offTargetChangePaths: string[];
-  gitRoots: string[];
-  diffStat?: string | null;
-  warnings: string[];
-  policyViolations: string[];
-};
-
-export type SelfEvolutionUpdateMetrics = {
-  evolverRunCompleted: boolean;
-  evolverRunStatus: SelfEvolutionRunStatus;
-  noOp: boolean;
-  changedSkillCount: number;
-  changedSkillPaths: string[];
-  offTargetChangeCount: number;
-  offTargetChangePaths: string[];
-  policyViolationCount: number;
-  gitBackedTargetCount: number;
-  unversionedTargetCount: number;
-  warningCount: number;
-  errorCount: number;
-  notificationStatus?: string | null;
-};
-
-export type BenefitSignalAvailability = "observed" | "not_observed" | "not_collectible" | "not_enough_data";
-export type BenefitAssessment =
-  | "not_enough_data"
-  | "positive_signal"
-  | "negative_signal"
-  | "mixed_signal"
-  | "neutral_signal";
-
-export type SelfEvolutionBenefitMetrics = {
-  linkedPostEvolutionRunIds: string[];
-  linkMethod: "target_identity_and_skill_overlap" | "manual_link" | "none";
-  completedLinkedRuns: number;
-  failedLinkedRuns: number;
-  userPositiveFeedbackCount?: number | null;
-  userNegativeFeedbackCount?: number | null;
-  validationPassedCount?: number | null;
-  validationFailedCount?: number | null;
-  skillActivation: {
-    status: BenefitSignalAvailability;
-    loadSkillToolUseCount?: number | null;
-    configuredSkillPreloaded?: boolean | null;
-    directSkillReferenceCount?: number | null;
-  };
-  skillAdherence: {
-    status: BenefitSignalAvailability;
-    supportingTraceCount?: number | null;
-    contradictoryTraceCount?: number | null;
-  };
-  assessment: BenefitAssessment;
-  notes: string[];
-};
 
 export type SelfEvolutionNotificationSummary = {
   status: "sent_active_idle" | "skipped_busy" | "next_run_only" | "not_applicable" | "failed";
@@ -176,9 +113,6 @@ export type SelfEvolutionRunRecord = {
   workspaceRootPath?: string | null;
   skillTargets: SelfEvolutionSkillTarget[];
   evidenceSummaryHash?: string | null;
-  changeSummary?: SelfEvolutionChangeSummary | null;
-  updateMetrics?: SelfEvolutionUpdateMetrics | null;
-  benefitMetrics?: SelfEvolutionBenefitMetrics | null;
   notificationSummary?: SelfEvolutionNotificationSummary | null;
   errors: string[];
 };

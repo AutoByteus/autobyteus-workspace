@@ -29,8 +29,6 @@ export const SelfEvolutionSkillTargetFields = gql`
     skillMdPath
     sourceLabel
     isWritable
-    gitRootPath
-    rollbackMode
   }
 `
 

@@ -245,7 +245,7 @@ Manage agent package sources used by the app.
 
 A flexible key-value store for backend configurations.
 
-- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Featured catalog items`, `Codex full access`, `Streaming parser`, `Web Search Configuration`, and a dedicated `Compaction config` card.
+- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Featured catalog items`, `Codex full access`, `Streaming parser`, `Web Search Configuration`, `Self-evolution`, and a dedicated `Compaction config` card.
 - **Default media models:** `components/settings/MediaDefaultModelsCard.vue` exposes model selectors for the media-tool defaults without requiring operators to remember raw env keys:
   - **Image editing:** saved to `DEFAULT_IMAGE_EDIT_MODEL`.
   - **Image generation:** saved to `DEFAULT_IMAGE_GENERATION_MODEL`.
@@ -286,6 +286,11 @@ A flexible key-value store for backend configurations.
 - **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
 - **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.
 - **Initialization source visibility:** The card surfaces whether the current value came from an explicit persisted server setting or from one-time discovery-seeded initialization during cutover.
+- **Self-evolution feature toggle:** `components/settings/SelfEvolutionFeatureToggleCard.vue` appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node's manual skill self-evolution capability.
+  - Toggle on saves `ENABLE_SELF_EVOLUTION=true`; toggle off saves `false`. If the backend setting was missing, the capability initializes as disabled before the UI shows it.
+  - This is a global hard gate only. It does not schedule evolution or make every run eligible; manual starts still require a run/member `selfEvolutionEffective` metadata snapshot, implemented `manual_only`/`single_agent` strategies, and at least one writable configured `SKILL.md` target.
+  - The selected helper agent is controlled by the predefined advanced setting `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID`. Fresh servers seed the built-in `autobyteus-skill-evolver`; operators can choose another agent through the raw setting if it includes `run_bash`. Blank runtime/model defaults on that helper inherit from the target run at launch.
+  - When disabled, workspace history self-evolution actions are hidden. When enabled, those actions still lazy-load backend eligibility and stay disabled until the backend reports the target is eligible.
 - **View & Edit:** precise control over server-side flags and parameters.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
@@ -323,6 +328,7 @@ Canonical app metadata and manual update controls.
 
 ## Related Documentation
 
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, run-owned snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
 - **[Agent Execution Architecture](./agent_execution_architecture.md)**: streamed runtime events, including compaction status propagation into the workspace banner.
 - **[Applications](./applications.md)**: runtime Applications availability, routing, and catalog behavior consume the capability managed from Settings.

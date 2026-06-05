@@ -1,10 +1,8 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { SelfEvolutionCapabilityService } from "../../../self-evolution/services/self-evolution-capability-service.js";
-import { SelfEvolutionMetricsService } from "../../../self-evolution/services/self-evolution-metrics-service.js";
 import { SelfEvolutionService } from "../../../self-evolution/services/self-evolution-service.js";
 import {
   GraphqlSelfEvolutionEligibility,
-  GraphqlSelfEvolutionMetricsReport,
   GraphqlSelfEvolutionRunRecord,
   GraphqlSelfEvolutionStartResult,
   GraphqlSelfEvolutionStrategyCatalog,
@@ -13,18 +11,15 @@ import {
   StartTeamMemberSelfEvolutionInput,
 } from "./self-evolution-graphql-types.js";
 import {
-  toGraphqlBenefitMetrics,
   toGraphqlCatalog,
   toGraphqlEligibility,
   toGraphqlRecord,
-  toGraphqlUpdateMetrics,
 } from "./self-evolution-graphql-converters.js";
 
 @Resolver()
 export class SelfEvolutionResolver {
   private readonly capabilityService = SelfEvolutionCapabilityService.getInstance();
   private readonly service = SelfEvolutionService.getInstance();
-  private readonly metricsService = new SelfEvolutionMetricsService();
 
   @Query(() => SelfEvolutionCapability)
   async selfEvolutionCapability(): Promise<SelfEvolutionCapability> {
@@ -70,25 +65,12 @@ export class SelfEvolutionResolver {
     return record ? toGraphqlRecord(record) : null;
   }
 
-  @Query(() => GraphqlSelfEvolutionMetricsReport)
-  async getSelfEvolutionMetricsReport(
-    @Arg("evolutionRunId", () => String) evolutionRunId: string,
-  ): Promise<GraphqlSelfEvolutionMetricsReport> {
-    const report = await this.metricsService.getMetricsReport(evolutionRunId);
-    return {
-      evolutionRunId: report.evolutionRunId,
-      updateMetrics: toGraphqlUpdateMetrics(report.updateMetrics)!,
-      benefitMetrics: toGraphqlBenefitMetrics(report.benefitMetrics)!,
-    };
-  }
-
   @Mutation(() => GraphqlSelfEvolutionStartResult)
   async startAgentRunSelfEvolution(
     @Arg("input", () => StartAgentRunSelfEvolutionInput) input: StartAgentRunSelfEvolutionInput,
   ): Promise<GraphqlSelfEvolutionStartResult> {
     const result = await this.service.startForAgentRun({
       runId: input.runId,
-      requestedByUserId: input.requestedByUserId ?? null,
       requestedFrom: "run_detail",
     });
     return { evolutionRunId: result.evolutionRunId, evolverRunId: result.evolverRunId ?? null, record: toGraphqlRecord(result.record) };
@@ -101,7 +83,6 @@ export class SelfEvolutionResolver {
     const result = await this.service.startForTeamMember({
       teamRunId: input.teamRunId,
       memberRunId: input.memberRunId,
-      requestedByUserId: input.requestedByUserId ?? null,
       requestedFrom: "team_run_detail",
     });
     return { evolutionRunId: result.evolutionRunId, evolverRunId: result.evolverRunId ?? null, record: toGraphqlRecord(result.record) };

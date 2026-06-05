@@ -164,7 +164,7 @@ User provided `https://arxiv.org/abs/2605.30621` and asked: "investigate how thi
 | Paper | Evolution is a loop with manifest, evidence, artifact scope, validation, and benefit measurement. | AutoByteus design needs a similar explicit cycle owner. | Formal design if approved. |
 | Paper findings | Task agent's activation/adherence is as important as update generation. | AutoByteus must measure skill activation and avoid relying only on global discovery. | Add metrics in future design. |
 | Agent/team services | Existing services own definitions and perform validation/scope checks. | Evolver should not write definition files directly. | Route apply through services. |
-| Skill services | Skills already have discovery, update, and versioning. | Skills are best MVP artifact family. | MVP direct-edits skill files; future stricter mode can integrate service-mediated apply. |
+| Skill services | Skills already have discovery, update, and versioning. | Skills are best MVP artifact family. | MVP direct-edits files inside skill roots; future stricter mode can integrate service-mediated apply. |
 | Memory/run history | Evidence substrate exists but may contain sensitive data. | Add evidence extractor/redactor/minimizer. | Define privacy gate. |
 | MCP/tool services | Tools have external side effects. | MVP should be proposal/recommendation-only for tools/MCP. | Defer auto-apply. |
 
@@ -215,7 +215,7 @@ User provided `https://arxiv.org/abs/2605.30621` and asked: "investigate how thi
 - Public paper: arXiv:2605.30621, submitted 2026-05-28.
 - Public code: `A-EVO-Lab/a-evolve`, branch `release/harness-evolution`.
 - Relevant contract learned: harness self-evolution updates external artifacts only; it needs scope control, evidence, validation, versioning, and rollback.
-- Why it matters: AutoByteus already has matching external artifacts and evidence stores. Latest MVP uses a central launcher/recorder plus feature-gated Git-backed direct edits rather than a full proposal/apply service.
+- Why it matters: AutoByteus already has matching external artifacts and evidence stores. Latest MVP uses a central launcher/minimal-run-record owner plus feature-gated Git-backed direct edits rather than a full proposal/apply service.
 
 ## Reproduction / Environment Setup
 
@@ -256,12 +256,12 @@ User provided `https://arxiv.org/abs/2605.30621` and asked: "investigate how thi
 - Requirements/design artifacts must live in the dedicated task worktree.
 - No implementation should proceed before requirements approval and architecture review.
 - Future design must not create duplicate mutation paths for agent definitions, team definitions, memory, tools, or MCP config.
-- MVP direct skill edits are allowed only for explicit target skill files under the feature-gated manual self-evolution path; non-skill mutations remain out of scope/report-only.
+- MVP direct skill-root edits are allowed only inside explicit target skill root directories under the feature-gated manual self-evolution path; non-skill-root mutations remain out of scope/report-only.
 - The future evolution cycle should be explicit and observable, not an incidental side effect of an agent run.
 
 ## Open Unknowns / Risks
 
-- What product/UI workflow should users use to inspect evolver runs and changed skill files?
+- What product/UI workflow should users use to inspect visible evolver runs and Git working-tree changes manually?
 - What evidence selectors should be available: one run, multiple runs, failed runs, user-rated runs, benchmark suites?
 - What privacy policy should govern copying information from run traces into persistent prompts/skills/memories?
 - How to prevent overfitting to a single failed run.
@@ -271,13 +271,13 @@ User provided `https://arxiv.org/abs/2605.30621` and asked: "investigate how thi
 
 ## Notes For Architect Reviewer
 
-Architecture handoff is ready after the user approved formal design on 2026-06-04. The design spec is centered on a single `SelfEvolutionService` that launches a visible direct-edit evolver run, provides trace/skill-path context, records provenance/post-run state, emits target notification/reload, and tracks harness-updating versus harness-benefit metrics.
+This earlier handoff note is superseded by later user refinements on 2026-06-05. The current design is centered on a single `SelfEvolutionService` that launches a visible direct-edit evolver run, provides anonymized work-history evidence and skill-root context, records only minimal run provenance, and emits target notification/reload. Dedicated change-recording/audit and metrics services are no longer MVP scope.
 
 ## Additional Architecture Analysis — Skill Evolution Bridge — 2026-06-04
 
 The user clarified that the important architectural question is how to connect two existing storage worlds: run traces/history in app-data memory and skill files primarily living in agent packages. Additional analysis produced `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/tickets/in-progress/self-evolving-harness-feasibility/skill-evolution-architecture-analysis.md`.
 
-Core conclusion after refinement: the bridge should be a `SkillEvolutionService` / `ExperienceDistillationService` that maps run metadata to agent definitions, resolves configured skills through `SkillService.resolveConfiguredSkillsForAgent`, reads complete trace corpora through memory/run-history readers, and launches a visible evolver agent. For the MVP, the evolver may directly edit target skill files using existing `run_bash`/shell tooling; the service records provenance/post-run Git status where practical rather than owning a full typed proposal/apply pipeline.
+Core conclusion after refinement: the bridge should be a `SkillEvolutionService` / `ExperienceDistillationService` that maps run metadata to agent definitions, resolves configured skills through `SkillService.resolveConfiguredSkillsForAgent`, reads complete trace corpora through memory/run-history readers, and launches a visible evolver agent. For the MVP, the evolver may directly edit files inside target skill roots using existing `run_bash`/shell tooling; the service records minimal visible-run provenance rather than owning a full typed proposal/apply pipeline or post-run Git/change recorder.
 
 Important current gap: run metadata records `agentDefinitionId`, `memoryDir`, `runtimeKind`, and `skillAccessMode`, but does not appear to snapshot the exact resolved skill root paths, skill versions, or content hashes used at run start. For historically accurate evolution, future design should persist `resolvedSkillBindings` at run start.
 
@@ -335,9 +335,9 @@ runId / teamRunId+memberRunId
   -> AgentDefinition.skillNames
   -> SkillService.resolveConfiguredSkillsForAgent(...)
   -> concrete skill root paths + current skill content/version
-  -> visible EvolverAgent receives exact skill file paths
-  -> EvolverAgent uses run_bash/shell to edit skill files directly
-  -> optional post-run git status/diff recording
+  -> visible EvolverAgent receives exact editable skill root paths plus primary SKILL.md paths
+  -> EvolverAgent uses run_bash/shell to edit files inside those skill roots directly
+  -> minimal record links source run to visible evolver run
 ```
 
 Important gap identified: run metadata currently records `agentDefinitionId`, `memoryDir`, `runtimeKind`, and `skillAccessMode`, but does not appear to snapshot the exact resolved skill root paths, skill versions, or skill content hashes used at run start. A future design should add a `resolvedSkillBindings` snapshot to make evolution historically accurate.
@@ -356,10 +356,10 @@ Recommended analogous MVP:
 ```text
 SkillEvolutionRunner
   -> create visible EvolverAgent or EvolverTeam run
-  -> post trace digest + current skill snapshot + output contract
-  -> evolver directly edits target skill files using run_bash/shell
-  -> record evolver run and optional post-run git status/diff
-  -> notify/reload target if skill files changed
+  -> post anonymized work-history digest + exact editable skill roots + direct-edit rules
+  -> evolver directly edits files inside target skill roots using run_bash/shell
+  -> record minimal visible evolver run linkage
+  -> notify/reload target after successful evolver completion
 ```
 
 The evolver may be a normal agent/team and shown in the frontend, but it should be a separate reflection/evolution run rather than a member of the target agent's normal business team by default.
@@ -378,7 +378,7 @@ Reflection/evolution plane:
   visible EvolverAgent/EvolverTeam run analyzes traces
 
 Control plane:
-  SkillEvolutionService connects evidence, direct skill file edit orchestration, audit, and reload notification
+  SkillEvolutionService connects evidence, direct skill-root edit orchestration, minimal run provenance, and reload notification
 ```
 
 A `visible coach` mode, where the evolver is intentionally visible as a teammate, can be a later explicit product mode, not the default self-evolution behavior.
@@ -397,10 +397,10 @@ Therefore, writing `SKILL.md` is sufficient for future runs but not necessarily 
 Recommended target notification/reload flow:
 
 ```text
-direct skill file edit by EvolverAgent
-  -> OptionalPostRunChangeRecorder records changed paths/status where practical
-  -> SkillUpdatedEvent emitted
-  -> ActiveRunSkillReloadService finds affected active runs
+successful EvolverAgent completion
+  -> SelfEvolutionService records source/evolver run linkage and affected skill roots
+  -> skill-update notification/reload request emitted
+  -> ActiveRunSkillReloadService or equivalent finds affected active runs
   -> if inactive: no live notification; next run uses new skill
   -> if active and idle: refresh supported skill state and send system notification
   -> if active and busy: queue reload/notification until idle
@@ -432,9 +432,9 @@ The refined MVP should be:
 ```text
 visible compaction-style SkillEvolutionRunner
   + skill-first EvolverAgent/EvolverTeam
-  + direct skill file edits through existing run_bash/shell tooling
+  + direct edits inside target skill roots through existing run_bash/shell tooling
   + manual-click consent plus feature toggle off by default
-  + optional post-run git status/diff recording
+  + minimal source/evolver run provenance only; no MVP change recorder
   + target run SkillUpdatedEvent / SenderType.SYSTEM notification
   + next-run correctness by default; active-run reload queued when safe
 ```
@@ -443,7 +443,7 @@ This preserves observability, keeps target agents focused on business tasks, and
 
 ## Trigger / UX Refinement — 2026-06-04
 
-The user asked whether evolution should be user-triggered, system-triggered, cron-like, or triggered by the self-evolver itself. Recommended MVP: user enables self-evolution at target launch or agent setting level, then the system automatically launches a visible compaction-style evolution run after target run completion or after an idle window for long-running sessions. This has been superseded: manual trigger should be first-class, not only a debug/admin escape hatch. Do not let the evolver independently self-trigger; trigger authority should live in an orchestration policy/service. Cron/batch and feedback-specific triggers can come later after evidence selection and dedupe mature.
+The user asked whether evolution should be user-triggered, system-triggered, cron-like, or triggered by the self-evolver itself. Earlier notes considered agent-level settings and automatic launch, but this has been superseded: self-evolution eligibility belongs to run-launch configuration and run/member metadata snapshots, and `manual_only` is the only executable MVP trigger. Do not let the evolver independently self-trigger; trigger authority should live in an orchestration policy/service. Cron/batch and feedback-specific triggers can come later after evidence selection and dedupe mature.
 
 ## Trigger Mode Refinement — Manual First-Class Plus Scheduled — 2026-06-04
 
@@ -455,7 +455,7 @@ The user endorsed a strategy split: trigger strategy decides when evolution runs
 
 ## MVP Simplification Refinement — 2026-06-04
 
-The user pushed back that the MVP should not expose separate approval and notification strategies. Refined recommendation: keep only essential user-facing configuration: self-evolution enabled, trigger strategy (manual/scheduled), and default evolver agent. For manual trigger, the user's click should count as consent to run the visible direct-edit evolver. The evolver may edit target skill files directly via `run_bash`; the feature is off by default and rollback/testing is Git-backed. Notification/reload should be default system behavior after apply, not a configurable strategy: record a skill-updated notification, deliver a `SenderType.SYSTEM` message/reload to an active idle target run, queue if busy, and rely on next-run updated skills if the target is not active.
+The user pushed back that the MVP should not expose separate approval and notification strategies. Refined recommendation: keep only essential user-facing configuration: self-evolution enabled, trigger strategy (manual/scheduled), and default evolver agent. For manual trigger, the user's click should count as consent to run the visible direct-edit evolver. The evolver may edit files inside target skill roots directly via `run_bash`; the feature is off by default and rollback/testing is Git-backed. Notification/reload should be default system behavior after apply, not a configurable strategy: record a skill-updated notification, deliver a `SenderType.SYSTEM` message/reload to an active idle target run, queue if busy, and rely on next-run updated skills if the target is not active.
 
 
 ## Manual-First Strategy Architecture Refinement — 2026-06-04
@@ -478,7 +478,7 @@ run configuration enables self-evolution
   -> when idle/completed, UI shows Improve from this run
   -> click creates EvolutionRequest
   -> SkillEvolutionRunner launches visible single evolver agent
-  -> evolver edits skill files directly via run_bash/shell
+  -> evolver edits files inside target skill roots directly via run_bash/shell
   -> service records run/post-run status where practical
 ```
 
@@ -533,18 +533,18 @@ Recommended constraint:
 
 ```text
 Evolver AgentRun: autoExecuteTools = true
-Evolver allowed tools: existing run_bash/shell for reading and editing target skill files
+Evolver allowed tools: existing run_bash/shell for reading and editing files inside target skill roots
 Durable skill apply: direct file edits in MVP; service records run/post-run state
 ```
 
 ## Evolver Tool Boundary Refinement — 2026-06-04
 
-The user asked whether the evolver needs file tools to update the skill file, and whether `autoExecuteTools: false` would otherwise require manual user approval. The latest refinement supersedes the prior no-direct-write recommendation: for MVP, the evolver should use `autoExecuteTools: true` plus the existing `run_bash`/shell capability and may directly update the skill files.
+The user asked whether the evolver needs file tools to update the skill file, and whether `autoExecuteTools: false` would otherwise require manual user approval. The latest refinement supersedes the prior no-direct-write recommendation: for MVP, the evolver should use `autoExecuteTools: true` plus the existing `run_bash`/shell capability and may directly update files inside the listed skill roots.
 
 This keeps the UX non-interactive while preserving safety:
 
 ```text
-Evolver: auto-executed `run_bash`/shell commands may edit skill files directly
+Evolver: auto-executed `run_bash`/shell commands may edit files inside listed skill roots directly
 Service: launches run, provides paths/context, records run/post-run state where practical
 Rollback/testing: Git-backed skill packages + feature toggle off by default
 ```
@@ -554,12 +554,12 @@ Do not create custom `emit_skill_change`/patch tooling for MVP unless later evid
 
 ## Direct-Edit Simplicity Refinement — 2026-06-04
 
-The user clarified they do not want a complex custom tool surface for the evolver. Use the existing `run_bash`/shell tool, set evolver `autoExecuteTools: true`, and let the evolver directly update skill files. The feature is globally disabled by default; when disabled the UI should not expose self-evolution controls in agent/team configuration. During testing, the user can enable it, run manual self-evolution, inspect the resulting Git working tree, and revert if needed. This shifts the MVP safety/rollback boundary from service-mediated patch apply to feature-gated Git-backed direct edits.
+The user clarified they do not want a complex custom tool surface for the evolver. Use the existing `run_bash`/shell tool, set evolver `autoExecuteTools: true`, and let the evolver directly update files inside listed skill roots. The feature is globally disabled by default; when disabled the UI should not expose self-evolution controls in agent/team configuration. During testing, the user can enable it, run manual self-evolution, inspect the resulting Git working tree, and revert if needed. This shifts the MVP safety/rollback boundary from service-mediated patch apply to feature-gated Git-backed direct edits.
 
 
 ## Run Bash Tool Availability Check — 2026-06-04
 
-Read `autobyteus-ts/src/tools/terminal/tools/run-bash.ts` and `autobyteus-ts/src/tools/register-tools.ts`. Findings: `run_bash` is registered by `registerRunBashTool()`, is named exactly `run_bash`, executes stateless non-interactive shell commands, and accepts optional `cwd`; absolute paths are supported by the argument schema/description. Design implication: the default self-evolver agent can use existing `run_bash` if its agent definition includes that tool, and the evolution service should pass exact absolute `SKILL.md` paths because skill roots may live outside the target workspace root.
+Read `autobyteus-ts/src/tools/terminal/tools/run-bash.ts` and `autobyteus-ts/src/tools/register-tools.ts`. Findings: `run_bash` is registered by `registerRunBashTool()`, is named exactly `run_bash`, executes stateless non-interactive shell commands, and accepts optional `cwd`; absolute paths are supported by the argument schema/description. Design implication: the default self-evolver agent can use existing `run_bash` if its agent definition includes that tool, and the evolution service should pass exact absolute skill root directories plus primary `SKILL.md` paths because skill roots may live outside the target workspace root and may contain supporting files.
 
 ## Readiness Audit — 2026-06-04
 
@@ -578,8 +578,8 @@ EvolverStrategy = single visible evolver agent
   -> target runtime/model fallback when no custom evolver model is configured
   -> autoExecuteTools: true
   -> built-in/default evolver agent has run_bash access
-  -> exact absolute SKILL.md paths are supplied in the evolution task
-  -> evolver directly edits target skill files via run_bash/shell
+  -> exact absolute skill root directories plus primary SKILL.md paths are supplied in the evolution task
+  -> evolver directly edits target skill-root files via run_bash/shell
 Post-run service responsibilities
   -> record evolver run/provenance
   -> optionally record git status/diff/changing paths
@@ -594,9 +594,9 @@ Remaining questions are design-detail questions rather than investigation blocke
 - exact UI surfaces and button enablement conditions;
 - exact `EvolutionRequest` and run-record fields;
 - exact built-in self-evolver agent definition/prompt and `toolNames`;
-- how to detect and record changed skill files robustly;
+- how much, if any, changed-file detection should be added in a future stricter strategy;
 - whether active-run reload is next-run-only for MVP or sends queued `SenderType.SYSTEM` notification when idle;
-- how to handle read-only/non-Git skill roots in the direct-edit MVP.
+- how to handle read-only skill roots in the direct-edit MVP; non-Git rollback remains a product/testing process risk, not a service-audit requirement.
 
 Recommendation: mark requirements ready for user approval and then produce the formal design spec. Do not hand to architecture reviewer until the design spec is written from these approved requirements.
 
@@ -619,8 +619,8 @@ visible evolver AgentRun, separate from target team membership
 compaction-style workspace/runtime/model fallback
 autoExecuteTools: true
 default built-in self-evolver has run_bash
-exact absolute target SKILL.md paths in task prompt
-direct skill-file edits via run_bash
+exact absolute target skill root directories plus primary SKILL.md paths in task prompt
+direct skill-root file edits via run_bash
 post-run provenance/Git summary where practical
 default target notification/reload attempt; next-run correctness baseline
 ```
@@ -638,11 +638,9 @@ Architecture review round 1 failed the design on three blocking items, recorded 
 The revised requirements and design now address these as follows:
 
 ```text
-AR-001 response:
-  Add SelfEvolutionMetricsService.
-  Add updateMetrics and benefitMetrics to the record/report contract.
-  Add getSelfEvolutionMetricsReport(evolutionRunId).
-  UI/reporting separates Harness update from Harness benefit and shows not_enough_data/not_collectible instead of treating changed files as benefit.
+AR-001 response superseded by later user scope correction:
+  Earlier design added a metrics service, but the 2026-06-05 user refinement removes dedicated MVP metrics/reporting.
+  Final MVP keeps the paper distinction as future work and prevents UI from claiming benefit from evolver completion.
 
 AR-002 response:
   Initially added definition/team/run scoped overrides, then revised after user correction.
@@ -679,3 +677,56 @@ Global capability setting
 ```
 
 Do not add MVP `selfEvolution` fields to `agent-config.json`, `AgentDefinition`, `team-config.json`, or `TeamDefinition`. Agent/team definitions continue to provide target identity and configured skills, which the self-evolution service reads after a run is selected. If persistent defaults are needed later, they should be modeled as run presets or launch preferences, not intrinsic agent/team definition attributes.
+
+
+## User Design Correction — Skill Evolution Targets Skill Folders, Not Only SKILL.md — 2026-06-05
+
+The user pointed out that the latest `origin/personal` canonical agent package skill layout supports multiple configured skills per agent and each skill is a folder/package, not merely one `SKILL.md` file. Source inspection of `origin/personal` confirmed canonical package skill folders such as:
+
+```text
+agents/<agent-id>/skills/<skill-name>/SKILL.md
+agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md
+agent-teams/<team-id>/skills/<skill-name>/SKILL.md
+```
+
+Design correction:
+
+- The self-evolution service should resolve all configured skills for the selected target agent/member.
+- Each resolved skill target should provide an exact editable `skillRootPath` plus primary `skillMdPath`.
+- The evolver may edit files only inside listed skill roots, not only `SKILL.md`. Supporting references/templates/examples inside the root are in scope when a reusable improvement warrants them.
+- The evolver must not edit sibling skills, agent/team definitions, run memory, source code, or config outside the listed roots.
+- If a new skill or agent `skillNames` change appears necessary, the evolver should report it as a recommendation rather than applying it in MVP.
+- The built-in self-evolver instruction and per-run task message should use a human-learning / experience-distillation frame and avoid unnecessary product-internal branding such as starting with “AutoByteus Skill Self-Evolver.”
+- The evolver should not receive raw trace internals in the prompt. Raw run traces should first be projected into an anonymized, human-readable work-history digest, similar to the compaction agent's message/tool-output rendering. Prompt-facing evidence should omit bookkeeping identifiers such as turn IDs, sequence IDs, trace IDs, tool-call IDs, provider event IDs, raw JSON trace payloads, and raw trace file paths. Exact editable skill root paths remain unredacted because they are the operational edit boundary.
+
+Note on base refresh: `origin/personal` was fetched and inspected. The ticket worktree currently contains substantial downstream implementation/delivery changes, so the branch was not rebased in-place during this design discussion to avoid disrupting the dirty worktree. The latest source facts were read directly from `origin/personal`.
+
+
+## User Simplification — No Change Recorder Or Metrics Service In MVP — 2026-06-05
+
+The user rejected the extra `ChangeRecorder`/audit and metrics-service machinery as redundant for the initial direct-edit MVP. Updated interpretation:
+
+- The self-evolver is a capable agent receiving exact editable skill root directories and explicit instructions to edit only inside those roots.
+- The MVP should trust that instruction boundary instead of adding a separate changed-path auditor.
+- Git remains the testing/revert surface, but the product service does not need to compute changed paths, diff stats, or off-target edits in MVP.
+- Formal harness-updating/harness-benefit metrics are valuable research/product concepts but should not be built as an MVP service.
+- The simplified flow is: manual user trigger -> visible evolver run -> anonymized work-history digest + exact skill roots -> direct skill-root edits via run_bash -> minimal source/evolver run provenance -> default target notification/reload.
+
+The requirements and design spec were revised locally for this simplification. Per the user's instruction, this latest revision has not been sent back to architecture review yet.
+
+## Architecture Review Rework — Runtime Config And Raw Trace Path Cleanup — 2026-06-05
+
+Fresh architecture review failed the latest simplified design on two narrow contradictions:
+
+- AR-002 reopened: implementation-facing guidance still implied manual start could accept config overrides or that agent/team definition update surfaces might carry `selfEvolution`.
+- AR-004: evidence/provenance contracts still retained `runMetadataPath` / raw trace path references, conflicting with the anonymized-evidence and minimal-provenance MVP boundary.
+
+Design corrections made locally:
+
+- `startAgentRunSelfEvolution` / `startTeamMemberSelfEvolution` use only target identity and the existing run/member metadata snapshot; they do not accept config overrides.
+- Only run-launch/team-run/member-run launch surfaces may carry `selfEvolution`; agent/team definition update surfaces must not carry it in MVP.
+- Precedence examples now use `default disabled -> run-launch override -> run metadata snapshot`, with no agent-definition layer.
+- `SelfEvolutionEvidencePackage` no longer contains `runMetadataPath`, `rawTracePathsForRecordOnly`, or any raw trace path retention field.
+- The MVP evidence/provenance contract now keeps only source run IDs, anonymized work-history evidence, feedback signals, privacy warnings, and optional evidence hash; raw trace paths are not retained in the default evidence package or evolution record.
+
+The narrow rework keeps the rest of the accepted design direction intact: visible single-agent evolver run, skill-root/package edit scope, anonymized work-history projection, runtime/run-launch ownership, no MVP change-recorder/audit, and no MVP metrics service.

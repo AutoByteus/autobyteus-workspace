@@ -373,6 +373,35 @@ runtime/model parameters render through the same advanced schema component; for
 Codex, a fast-capable model can therefore expose `service_tier` with the
 user-facing label **Fast mode** beside reasoning settings.
 
+
+### Self-Evolution Snapshots And Manual History Actions
+
+Self-evolution is run-owned, not definition-owned. Frontend run-config types can
+carry an optional `selfEvolution` override for standalone runs, team runs, and
+team agent-member launch records, and the backend snapshots the effective result
+into run/member metadata as `selfEvolutionEffective`. Agent/team definition
+forms and persisted definition defaults must not add `selfEvolution`; changing a
+definition later must not change historical run eligibility. Existing runs with
+no snapshot are ineligible.
+
+`useSelfEvolutionCapabilityStore` owns the global typed capability query/mutation
+for `ENABLE_SELF_EVOLUTION`. `useSelfEvolutionStore` owns backend eligibility and
+manual start calls. Workspace history surfaces only show sparkles/manual
+self-evolution actions when the global capability is enabled. Expanded/visible
+standalone run rows and team agent-member rows lazy-load eligibility from the
+backend and keep the action disabled until the backend returns `eligible: true`.
+The UI must display backend reasons/warnings through the action title/toast and
+must not recompute eligibility from current definitions or local skill lists.
+
+Starting self-evolution from history calls `startAgentRunSelfEvolution` or
+`startTeamMemberSelfEvolution` without run-time overrides. The backend uses the
+stored snapshot, starts a separate visible evolver `AgentRun`, and records the
+`evolutionRunId` / optional `evolverRunId`. The current UI stores the returned
+record summary and shows a start toast; deeper minimal-provenance inspection
+should use `getSelfEvolutionRunRecord` rather than scraping history rows. The
+MVP does not expose a metrics/reporting query and the UI must not imply helper
+completion proves downstream improvement.
+
 ### New Run From Existing Run
 
 When the user clicks the workspace header add/new-run action while an existing
@@ -538,6 +567,7 @@ needs to know that one exact turn has finished.
 
 ## Related Documentation
 
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, run-owned snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

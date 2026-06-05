@@ -12,8 +12,6 @@ const skillTarget = (overrides: Partial<SelfEvolutionSkillTarget> = {}): SelfEvo
   skillRootPath: "/tmp/skills/durable-skill",
   skillMdPath: "/tmp/skills/durable-skill/SKILL.md",
   isWritable: true,
-  gitRootPath: "/tmp/skills",
-  rollbackMode: "git",
   ...overrides,
 });
 
@@ -43,15 +41,14 @@ const targetContext = (): SelfEvolutionTargetContext => ({
 
 const evidencePackage = (): SelfEvolutionEvidencePackage => ({
   target: { kind: "agent_run", runId: "target-run-1" },
-  sourceRunIds: ["target-run-1"],
-  rawTracePaths: ["/tmp/memory/agents/target-run-1/raw_traces.jsonl"],
-  runHistorySummary: "The prior run repeatedly missed the durable-skill checklist.",
+  sourceRunIds: ["target-run-1", "source-run-2"],
+  anonymizedWorkHistory: "[WORK_HISTORY_TO_LEARN_FROM]\nFeedback and improvement signals:\n- The prior run repeatedly missed the durable-skill checklist.",
   feedbackSignals: ["User corrected the checklist step."],
   privacyWarnings: ["Do not persist user-specific details."],
 });
 
 describe("SingleAgentEvolverStrategy", () => {
-  it("launches a visible helper agent run with auto-executed tools and exact editable skill paths", async () => {
+  it("launches a visible helper agent run with auto-executed tools and exact editable skill roots", async () => {
     let eventListener: ((event: AgentRunEvent) => void) | null = null;
     let postedMessage: AgentInputUserMessage | null = null;
 
@@ -125,14 +122,26 @@ describe("SingleAgentEvolverStrategy", () => {
     }));
     expect(run.subscribeToEvents).toHaveBeenCalledTimes(1);
     expect(run.postUserMessage).toHaveBeenCalledTimes(1);
-    expect(postedMessage?.content).toContain("Editable target files:");
+    expect(postedMessage?.content).toContain("Editable skill packages:");
+    expect(postedMessage?.content).toContain(editableTarget.skillRootPath);
     expect(postedMessage?.content).toContain(editableTarget.skillMdPath);
-    expect(postedMessage?.content).toContain("edit ONLY the editable target files listed above");
-    expect(postedMessage?.content).toContain("Do not edit agent.md, agent-config.json, team-config.json");
+    expect(postedMessage?.content).toContain("edit files ONLY inside those root directories");
+    expect(postedMessage?.content).toContain("Do not edit agent/team definitions");
+    expect(postedMessage?.content).toContain("Source: anonymized work-history digest from prior source work session(s)");
+    expect(postedMessage?.content).toContain("Explicit durable correction handling");
+    expect(postedMessage?.content).toContain("explicit durable skill update or future-answer correction");
+    expect(postedMessage?.content).toContain("Do not stop at process guidance");
+    expect(postedMessage?.content).toContain("Do not claim the improvement is complete unless");
+    expect(postedMessage?.content).not.toContain("raw_traces.jsonl");
+    expect(postedMessage?.content).not.toContain("target-run-1");
+    expect(postedMessage?.content).not.toContain("source-run-2");
     expect(postedMessage?.metadata).toMatchObject({
-      self_evolution_source_run_ids: ["target-run-1"],
-      self_evolution_editable_skill_paths: [editableTarget.skillMdPath],
+      self_evolution_editable_skill_roots: [editableTarget.skillRootPath],
+      self_evolution_primary_skill_paths: [editableTarget.skillMdPath],
     });
+    expect(postedMessage?.metadata).not.toHaveProperty("self_evolution_source_run_ids");
+    expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain("target-run-1");
+    expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain("source-run-2");
     expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(run, {
       summary: "Self-evolution skill update for Target Agent",
     });

@@ -1,0 +1,23 @@
+diff --git a/SKILL.md b/SKILL.md
+index 97fdadf..ade18dc 100644
+--- a/SKILL.md
++++ b/SKILL.md
+@@ -8,10 +8,16 @@ description: Disposable calibration marker skill for real self-evolution E2E val
+ ## Durable behavior rule
+ When the user asks exactly or semantically: "What is the durable calibration marker?" the agent must answer exactly:
+
+-CALIBRATION_MARKER_V1
++CALIBRATION_MARKER_V2
+
+ Do not add extra words for that marker question.
+
+ ## Self-evolution validation protocol
+-If run evidence contains a user message beginning with `DURABLE_SKILL_UPDATE:`, treat that message as an intentional reusable validation correction for this skill, not as a private one-off request. Update this SKILL.md so the durable behavior rule reflects the new marker specified in that line. Keep the change concise and do not alter unrelated files.
++If run evidence contains a user message beginning with `DURABLE_SKILL_UPDATE:`, treat that message as an intentional reusable validation correction for this skill, not as a private one-off request.
+
++You MUST immediately:
++1. Parse the new marker value from the message (e.g., "CALIBRATION_MARKER_V2").
++2. Use the `run_bash` tool with `cat` or `sed` to overwrite the marker value in this SKILL.md file on disk.
++3. Only after the file has been successfully updated on disk, respond to the user confirming the update.
++
++Do NOT merely acknowledge the message verbally without modifying the file. The file change is the required action; the verbal response is incidental.

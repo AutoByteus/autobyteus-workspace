@@ -197,7 +197,31 @@ The Skill Detail view exposes versioning controls when the backend reports `isVe
 
 The compare modal uses `skillVersionDiff` to fetch a unified diff, parses it into file sections, and renders a focused diff view for the selected file.
 
+
+## Self-Evolution And Skill Files
+
+Manual self-evolution is a skill-first workflow. When the backend deems a run or
+team agent-member eligible, the visible evolver helper may edit only the exact
+configured skill root directories returned by backend eligibility. `SKILL.md`
+is the primary guidance file, but supporting files inside the same listed root
+may be changed when a reusable improvement needs them. Agent/team definitions,
+MCP/tool config, source code, run memory, sibling skills, and files outside the
+listed roots are out of MVP scope.
+
+The frontend does not decide whether a skill is eligible for evolution.
+Workspace history calls backend eligibility, which returns writable target
+roots, primary `SKILL.md` paths, warnings, and reasons. The backend launches a
+visible helper run with anonymized work-history evidence and records minimal
+provenance; it does not compute changed paths or policy-violation metrics in
+the MVP.
+
+Git-backed skill packages remain the recommended testing and rollback mode for
+this MVP. The feature is globally disabled by default and direct editing is
+controlled by prompt/tool contract plus manual Git inspection/revert, not by a
+separate proposal/apply UI or product audit service.
+
 ## Related Documentation
 
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Skills are attached to agents to provide capabilities.
 - **[File Explorer](./file_explorer.md)**: Skills use the generic, workspace-agnostic File Explorer.

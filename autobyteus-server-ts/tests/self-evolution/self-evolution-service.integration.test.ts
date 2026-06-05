@@ -1,23 +1,14 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../src/agent-definition/domain/models.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
-import { SelfEvolutionChangeRecorder } from "../../src/self-evolution/services/self-evolution-change-recorder.js";
 import { SelfEvolutionRecordLifecycle } from "../../src/self-evolution/services/self-evolution-record-lifecycle.js";
 import { SelfEvolutionRunStore } from "../../src/self-evolution/services/self-evolution-run-store.js";
 import { SelfEvolutionService } from "../../src/self-evolution/services/self-evolution-service.js";
-import type { SelfEvolutionRequest, SelfEvolutionSkillTarget } from "../../src/self-evolution/domain/models.js";
+import type { SelfEvolutionRequest, SelfEvolutionRunStatus, SelfEvolutionSkillTarget } from "../../src/self-evolution/domain/models.js";
 import type { SelfEvolutionTargetContext } from "../../src/self-evolution/services/self-evolution-target-context-resolver.js";
-
-const execFileAsync = promisify(execFile);
-
-const runGit = async (root: string, args: string[]) => {
-  await execFileAsync("git", ["-C", root, ...args], { timeout: 5_000 });
-};
 
 const effectiveConfig = {
   enabled: true,
@@ -33,7 +24,6 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
   let tempMemoryRoot: string;
   let memoryDir: string;
   let skillMdPath: string;
-  let offTargetPath: string;
   let skillTarget: SelfEvolutionSkillTarget;
   let targetContext: SelfEvolutionTargetContext;
 
@@ -43,23 +33,14 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     memoryDir = path.join(tempMemoryRoot, "memory");
     const skillRoot = path.join(tempRoot, "skills", "durable-skill");
     skillMdPath = path.join(skillRoot, "SKILL.md");
-    offTargetPath = path.join(tempRoot, "agent.md");
     await fs.mkdir(skillRoot, { recursive: true });
     await fs.writeFile(skillMdPath, "# Durable Skill\n", "utf8");
-    await fs.writeFile(offTargetPath, "# Agent\n", "utf8");
-    await runGit(tempRoot, ["init"]);
-    await runGit(tempRoot, ["config", "user.email", "test@example.com"]);
-    await runGit(tempRoot, ["config", "user.name", "Test User"]);
-    await runGit(tempRoot, ["add", "."]);
-    await runGit(tempRoot, ["commit", "-m", "initial"]);
 
     skillTarget = {
       skillName: "durable-skill",
       skillRootPath: skillRoot,
       skillMdPath,
       isWritable: true,
-      gitRootPath: tempRoot,
-      rollbackMode: "git",
     };
     targetContext = {
       target: { kind: "agent_run", runId: "target-run-1" },
@@ -100,7 +81,7 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     requestedFrom: "api",
   });
 
-  const buildService = (evolverRun: () => Promise<void>): SelfEvolutionService => {
+  const buildService = (evolverStatus: SelfEvolutionRunStatus = "completed"): SelfEvolutionService => {
     const runStore = new SelfEvolutionRunStore(memoryDir);
     return new SelfEvolutionService({
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
@@ -111,27 +92,22 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
           evidence: {
             target: { kind: "agent_run", runId: "target-run-1" },
             sourceRunIds: ["target-run-1"],
-            rawTracePaths: [path.join(targetContext.memoryDir, "raw_traces.jsonl")],
-            runHistorySummary: "Prior evidence showed a reusable skill gap.",
-            feedbackSignals: [],
-            privacyWarnings: [],
+            anonymizedWorkHistory: "[WORK_HISTORY_TO_LEARN_FROM]\nFeedback and improvement signals:\n- Prior evidence showed a reusable skill gap.",
+            feedbackSignals: ["Prior evidence showed a reusable skill gap."],
+            privacyWarnings: ["Do not persist user-specific details."],
           },
           evidenceSummaryHash: "hash-123",
         })),
       } as any,
-      changeRecorder: new SelfEvolutionChangeRecorder(),
       evolverStrategy: {
-        run: vi.fn(async () => {
-          await evolverRun();
-          return {
-            status: "completed",
-            evolverRunId: "evolver-run-1",
-            evolverAgentDefinitionId: "autobyteus-skill-evolver",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            llmModelIdentifier: "target-model",
-            outputText: "done",
-          };
-        }),
+        run: vi.fn(async () => ({
+          status: evolverStatus,
+          evolverRunId: "evolver-run-1",
+          evolverAgentDefinitionId: "autobyteus-skill-evolver",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          llmModelIdentifier: "target-model",
+          outputText: evolverStatus === "completed" ? "done" : null,
+        })),
       } as any,
       recordLifecycle: new SelfEvolutionRecordLifecycle({
         runStore,
@@ -142,48 +118,40 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     });
   };
 
-  it("records a Git-backed editable SKILL.md mutation as a valid harness update", async () => {
-    const service = buildService(async () => {
-      await fs.writeFile(skillMdPath, "# Durable Skill\n\n- New reusable checklist.\n", "utf8");
-    });
+  it("records minimal provenance and notification for a completed visible evolver run", async () => {
+    const service = buildService("completed");
 
-    const result = await service.startFromEvolutionRequest(request("evo-valid-edit"));
+    const result = await service.startFromEvolutionRequest(request("evo-minimal-record"));
 
-    expect(result.record.status).toBe("completed");
-    expect(result.record.skillTargets).toEqual([skillTarget]);
-    expect(result.record.changeSummary?.changedSkillPaths).toEqual([skillMdPath]);
-    expect(result.record.changeSummary?.offTargetChangePaths).toEqual([]);
-    expect(result.record.changeSummary?.policyViolations).toEqual([]);
-    expect(result.record.updateMetrics).toMatchObject({
-      evolverRunCompleted: true,
-      changedSkillCount: 1,
-      changedSkillPaths: [skillMdPath],
-      offTargetChangeCount: 0,
-      policyViolationCount: 0,
-      notificationStatus: "next_run_only",
+    expect(result.record).toMatchObject({
+      status: "completed",
+      sourceRunIds: ["target-run-1"],
+      evolverRunId: "evolver-run-1",
+      evolverAgentDefinitionId: "autobyteus-skill-evolver",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "target-model",
+      workspaceRootPath: tempRoot,
+      skillTargets: [skillTarget],
+      evidenceSummaryHash: "hash-123",
+      notificationSummary: { status: "next_run_only" },
+      errors: [],
     });
-    expect(result.record.benefitMetrics?.assessment).toBe("not_enough_data");
-    await expect(new SelfEvolutionRunStore(memoryDir).readRecord("evo-valid-edit"))
+    expect(result.record).not.toHaveProperty("changeSummary");
+    expect(result.record).not.toHaveProperty("updateMetrics");
+    expect(result.record).not.toHaveProperty("benefitMetrics");
+    await expect(new SelfEvolutionRunStore(memoryDir).readRecord("evo-minimal-record"))
       .resolves.toMatchObject({ status: "completed" });
   });
 
-  it("fails the evolution record when the helper mutates an off-target path", async () => {
-    const service = buildService(async () => {
-      await fs.writeFile(offTargetPath, "# Agent\nInvalid off-target update.\n", "utf8");
-    });
+  it("finalizes a non-completed helper run without notification or metric side effects", async () => {
+    const service = buildService("timed_out");
 
-    const result = await service.startFromEvolutionRequest(request("evo-off-target-edit"));
+    const result = await service.startFromEvolutionRequest(request("evo-helper-timeout"));
 
-    expect(result.record.status).toBe("failed");
-    expect(result.record.changeSummary?.changedSkillPaths).toEqual([]);
-    expect(result.record.changeSummary?.offTargetChangePaths).toContain(offTargetPath);
-    expect(result.record.errors.join("\n")).toContain("off-target path");
-    expect(result.record.updateMetrics).toMatchObject({
-      evolverRunCompleted: false,
-      changedSkillCount: 0,
-      offTargetChangeCount: 1,
-      policyViolationCount: 1,
-    });
-    expect(result.record.benefitMetrics?.notes.join("\n")).toContain("not collectible");
+    expect(result.record.status).toBe("timed_out");
+    expect(result.record.notificationSummary).toBeNull();
+    expect(result.record).not.toHaveProperty("changeSummary");
+    expect(result.record).not.toHaveProperty("updateMetrics");
+    expect(result.record).not.toHaveProperty("benefitMetrics");
   });
 });

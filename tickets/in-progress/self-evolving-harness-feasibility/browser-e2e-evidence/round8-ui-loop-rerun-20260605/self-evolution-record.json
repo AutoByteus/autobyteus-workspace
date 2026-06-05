@@ -1,0 +1,59 @@
+{
+  "evolutionRunId": "ac6502ed-cb8e-4994-88e6-58bd348394d5",
+  "status": "completed",
+  "requestedAt": "2026-06-05T12:23:22.493Z",
+  "completedAt": "2026-06-05T12:23:39.105Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "agent_run",
+    "runId": "calibration_ui_agent_r8_v2_loop_disposable_target_agent_for_round_8_ui_self_evolution_validation_1992"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-05T12:21:57.032Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "agent_run_launch",
+        "fields": [
+          "enabled"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibration_ui_agent_r8_v2_loop_disposable_target_agent_for_round_8_ui_self_evolution_validation_1992"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_5467",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/temp_workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_r8_v2_loop",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/skills/calibration_marker_r8_v2_loop",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/skills/calibration_marker_r8_v2_loop/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true
+    }
+  ],
+  "evidenceSummaryHash": "c7cc8ec2c0e83d292ef6c211377e1fd024abb9fb81e7ef6e15ba1ac0323f36ba",
+  "notificationSummary": {
+    "status": "sent_active_idle",
+    "message": "A self-evolution run completed for your configured skill playbooks: ac6502ed-cb8e-4994-88e6-58bd348394d5.\n\nAffected skill packages:\n- calibration_marker_r8_v2_loop: /tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/skills/calibration_marker_r8_v2_loop\n\nPlease reload or re-read the affected skills before continuing when relevant.\n\nHelper-run completion does not by itself prove downstream improvement; use the updated skills only when they are relevant."
+  },
+  "errors": []
+}

@@ -1,0 +1,7 @@
+{
+  "postRunId": "calibration_ui_agent_r7_om2kwgki_disposable_validation_target_for_round_7_ui_self_evolution_mvp_r7_om2kwgki_8781",
+  "assistantText": "CALIBRATION_MARKER_R7_V1",
+  "expected": "CALIBRATION_MARKER_R7_V2",
+  "postRunAnsweredV2": false,
+  "postRunStillAnsweredV1": true
+}

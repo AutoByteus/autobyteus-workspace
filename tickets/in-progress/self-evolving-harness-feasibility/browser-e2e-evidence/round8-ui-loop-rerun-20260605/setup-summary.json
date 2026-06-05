@@ -1,0 +1,14 @@
+{
+  "token": "r8_v2_loop",
+  "runRoot": "/tmp/autobyteus-self-evolution-round8-ui-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round8-ui-e2e/workspace",
+  "skillName": "calibration_marker_r8_v2_loop",
+  "skillRootPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/skills/calibration_marker_r8_v2_loop",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/skills/calibration_marker_r8_v2_loop/SKILL.md",
+  "agentDefinitionId": "calibration-marker-agent-r8-v2-loop",
+  "agentName": "Calibration UI Agent r8_v2_loop",
+  "teamDefinitionId": "calibration-marker-team-r8-v2-loop",
+  "teamName": "Calibration UI Team r8_v2_loop",
+  "markerBefore": "CALIBRATION_MARKER_R8_V1",
+  "markerAfter": "CALIBRATION_MARKER_R8_V2"
+}

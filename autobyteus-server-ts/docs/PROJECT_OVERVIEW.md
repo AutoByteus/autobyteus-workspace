@@ -30,6 +30,7 @@ Major domains under `src/`:
 - External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
 - Skills and skill versioning
+- Manual skill self-evolution orchestration
 - MCP server management
 - LLM and multimedia model management
 - Workspaces and file explorer
@@ -67,4 +68,5 @@ This keeps startup robust while still warming caches shortly after boot.
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`
 - `features/remote_access.md`
 - `modules/README.md`
+  - `modules/self_evolution.md`
 - `design/startup_initialization_and_lazy_services.md`

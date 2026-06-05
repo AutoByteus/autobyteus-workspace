@@ -18,8 +18,6 @@ export interface SelfEvolutionSkillTarget {
   skillMdPath: string
   sourceLabel?: string | null
   isWritable: boolean
-  gitRootPath?: string | null
-  rollbackMode: 'git' | 'unversioned' | 'none'
 }
 
 export interface SelfEvolutionEligibility {

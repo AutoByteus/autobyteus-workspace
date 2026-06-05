@@ -17,8 +17,16 @@ const messages = {
     "配置",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
+    "自我演进资格",
+  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
+    "允许此运行在工作完成后显示“从此运行改进技能”。该设置会在启动时快照保存。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
+    "自我演进资格",
+  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
+    "允许此团队运行的成员在工作完成后显示技能改进操作。成员覆盖可在启动前进一步调整。",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -37,6 +45,16 @@ const messages = {
     "自动执行：开启",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
     "自动执行：关闭",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_override":
+    "自我演进覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default":
+    "使用团队默认值",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled":
+    "符合资格",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled":
+    "不符合资格",
+  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_help":
+    "此成员自我演进资格快照的可选启动时覆盖。",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

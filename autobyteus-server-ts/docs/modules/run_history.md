@@ -188,7 +188,8 @@ Team persisted files:
   containing resume/config/topology and stable lifecycle facts:
   `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
   `coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-  recursive `memberTree`
+  recursive `memberTree`; agent-member entries may include optional
+  `selfEvolutionEffective` launch snapshots
 - member runtime memory artifacts: `memory/agent_teams/<teamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
 - optional member segmented archive: `memory/agent_teams/<teamRunId>/<memberRunId>/raw_traces_archive_manifest.json` plus `raw_traces_archive/*.jsonl`
 - team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
@@ -229,6 +230,12 @@ Important identity/storage rules:
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old
   memory directories
+- Self-evolution run snapshots are metadata facts: standalone runs store
+  `selfEvolutionEffective` on `run_metadata.json`, and team agent members store
+  `selfEvolutionEffective` on their member metadata entry. Old runs with no
+  snapshot are intentionally ineligible for manual self-evolution. History
+  listing and manual start flows must read these snapshots instead of current
+  agent/team definition config.
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - Codex and Claude standalone runs now write storage-only local memory in the same run directory as native AutoByteus runs; native AutoByteus memory remains owned by the native `autobyteus-ts` memory manager
 - standalone AutoByteus run ids are stored literally under `memory/agents/<runId>/...`

@@ -90,6 +90,15 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 
 The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
 
+
+The team launch data model can also carry run-owned self-evolution overrides.
+`TeamRunConfig.selfEvolution` applies to the team run launch, while agent-member
+overrides may set `selfEvolution` for a specific leaf member. The backend
+snapshots the effective result into each agent member's run metadata. Team
+definitions, `team-config.json`, and persisted default launch preferences do not
+own self-evolution eligibility, and whole-team/subteam evolution is not part of
+the MVP manual action.
+
 That surface owns:
 
 - the team-level default runtime/model/config selection,

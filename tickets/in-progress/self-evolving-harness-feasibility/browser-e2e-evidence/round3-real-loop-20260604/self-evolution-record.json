@@ -1,0 +1,123 @@
+{
+  "evolutionRunId": "6984a63e-dd84-4dc2-a9b0-3a6195f4ba4d",
+  "status": "failed",
+  "requestedAt": "2026-06-04T18:49:58.646Z",
+  "completedAt": "2026-06-04T18:50:24.740Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "agent_run",
+    "runId": "calibration_marker_agent_mpzumbn3_validation_target_7561"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-04T18:48:34.948Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "agent_run_launch",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibration_marker_agent_mpzumbn3_validation_target_7561"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_evolution_specialist_1190",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-real-e2e/workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_mpzumbn3",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true,
+      "gitRootPath": "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3",
+      "rollbackMode": "git"
+    }
+  ],
+  "evidenceSummaryHash": "eb4ed2f3d4d0360923b4546a901f494de50a608c93053033a61ffd584de4d8de",
+  "changeSummary": {
+    "detectionMode": "git",
+    "changedSkillPaths": [
+      "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "offTargetChangePaths": [
+      "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "gitRoots": [
+      "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3"
+    ],
+    "diffStat": "Git root /private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3:\nWorking tree:\nSKILL.md | 10 ++++++++--\n 1 file changed, 8 insertions(+), 2 deletions(-)",
+    "warnings": [],
+    "policyViolations": [
+      "Self-evolver changed off-target path '/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md'."
+    ]
+  },
+  "updateMetrics": {
+    "evolverRunCompleted": false,
+    "evolverRunStatus": "failed",
+    "noOp": false,
+    "changedSkillCount": 1,
+    "changedSkillPaths": [
+      "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "offTargetChangeCount": 1,
+    "offTargetChangePaths": [
+      "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "policyViolationCount": 1,
+    "gitBackedTargetCount": 1,
+    "unversionedTargetCount": 0,
+    "warningCount": 0,
+    "errorCount": 1,
+    "notificationStatus": null
+  },
+  "benefitMetrics": {
+    "linkedPostEvolutionRunIds": [],
+    "linkMethod": "none",
+    "completedLinkedRuns": 0,
+    "failedLinkedRuns": 0,
+    "userPositiveFeedbackCount": null,
+    "userNegativeFeedbackCount": null,
+    "validationPassedCount": null,
+    "validationFailedCount": null,
+    "skillActivation": {
+      "status": "not_enough_data",
+      "loadSkillToolUseCount": null,
+      "configuredSkillPreloaded": null,
+      "directSkillReferenceCount": null
+    },
+    "skillAdherence": {
+      "status": "not_collectible",
+      "supportingTraceCount": null,
+      "contradictoryTraceCount": null
+    },
+    "assessment": "not_enough_data",
+    "notes": [
+      "Evolution did not complete, so downstream benefit is not collectible."
+    ]
+  },
+  "notificationSummary": null,
+  "errors": [
+    "Self-evolver changed off-target path '/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md'."
+  ]
+}

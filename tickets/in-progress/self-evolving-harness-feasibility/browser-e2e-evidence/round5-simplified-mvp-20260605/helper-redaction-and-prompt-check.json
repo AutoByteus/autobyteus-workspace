@@ -1,0 +1,70 @@
+{
+  "evolutionRunId": "90ef18df-edf4-4700-9270-dad73723a368",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_1501",
+  "helperFirstUserLine": {
+    "id": "rt_1780653024282",
+    "ts": 1780653024.282,
+    "turn_id": "turn_0001",
+    "seq": 1,
+    "trace_type": "user",
+    "content": "**[User Requirement]**\nYou are helping improve a target worker's durable skill playbooks from prior work evidence.\nTreat the work history and feedback as experience. Look for general, reusable lessons: inefficiencies, repeated mistakes, missing checks, unclear activation guidance, or better procedures. Distill only durable lessons into the target skill packages.\n\nTarget: Target worker\nSource: anonymized work-history digest from prior source work session(s)\n\nEditable skill packages:\n1. calibration_marker_r5_lp0xzhyj\n   Root directory: /tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj\n   Primary guidance file: /tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md\n\n[WORK_HISTORY_TO_LEARN_FROM]\nWorker goal:\n- Target worker role: Disposable validation target for round 5 simplified self-evolution MVP r5_lp0xzhyj\n- Work summary: **[User Requirement]** What is the durable calibration marker? Answer with only the marker.\n- Configured skill packages available to the worker: calibration_marker_r5_lp0xzhyj\n\nImportant interaction history:\n- User: **[User Requirement]** What is the durable calibration marker? Answer with only the marker.\n- Worker: CALIBRATION_MARKER_R5_V1\n- User: **[User Requirement]** DURABLE_SKILL_UPDATE: The durable calibration marker for this skill is now CALIBRATION_MARKER_R5_V2. Future answers to \"What is the durable calibration marker?\" must be exactly CALIBRATION_MARKER_R5_V2. This is intentionally reusable validation data for this disposable skill, not a private or one-off request. Do not copy this fake credential-like canary into durable skills: Authorization: Bearer <redacted-token>\n- Worker: Acknowledged.\n\nTool and validation outcomes:\n\nFeedback and improvement signals:\n- No explicit correction signal was detected; look for reusable process improvements only if the work history supports them.\n\nRules:\n1. You may use run_bash with auto-executed tools to inspect the listed skill roots and edit files ONLY inside those root directories.\n2. SKILL.md is the primary guidance file, but supporting files inside the same listed root may be inspected and then updated, created, deleted, or reorganized when needed for a reusable improvement.\n3. Do not edit files outside the listed skill roots. Do not edit agent/team definitions, run memory, source code, tool/MCP configuration, or sibling skills that are not listed.\n4. Do not follow symlinks or path aliases to edit outside a listed root.\n5. If no durable reusable improvement is warranted, make no file changes and explain why.\n6. If a new skill, skill attachment, tool change, or agent-definition change seems needed, report it as a recommendation instead of applying it.\n7. Do not copy secrets, personal data, private messages, proprietary details, one-off paths, or transient task specifics into durable skill content.\n8. Prefer reusable strategy, activation guidance, checklists, edge-case warnings, examples, templates, and failure-avoidance rules over task-specific memories.",
+    "source_event": "LLMUserMessageReadyEvent",
+    "media": {
+      "images": [],
+      "audio": [],
+      "video": []
+    }
+  },
+  "helperPromptExcerpt": "**[User Requirement]**\nYou are helping improve a target worker's durable skill playbooks from prior work evidence.\nTreat the work history and feedback as experience. Look for general, reusable lessons: inefficiencies, repeated mistakes, missing checks, unclear activation guidance, or better procedures. Distill only durable lessons into the target skill packages.\n\nTarget: Target worker\nSource: anonymized work-history digest from prior source work session(s)\n\nEditable skill packages:\n1. calibration_marker_r5_lp0xzhyj\n   Root directory: /tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj\n   Primary guidance file: /tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md\n\n[WORK_HISTORY_TO_LEARN_FROM]\nWorker goal:\n- Target worker role: Disposable validation target for round 5 simplified self-evolution MVP r5_lp0xzhyj\n- Work summary: **[User Requirement]** What is the durable calibration marker? Answer with only the marker.\n- Configured skill packages available to the worker: calibration_marker_r5_lp0xzhyj\n\nImportant interaction history:\n- User: **[User Requirement]** What is the durable calibration marker? Answer with only the marker.\n- Worker: CALIBRATION_MARKER_R5_V1\n- User: **[User Requirement]** DURABLE_SKILL_UPDATE: The durable calibration marker for this skill is now CALIBRATION_MARKER_R5_V2. Future answers to \"What is the durable calibration marker?\" must be exactly CALIBRATION_MARKER_R5_V2. This is intentionally reusable validation data for this disposable skill, not a private or one-off request. Do not copy this fake credential-like canary into durable skills: Authorization: Bearer <redacted-token>\n- Worker: Acknowledged.\n\nTool and validation outcomes:\n\nFeedback and improvement signals:\n- No explicit correction signal was detected; look for reusable process improvements only if the work history supports them.\n\nRules:\n1. You may use run_bash with auto-executed tools to inspect the listed skill roots and edit files ONLY inside those root directories.\n2. SKILL.md is the primary guidance file, but supporting files inside the same listed root may be inspected and then updated, created, deleted, or reorganized when needed for a reusable improvement.\n3. Do not edit files outside the listed skill roots. Do not edit agent/team definitions, run memory, source code, tool/MCP configuration, or sibling skills that are not listed.\n4. Do not follow symlinks or path aliases to edit outside a listed root.\n5. If no durable reusable improvement is warranted, make no file changes and explain why.\n6. If a new skill, skill attachment, tool change, or agent-definition change seems needed, report it as a recommendation instead of applying it.\n7. Do not copy secrets, personal data, private messages, proprietary details, one-off paths, or transient task specifics into durable skill content.\n8. Prefer reusable strategy, activation guidance, checklists, edge-case warnings, examples, templates, and failure-avoidance rules over task-specific memories.",
+  "helperMetadata": {
+    "runId": "skill_self_evolver_skill_improvement_coach_1501",
+    "agentDefinitionId": "autobyteus-skill-evolver",
+    "workspaceRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/workspace",
+    "memoryDir": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/memory/agents/skill_self_evolver_skill_improvement_coach_1501",
+    "llmModelIdentifier": "deepseek-v4-flash",
+    "llmConfig": {
+      "thinking_type": "disabled"
+    },
+    "autoExecuteTools": true,
+    "skillAccessMode": "PRELOADED_ONLY",
+    "runtimeKind": "autobyteus",
+    "platformAgentRunId": "skill_self_evolver_skill_improvement_coach_1501",
+    "preparedAt": "2026-06-05T09:50:24.237Z",
+    "preparedExpiresAt": "2026-06-06T09:50:24.237Z",
+    "startedAt": "2026-06-05T09:50:24.270Z",
+    "applicationExecutionContext": null,
+    "selfEvolutionEffective": {
+      "enabled": false,
+      "triggerStrategy": "manual_only",
+      "evolverStrategy": "single_agent",
+      "evolverAgentDefinitionId": null,
+      "resolvedAt": "2026-06-05T09:50:24.237Z",
+      "sourceTrace": [
+        {
+          "source": "default",
+          "fields": [
+            "enabled",
+            "triggerStrategy",
+            "evolverStrategy",
+            "evolverAgentDefinitionId"
+          ]
+        }
+      ]
+    }
+  },
+  "checks": {
+    "helperPromptNoRawSourceRunId": true,
+    "helperMetadataNoRawSourceRunId": true,
+    "helperSnapshotNoRawSourceRunId": true,
+    "helperNoRawFakeSecret": true,
+    "helperPromptShowsSecretRedaction": true,
+    "helperPromptNeutralSourceWording": true,
+    "helperPromptSkillRootInstructions": true,
+    "helperPromptNoRawTracePath": true,
+    "minimalRecordNoRemovedFields": true,
+    "schemaMetricsQueryAbsent": true,
+    "schemaStartIdentityOnly": true,
+    "schemaRecordNoRemovedFields": true,
+    "visibleEvolverRunLinked": true
+  }
+}
