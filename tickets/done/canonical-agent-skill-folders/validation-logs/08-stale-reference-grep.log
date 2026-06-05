@@ -1,0 +1,1 @@
+$ rg -n "agents/<agent-id>/SKILL|agent-teams/<team-id>/agents/<agent-id>/SKILL|root private skill|colocated private|colocated skill|agent colocated" autobyteus-server-ts/src autobyteus-server-ts/docs autobyteus-server-ts/tests autobyteus-web/docs -S --glob !node_modules --glob !**/dist/**

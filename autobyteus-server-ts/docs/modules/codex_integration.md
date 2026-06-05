@@ -192,8 +192,8 @@ working directory.
   runtime-owned whole-directory symlink into the run workspace at
   `.codex/skills/<sanitized-skill-name>`.
 - The symlink target is the already-resolved `Skill.rootPath`. For imported
-  shared-agent package skills, that may be the colocated agent `SKILL.md` root or
-  an `agents/<agent-id>/skills/<skill-name>` multi-skill root.
+  shared-agent package skills, that is the canonical
+  `agents/<agent-id>/skills/<skill-name>` package skill root.
 - If the discovery probe fails, AutoByteus falls back to the runtime-owned
   workspace symlink path instead of blocking bootstrap.
 - The runtime-owned workspace path is an intuitive
@@ -209,7 +209,7 @@ working directory.
 
 Durable E2E coverage exercises the runtime boundary with the real
 `CodexThreadBootstrapper` and `CodexWorkspaceSkillMaterializer`: imported
-shared-agent private root and multi-skill package layouts resolve into
+shared-agent canonical single-skill and multi-skill package layouts resolve into
 `.codex/skills/<skill-name>` symlinks that point at the exact package source
 roots and expose the expected `SKILL.md` content to Codex.
 

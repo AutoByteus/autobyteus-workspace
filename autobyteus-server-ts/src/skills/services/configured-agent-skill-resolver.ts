@@ -120,15 +120,6 @@ export class ConfiguredAgentSkillResolver {
       if (privateSkill) {
         return privateSkill;
       }
-
-      const colocatedSkill = this.loadContextualCandidate(
-        configuredName,
-        agentDirPath,
-        "agent colocated root skill",
-      );
-      if (colocatedSkill) {
-        return colocatedSkill;
-      }
     }
 
     const teamDirPath = this.normalizeExistingDirectory(sourceInfo?.teamDirPath);

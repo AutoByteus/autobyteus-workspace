@@ -92,9 +92,6 @@ const getAgentSkillDirectories = (agentsDir: string): string[] => {
     }
 
     const agentDir = path.join(agentsDir, agentEntry.name);
-    if (isSkillDirectory(agentDir)) {
-      skillDirectories.push(agentDir);
-    }
     skillDirectories.push(...getSkillFolderDirectories(path.join(agentDir, "skills")));
   }
 

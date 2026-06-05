@@ -1,0 +1,3 @@
+# Finalization git diff whitespace check
+timestamp_utc=2026-06-05T05:37:19Z
+command=git diff --check

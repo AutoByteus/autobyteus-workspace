@@ -1,0 +1,54 @@
+# Delivery git status at pre-verification handoff
+timestamp_utc=2026-06-05T04:51:27Z
+## codex/canonical-agent-skill-folders...origin/personal
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_packages.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/skills.md
+ M autobyteus-server-ts/src/skills/services/configured-agent-skill-resolver.ts
+ M autobyteus-server-ts/src/skills/services/skill-discovery.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/skills/services/skill-service.test.ts
+ M autobyteus-server-ts/tests/unit/skills/services/skill-sources-management.test.ts
+ M autobyteus-web/docs/skills.md
+?? tickets/canonical-agent-skill-folders/
+
+ .../docs/modules/agent_execution.md                |  10 +-
+ .../docs/modules/agent_packages.md                 |  18 +-
+ .../docs/modules/codex_integration.md              |   6 +-
+ autobyteus-server-ts/docs/modules/skills.md        |  39 ++--
+ .../services/configured-agent-skill-resolver.ts    |   9 -
+ .../src/skills/services/skill-discovery.ts         |   3 -
+ .../agent-package-private-skills.e2e.test.ts       | 224 ++++++++++-----------
+ .../unit/skills/services/skill-service.test.ts     | 102 +++++++---
+ .../services/skill-sources-management.test.ts      |  12 +-
+ autobyteus-web/docs/skills.md                      |   7 +-
+ 10 files changed, 228 insertions(+), 202 deletions(-)
+
+ticket_artifacts=
+tickets/canonical-agent-skill-folders/api-e2e-validation-report.md
+tickets/canonical-agent-skill-folders/code-review-report.md
+tickets/canonical-agent-skill-folders/delivery-logs/00-integration-refresh.log
+tickets/canonical-agent-skill-folders/delivery-logs/01-stale-reference-grep.log
+tickets/canonical-agent-skill-folders/delivery-logs/02-git-diff-check.log
+tickets/canonical-agent-skill-folders/delivery-logs/03-git-status-before-delivery-artifacts.log
+tickets/canonical-agent-skill-folders/delivery-logs/04-git-status-pre-verification-handoff.log
+tickets/canonical-agent-skill-folders/delivery-release-deployment-report.md
+tickets/canonical-agent-skill-folders/design-review-report.md
+tickets/canonical-agent-skill-folders/design-spec.md
+tickets/canonical-agent-skill-folders/docs-sync-report.md
+tickets/canonical-agent-skill-folders/handoff-summary.md
+tickets/canonical-agent-skill-folders/implementation-handoff.md
+tickets/canonical-agent-skill-folders/investigation-notes.md
+tickets/canonical-agent-skill-folders/requirements.md
+tickets/canonical-agent-skill-folders/validation-logs/00-environment.log
+tickets/canonical-agent-skill-folders/validation-logs/01-git-diff-check.log
+tickets/canonical-agent-skill-folders/validation-logs/02-prisma-generate.log
+tickets/canonical-agent-skill-folders/validation-logs/03-unit-skill-tests.log
+tickets/canonical-agent-skill-folders/validation-logs/04-agent-package-private-skills-e2e.log
+tickets/canonical-agent-skill-folders/validation-logs/05-skills-graphql-e2e.log
+tickets/canonical-agent-skill-folders/validation-logs/06-tsc-build-noemit.log
+tickets/canonical-agent-skill-folders/validation-logs/07-typecheck-known-ts6059.log
+tickets/canonical-agent-skill-folders/validation-logs/08-stale-reference-grep.log
+tickets/canonical-agent-skill-folders/validation-logs/09-agent-packages-graphql-e2e.log
+tickets/canonical-agent-skill-folders/validation-logs/10-git-status-after-validation.log

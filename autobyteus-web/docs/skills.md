@@ -178,9 +178,10 @@ When an agent is created, the selected `skillNames` are sent to the backend
 
 The backend treats `skillNames` as logical names at runtime. For package-authored
 agents, runtime resolution is context-first: those names may resolve to
-package-private layouts such as
-`agents/<agent-id>/skills/<skill-name>/SKILL.md`, a colocated
-`agents/<agent-id>/SKILL.md`, or an owning-team shared skill under
+package-private canonical folders such as
+`agents/<agent-id>/skills/<skill-name>/SKILL.md`, team-local private folders
+under `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`, or
+an owning-team shared skill under
 `agent-teams/<team-id>/skills/<skill-name>/SKILL.md` before falling back to the
 global skill directories. The Skills page catalog also scans package roots so
 users can browse and open those bundled skill files normally. Duplicate skill
