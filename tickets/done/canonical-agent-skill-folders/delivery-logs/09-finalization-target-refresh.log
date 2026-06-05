@@ -1,0 +1,25 @@
+# Finalization target refresh after user verification
+timestamp_utc=2026-06-05T05:37:17Z
+user_signal=finalize ticket; no release; rebuild Electron from main personal afterward
+command=git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+
+branch=codex/canonical-agent-skill-folders
+head=bd4803d457a1a0ba681cc2b7ccac63486f677a34
+origin_personal=bd4803d457a1a0ba681cc2b7ccac63486f677a34
+merge_base=bd4803d457a1a0ba681cc2b7ccac63486f677a34
+ahead_behind_HEAD_origin_personal=0	0
+
+## codex/canonical-agent-skill-folders...origin/personal
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_packages.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/skills.md
+ M autobyteus-server-ts/src/skills/services/configured-agent-skill-resolver.ts
+ M autobyteus-server-ts/src/skills/services/skill-discovery.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/skills/services/skill-service.test.ts
+ M autobyteus-server-ts/tests/unit/skills/services/skill-sources-management.test.ts
+ M autobyteus-web/docs/skills.md
+?? tickets/done/canonical-agent-skill-folders/

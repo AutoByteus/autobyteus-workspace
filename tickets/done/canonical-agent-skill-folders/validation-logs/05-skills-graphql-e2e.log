@@ -1,0 +1,144 @@
+$ pnpm -C autobyteus-server-ts test tests/e2e/skills/skills-graphql.e2e.test.ts
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+> vitest tests/e2e/skills/skills-graphql.e2e.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:88495) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/canonical-agent-skill-folders/autobyteus-server-ts
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > creates and queries a skill
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-zzs3jD
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-zzs3jD/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > creates and queries a skill
+Initialized git repository at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-zzs3jD/skills/test_skill
+Created version 0.1.0 at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-zzs3jD/skills/test_skill
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Initialized git repository at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE/skills/file_skill
+Created version 0.1.0 at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE/skills/file_skill
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE/skills/file_skill' with max_depth=null
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-xCx9NE/skills/file_skill' completed in 0.0050 seconds.
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > deletes a skill
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-X4TWDw
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-X4TWDw/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > deletes a skill
+Initialized git repository at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-X4TWDw/skills/delete_me
+Created version 0.1.0 at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-X4TWDw/skills/delete_me
+
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (3 tests) 1255ms
+     ✓ creates and queries a skill  710ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  06:40:26
+   Duration  7.27s (transform 3.68s, setup 20ms, import 5.52s, tests 1.26s, environment 0ms)
+

@@ -94,13 +94,9 @@ surfaces:
 
 Supported package layouts:
 
-- shared agent colocated skill:
-  `agents/<agent-id>/SKILL.md`
-- shared agent private multi-skill layout:
+- shared agent private skill layout:
   `agents/<agent-id>/skills/<skill-name>/SKILL.md`
-- team-local agent colocated skill:
-  `agent-teams/<team-id>/agents/<agent-id>/SKILL.md`
-- team-local agent private multi-skill layout:
+- team-local agent private skill layout:
   `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
 - owning-team shared skill for team-local members:
   `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
@@ -120,11 +116,11 @@ choose unique logical skill names instead of relying on collision
 disambiguation.
 
 Runtime-specific consumers receive resolved paths. Codex materializes imported
-package private roots and multi-skill roots into `.codex/skills/<skillName>`
-symlinks that target the package source directories. Native AutoByteus receives
-the same exact resolved roots through `AgentConfig.skills`. Runtime resolution
-does not use the package-wide catalog scan as its fallback, preserving the
-owning agent/team context for package-contained skills.
+package-private canonical skill roots into `.codex/skills/<skillName>` symlinks
+that target the package source directories under `skills/<skill-name>`. Native
+AutoByteus receives the same exact resolved roots through `AgentConfig.skills`.
+Runtime resolution does not use the package-wide catalog scan as its fallback,
+preserving the owning agent/team context for package-contained skills.
 
 ## Failure And Rollback Rules
 

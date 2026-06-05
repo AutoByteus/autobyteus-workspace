@@ -448,29 +448,29 @@ describe("Agent package private skills GraphQL e2e", () => {
   };
 
 
-  it("materializes imported shared-agent private root and multi-skill layouts for Codex runtime", async () => {
+  it("materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
     const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), `codex-private-skills-workspace-${unique}-`));
     cleanupPaths.add(workspaceRoot);
 
-    const rootAgentId = `codex-root-agent-${unique}`;
+    const singleAgentId = `codex-single-agent-${unique}`;
     const multiAgentId = `codex-multi-agent-${unique}`;
-    const rootSkillName = `codex_root_${unique}`;
+    const singleSkillName = `codex_single_${unique}`;
     const toneSkillName = `codex_tone_${unique}`;
     const outlineSkillName = `codex_outline_${unique}`;
 
-    const rootAgentDir = await writeAgentDefinition(externalRoot, rootAgentId, {
-      name: "Codex Runtime Root Private Skill Agent",
-      description: "Uses one colocated private skill at the agent root",
-      instructions: "Use the root private skill.",
-      skillNames: [rootSkillName],
+    const singleAgentDir = await writeAgentDefinition(externalRoot, singleAgentId, {
+      name: "Codex Runtime Single Private Skill Agent",
+      description: "Uses one canonical private skill folder",
+      instructions: "Use the canonical private skill.",
+      skillNames: [singleSkillName],
     });
-    await writeSkillDirectory(
-      rootAgentDir,
-      rootSkillName,
-      "Codex runtime root private skill",
-      "Codex root private skill content",
+    const singleSkillDir = await writeSkillDirectory(
+      path.join(singleAgentDir, "skills", singleSkillName),
+      singleSkillName,
+      "Codex runtime single private skill",
+      "Codex single private skill content",
     );
 
     const multiAgentDir = await writeAgentDefinition(externalRoot, multiAgentId, {
@@ -498,22 +498,22 @@ describe("Agent package private skills GraphQL e2e", () => {
     SkillService.resetInstance();
 
     const bootstrapper = createCodexBootstrapper(workspaceRoot);
-    const rootRunContext = await bootstrapper.bootstrapForCreate(
+    const singleRunContext = await bootstrapper.bootstrapForCreate(
       createCodexRunContext({
-        runId: `codex-root-run-${unique}`,
-        agentDefinitionId: rootAgentId,
+        runId: `codex-single-run-${unique}`,
+        agentDefinitionId: singleAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
     );
-    expect(rootRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
-    const rootMaterializedByName = new Map(
-      rootRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => [skill.name, skill]),
+    expect(singleRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+    const singleMaterializedByName = new Map(
+      singleRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => [skill.name, skill]),
     );
     await expectMaterializedSkillSymlink({
-      materialized: rootMaterializedByName.get(rootSkillName),
-      expectedName: rootSkillName,
-      expectedSourceRootPath: rootAgentDir,
-      expectedContent: "Codex root private skill content",
+      materialized: singleMaterializedByName.get(singleSkillName),
+      expectedName: singleSkillName,
+      expectedSourceRootPath: singleSkillDir,
+      expectedContent: "Codex single private skill content",
     });
 
     const multiRunContext = await bootstrapper.bootstrapForCreate(
@@ -544,11 +544,11 @@ describe("Agent package private skills GraphQL e2e", () => {
       expectedContent: "Codex outline private skill content",
     });
     await expect(fs.readdir(path.join(workspaceRoot, ".codex", "skills"))).resolves.toEqual(
-      expect.arrayContaining([rootSkillName, toneSkillName, outlineSkillName]),
+      expect.arrayContaining([singleSkillName, toneSkillName, outlineSkillName]),
     );
   });
 
-  it("passes imported private root and multi-skill paths to the AutoByteus runtime config", async () => {
+  it("passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
     const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), `autobyteus-private-skills-workspace-${unique}-`));
@@ -556,23 +556,23 @@ describe("Agent package private skills GraphQL e2e", () => {
     cleanupPaths.add(workspaceRoot);
     cleanupPaths.add(memoryRoot);
 
-    const rootAgentId = `autobyteus-root-agent-${unique}`;
+    const singleAgentId = `autobyteus-single-agent-${unique}`;
     const multiAgentId = `autobyteus-multi-agent-${unique}`;
-    const rootSkillName = `autobyteus_root_${unique}`;
+    const singleSkillName = `autobyteus_single_${unique}`;
     const toneSkillName = `autobyteus_tone_${unique}`;
     const outlineSkillName = `autobyteus_outline_${unique}`;
 
-    const rootAgentDir = await writeAgentDefinition(externalRoot, rootAgentId, {
-      name: "AutoByteus Runtime Root Private Skill Agent",
-      description: "Uses one colocated private skill at the agent root",
-      instructions: "Use the root private skill.",
-      skillNames: [rootSkillName],
+    const singleAgentDir = await writeAgentDefinition(externalRoot, singleAgentId, {
+      name: "AutoByteus Runtime Single Private Skill Agent",
+      description: "Uses one canonical private skill folder",
+      instructions: "Use the canonical private skill.",
+      skillNames: [singleSkillName],
     });
-    await writeSkillDirectory(
-      rootAgentDir,
-      rootSkillName,
-      "AutoByteus runtime root private skill",
-      "AutoByteus root private skill content",
+    const singleSkillDir = await writeSkillDirectory(
+      path.join(singleAgentDir, "skills", singleSkillName),
+      singleSkillName,
+      "AutoByteus runtime single private skill",
+      "AutoByteus single private skill content",
     );
 
     const multiAgentDir = await writeAgentDefinition(externalRoot, multiAgentId, {
@@ -602,20 +602,20 @@ describe("Agent package private skills GraphQL e2e", () => {
     const { factory, capturedConfigs } = createAutoByteusRuntimeProbe(workspaceRoot);
     const workspaceId = "runtime_ws_private_skills";
 
-    const rootRunId = `autobyteus-root-run-${unique}`;
-    const rootBackend = await factory.createBackend(
+    const singleRunId = `autobyteus-single-run-${unique}`;
+    const singleBackend = await factory.createBackend(
       createRuntimeRunConfig({
-        agentDefinitionId: rootAgentId,
+        agentDefinitionId: singleAgentId,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceId,
-        memoryDir: path.join(memoryRoot, rootRunId),
+        memoryDir: path.join(memoryRoot, singleRunId),
       }),
-      rootRunId,
+      singleRunId,
     );
-    expect(capturedConfigs.get(rootRunId)?.skills).toEqual([path.resolve(rootAgentDir)]);
-    expect(capturedConfigs.get(rootRunId)?.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
-    expect(rootBackend.getContext().config.workspaceId).toBe(workspaceId);
-    await rootBackend.terminate();
+    expect(capturedConfigs.get(singleRunId)?.skills).toEqual([path.resolve(singleSkillDir)]);
+    expect(capturedConfigs.get(singleRunId)?.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
+    expect(singleBackend.getContext().config.workspaceId).toBe(workspaceId);
+    await singleBackend.terminate();
 
     const multiRunId = `autobyteus-multi-run-${unique}`;
     const multiBackend = await factory.createBackend(
@@ -635,14 +635,14 @@ describe("Agent package private skills GraphQL e2e", () => {
     expect(multiBackend.getContext().config.workspaceId).toBe(workspaceId);
     await multiBackend.terminate();
   });
-  it("imports shared agents with colocated, multi-skill, context-bound private, and global fallback skills with catalog visibility", async () => {
+  it("imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
 
-    const rootAgentId = `shared-root-${unique}`;
+    const singleAgentId = `shared-single-${unique}`;
     const multiAgentId = `shared-multi-${unique}`;
     const foreignPrivateAgentId = `foreign-private-${unique}`;
-    const rootSkillName = `root_private_${unique}`;
+    const singleSkillName = `single_private_${unique}`;
     const toneSkillName = `tone_${unique}`;
     const outlineSkillName = `outline_${unique}`;
     const globalSkillName = `global_fallback_${unique}`;
@@ -654,17 +654,17 @@ describe("Agent package private skills GraphQL e2e", () => {
       "Global fallback content",
     );
 
-    const rootAgentDir = await writeAgentDefinition(externalRoot, rootAgentId, {
-      name: "Shared Root Private Skill Agent",
-      description: "Uses colocated root skill",
-      instructions: "Use the colocated skill.",
-      skillNames: [rootSkillName],
+    const singleAgentDir = await writeAgentDefinition(externalRoot, singleAgentId, {
+      name: "Shared Single Private Skill Agent",
+      description: "Uses one canonical private skill folder",
+      instructions: "Use the canonical private skill.",
+      skillNames: [singleSkillName],
     });
-    await writeSkillDirectory(
-      rootAgentDir,
-      rootSkillName,
-      "Shared root private skill",
-      "Root private skill content",
+    const singleSkillDir = await writeSkillDirectory(
+      path.join(singleAgentDir, "skills", singleSkillName),
+      singleSkillName,
+      "Shared single private skill",
+      "Single private skill content",
     );
 
     const multiAgentDir = await writeAgentDefinition(externalRoot, multiAgentId, {
@@ -690,7 +690,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       name: "Foreign Private Skill Guard Agent",
       description: "Must not resolve another agent's private skill",
       instructions: "Do not resolve a private skill from another agent directory.",
-      skillNames: [rootSkillName],
+      skillNames: [singleSkillName],
     });
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
@@ -698,8 +698,8 @@ describe("Agent package private skills GraphQL e2e", () => {
     await AgentDefinitionService.getInstance().refreshCache();
     SkillService.resetInstance();
 
-    await expect(resolveAgentSkillDescriptions(rootAgentId)).resolves.toEqual([
-      "Shared root private skill",
+    await expect(resolveAgentSkillDescriptions(singleAgentId)).resolves.toEqual([
+      "Shared single private skill",
     ]);
     await expect(resolveAgentSkillDescriptions(multiAgentId)).resolves.toEqual([
       "Shared private tone skill",
@@ -708,72 +708,72 @@ describe("Agent package private skills GraphQL e2e", () => {
     ]);
     const foreignWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     await expect(resolveAgentSkillDescriptions(foreignPrivateAgentId)).resolves.toEqual([]);
-    expect(foreignWarnSpy).toHaveBeenCalledWith(expect.stringContaining(rootSkillName));
+    expect(foreignWarnSpy).toHaveBeenCalledWith(expect.stringContaining(singleSkillName));
     foreignWarnSpy.mockRestore();
 
     const catalog = await execGraphql<{
       skills: Array<{ name: string; rootPath: string }>;
-      rootPrivate: { name: string; rootPath: string; content: string; fileCount: number } | null;
+      singlePrivate: { name: string; rootPath: string; content: string; fileCount: number } | null;
       tonePrivate: { name: string; rootPath: string; content: string; fileCount: number } | null;
       globalFallback: { name: string } | null;
-      rootPrivateTree: string | null;
-      rootPrivateFile: string | null;
+      singlePrivateTree: string | null;
+      singlePrivateFile: string | null;
       tonePrivateFile: string | null;
-      rootPrivateWorkspaceTree: string | null;
-      rootPrivateWorkspaceFile: string | null;
+      singlePrivateWorkspaceTree: string | null;
+      singlePrivateWorkspaceFile: string | null;
       tonePrivateWorkspaceFile: string | null;
     }>(
       `
         query SkillCatalog(
-          $rootSkillName: String!
+          $singleSkillName: String!
           $toneSkillName: String!
           $globalSkillName: String!
-          $rootSkillWorkspaceId: String!
+          $singleSkillWorkspaceId: String!
           $toneSkillWorkspaceId: String!
         ) {
           skills { name rootPath }
-          rootPrivate: skill(name: $rootSkillName) { name rootPath content fileCount }
+          singlePrivate: skill(name: $singleSkillName) { name rootPath content fileCount }
           tonePrivate: skill(name: $toneSkillName) { name rootPath content fileCount }
           globalFallback: skill(name: $globalSkillName) { name }
-          rootPrivateTree: skillFileTree(name: $rootSkillName)
-          rootPrivateFile: skillFileContent(skillName: $rootSkillName, path: "SKILL.md")
+          singlePrivateTree: skillFileTree(name: $singleSkillName)
+          singlePrivateFile: skillFileContent(skillName: $singleSkillName, path: "SKILL.md")
           tonePrivateFile: skillFileContent(skillName: $toneSkillName, path: "SKILL.md")
-          rootPrivateWorkspaceTree: folderChildren(workspaceId: $rootSkillWorkspaceId, folderPath: "")
-          rootPrivateWorkspaceFile: fileContent(workspaceId: $rootSkillWorkspaceId, filePath: "SKILL.md")
+          singlePrivateWorkspaceTree: folderChildren(workspaceId: $singleSkillWorkspaceId, folderPath: "")
+          singlePrivateWorkspaceFile: fileContent(workspaceId: $singleSkillWorkspaceId, filePath: "SKILL.md")
           tonePrivateWorkspaceFile: fileContent(workspaceId: $toneSkillWorkspaceId, filePath: "SKILL.md")
         }
       `,
       {
-        rootSkillName,
+        singleSkillName,
         toneSkillName,
         globalSkillName,
-        rootSkillWorkspaceId: `skill_ws_${rootSkillName}`,
+        singleSkillWorkspaceId: `skill_ws_${singleSkillName}`,
         toneSkillWorkspaceId: `skill_ws_${toneSkillName}`,
       },
     );
 
     const catalogNames = catalog.skills.map((skill) => skill.name);
     expect(catalogNames).toContain(globalSkillName);
-    expect(catalogNames).toContain(rootSkillName);
+    expect(catalogNames).toContain(singleSkillName);
     expect(catalogNames).toContain(toneSkillName);
-    expect(catalog.rootPrivate?.name).toBe(rootSkillName);
-    expect(catalog.rootPrivate?.rootPath).toBe(path.resolve(rootAgentDir));
-    expect(catalog.rootPrivate?.content).toContain("Root private skill content");
-    expect(catalog.rootPrivate?.fileCount).toBeGreaterThanOrEqual(1);
+    expect(catalog.singlePrivate?.name).toBe(singleSkillName);
+    expect(catalog.singlePrivate?.rootPath).toBe(path.resolve(singleSkillDir));
+    expect(catalog.singlePrivate?.content).toContain("Single private skill content");
+    expect(catalog.singlePrivate?.fileCount).toBeGreaterThanOrEqual(1);
     expect(catalog.tonePrivate?.name).toBe(toneSkillName);
     expect(catalog.tonePrivate?.rootPath).toBe(path.resolve(toneSkillDir));
     expect(catalog.tonePrivate?.content).toContain("Tone content");
     expect(catalog.globalFallback?.name).toBe(globalSkillName);
-    expect(catalog.rootPrivateFile).toContain("Root private skill content");
+    expect(catalog.singlePrivateFile).toContain("Single private skill content");
     expect(catalog.tonePrivateFile).toContain("Tone content");
-    expect(JSON.parse(catalog.rootPrivateTree ?? "{}").children).toEqual(
+    expect(JSON.parse(catalog.singlePrivateTree ?? "{}").children).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ name: "SKILL.md", is_file: true }),
       ]),
     );
-    expect(catalog.rootPrivateWorkspaceFile).toContain("Root private skill content");
+    expect(catalog.singlePrivateWorkspaceFile).toContain("Single private skill content");
     expect(catalog.tonePrivateWorkspaceFile).toContain("Tone content");
-    expect(JSON.parse(catalog.rootPrivateWorkspaceTree ?? "{}").children).toEqual(
+    expect(JSON.parse(catalog.singlePrivateWorkspaceTree ?? "{}").children).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ name: "SKILL.md", is_file: true }),
       ]),
@@ -785,13 +785,13 @@ describe("Agent package private skills GraphQL e2e", () => {
     const { externalRoot } = await bootstrapPackageService(unique);
 
     const teamId = `team-${unique}`;
-    const rootLocalAgentId = `local-root-${unique}`;
+    const singleLocalAgentId = `local-single-${unique}`;
     const multiLocalAgentId = `local-multi-${unique}`;
     const sharedFallbackAgentId = `team-shared-${unique}`;
     const foreignLocalAgentId = `foreign-local-${unique}`;
     const invalidAgentId = `invalid-skill-names-${unique}`;
 
-    const localRootSkillName = `local_root_${unique}`;
+    const localSingleSkillName = `local_single_${unique}`;
     const localToneSkillName = `local_tone_${unique}`;
     const localOutlineSkillName = `local_outline_${unique}`;
     const teamSharedSkillName = `team_shared_${unique}`;
@@ -803,7 +803,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       description: "Team package with team-local private skills",
       instructions: "Coordinate skill validation.",
       members: [
-        rootLocalAgentId,
+        singleLocalAgentId,
         multiLocalAgentId,
         sharedFallbackAgentId,
         foreignLocalAgentId,
@@ -811,22 +811,22 @@ describe("Agent package private skills GraphQL e2e", () => {
       ],
     });
 
-    const localRootAgentDir = await writeTeamLocalAgentDefinition(
+    const localSingleAgentDir = await writeTeamLocalAgentDefinition(
       externalRoot,
       teamId,
-      rootLocalAgentId,
+      singleLocalAgentId,
       {
-        name: "Team Local Root Skill Agent",
-        description: "Uses colocated team-local root skill",
-        instructions: "Use local root skill.",
-        skillNames: [localRootSkillName],
+        name: "Team Local Single Skill Agent",
+        description: "Uses one canonical team-local private skill folder",
+        instructions: "Use local single skill.",
+        skillNames: [localSingleSkillName],
       },
     );
-    await writeSkillDirectory(
-      localRootAgentDir,
-      localRootSkillName,
-      "Team-local root private skill",
-      "Local root content",
+    const localSingleSkillDir = await writeSkillDirectory(
+      path.join(localSingleAgentDir, "skills", localSingleSkillName),
+      localSingleSkillName,
+      "Team-local single private skill",
+      "Local single content",
     );
 
     const multiLocalAgentDir = await writeTeamLocalAgentDefinition(
@@ -870,7 +870,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       name: "Foreign Team-Local Private Skill Guard Agent",
       description: "Must not resolve another team-local agent's private skill",
       instructions: "Do not resolve a private skill from another local agent directory.",
-      skillNames: [localRootSkillName],
+      skillNames: [localSingleSkillName],
     });
 
     const invalidAgentDir = await writeTeamLocalAgentDefinition(
@@ -909,14 +909,14 @@ describe("Agent package private skills GraphQL e2e", () => {
     await AgentDefinitionService.getInstance().refreshCache();
     SkillService.resetInstance();
 
-    const rootDefinitionId = buildTeamLocalAgentDefinitionId(teamId, rootLocalAgentId);
+    const singleDefinitionId = buildTeamLocalAgentDefinitionId(teamId, singleLocalAgentId);
     const multiDefinitionId = buildTeamLocalAgentDefinitionId(teamId, multiLocalAgentId);
     const sharedFallbackDefinitionId = buildTeamLocalAgentDefinitionId(teamId, sharedFallbackAgentId);
     const foreignLocalDefinitionId = buildTeamLocalAgentDefinitionId(teamId, foreignLocalAgentId);
     const invalidDefinitionId = buildTeamLocalAgentDefinitionId(teamId, invalidAgentId);
 
-    await expect(resolveAgentSkillDescriptions(rootDefinitionId)).resolves.toEqual([
-      "Team-local root private skill",
+    await expect(resolveAgentSkillDescriptions(singleDefinitionId)).resolves.toEqual([
+      "Team-local single private skill",
     ]);
     await expect(resolveAgentSkillDescriptions(multiDefinitionId)).resolves.toEqual([
       "Team-local private tone skill",
@@ -928,7 +928,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     await expect(resolveAgentSkillDescriptions(foreignLocalDefinitionId)).resolves.toEqual([]);
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(localRootSkillName));
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(localSingleSkillName));
     await expect(resolveAgentSkillDescriptions(invalidDefinitionId)).resolves.toEqual([]);
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name '../escape'"));
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name 'a/b'"));
@@ -938,7 +938,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const catalog = await execGraphql<{
       skills: Array<{ name: string }>;
-      localRoot: { name: string; rootPath: string; content: string } | null;
+      localSingle: { name: string; rootPath: string; content: string } | null;
       localTone: { name: string; rootPath: string; content: string } | null;
       teamShared: { name: string; rootPath: string; content: string } | null;
       teamSharedTree: string | null;
@@ -948,13 +948,13 @@ describe("Agent package private skills GraphQL e2e", () => {
     }>(
       `
         query TeamSkillCatalog(
-          $localRootSkillName: String!
+          $localSingleSkillName: String!
           $localToneSkillName: String!
           $teamSharedSkillName: String!
           $teamSharedWorkspaceId: String!
         ) {
           skills { name }
-          localRoot: skill(name: $localRootSkillName) { name rootPath content }
+          localSingle: skill(name: $localSingleSkillName) { name rootPath content }
           localTone: skill(name: $localToneSkillName) { name rootPath content }
           teamShared: skill(name: $teamSharedSkillName) { name rootPath content }
           teamSharedTree: skillFileTree(name: $teamSharedSkillName)
@@ -964,7 +964,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         }
       `,
       {
-        localRootSkillName,
+        localSingleSkillName,
         localToneSkillName,
         teamSharedSkillName,
         teamSharedWorkspaceId: `skill_ws_${teamSharedSkillName}`,
@@ -973,13 +973,13 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const catalogNames = catalog.skills.map((skill) => skill.name);
     expect(catalogNames).toEqual(expect.arrayContaining([
-      localRootSkillName,
+      localSingleSkillName,
       localToneSkillName,
       localOutlineSkillName,
       teamSharedSkillName,
     ]));
-    expect(catalog.localRoot?.rootPath).toBe(path.resolve(localRootAgentDir));
-    expect(catalog.localRoot?.content).toContain("Local root content");
+    expect(catalog.localSingle?.rootPath).toBe(path.resolve(localSingleSkillDir));
+    expect(catalog.localSingle?.content).toContain("Local single content");
     expect(catalog.localTone?.rootPath).toBe(path.resolve(localToneSkillDir));
     expect(catalog.localTone?.content).toContain("Local tone content");
     expect(catalog.teamShared?.rootPath).toBe(path.resolve(teamSharedSkillDir));

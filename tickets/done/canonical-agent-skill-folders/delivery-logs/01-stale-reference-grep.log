@@ -1,0 +1,4 @@
+# Delivery docs/source stale-reference grep
+timestamp_utc=2026-06-05T04:49:03Z
+command=rg -n exact unsupported package-agent root layout references
+note=No output above means no exact unsupported positive root/colocated package-agent skill layout references were found. Explicit negative test names with 'root-level agent SKILL.md' were checked separately in validation.

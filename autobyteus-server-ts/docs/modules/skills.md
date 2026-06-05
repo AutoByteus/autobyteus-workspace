@@ -33,12 +33,9 @@ After those directories, `SkillService.listSkills()` and
 `SkillService.getSkill(name)` scan definition roots from app data and configured
 agent package roots for bundled package skills:
 
-- shared agent colocated skills: `agents/<agent-id>/SKILL.md`
-- shared agent multi-skill folders:
+- shared agent private skill folders:
   `agents/<agent-id>/skills/<skill-name>/SKILL.md`
-- team-local agent colocated skills:
-  `agent-teams/<team-id>/agents/<agent-id>/SKILL.md`
-- team-local agent multi-skill folders:
+- team-local agent private skill folders:
   `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
 - owning-team shared skills:
   `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
@@ -70,13 +67,11 @@ providers:
 
 For each configured skill name, resolution proceeds in this order:
 
-1. agent-private multi-skill folder:
+1. agent-private skill folder:
    `<agentDirPath>/skills/<skillName>/SKILL.md`
-2. agent colocated root skill:
-   `<agentDirPath>/SKILL.md`
-3. owning-team shared skill for team-local agents:
+2. owning-team shared skill for team-local agents:
    `<teamDirPath>/skills/<skillName>/SKILL.md`
-4. configured/global skill-directory fallback
+3. configured/global skill-directory fallback
 
 Contextual candidates must contain `SKILL.md`, and that file's frontmatter
 `name` must exactly match the configured skill name. Unsafe configured names
@@ -102,8 +97,8 @@ private skill scan.
   `.codex/skills/<skillName>` directory symlinks whose targets are the exact
   resolved `Skill.rootPath` package roots.
 - Native AutoByteus passes the exact resolved `Skill.rootPath` values to
-  `AgentConfig.skills`, including colocated private skill roots and
-  `skills/<skillName>` multi-skill roots.
+  `AgentConfig.skills`, including package-private canonical skill roots under
+  `skills/<skillName>`.
 - GraphQL `skills` / `skill(name)` and the frontend Skills page expose bundled
   package skills as normal catalog entries when their package roots are
   available, so users can browse their `SKILL.md` content and files through the
@@ -111,24 +106,18 @@ private skill scan.
 
 ## Supported Package Authoring Layouts
 
-Shared/package-owned agents can use a single colocated skill:
+Shared/package-owned agents use the same canonical foldered layout for one
+skill or many skills:
 
 ```text
 agents/my-agent/
   agent.md
-  agent-config.json        # { "skillNames": ["my-private-skill"] }
-  SKILL.md                 # frontmatter name: my-private-skill
-```
-
-They can also use multiple private skills:
-
-```text
-agents/my-agent/
-  agent.md
-  agent-config.json        # { "skillNames": ["tone", "outline"] }
+  agent-config.json        # { "skillNames": ["my-private-skill", "optional-second-skill"] }
   skills/
-    tone/SKILL.md          # frontmatter name: tone
-    outline/SKILL.md       # frontmatter name: outline
+    my-private-skill/
+      SKILL.md             # frontmatter name: my-private-skill
+    optional-second-skill/
+      SKILL.md             # frontmatter name: optional-second-skill
 ```
 
 Team-local agents can use private member skills and owning-team shared skills:

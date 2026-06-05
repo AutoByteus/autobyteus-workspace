@@ -1,0 +1,20 @@
+# Electron build preflight
+timestamp_utc=2026-06-05T05:02:19Z
+node=v22.21.1
+pnpm=10.28.2
+platform=Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+
+autobyteus-web package scripts include:
+test:electron: vitest --config ./electron/vitest.config.ts
+generate:electron: cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+transpile-electron: tsc -p electron/tsconfig.json
+prepare-server: node ./scripts/prepare-server-dispatch.mjs
+build:electron: cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js
+build:electron:linux: cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux
+build:electron:windows: cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows
+build:electron:mac: cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+Checking dependency folders:
+root node_modules: present
+autobyteus-web node_modules: present
+autobyteus-server-ts node_modules: present

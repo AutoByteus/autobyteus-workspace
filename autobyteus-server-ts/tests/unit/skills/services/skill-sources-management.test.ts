@@ -18,11 +18,11 @@ const writeSkill = (root: string, name: string, description: string, content: st
 };
 
 const writeBundledAgentSkill = (root: string, name: string, description: string, content: string) => {
-  const agentDir = path.join(root, "agents", name);
-  fs.mkdirSync(agentDir, { recursive: true });
+  const skillDir = path.join(root, "agents", name, "skills", name);
+  fs.mkdirSync(skillDir, { recursive: true });
   const skillMd = `---\nname: ${name}\ndescription: ${description}\n---\n\n${content}\n`;
-  fs.writeFileSync(path.join(agentDir, "SKILL.md"), skillMd, "utf-8");
-  return agentDir;
+  fs.writeFileSync(path.join(skillDir, "SKILL.md"), skillMd, "utf-8");
+  return skillDir;
 };
 
 describe("SkillService skill source management", () => {
@@ -206,7 +206,7 @@ describe("SkillService skill source management", () => {
   it("counts and resolves bundled agent-local skills when a package root is added as a skill source", () => {
     const packageRoot = path.join(tempRoot, "agent_package");
     fs.mkdirSync(packageRoot, { recursive: true });
-    writeBundledAgentSkill(packageRoot, "requirements-engineer", "Bundled skill", "Bundled");
+    const skillDir = writeBundledAgentSkill(packageRoot, "requirements-engineer", "Bundled skill", "Bundled");
     additionalDirs = [packageRoot];
 
     const sources = service.getSkillSources();
@@ -215,6 +215,6 @@ describe("SkillService skill source management", () => {
     expect(addedSource?.skillCount).toBe(1);
 
     const bundled = service.getSkill("requirements-engineer");
-    expect(bundled?.rootPath).toBe(path.resolve(path.join(packageRoot, "agents", "requirements-engineer")));
+    expect(bundled?.rootPath).toBe(path.resolve(skillDir));
   });
 });
