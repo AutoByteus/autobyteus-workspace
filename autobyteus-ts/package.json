@@ -22,7 +22,6 @@
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.10",
-    "@types/react": "^19.2.10",
     "dotenv": "^17.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
@@ -36,11 +35,9 @@
     "axios": "^1.13.2",
     "cheerio": "^1.2.0",
     "hono": "^4.0.0",
-    "ink": "^6.6.0",
     "mime-types": "^3.0.2",
     "ollama": "^0.6.3",
     "openai": "^6.16.0",
-    "react": "^19.2.0",
     "undici": "^7.22.0",
     "zod": "^4.3.6"
   },

@@ -155,9 +155,10 @@ message ingestion.
 ## Tool Approval Spine
 
 Pending tool approvals are part of the active turn boundary, not the runtime
-lifecycle lane. The native single-agent path is:
+lifecycle lane. The native single-agent runtime path is:
 
-1. external API/UI/CLI calls `Agent.postToolExecutionApproval(...)`;
+1. external API, server/web UI, or other programmatic caller calls
+   `Agent.postToolExecutionApproval(...)`;
 2. `AgentRuntime.postToolApprovalEvent(...)` checks runtime liveness and posts
    an awaitable active-turn event entry;
 3. `ToolApprovalInboxEventHandler` delegates to
