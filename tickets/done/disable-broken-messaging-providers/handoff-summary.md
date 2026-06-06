@@ -58,5 +58,5 @@
 ## Finalization Status
 
 - Ticket archived to: `tickets/done/disable-broken-messaging-providers/`
-- Ticket branch commit: `Completed on codex/disable-broken-messaging-providers finalization commit`
-- Target branch merge/push: `To be completed immediately after ticket-branch push; see final user response for final result.`
+- Ticket branch commit: `36f0a4d80c3f` (`chore(ticket): finalize disable broken messaging providers`)
+- Target branch merge/push: `Completed` — merge commit `0419726affcd` pushed to `origin/personal`.

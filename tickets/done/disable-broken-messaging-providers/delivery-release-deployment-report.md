@@ -57,17 +57,17 @@ No release, publication, deployment, or version bump is in scope. The user expli
 
 - Bootstrap context source: `investigation-notes.md` recorded `origin/personal` / `personal` as base/finalization target.
 - Ticket branch: `codex/disable-broken-messaging-providers`
-- Ticket branch commit result: `Completed` — final ticket archive/docs artifacts committed on `codex/disable-broken-messaging-providers`.
-- Ticket branch push result: `Pending at report creation time`
+- Ticket branch commit result: `Completed` — `36f0a4d80c3f` (`chore(ticket): finalize disable broken messaging providers`).
+- Ticket branch push result: `Completed` — pushed to `origin/codex/disable-broken-messaging-providers` at `36f0a4d80c3f`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No` — final fetch before archival still had `origin/personal` at `c2317fa830af`.
 - Delivery-owned edits protected before re-integration: `Completed` — delivery logs were stashed before the user-requested rebase and restored afterward; a safety branch was created at the pre-rebase state.
 - Re-integration before final merge result: `Completed` — rebased onto `c2317fa830af`.
-- Target branch update result: `Pending at report creation time`
-- Merge into target result: `Pending at report creation time`
-- Push target branch result: `Pending at report creation time`
-- Repository finalization status: `Pending at report creation time`
+- Target branch update result: `Completed` — local `personal` was refreshed from `origin/personal` at `c2317fa830af` before merge.
+- Merge into target result: `Completed` — merge commit `0419726affcd` (`merge: disable broken messaging providers`).
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` (`c2317fa8..0419726a`).
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `N/A`
 
 ## Release / Publication / Deployment
@@ -82,9 +82,9 @@ No release, publication, deployment, or version bump is in scope. The user expli
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers`
-- Worktree cleanup result: `Pending user-safe cleanup decision after finalization`
-- Worktree prune result: `Pending user-safe cleanup decision after finalization`
-- Local ticket branch cleanup result: `Pending user-safe cleanup decision after finalization`
+- Worktree cleanup result: `Not performed` — preserved the user-tested local Electron build artifact path after finalization.
+- Worktree prune result: `Not performed` — ticket worktree intentionally retained for the local DMG/ZIP artifacts.
+- Local ticket branch cleanup result: `Not performed` — retained for traceability to the user-tested build.
 - Remote branch cleanup result: `Not required`
 - Blocker (if applicable): `N/A`
 
@@ -123,4 +123,4 @@ If Settings -> Messaging loses the whole Messaging section, hides Discord/Telegr
 
 ## Final Status
 
-`Ticket branch finalized; target merge/push to follow immediately. No release required.`
+`Completed. Ticket branch was pushed, merged into personal, and personal was pushed. No release required.`
