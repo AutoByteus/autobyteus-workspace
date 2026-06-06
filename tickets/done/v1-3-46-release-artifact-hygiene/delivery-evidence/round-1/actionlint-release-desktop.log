@@ -1,0 +1,1 @@
+$ actionlint .github/workflows/release-desktop.yml

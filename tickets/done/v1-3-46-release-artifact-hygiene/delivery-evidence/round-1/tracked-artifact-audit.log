@@ -1,0 +1,5 @@
+$ git ls-files | grep -E "(^|/)\.xcresult(/|$)|\.xcresult$"
+PASS: no tracked .xcresult paths
+
+$ git ls-files | awk length > 200
+tracked_paths_over_200=0

@@ -1,0 +1,18 @@
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 11331
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+
+$ python3 -m py_compile scripts/check_repository_artifact_hygiene.py
+
+$ actionlint .github/workflows/release-desktop.yml
+
+$ ruby YAML parse release-desktop
+YAML parse OK
+
+$ git diff --check --cached
+
+$ git ls-files .xcresult/path audit
+PASS: no tracked .xcresult paths
+tracked_paths_over_200=0

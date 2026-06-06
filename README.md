@@ -322,6 +322,9 @@ pnpm android:server:stop
   - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
   - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
   - The desktop, Android, and messaging-gateway release workflows enforce those checks and fail on mismatch.
+- Repository artifact hygiene is mandatory:
+  - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, and checkout-risk path lengths.
+  - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
 - Android APK release:
   - public Android publishing uses `.github/workflows/release-android.yml`
   - release tags and publish-enabled manual runs require signing secrets and build `AutoByteus_personal_android-X.Y.Z-release.apk`

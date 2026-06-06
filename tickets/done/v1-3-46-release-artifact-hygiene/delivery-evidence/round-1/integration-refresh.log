@@ -1,0 +1,18 @@
+$ git fetch origin personal codex/v1-3-46-release-artifact-hygiene
+Already completed before this check; refs captured below.
+
+$ git rev-parse origin/personal HEAD
+15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+910785d54497d0bf12cc3e85c86d51901094f7a5
+
+$ git merge-base HEAD origin/personal
+15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+
+$ git merge-base --is-ancestor origin/personal HEAD
+PASS: origin/personal is ancestor of HEAD
+
+$ git log --oneline origin/personal..HEAD
+910785d5 test(release): record desktop workflow validation
+ec989ecf fix(release): remove tracked checkout-risk artifacts
+
+$ git log --oneline HEAD..origin/personal

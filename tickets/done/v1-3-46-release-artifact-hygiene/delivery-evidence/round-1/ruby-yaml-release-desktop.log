@@ -1,0 +1,2 @@
+$ ruby -e require yaml; YAML.load_file(...)
+YAML parse OK
