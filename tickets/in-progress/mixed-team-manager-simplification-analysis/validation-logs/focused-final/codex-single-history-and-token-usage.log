@@ -1,0 +1,210 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:52848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime)
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-e2e-appdata-zsZIWi
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-e2e-appdata-zsZIWi/.env
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent Definition created successfully with ID: codex-history-title-7a732955-dcc0-41a9-9cd0-382a48899bdc
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-yYZqJe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-yYZqJe.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Created and registered workspace ID: agent_ws_9f710bdb5834503968671342e0c093e6d0d7bf34c611bbd93344e75c182902af
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent definition cache populated with 47 items.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-yYZqJe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-yYZqJe.
+Reusing existing workspace ID: agent_ws_9f710bdb5834503968671342e0c093e6d0d7bf34c611bbd93344e75c182902af
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Successfully created codex_app_server agent run '54ce1393-bdf9-480c-9b10-9320713f2c12'.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-06-06T17:31:26.810Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent websocket attached for run 54ce1393-bdf9-480c-9b10-9320713f2c12
+Created agent session 598ab19e-a2c5-4ac7-aeba-ca8adcea417f for run 54ce1393-bdf9-480c-9b10-9320713f2c12
+Agent WebSocket connected: session=598ab19e-a2c5-4ac7-aeba-ca8adcea417f, run=54ce1393-bdf9-480c-9b10-9320713f2c12
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Closed agent session 598ab19e-a2c5-4ac7-aeba-ca8adcea417f
+Agent WebSocket disconnected: 598ab19e-a2c5-4ac7-aeba-ca8adcea417f
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+In-memory cache: Removed agent definition with ID codex-history-title-7a732955-dcc0-41a9-9cd0-382a48899bdc.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent Definition with ID codex-history-title-7a732955-dcc0-41a9-9cd0-382a48899bdc deleted successfully.
+
+ ❯ tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts (1 test | 1 failed) 9529ms
+     × keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites 9488ms
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:53674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+ ↓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (1 test | 1 skipped)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+AssertionError: expected 'Reply with exactly HISTORY_TITLE_SECO…' to be 'Reply with exactly HISTORY_TITLE_FIRS…' // Object.is equality
+
+Expected: "Reply with exactly HISTORY_TITLE_FIRST_e927c2ed_1609_40ff_845f_ac594eed3d6c and nothing else."
+Received: "Reply with exactly HISTORY_TITLE_SECOND_5b00de47_9122_4760_b3f1_92b9d7163271 and nothing else."
+
+ ❯ tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:530:44
+    528|         );
+    529|         const followUpHistoryRow = await findHistoryRow(runId);
+    530|         expect(followUpHistoryRow.summary).toBe(firstUserMessage);
+       |                                            ^
+    531|         expect(followUpHistoryRow.summary).not.toBe(followUpUserMessag…
+    532|         expect(followUpHistoryRow.isActive).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 skipped (2)
+      Tests  1 failed | 1 skipped (2)
+   Start at  19:31:21
+   Duration  16.35s (transform 2.96s, setup 25ms, import 6.18s, tests 9.53s, environment 0ms)
+

@@ -12,8 +12,10 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const describeAutoByteusTeamRuntime =
   process.env.RUN_LMSTUDIO_E2E === "1" ? describe : describe.skip;
 
@@ -466,17 +468,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     const toolStartIndex = streamMessages.length;
 
     try {
-      teamSocket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(teamSocket, {
             target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use a relative path and perform the real tool call.",
-          },
-        }),
-      );
+          });
 
       const approvalRequested = await waitForMessageAfter(
         streamMessages,
@@ -492,7 +489,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "APPROVE_TOOL",
           payload: {
-            agent_name: "worker",
+            target_member_route_key: "worker",
             invocation_id: invocationId,
             reason: "approved by team API e2e",
           },
@@ -565,14 +562,9 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
       const restoreToken = `TEAM_RESTORE_${randomUUID().replace(/-/g, "_")}`;
       const restoreStartIndex = streamMessages.length;
-      teamSocket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(teamSocket, {
             content: `Reply with exactly ${restoreToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         streamMessages,
@@ -633,17 +625,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const expectedContent = `TEAM_INTERRUPT_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
       const interruptStartIndex = messages.length;
 
-      socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(socket, {
             target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
-          },
-        }),
-      );
+          });
 
       const approvalRequested = await waitForMessageAfter(
         messages,
@@ -700,15 +687,10 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
       const followUpToken = `TEAM_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
       const followUpStartIndex = messages.length;
-      socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(socket, {
             target_member_route_key: "worker",
             content: `Reply with exactly ${followUpToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         messages,
@@ -769,17 +751,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const expectedContent = `TEAM_TERMINATE_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
       const terminateStartIndex = messages.length;
 
-      socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(socket, {
             target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         messages,
@@ -805,15 +782,10 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
       const followUpToken = `TEAM_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
       const followUpStartIndex = messages.length;
-      socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(socket, {
             target_member_route_key: "worker",
             content: `Reply with exactly ${followUpToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         messages,
@@ -961,14 +933,9 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
     try {
       const firstStartIndex = streamMessages.length;
-      teamSocket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(teamSocket, {
             content: `Reply with exactly ${firstToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         streamMessages,
@@ -992,14 +959,10 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       expect(firstTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
       const firstResumeResult = await execGraphql<{
-        getTeamRunResumeConfig: {
-          metadata: {
-            memberMetadata: Array<{ memberName: string; memberRouteKey: string }>;
-          };
-        };
+        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
       }>(teamResumeQuery, { teamRunId });
       const memberRouteKey =
-        firstResumeResult.getTeamRunResumeConfig.metadata.memberMetadata.find(
+        flattenE2eTeamMemberMetadata(firstResumeResult.getTeamRunResumeConfig.metadata).find(
           (member) => member.memberName === "worker",
         )?.memberRouteKey ?? "worker";
 
@@ -1021,14 +984,9 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
 
       const secondStartIndex = streamMessages.length;
-      teamSocket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(teamSocket, {
             content: `Reply with exactly ${secondToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         streamMessages,

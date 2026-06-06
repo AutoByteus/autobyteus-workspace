@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { StartTaskAgentInstanceRequest } from "../../../domain/task-agent-instance.js";
 import { cloneTaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
@@ -26,6 +27,7 @@ export class MixedTeamMemberRegistry {
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     subTeamRunFactory: MixedSubTeamRunFactory;
+    agentRunManager?: AgentRunManager;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryRequest) => Promise<AgentOperationResult>;
@@ -84,6 +86,7 @@ export class MixedTeamMemberRegistry {
           teamContext: this.options.teamContext,
           context,
           config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
+          agentRunManager: this.options.agentRunManager,
           publish: this.options.publish,
           notifyStatusChange: this.options.notifyStatusChange,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
@@ -145,6 +148,7 @@ export class MixedTeamMemberRegistry {
       teamContext: this.options.teamContext,
       context: taskAgentContext,
       config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
+      agentRunManager: this.options.agentRunManager,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,

@@ -14,10 +14,14 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
+import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../src/run-history/utils/team-member-run-id.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import type { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
+import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
+import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
@@ -79,6 +83,24 @@ const waitForCondition = async (fn: () => boolean, timeoutMs = 3000): Promise<vo
     await new Promise((resolve) => setTimeout(resolve, 20));
   }
   throw new Error("Timed out waiting for condition");
+};
+
+const buildTestDeliveryRequest = (
+  memberTeamContext: MemberTeamContext,
+  recipientName: string,
+  content: string,
+) => {
+  const result = buildInterAgentMessageDeliveryRequestFromRecipientName({
+    memberTeamContext,
+    recipientName,
+    content,
+    messageType: "agent_message",
+  });
+  expect(result.ok).toBe(true);
+  if (!result.ok) {
+    throw new Error(result.message);
+  }
+  return result.request;
 };
 
 type SocketHarness = {
@@ -296,6 +318,25 @@ class FakeAgentRunManager {
     return run;
   }
 
+  async restoreAgentRunFromPlatformState(input: {
+    runId: string;
+    config: AgentRunConfig;
+    platformAgentRunId: string | null;
+  }): Promise<AgentRun> {
+    const runtimeContext = input.platformAgentRunId
+      ? input.config.runtimeKind === RuntimeKind.CODEX_APP_SERVER
+        ? { threadId: input.platformAgentRunId }
+        : input.config.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK
+          ? { sessionId: input.platformAgentRunId }
+          : null
+      : null;
+    return this.restoreAgentRun(new AgentRunContext({
+      runId: input.runId,
+      config: input.config,
+      runtimeContext: runtimeContext as never,
+    }));
+  }
+
   async terminateAgentRun(runId: string): Promise<boolean> {
     const run = this.getActiveRun(runId);
     if (!run) {
@@ -340,7 +381,7 @@ const createAutoByteusTeamBackendFactory = () => {
 
     return {
       runId,
-      teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+      teamBackendKind: TeamBackendKind.MIXED,
       getRuntimeContext: () => ({
         coordinatorMemberRouteKey: memberContexts[0]?.memberRouteKey ?? null,
         memberContexts,
@@ -504,8 +545,8 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
         instructions: "Coordinate with the native team manager",
         coordinatorMemberName: "Coordinator",
         nodes: [
-          new TeamMember({ memberName: "Coordinator", ref: "agent-coordinator", refType: "agent" }),
-          new TeamMember({ memberName: "Reviewer", ref: "agent-reviewer", refType: "agent" }),
+          new TeamMember({ memberName: "Coordinator", ref: "agent-coordinator", refType: "agent", refScope: "shared" }),
+          new TeamMember({ memberName: "Reviewer", ref: "agent-reviewer", refType: "agent", refScope: "shared" }),
         ],
       }),
     ],
@@ -518,18 +559,20 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
         instructions: "Use mixed runtime orchestration",
         coordinatorMemberName: "Coordinator",
         nodes: [
-          new TeamMember({ memberName: "Coordinator", ref: "agent-coordinator", refType: "agent" }),
-          new TeamMember({ memberName: "Specialist", ref: "agent-specialist", refType: "agent" }),
+          new TeamMember({ memberName: "Coordinator", ref: "agent-coordinator", refType: "agent", refScope: "shared" }),
+          new TeamMember({ memberName: "Specialist", ref: "agent-specialist", refType: "agent", refScope: "shared" }),
         ],
       }),
     ],
   ]);
 
   const teamRunManager = new AgentTeamRunManager({
-    autoByteusTeamRunBackendFactory: autoByteusTeamFactory as never,
-    codexTeamRunBackendFactory: unexpectedTeamFactory as never,
-    claudeTeamRunBackendFactory: unexpectedTeamFactory as never,
     mixedTeamRunBackendFactory: mixedFactory as never,
+    teamCommunicationService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
+    runFileChangeService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
+  });
+  const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
+    teamRunManager: teamRunManager as never,
   });
 
   const teamRunService = new TeamRunService({
@@ -540,12 +583,7 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
       ),
     } as never,
     teamRunMetadataService,
-    teamRunHistoryIndexService: {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
-      recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      recordRunRestored: vi.fn().mockResolvedValue(undefined),
-      recordRunTerminated: vi.fn().mockResolvedValue(undefined),
-    } as never,
+    teamRunHistoryCatalogService,
     workspaceManager: workspaceManager as never,
     memoryDir,
   });
@@ -571,7 +609,17 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
   await app.register(websocket);
   await registerAgentWebsocket(
     app,
-    new AgentStreamHandler(undefined, agentRunService),
+    new AgentStreamHandler(
+      undefined,
+      agentRunService,
+      undefined,
+      undefined,
+      undefined,
+      new AgentRunStatusProjectionService({
+        agentRunManager: standaloneAgentRunManager as never,
+        metadataService: agentMetadataService,
+      }),
+    ),
     new AgentTeamStreamHandler(undefined, teamRunService),
   );
 
@@ -646,6 +694,8 @@ describe("runtime-selection top-level integration", () => {
           JSON.stringify({
             type: "SEND_MESSAGE",
             payload: {
+              message_id: "msg-standalone-1",
+              dedupe_key: "dedupe-standalone-1",
               content: "hello standalone agent",
               context_file_paths: [path.join(harness.workspaceRootPath, "notes.txt")],
             },
@@ -669,7 +719,7 @@ describe("runtime-selection top-level integration", () => {
     }
   });
 
-  it("keeps same-runtime autobyteus team creation and websocket messaging on the native team backend", async () => {
+  it("keeps same-runtime autobyteus team creation and websocket messaging on the mixed team backend", async () => {
     const harness = await createValidationHarness();
 
     try {
@@ -714,9 +764,9 @@ describe("runtime-selection top-level integration", () => {
       });
       const teamRunId = createResult.data.createAgentTeamRun.teamRunId as string;
       expect(teamRunId).toBeTruthy();
-      expect(harness.autoByteusTeamFactory.createCalls).toHaveLength(1);
-      expect(harness.mixedFactory.createBackend).not.toHaveBeenCalled();
-      expect(harness.teamRunService.getTeamRun(teamRunId)?.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
+      expect(harness.autoByteusTeamFactory.createCalls).toHaveLength(0);
+      expect(harness.mixedFactory.createBackend).toHaveBeenCalledTimes(1);
+      expect(harness.teamRunService.getTeamRun(teamRunId)?.teamBackendKind).toBe(TeamBackendKind.MIXED);
 
       const { socket, nextMessage } = await openSocket(`${harness.baseUrl}/ws/agent-team/${teamRunId}`);
       try {
@@ -731,17 +781,22 @@ describe("runtime-selection top-level integration", () => {
           JSON.stringify({
             type: "SEND_MESSAGE",
             payload: {
-              content: "hello native team",
+              message_id: "msg-team-autobyteus-1",
+              dedupe_key: "dedupe-team-autobyteus-1",
+              content: "hello mixed-only team",
               target_member_route_key: "Reviewer",
             },
           }),
         );
 
-        await waitForCondition(() => harness.autoByteusTeamFactory.messages.length === 1);
-        expect(harness.autoByteusTeamFactory.messages[0]).toMatchObject({
-          teamRunId,
-          targetMemberRouteKey: "Reviewer",
-          content: "hello native team",
+        await waitForCondition(() => harness.mixedMemberRunManager.messages.length === 1);
+        expect(harness.mixedMemberRunManager.createCalls[0]).toMatchObject({
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+        });
+        expect(harness.mixedMemberRunManager.createCalls[0]?.memberTeamContext?.teamBackendKind).toBe(TeamBackendKind.MIXED);
+        expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          content: "hello mixed-only team",
           source: "create",
         });
       } finally {
@@ -815,6 +870,8 @@ describe("runtime-selection top-level integration", () => {
           JSON.stringify({
             type: "SEND_MESSAGE",
             payload: {
+              message_id: "msg-team-mixed-1",
+              dedupe_key: "dedupe-team-mixed-1",
               content: "coordinate the mixed fix",
               target_member_route_key: "Coordinator",
             },
@@ -832,14 +889,14 @@ describe("runtime-selection top-level integration", () => {
           source: "create",
         });
 
-        await coordinatorCreateConfig.memberTeamContext?.deliverInterAgentMessage?.({
-          senderRunId: coordinatorCreateConfig.memberTeamContext.memberRunId,
-          senderMemberName: "Coordinator",
-          teamRunId,
-          recipientMemberName: "Specialist",
-          content: "Please validate the patch.",
-          messageType: "agent_message",
-        });
+        expect(coordinatorCreateConfig.memberTeamContext).toBeTruthy();
+        await coordinatorCreateConfig.memberTeamContext?.deliverInterAgentMessage?.(
+          buildTestDeliveryRequest(
+            coordinatorCreateConfig.memberTeamContext,
+            "Specialist",
+            "Please validate the patch.",
+          ),
+        );
 
         await waitForCondition(() => harness.mixedMemberRunManager.createCalls.length === 2);
         const specialistCreateConfig = harness.mixedMemberRunManager.createCalls[1]!;
@@ -851,7 +908,7 @@ describe("runtime-selection top-level integration", () => {
 
         await harness.teamRunService.refreshRunMetadata(createdRun!);
         const metadata = await harness.teamRunMetadataService.readMetadata(teamRunId);
-        expect(metadata?.memberMetadata).toEqual(
+        expect(metadata?.memberTree).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
               memberName: "Coordinator",
@@ -907,6 +964,8 @@ describe("runtime-selection top-level integration", () => {
             JSON.stringify({
               type: "SEND_MESSAGE",
               payload: {
+                message_id: "msg-team-mixed-restore-1",
+                dedupe_key: "dedupe-team-mixed-restore-1",
                 content: "resume mixed coordination",
                 target_member_route_key: "Coordinator",
               },
@@ -922,18 +981,18 @@ describe("runtime-selection top-level integration", () => {
             source: "restore",
           });
 
-          await coordinatorRestoreContext.config.memberTeamContext?.deliverInterAgentMessage?.({
-            senderRunId: coordinatorRestoreContext.config.memberTeamContext.memberRunId,
-            senderMemberName: "Coordinator",
-            teamRunId,
-            recipientMemberName: "Specialist",
-            content: "Please resume the review.",
-            messageType: "agent_message",
-          });
+          expect(coordinatorRestoreContext.config.memberTeamContext).toBeTruthy();
+          await coordinatorRestoreContext.config.memberTeamContext?.deliverInterAgentMessage?.(
+            buildTestDeliveryRequest(
+              coordinatorRestoreContext.config.memberTeamContext,
+              "Specialist",
+              "Please resume the review.",
+            ),
+          );
 
           await waitForCondition(() => harness.mixedMemberRunManager.restoreCalls.length === 2);
           const specialistRestoreContext = harness.mixedMemberRunManager.restoreCalls[1]!;
-          const specialistMetadata = metadata?.memberMetadata.find((member) => member.memberName === "Specialist");
+          const specialistMetadata = metadata?.memberTree.find((member) => member.memberName === "Specialist");
           expect(specialistRestoreContext.config.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
           expect((specialistRestoreContext.runtimeContext as { threadId?: string | null })?.threadId).toBe(
             specialistMetadata?.platformAgentRunId,

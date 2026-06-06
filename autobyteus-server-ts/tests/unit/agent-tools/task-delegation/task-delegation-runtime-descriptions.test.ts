@@ -39,7 +39,7 @@ const getDescription = (schema: unknown): string => {
 const createMemberTeamContext = (): MemberTeamContext => new MemberTeamContext({
   teamRunId: "team-1",
   teamDefinitionId: "team-def-1",
-  teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+  teamBackendKind: TeamBackendKind.MIXED,
   memberName: "Coordinator",
   memberPath: ["coordinator"],
   memberRouteKey: "coordinator",

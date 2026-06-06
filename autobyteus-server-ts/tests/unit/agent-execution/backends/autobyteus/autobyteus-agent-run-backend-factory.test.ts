@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentConfig } from "autobyteus-ts";
 import { InterAgentMessageRequestEvent } from "autobyteus-ts/agent-team/events/agent-team-events.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { TeamManifestInjectorProcessor } from "autobyteus-ts/agent-team/system-prompt-processor/team-manifest-injector-processor.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -80,6 +79,7 @@ const createMemberTeamContext = (
     memberPath: ["professor"],
     memberRouteKey: "professor",
     memberRunId: taskAgentInstance?.taskAgentRunId ?? "run-professor",
+    teamInstruction: "Coordinate as a team.",
     members: [
       {
         memberKind: "agent",
@@ -148,7 +148,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     defaultToolRegistry.restore(toolRegistrySnapshot);
   });
 
-  it("filters mixed task-management tools, injects communication context, and ensures team manifest injection", async () => {
+  it("filters mixed task-management tools, composes server team prompts, and injects communication context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -203,9 +203,14 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ]);
     expect(
       built.agentConfig.systemPromptProcessors.some(
-        (processor: unknown) => processor instanceof TeamManifestInjectorProcessor,
+        (processor: unknown) =>
+          (processor as { constructor?: { name?: string } } | null | undefined)?.constructor?.name ===
+          "TeamManifestInjectorProcessor",
       ),
-    ).toBe(true);
+    ).toBe(false);
+    expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
+    expect(built.agentConfig.systemPrompt).toContain("## Agent Instruction");
+    expect(built.agentConfig.systemPrompt).toContain("## Runtime Instruction");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({
         teamRunId: "team-1",
@@ -219,7 +224,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("keeps task-management tools for non-mixed standalone team contexts", async () => {
+  it("keeps task-management tools for standalone AutoByteus runs without member team context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -264,7 +269,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberTeamContext: createMemberTeamContext(TeamBackendKind.AUTOBYTEUS),
       }),
     );
 

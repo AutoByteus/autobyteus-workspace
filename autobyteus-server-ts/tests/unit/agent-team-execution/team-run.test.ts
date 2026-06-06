@@ -11,7 +11,7 @@ import {
 
 const createBackend = () => ({
   runId: "team-run-1",
-  teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+  teamBackendKind: TeamBackendKind.MIXED,
   getRuntimeContext: () => null,
   isActive: () => true,
   getStatusSnapshot: () => ({ status: "idle" }),
@@ -34,11 +34,11 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: "Coordinator",
         config: new TeamRunConfig({
           teamDefinitionId: "team-def-1",
-          teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+          teamBackendKind: TeamBackendKind.MIXED,
           coordinatorMemberName: "Coordinator",
           memberConfigs: [],
         }),
@@ -61,11 +61,11 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: null,
         config: new TeamRunConfig({
           teamDefinitionId: "team-def-1",
-          teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+          teamBackendKind: TeamBackendKind.MIXED,
           coordinatorMemberName: "Coordinator",
           memberConfigs: [],
         }),
@@ -116,7 +116,7 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: null,
         config: null,
         runtimeContext: { memberContexts: [] },
@@ -136,7 +136,7 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: null,
         config: null,
         runtimeContext: { memberContexts: [] },

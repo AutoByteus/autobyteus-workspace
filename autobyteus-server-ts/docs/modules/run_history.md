@@ -250,7 +250,7 @@ Important identity/storage rules:
   - bare `memberName` is display/top-level identity and is not sufficient for
     duplicate nested leaf names
 - `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`
-- Codex and Claude team members write storage-only local memory under the member run directory, including single-runtime Claude teams and mixed-runtime members
+- Codex and Claude team members write storage-only local memory under the member run directory, through mixed team members
 - runtime-native identifiers remain separate from domain identifiers:
   - AutoByteus native agent id
   - Codex thread id

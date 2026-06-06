@@ -5,19 +5,17 @@ import {
 } from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import type { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { TeamBackendKind, resolveSingleRuntimeTeamBackendKind } from "../domain/team-backend-kind.js";
+import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
   TeamRunConfig,
   type TeamMemberRunConfigInput,
   type TeamRunMemberConfig,
   type TeamRunMemberConfigInput,
-  hasSubTeamMemberConfigs,
 } from "../domain/team-run-config.js";
 import {
   buildMemberPath,
   buildMemberRouteKeyFromPath,
 } from "../domain/team-run-member-identity.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 export type TeamDefinitionTopologyPlan = {
   teamDefinitionId: string;
@@ -105,13 +103,8 @@ export class TeamDefinitionTopologyPlanner {
       configsByName,
       duplicateLeafNames,
     });
-    const hasSubTeams = hasSubTeamMemberConfigs(memberTree);
-    const runtimeKinds = new Set(leaves.map((leaf) => this.resolveLeafRuntimeKind(leaf, memberTree)));
-    const teamBackendKind = hasSubTeams
-      ? TeamBackendKind.MIXED
-      : runtimeKinds.size <= 1
-        ? resolveSingleRuntimeTeamBackendKind(runtimeKinds.values().next().value ?? RuntimeKind.AUTOBYTEUS)
-        : TeamBackendKind.MIXED;
+    const hasSubTeams = memberTree.some((member) => member.memberKind === "agent_team");
+    const teamBackendKind = TeamBackendKind.MIXED;
 
     const config = new TeamRunConfig({
       teamDefinitionId,
@@ -314,20 +307,4 @@ export class TeamDefinitionTopologyPlanner {
     throw new Error(`Launch config for team member '${leaf.memberRouteKey}' was not provided.`);
   }
 
-  private resolveLeafRuntimeKind(
-    leaf: AgentSkeleton,
-    memberTree: readonly TeamRunMemberConfig[],
-  ): RuntimeKind {
-    const stack = [...memberTree];
-    while (stack.length > 0) {
-      const member = stack.shift()!;
-      if (member.memberKind === "agent" && member.memberRouteKey === leaf.memberRouteKey) {
-        return member.runtimeKind ?? RuntimeKind.AUTOBYTEUS;
-      }
-      if (member.memberKind === "agent_team") {
-        stack.push(...member.memberConfigs);
-      }
-    }
-    return RuntimeKind.AUTOBYTEUS;
-  }
 }

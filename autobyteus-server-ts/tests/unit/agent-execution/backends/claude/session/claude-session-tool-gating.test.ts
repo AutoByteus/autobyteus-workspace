@@ -37,7 +37,7 @@ const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+    teamBackendKind: TeamBackendKind.MIXED,
     memberName: "Professor",
     memberRouteKey: "professor",
     memberRunId: "run-1",

@@ -1,20 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { buildConfiguredAgentToolExposure } from "../../../../agent-execution/shared/configured-agent-tool-exposure.js";
 import { AgentRunConfig } from "../../../../agent-execution/domain/agent-run-config.js";
 import type { AgentRun } from "../../../../agent-execution/domain/agent-run.js";
-import { AgentRunContext } from "../../../../agent-execution/domain/agent-run-context.js";
 import { isAgentRunEvent } from "../../../../agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
-import { CodexAgentRunContext } from "../../../../agent-execution/backends/codex/backend/codex-agent-run-context.js";
-import { buildCodexThreadConfig } from "../../../../agent-execution/backends/codex/thread/codex-thread-config.js";
-import { resolveApprovalPolicyForAutoExecuteTools } from "../../../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { ClaudeAgentRunContext } from "../../../../agent-execution/backends/claude/backend/claude-agent-run-context.js";
-import {
-  buildClaudeSessionConfig,
-  resolveClaudePermissionMode,
-} from "../../../../agent-execution/backends/claude/session/claude-session-config.js";
-import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
@@ -204,46 +193,16 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     const memberRunConfig = await this.buildMemberRunConfig();
     const manager = this.options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRun = typeof this.context.platformAgentRunId === "string" && this.context.platformAgentRunId.trim().length > 0
-      ? await manager.restoreAgentRun(new AgentRunContext({
+      ? await manager.restoreAgentRunFromPlatformState({
           runId: this.context.memberRunId,
           config: memberRunConfig,
-          runtimeContext: this.buildRestoreRuntimeContext(memberRunConfig),
-        }))
+          platformAgentRunId: this.context.platformAgentRunId,
+        })
       : await manager.createAgentRun(memberRunConfig, this.context.memberRunId);
     this.context.platformAgentRunId = this.agentRun.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     this.bindEvents(this.agentRun);
     this.options.notifyStatusChange();
     return this.agentRun;
-  }
-
-  private buildRestoreRuntimeContext(memberRunConfig: AgentRunConfig) {
-    if (this.context.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
-      return new CodexAgentRunContext({
-        codexThreadConfig: buildCodexThreadConfig({
-          model: memberRunConfig.llmModelIdentifier,
-          workingDirectory: ".",
-          reasoningEffort: null,
-          serviceTier: null,
-          approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(memberRunConfig.autoExecuteTools),
-          sandbox: "workspace-write",
-          dynamicTools: null,
-        }),
-        threadId: this.context.platformAgentRunId,
-      });
-    }
-    if (this.context.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
-      return new ClaudeAgentRunContext({
-        sessionConfig: buildClaudeSessionConfig({
-          model: memberRunConfig.llmModelIdentifier,
-          workingDirectory: ".",
-          permissionMode: resolveClaudePermissionMode(memberRunConfig.autoExecuteTools),
-        }),
-        configuredToolExposure: buildConfiguredAgentToolExposure([]),
-        memberTeamContext: memberRunConfig.memberTeamContext,
-        sessionId: this.context.platformAgentRunId,
-      });
-    }
-    return null;
   }
 
   private async buildMemberRunConfig(): Promise<AgentRunConfig> {

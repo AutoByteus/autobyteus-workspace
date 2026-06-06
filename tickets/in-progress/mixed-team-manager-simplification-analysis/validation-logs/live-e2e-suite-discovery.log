@@ -1,0 +1,29 @@
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:23:  process.env.RUN_LMSTUDIO_E2E === "1" && process.env.RUN_CODEX_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:189:describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:30:const lmStudioRuntimeEnabled = process.env.RUN_LMSTUDIO_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:376:  describeRuntime(`${input.title} current GraphQL runtime e2e`, () => {
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1962:  enabled: codexBinaryReady && process.env.RUN_CODEX_E2E === "1",
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1974:  enabled: claudeBinaryReady && process.env.RUN_CLAUDE_E2E === "1",
+autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:28:  process.env.RUN_LMSTUDIO_E2E === "1" ? describe : describe.skip;
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:25:  process.env.RUN_LMSTUDIO_E2E === "1" &&
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:26:  process.env.RUN_CODEX_E2E === "1" &&
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:27:  process.env.RUN_CLAUDE_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:207:describeNestedMixedRuntime("Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)", () => {
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:20:const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:67:describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", () => {
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:19:const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:154:describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", () => {
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:18:  process.env.RUN_LMSTUDIO_E2E === "1" ? describe : describe.skip;
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:151:describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () => {
+autobyteus-server-ts/tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts:17:describe("Remote browser bridge runtime GraphQL e2e", () => {
+autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts:170:describeCodex("Codex token usage GraphQL runtime e2e", () => {
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:20:const liveClaudeTestsEnabled = process.env.RUN_CLAUDE_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:134:describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", () => {
+autobyteus-server-ts/tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts:8:describe("Runtime capability GraphQL e2e", () => {
+autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:47:const liveClaudeTestsEnabled = process.env.RUN_CLAUDE_E2E === "1";
+autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:608:describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:864:describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E", () => {
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:21:const codexBinaryReady = process.env.RUN_CODEX_E2E === "1" || spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:23:  process.env.RUN_MIXED_TASK_DELEGATION_E2E === "1" ||
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:24:  (process.env.RUN_LMSTUDIO_E2E === "1" && process.env.RUN_CODEX_E2E === "1");
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:162:describeLive("Live mixed-runtime task delegation e2e", () => {

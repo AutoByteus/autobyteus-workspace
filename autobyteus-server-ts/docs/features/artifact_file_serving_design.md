@@ -59,7 +59,7 @@ route.
 | Run file-change API | `src/api/graphql/types/run-file-changes.ts`, `src/api/rest/run-file-changes.ts` | List and preview Agent Artifacts. |
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
 | Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
-| AutoByteus team bridge | `src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | Converts/enriches native team events once before fan-out. |
+| Mixed team member event bridge | `src/agent-team-execution/backends/mixed/**` plus runtime AgentRun event converters | Converts/enriches member runtime events once before team fan-out. |
 | Mixed nested team event bridge | `src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts` | Prefixes child team event `sourcePath` with the parent subteam path before projection/fan-out. |
 
 ## Storage

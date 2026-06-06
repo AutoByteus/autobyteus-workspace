@@ -424,7 +424,7 @@ describe("TeamRunService", () => {
       runId: "team-1",
       config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: "Coordinator",
         memberConfigs: [
           {
@@ -495,7 +495,7 @@ describe("TeamRunService", () => {
       runId: "team-1",
       config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         memberConfigs: [
           {
             memberKind: "agent",

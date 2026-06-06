@@ -1,0 +1,747 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:99679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3/.env
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Finished LM Studio discovery. Total models registered: 29
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Finished Autobyteus discovery. Total models registered: 37
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Successfully fetched 87 models from LLMFactory.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+LLM models cache populated with 87 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition created successfully with ID: mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition created successfully with ID: mixed-specialist-762016e5-e72c-4bb8-bba3-eaf62ab9626a
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-06-06T17:50:43.020Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team Definition created successfully with ID: mixed-runtime-team-113f304c-7a4f-438f-9015-0ac70c8366a9
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Created and registered workspace ID: agent_ws_3a758c7cd6adfd05e799248ba98a5d293c79a9cc9cd55944ca06a508ed0a80d8
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-06-06T17:50:43.027Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-06-06T17:50:43.039Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Successfully created mixed team run 'team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent team websocket attached for team run team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+Created agent session ccd6b07e-08d0-4bc3-85bd-8b6fb9453b03 for run team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+Agent Team WebSocket connected: session=ccd6b07e-08d0-4bc3-85bd-8b6fb9453b03, run=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Resolved system prompt from fresh definition instructions for AgentDefinition mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntimeState initialized for agent_id 'coordinator_2b6a202d8125fce9'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'coordinator_2b6a202d8125fce9': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_2b6a202d8125fce9'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'coordinator_2b6a202d8125fce9' with config: 'mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2'.
+AgentWorker initialized for agent_id 'coordinator_2b6a202d8125fce9'.
+Registered AgentContext for agent_id 'coordinator_2b6a202d8125fce9'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_2b6a202d8125fce9'. Context registered.
+Agent facade initialized for agent_id 'coordinator_2b6a202d8125fce9'.
+Agent 'coordinator_2b6a202d8125fce9' created and stored successfully.
+Agent 'coordinator_2b6a202d8125fce9' requesting runtime to start.
+AgentRuntime for 'coordinator_2b6a202d8125fce9': Starting worker.
+AgentWorker 'coordinator_2b6a202d8125fce9': Starting...
+AgentWorker 'coordinator_2b6a202d8125fce9' asyncRun(): Starting.
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (event store initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (status deriver initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (AgentEventInbox initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'coordinator_2b6a202d8125fce9' to become idle (timeout: 30s)...
+AgentEventStream (ID: 3d55ce96-4463-4bc4-8a08-7341ad3be698) initialized for agent_id 'coordinator_2b6a202d8125fce9'. Subscribed to notifier.
+Agent 'coordinator_2b6a202d8125fce9': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Bootstrapper starting direct lifecycle execution.
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'coordinator_2b6a202d8125fce9': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'coordinator_2b6a202d8125fce9': Executing SystemPromptProcessingStep.
+Agent 'coordinator_2b6a202d8125fce9': Final processed system prompt configured on LLM instance. Final length: 1886.
+Agent 'coordinator_2b6a202d8125fce9': Final processed system prompt:
+---
+## Team Instruction
+Coordinate the team to execute directed teammate messaging only.
+
+## Agent Instruction
+You are participating in a live mixed-runtime team validation.
+
+Rules:
+1. Follow direct user instructions exactly.
+2. Do not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. If you receive a teammate message that asks for an exact token, reply in plain assistant text with that exact token and nothing else.
+6. Do not use send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
+7. Otherwise keep assistant text responses very short.
+
+## Runtime Instruction
+Current team member: coordinator
+If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.
+Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.
+When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Team Communication messages.
+Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].
+Do not claim teammate delivery unless the tool call succeeds.
+
+Team membership roster
+
+You are: coordinator
+
+You are a member of these teams:
+1. mixed-runtime-team-113f304c-7a4f-438f-9015-0ac70c8366a9
+   Your role: coordinator
+   Team members:
+   - coordinator (you, coordinator)
+   - specialist
+
+   You can message:
+   - specialist
+
+When using send_message_to, recipient_name must exactly match one of:
+- specialist
+---
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9' has become idle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 3d55ce96-4463-4bc4-8a08-7341ad3be698) for 'coordinator_2b6a202d8125fce9': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 86c124a6-93ef-4fbe-a7cd-b949967335c1) initialized for agent_id 'coordinator_2b6a202d8125fce9'. Subscribed to notifier.
+Successfully created autobyteus agent run 'coordinator_2b6a202d8125fce9'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1096,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[team-communication] projection inserted teamRunId=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251 messageId=teammsg_PUyx1-PS0zQILTpXKvFIbUgrOZgu4WCj senderRunId=coordinator_2b6a202d8125fce9 receiverRunId=specialist_4cf0c14438f13755 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3/memory/agent_teams/team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Successfully created codex_app_server agent run 'specialist_4cf0c14438f13755'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1233,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[team-communication] projection inserted teamRunId=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251 messageId=teammsg_SPeiG-9NwDOYPg_uQ4_zrFT_1IsSvCPw senderRunId=specialist_4cf0c14438f13755 receiverRunId=coordinator_2b6a202d8125fce9 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3/memory/agent_teams/team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1339,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 86c124a6-93ef-4fbe-a7cd-b949967335c1) for 'coordinator_2b6a202d8125fce9': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'coordinator_2b6a202d8125fce9'. Attempting graceful shutdown.
+Agent 'coordinator_2b6a202d8125fce9' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 89119224-d6df-449a-999a-f4d3f3fce204, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Closed agent session ccd6b07e-08d0-4bc3-85bd-8b6fb9453b03
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team WebSocket disconnected: ccd6b07e-08d0-4bc3-85bd-8b6fb9453b03
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9' asyncRun() loop has finished.
+AgentWorker 'coordinator_2b6a202d8125fce9': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_2b6a202d8125fce9': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Unregistered AgentContext for agent_id 'coordinator_2b6a202d8125fce9'.
+AgentRuntime for 'coordinator_2b6a202d8125fce9': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntime for 'coordinator_2b6a202d8125fce9' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb.
+Reusing existing workspace ID: agent_ws_3a758c7cd6adfd05e799248ba98a5d293c79a9cc9cd55944ca06a508ed0a80d8
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-z9GVEb.
+Reusing existing workspace ID: agent_ws_3a758c7cd6adfd05e799248ba98a5d293c79a9cc9cd55944ca06a508ed0a80d8
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Successfully restored mixed team run 'team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent team websocket attached for team run team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+Created agent session 4dd9a3f8-a194-4d39-8cff-437042d5cfff for run team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+Agent Team WebSocket connected: session=4dd9a3f8-a194-4d39-8cff-437042d5cfff, run=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Resolved system prompt from fresh definition instructions for AgentDefinition mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntimeState initialized for agent_id 'coordinator_2b6a202d8125fce9'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'coordinator_2b6a202d8125fce9': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_2b6a202d8125fce9'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'coordinator_2b6a202d8125fce9' with config: 'mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2'.
+AgentWorker initialized for agent_id 'coordinator_2b6a202d8125fce9'.
+Registered AgentContext for agent_id 'coordinator_2b6a202d8125fce9'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_2b6a202d8125fce9'. Context registered.
+Agent facade initialized for agent_id 'coordinator_2b6a202d8125fce9'.
+Agent 'coordinator_2b6a202d8125fce9' restored and stored successfully.
+Agent 'coordinator_2b6a202d8125fce9' requesting runtime to start.
+AgentRuntime for 'coordinator_2b6a202d8125fce9': Starting worker.
+AgentWorker 'coordinator_2b6a202d8125fce9': Starting...
+AgentWorker 'coordinator_2b6a202d8125fce9' asyncRun(): Starting.
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (event store initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (status deriver initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (AgentEventInbox initialized).
+Agent 'coordinator_2b6a202d8125fce9': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'coordinator_2b6a202d8125fce9' to become idle (timeout: 30s)...
+AgentEventStream (ID: 3df1e759-3a4c-4d64-aab6-737727009c43) initialized for agent_id 'coordinator_2b6a202d8125fce9'. Subscribed to notifier.
+Agent 'coordinator_2b6a202d8125fce9': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Bootstrapper starting direct lifecycle execution.
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'coordinator_2b6a202d8125fce9': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'coordinator_2b6a202d8125fce9': Executing SystemPromptProcessingStep.
+Agent 'coordinator_2b6a202d8125fce9': Final processed system prompt configured on LLM instance. Final length: 1886.
+Agent 'coordinator_2b6a202d8125fce9': Final processed system prompt:
+---
+## Team Instruction
+Coordinate the team to execute directed teammate messaging only.
+
+## Agent Instruction
+You are participating in a live mixed-runtime team validation.
+
+Rules:
+1. Follow direct user instructions exactly.
+2. Do not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. If you receive a teammate message that asks for an exact token, reply in plain assistant text with that exact token and nothing else.
+6. Do not use send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
+7. Otherwise keep assistant text responses very short.
+
+## Runtime Instruction
+Current team member: coordinator
+If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.
+Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.
+When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Team Communication messages.
+Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].
+Do not claim teammate delivery unless the tool call succeeds.
+
+Team membership roster
+
+You are: coordinator
+
+You are a member of these teams:
+1. mixed-runtime-team-113f304c-7a4f-438f-9015-0ac70c8366a9
+   Your role: coordinator
+   Team members:
+   - coordinator (you, coordinator)
+   - specialist
+
+   You can message:
+   - specialist
+
+When using send_message_to, recipient_name must exactly match one of:
+- specialist
+---
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'coordinator_2b6a202d8125fce9' has become idle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 3df1e759-3a4c-4d64-aab6-737727009c43) for 'coordinator_2b6a202d8125fce9': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 5f0cd086-ef2c-4e9a-ba7a-2bae85cb9fef) initialized for agent_id 'coordinator_2b6a202d8125fce9'. Subscribed to notifier.
+Successfully restored autobyteus agent run 'coordinator_2b6a202d8125fce9'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1481,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[team-communication] projection inserted teamRunId=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251 messageId=teammsg_Xx2L2JOTHQYSH6jE--OLPtmPTqpdqO7E senderRunId=coordinator_2b6a202d8125fce9 receiverRunId=specialist_4cf0c14438f13755 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3/memory/agent_teams/team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Successfully restored codex_app_server agent run 'specialist_4cf0c14438f13755'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1618,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[team-communication] projection inserted teamRunId=team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251 messageId=teammsg_LAbWqo6hewkLEqTn5a1ZYJQvSCwqVc3y senderRunId=specialist_4cf0c14438f13755 receiverRunId=coordinator_2b6a202d8125fce9 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-TkXrY3/memory/agent_teams/team_mixed-runtime-team-113f304c-7a4f-438f-90_6f631251/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+compaction_budget_evaluated {
+  agent_id: 'coordinator_2b6a202d8125fce9',
+  prompt_tokens: 1724,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 5f0cd086-ef2c-4e9a-ba7a-2bae85cb9fef) for 'coordinator_2b6a202d8125fce9': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'coordinator_2b6a202d8125fce9'. Attempting graceful shutdown.
+Agent 'coordinator_2b6a202d8125fce9' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 4965800d-b0c7-48e5-b847-b54bd3f67c4e, AgentID: coordinator_2b6a202d8125fce9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Closed agent session 4dd9a3f8-a194-4d39-8cff-437042d5cfff
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team WebSocket disconnected: 4dd9a3f8-a194-4d39-8cff-437042d5cfff
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9' asyncRun() loop has finished.
+AgentWorker 'coordinator_2b6a202d8125fce9': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'coordinator_2b6a202d8125fce9': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_2b6a202d8125fce9': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Unregistered AgentContext for agent_id 'coordinator_2b6a202d8125fce9'.
+AgentRuntime for 'coordinator_2b6a202d8125fce9': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntime for 'coordinator_2b6a202d8125fce9' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-06-06T17:51:31.654Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID mixed-runtime-team-113f304c-7a4f-438f-9015-0ac70c8366a9.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team Definition with ID mixed-runtime-team-113f304c-7a4f-438f-9015-0ac70c8366a9 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Removed agent definition with ID mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition with ID mixed-coordinator-0a64cdd1-e75c-4cba-9232-1026bb8854e2 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Removed agent definition with ID mixed-specialist-762016e5-e72c-4bb8-bba3-eaf62ab9626a.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition with ID mixed-specialist-762016e5-e72c-4bb8-bba3-eaf62ab9626a deleted successfully.
+
+ ✓ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test) 51381ms
+     ✓ creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration  51343ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  19:50:36
+   Duration  55.47s (transform 2.56s, setup 15ms, import 3.68s, tests 51.38s, environment 0ms)
+
+EXIT_STATUS=0

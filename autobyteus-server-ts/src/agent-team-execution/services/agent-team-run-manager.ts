@@ -4,26 +4,13 @@ import {
   type TeamRunMemberConfig,
 } from "../domain/team-run-config.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../domain/team-run-context.js";
+import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
-import { AgentTeamCreationError, AgentTeamTerminationError } from "../errors.js";
-import {
-  AutoByteusTeamLike,
-  getAutoByteusTeamRunBackendFactory,
-  type AutoByteusTeamRunBackendFactory,
-} from "../backends/autobyteus/autobyteus-team-run-backend-factory.js";
-import {
-  getClaudeTeamRunBackendFactory,
-  type ClaudeTeamRunBackendFactory,
-} from "../backends/claude/claude-team-run-backend-factory.js";
-import {
-  getCodexTeamRunBackendFactory,
-  type CodexTeamRunBackendFactory,
-} from "../backends/codex/codex-team-run-backend-factory.js";
+import { AgentTeamTerminationError } from "../errors.js";
 import {
   getMixedTeamRunBackendFactory,
   type MixedTeamRunBackendFactory,
 } from "../backends/mixed/mixed-team-run-backend-factory.js";
-import type { TeamRunBackendFactory } from "../backends/team-run-backend-factory.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
@@ -43,9 +30,6 @@ const logger = {
 };
 
 type AgentTeamRunManagerOptions = {
-  autoByteusTeamRunBackendFactory?: AutoByteusTeamRunBackendFactory;
-  codexTeamRunBackendFactory?: CodexTeamRunBackendFactory;
-  claudeTeamRunBackendFactory?: ClaudeTeamRunBackendFactory;
   mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
   teamCommunicationService?: TeamCommunicationService;
   runFileChangeService?: RunFileChangeService;
@@ -53,9 +37,6 @@ type AgentTeamRunManagerOptions = {
 
 export class AgentTeamRunManager {
   private static instance: AgentTeamRunManager | null = null;
-  private readonly autoByteusTeamRunBackendFactory: AutoByteusTeamRunBackendFactory;
-  private readonly codexTeamRunBackendFactory: CodexTeamRunBackendFactory;
-  private readonly claudeTeamRunBackendFactory: ClaudeTeamRunBackendFactory;
   private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
   private readonly teamCommunicationService: TeamCommunicationService;
   private readonly runFileChangeService: RunFileChangeService;
@@ -71,35 +52,21 @@ export class AgentTeamRunManager {
   }
 
   constructor(options: AgentTeamRunManagerOptions = {}) {
-    this.autoByteusTeamRunBackendFactory =
-      options.autoByteusTeamRunBackendFactory ?? getAutoByteusTeamRunBackendFactory();
-    this.codexTeamRunBackendFactory =
-      options.codexTeamRunBackendFactory ?? getCodexTeamRunBackendFactory();
-    this.claudeTeamRunBackendFactory =
-      options.claudeTeamRunBackendFactory ?? getClaudeTeamRunBackendFactory();
     this.mixedTeamRunBackendFactory =
       options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
     this.teamCommunicationService =
       options.teamCommunicationService ?? getTeamCommunicationService();
     this.runFileChangeService =
       options.runFileChangeService ?? getRunFileChangeService();
-    logger.info("AgentTeamRunManager initialized.");
+    logger.info("AgentTeamRunManager initialized with MixedTeamManager-only team execution.");
   }
 
-  async createTeamRun(
-    input: TeamRunConfig,
-  ): Promise<TeamRun> {
-    const config = input;
-    const backendFactory = this.resolveBackendFactory(config.teamBackendKind);
-    if (!backendFactory) {
-      throw new AgentTeamCreationError(
-        `Team backend kind '${config.teamBackendKind}' is not yet supported by AgentTeamRunManager.createTeamRun().`,
-      );
-    }
-    const backend = await backendFactory.createBackend(config);
+  async createTeamRun(input: TeamRunConfig): Promise<TeamRun> {
+    const config = this.withMixedBackendKind(input);
+    const backend = await this.mixedTeamRunBackendFactory.createBackend(config);
     const normalizedConfig = new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
-      teamBackendKind: config.teamBackendKind,
+      teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: this.attachRuntimeMemberIds(config.memberTree, backend.runId),
@@ -107,39 +74,41 @@ export class AgentTeamRunManager {
     const activeRun = new TeamRun({
       context: new TeamRunContext({
         runId: backend.runId,
-        teamBackendKind: backend.teamBackendKind,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: normalizedConfig.coordinatorMemberName,
+        coordinatorMemberRouteKey: normalizedConfig.coordinatorMemberRouteKey,
         config: normalizedConfig,
         runtimeContext: backend.getRuntimeContext(),
       }),
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully created ${backend.teamBackendKind} team run '${activeRun.runId}'.`);
+    logger.info(`Successfully created mixed team run '${activeRun.runId}'.`);
     return activeRun;
   }
 
   async restoreTeamRun(
     context: TeamRunContext<RuntimeTeamRunContext>,
   ): Promise<TeamRun> {
-    const backendFactory = this.resolveBackendFactory(context.teamBackendKind);
-    if (!backendFactory) {
-      throw new AgentTeamCreationError(
-        `Team backend kind '${context.teamBackendKind}' is not yet supported by AgentTeamRunManager.restoreTeamRun().`,
-      );
+    if (!context.runtimeContext) {
+      throw new Error(`Team run '${context.runId}' restore requires a mixed runtime context.`);
     }
-    const backend = await backendFactory.restoreBackend(context);
+    const mixedContext = new TeamRunContext<MixedTeamRunContext>({
+      runId: context.runId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberName: context.coordinatorMemberName,
+      coordinatorMemberRouteKey: context.coordinatorMemberRouteKey,
+      config: context.config ? this.withMixedBackendKind(context.config) : null,
+      runtimeContext: context.runtimeContext,
+    });
+    const backend = await this.mixedTeamRunBackendFactory.restoreBackend(mixedContext);
     const activeRun = new TeamRun({
-      context,
+      context: mixedContext,
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully restored ${context.teamBackendKind} team run '${activeRun.runId}'.`);
+    logger.info(`Successfully restored mixed team run '${activeRun.runId}'.`);
     return activeRun;
-  }
-
-  getTeam(teamRunId: string): AutoByteusTeamLike | null {
-    return this.autoByteusTeamRunBackendFactory.getTeam(teamRunId) as AutoByteusTeamLike | null;
   }
 
   getTeamRun(teamRunId: string): TeamRun | null {
@@ -176,12 +145,10 @@ export class AgentTeamRunManager {
       run.runId,
       this.teamCommunicationService.attachToTeamRun(run),
     );
-    if (run.teamBackendKind === TeamBackendKind.AUTOBYTEUS) {
-      this.runFileChangeUnsubscribers.set(
-        run.runId,
-        this.runFileChangeService.attachToTeamRun(run),
-      );
-    }
+    this.runFileChangeUnsubscribers.set(
+      run.runId,
+      this.runFileChangeService.attachToTeamRun(run),
+    );
   }
 
   private unregisterActiveRun(teamRunId: string): void {
@@ -241,22 +208,6 @@ export class AgentTeamRunManager {
     return activeRun.subscribeToEvents(listener);
   }
 
-  private resolveBackendFactory(teamBackendKind: TeamBackendKind): TeamRunBackendFactory | null {
-    if (teamBackendKind === TeamBackendKind.AUTOBYTEUS) {
-      return this.autoByteusTeamRunBackendFactory;
-    }
-    if (teamBackendKind === TeamBackendKind.CODEX_APP_SERVER) {
-      return this.codexTeamRunBackendFactory;
-    }
-    if (teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK) {
-      return this.claudeTeamRunBackendFactory;
-    }
-    if (teamBackendKind === TeamBackendKind.MIXED) {
-      return this.mixedTeamRunBackendFactory;
-    }
-    return null;
-  }
-
   private attachRuntimeMemberIds(
     members: readonly TeamRunMemberConfig[],
     teamRunId: string,
@@ -278,6 +229,20 @@ export class AgentTeamRunManager {
         memberRouteKey,
         memberRunId,
       };
+    });
+  }
+
+  private withMixedBackendKind(config: TeamRunConfig): TeamRunConfig {
+    if (config.teamBackendKind === TeamBackendKind.MIXED) {
+      return config;
+    }
+    return new TeamRunConfig({
+      teamDefinitionId: config.teamDefinitionId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
+      memberTree: config.memberTree,
+      selfEvolution: config.selfEvolution,
     });
   }
 }

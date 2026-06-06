@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
@@ -88,9 +89,7 @@ export class MixedTeamManager implements TeamManager {
 
   constructor(
     context: TeamRunContext<MixedTeamRunContext>,
-    options: {
-      subTeamRunFactory?: MixedSubTeamRunFactory;
-    } = {},
+    options: { subTeamRunFactory?: MixedSubTeamRunFactory; agentRunManager?: AgentRunManager } = {},
   ) {
     this.teamContext = context;
     const subTeamRunFactory = options.subTeamRunFactory ?? new MixedSubTeamRunFactory({
@@ -104,6 +103,7 @@ export class MixedTeamManager implements TeamManager {
     this.memberRegistry = new MixedTeamMemberRegistry({
       teamContext: context,
       subTeamRunFactory,
+      agentRunManager: options.agentRunManager,
       publish: (event) => this.publish(event),
       notifyStatusChange: () => this.publishTeamStatusIfChanged(),
       deliverInterAgentMessage: (request) => this.deliverInterAgentMessage(request),

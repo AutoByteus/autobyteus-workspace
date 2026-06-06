@@ -271,11 +271,11 @@ describe("RunFileChangeProjectionService", () => {
     const teamRun = new TeamRun({
       context: new TeamRunContext({
         runId: "team-active",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: "Professor",
         config: new TeamRunConfig({
           teamDefinitionId: "team-def",
-          teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+          teamBackendKind: TeamBackendKind.MIXED,
           coordinatorMemberName: "Professor",
           memberConfigs: [
             {
@@ -296,7 +296,7 @@ describe("RunFileChangeProjectionService", () => {
       }),
       backend: {
         runId: "team-active",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         isActive: () => true,
         getRuntimeContext: () => null,
         subscribeToEvents: () => () => undefined,

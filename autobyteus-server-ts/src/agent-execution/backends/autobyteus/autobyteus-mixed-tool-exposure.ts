@@ -4,7 +4,7 @@ import type { MemberTeamContext } from "../../../agent-team-execution/domain/mem
 import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
 import { TASK_DELEGATION_TOOL_NAMES } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 
-const LEGACY_LOCAL_TASK_TOOL_NAMES = new Set([
+const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
   "assign_task_to",
   "create_task",
   "create_tasks",
@@ -27,10 +27,15 @@ export const resolveAutoByteusStandaloneToolNames = (input: {
   }
 
   return configuredToolNames.filter((toolName) => {
-    const definition = defaultToolRegistry.getToolDefinition(toolName);
-    if (LEGACY_LOCAL_TASK_TOOL_NAMES.has(toolName)) {
+    const normalizedToolName = toolName.trim();
+    if (LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES.has(normalizedToolName)) {
       return false;
     }
-    return definition?.category !== ToolCategory.TASK_MANAGEMENT || TASK_DELEGATION_TOOL_NAMES.has(toolName);
+    if (TASK_DELEGATION_TOOL_NAMES.has(normalizedToolName)) {
+      return true;
+    }
+
+    const definition = defaultToolRegistry.getToolDefinition(normalizedToolName);
+    return definition?.category !== ToolCategory.TASK_MANAGEMENT;
   });
 };

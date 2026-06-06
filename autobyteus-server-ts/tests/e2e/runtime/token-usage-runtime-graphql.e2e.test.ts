@@ -14,6 +14,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SqlTokenUsageRecordRepository } from "../../../src/token-usage/repositories/sql/token-usage-record-repository.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 // Codex runtime no longer persists token usage into AutoByteus statistics.
 const describeCodex = describe.skip;
@@ -397,14 +398,9 @@ describeCodex("Codex token usage GraphQL runtime e2e", () => {
     const usageWindowStart = new Date();
 
     try {
-      socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(socket, {
             content: `Reply with exactly ${expectedToken} and nothing else.`,
-          },
-        }),
-      );
+          });
 
       await waitForMessageAfter(
         messages,

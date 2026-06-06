@@ -19,7 +19,7 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
-import { resolveSingleRuntimeTeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -61,7 +61,7 @@ const createTeamRun = (input: {
   workspaceId: string;
   workspaceRootPath: string;
 }): TeamRun => {
-  const teamBackendKind = resolveSingleRuntimeTeamBackendKind(input.runtimeKind);
+  const teamBackendKind = TeamBackendKind.MIXED;
   const config = new TeamRunConfig({
     teamDefinitionId: "team-def-1",
     teamBackendKind,

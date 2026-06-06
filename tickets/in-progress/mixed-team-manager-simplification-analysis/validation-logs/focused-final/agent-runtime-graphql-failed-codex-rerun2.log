@@ -1,0 +1,219 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:45793) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-kg4dan
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-kg4dan/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent Definition created successfully with ID: codex-app-server-api-e2e-cdc9cf0e-9a9c-4de6-85e3-757b446850e1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-mpQV5h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-mpQV5h.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Created and registered workspace ID: agent_ws_efb59254debd2cb1a271009581c8cb57c02d09d03c4368b875b2bda431f60a54
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent definition cache populated with 47 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-mpQV5h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-mpQV5h.
+Reusing existing workspace ID: agent_ws_efb59254debd2cb1a271009581c8cb57c02d09d03c4368b875b2bda431f60a54
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Successfully created codex_app_server agent run '7c516808-bcf9-432e-a83d-ef2f0ffb341a'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent websocket attached for run 7c516808-bcf9-432e-a83d-ef2f0ffb341a
+Created agent session f0a78692-1b3b-4eec-9449-c02af2abd648 for run 7c516808-bcf9-432e-a83d-ef2f0ffb341a
+Agent WebSocket connected: session=f0a78692-1b3b-4eec-9449-c02af2abd648, run=7c516808-bcf9-432e-a83d-ef2f0ffb341a
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Closed agent session f0a78692-1b3b-4eec-9449-c02af2abd648
+Agent WebSocket disconnected: f0a78692-1b3b-4eec-9449-c02af2abd648
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-130a54d5-d3b4-466c-b35f-69d2466777f0.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Agent Definition created successfully with ID: codex-app-server-api-e2e-130a54d5-d3b4-466c-b35f-69d2466777f0
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-linked-skill-workspace-Qmdtfn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-linked-skill-workspace-Qmdtfn.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Created and registered workspace ID: agent_ws_a582392fb9c28d403e75702a6d09b6530990655290c85b31e3e02ab9ebbbd239
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-linked-skill-workspace-Qmdtfn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-linked-skill-workspace-Qmdtfn.
+Reusing existing workspace ID: agent_ws_a582392fb9c28d403e75702a6d09b6530990655290c85b31e3e02ab9ebbbd239
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Skill 'codex_symlink_36061fc4e0eb' defined in agent definition 'codex_app_server-api-e2e-130a54d5-d3b4-466c-b35f-69d2466777f0' could not be resolved. Skipping.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Successfully created codex_app_server agent run 'f52440c1-e6dc-43a0-8247-04d197649b8e'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Agent websocket attached for run f52440c1-e6dc-43a0-8247-04d197649b8e
+Created agent session 5403394b-c4a1-4a55-bfdb-c7074ddabc66 for run f52440c1-e6dc-43a0-8247-04d197649b8e
+Agent WebSocket connected: session=5403394b-c4a1-4a55-bfdb-c7074ddabc66, run=f52440c1-e6dc-43a0-8247-04d197649b8e
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+[CodexAppServerClient] stderr: 2026-06-06T17:28:33.197139Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Closed agent session 5403394b-c4a1-4a55-bfdb-c7074ddabc66
+Agent WebSocket disconnected: 5403394b-c4a1-4a55-bfdb-c7074ddabc66
+
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (18 tests | 1 failed | 16 skipped) 157903ms
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket
+     ↓ terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ auto-executes Codex tool calls over websocket without approval requests
+     ↓ routes Codex MCP tool approval over websocket for the speak tool
+     ✓ auto-executes the Codex speak MCP tool without approval requests  30993ms
+     ↓ applies configured runtime skills over the current websocket API contract
+     × uses a whole-directory materialized skill whose linked shared file sits outside the skill folder 126848ms
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ terminates an active tool-approval run, restores it, reconnects, and continues streaming
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ applies configured runtime skills over the current websocket API contract
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+Error: Timed out waiting for websocket message 'assistant text containing LINKED_SHARED_RESPONSE_b68b38a8_9c20_441d_b30a_c1b88729fe3b'. preview='SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"e","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"769","id":"msg_054298f3d943643f016a2458feb40081919c14e | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"ef","id":"msg_054298f3d943643f016a2458feb40081919c14e1 | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"6","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"_d","id":"msg_054298f3d943643f016a2458feb40081919c14e1 | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"5","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"d","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"6","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"_","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"418","id":"msg_054298f3d943643f016a2458feb40081919c14e | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"7","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"_","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"8","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"cff","id":"msg_054298f3d943643f016a2458feb40081919c14e | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"_","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"23","id":"msg_054298f3d943643f016a2458feb40081919c14e1 | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"fec","id":"msg_054298f3d943643f016a2458feb40081919c14e | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"f","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"661","id":"msg_054298f3d943643f016a2458feb40081919c14e | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"84","id":"msg_054298f3d943643f016a2458feb40081919c14e1 | SEGMENT_CONTENT:{"threadId":"019e9dfa-0c04-7623-9db5-051c4d5e8cf1","itemId":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","delta":"e","id":"msg_054298f3d943643f016a2458feb40081919c14e1c | SEGMENT_END:{"item":{"type":"agentMessage","id":"msg_054298f3d943643f016a2458feb40081919c14e1c2c15dfb0c","text":"LINKED_SHARED_TRIGGER_9e769ef6_d5d6_4187_8cff_23fecf66184e","phase":"final_answ | AGENT_STATUS:{"status":"idle","can_interrupt":false} | TURN_COMPLETED:{"turnId":"019e9dfa-208f-7271-967a-79d96c6ec289","turn_id":"019e9dfa-208f-7271-967a-79d96c6ec289"} | AGENT_STATUS:{"status":"idle","can_interrupt":false}'
+ ❯ waitForMessage tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:128:9
+    126|     .map((message) => `${message.type}:${JSON.stringify(message.payloa…
+    127|     .join(" | ");
+    128|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+    129| };
+    130| 
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1855:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 16 skipped (18)
+   Start at  19:27:13
+   Duration  163.60s (transform 3.01s, setup 16ms, import 5.23s, tests 157.90s, environment 0ms)
+

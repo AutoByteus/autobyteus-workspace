@@ -7,29 +7,21 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 ## Backend Selection Model
 
 - `RuntimeKind` is the **member execution runtime** subject.
-- `TeamBackendKind` is the **team orchestration** subject.
+- `TeamBackendKind` is the **team orchestration** subject. Active server team execution uses `TeamBackendKind.MIXED` for every team composition.
 - `TeamRunService` builds a recursive topology plan before launch:
-  - every member receives a stable `memberPath` array and slash-delimited
-    `memberRouteKey`
-  - launch configs for nested leaf agents are matched by `memberRouteKey`
-    or `memberPath`; no bare member-name fallback is defined for nested
-    launch config matching
-  - definitions containing any nested `agent_team` member select `MIXED`, even
-    when all leaf agents use the same member runtime
-  - non-nested single-runtime teams stay on `AUTOBYTEUS`, `CODEX_APP_SERVER`,
-    or `CLAUDE_AGENT_SDK`
-  - non-nested multi-runtime teams select `MIXED`
-- `AgentTeamRunManager` then delegates create/restore work to the matching backend factory.
+  - every member receives a stable `memberPath` array and slash-delimited `memberRouteKey`
+  - launch configs for nested leaf agents are matched by `memberRouteKey` or `memberPath`; no bare member-name fallback is defined for nested launch config matching
+  - homogeneous AutoByteus, Codex, Claude, heterogeneous, and nested team definitions all produce `TeamBackendKind.MIXED`
+- `AgentTeamRunManager` delegates create/restore work only to `MixedTeamRunBackendFactory`.
+- Per-member runtime selection remains below the team boundary: `MixedTeamManager` builds member `AgentRunConfig`s, and `AgentRunManager` selects the AutoByteus, Codex, or Claude AgentRun backend from each member's `runtimeKind`.
 
 ## Current Execution Paths
 
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
-| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves native team member/status/event behavior while server-owned task-delegation wrappers share the canonical explicit task-delegation command boundary. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
-| Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation dynamic tools. |
-| Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex, with task-delegation tools projected as first-party team MCP tools when configured. |
-| Mixed or nested-topology team | `MixedTeamManager` | Top-level member handles; agent handles own `AgentRun`s and subteam handles own child `TeamRun`s | Server-owned path for mixed-runtime and nested definitions. A top-level subteam is a first-class member, not a flattened leaf alias. |
-
+| Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
+| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | Server-composed `MemberTeamContext`/`MemberRunInstructionComposer` prompt path provides team instructions, roster, send-message guidance, and task-delegation guidance. `TeamManifestInjectorProcessor` is not added for mixed server team members. |
+| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation tools. |
 ## Nested Member Identity And Commands
 
 - `TeamMemberSelector` is the domain/backend command identity:
@@ -62,60 +54,14 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 
 ## Command-Start Status
 
-Team message commands publish backend-owned `initializing` as soon as a concrete
-target is resolved and before slow member startup, child-team restore, provider
-session/thread startup, native `team.postMessage(...)`, or first-turn send work
-is awaited.
+Team message commands publish backend-owned `initializing` as soon as a concrete target is resolved and before slow member startup, child-team restore, provider session/thread startup, or first-turn send work is awaited.
 
-- Codex and Claude single-runtime teams publish member-scoped `AGENT_STATUS`
-  through their team managers before lazy member `AgentRun` creation or send.
-- Mixed leaf-agent handles publish member-scoped `AGENT_STATUS` before creating
-  or restoring their child `AgentRun`.
-- Mixed subteam handles publish represented-team/source-path `TEAM_STATUS`
-  before creating or restoring their child `TeamRun`; the parent member-row
-  snapshot projects that represented team status for display without inventing a
-  leaf-agent identity.
-- Native AutoByteus teams publish member-scoped `AGENT_STATUS` for explicit or
-  default-resolved member targets before native `team.postMessage(...)`.
-- True native no-target commands publish root `TEAM_STATUS initializing` only;
-  they do not invent a member-scoped event.
+- Mixed leaf-agent handles publish member-scoped `AGENT_STATUS` before creating or restoring their child `AgentRun`.
+- Mixed subteam handles publish represented-team/source-path `TEAM_STATUS` before creating or restoring their child `TeamRun`; the parent member-row snapshot projects that represented team status for display without inventing a leaf-agent identity.
 
-`TeamCommandStatusOverlayStore` is the only shared owner for pending
-command-start overlays. Each backend/handle owns its own store instance; it is
-not a global status authority. The store gates `initializing` publication to
-current effective `offline`/`idle`, stores pending member route-key overlays and
-team `sourcePath` overlays, applies them to snapshots and aggregate inputs,
-replaces pending startup with `error` on command failure, clears overlays when
-matching runtime/native `AGENT_STATUS` or team `TEAM_STATUS` replacement events
-arrive, and clears all pending state on termination/disposal. Command owners
-still own target resolution, lazy runtime creation/restoration, child-team
-creation, provider/native send sequencing, and failure handling.
+`TeamCommandStatusOverlayStore` is the shared owner for pending command-start overlays. Each handle owns its own store instance; it is not a global status authority. The store gates `initializing` publication to current effective `offline`/`idle`, stores pending member route-key overlays and team `sourcePath` overlays, applies them to snapshots and aggregate inputs, replaces pending startup with `error` on command failure, clears overlays when matching runtime `AGENT_STATUS` or team `TEAM_STATUS` replacement events arrive, and clears all pending state on termination/disposal. Command owners still own target resolution, lazy runtime creation/restoration, child-team creation, provider send sequencing, and failure handling.
 
-Native AutoByteus member status identity/projection is owned by
-`AutoByteusTeamMemberStatusProjector`. The projector canonicalizes configured
-member run id, native agent id, member name, route key, member path, and runtime
-member context for both backend snapshots and native event processing. This
-keeps native status projection from creating duplicate snapshot identities for
-one member and keeps `AutoByteusTeamRunBackend` /
-`AutoByteusTeamRunEventProcessor` aligned on the same identity policy.
-
-For native AutoByteus steady-state status, explicit runtime `AGENT_STATUS`
-payloads are the primary status edge. Mutable native `team.context.agents`
-snapshots may enrich identity/can-interrupt or provide fallback status, but a
-stale or missing snapshot must not turn a known live member into `offline` while
-the backend remains active. The projector keeps the last observed live status
-for known active members and skips that observed overlay only for inactive
-backend/terminal cleanup. Native fine-grained runtime statuses stay internal to
-`autobyteus-ts`; the server projects them to the public coarse status vocabulary
-before WebSocket/frontend emission. The old `AGENT_STATUS_UPDATED`/
-`agent_status_updated` liveness event name is not part of the canonical runtime
-or server status path.
-
-Pending command-start overlays are reflected in member/represented-team status
-snapshots and aggregate team status while the command is still in startup.
-Runtime/native status events, command rejection, thrown failures, termination,
-or disposal must replace or clear those overlays so clients cannot remain
-indefinitely in `initializing`.
+Pending command-start overlays are reflected in member/represented-team status snapshots and aggregate team status while the command is still in startup. Runtime status events, command rejection, thrown failures, termination, or disposal must replace or clear those overlays so clients cannot remain indefinitely in `initializing`.
 
 ## Server-Owned Task Delegation Lifecycle
 
@@ -317,14 +263,14 @@ RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   history should not list them as independent top-level team rows.
 - Historical flat team metadata is not compatibility-read for nested topology;
   unsupported legacy metadata fails instead of guessing a lost tree.
-- Every Codex and Claude member receives a member `memoryDir` on create and restore, including single-runtime Claude teams and mixed-runtime members. The storage path is `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
-- Non-native member memory is storage-only: `AgentRunManager` attaches the shared recorder to each member `AgentRun`, while native AutoByteus members continue to use native memory ownership.
+- Every member `AgentRun` receives a member `memoryDir` on create and restore through the mixed member-run path. The storage path is `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
+- Member memory recording is attached at the `AgentRunManager` layer for mixed team members; runtime-specific AgentRun backends keep their own provider-local runtime details below that boundary.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
 - Active-only team controls still use the active lookup path. `INTERRUPT_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
 - Team generation interrupt is intentionally member-scoped. `TeamRun.interruptMember(targetMemberRouteKey, targetMemberRunId?)` is the domain boundary; backend managers resolve the route key as the authoritative target and use the optional run id only as a stale-target guard. A missing target or route-key/run-id mismatch rejects without retargeting or falling back to a team-wide interrupt.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
-- `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
+- `applicationExecutionContext` stays member-local and flows through create/restore for mixed team members.
 - Accepted restored follow-up messages call
   `TeamRunService.recordRunActivity(...)`, refreshing team metadata/history
   activity state while preserving the stable opening/coordinator title for the
@@ -346,7 +292,6 @@ RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - `src/agent-execution/backends/claude/task-delegation/*`
 - `src/agent-team-execution/services/team-member-command-start-status-events.ts`
 - `src/agent-team-execution/domain/team-run-member-identity.ts`
-- `src/agent-team-execution/backends/autobyteus/autobyteus-team-member-status-projector.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
 - `src/agent-team-execution/backends/mixed/members/*`

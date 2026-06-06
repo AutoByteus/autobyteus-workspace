@@ -23,11 +23,10 @@ Standalone runs:
 
 Team runs:
 
-1. Team services create a team run with deterministic `memberRunId` values and resolve the governing `TeamBackendKind`.
-2. Single-runtime Codex teams use `codex-team-run-backend-factory.ts` + `codex-team-manager.ts` to create/restore one standalone Codex `AgentRun` per team member.
-3. Mixed-runtime teams still run Codex members as standalone Codex `AgentRun`s, but the governing team owner is `MixedTeamManager`, not `codex-team-manager.ts`.
-4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
-5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
+1. Team services create a team run with deterministic `memberRunId` values and `TeamBackendKind.MIXED`.
+2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
+3. Codex member bootstrap consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
+4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
 
 Codex team communication uses the same dynamic-tool lifecycle normalization as
 other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool, but a
@@ -164,9 +163,8 @@ Event normalization:
 
 Team runtime:
 
-- `src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`
-- `src/agent-team-execution/backends/codex/codex-team-run-backend.ts`
-- `src/agent-team-execution/backends/codex/codex-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
 - `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`

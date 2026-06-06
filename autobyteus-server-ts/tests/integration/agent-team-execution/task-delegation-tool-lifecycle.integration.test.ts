@@ -51,7 +51,7 @@ const acceptEntry = getTaskDelegationToolManifestEntry(ACCEPT_TASK_TOOL_NAME);
 
 class ManagedCodexTeamBackend implements TeamRunBackend {
   readonly runId = teamRunId;
-  readonly teamBackendKind = TeamBackendKind.CODEX_APP_SERVER;
+  readonly teamBackendKind = TeamBackendKind.MIXED;
   readonly messages: Array<{ content: string; targetRouteKey: string | null; targetMemberRunId: string | null; metadata: Record<string, unknown> | null }> = [];
   readonly taskAgentStarts: StartTaskAgentInstanceRequest[] = [];
   readonly publishedEvents: TeamRunEvent[] = [];
@@ -178,25 +178,18 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
 
 const createHarness = async () => {
   let backend: ManagedCodexTeamBackend | null = null;
-  const codexFactory: TeamRunBackendFactory = {
+  const mixedFactory: TeamRunBackendFactory = {
     createBackend: async (config) => (backend = new ManagedCodexTeamBackend(config.memberConfigs)),
     restoreBackend: async () => { throw new Error("Unexpected restore in task delegation integration test."); },
   };
-  const unsupportedFactory: TeamRunBackendFactory = {
-    createBackend: async () => { throw new Error("Unexpected backend in task delegation integration test."); },
-    restoreBackend: async () => { throw new Error("Unexpected restore in task delegation integration test."); },
-  };
   const manager = new AgentTeamRunManager({
-    autoByteusTeamRunBackendFactory: unsupportedFactory as never,
-    codexTeamRunBackendFactory: codexFactory as never,
-    claudeTeamRunBackendFactory: unsupportedFactory as never,
-    mixedTeamRunBackendFactory: unsupportedFactory as never,
+    mixedTeamRunBackendFactory: mixedFactory as never,
     teamCommunicationService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
     runFileChangeService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
   });
   const run = await manager.createTeamRun(new TeamRunConfig({
     teamDefinitionId: "task-delegation-integration-team",
-    teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+    teamBackendKind: TeamBackendKind.MIXED,
     coordinatorMemberRouteKey: "coordinator",
     memberConfigs: ["coordinator", "worker"].map((memberRouteKey) => ({
       memberName: memberRouteKey,
@@ -269,7 +262,7 @@ const executeDelegateTasksAsTaskAgent = async (harness: Harness, contextTaskId: 
   (await delegateEntry.execute(
     harness.service,
     buildToolContext(
-      { runId: harness.backend.runId, teamBackendKind: TeamBackendKind.CODEX_APP_SERVER, config: harness.manager.getTeamRun(harness.backend.runId)?.config ?? null },
+      { runId: harness.backend.runId, teamBackendKind: TeamBackendKind.MIXED, config: harness.manager.getTeamRun(harness.backend.runId)?.config ?? null },
       "worker",
       findTaskAgentIdentity(harness.backend, contextTaskId),
     ),
@@ -301,7 +294,7 @@ const executeWorkerCompletionAsTaskAgent = async (
   rawInput: Record<string, unknown>,
 ) => {
   const context = buildToolContext(
-    { runId: harness.backend.runId, teamBackendKind: TeamBackendKind.CODEX_APP_SERVER, config: harness.manager.getTeamRun(harness.backend.runId)?.config ?? null },
+    { runId: harness.backend.runId, teamBackendKind: TeamBackendKind.MIXED, config: harness.manager.getTeamRun(harness.backend.runId)?.config ?? null },
     "worker",
     findTaskAgentIdentity(harness.backend, contextTaskId),
   );

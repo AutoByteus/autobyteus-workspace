@@ -30,7 +30,6 @@ import {
 } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { TeamManifestInjectorProcessor } from "autobyteus-ts/agent-team/system-prompt-processor/team-manifest-injector-processor.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentCreationError } from "../../errors.js";
@@ -44,6 +43,7 @@ import {
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
 import { buildAutoByteusStandaloneTeamContext } from "./autobyteus-team-communication-context-builder.js";
+import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -123,6 +123,9 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const isTeamManifestInjectorProcessor = (processor: unknown): boolean =>
+  processor?.constructor?.name === "TeamManifestInjectorProcessor";
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly agentFactory: AgentFactoryLike;
@@ -290,7 +293,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
 
     const systemPrompt = asTrimmedString(agentDef.instructions);
-    const resolvedPrompt = systemPrompt ?? agentDef.description;
+    const basePrompt = systemPrompt ?? agentDef.description;
     if (!systemPrompt) {
       logger.warn(
         `No non-blank definition instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
@@ -306,6 +309,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       memberTeamContext: options.memberTeamContext,
     });
     const tools = [];
+    const actualToolNames: string[] = [];
     for (const name of resolvedToolNames) {
       if (!defaultToolRegistry.getToolDefinition(name)) {
         logger.warn(
@@ -315,12 +319,18 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       }
       try {
         tools.push(defaultToolRegistry.createTool(name));
+        actualToolNames.push(name);
       } catch (error) {
         logger.error(
           `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
         );
       }
     }
+    const resolvedPrompt = composeAutoByteusMemberSystemPrompt({
+      baseAgentInstruction: basePrompt,
+      memberTeamContext: options.memberTeamContext ?? null,
+      resolvedToolNames: actualToolNames,
+    });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
     for (const name of mergeMandatoryAndOptional(agentDef.inputProcessorNames, this.registries.input)) {
@@ -356,6 +366,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     )) {
       const processor = this.registries.systemPrompt.getProcessor(name);
       if (processor) {
+        if (options.memberTeamContext && isTeamManifestInjectorProcessor(processor)) {
+          continue;
+        }
         systemPromptProcessors.push(processor);
       } else {
         logger.warn(
@@ -363,15 +376,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         );
       }
     }
-    if (
-      options.memberTeamContext &&
-      !systemPromptProcessors.some(
-        (processor) => processor instanceof TeamManifestInjectorProcessor,
-      )
-    ) {
-      systemPromptProcessors.push(new TeamManifestInjectorProcessor());
-    }
-
     const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
     for (const name of mergeMandatoryAndOptional(
       agentDef.toolExecutionResultProcessorNames,

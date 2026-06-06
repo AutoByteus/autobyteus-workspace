@@ -1,6 +1,3 @@
-import type { AutoByteusTeamRunContext } from "../backends/autobyteus/autobyteus-team-run-context.js";
-import type { ClaudeTeamRunContext } from "../backends/claude/claude-team-run-context.js";
-import type { CodexTeamRunContext } from "../backends/codex/codex-team-run-context.js";
 import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
@@ -37,12 +34,7 @@ const hasMemberContexts = (value: unknown): value is TeamMemberContextCarrier =>
   "memberContexts" in value &&
   Array.isArray((value as { memberContexts?: unknown }).memberContexts);
 
-export type RuntimeTeamRunContext =
-  | AutoByteusTeamRunContext
-  | ClaudeTeamRunContext
-  | CodexTeamRunContext
-  | MixedTeamRunContext
-  | null;
+export type RuntimeTeamRunContext = MixedTeamRunContext | null;
 
 export type TeamRunContextInput<TRuntimeContext> = {
   runId: string;

@@ -17,8 +17,8 @@ import { TeamRun } from "../domain/team-run.js";
 import {
   buildRestoreTeamRunRuntimeContext,
   getRuntimeMemberContexts,
-  resolveTeamBackendKindFromMetadata,
 } from "./team-run-runtime-context-support.js";
+import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 import type {
   RuntimeTeamRunContext,
@@ -43,7 +43,7 @@ export class TeamRunMetadataMapper {
   }) {}
 
   async buildRestoreContext(metadata: TeamRunMetadata): Promise<TeamRunContext> {
-    const teamBackendKind = resolveTeamBackendKindFromMetadata(metadata);
+    const teamBackendKind = TeamBackendKind.MIXED;
     const memberTree = await Promise.all(
       metadata.memberTree.map((member) => this.memberMetadataToRunConfig(metadata.teamRunId, member)),
     );
@@ -61,7 +61,7 @@ export class TeamRunMetadataMapper {
         coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
         memberTree,
       }),
-      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, teamBackendKind),
+      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata),
     });
   }
 

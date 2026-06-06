@@ -13,6 +13,9 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -51,17 +54,12 @@ const sendTeamMessageOverSocket = (
     imageUrls?: string[];
   },
 ): void => {
-  socket.send(
-    JSON.stringify({
-      type: "SEND_MESSAGE",
-      payload: {
+  sendE2eSendMessageCommand(socket, {
         content: input.content,
         target_member_route_key: input.targetMemberRouteKey ?? null,
         context_file_paths: input.contextFilePaths ?? [],
         image_urls: input.imageUrls ?? [],
-      },
-    }),
-  );
+      });
 };
 
 describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", () => {
@@ -118,14 +116,14 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     };
 
     const terminateTeamRunMutation = `
-      mutation TerminateAgentTeamRun($id: String!) {
-        terminateAgentTeamRun(id: $id) {
+      mutation TerminateAgentTeamRun($teamRunId: String!) {
+        terminateAgentTeamRun(teamRunId: $teamRunId) {
           success
         }
       }
     `;
     for (const teamRunId of createdTeamRunIds) {
-      await exec(terminateTeamRunMutation, { id: teamRunId });
+      await exec(terminateTeamRunMutation, { teamRunId });
     }
     createdTeamRunIds.clear();
 
@@ -387,14 +385,11 @@ Rules:
         }
       `;
       const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: {
-          metadata: {
-            memberMetadata: Array<{ memberName: string; memberRunId: string }>;
-          };
-        };
+        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
       }>(teamResumeQuery, { teamRunId });
+      const members = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
       const memberRunIdByName = new Map(
-        resumeResult.getTeamRunResumeConfig.metadata.memberMetadata.map((member) => [
+        members.map((member) => [
           member.memberName,
           member.memberRunId,
         ]),
@@ -619,14 +614,12 @@ Rules:
 
         await waitForTeamStreamEvent(
           (message) =>
-            message.type === "INTER_AGENT_MESSAGE" &&
-            message.payload.agent_name === input.recipientMemberName &&
-            typeof message.payload.sender_agent_id === "string" &&
-            (message.payload.sender_agent_id as string).trim().length > 0 &&
-            message.payload.sender_agent_name === input.senderMemberName &&
-            message.payload.recipient_role_name === input.recipientMemberName &&
-            message.payload.content === input.content,
-          `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
+            isE2eTeamCommunicationMessage(message, {
+              senderMemberName: input.senderMemberName,
+              recipientMemberName: input.recipientMemberName,
+              content: input.content,
+            }),
+          `${input.recipientMemberName} TEAM_COMMUNICATION_MESSAGE`,
         );
 
         await waitForTeamStreamEvent(
@@ -817,6 +810,7 @@ Rules:
               memberName: "research_subteam",
               ref: subTeamDefinitionId,
               refType: "AGENT_TEAM",
+              refScope: "SHARED",
             },
           ],
         },
@@ -944,12 +938,12 @@ Rules:
 
         await waitForTeamStreamEvent(
           (message) =>
-            message.type === "INTER_AGENT_MESSAGE" &&
-            message.payload.agent_name === "specialist" &&
-            message.payload.sender_agent_name === "parent" &&
-            message.payload.recipient_role_name === "specialist" &&
-            message.payload.content === `Nested relay ${relayToken}`,
-          "specialist INTER_AGENT_MESSAGE receipt",
+            isE2eTeamCommunicationMessage(message, {
+              senderMemberName: "parent",
+              recipientMemberName: "specialist",
+              content: `Nested relay ${relayToken}`,
+            }),
+          "specialist TEAM_COMMUNICATION_MESSAGE receipt",
         );
 
         await waitForTeamStreamEvent(
@@ -1306,6 +1300,7 @@ Rules:
               skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceId,
+              workspaceRootPath,
             },
           ],
         },
@@ -1477,16 +1472,13 @@ Rules:
         getTeamRunResumeConfig: {
           teamRunId: string;
           isActive: boolean;
-          metadata: {
-            workspaceRootPath: string | null;
-            memberMetadata: Array<{ memberName: string; workspaceRootPath: string | null }>;
-          };
+          metadata: Record<string, unknown>;
         };
       }>(teamResumeQuery, { teamRunId });
 
       expect(resumeResult.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
       expect(
-        resumeResult.getTeamRunResumeConfig.metadata.memberMetadata.every(
+        flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata).every(
           (binding) => binding.workspaceRootPath === workspaceRootPath,
         ),
       ).toBe(true);
@@ -1650,18 +1642,15 @@ Rules:
       `;
 
       const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: {
-          metadata: {
-            memberMetadata: Array<{ memberName: string; memberRouteKey: string; memberRunId: string }>;
-          };
-        };
+        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
       }>(teamResumeQuery, { teamRunId });
+      const members = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
       const professorRouteKey =
-        resumeResult.getTeamRunResumeConfig.metadata.memberMetadata.find(
+        members.find(
           (binding) => binding.memberName === "professor",
         )?.memberRouteKey ?? "professor";
       const studentBinding =
-        resumeResult.getTeamRunResumeConfig.metadata.memberMetadata.find(
+        members.find(
           (binding) => binding.memberName === "student",
         ) ?? null;
 

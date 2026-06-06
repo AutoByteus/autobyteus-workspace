@@ -14,6 +14,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
@@ -382,12 +383,7 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
     expectedResponseToken: string,
   ): Promise<void> => {
     const startIndex = messages.length;
-    socket.send(
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        payload: { content },
-      }),
-    );
+    sendE2eSendMessageCommand(socket, { content });
     await waitForMessageAfter(
       messages,
       startIndex,

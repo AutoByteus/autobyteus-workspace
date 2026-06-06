@@ -34,7 +34,7 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
   - `src/api/rest/team-communication.ts`
 - Streaming transport:
   - `src/services/agent-streaming/agent-run-event-message-mapper.ts`
-  - `src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+  - `src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts`
 
 ## Responsibilities
 

@@ -18,8 +18,9 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ContextFileLocalPathResolver } from "../../../src/context-files/services/context-file-local-path-resolver.js";
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
 import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const RED_PNG_BASE64 =
   "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAS0lEQVR42u3PQQkAAAgAsetfWiP4FgYrsKZeS0BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEDgsqnc8OJg6Ln3AAAAAElFTkSuQmCC";
 const BLUE_PNG_BASE64 =
@@ -634,16 +635,11 @@ runLiveContextFileRuntimeE2e(
           await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
 
           const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content:
                   "What is the dominant color in the attached image? Reply with exactly one lowercase word.",
                 context_file_paths: [finalized.locator],
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,
@@ -743,17 +739,12 @@ runLiveContextFileRuntimeE2e(
           await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
 
           const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 target_member_route_key: "worker",
                 content:
                   "What is the dominant color in the attached image? Reply with exactly one lowercase word.",
                 context_file_paths: [finalized.locator],
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,

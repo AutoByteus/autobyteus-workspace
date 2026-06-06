@@ -17,12 +17,14 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const codexBinaryReady = process.env.RUN_CODEX_E2E === "1" || spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveMixedTaskDelegationEnabled =
   process.env.RUN_MIXED_TASK_DELEGATION_E2E === "1" ||
   (process.env.RUN_LMSTUDIO_E2E === "1" && process.env.RUN_CODEX_E2E === "1");
 const describeLive = codexBinaryReady && liveMixedTaskDelegationEnabled ? describe : describe.skip;
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
 const originalToolCallFormat = process.env.AUTOBYTEUS_STREAM_PARSER;
 
@@ -81,15 +83,12 @@ const waitForMessageAfter = async (
 };
 
 const sendTeamMessageOverSocket = (socket: WebSocket, input: { content: string; targetMemberRouteKey: string }) => {
-  socket.send(JSON.stringify({
-    type: "SEND_MESSAGE",
-    payload: {
+  sendE2eSendMessageCommand(socket, {
       content: input.content,
       target_member_route_key: input.targetMemberRouteKey,
       context_file_paths: [],
       image_urls: [],
-    },
-  }));
+    });
 };
 
 const flattenMemberMetadata = (metadata: Record<string, unknown>): TeamMemberMetadata[] => {
@@ -170,7 +169,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
 
   beforeAll(async () => {
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
-    process.env.AUTOBYTEUS_STREAM_PARSER = "json";
+    process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
@@ -260,7 +259,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const autoByteusModel = await fetchModelIdentifier(RuntimeKind.AUTOBYTEUS, (models) => {
       const exact = process.env.LMSTUDIO_MODEL_ID?.trim();
       if (exact && models.includes(exact)) return exact;
-      const fragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || "qwen";
+      const fragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || DEFAULT_LMSTUDIO_TEXT_MODEL;
       return models.find((model) => model.includes(fragment) && model.includes("lmstudio")) ?? models.find((model) => model.toLowerCase().includes("qwen"));
     });
     const requestedCodexModel = process.env.CODEX_E2E_TASK_DELEGATION_MODEL?.trim() || "gpt-5.5";
@@ -276,7 +275,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       name: `mixed-task-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task delegation E2E.",
       toolNames: ["delegate_tasks", "accept_task"],
-      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"delegate_tasks","parameters":<exact arguments>}}. When you later receive a framework task completion notification with a Task ID, accept it exactly once by emitting only one raw JSON tool-call object and no prose or markdown: {"tool":{"function":"accept_task","parameters":{"task_id":"<Task ID>"}}}. Do not explore the environment.`,
+      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. When you later receive a framework task completion notification with a Task ID, call accept_task exactly once with that task_id and no other arguments. Do not explore the environment.`,
     });
     const workerAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-worker-${unique}`,
@@ -314,6 +313,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           workspaceRootPath,
           llmConfig: {
             temperature: 0,
+            tool_choice: "required",
           },
         },
         { memberName: "worker", agentDefinitionId: workerAgentDefinitionId, llmModelIdentifier: codexModel, autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: RuntimeKind.CODEX_APP_SERVER, workspaceRootPath },
@@ -345,7 +345,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       const startIndex = connection.messages.length;
       sendTeamMessageOverSocket(connection.socket, {
         targetMemberRouteKey: "coordinator",
-        content: `Emit exactly this raw JSON tool call object, with no markdown and no prose: ${JSON.stringify({ tool: { function: "delegate_tasks", parameters: delegateArgs } })}`,
+        content: `Call delegate_tasks exactly once now with these exact JSON arguments: ${JSON.stringify(delegateArgs)}. Do not call any other tool.`,
       });
 
       await waitForMessageAfter(connection.messages, startIndex, (message) =>

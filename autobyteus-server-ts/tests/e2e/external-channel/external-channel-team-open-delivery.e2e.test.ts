@@ -207,7 +207,7 @@ describe("external channel team open delivery e2e", () => {
 });
 
 class DeterministicTeamRunBackend implements TeamRunBackend {
-  readonly teamBackendKind = TeamBackendKind.AUTOBYTEUS;
+  readonly teamBackendKind = TeamBackendKind.MIXED;
   private readonly listeners = new Set<TeamRunEventListener>();
   private active = true;
 
@@ -345,7 +345,7 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
 const createDeterministicTeamRun = (teamRunId: string): TeamRun => {
   const config = new TeamRunConfig({
     teamDefinitionId: "team-definition-open-delivery",
-    teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+    teamBackendKind: TeamBackendKind.MIXED,
     coordinatorMemberName: "coordinator",
     memberConfigs: [createMemberConfig("coordinator", "run-coordinator"), createMemberConfig("worker", "run-worker")],
   });
@@ -355,7 +355,7 @@ const createDeterministicTeamRun = (teamRunId: string): TeamRun => {
   return new TeamRun({
     context: new TeamRunContext({
       runId: teamRunId,
-      teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+      teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: "coordinator",
       config,
       runtimeContext,
