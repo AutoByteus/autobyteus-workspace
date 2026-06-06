@@ -1,0 +1,136 @@
+# iOS Signing Readiness
+
+Date: 2026-06-06T15:53:20Z
+App bundle ID: org.autobyteus.mobile
+Share extension bundle ID: org.autobyteus.mobile.share
+Requested App Group: group.org.autobyteus.mobile
+Development team input: not provided
+Detected provisioning teams: none
+Xcode path: /Applications/Xcode_16.4.app/Contents/Developer
+Xcode version: Xcode 16.4 Build version 16F6
+Development signing identities detected: 0
+Distribution signing identities detected: 0
+Provisioning profile search directories:
+ - legacyMobileDevice: /Users/runner/Library/MobileDevice/Provisioning Profiles (missing, files: 0)
+ - xcodeUserData: /Users/runner/Library/Developer/Xcode/UserData/Provisioning Profiles (missing, files: 0)
+Provisioning profiles discovered: 0
+iOS provisioning profiles detected: 0
+Team-filtered iOS profiles considered: 0
+iOS development profiles detected: 0
+iOS development wildcard profiles detected: 0
+App development profiles matching bundle exact-or-wildcard: 0
+App development profiles with requested App Group: 0
+Share extension development profiles matching bundle exact-or-wildcard: 0
+Share extension development profiles with requested App Group: 0
+App Store/TestFlight app profiles matching exact bundle: 0
+App Store/TestFlight app profiles with requested App Group: 0
+App Store/TestFlight share-extension profiles matching exact bundle: 0
+App Store/TestFlight share-extension profiles with requested App Group: 0
+Development-device profile prerequisites complete: false
+Development-device App Group prerequisites complete: false
+Profile/App Group entitlement prerequisites complete: false
+App Store/TestFlight archive prerequisites complete without dry run: false
+Archive dry run: skipped
+Archive note: Set IOS_DEVELOPMENT_TEAM and IOS_SIGNING_READINESS_ARCHIVE=1 to attempt a local archive dry run.
+Final readiness classification: simulator-ready-signing-assets-missing
+Readiness reasons:
+ - No Apple Development/iPhone Developer signing identity detected
+ - No iOS development provisioning profile detected in configured profile directories
+ - No iOS development provisioning profile detected for app bundle org.autobyteus.mobile (exact or wildcard)
+ - No iOS development provisioning profile detected for share extension bundle org.autobyteus.mobile.share (exact or wildcard)
+ - No app development profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension development profile with App Group group.org.autobyteus.mobile detected
+ - No Apple/iOS Distribution signing identity detected
+ - No exact App Store/TestFlight distribution profile detected for app bundle org.autobyteus.mobile
+ - No exact App Store/TestFlight distribution profile detected for share extension bundle org.autobyteus.mobile.share
+ - No app App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+
+Provisioning profile summaries (public metadata only):
+ - none
+
+Simulator inventory excerpt:
+== Devices ==
+-- iOS 18.5 --
+    iPhone 16 Pro (57DAC7D7-5067-4346-9860-CEEBA84AE630) (Shutdown) 
+    iPhone 16 Pro Max (2AF7549F-9C21-432C-8DD6-61912065CFA4) (Shutdown) 
+    iPhone 16e (23D33FE3-27E6-4F72-BB7E-D970236F4353) (Shutdown) 
+    iPhone 16 (90D75F8C-0A6E-4EE9-AF9B-5A0B441033A5) (Shutdown) 
+    iPhone 16 Plus (0D9C95DC-A620-42FA-BEFA-70503649B667) (Shutdown) 
+    iPhone SE (3rd generation) (AC37353A-E662-4C30-B4C9-3AC6639B745B) (Shutdown) 
+    iPad Pro 11-inch (M4) (CADB69EC-5C4C-4AA7-92D2-61DA4F12D64B) (Shutdown) 
+    iPad Pro 13-inch (M4) (A7EE1AF8-9B14-4D49-A1F8-43A6B0AF0B08) (Shutdown) 
+    iPad mini (A17 Pro) (ACDCAC88-439F-4B30-A5C6-F0DAEB318A03) (Shutdown) 
+    iPad (A16) (C18055B7-DD64-4C47-BFBE-B50A5666D9AA) (Shutdown) 
+    iPad Air 13-inch (M3) (98E14FDD-6843-4A5F-89F7-85B4FBC5F4C9) (Shutdown) 
+    iPad Air 11-inch (M3) (296D0407-8026-4D8C-AD08-250935464A9C) (Shutdown) 
+    iPad Air 11-inch (M2) (574861D3-C614-478B-8F79-F959168C6B2F) (Shutdown) 
+    iPad Air 13-inch (M2) (9342CC96-48CB-4B80-86C0-CE62C80BF3B4) (Shutdown) 
+    iPad (10th generation) (BCF9D12A-D849-4CBE-AFE8-4D35B8E11161) (Shutdown) 
+-- iOS 18.6 --
+    iPhone 16 Pro (28A23778-E1E2-42CB-A610-ECAAAA791EF5) (Shutdown) 
+    iPhone 16 Pro Max (66E9C6CC-3A9E-494E-8C5E-727B8CEFED2F) (Shutdown) 
+    iPhone 16e (F1757741-B75C-4A0F-8334-1BFC0284A5B1) (Shutdown) 
+    iPhone 16 (958529E9-C30D-4910-B1F7-FBB3D728F352) (Shutdown) 
+    iPhone 16 Plus (74FF5335-35E1-4982-B4D8-B799C4809824) (Shutdown) 
+    iPhone SE (3rd generation) (0877533F-F61F-4937-B309-394245E3BF46) (Shutdown) 
+    iPad Pro 11-inch (M4) (F738D296-B7DD-43E8-8168-8FF560D898A8) (Shutdown) 
+    iPad Pro 13-inch (M4) (887176FF-60D7-476E-90C9-8DF8F836A454) (Shutdown) 
+    iPad Air 13-inch (M3) (6321DB52-390D-43DD-98E9-21FF9F3418B0) (Shutdown) 
+    iPad Air 11-inch (M3) (37C883FB-87D1-409C-A6D7-64F2027F4F11) (Shutdown) 
+    iPad Air 11-inch (M2) (94FF355E-6ACC-4014-9AA7-5B318EF0AB62) (Shutdown) 
+    iPad Air 13-inch (M2) (C6408BA0-0B45-4545-B6ED-C28DB5C43C9E) (Shutdown) 
+    iPad mini (A17 Pro) (6D8245C9-68CF-4308-A134-77CC05A32D01) (Shutdown) 
+    iPad (A16) (8C8C34AD-7F54-4A5D-8E05-6633E40E1911) (Shutdown) 
+    iPad (10th generation) (D9D7F930-74F6-489F-BFA3-A42277669F10) (Shutdown) 
+-- iOS 26.0 --
+    iPhone 17 Pro (204789F2-5345-40FE-BFD4-F00589152D86) (Booted) 
+    iPhone 17 Pro Max (9D39B2FD-6679-4688-9335-5A3121903576) (Shutdown) 
+    iPhone Air (79835EE8-01A9-46F2-918B-5556B1B17EF0) (Shutdown) 
+    iPhone 17 (CDF250EA-38BF-49C4-9B91-395F54D9A80A) (Shutdown) 
+    iPhone 16 Pro (DD6921D3-76B5-4C8B-94E7-819AC86BAD38) (Shutdown) 
+    iPhone 16 Pro Max (2C61DD9E-AA50-4E30-9FD8-A21144F4AF40) (Shutdown) 
+    iPhone 16e (56C04E56-1C3C-4AAE-91BA-892E1AF490C1) (Shutdown) 
+    iPhone 16 (8E931F0B-F51A-4AAB-82E3-D27E662FC517) (Shutdown) 
+    iPhone 16 Plus (49A2EE9F-4D49-474A-A837-76B5924F785F) (Shutdown) 
+    iPhone SE (3rd generation) (D6C0F03F-089A-4011-80F5-AF54FF5D562F) (Shutdown) 
+    iPad Pro 13-inch (M5) (2823F45E-9880-42F0-8105-B8F17BD5FD14) (Shutdown) 
+    iPad Pro 11-inch (M5) (3EF892CA-5088-430B-AD92-84BFAAC4FBA4) (Shutdown) 
+    iPad Pro 11-inch (M4) (8EEF279D-32A2-412B-9C41-DC3B8D4BFA95) (Shutdown) 
+    iPad Pro 13-inch (M4) (3749BA3E-5BED-4C1C-9EE1-31B9E46AC040) (Shutdown) 
+    iPad mini (A17 Pro) (44F2352B-F296-496D-9DD1-5B82D576BD78) (Shutdown) 
+    iPad (A16) (BAEA1540-4C7A-451F-BACC-47CC4944E2E7) (Shutdown) 
+    iPad Air 13-inch (M3) (A51C1F17-A215-4642-8020-FDED0D112CB4) (Shutdown) 
+    iPad Air 11-inch (M3) (ED72A5EA-1025-4E2F-B3FD-8F4701ECF6FF) (Shutdown) 
+    iPad Air 11-inch (M2) (41FF4EB7-B502-4123-A11C-7BF0C6B89031) (Shutdown) 
+    iPad Air 13-inch (M2) (53563322-25C6-441E-8628-6D9356D57C8C) (Shutdown) 
+    iPad (10th generation) (AC3BF86B-F0B9-4215-8761-ED2ED6D89A36) (Shutdown) 
+-- iOS 26.1 --
+    iPhone 17 Pro (9410DB92-A79D-4103-A6D8-ECF0ACE3E2A8) (Shutdown) 
+    iPhone 17 Pro Max (CA44561F-28C5-4B23-9260-72F9F00CEAE2) (Shutdown) 
+    iPhone Air (0F1B7223-97FD-4147-8DFD-89ECA360C1C9) (Shutdown) 
+    iPhone 17 (35CC3810-07F0-488B-8194-F75A34D53186) (Shutdown) 
+    iPhone 16 Pro (FCD52566-D283-481D-9ED1-5EE653685675) (Shutdown) 
+    iPhone 16 Pro Max (BEBF304B-D9C0-4A53-9FBE-753C26132D88) (Shutdown) 
+    iPhone 16e (27AB327E-01A7-4B2D-94CF-4DB257865C09) (Shutdown) 
+    iPhone 16 (0C298044-D41B-4D34-95A6-286F7586F91E) (Shutdown) 
+    iPhone 16 Plus (8F16D9E4-164D-49B6-AC66-4F3CC6E418CB) (Shutdown) 
+    iPhone SE (3rd generation) (5A4584A9-9F08-4387-B1BB-AEC5DEEC0A80) (Shutdown) 
+    iPad Pro 13-inch (M5) (CC2CDEC1-CAA7-4CFA-97CD-F0D96DB0E8AE) (Shutdown) 
+    iPad Pro 11-inch (M5) (52B0B2AB-DED0-4D25-9271-D8D978DD5EDA) (Shutdown) 
+    iPad Pro 11-inch (M4) (6949E528-DBA9-4A24-8708-13EE02E37494) (Shutdown) 
+    iPad Pro 13-inch (M4) (EB2B7214-49A2-4436-BAD5-3D12536882D2) (Shutdown) 
+    iPad (A16) (A59D7886-C8E0-4BFF-9655-76A55D07CF3C) (Shutdown) 
+    iPad Air 13-inch (M3) (06619F12-72D8-4EC1-B401-9C91719AB720) (Shutdown) 
+    iPad Air 11-inch (M3) (E1359859-1B3C-48FB-96CA-5DB6B2DC6F9A) (Shutdown) 
+    iPad Air 11-inch (M2) (C8A258A0-267F-41CA-99B3-E8D02AFC4AB6) (Shutdown) 
+    iPad Air 13-inch (M2) (F1051A45-D0F3-4D3B-B353-D8A60BDB95F4) (Shutdown) 
+    iPad mini (A17 Pro) (16942785-3B3A-42BE-A146-B611759A3947) (Shutdown) 
+    iPad (10th generation) (BFDB6EA0-1F95-4BCE-993E-B9E5B70BB843) (Shutdown) 
+-- iOS 26.2 --
+    iPhone 17 Pro (86C81BD8-3941-4DB2-A7E0-41895F011C48) (Shutdown) 
+    iPhone 17 Pro Max (B6201C51-2437-479F-80AB-0C3267A3CEF2) (Shutdown) 
+
+Codesigning identities (public certificate names/hashes only; no private keys):
+0 valid identities found
+JSON report: /Users/runner/work/_temp/ios-smoke/signing-readiness/ios-signing-readiness.json

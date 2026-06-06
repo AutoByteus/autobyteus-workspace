@@ -2,8 +2,6 @@ name: iOS App Store Connect Release
 
 on:
   push:
-    branches:
-      - "codex/ios-wrapper-app"
     tags:
       - "v*"
   workflow_dispatch:

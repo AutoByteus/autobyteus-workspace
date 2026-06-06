@@ -44,3 +44,23 @@ Repository variables present:
 
 1. Merge or otherwise add `.github/workflows/release-ios.yml` to default branch `personal`, then manually dispatch `publish_app_store_connect=false` for a build-only GitHub runner validation.
 2. Push a `vMAJOR.MINOR.PATCH[-PRERELEASE]` tag pointing at the branch commit. Because the required iOS secrets appear present, this can proceed beyond the missing-secret gate and may upload to App Store Connect/TestFlight. Do this only after explicit confirmation of the tag/version and acceptance of a real TestFlight upload attempt.
+
+
+## Real GitHub Runner Build-Only Result
+
+A temporary branch-push trigger was added on `codex/ios-wrapper-app` only to exercise the workflow on a real GitHub-hosted macOS runner without requesting publish.
+
+- Temporary trigger commit: `c32f20f3a10274307efc92cdd35675f1ccfc98b9`
+- Run ID: `27066610907`
+- Run URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27066610907
+- Result: `success`
+- Metadata job: success
+- Build/test/smoke job: success in 10m18s
+- Core tests on runner: 21 tests, 0 failures
+- UI smoke on runner: 2 tests, 0 failures/skips
+- Uploaded artifact: `ios-build-test-artifacts`, artifact id `7455760368`, digest `sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393`
+- Publish requested: `false`; publish secret gate and TestFlight upload jobs were skipped.
+
+The run proves the GitHub-hosted macOS build-only path can build/test/smoke successfully. It does not prove archive/export/TestFlight upload. The temporary branch-push trigger should be reverted after recording this evidence so the final workflow keeps the reviewed trigger contract.
+
+Runner-specific note: `publish-secret-readiness.txt` reported the required iOS/App Store Connect secret names as present, but the smoke-captured signing readiness classified the ephemeral runner as `simulator-ready-signing-assets-missing` because no signing identities/profiles are installed in the runner keychain/profile directories unless the publish job imports them.
