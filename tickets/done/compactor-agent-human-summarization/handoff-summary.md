@@ -110,3 +110,28 @@ After explicit user verification, delivery should refresh `origin/personal` agai
 - Finalization rerun check: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts tests/unit/built-in-agents/built-in-agent-templates.test.ts` passed, 2 files / 7 tests. Evidence: `validation-logs/delivery-finalization-post-local-fix-built-in-agent-unit-tests.log`.
 - Final static checks: prompt anchors, prohibited legacy/internal prompt terms, removed Duplicate/Fork source/generated grep, and `git diff --check origin/personal` including untracked delivery artifacts passed. Evidence: `validation-logs/delivery-finalization-static-checks.log`.
 - Release plan: finalize repository state into `personal`, then run the documented desktop release helper for `1.3.45` using archived `release-notes.md`.
+
+
+## Final Repository / Release Completion
+
+- Updated: `2026-06-06T15:04:00Z`
+- User verification: `Yes`; user requested finalization and a new release version.
+- Ticket branch commit: `e6958139ececb67c3684d0c33f6c4a2703272f2a` (`chore(ticket): finalize compactor agent cleanup`).
+- Merge commit on `personal`: `12bf9fef75fcc9f122002ac84325182ad9ccbc8b` (`merge: compactor agent human summarization`).
+- Release commit: `1719a46a893f426d83b74f16117bc2a46ae4cb84` (`chore(release): bump workspace release version to 1.3.45`).
+- Release tag: `v1.3.45`.
+- Release tag object: `f80a04d3a12829db3225090d4b52c00ceacd3ad8`.
+- Release tag target: `1719a46a893f426d83b74f16117bc2a46ae4cb84`.
+- Final `origin/personal` after release helper: `1719a46a893f426d83b74f16117bc2a46ae4cb84` before this final delivery-record commit.
+- Release helper command: `pnpm release 1.3.45 -- --release-notes tickets/done/compactor-agent-human-summarization/release-notes.md`.
+- Release notes synced to `.github/release-notes/release-notes.md` by the release helper.
+- Tag-triggered workflows observed after release push:
+  - Desktop Release: `in_progress`, run `27065687694`.
+  - Server Docker Release: `in_progress`, run `27065687690`.
+  - Release Messaging Gateway: `in_progress`, run `27065687689`.
+  - Android APK Release: `in_progress`, run `27065687688`.
+- Cleanup completed:
+  - Removed dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization`.
+  - Deleted local branch `codex/compactor-agent-human-summarization`.
+  - Deleted remote branch `origin/codex/compactor-agent-human-summarization`.
+- Final note: this delivery-record update is intentionally after the `v1.3.45` tag; it records final release/cleanup status and does not alter the release tag contents.
