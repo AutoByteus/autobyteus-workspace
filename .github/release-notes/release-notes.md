@@ -1,16 +1,19 @@
-# Release Notes — Memory Compactor and Built-In Agent Cleanup
+# Release Notes — iOS Wrapper App and Mobile Release Workflow
 
-## Improvements
+## New iOS App Shell
 
-- Updated the built-in Memory Compactor prompt so it uses clearer user-facing instructions: summarize earlier work so the same agent can continue later without rereading the full history.
-- Built-in internal agents now sync from bundled templates on startup for the product-managed `autobyteus-memory-compactor` and `autobyteus-skill-evolver` ids.
-- Memory compaction task prompts now describe the required final JSON shape directly instead of relying on older backend/internal output-contract wording.
+- Added the first native AutoByteus iOS wrapper project with a `WKWebView` shell for the server-served `/mobile` experience.
+- Added first-run node connection, saved-node restore, QR scanner entry, paste/share handoff, trusted navigation boundaries, and native diagnostics for unreachable nodes.
+- Added a share extension handoff path while keeping mobile access credentials inside web storage rather than persisting `mra_...` secrets natively.
 
-## Cleanup
+## Build, Signing, and Release Automation
 
-- Removed the generic agent Duplicate/Fork path from the backend GraphQL/API/service/provider layers and frontend UI/store/generated client.
-- Documented that app-data edits to product-managed built-in agent ids are overwritten by startup sync; custom compactor behavior should use a separate user/package-managed agent selected by setting.
+- Added XcodeGen project generation, core unit tests, simulator smoke tests, fake-node smoke support, and signing-readiness checks under `autobyteus-ios`.
+- Added `.github/workflows/release-ios.yml` with build-only validation and guarded App Store Connect/TestFlight archive/upload support.
+- Added release metadata and contract checks for numeric iOS marketing/build versions, prerelease artifact metadata, app/share bundle IDs, required iOS secrets, and App Store provisioning profile validation.
 
-## Validation
+## Documentation and Validation
 
-- Verified with targeted backend GraphQL E2E, frontend AgentDetail/integration tests, built-in-agent unit tests, memory compaction unit tests, docs checks, static grep for removed Duplicate/Fork artifacts, and a local personal macOS Electron rebuild.
+- Documented iOS setup, simulator validation, signing readiness, GitHub Actions release paths, TestFlight/App Store limits, and Phone Access mobile-wrapper ownership.
+- Validated locally and on GitHub-hosted macOS: core tests passed 21/0 and simulator UI smoke passed 2/0 without skips.
+- This release includes the workflow and build-only proof. Physical iPhone QR/file-upload/live-node evidence and a real TestFlight/App Store upload remain separate release-readiness gates.
