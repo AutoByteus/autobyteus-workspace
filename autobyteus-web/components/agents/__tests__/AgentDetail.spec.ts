@@ -102,7 +102,6 @@ describe('AgentDetail', () => {
       global: {
         stubs: {
           AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: true,
         },
       },
     })
@@ -111,6 +110,8 @@ describe('AgentDetail', () => {
     expect(wrapper.text()).toContain('Always create a concrete execution plan before coding.')
     expect(wrapper.text()).toContain(translate('agents.components.agents.AgentDetail.category'))
     expect(wrapper.text()).toContain('software-engineering')
+    expect(wrapper.text()).not.toContain('Duplicate')
+    expect(wrapper.text()).not.toContain('Fork')
   })
 
   it('shows the chevron toggle when instructions overflow', async () => {
@@ -145,7 +146,6 @@ describe('AgentDetail', () => {
       global: {
         stubs: {
           AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: true,
         },
       },
     })
@@ -170,7 +170,6 @@ describe('AgentDetail', () => {
       global: {
         stubs: {
           AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: true,
         },
       },
     })
@@ -182,26 +181,6 @@ describe('AgentDetail', () => {
     expect(wrapper.emitted('navigate')).toEqual([[
       { target: 'agent-team', view: 'team-detail', id: 'team-1' },
     ]])
-  })
-
-  it('navigates to edit view after duplicate completes', async () => {
-    const wrapper = mount(AgentDetail, {
-      props: {
-        agentDefinitionId: 'agent-1',
-      },
-      global: {
-        stubs: {
-          AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: {
-            template: '<button data-test="duplicate" @click="$emit(\'duplicated\', \'agent-copy-1\')">Duplicate</button>',
-          },
-        },
-      },
-    })
-
-    await wrapper.get('[data-test="duplicate"]').trigger('click')
-
-    expect(wrapper.emitted('navigate')).toEqual([[{ view: 'edit', id: 'agent-copy-1' }]])
   })
 
   it('shows team ownership and hides shared-only actions for team-local agents', async () => {
@@ -238,7 +217,6 @@ describe('AgentDetail', () => {
       global: {
         stubs: {
           AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: true,
         },
       },
     })
@@ -287,7 +265,6 @@ describe('AgentDetail', () => {
       global: {
         stubs: {
           AgentDeleteConfirmDialog: true,
-          AgentDuplicateButton: true,
         },
       },
     })

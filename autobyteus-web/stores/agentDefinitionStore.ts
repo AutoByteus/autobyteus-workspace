@@ -5,7 +5,6 @@ import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
 import {
   CreateAgentDefinition,
   DeleteAgentDefinition,
-  DuplicateAgentDefinition,
   RefreshAgentDefinitionCatalog,
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
@@ -85,11 +84,6 @@ export interface UpdateAgentDefinitionInput {
 interface DeleteResult {
   success: boolean
   message: string
-}
-
-interface DuplicateAgentDefinitionInput {
-  sourceId: string
-  newName: string
 }
 
 export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
@@ -302,33 +296,6 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     }
   }
 
-  const duplicateAgentDefinition = async (
-    input: DuplicateAgentDefinitionInput,
-  ): Promise<AgentDefinition | null> => {
-    try {
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({
-        mutation: DuplicateAgentDefinition,
-        variables: { input },
-      })
-
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-
-      if (!data?.duplicateAgentDefinition) {
-        return null
-      }
-
-      await reloadAllAgentDefinitions()
-      return data.duplicateAgentDefinition
-    } catch (cause) {
-      error.value = cause
-      console.error('Failed to duplicate agent definition:', cause)
-      throw cause
-    }
-  }
-
   const clearDeleteResult = () => {
     deleteResult.value = null
   }
@@ -390,7 +357,6 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     createAgentDefinition,
     updateAgentDefinition,
     deleteAgentDefinition,
-    duplicateAgentDefinition,
     clearDeleteResult,
     invalidateAgentDefinitions,
     getAgentDefinitionById,

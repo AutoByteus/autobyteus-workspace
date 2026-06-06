@@ -61,15 +61,6 @@ export const DeleteAgentDefinition = gql`
   }
 `
 
-export const DuplicateAgentDefinition = gql`
-  mutation DuplicateAgentDefinition($input: DuplicateAgentDefinitionInput!) {
-    duplicateAgentDefinition(input: $input) {
-      ...AgentDefinitionMutationFields
-    }
-  }
-  ${AgentDefinitionMutationFields}
-`
-
 export const RefreshAgentDefinitionCatalog = gql`
   mutation RefreshAgentDefinitionCatalog {
     refreshAgentDefinitionCatalog

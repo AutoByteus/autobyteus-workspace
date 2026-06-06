@@ -48,9 +48,9 @@ defaults are not stored in `llmConfig` merely because the form renders them.
 
 ## Ownership Behavior
 
-| Scope | Shown in generic Agents list | Editable from generic agent detail/edit | Generic delete / duplicate actions |
+| Scope | Shown in generic Agents list | Editable from generic agent detail/edit | Generic delete action |
 | --- | --- | --- | --- |
-| `SHARED` | Yes | Yes | Allowed |
+| `SHARED` | Yes | Yes | Delete allowed |
 | `TEAM_LOCAL` | No in normal browse/search; use owning Agent Team detail | Direct known-id routes remain available, but primary edit is in Agent Team detail | Not allowed in the generic shared workflow |
 | `APPLICATION_OWNED` | Yes | Yes when backed by a writable source | Not allowed in the generic shared workflow |
 
@@ -99,7 +99,7 @@ eligibility** control when the global capability is enabled.
 `agentDefinitionStore` owns:
 
 - fetch and reload of the full agent catalog,
-- create/update/delete/duplicate mutations,
+- create/update/delete mutations,
 - ownership-aware getters such as `sharedAgentDefinitions`, `teamLocalAgentDefinitions`, `getTeamLocalAgentDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedAgentDefinitionsByOwnerApplicationId(...)`, and
 - cache invalidation via `invalidateAgentDefinitions()`.
 
@@ -137,5 +137,6 @@ definitions between nodes.
 - The generic create flow still creates shared standalone agents.
 - Application-owned agents are surfaced for inspection/testing and in-place editing, not for shared-path duplication or destructive management.
 - Team-local agents are inspected and edited from the owning Agent Team detail page; direct known-id `/agents` detail/edit routes remain available for debugging but are not normal discovery.
+- The generic Agents surface no longer exposes Duplicate/Fork. To customize package-managed content, update the source package and reload it; to create unrelated standalone content, create a new shared agent explicitly.
 - When a shared/global agent member is opened from Agent Team detail, the Agent Detail route may include `returnToTeam=<teamId>`; its back action returns to `/agent-teams?view=team-detail&id=<teamId>` when that context is present and otherwise keeps the normal Back to Agents behavior.
 - Search in the list includes provenance fields such as owning application and package id for discoverable agents, while excluding team-local definitions.

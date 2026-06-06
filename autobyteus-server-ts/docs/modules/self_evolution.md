@@ -11,7 +11,7 @@ Self-evolution is disabled by default for every server node.
 - `SelfEvolutionCapabilityService` reads and writes the `ENABLE_SELF_EVOLUTION` server setting.
 - If the setting is missing, the capability initializes disabled and records the source as `INITIALIZED_DISABLED`.
 - Every manual start mutation checks the capability gate before target resolution.
-- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` selects the helper agent definition. Fresh servers seed the built-in `autobyteus-skill-evolver` through the built-in-agent bootstrap path.
+- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` selects the helper agent definition. Server startup syncs the product-managed built-in `autobyteus-skill-evolver` through the built-in-agent bootstrap path and selects it only when the setting is blank.
 - The selected evolver definition must include `run_bash`. Blank runtime/model defaults fall back to the target run's runtime/model/config.
 
 Executable MVP strategies are intentionally narrow: `manual_only` trigger and `single_agent` evolver are implemented; `scheduled`, `signal_based`, and `agent_team` are catalog-visible `not_implemented` placeholders only.

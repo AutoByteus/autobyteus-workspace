@@ -1,0 +1,10 @@
+# Delivery docs sync checks
+Date: 2026-06-06T09:40:14Z
+HEAD: f9f8386c428081b84daadf5bfbe559cb2f96186f
+origin/personal: c4a7c61394bda6789809473c4e170ce96b2c79ed
+
+## git diff --check origin/personal
+PASS: git diff --check origin/personal
+
+## stale docs/source scan for removed built-in/compactor/duplicate terms
+PASS: no stale removed behavior terms found in active non-ticket source/docs

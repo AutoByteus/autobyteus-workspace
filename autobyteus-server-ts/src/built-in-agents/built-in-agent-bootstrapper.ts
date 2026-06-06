@@ -35,8 +35,8 @@ export type BuiltInAgentBootstrapResult = {
   displayName: string;
   agentDir: string;
   templateDir: string;
-  seededAgentMd: boolean;
-  seededAgentConfig: boolean;
+  syncedAgentMd: boolean;
+  syncedAgentConfig: boolean;
   resolved: boolean;
   initializedSetting: boolean;
 };
@@ -49,7 +49,6 @@ export type BuiltInAgentsBootstrapResult = {
 
 export type BuiltInAgentBootstrapperOptions = {
   agentsDir?: string;
-  agentDefinitions?: readonly BuiltInAgentDefinition[];
   agentDefinitionService?: AgentDefinitionLookup;
   serverSettingsService?: BuiltInAgentSettingsPersistence;
   logger?: Logger;
@@ -69,7 +68,7 @@ export class BuiltInAgentBootstrapper {
 
   constructor(options: BuiltInAgentBootstrapperOptions = {}) {
     this.agentsDir = options.agentsDir ?? null;
-    this.agentDefinitions = options.agentDefinitions ?? BUILT_IN_AGENT_DEFINITIONS;
+    this.agentDefinitions = BUILT_IN_AGENT_DEFINITIONS;
     this.agentDefinitionService = options.agentDefinitionService ?? null;
     this.serverSettingsService = options.serverSettingsService ?? null;
     this.logger = options.logger ?? logger;
@@ -104,9 +103,9 @@ export class BuiltInAgentBootstrapper {
     const templateDir = this.getTemplateDir(definition);
 
     await fs.mkdir(agentDir, { recursive: true });
-    const [seededAgentMd, seededAgentConfig] = await Promise.all([
-      this.seedFileIfMissing(path.join(templateDir, "agent.md"), path.join(agentDir, "agent.md")),
-      this.seedFileIfMissing(
+    const [syncedAgentMd, syncedAgentConfig] = await Promise.all([
+      this.syncFileFromTemplate(path.join(templateDir, "agent.md"), path.join(agentDir, "agent.md")),
+      this.syncFileFromTemplate(
         path.join(templateDir, "agent-config.json"),
         path.join(agentDir, "agent-config.json"),
       ),
@@ -122,8 +121,8 @@ export class BuiltInAgentBootstrapper {
       displayName: definition.displayName,
       agentDir,
       templateDir,
-      seededAgentMd,
-      seededAgentConfig,
+      syncedAgentMd,
+      syncedAgentConfig,
       resolved,
       initializedSetting,
     };
@@ -145,34 +144,10 @@ export class BuiltInAgentBootstrapper {
     return path.join(TEMPLATES_DIR, definition.templateDirName);
   }
 
-  private async seedFileIfMissing(templatePath: string, targetPath: string): Promise<boolean> {
-    if (await this.fileExists(targetPath)) {
-      return false;
-    }
-
-    const content = await fs.readFile(templatePath, "utf-8");
+  private async syncFileFromTemplate(templatePath: string, targetPath: string): Promise<boolean> {
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
-    try {
-      await fs.writeFile(targetPath, content, { encoding: "utf-8", flag: "wx" });
-      return true;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "EEXIST") {
-        return false;
-      }
-      throw error;
-    }
-  }
-
-  private async fileExists(filePath: string): Promise<boolean> {
-    try {
-      await fs.access(filePath);
-      return true;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-        return false;
-      }
-      throw error;
-    }
+    await fs.copyFile(templatePath, targetPath);
+    return true;
   }
 
   private async resolveBuiltInDefinition(
@@ -184,7 +159,7 @@ export class BuiltInAgentBootstrapper {
       );
       if (!agentDefinition) {
         this.logger.warn(
-          `Built-in agent '${definition.id}' was seeded but did not resolve as a normal agent definition.`,
+          `Built-in agent '${definition.id}' was synced but did not resolve as a normal agent definition.`,
         );
       }
       return agentDefinition;

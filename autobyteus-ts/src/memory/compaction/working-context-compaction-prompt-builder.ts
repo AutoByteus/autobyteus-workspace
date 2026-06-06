@@ -1,7 +1,7 @@
 import { MessageRole, ToolCallPayload, ToolResultPayload } from '../../llm/utils/messages.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
-import { COMPACTION_OUTPUT_CONTRACT } from './compaction-task-prompt-builder.js';
+import { COMPACTION_RESULT_SHAPE } from './compaction-task-prompt-builder.js';
 import type {
   ToolProtocolMessageUnit,
   WorkingContextMessageUnit,
@@ -17,12 +17,12 @@ export class WorkingContextCompactionPromptBuilder {
     options: WorkingContextCompactionPromptBuildOptions = {},
   ): string {
     return [
-      'Summarize the earlier conversation history below so future work can continue with refreshed context.',
+      'Summarize the earlier conversation history below so the same work can continue after a context refresh.',
       'Preserve user goals, decisions, progress, findings, artifacts, tool outcomes, open questions, and next steps.',
       'Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.',
       '',
-      '[OUTPUT_CONTRACT]',
-      COMPACTION_OUTPUT_CONTRACT,
+      '[REQUIRED_FINAL_JSON_SHAPE]',
+      COMPACTION_RESULT_SHAPE,
       '',
       '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
       ...this.renderUnits(units, options.maxItemChars),
