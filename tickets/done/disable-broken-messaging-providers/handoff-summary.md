@@ -39,7 +39,7 @@
 - SHA256: `1d13717d9f6b2f8f348949590344a50e854bde614d5449270eb957cb32799b39`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.47.zip`
 - SHA256: `34c14cc061ebe5b71e3884db2920ff85aaca0de7110d2d6c360a4d028a3d7760`
-- Note: local build was unsigned/not notarized and used only for user verification.
+- Note: local build was unsigned/not notarized and used only for user verification. The dedicated ticket worktree and local build artifacts were removed during post-finalization cleanup; repository-resident build logs and hashes remain archived under this ticket.
 
 ## Checks Recorded
 
@@ -60,3 +60,11 @@
 - Ticket archived to: `tickets/done/disable-broken-messaging-providers/`
 - Ticket branch commit: `36f0a4d80c3f` (`chore(ticket): finalize disable broken messaging providers`)
 - Target branch merge/push: `Completed` — merge commit `0419726affcd` pushed to `origin/personal`.
+
+## Post-Finalization Cleanup
+
+- Dedicated worktree removed: `/Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers`
+- Worktree metadata pruned: `Yes`
+- Local ticket branch deleted: `codex/disable-broken-messaging-providers`
+- Temporary safety branch deleted: `delivery-safety/disable-broken-messaging-providers-pre-rebase-20260606T185600Z`
+- Remote ticket branch deleted: `origin/codex/disable-broken-messaging-providers`
