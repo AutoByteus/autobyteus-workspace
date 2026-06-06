@@ -39,6 +39,4 @@ export * from './agent-team/context/index.js';
 export * from './agent-team/factory/index.js';
 export * from './agent-team/runtime/index.js';
 export * from './agent-team/streaming/index.js';
-export * from './cli/index.js';
-export * from './cli/agent-team/widgets/index.js';
 export * from './utils/tool-call-format.js';

@@ -77,16 +77,17 @@ Python runs each agent in its own thread and private asyncio event loop. In Node
 - Progress tracking: `migrate_nodesjs_ticket/MIGRATION_PROGRESS.md`
 - Architecture map: `ARCHITECTURE.md` (with Node.js additions)
 
-## 6. CLI / TUI (Ink)
+## 6. Native CLI / TUI Removed
 
-The Node.js CLI uses **Ink** for the interactive TUI and a lightweight console renderer for single-agent sessions.
+The TypeScript package no longer owns a native interactive CLI/TUI surface. The
+former single-agent console runner and Ink-based agent-team TUI were removed
+with `src/cli/**` so `autobyteus-ts` remains a programmatic runtime/library
+package.
 
-- **Single-agent CLI** (`src/cli/agent`):
-  - `cli-display.ts`: stateful renderer for stream events (segment tags, thinking blocks, approvals).
-  - `agent-cli.ts`: controller loop (input, approvals, lifecycle) using `AgentEventStream`.
-- **Agent team TUI** (`src/cli/agent-team`):
-  - `state-store.ts`: reducer-style state store (team/agent/task status, approvals, history).
-  - `app.tsx`: Ink composition root (sidebar + focus pane + status bar).
-  - `widgets/*`: pure components (sidebar, focus pane, status bar, logo).
+Supported interaction paths are the programmatic agent/team APIs and the
+server/web surfaces. Do not reintroduce `src/cli/**`, `runAgentCli`,
+`runAgentTeamCli`, Ink widgets, or CLI/TUI compatibility wrappers without a new
+design.
 
-This mirrors the Python Textual/TUI architecture while keeping renderer logic testable and UI components reactive.
+Terminal runtime tooling under `src/tools/terminal/**` is separate from the
+removed native UI surface and remains part of the runtime tool subsystem.

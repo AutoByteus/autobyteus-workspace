@@ -53,6 +53,7 @@ describe("ClaudeSdkClient", () => {
         mcpServers: { demo: mcpServer },
         permissionMode: "default",
         settingSources: ["user", "project", "local"],
+        disallowedTools: ["AskUserQuestion"],
         allowedTools: expect.arrayContaining([
           "Skill",
           "send_message_to",
@@ -64,6 +65,10 @@ describe("ClaudeSdkClient", () => {
         ]),
       }),
     });
+    const firstCall = queryFn.mock.calls[0]?.[0] as {
+      options?: Record<string, unknown>;
+    };
+    expect(firstCall.options).not.toHaveProperty("tools");
   });
 
   it("loads user, project, and local Claude Code settings for normal turns", async () => {

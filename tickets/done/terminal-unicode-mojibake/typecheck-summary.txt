@@ -1,0 +1,45 @@
+exit_code=1
+
+changed-file diagnostics:
+
+first 40 lines:
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+build/scripts/afterPack.ts(8,10): error TS1484: 'AfterPackContext' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+build/scripts/build.ts(1,17): error TS1484: 'Configuration' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+components/agents/__tests__/GroupableTagInput.spec.ts(15,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/agents/__tests__/GroupableTagInput.spec.ts(28,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/agents/__tests__/GroupableTagInput.spec.ts(44,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/agents/MarketplaceFilter.vue(60,32): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/MarketplaceFilter.vue(87,59): error TS7006: Parameter 'agent' implicitly has an 'any' type.
+components/agents/RemoteAgentCard.vue(82,33): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/RunningAgentCard.vue(59,15): error TS2305: Module '"~/generated/graphql"' has no exported member 'GetAgentRunsQuery'.
+components/agentTeams/AgentTeamEdit.vue(82,5): error TS2783: 'id' is specified more than once, so this usage will be overwritten.
+components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts(92,73): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(251,67): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(252,70): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(303,71): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(305,80): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(335,78): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationSurface.spec.ts(205,79): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(140,9): error TS2322: Type '{ slotKey: string; name: string; allowedExecutionResourceKinds: string[]; supportedLaunchConfig: { AGENT_TEAM: { runtimeKind: boolean; llmModelIdentifier: boolean; workspaceRootPath: boolean; memberOverrides: { ...; }; }; }; }' is not assignable to type 'ApplicationExecutionResourceSlotDeclaration'.
+  Types of property 'allowedExecutionResourceKinds' are incompatible.
+    Type 'string[]' is not assignable to type 'ApplicationExecutionResourceKind[]'.
+      Type 'string' is not assignable to type 'ApplicationExecutionResourceKind'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(180,26): error TS18046: 'payload' is of type 'unknown'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(180,66): error TS18046: 'payload' is of type 'unknown'.
+components/conversation/__tests__/ToolCallIndicator.spec.ts(52,3): error TS2322: Type '{ invocationId: string; toolName: string; args: { path: string; }; }' is not assignable to type 'VNodeProps & { __v_isVNode?: undefined; [Symbol.iterator]?: undefined; } & Record<string, any> & { readonly invocationId: string; readonly toolName: string; readonly status: string; readonly args?: string | ... 1 more ... | undefined; readonly errorMessage?: string | undefined; readonly approvalTarget?: ToolApproval...'.
+  Property 'status' is missing in type '{ invocationId: string; toolName: string; args: { path: string; }; }' but required in type '{ readonly invocationId: string; readonly toolName: string; readonly status: string; readonly args?: string | Record<string, any> | undefined; readonly errorMessage?: string | undefined; readonly approvalTarget?: ToolApprovalTarget | ... 1 more ... | undefined; }'.
+components/fileExplorer/FileViewer.vue(15,12): error TS2345: Argument of type '{ class: string; content: string; path: string; modelValue?: undefined; language?: undefined; readOnly?: undefined; url?: undefined; onSave: any; 'onUpdate:modelValue': any; } | { class: string; modelValue: string | null; ... 6 more ...; 'onUpdate:modelValue': any; } | { ...; }' is not assignable to parameter of type '((Partial<{ options: Record<string, any>; theme: string; language: string; modelValue: string; readOnly: boolean; wordWrap: boolean | WordWrapSetting | null; }> & Omit<...>) | ({ ...; } & ... 2 more ... & ComponentCustomProps) | ({ ...; } & ... 2 more ... & ComponentCustomProps) | ({ ...; } & ... 2 more ... & Compon...'.
+  Type '{ class: string; modelValue: string | null; language: string; readOnly: boolean; content?: undefined; path?: undefined; url?: undefined; onSave: any; 'onUpdate:modelValue': any; }' is not assignable to type '((Partial<{ options: Record<string, any>; theme: string; language: string; modelValue: string; readOnly: boolean; wordWrap: boolean | WordWrapSetting | null; }> & Omit<...>) | ({ ...; } & ... 2 more ... & ComponentCustomProps) | ({ ...; } & ... 2 more ... & ComponentCustomProps) | ({ ...; } & ... 2 more ... & Compon...'.
+    Type '{ class: string; modelValue: string | null; language: string; readOnly: boolean; content?: undefined; path?: undefined; url?: undefined; onSave: any; 'onUpdate:modelValue': any; }' is not assignable to type '{ readonly content: string; readonly path?: string | undefined; } & VNodeProps & AllowedComponentProps & ComponentCustomProps & Record<...>'.
+      Type '{ class: string; modelValue: string | null; language: string; readOnly: boolean; content?: undefined; path?: undefined; url?: undefined; onSave: any; 'onUpdate:modelValue': any; }' is not assignable to type '{ readonly content: string; readonly path?: string | undefined; }'.

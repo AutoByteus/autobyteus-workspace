@@ -18,6 +18,13 @@ import {
   buildAuthenticatedWebSocketUrl,
   redactRemoteAccessWebSocketUrl,
 } from "~/utils/remoteAccess/websocketAuth";
+import {
+  createTerminalOutputDecoder,
+  decodeTerminalOutputChunk,
+  encodeTerminalInput,
+  flushTerminalOutputDecoder,
+  type TerminalOutputDecoder,
+} from "~/utils/terminalTransportCodec";
 import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected";
@@ -51,9 +58,27 @@ export function useTerminalSession(
 
   let ws: WebSocket | null = null;
   let outputCallback: ((data: string) => void) | null = null;
+  let outputDecoder: TerminalOutputDecoder = createTerminalOutputDecoder();
 
   const isConnected = computed(() => connectionStatus.value === "connected");
   const isConnecting = computed(() => connectionStatus.value === "connecting");
+
+  const resetOutputDecoder = () => {
+    outputDecoder = createTerminalOutputDecoder();
+  };
+
+  const flushAndResetOutputDecoder = () => {
+    try {
+      const remainingOutput = flushTerminalOutputDecoder(outputDecoder);
+      if (remainingOutput && outputCallback) {
+        outputCallback(remainingOutput);
+      }
+    } catch (err) {
+      console.error("[useTerminalSession] Error flushing output decoder:", err);
+    } finally {
+      resetOutputDecoder();
+    }
+  };
 
   type TerminalConnectionTarget =
     | {
@@ -118,6 +143,7 @@ export function useTerminalSession(
       "[useTerminalSession] Connecting to:",
       redactRemoteAccessWebSocketUrl(wsUrl),
     );
+    resetOutputDecoder();
     connectionStatus.value = "connecting";
     errorMessage.value = "";
 
@@ -135,9 +161,11 @@ export function useTerminalSession(
           const message = JSON.parse(event.data);
 
           if (message.type === "output" && message.data) {
-            // Decode base64 output
-            const decoded = atob(message.data);
-            if (outputCallback) {
+            const decoded = decodeTerminalOutputChunk(
+              outputDecoder,
+              message.data,
+            );
+            if (decoded && outputCallback) {
               outputCallback(decoded);
             }
           } else if (message.type === "error") {
@@ -161,6 +189,7 @@ export function useTerminalSession(
           event.code,
           event.reason,
         );
+        flushAndResetOutputDecoder();
         connectionStatus.value = "disconnected";
         if (!event.wasClean) {
           errorMessage.value = event.reason || "Connection lost";
@@ -184,6 +213,7 @@ export function useTerminalSession(
       ws.close();
       ws = null;
     }
+    flushAndResetOutputDecoder();
     connectionStatus.value = "disconnected";
   };
 
@@ -193,12 +223,10 @@ export function useTerminalSession(
       return;
     }
 
-    // Encode input as base64
-    const encoded = btoa(data);
     ws.send(
       JSON.stringify({
         type: "input",
-        data: encoded,
+        data: encodeTerminalInput(data),
       }),
     );
   };

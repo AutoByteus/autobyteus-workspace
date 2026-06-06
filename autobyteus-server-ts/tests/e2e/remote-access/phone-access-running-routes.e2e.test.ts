@@ -65,17 +65,43 @@ describe("Phone Access running REST route behavior", () => {
     appConfigProvider.resetForTests();
   });
 
-  it("keeps active and revoked device routes separate while proving HTTPS QR pairing and mobile credential behavior", async () => {
+  it("keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy", async () => {
     await enablePhoneAccess();
 
-    const httpResponse = await inject({
+    const httpWithoutAcknowledgementResponse = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
       payload: { serverBaseUrl: "http://192.168.1.25:29695/mobile" },
     });
-    expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_HTTPS_REQUIRED" });
+    expect(httpWithoutAcknowledgementResponse.statusCode).toBe(400);
+    expect(httpWithoutAcknowledgementResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED" });
+
+    const publicHttpResponse = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-sessions",
+      remoteAddress: "100.64.1.2",
+      payload: { serverBaseUrl: "http://example.com:29695/mobile", trustedPrivateHttpAcknowledged: true },
+    });
+    expect(publicHttpResponse.statusCode).toBe(400);
+    expect(publicHttpResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED" });
+
+    const localOnlyResponse = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-sessions",
+      remoteAddress: "100.64.1.2",
+      payload: { serverBaseUrl: "http://127.0.0.1:29695/mobile", trustedPrivateHttpAcknowledged: true },
+    });
+    expect(localOnlyResponse.statusCode).toBe(400);
+    expect(localOnlyResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY" });
+
+    const privateHttpSession = await createPairingSession("http://192.168.1.25:29695/mobile?pairing=old", true);
+    expect(privateHttpSession.payload.serverBaseUrl).toBe("http://192.168.1.25:29695");
+    expect(privateHttpSession.mobileUrl).toMatch(/^http:\/\/192\.168\.1\.25:29695\/mobile\?pairing=/);
+    expect(decodePairingParam(privateHttpSession.mobileUrl)).toMatchObject({
+      serverBaseUrl: "http://192.168.1.25:29695",
+      pairingCode: privateHttpSession.payload.pairingCode,
+    });
 
     const basePathSession = await createPairingSession("https://gateway.example.com/autobyteus/mobile?pairing=old");
     expect(basePathSession.payload.serverBaseUrl).toBe("https://gateway.example.com/autobyteus");
@@ -280,12 +306,19 @@ describe("Phone Access running REST route behavior", () => {
     expect(response.statusCode).toBe(200);
   }
 
-  async function createPairingSession(serverBaseUrl: string): Promise<CreatePairingSessionResult> {
+  async function createPairingSession(
+    serverBaseUrl: string,
+    trustedPrivateHttpAcknowledged = false,
+  ): Promise<CreatePairingSessionResult> {
     const response = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
-      payload: { serverBaseUrl, serverName: "AutoByteus Desktop" },
+      payload: {
+        serverBaseUrl,
+        serverName: "AutoByteus Desktop",
+        ...(trustedPrivateHttpAcknowledged ? { trustedPrivateHttpAcknowledged: true } : {}),
+      },
     });
     expect(response.statusCode).toBe(201);
     return response.json() as CreatePairingSessionResult;

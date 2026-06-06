@@ -6,9 +6,9 @@ Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus 
 
 - The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
 - Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
-- New desktop-created pairing QR codes require an `https://` URL. The recommended path is Tailscale Serve HTTPS, for example `https://desktop.tailnet-name.ts.net/mobile`.
-- For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private HTTPS URL and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
-- The pairing QR opens `https://<private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
+- New desktop-created pairing QR codes support Tailscale/private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs. Tailscale Serve HTTPS remains the recommended path, for example `https://desktop.tailnet-name.ts.net/mobile`.
+- For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private-network URL (HTTPS or acknowledged trusted private HTTP) and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
+- The pairing QR opens `<selected-private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
 - After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
 
@@ -63,12 +63,14 @@ AutoByteus does not require or special-case a VPN vendor. Phone Access only requ
 
 Supported setup profiles include:
 
-- **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it.
+- **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it. Local LAN HTTP uses cleartext and requires an explicit trusted-private-network acknowledgement before QR creation.
 - **Tailscale:** use the desktop's full MagicDNS hostname/FQDN when possible.
 - **Tailscale Serve HTTPS:** recommended for Android, iOS, and travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
 - **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
 - **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
 - **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
+
+Public/routable HTTP URLs and phone-unreachable local-only hosts such as `localhost`, `127.*`, `0.0.0.0`, `::1`, and `host.docker.internal` are not valid phone-facing QR targets. Use HTTPS for public-looking hostnames.
 
 For phone/mobile clients, the app-level pairing credential is still required; a private network or VPN is not treated as sufficient mobile authorization by itself. Desktop/Electron remote-node access to the full backend is separate and follows the trusted private-network product model documented below.
 
@@ -107,8 +109,8 @@ QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 
 3. Add the printed Backend URL as a remote node in **Settings -> Nodes -> Manage Nodes**, then click **Open** on that Docker node.
 4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Configure a phone-facing private HTTPS URL that maps to the Docker node, for example Tailscale Serve or company-controlled HTTPS ingress.
-6. Paste the HTTPS `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values.
+5. Configure a phone-facing private-network URL that maps to the Docker node. Prefer Tailscale Serve or company-controlled HTTPS ingress; trusted private HTTP is available only with cleartext acknowledgement.
+6. Paste the phone-facing `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values before QR creation.
 7. Enable Phone Access, create the QR, and scan it with the Android/iOS native wrapper or open it in the mobile browser. The pairing exchange and paired-device records belong to the Docker node.
 
 The embedded host desktop node should not mint QR codes for a different remote node, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
@@ -138,10 +140,10 @@ Use this when the embedded desktop node itself is the node your phone should use
    /Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset
    ```
 
-5. Copy the private HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell URL shape, for example `https://desktop.tailnet-name.ts.net/mobile`. The Tailscale Serve HTTPS QR target normally does **not** include `:29695`; that port belongs to local HTTP/interface diagnostics.
-6. Prefer the full MagicDNS hostname/FQDN shown by Tailscale. Do not use IPv4/IPv6 or HTTP interface candidates such as `http://100.x.y.z:29695` or `http://192.168.x.x:29695` as the normal QR target.
+5. Recommended travel/stable setup: copy the private HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell URL shape, for example `https://desktop.tailnet-name.ts.net/mobile`. The Tailscale Serve HTTPS QR target normally does **not** include `:29695`; that port belongs to local HTTP/interface reachability.
+6. Prefer the full MagicDNS hostname/FQDN shown by Tailscale when you need a stable HTTPS origin. For home/local pairing, you may instead select a discovered private LAN or tailnet IP HTTP candidate such as `http://192.168.x.x:29695` or `http://100.x.y.z:29695` and acknowledge cleartext trusted-network use.
 7. Enable **Phone Access**.
-8. Paste the HTTPS MagicDNS `/mobile` URL into the **Tailscale Serve HTTPS URL** field. HTTP-only discovered candidates are left as diagnostics and are not auto-selected for new HTTPS-required QR creation.
+8. Paste the HTTPS MagicDNS `/mobile` URL into the **Phone-facing private network URL** field, or choose a discovered trusted Local LAN/private HTTP candidate. HTTP candidates require the cleartext trusted-network acknowledgement before **Create QR code** is enabled.
 9. Click **Create QR code**.
 10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android and iOS own their **Scan QR** flows with app-owned scanner/camera permission handling; they do not require a separately installed generic QR scanner app.
 11. The phone exchanges the code for a per-device credential and stores the paired session.
@@ -245,7 +247,7 @@ Installing a new native wrapper build does not update the desktop-served `/mobil
 ## Troubleshooting
 
 - **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
-- **Create QR is blocked for HTTP:** run Tailscale Serve and use the private HTTPS URL before creating a new desktop pairing QR.
+- **Create QR is blocked for HTTP:** public HTTP and local-only hosts are rejected. For Local LAN/private HTTP, use a private IP/local hostname and acknowledge cleartext trusted-network use; otherwise use Tailscale Serve HTTPS.
 - **Android/iOS over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
 - **Native Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK or iOS app, then verify the app has camera permission. Current AutoByteus native wrappers do not depend on an external QR scanner app.
 - **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
@@ -256,6 +258,6 @@ Installing a new native wrapper build does not update the desktop-served `/mobil
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **Docker node desktop window cannot reach backend:** confirm the Backend URL printed by `autobyteus-docker` is reachable from the desktop over a trusted LAN, VPN, tailnet, or equivalent private-network path. Do not expose the full backend directly to the public internet.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
-- **Remote-node QR creation says URL mismatch:** the phone-facing HTTPS URL is not reaching the same node as the desktop management URL. Recheck the Tailscale Serve/private ingress mapping to the node Backend.
+- **Remote-node QR creation says URL mismatch:** the phone-facing URL is not reaching the same node as the desktop management URL. Recheck the Tailscale Serve/private ingress/LAN mapping to the node Backend.
 - **Fresh Docker `/mobile` returns missing assets:** upgrade/recreate from a current server Docker image. Current public launcher, remote-server, and all-in-one image paths package `autobyteus-server-ts/mobile-web` during the image build.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

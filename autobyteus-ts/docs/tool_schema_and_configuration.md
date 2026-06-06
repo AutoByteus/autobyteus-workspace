@@ -258,6 +258,7 @@ constructor(config?: ToolConfig) {
 
 ## 7. Future Extensions
 
-- **CLI Integration**: A CLI command to list available tools and their required config options.
+- **Developer Tooling Integration**: A programmatic or server/web-owned surface
+  to list available tools and their required config options.
 - **Declarative Specs**: A top-level YAML/JSON spec to wire up tools and config without writing TypeScript instantiation code.
 - **Auto-Validation**: Adding a flag to `ToolRegistry.create_tool` to enforce config validation automatically.

@@ -27,6 +27,17 @@ class MockWebSocket {
   }
 }
 
+const bytesToBase64ForTest = (bytes: Uint8Array): string =>
+  btoa(String.fromCharCode(...bytes));
+
+const textToBase64Utf8ForTest = (text: string): string =>
+  bytesToBase64ForTest(new TextEncoder().encode(text));
+
+const decodeBase64Utf8ForTest = (base64Data: string): string =>
+  new TextDecoder("utf-8").decode(
+    Uint8Array.from(atob(base64Data), (char) => char.charCodeAt(0)),
+  );
+
 const terminalTarget = (
   overrides: Partial<TerminalTarget> = {},
 ): TerminalTarget => ({
@@ -114,7 +125,7 @@ describe("useTerminalSession", () => {
     expect(session.isConnected.value).toBe(true);
   });
 
-  it("sends encoded input when connected", () => {
+  it("sends UTF-8 encoded input when connected", () => {
     const session = useTerminalSession({ target: terminalTarget() });
     session.connect();
     mockWs.onopen?.();
@@ -124,9 +135,21 @@ describe("useTerminalSession", () => {
     expect(mockWs.send).toHaveBeenCalledWith(
       JSON.stringify({
         type: "input",
-        data: btoa("ls"), // base64 encoded
+        data: textToBase64Utf8ForTest("ls"),
       }),
     );
+  });
+
+  it("sends non-ASCII input as UTF-8 bytes instead of browser binary-string text", () => {
+    const session = useTerminalSession({ target: terminalTarget() });
+    session.connect();
+    mockWs.onopen?.();
+
+    expect(() => session.sendInput("✓你好")).not.toThrow();
+
+    const sentMessage = JSON.parse(String(mockWs.send.mock.calls[0][0]));
+    expect(sentMessage).toMatchObject({ type: "input" });
+    expect(decodeBase64Utf8ForTest(sentMessage.data)).toBe("✓你好");
   });
 
   it("sends resize events", () => {
@@ -152,15 +175,59 @@ describe("useTerminalSession", () => {
 
     session.connect();
 
-    // Simulate incoming message
     const message = {
       type: "output",
-      data: btoa("hello world"),
+      data: textToBase64Utf8ForTest("hello world"),
     };
 
     mockWs.onmessage?.({ data: JSON.stringify(message) });
 
     expect(outputSpy).toHaveBeenCalledWith("hello world");
+  });
+
+  it("decodes Unicode output bytes before dispatching terminal text", () => {
+    const session = useTerminalSession({ target: terminalTarget() });
+    const outputSpy = vi.fn();
+    const unicodeOutput = "┌─┐\n│✓│\n└─┘\n";
+    session.onOutput(outputSpy);
+
+    session.connect();
+
+    mockWs.onmessage?.({
+      data: JSON.stringify({
+        type: "output",
+        data: textToBase64Utf8ForTest(unicodeOutput),
+      }),
+    });
+
+    expect(outputSpy).toHaveBeenCalledWith(unicodeOutput);
+  });
+
+  it("streams split UTF-8 output chunks through one session decoder", () => {
+    const session = useTerminalSession({ target: terminalTarget() });
+    const outputSpy = vi.fn();
+    session.onOutput(outputSpy);
+    const bytes = new TextEncoder().encode("┌");
+
+    session.connect();
+
+    mockWs.onmessage?.({
+      data: JSON.stringify({
+        type: "output",
+        data: bytesToBase64ForTest(bytes.subarray(0, 1)),
+      }),
+    });
+    expect(outputSpy).not.toHaveBeenCalled();
+
+    mockWs.onmessage?.({
+      data: JSON.stringify({
+        type: "output",
+        data: bytesToBase64ForTest(bytes.subarray(1)),
+      }),
+    });
+
+    expect(outputSpy).toHaveBeenCalledTimes(1);
+    expect(outputSpy).toHaveBeenCalledWith("┌");
   });
 
   it("handles disconnection", () => {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import apiService from '~/services/api';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -12,17 +12,21 @@ import type {
 } from '~/types/remoteAccess';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 import {
+  evaluatePhoneAccessPairingUrl,
+  normalizeAllowedPhoneAccessCandidate,
+  type PhoneAccessPairingUrlDecision,
+} from '~/utils/phoneAccessPairingUrlPolicy';
+import {
   fetchRemoteAccessStatusFromBaseUrl,
   formatPhoneAccessRequestError,
-  normalizeHttpsPhoneAccessCandidate,
-  validatePhoneAccessAdvertisedUrl,
-  type AdvertisedUrlValidation,
 } from '~/utils/phoneAccessRemoteNode';
 
 const defaultSettings = (): RemoteAccessSettings => ({
   phoneAccessEnabled: false,
   updatedAt: new Date(0).toISOString(),
 });
+
+const trustedPrivateHttpAcknowledgementError = 'Acknowledge that this private HTTP URL is trusted and cleartext before creating a QR code.';
 
 export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const windowNodeContextStore = useWindowNodeContextStore();
@@ -35,6 +39,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const activePairing = ref<RemoteAccessPairingSessionResponse | null>(null);
   const selectedServerBaseUrl = ref('');
   const manualServerBaseUrl = ref('');
+  const trustedPrivateHttpAcknowledged = ref(false);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
   const info = ref<string | null>(null);
@@ -52,22 +57,54 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   ));
   const canManagePhoneAccess = computed(() => true);
 
-  const selectedUrlValidation = computed<AdvertisedUrlValidation>(() =>
-    validatePhoneAccessAdvertisedUrl(selectedServerBaseUrl.value, isRemoteNodeWindow.value));
+  const selectedUrlValidation = computed<PhoneAccessPairingUrlDecision>(() =>
+    evaluatePhoneAccessPairingUrl(selectedServerBaseUrl.value, { requiresPhoneFacingUrl: isRemoteNodeWindow.value }));
+
+  const selectedUrlRequiresTrustedPrivateHttpAcknowledgement = computed(() =>
+    selectedUrlValidation.value.requiresTrustedPrivateHttpAcknowledgement);
+
+  const selectedUrlWarning = computed(() =>
+    selectedUrlValidation.value.warning || selectedUrlValidation.value.message);
+
+  const canCreatePairingSession = computed(() => (
+    phoneAccessEnabled.value
+    && Boolean(selectedServerBaseUrl.value.trim())
+    && (!isRemoteNodeWindow.value || Boolean(manualServerBaseUrl.value.trim()))
+    && selectedUrlValidation.value.isValid
+    && selectedUrlValidation.value.isAndroidFacing
+    && (!selectedUrlRequiresTrustedPrivateHttpAcknowledgement.value || trustedPrivateHttpAcknowledged.value)
+  ));
 
   function resetAdvertisedVerification(): void {
     advertisedUrlVerified.value = false;
     advertisedUrlVerificationMessage.value = null;
   }
 
+  function resetSelectedUrlDependentState(): void {
+    trustedPrivateHttpAcknowledged.value = false;
+    resetAdvertisedVerification();
+    activePairing.value = null;
+    info.value = null;
+  }
+
   function selectDefaultCandidate(): void {
     if (isRemoteNodeWindow.value || selectedServerBaseUrl.value) {
       return;
     }
-    const httpsCandidates = candidates.value
-      .map((candidate) => ({ candidate, normalizedBaseUrl: normalizeHttpsPhoneAccessCandidate(candidate) }))
-      .filter((entry): entry is { candidate: RemoteAccessUrlCandidate; normalizedBaseUrl: string } => Boolean(entry.normalizedBaseUrl));
-    const preferred = httpsCandidates.find((entry) => entry.candidate.kind !== 'loopback') || httpsCandidates[0];
+    const allowedCandidates = candidates.value
+      .map((candidate) => {
+        const normalizedBaseUrl = normalizeAllowedPhoneAccessCandidate(candidate);
+        return normalizedBaseUrl
+          ? { candidate, normalizedBaseUrl, decision: evaluatePhoneAccessPairingUrl(normalizedBaseUrl) }
+          : null;
+      })
+      .filter((entry): entry is {
+        candidate: RemoteAccessUrlCandidate;
+        normalizedBaseUrl: string;
+        decision: PhoneAccessPairingUrlDecision;
+      } => Boolean(entry));
+    const preferred = allowedCandidates.find((entry) => entry.decision.transportSecurity === 'https')
+      || allowedCandidates.find((entry) => entry.decision.transportSecurity === 'trusted_private_http');
     selectedServerBaseUrl.value = preferred?.normalizedBaseUrl || '';
   }
 
@@ -128,8 +165,8 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   async function verifyAdvertisedUrlForRemoteQr(): Promise<string | null> {
     resetAdvertisedVerification();
     const validation = selectedUrlValidation.value;
-    if (!validation.isValid || !validation.isHttps || !validation.isAndroidFacing) {
-      return validation.message || 'Enter a phone-facing private HTTPS URL for this remote node.';
+    if (!validation.isValid || !validation.isAndroidFacing) {
+      return validation.message || 'Enter a phone-facing private network URL for this remote node.';
     }
     try {
       const [managementResponse, advertisedStatus] = await Promise.all([
@@ -142,13 +179,13 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
         return 'Could not verify this URL because one status response does not include a server instance ID.';
       }
       if (managementId !== advertisedId) {
-        return 'The phone-facing URL reaches a different AutoByteUs node. Map the HTTPS URL to this node, then retry.';
+        return 'The phone-facing URL reaches a different AutoByteUs node. Map the private network URL to this node, then retry.';
       }
       advertisedUrlVerified.value = true;
       advertisedUrlVerificationMessage.value = 'Phone-facing URL verified for this node.';
       return null;
     } catch (verifyError) {
-      return `${formatPhoneAccessRequestError(verifyError)} Use a private HTTPS URL mapped to this node, such as Tailscale Serve.`;
+      return `${formatPhoneAccessRequestError(verifyError)} Use a phone-facing HTTPS URL or acknowledged trusted private HTTP URL mapped to this node.`;
     }
   }
 
@@ -161,14 +198,18 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     }
     if (!selectedServerBaseUrl.value.trim() || (isRemoteNodeWindow.value && !manualServerBaseUrl.value.trim())) {
       error.value = isRemoteNodeWindow.value
-        ? 'Enter the phone-facing private HTTPS URL for this remote node first.'
+        ? 'Enter the phone-facing private network URL for this remote node first.'
         : 'Choose or enter a server URL first.';
       return;
     }
     try {
       const validation = selectedUrlValidation.value;
-      if (!validation.isValid || !validation.isHttps || (isRemoteNodeWindow.value && !validation.isAndroidFacing)) {
+      if (!validation.isValid || (isRemoteNodeWindow.value && !validation.isAndroidFacing)) {
         error.value = validation.message;
+        return;
+      }
+      if (validation.requiresTrustedPrivateHttpAcknowledgement && !trustedPrivateHttpAcknowledged.value) {
+        error.value = trustedPrivateHttpAcknowledgementError;
         return;
       }
       if (isRemoteNodeWindow.value) {
@@ -181,6 +222,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
       const response = await apiService.post<RemoteAccessPairingSessionResponse>('/remote-access/pairing-sessions', {
         serverBaseUrl: validation.normalizedBaseUrl,
         serverName: currentNodeName.value,
+        ...(validation.requiresTrustedPrivateHttpAcknowledgement ? { trustedPrivateHttpAcknowledged: true } : {}),
       });
       activePairing.value = response.data;
       info.value = isRemoteNodeWindow.value
@@ -211,6 +253,12 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     return response.data.result.revokedCount;
   }
 
+  watch(selectedServerBaseUrl, (nextUrl, previousUrl) => {
+    if (nextUrl !== previousUrl) {
+      resetSelectedUrlDependentState();
+    }
+  });
+
   return {
     settings,
     candidates,
@@ -219,6 +267,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     activePairing,
     selectedServerBaseUrl,
     manualServerBaseUrl,
+    trustedPrivateHttpAcknowledged,
     isLoading,
     error,
     info,
@@ -230,6 +279,9 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     currentNodeName,
     canManagePhoneAccess,
     selectedUrlValidation,
+    selectedUrlRequiresTrustedPrivateHttpAcknowledgement,
+    selectedUrlWarning,
+    canCreatePairingSession,
     loadAll,
     setEnabled,
     refreshCandidates,
