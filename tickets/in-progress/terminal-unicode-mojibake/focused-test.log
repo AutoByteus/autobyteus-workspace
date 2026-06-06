@@ -1,0 +1,87 @@
+
+> autobyteus@1.3.43 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useTerminalSession.spec.ts utils/__tests__/terminalTransportCodec.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/autobyteus-web
+
+stderr | composables/__tests__/useTerminalSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/terminalTransportCodec.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/terminalTransportCodec.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/terminalTransportCodec.spec.ts (5 tests) 3ms
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/263bc101-e599-4172-823d-ade25cae4c85?cwd=%2Ftmp%2Fproject
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects without cwd or rootPath query params when server-home default is enabled
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/8a7e9ddd-9cad-49d7-94b5-3d63798e74ef
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > keeps explicit empty root paths explicit instead of falling back to server home
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/d33715de-d407-4d49-9ab9-ef59a96ac1e9?cwd=
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/565cc004-e066-49db-a5f8-bc280b0de7f4?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends UTF-8 encoded input when connected
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/c1a99768-a7b7-4948-81e4-57e49f16b15b?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends non-ASCII input as UTF-8 bytes instead of browser binary-string text
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/efb1b20f-3009-4d9b-baeb-2e28056daccf?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/3fec1d64-ce17-4a32-827b-32f85ca3f68d?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/8c304c18-be33-43b4-832e-aa01f31605fd?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > decodes Unicode output bytes before dispatching terminal text
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/2bbcd968-d830-48c9-bf0c-a5125ccc87e7?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > streams split UTF-8 output chunks through one session decoder
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/84e5ad53-5e68-49b7-8061-ecea5d5d1aa4?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/c0d88634-fb59-4293-8d3a-a259dda70a1c?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/038a1634-f971-4563-8998-a779a1528158?cwd=%2Ftmp%2Fws-1
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at MockWebSocket.ws.onmessage (/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/autobyteus-web/composables/useTerminalSession.ts:161:32)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:249:14
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path
+[useTerminalSession] No terminal root path
+
+ ✓ composables/__tests__/useTerminalSession.spec.ts (13 tests) 12ms
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  12:36:52
+   Duration  4.80s (transform 2.39s, setup 7.90s, collect 47ms, tests 15ms, environment 497ms, prepare 461ms)
+

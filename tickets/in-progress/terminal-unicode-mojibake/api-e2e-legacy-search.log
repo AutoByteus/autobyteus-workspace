@@ -1,0 +1,15 @@
+# API/E2E legacy terminal codec path search
+Sat Jun  6 10:50:08 UTC 2026
+Production terminal atob/btoa usage:
+autobyteus-web/utils/terminalTransportCodec.ts:15:  const binaryString = atob(base64Data);
+autobyteus-web/utils/terminalTransportCodec.ts:33:  return btoa(binaryString);
+autobyteus-web/stores/mobileNodeSessionStore.ts:32:  const decoded = JSON.parse(atob(padded)) as RemoteAccessPairingPayload;
+Forbidden legacy terminal forwarding patterns:
+pattern=atob\(message\.data\)
+no matches
+pattern=outputCallback\(atob
+no matches
+pattern=btoa\(data\)
+no matches
+pattern=outputCallback\(message\.data\)
+no matches

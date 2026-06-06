@@ -1,0 +1,150 @@
+{
+  "generatedAt": "2026-06-06T10:59:09.134Z",
+  "frontendUrl": "http://localhost:3000/workspace",
+  "result": "PASS",
+  "scenarios": [
+    {
+      "id": "BROWSER-001-load-terminal",
+      "status": "PASS",
+      "detail": {
+        "initialTail": "➜ Terminal initializedThe default interactive shell is now zsh.To update your account to use zsh, please run `chsh -s /bin/zsh`.For more details, please visit https://support.apple.com/kb/HT208050.~ $  ",
+        "consoleTail": [
+          "[log] Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+          "[log] [useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/3d2cc0ae-179e-4ce8-85dd-66d591f89293",
+          "[log] [useTerminalSession] Connected",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] Team WebSocket connected",
+          "[warning] No member context found for message, skipping",
+          "[log] serverStore: Checking server health at /rest/health"
+        ]
+      }
+    },
+    {
+      "id": "BROWSER-002-deterministic-unicode-ansi",
+      "status": "PASS",
+      "detail": {
+        "unicodePass": true,
+        "noMojibake": true,
+        "ansiTextPass": true,
+        "unicodeSection": "__ABT_B_U_START__┌─┐│✓│└─┘ANSI_RED_BROWSER__ABT_B_U_DONE__"
+      }
+    },
+    {
+      "id": "BROWSER-003-non-ascii-input-pty-receipt",
+      "status": "PASS",
+      "detail": {
+        "inputHexPass": true,
+        "inputCatPass": true,
+        "inputSection": "__ABT_B_I_HEX__           e2  9c  93  e4  bd  a0  e5  a5  bd  0a                        __ABT_B_I_CAT__✓你好__ABT_B_I_DONE__"
+      }
+    },
+    {
+      "id": "BROWSER-004-viewport-resize-propagates",
+      "status": "PASS",
+      "detail": {
+        "r1": {
+          "rows": 24,
+          "cols": 80
+        },
+        "r2": {
+          "rows": 31,
+          "cols": 51
+        },
+        "r1Section": "__ABT_B_R1__24 80__ABT_B_R1_DONE__",
+        "r2Section": "__ABT_B_R2__31 51__ABT_B_R2_DONE__"
+      }
+    },
+    {
+      "id": "BROWSER-005-reload-reconnect",
+      "status": "PASS",
+      "detail": {
+        "tail": "➜ Terminal initializedThe default interactive shell is now zsh.To update your account to use zsh, please run `chsh -s /bin/zsh`.For more details, please visit https://support.apple.com/kb/HT208050.~ $ printf '__ABT_BROWSER_RECONNECT_OK__\\n'__ABT_BROWSER_RECONNECT_OK__~ $  "
+      }
+    },
+    {
+      "id": "BROWSER-006-real-codex-unicode-smoke",
+      "status": "PASS",
+      "detail": {
+        "codexProducedUi": true,
+        "codexNoMojibake": true,
+        "codexNotCommandMissing": true,
+        "codexTail": "╭────────────────────────────────────────────╮│ >_ OpenAI Codex (v0.137.0)                 ││                                            ││ model:     gpt-5.5 high   /model to change ││ directory: ~                               │╰────────────────────────────────────────────╯  Tip: Use /fork to branch the current chat into a new thread.⚠ Under-development features enabled: realtime_conversation. Under-development  features are incomplete and may behave unpredictably. To suppress this  warning, set `suppress_unstable_features_warning = true` in /Users/  normy/.codex/config.toml.                                                   › Run /review on my current changes                                                                     gpt-5.5 high · ~"
+      }
+    }
+  ],
+  "failures": [],
+  "artifacts": {
+    "terminalScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-terminal-validation.png",
+    "codexScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-codex-smoke.png",
+    "htmlPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-terminal-dom.html"
+  },
+  "consoleTail": [
+    "[debug] [vite] connecting...",
+    "[debug] [vite] connected.",
+    "[log] serverStore: Initializing server config",
+    "[log] serverStore: Not in Electron environment. Skipping server initialization.",
+    "[info] <Suspense> is an experimental feature and its API will likely change.",
+    "[log] ServerLoading: Component mounted with status: running",
+    "[log] Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+    "[log] [useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/3d2cc0ae-179e-4ce8-85dd-66d591f89293",
+    "[log] [useTerminalSession] Connected",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] serverStore: Checking server health at /rest/health",
+    "[warning] [toolLifecycleHandler] Dropping malformed TOOL_LOG payload {threadId: 019e9c92-2900-7ac2-8913-10784350ad71, turnId: 019e9c92-2991-7c72-b86b-909f285ff23b, item: Object, tool_invocation_id: call_2RSPCJPYMhIrSzmAue6MZUb9, log_entry: Chunk ID: f00246\nWall time: 0.1570 seconds\nProcess…code: 'ERR_MODULE_NOT_FOUND'\n}\n\nNode.js v22.21.1\n}",
+    "[debug] [vite] connecting...",
+    "[debug] [vite] connected.",
+    "[log] serverStore: Initializing server config",
+    "[log] serverStore: Not in Electron environment. Skipping server initialization.",
+    "[info] <Suspense> is an experimental feature and its API will likely change.",
+    "[log] ServerLoading: Component mounted with status: running",
+    "[log] Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+    "[log] [useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/3c940ada-fca2-4df1-9afc-1da1ded9f7bc",
+    "[log] [useTerminalSession] Connected",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] Team WebSocket connected",
+    "[warning] No member context found for message, skipping",
+    "[log] serverStore: Checking server health at /rest/health",
+    "[warning] [toolLifecycleHandler] Dropping malformed TOOL_LOG payload {threadId: 019e9c92-2900-7ac2-8913-10784350ad71, turnId: 019e9c92-2991-7c72-b86b-909f285ff23b, item: Object, tool_invocation_id: call_J7wburLxd4GooZepqYb0jiGr, log_entry: Chunk ID: 37f124\nWall time: 0.3629 seconds\nProcess…s-worktrees/remove-autobyteus-ts-tui-cli/[eval1]\n}"
+  ]
+}

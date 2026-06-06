@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-06-06T10:54:44.558Z",
+  "backendBase": "ws://127.0.0.1:29695/ws/terminal",
+  "result": "PASS",
+  "scenarios": [
+    {
+      "id": "WS-001-connect",
+      "status": "PASS",
+      "detail": {
+        "sessionId": "d59d8b76-5925-4c14-a7ff-1902c1686a02",
+        "url": "ws://127.0.0.1:29695/ws/terminal/d59d8b76-5925-4c14-a7ff-1902c1686a02",
+        "initialTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h~ $ "
+      }
+    },
+    {
+      "id": "WS-002-unicode-ansi-output",
+      "status": "PASS",
+      "detail": {
+        "unicodePass": true,
+        "noMojibake": true,
+        "ansiPass": true,
+        "unicodeSection": "__ABT_U_START__\r\n┌─┐\r\n│✓│\r\n└─┘\r\n\u001b[31mANSI_RED\u001b[0m\r\n__ABT_U_DONE__"
+      }
+    },
+    {
+      "id": "WS-003-resize-propagation",
+      "status": "PASS",
+      "detail": {
+        "resizeSection": "__ABT_R_START__\r\n31 97\r\n__ABT_R_DONE__"
+      }
+    },
+    {
+      "id": "WS-004-non-ascii-input-pty-receipt",
+      "status": "PASS",
+      "detail": {
+        "hexPass": true,
+        "catPass": true,
+        "inputSection": "__ABT_I_HEX__\r\n           e2  9c  93  e4  bd  a0  e5  a5  bd  0a                        \r\n\r\n__ABT_I_CAT__\r\n✓你好\r\n__ABT_I_DONE__"
+      }
+    },
+    {
+      "id": "WS-005-close-primary",
+      "status": "PASS",
+      "detail": {
+        "closedAt": "2026-06-06T10:54:43.654Z"
+      }
+    },
+    {
+      "id": "WS-006-reconnect-new-session",
+      "status": "PASS",
+      "detail": {
+        "sessionId": "6534c5a0-2b5b-4e6a-bd88-19c4d700bebb",
+        "tail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h~ $ printf '__ABT_RECONNECT_OK__\\n'\r\n__ABT_RECONNECT_OK__\r\n~ $ "
+      }
+    }
+  ],
+  "failures": [],
+  "sessions": [
+    {
+      "label": "primary",
+      "sessionId": "d59d8b76-5925-4c14-a7ff-1902c1686a02",
+      "url": "ws://127.0.0.1:29695/ws/terminal/d59d8b76-5925-4c14-a7ff-1902c1686a02",
+      "openedAt": "2026-06-06T10:54:41.028Z",
+      "messageCount": 18,
+      "rawPayloadSamples": [
+        {
+          "length": 183,
+          "firstBytesHex": "0d0a5468652064656661756c7420696e"
+        },
+        {
+          "length": 12,
+          "firstBytesHex": "1b5b3f31303334687e202420"
+        },
+        {
+          "length": 12,
+          "firstBytesHex": "73747479202d6563686f0d0a"
+        },
+        {
+          "length": 4,
+          "firstBytesHex": "7e202420"
+        },
+        {
+          "length": 85,
+          "firstBytesHex": "5f5f4142545f555f53544152545f5f0d"
+        },
+        {
+          "length": 4,
+          "firstBytesHex": "7e202420"
+        },
+        {
+          "length": 17,
+          "firstBytesHex": "5f5f4142545f525f53544152545f5f0d"
+        },
+        {
+          "length": 7,
+          "firstBytesHex": "33312039370d0a"
+        },
+        {
+          "length": 16,
+          "firstBytesHex": "5f5f4142545f525f444f4e455f5f0d0a"
+        },
+        {
+          "length": 4,
+          "firstBytesHex": "7e202420"
+        },
+        {
+          "length": 17,
+          "firstBytesHex": "5f5f4142545f495f52454144595f5f0d"
+        },
+        {
+          "length": 4,
+          "firstBytesHex": "7e202420"
+        }
+      ],
+      "textTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h~ $ stty -echo\r\n~ $ __ABT_U_START__\r\n┌─┐\r\n│✓│\r\n└─┘\r\n\u001b[31mANSI_RED\u001b[0m\r\n__ABT_U_DONE__\r\n~ $ __ABT_R_START__\r\n31 97\r\n__ABT_R_DONE__\r\n~ $ __ABT_I_READY__\r\n~ $ __ABT_I_HEX__\r\n           e2  9c  93  e4  bd  a0  e5  a5  bd  0a                        \r\n\r\n__ABT_I_CAT__\r\n✓你好\r\n__ABT_I_DONE__\r\n~ $ "
+    },
+    {
+      "label": "reconnect",
+      "sessionId": "6534c5a0-2b5b-4e6a-bd88-19c4d700bebb",
+      "url": "ws://127.0.0.1:29695/ws/terminal/6534c5a0-2b5b-4e6a-bd88-19c4d700bebb",
+      "openedAt": "2026-06-06T10:54:43.654Z",
+      "messageCount": 5,
+      "rawPayloadSamples": [
+        {
+          "length": 183,
+          "firstBytesHex": "0d0a5468652064656661756c7420696e"
+        },
+        {
+          "length": 12,
+          "firstBytesHex": "1b5b3f31303334687e202420"
+        },
+        {
+          "length": 33,
+          "firstBytesHex": "7072696e746620275f5f4142545f5245"
+        },
+        {
+          "length": 22,
+          "firstBytesHex": "5f5f4142545f5245434f4e4e4543545f"
+        },
+        {
+          "length": 4,
+          "firstBytesHex": "7e202420"
+        }
+      ],
+      "textTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h~ $ printf '__ABT_RECONNECT_OK__\\n'\r\n__ABT_RECONNECT_OK__\r\n~ $ "
+    }
+  ]
+}

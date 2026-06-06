@@ -25,6 +25,8 @@ autobyteus-web/
 ├── composables/
 │   ├── useRightSideTabs.ts       # Tab state management
 │   └── useTerminalSession.ts     # Terminal WebSocket session
+└── utils/
+    └── terminalTransportCodec.ts # Terminal byte/base64/UTF-8 codec
 ```
 
 ## Architecture
@@ -108,9 +110,9 @@ sequenceDiagram
     User->>XTerm: Types command
     XTerm->>Terminal: onData callback
     Terminal->>Session: sendInput(data)
-    Session->>Backend: WebSocket input (base64)
-    Backend-->>Session: WebSocket output (base64)
-    Session-->>Terminal: onOutput callback
+    Session->>Backend: WebSocket input (base64 UTF-8 bytes)
+    Backend-->>Session: WebSocket output (base64 terminal bytes)
+    Session-->>Terminal: onOutput callback with decoded terminal text
     Terminal->>XTerm: write(output)
 ```
 
@@ -130,7 +132,7 @@ Manages the terminal WebSocket session and streaming I/O.
 | -------------- | ----------------------------------- |
 | `connect()`    | Opens the WebSocket session         |
 | `disconnect()` | Closes the session                  |
-| `sendInput()`  | Sends user input (base64 encoded)   |
+| `sendInput()`  | Sends user input as UTF-8 bytes in base64 transport |
 | `sendResize()` | Sends terminal resize events        |
 | `onOutput()`   | Registers output callback for xterm |
 
@@ -156,12 +158,14 @@ Phase One Android pairing removes the mobile Tools/Terminal/VNC page entirely. T
 
 The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` for an explicit root path. When no workspace/root target is selected, it connects to `/ws/terminal/{sessionId}` without `cwd` or `rootPath`; the backend resolves that omitted cwd to the server process user's home directory after authorization.
 
-Both modes communicate via WebSocket using JSON messages:
+Both modes communicate via WebSocket using JSON messages. The `data` field in input and output messages is always base64-encoded terminal bytes, not base64-encoded JavaScript text:
 
-- **Input**: `{ "type": "input", "data": "<base64>" }`
+- **Input**: `{ "type": "input", "data": "<base64>" }` where `data` is UTF-8 bytes encoded from xterm input text
 - **Resize**: `{ "type": "resize", "rows": number, "cols": number }`
-- **Output**: `{ "type": "output", "data": "<base64>" }`
+- **Output**: `{ "type": "output", "data": "<base64>" }` where `data` is raw PTY output bytes from the backend
 - **Error**: `{ "type": "error", "message": "..." }`
+
+`useTerminalSession.ts` owns the frontend byte/text boundary. It UTF-8 encodes xterm input before base64 transport, and it decodes backend output by converting base64 back to bytes and feeding those bytes through one streaming `TextDecoder("utf-8")` per terminal connection before dispatching strings to xterm. Streaming decode is required because a UTF-8 code point may span separate WebSocket output messages. `Terminal.vue` receives decoded terminal text only and remains transport-agnostic.
 
 ## Styling
 
