@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: `User verified; finalization and release v1.3.46 authorized`
+- Delivery status: `Finalized and release v1.3.46 tagged; iOS TestFlight upload blocked externally`
 - Ticket branch/worktree: `codex/ios-wrapper-app` at `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`
 - Original API/E2E round-3 validated HEAD: `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`
 - User-authorized GitHub runner build-only workflow head tested: `c32f20f3a10274307efc92cdd35675f1ccfc98b9`
@@ -125,3 +125,15 @@ After explicit final verification, delivery should:
 3. Move `tickets/done/ios-wrapper-app/` to `tickets/done/ios-wrapper-app/`.
 4. Commit/push the final ticket branch state if not already current, update the finalization target branch, merge the ticket branch, and push the target according to repository flow.
 5. Do not claim TestFlight/App Store release readiness until the residual signing/profile/live-device/live-node/upload gaps above are closed.
+
+
+## Final Release Result
+
+- Updated: `2026-06-06T16:43:41Z`
+- Ticket archived at: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app`.
+- `personal` merge commit: `4db276470a49832b1aac290c7852f5b98501c526`.
+- Release commit/tag: `7b519f879b018ba472169390220225b970c879fb` / `v1.3.46`.
+- Release helper completed and pushed `origin/personal` plus tag `v1.3.46`.
+- Android APK and messaging gateway release workflows succeeded; desktop and server Docker workflows were still in progress when final status was recorded.
+- iOS tag workflow build/test, secret gate, archive, and export succeeded; App Store Connect/TestFlight upload failed because App Store Connect did not have an accessible application record for bundle ID `org.autobyteus.mobile`.
+- Dedicated ticket worktree and local/remote ticket branches were cleaned up.

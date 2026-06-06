@@ -140,7 +140,7 @@ If finalization later proceeds and a release/deployment task is added, rollback 
 
 ## Final Status
 
-`Ready for final user verification. User-authorized ticket-branch push and GitHub-hosted build-only validation are complete; target-branch merge, ticket archival, release tag, TestFlight/App Store upload, deployment, and cleanup remain intentionally held until explicit final user completion/verification is received.`
+`Repository finalization and release tag v1.3.46 are complete. Android and messaging release workflows succeeded; desktop/server workflows were still in progress when recorded; iOS archive/export succeeded but TestFlight upload is blocked by missing/inaccessible App Store Connect app record for org.autobyteus.mobile.`
 
 
 ## Finalization Authorization / Planned Release
@@ -151,3 +151,37 @@ If finalization later proceeds and a release/deployment task is added, rollback 
 - Planned release version: `1.3.46` / tag `v1.3.46` using `pnpm release 1.3.46 -- --release-notes tickets/done/ios-wrapper-app/release-notes.md` after the archived ticket is merged into `personal`.
 - Release scope note: pushing tag `v1.3.46` can trigger the iOS tag workflow. Per the user's release request, delivery will proceed with the release while preserving the non-claim that a TestFlight/App Store upload may still be gated by external signing/profile/App Store Connect readiness.
 - Final pre-archive checks: passed ancestry check, iOS workflow trigger assertion, `actionlint`, iOS release contract check, and scoped diff hygiene check (`tickets/done/ios-wrapper-app/validation-logs/delivery-finalization-checks.log`).
+
+
+## Final Repository / Release Completion
+
+- Updated: `2026-06-06T16:43:41Z`
+- User verification: `Yes`; user stated the ticket is done and requested finalization plus a new release version.
+- Ticket branch archive commit: `3268b74f01daf15e0eb2812297323a0c3696aaed` (`chore(ticket): finalize ios wrapper app`).
+- Merge commit on `personal`: `4db276470a49832b1aac290c7852f5b98501c526` (`merge: ios wrapper app`).
+- Personal post-merge check commit: `e7bfba2ebcb26e8fc80f654f555926420126535e` (`docs(delivery): record ios personal merge check`).
+- Release commit: `7b519f879b018ba472169390220225b970c879fb` (`chore(release): bump workspace release version to 1.3.46`).
+- Release tag: `v1.3.46`.
+- Release tag object: `0daf1a9122ca883dbde8e3ea7e9a73f5e472a35a`.
+- Release tag target: `7b519f879b018ba472169390220225b970c879fb`.
+- Final `origin/personal` after release helper: `7b519f879b018ba472169390220225b970c879fb` before this final delivery-record commit.
+- Release helper command: `pnpm release 1.3.46 -- --release-notes tickets/done/ios-wrapper-app/release-notes.md`.
+- Release helper log: `tickets/done/ios-wrapper-app/validation-logs/delivery-release-v1.3.46.log`.
+- Release notes synced to `.github/release-notes/release-notes.md` by the release helper.
+- Tag-triggered workflows observed after release push:
+  - iOS App Store Connect Release: `failure`, run `27067769383`.
+  - Android APK Release: `success`, run `27067769375`.
+  - Release Messaging Gateway: `success`, run `27067769370`.
+  - Desktop Release: `in_progress`, run `27067769356` at the time of this report update.
+  - Server Docker Release: `in_progress`, run `27067769354` at the time of this report update.
+- iOS release details:
+  - iOS metadata, build/test/smoke, and publish-secret validation jobs passed.
+  - Archive/export produced `AutoByteus_personal_ios-1.3.46.ipa` successfully.
+  - App Store Connect/TestFlight upload failed with Apple error `No suitable application records were found` for bundle identifier `org.autobyteus.mobile` / Apple ID access (`-19000`).
+  - Uploaded failure evidence artifact: `ios-app-store-connect-artifacts`, artifact id `7456090288`, digest `cb02d4164bade1e347e660ed04bd7031d1674704716eb22ae43f670c94edccb5`.
+  - Evidence: `tickets/done/ios-wrapper-app/validation-logs/release-v1.3.46-github-runs/ios-run-27067769383-summary.json`, `tickets/done/ios-wrapper-app/validation-logs/release-v1.3.46-github-runs/ios-run-27067769383.log`, and `tickets/done/ios-wrapper-app/validation-logs/release-v1.3.46-github-runs/ios-run-27067769383-key-lines.txt`.
+- Cleanup completed:
+  - Removed dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`.
+  - Deleted local branch `codex/ios-wrapper-app`.
+  - Deleted remote branch `origin/codex/ios-wrapper-app`.
+- Final note: this delivery-record update is intentionally after the `v1.3.46` tag; it records final release/cleanup status and does not alter the release tag contents.
