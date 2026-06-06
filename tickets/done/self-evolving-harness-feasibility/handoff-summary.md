@@ -137,10 +137,10 @@ Known carried limitation: full `pnpm -C autobyteus-web exec nuxi typecheck` rema
 
 - Ticket branch: `codex/self-evolving-harness-feasibility`.
 - Finalization target: `origin/personal`.
-- Current tracked base: `00631e7a091f3202eb31fd7b03161a24b8730ccd`.
-- Current integrated ticket HEAD before uncommitted round11 delivery edits: `5cb43ea35dd91ddf0f6cc655ff51c5cb0ea648d0`.
-- Current candidate state contains uncommitted/intent-to-add implementation, evidence, and delivery-doc changes from the post-round8/round9/round10/round11 loops. Finalization must include newly added source/test files under `autobyteus-web/components/workspace/self-evolution/`, `autobyteus-web/services/agentStreaming/handlers/systemTaskNotificationHandler.ts`, `autobyteus-server-ts/tests/self-evolution/self-evolution-target-notification-service.test.ts`, the localization cleanup test, and round9/round10/round11 evidence.
-- API/E2E left `/tmp/autobyteus-self-evolution-round11-di001-e2e` available for audit; cleanup remains pending delivery/finalization decision.
+- Final tracked base before merge: `00631e7a091f3202eb31fd7b03161a24b8730ccd`; final pushed `origin/personal` contains the ticket merge and final report updates.
+- Final ticket branch commit: `76a901eac98587668a2a74e00c2a0804cc8c15ea`; final target merge commit: `4a322bd43af7adfcaf85e3dae9f290a454884df2`.
+- Final candidate source, test, evidence, docs, and delivery artifacts from the post-round8/round9/round10/round11 loops were committed to the ticket branch and merged into `personal`.
+- API/E2E left `/tmp/autobyteus-self-evolution-round11-di001-e2e` available for audit; delivery removed it during finalization cleanup after user verification.
 - Ticket folder moved to `tickets/done/self-evolving-harness-feasibility`: `Yes`.
 - Final ticket commit/push/target merge: `Completed`; merge commit `4a322bd43af7adfcaf85e3dae9f290a454884df2` integrated the ticket branch before the final report update.
 - Release/publication/deployment: `Skipped` by user instruction; no new version/release.
