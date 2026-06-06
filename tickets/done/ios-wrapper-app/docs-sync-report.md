@@ -6,7 +6,7 @@
 - Trigger: API/E2E validation round 3 passed for the iOS wrapper plus GitHub Actions/App Store Connect/TestFlight release-contract scope. The user later authorized ticket-branch commit/push and a safe GitHub-hosted build-only workflow probe. Delivery refreshed latest base again, reassessed docs against the integrated state, and updated ticket-local handoff artifacts.
 - Bootstrap base reference: `origin/personal`; dedicated task branch was originally created from `origin/personal` at `00631e7a091f3202eb31fd7b03161a24b8730ccd`.
 - Integrated base reference used for docs sync: `origin/personal` at `01ea087bfd168dbc24113711bf16b420656a409a`, merged into `codex/ios-wrapper-app` by delivery after the user-authorized runner probe.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`.
 
 ## Why Docs Were Updated
 
@@ -31,7 +31,7 @@
 | `README.md` | Earlier delivery merge-conflict resolution and release/docs sync | Combined latest-base Local LAN/private HTTP Phone Access wording with iOS wrapper references and `docs/ios_mobile_access.md`; verified iOS release workflow summary remains present. | Keep the integrated top-level docs truthful for both latest-base Phone Access policy and the new iOS wrapper/release workflow. |
 | `autobyteus-web/docs/remote_access.md` | Earlier delivery merge-conflict resolution and Phone Access/mobile-wrapper docs sync | Combined latest-base private-network URL/cleartext acknowledgement policy with Android/iOS native wrapper scan/troubleshooting/freshness notes. | Prevent latest-base Phone Access behavior from overwriting iOS native wrapper guidance, and prevent iOS docs from erasing the new Local LAN/private HTTP policy. |
 | `.github/workflows/release-ios.yml` | Earlier delivery-local hygiene | Removed one trailing-whitespace line surfaced by scoped diff hygiene check. | Keep the integrated release workflow clean without changing behavior. |
-| `tickets/ios-wrapper-app/handoff-summary.md`, `tickets/ios-wrapper-app/delivery-release-deployment-report.md`, `tickets/ios-wrapper-app/delivery-evidence/...` | Ticket-local delivery artifacts | Recorded user-authorized GitHub runner build-only success, latest-base refresh to `origin/personal` `01ea087bfd168dbc24113711bf16b420656a409a`, final workflow trigger restoration, and remaining non-claims. | Preserve delivery evidence without over-promoting run-specific proof into long-lived docs. |
+| `tickets/done/ios-wrapper-app/handoff-summary.md`, `tickets/done/ios-wrapper-app/delivery-release-deployment-report.md`, `tickets/done/ios-wrapper-app/delivery-evidence/...` | Ticket-local delivery artifacts | Recorded user-authorized GitHub runner build-only success, latest-base refresh to `origin/personal` `01ea087bfd168dbc24113711bf16b420656a409a`, final workflow trigger restoration, and remaining non-claims. | Preserve delivery evidence without over-promoting run-specific proof into long-lived docs. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -52,7 +52,7 @@
 | Android-only native wrapper mentions in canonical Phone Access docs | Android/iOS native wrapper wording with iOS `WKWebView`, build, QR, troubleshooting, and freshness notes. | `README.md`, `autobyteus-web/docs/remote_access.md` |
 | Statement that a future native wrapper should move the same credential into platform secure storage | Current native wrappers intentionally do not persist `mra_...` credentials natively; any future native credential storage requires separate backend/security design. | `autobyteus-web/docs/remote_access.md` |
 | Earlier round-1/round-2 delivery signing-readiness summaries | Round-3 and post-run authoritative scope: custom bundle/version smoke, release metadata checks, real GitHub-hosted build-only workflow success, `development-device-profile-ready-app-group-incomplete`, and TestFlight/App Store residual gaps. | `handoff-summary.md`, `delivery-release-deployment-report.md`, this docs sync report |
-| GitHub workflow dispatch/build-only gap from API/E2E round 3 | User-authorized real GitHub-hosted build-only workflow run `27066610907` succeeded. Full publish/upload remains a separate non-claim. | `handoff-summary.md`, `delivery-release-deployment-report.md`, runner evidence under `tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/` |
+| GitHub workflow dispatch/build-only gap from API/E2E round 3 | User-authorized real GitHub-hosted build-only workflow run `27066610907` succeeded. Full publish/upload remains a separate non-claim. | `handoff-summary.md`, `delivery-release-deployment-report.md`, runner evidence under `tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/` |
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 

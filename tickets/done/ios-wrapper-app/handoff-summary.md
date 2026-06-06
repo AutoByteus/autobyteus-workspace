@@ -2,14 +2,14 @@
 
 ## Status
 
-- Delivery status: `Ready for user verification / finalization hold`
+- Delivery status: `User verified; finalization and release v1.3.46 authorized`
 - Ticket branch/worktree: `codex/ios-wrapper-app` at `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`
 - Original API/E2E round-3 validated HEAD: `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`
 - User-authorized GitHub runner build-only workflow head tested: `c32f20f3a10274307efc92cdd35675f1ccfc98b9`
 - Latest user-authorized pushed ticket-branch head before this delivery refresh: `origin/codex/ios-wrapper-app` at `864024a06da5d9ac36cbd7dab213855906eb830e`
 - Latest tracked base checked and integrated by delivery after the runner probe: `origin/personal` at `01ea087bfd168dbc24113711bf16b420656a409a` (base now contains release `v1.3.45` work)
 - Latest delivery base merge commit before this handoff artifact update: `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf` (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`)
-- User authorization received: `Partial` — user authorized ticket-branch commit/push and a safe GitHub Actions build-only runner probe. Final merge to `personal`, ticket archival, release tagging, TestFlight/App Store upload, deployment, and cleanup remain intentionally held until explicit final verification.
+- User authorization received: `Yes` — user confirmed the ticket is done and requested finalization plus a new release version. Delivery is proceeding with target-branch merge and release `v1.3.46`.
 
 ## Delivered Implementation
 
@@ -32,7 +32,7 @@
 
 ## Delivery Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/docs-sync-report.md`
 - Long-lived docs updated/resolved during delivery:
   - `README.md`
   - `autobyteus-web/docs/remote_access.md`
@@ -44,7 +44,7 @@
 ## Authoritative Validation Result
 
 API/E2E validation round 3 passed; authoritative report:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-validation-report.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/api-e2e-validation-report.md`
 
 Passed validation summary from API/E2E round 3:
 
@@ -60,12 +60,12 @@ Passed validation summary from API/E2E round 3:
 - Repository-resident durable validation added/updated by API/E2E round 3: `No`; implementation-owned workflow/project/script/docs updates were already reviewed by code review round 5.
 
 Key round-3 evidence root:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-3`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/api-e2e-evidence/round-3`
 
 ## User-Authorized GitHub Runner Build-Only Probe
 
 The user authorized committing/pushing the ticket branch and safely exercising the iOS workflow on a real GitHub-hosted runner without publishing. Evidence root:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
 
 Result summary:
 
@@ -84,11 +84,11 @@ Result summary:
 
 Key runner evidence files:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt`
 
 ## Delivery Integrated-State Validation
 
@@ -99,7 +99,7 @@ Delivery performed two latest-base refreshes:
 
 Latest post-run check evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` — passed ancestry check, workflow trigger assertion, Ruby YAML parse, `actionlint`, iOS release contract check, and source/docs/delivery-markdown diff hygiene check.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` — passed ancestry check, workflow trigger assertion, Ruby YAML parse, `actionlint`, iOS release contract check, and source/docs/delivery-markdown diff hygiene check.
 
 ## Residual Release-Readiness Gaps / Non-Claims
 
@@ -122,6 +122,6 @@ After explicit final verification, delivery should:
 
 1. Fetch `origin` and refresh the finalization target (`origin/personal`) again.
 2. If `origin/personal` advanced beyond `01ea087bfd168dbc24113711bf16b420656a409a`, re-integrate, rerun required checks, update docs/handoff if the user-facing state materially changes, and request renewed verification if needed.
-3. Move `tickets/ios-wrapper-app/` to `tickets/done/ios-wrapper-app/`.
+3. Move `tickets/done/ios-wrapper-app/` to `tickets/done/ios-wrapper-app/`.
 4. Commit/push the final ticket branch state if not already current, update the finalization target branch, merge the ticket branch, and push the target according to repository flow.
 5. Do not claim TestFlight/App Store release readiness until the residual signing/profile/live-device/live-node/upload gaps above are closed.

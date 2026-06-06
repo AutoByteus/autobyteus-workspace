@@ -6,7 +6,7 @@ Delivery of the integrated iOS wrapper implementation plus iOS GitHub Actions/Ap
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summary records API/E2E round 3, user-authorized GitHub runner run `27066610907`, latest-base integrations, post-integration checks, docs sync/no-impact reassessment, residual non-claims, and finalization hold.
 
@@ -35,7 +35,7 @@ Integration history:
 
 Post-run integration evidence:
 
-- Refined post-integration checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
+- Refined post-integration checks: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
 - The refined check passed ancestry, workflow trigger assertion, Ruby YAML parse, `actionlint`, iOS release contract check, and source/docs/delivery-markdown diff hygiene check. Raw GitHub/Xcode runner logs intentionally retain their original whitespace and are not normalized by delivery.
 
 ## User Verification
@@ -48,7 +48,7 @@ Post-run integration evidence:
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/docs-sync-report.md`
 - Docs sync result: `Updated` for earlier integrated docs; `No additional long-lived docs impact` after user-authorized runner probe.
 - Docs updated: `README.md`; `autobyteus-web/docs/remote_access.md`; earlier delivery-local hygiene in `.github/workflows/release-ios.yml`; ticket-local handoff/evidence reports.
 - No-impact rationale (if applicable): The GitHub runner proof is run-specific evidence. Existing long-lived docs already describe build-only versus publish behavior, required iOS/App Store Connect secrets and variables, bundle-ID authority, metadata split, release contract, and residual App Store/TestFlight gaps.
@@ -64,7 +64,7 @@ No version bump, release tag, GitHub Release, TestFlight upload, public App Stor
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/investigation-notes.md` (`origin/personal` / finalization target `personal` inferred from remote HEAD and bootstrap notes).
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/investigation-notes.md` (`origin/personal` / finalization target `personal` inferred from remote HEAD and bootstrap notes).
 - Ticket branch: `codex/ios-wrapper-app`
 - Ticket branch commit result: `Completed for user-authorized branch push/probe and latest delivery refresh/artifact update on the ticket branch.`
 - Ticket branch push result: `Completed to origin/codex/ios-wrapper-app for the runner-tested branch state and delivery handoff state. Final target merge remains held.`
@@ -83,7 +83,7 @@ No version bump, release tag, GitHub Release, TestFlight upload, public App Stor
 
 - Applicable: `No` for actual release/publication/deployment in this handoff; `Yes` only for delivering and safely exercising the build-only release workflow implementation.
 - Method: `Other`
-- Method reference / command: GitHub Actions run `27066610907` plus local post-integration validation in `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`.
+- Method reference / command: GitHub Actions run `27066610907` plus local post-integration validation in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`.
 - Release/publication/deployment result: `Not required` for actual publish/deploy; `Completed` for user-authorized build-only runner validation.
 - Release notes handoff result: `Not required`
 - Blocker (if applicable): N/A for handoff. Future TestFlight/App Store publishing is gated by explicit release tag/version selection, user acceptance of a possible TestFlight upload, exact iOS/App Store Connect signing assets, matching app/share App Store profiles, App Group profile setup, and physical/live validation evidence.
@@ -123,16 +123,16 @@ N/A. No deployment path or TestFlight upload is in scope for this handoff. If a 
 
 ## Verification Checks
 
-- API/E2E authoritative pass: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-validation-report.md`
-- API/E2E round-3 evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-3`
-- User-authorized GitHub runner evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
+- API/E2E authoritative pass: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/api-e2e-validation-report.md`
+- API/E2E round-3 evidence root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/api-e2e-evidence/round-3`
+- User-authorized GitHub runner evidence root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
 - GitHub Actions run: `27066610907` — success.
 - Runner core tests: 21 tests, 0 failures.
 - Runner UI smoke: 2 tests, 0 failures/skips.
 - Runner artifact: `ios-build-test-artifacts`, digest `sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393`.
 - Delivery latest-base refresh after runner probe: `git fetch origin --prune`; latest checked `origin/personal` `01ea087bfd168dbc24113711bf16b420656a409a`.
 - Delivery post-run merge commit: `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf`.
-- Delivery post-run verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` passed.
+- Delivery post-run verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` passed.
 
 ## Rollback Criteria
 
@@ -141,3 +141,13 @@ If finalization later proceeds and a release/deployment task is added, rollback 
 ## Final Status
 
 `Ready for final user verification. User-authorized ticket-branch push and GitHub-hosted build-only validation are complete; target-branch merge, ticket archival, release tag, TestFlight/App Store upload, deployment, and cleanup remain intentionally held until explicit final user completion/verification is received.`
+
+
+## Finalization Authorization / Planned Release
+
+- Updated: `2026-06-06T16:29:14Z`
+- User verification: `Yes` — user stated the ticket is done and requested finalization plus a new release version.
+- Latest target refresh before final ticket archive: `origin/personal` remained at `01ea087bfd168dbc24113711bf16b420656a409a`; ticket branch already contains that base.
+- Planned release version: `1.3.46` / tag `v1.3.46` using `pnpm release 1.3.46 -- --release-notes tickets/done/ios-wrapper-app/release-notes.md` after the archived ticket is merged into `personal`.
+- Release scope note: pushing tag `v1.3.46` can trigger the iOS tag workflow. Per the user's release request, delivery will proceed with the release while preserving the non-claim that a TestFlight/App Store upload may still be gated by external signing/profile/App Store Connect readiness.
+- Final pre-archive checks: passed ancestry check, iOS workflow trigger assertion, `actionlint`, iOS release contract check, and scoped diff hygiene check (`tickets/done/ios-wrapper-app/validation-logs/delivery-finalization-checks.log`).

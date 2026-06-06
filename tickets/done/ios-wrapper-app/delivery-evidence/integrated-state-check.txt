@@ -22,9 +22,9 @@ Base advanced since prior delivery handoff: Yes
 Post-integration checks for the first delivery refresh:
 
 - iOS release contract check: PASS.
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log`
 - Relevant diff hygiene check: PASS.
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log`
 
 ## User-authorized GitHub runner build-only probe
 
@@ -43,7 +43,7 @@ The user authorized committing/pushing the ticket branch and running a safe buil
 - Temporary branch-push trigger was reverted; final `.github/workflows/release-ios.yml` keeps `push.tags: v*` plus `workflow_dispatch` and no branch trigger.
 
 Evidence:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
 
 ## Second delivery integration after runner probe
 
@@ -74,19 +74,19 @@ python3 autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/
 git diff --check origin/personal -- \
   .github/workflows/release-ios.yml README.md autobyteus-web/docs/remote_access.md \
   autobyteus-ios docs/ios_mobile_access.md \
-  tickets/ios-wrapper-app/handoff-summary.md \
-  tickets/ios-wrapper-app/docs-sync-report.md \
-  tickets/ios-wrapper-app/delivery-release-deployment-report.md \
-  tickets/ios-wrapper-app/api-e2e-validation-report.md \
-  tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md \
-  tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md \
-  tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt \
-  tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt \
-  tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt
+  tickets/done/ios-wrapper-app/handoff-summary.md \
+  tickets/done/ios-wrapper-app/docs-sync-report.md \
+  tickets/done/ios-wrapper-app/delivery-release-deployment-report.md \
+  tickets/done/ios-wrapper-app/api-e2e-validation-report.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt
 ```
 
 Result: PASS. Evidence:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
 
 Note: raw GitHub/Xcode runner logs intentionally preserve their original whitespace, so delivery's final diff hygiene check scoped to source, workflow, long-lived docs, and delivery markdown artifacts rather than normalizing evidence logs.
 

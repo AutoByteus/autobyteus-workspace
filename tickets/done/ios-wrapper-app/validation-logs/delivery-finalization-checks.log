@@ -1,0 +1,20 @@
+# Finalization checks before ticket archive commit
+date_utc=2026-06-06T16:30:07Z
+branch=codex/ios-wrapper-app
+head=fb6aa0419869b2e911eb64d42ea5f6f64319304a
+origin_personal=01ea087bfd168dbc24113711bf16b420656a409a
+
+## base ancestry
+origin/personal is ancestor of ticket branch HEAD
+
+## workflow trigger contract
+iOS workflow trigger contract OK
+
+## actionlint
+actionlint ok
+
+## iOS release contract
+iOS release contract checks passed.
+
+## scoped diff check
+scoped diff check ok
