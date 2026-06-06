@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { normalizeNodeBaseUrl } from "./url-normalization.js";
+import { validatePairingServerBaseUrl } from "./pairing-url-policy.js";
 import {
   RemoteAccessError,
   type CreatePairingSessionResult,
@@ -38,16 +39,6 @@ export const buildMobileUrlFromServerBaseUrl = (
   return url.toString();
 };
 
-const assertHttpsServerBaseUrl = (serverBaseUrl: string): void => {
-  if (new URL(serverBaseUrl).protocol !== "https:") {
-    throw new RemoteAccessError(
-      "REMOTE_ACCESS_HTTPS_REQUIRED",
-      "Phone Access pairing requires an HTTPS server URL.",
-      400,
-    );
-  }
-};
-
 export class RemoteAccessPairingService {
   private readonly sessionsByCode = new Map<string, RemoteAccessPairingSession>();
 
@@ -60,6 +51,7 @@ export class RemoteAccessPairingService {
   async createPairingSession(input: {
     serverBaseUrl: string;
     serverName?: string | null;
+    trustedPrivateHttpAcknowledged?: boolean | null;
   }): Promise<CreatePairingSessionResult> {
     const settings = await this.settingsService.getSettings();
     if (!settings.phoneAccessEnabled) {
@@ -72,8 +64,10 @@ export class RemoteAccessPairingService {
 
     this.pruneExpiredSessions();
     const createdAtMs = nowMs();
-    const serverBaseUrl = normalizeNodeBaseUrl(input.serverBaseUrl);
-    assertHttpsServerBaseUrl(serverBaseUrl);
+    const pairingUrlPolicy = validatePairingServerBaseUrl(input.serverBaseUrl, {
+      trustedPrivateHttpAcknowledged: input.trustedPrivateHttpAcknowledged,
+    });
+    const { normalizedBaseUrl: serverBaseUrl } = pairingUrlPolicy;
     const payload: RemoteAccessPairingPayload = {
       version: 1,
       serverBaseUrl,

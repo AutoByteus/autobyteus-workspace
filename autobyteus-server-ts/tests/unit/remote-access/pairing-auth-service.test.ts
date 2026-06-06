@@ -55,15 +55,43 @@ describe("remote access pairing and auth services", () => {
       .resolves.toMatchObject({ ok: true, context: { mode: "mobile", deviceId: exchange.device.deviceId } });
   });
 
-  it("rejects HTTP pairing sessions before creating payloads", async () => {
+  it("requires acknowledgement before creating trusted private HTTP pairing sessions", async () => {
     const { settingsService, pairingService } = buildServices();
     await settingsService.setPhoneAccessEnabled(true);
 
     await expect(pairingService.createPairingSession({ serverBaseUrl: "http://100.64.1.2:29695" }))
       .rejects.toMatchObject({
-        code: "REMOTE_ACCESS_HTTPS_REQUIRED",
+        code: "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED",
         statusCode: 400,
       });
+
+    const session = await pairingService.createPairingSession({
+      serverBaseUrl: "http://100.64.1.2:29695/mobile?pairing=old",
+      trustedPrivateHttpAcknowledged: true,
+    });
+
+    expect(session.payload.serverBaseUrl).toBe("http://100.64.1.2:29695");
+    expect(session.mobileUrl).toMatch(/^http:\/\/100\.64\.1\.2:29695\/mobile\?pairing=/);
+  });
+
+  it("rejects public HTTP and phone-unreachable local-only pairing URLs", async () => {
+    const { settingsService, pairingService } = buildServices();
+    await settingsService.setPhoneAccessEnabled(true);
+
+    await expect(pairingService.createPairingSession({
+      serverBaseUrl: "http://example.com:29695",
+      trustedPrivateHttpAcknowledged: true,
+    })).rejects.toMatchObject({
+      code: "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED",
+      statusCode: 400,
+    });
+
+    await expect(pairingService.createPairingSession({
+      serverBaseUrl: "https://127.0.0.1:29695/mobile",
+    })).rejects.toMatchObject({
+      code: "REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY",
+      statusCode: 400,
+    });
   });
 
   it("preserves deployment base paths when building mobile pairing URLs", async () => {
