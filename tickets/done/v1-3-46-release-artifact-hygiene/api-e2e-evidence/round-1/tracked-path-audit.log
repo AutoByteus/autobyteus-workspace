@@ -1,0 +1,15 @@
+tracked_files=11287
+xcresult_tracked=0
+generated_ticket_zips_tracked=0
+paths_over_200=0
+longest_paths:
+197 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+197 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+188 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent.md
+188 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent.md
+172 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/team-config.json
+172 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package/applications/research-workspace/agent-teams/literature-review/team-config.json
+171 tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/signing-readiness/ios-signing-readiness.json
+170 tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/signing-readiness/ios-signing-readiness.txt
+169 applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+169 tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agents/research-assistant/agent-config.json

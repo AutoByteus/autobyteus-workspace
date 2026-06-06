@@ -1,0 +1,39 @@
+Repository artifact hygiene check failed.
+Tracked files scanned: 11942
+Path-length threshold: 200
+
+Tracked raw Xcode .xcresult bundles/files: 669
+Action: Remove generated .xcresult bundles from git, for example `git rm -r <path>.xcresult`, and keep summary/log artifacts instead.
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~-1kPheDrfmyOd2_gh4Zyv9rzUR4hdx5NUoMwGQ9CMBOrAxctTK207jXA2-xGUkR4e_TyMEDQztAZ-xzPCZaEGA==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~-HK_kVcknXeAh2W90BZazoivyMpmzZQsyWRF4d0EoO6MTdcvTgOu9COJpGe5xCtAg3hko-YQhRn9eZe7T4CC7g==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~0yGIAaelh363thUr-X-TWoYhjwJII_oJyRJUqRMOn86phfhz7fzyX2cui9YMJkCH8_QlO9aU5YEoku3gEZjAVA==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~12Hcr2nCx_W06kCx4tELXvnzdehwrqq1cq3uxCbxBasS4rJCZrXwLyw47dG9dTG1VsOA0ifUYOWgelV2PmY0Zg==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~4VqMqsI5lOfxRppnud6-VDWcNsU8J7VgFCJfW2dXPwOcAkvU-I8Um5yp9n0Zv6nr3VmcxYggaVMDFfR0U_vjKw==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~4wEqSd8dZ2y6LwObd2B4_1odzsZsyDlJN15bCQc-jwR5RlZO47sY8Wx5LVCP4OirTouE0_J3Ko3-v2Pwx8QcTg==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~5WWfgjJLc5F94HC88yF2eAmCBjsxnkks1ytfAgMPJs2Btdv4KOpDpXVY6yu6BBenspN0yOE_5oFx-0pzVr_AsQ==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~5XXN2rjn6zdaEvsJ4bViZTd0gOvw9V3oCuTfXs-UsgWl_fgJEDgQDcfK3k1e2ixcl-TxFonq_uEaN-jlVyydaQ==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~7jgggR4obKTg0uWa4ep4-YM15YTgvG--ajO2qnXS4G1rocWWCPaaaNkhRKWpu8Lg8S_J4wfvclYVpub8OtLNUw==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~87n6tAtZdTA0jSF6-nXSOzz4grCpFIjVZaCijXb5qqE7b2-Rz96yPS4KJk2O5PcMjrlZNols_Xzv4POwxJRyRQ==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~ANWWD9tXy35cve4ajPyojvtDAWoakFJbnQ0RGsR8Wqz8_ZF2qgRSkikz9PWOyFZjEEoqsd6JngODbYWGpnpmKg==
+ - 205 chars: tickets/done/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult/Data/data.0~C4OISE6J1Tio00OaxNY1r4kdULFXd3ATXrmYldMD5x_GPEqutBvnp9bCMYF87B-l_H4OOkUUsOMrZxYmIaeovg==
+ - ... 657 more
+
+Tracked generated ticket artifact zip files: 1
+Action: Remove downloaded/generated build archives from ticket evidence, for example `git rm <path>.zip`, and keep durable summaries/logs or external artifact links.
+ - 173 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteus_personal_ios-ci-1-simulator-app.zip
+
+Tracked checkout-risk paths longer than 200 characters: 464
+Action: Shorten, move, or remove these paths before release. GitHub-hosted Windows checkout can fail before repository scripts can run.
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~3LBmS2MHqn7h89INFA2xjgrTBmcr6yAd1zBPbJOtN7D0q48yfiGkufCUV5lmh7kWsXvAlnRMFtJ7qdyP8vVW8g==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~3vkfDq5gKxd6obpBu-GAjJ974dJi1jvtrZ-4OUVEBEWvNqabasZOJaaFMFCBjmOjDKCpDAiQTK2DWQkx2I-rQg==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~3zjDJmloQB4JFfuaWMTLgTTgxNtbE3SqEMD7DluxlY0Nt-TljIEiBtVk6hpJ3epXJ6yWYmrLBDyxt938RV66sQ==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~4TB8OUEPueOckHRPAI96eQln_HBx_0g546RyhViD8evP3X4uZ5578uNIderTd_OzeNbRnaFiy_-ih-t5Dkbiag==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~4VqMqsI5lOfxRppnud6-VDWcNsU8J7VgFCJfW2dXPwOcAkvU-I8Um5yp9n0Zv6nr3VmcxYggaVMDFfR0U_vjKw==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~7wV3SLtcRIKxwvrVwuE5T6vx8Nmb6wy_PIq5vEVXSv5fqVJsW3lI1f8eIjWKEUz1-JAJAGFj9X4MWeUNeV3e5g==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~A_0H4pK0QRz-SS_HsQyutSG0oPKztwI8EWj_Res1X_GBz3enrZoECXIORJaYo7BtM2GVdTYQz5sbia6SfMVnxA==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~CGlCicw3lcfMZcsboP0mN9yxoPw4-_Ga7KOBUNdyDP4IB8y8lvlbOmc16Jojx5rlfkf1i_c56TtZU4vpZ5245w==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~GhbbXYMnlT223OVy_bNM1KRw-em5YEhv5HZAE24J5b2a69LGr6xCxHZI0digaftl1--V2nvFf393MLpHTYd5CQ==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~POIfr0qMXiZP9SFPh1HWMeebPCdfyjltYs2kKnJcvRBkiuZaz7SdzaxApFz6DQalTlwrxfMpATil5se0bmPQbQ==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~SxqI-HVU969bYHlExFqKO4MIlOpCH2MrkuNyR59RNT_PjdgJqzYbmUVl4tgYz1i5L7abWlQHgoBDfxsj5O8LQg==
+ - 262 chars: tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/AutoByteusMobileCoreTests.xcresult/Data/data.0~Y1Z_SsqDYoOO0cGRIhbAELJ8o36Byfa5ZJnQMerqxsp3VV7ukm952J5TA4Qf30ROLCnYPOpj9OI1Z1GH4azIow==
+ - ... 452 more

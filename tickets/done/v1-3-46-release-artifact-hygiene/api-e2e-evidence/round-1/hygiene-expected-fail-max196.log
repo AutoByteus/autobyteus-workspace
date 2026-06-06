@@ -1,0 +1,15 @@
+## hygiene expected failure max path length 196
+utc=2026-06-06T18:10:35Z
+command=python3 scripts/check_repository_artifact_hygiene.py --max-path-length 196
+
+Repository artifact hygiene check failed.
+Tracked files scanned: 11287
+Path-length threshold: 196
+
+Tracked checkout-risk paths longer than 196 characters: 2
+Action: Shorten, move, or remove these paths before release. GitHub-hosted Windows checkout can fail before repository scripts can run.
+ - 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+ - 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+
+raw_exit_code=1
+EXPECTED_FAILURE_CHECK=PASS (command failed as expected)

@@ -1,0 +1,7 @@
+## actionlint
+utc_start=2026-06-06T18:10:35Z
+command=actionlint .github/workflows/release-desktop.yml
+
+
+exit_code=0
+utc_end=2026-06-06T18:10:35Z

@@ -1,0 +1,9 @@
+$ git diff --check
+$ git status --short --branch
+## codex/v1-3-46-release-artifact-hygiene...origin/codex/v1-3-46-release-artifact-hygiene
+ M README.md
+?? tickets/v1-3-46-release-artifact-hygiene/delivery-evidence/
+?? tickets/v1-3-46-release-artifact-hygiene/delivery-release-deployment-report.md
+?? tickets/v1-3-46-release-artifact-hygiene/docs-sync-report.md
+?? tickets/v1-3-46-release-artifact-hygiene/handoff-summary.md
+?? tickets/v1-3-46-release-artifact-hygiene/release-notes.md

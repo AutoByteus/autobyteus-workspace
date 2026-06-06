@@ -32,3 +32,12 @@ autobyteus-ios/DerivedData/
 autobyteus-ios/**/*.xcuserstate
 autobyteus-ios/**/*.xcuserdata/
 autobyteus-ios/**/*.xcresult/
+
+# Ticket/evidence hygiene: keep durable summaries/logs/reports in git, not raw
+# generated tool output or downloaded CI artifact drops.
+*.xcresult/
+tickets/**/*.xcresult/
+tickets/**/github-run-*-artifacts/
+tickets/**/github-run-*-artifacts/**/*.zip
+tickets/**/github-run-*-artifacts/**/*.ipa
+tickets/**/github-run-*-artifacts/**/*.app/

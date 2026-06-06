@@ -1,0 +1,6 @@
+# API/E2E local validation context
+utc=2026-06-06T18:10:35Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/v1-3-46-release-artifact-hygiene
+branch=codex/v1-3-46-release-artifact-hygiene
+head=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+upstream=origin/personal

@@ -1,0 +1,61 @@
+# GitHub log excerpts for artifact-hygiene release validation
+
+## Run/job summary
+run_status=completed
+run_conclusion=success
+run_url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231
+Resolve Release Metadata: completed success
+  - Check repository artifact hygiene: completed success 2026-06-06T18:12:00Z -> 2026-06-06T18:12:00Z
+Build Linux x64: completed success
+  - Checkout workspace + submodules: completed success 2026-06-06T18:12:06Z -> 2026-06-06T18:12:13Z
+  - Build Electron Linux x64: completed success 2026-06-06T18:12:53Z -> 2026-06-06T18:15:37Z
+Build Windows x64: completed success
+  - Checkout workspace + submodules: completed success 2026-06-06T18:12:08Z -> 2026-06-06T18:12:26Z
+  - Build Electron Windows x64: completed success 2026-06-06T18:13:30Z -> 2026-06-06T18:22:53Z
+  - Upload Windows artifacts: completed success 2026-06-06T18:22:53Z -> 2026-06-06T18:23:04Z
+Build macOS ARM64: completed success
+  - Checkout workspace + submodules: completed success 2026-06-06T18:12:07Z -> 2026-06-06T18:12:15Z
+  - Build Electron macOS ARM64: completed success 2026-06-06T18:12:44Z -> 2026-06-06T18:24:57Z
+Build macOS Intel x64: completed success
+  - Checkout workspace + submodules: completed success 2026-06-06T18:12:09Z -> 2026-06-06T18:12:21Z
+  - Build Electron macOS Intel x64: completed success 2026-06-06T18:13:11Z -> 2026-06-06T18:27:19Z
+Publish GitHub Release: completed skipped
+
+## Prepare-release hygiene guard output
+Resolve Release Metadata	Check repository artifact hygiene	﻿2026-06-06T18:12:00.6801462Z ##[group]Run python3 scripts/check_repository_artifact_hygiene.py
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6801974Z [36;1mpython3 scripts/check_repository_artifact_hygiene.py[0m
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6829601Z shell: /usr/bin/bash -e {0}
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6829889Z ##[endgroup]
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7402774Z Repository artifact hygiene check passed.
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7403388Z Tracked files scanned: 11296
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7403831Z Path-length threshold: 200
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7404954Z Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+
+## Windows checkout/build/upload status from final JSON
+job_url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897479216
+Checkout workspace + submodules: status=completed conclusion=success started=2026-06-06T18:12:08Z completed=2026-06-06T18:12:26Z
+Setup pnpm: status=completed conclusion=success started=2026-06-06T18:12:26Z completed=2026-06-06T18:12:30Z
+Setup Node: status=completed conclusion=success started=2026-06-06T18:12:30Z completed=2026-06-06T18:12:37Z
+Install workspace dependencies: status=completed conclusion=success started=2026-06-06T18:12:37Z completed=2026-06-06T18:13:22Z
+Install Python setuptools for node-gyp: status=completed conclusion=success started=2026-06-06T18:13:22Z completed=2026-06-06T18:13:30Z
+Build Electron Windows x64: status=completed conclusion=success started=2026-06-06T18:13:30Z completed=2026-06-06T18:22:53Z
+Upload Windows artifacts: status=completed conclusion=success started=2026-06-06T18:22:53Z completed=2026-06-06T18:23:04Z
+
+## Windows build command start
+Build Windows x64	Build Electron Windows x64	﻿2026-06-06T18:13:30.0647178Z ##[group]Run pnpm build:electron:windows
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0647576Z [36;1mpnpm build:electron:windows[0m
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0677947Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0678316Z env:
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0678589Z   PNPM_HOME: C:\Users\runneradmin\setup-pnpm\node_modules\.bin
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0678937Z   AUTOBYTEUS_BUILD_FLAVOR: personal
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.0679191Z ##[endgroup]
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.6671772Z 
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.6672630Z > autobyteus@1.3.46 build:electron:windows D:\a\autobyteus-workspace\autobyteus-workspace\autobyteus-web
+Build Windows x64	Build Electron Windows x64	2026-06-06T18:13:30.6674777Z > cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows
+
+## Windows artifacts
+total_count=4
+macos-x64 size=855321207 expired=False created=2026-06-06T18:27:41Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456815331/zip
+macos-arm64 size=805583625 expired=False created=2026-06-06T18:25:17Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456797848/zip
+windows-x64 size=280787165 expired=False created=2026-06-06T18:23:04Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456782646/zip
+linux-x64 size=349429389 expired=False created=2026-06-06T18:15:49Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456735043/zip
