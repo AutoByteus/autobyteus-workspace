@@ -5,6 +5,17 @@ tmp/
 *.pyc
 .local/*
 !.local/*.example
+
+# Apple/iOS signing material and App Store Connect API credentials.
+# Keep these under .local/ios-signing/ when needed locally; never commit them.
+*.mobileprovision
+*.p12
+*.p8
+*.cer
+*.csr
+ios_distribution_private_key.key
+ios_distribution_certificate_p12_password.txt
+
 autobyteus-server-ts/agents/
 autobyteus-server-ts/applications/
 autobyteus-server-ts/agent-teams/

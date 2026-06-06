@@ -1,0 +1,8 @@
+# Round-3 post-integration executable check after workflow whitespace cleanup
+Date: 2026-06-06
+Branch: codex/ios-wrapper-app
+HEAD: 7d08ebdb6fc07a6381346961522b6f1afa7d9811
+origin/personal: 74c0fd5905c85a4f52b7fecec16bf4c644a745de
+
+## autobyteus-ios/scripts/ios-release-contract-check.py
+iOS release contract checks passed.

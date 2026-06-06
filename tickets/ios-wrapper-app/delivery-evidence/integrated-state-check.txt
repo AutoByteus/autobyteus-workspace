@@ -1,12 +1,42 @@
 # Delivery integrated-state check
-Date: 2026-06-06
-Delivery pass: round 2 after API/E2E validation round 2
-Branch: codex/ios-wrapper-app
-HEAD: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
-Tracked base origin/personal: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
-Base refresh: git fetch origin --prune completed; HEAD and origin/personal match.
-Integration method: already current; no merge/rebase/checkpoint commit needed.
-Executable rerun rationale: no new base commits were integrated; API/E2E round 2 independently reran simulator smoke, core tests, QR diagnostic, signing readiness, and static checks on the same HEAD.
 
-## git diff --check
-Result: PASS
+Date: 2026-06-06
+Delivery pass: round 3 after API/E2E validation round 3 and latest-base refresh
+Branch: codex/ios-wrapper-app
+Original API/E2E validated HEAD: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
+Latest tracked base checked: origin/personal at 74c0fd5905c85a4f52b7fecec16bf4c644a745de
+Base advanced since prior handoff: Yes, by 14 commits
+
+## Integration
+
+- Created local delivery checkpoint commit before integrating latest base: fbae0246 (`chore(delivery): checkpoint ios wrapper before base refresh`).
+- Merged latest `origin/personal` into `codex/ios-wrapper-app`: 7d08ebdb (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`).
+- Merge conflicts occurred in long-lived docs only:
+  - `README.md`
+  - `autobyteus-web/docs/remote_access.md`
+- Conflict resolution preserved both latest-base trusted Local LAN/private HTTP Phone Access docs and the iOS wrapper/docs links.
+- Delivery-local cleanup after merge: trimmed one trailing-whitespace line in `.github/workflows/release-ios.yml` found by scoped diff hygiene check.
+
+## Post-integration checks
+
+Executable check after integrating latest base:
+
+```bash
+autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app
+```
+
+Result: PASS. Evidence:
+`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log`
+
+Relevant diff hygiene check after workflow whitespace cleanup:
+
+```bash
+git diff --check origin/personal -- README.md autobyteus-web/docs/remote_access.md autobyteus-ios .github/workflows/release-ios.yml docs/ios_mobile_access.md
+```
+
+Result: PASS. Evidence:
+`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log`
+
+## Notes
+
+API/E2E round 3 validated the candidate at `c62a78d6`. Because delivery integrated a newer base, delivery reran the iOS release contract check and relevant diff hygiene check against the integrated state. Full simulator/GitHub-runner/TestFlight validation was not rerun by delivery; API/E2E round 3 remains the authoritative validation evidence for the pre-merge candidate, and the actual GitHub Actions runner/TestFlight paths remain residual non-claims until the workflow is committed/pushed and required secrets/profiles exist.

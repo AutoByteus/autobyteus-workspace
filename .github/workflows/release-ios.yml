@@ -429,7 +429,7 @@ jobs:
           import os
           import plistlib
           from pathlib import Path
-          
+
           export_options = {
               "method": "app-store-connect",
               "destination": "export",
