@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { usePhoneAccessStore } from '../phoneAccessStore';
 
@@ -64,7 +65,7 @@ describe('phoneAccessStore', () => {
     expect(store.selectedServerBaseUrl).toBe('https://desktop.tailnet.ts.net');
   });
 
-  it('does not auto-select HTTP-only interface candidates as the QR target', async () => {
+  it('auto-selects an allowed private HTTP interface candidate when HTTPS is unavailable', async () => {
     apiServiceMock.get.mockImplementation(async (url: string) => {
       const shared = emptyDeviceResponses(url);
       if (shared) {
@@ -86,9 +87,9 @@ describe('phoneAccessStore', () => {
     const store = usePhoneAccessStore();
     await store.loadAll();
 
-    expect(store.selectedServerBaseUrl).toBe('');
-    expect(store.selectedUrlValidation.isHttps).toBe(false);
-    expect(store.selectedUrlValidation.message).toContain('Choose or enter');
+    expect(store.selectedServerBaseUrl).toBe('http://100.64.1.2:29695');
+    expect(store.selectedUrlValidation.transportSecurity).toBe('trusted_private_http');
+    expect(store.selectedUrlValidation.requiresTrustedPrivateHttpAcknowledgement).toBe(true);
   });
 
   it('auto-selects an HTTPS candidate when one is available', async () => {
@@ -146,7 +147,20 @@ describe('phoneAccessStore', () => {
     });
   });
 
-  it('blocks HTTP pairing creation before POST', async () => {
+  it('requires acknowledgement before private HTTP pairing creation and sends the acknowledgement to the backend', async () => {
+    apiServiceMock.post.mockResolvedValue({
+      data: {
+        payload: {
+          version: 1,
+          serverBaseUrl: 'http://192.168.1.25:29695',
+          pairingCode: 'code',
+          expiresAt: '2026-05-22T00:05:00.000Z',
+          serverName: 'AutoByteus Desktop',
+        },
+        qrText: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+        mobileUrl: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+      },
+    });
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
     store.selectedServerBaseUrl = 'http://192.168.1.25:29695';
@@ -154,7 +168,28 @@ describe('phoneAccessStore', () => {
     await store.createPairingSession();
 
     expect(apiServiceMock.post).not.toHaveBeenCalled();
-    expect(store.error).toContain('HTTPS URL');
+    expect(store.error).toContain('Acknowledge');
+
+    store.trustedPrivateHttpAcknowledged = true;
+    await store.createPairingSession();
+
+    expect(apiServiceMock.post).toHaveBeenCalledWith('/remote-access/pairing-sessions', {
+      serverBaseUrl: 'http://192.168.1.25:29695',
+      serverName: 'AutoByteus Desktop',
+      trustedPrivateHttpAcknowledged: true,
+    });
+  });
+
+  it('blocks public HTTP pairing creation before POST', async () => {
+    const store = usePhoneAccessStore();
+    store.settings.phoneAccessEnabled = true;
+    store.selectedServerBaseUrl = 'http://example.com:29695';
+    store.trustedPrivateHttpAcknowledged = true;
+
+    await store.createPairingSession();
+
+    expect(apiServiceMock.post).not.toHaveBeenCalled();
+    expect(store.error).toContain('Use HTTPS for public hostnames');
   });
 
   it('normalizes pasted mobile URLs before creating pairing sessions', async () => {
@@ -204,7 +239,7 @@ describe('phoneAccessStore', () => {
     expect(store.revokedDevices).toHaveLength(1);
   });
 
-  it('requires a manual phone-facing HTTPS URL before remote-node QR creation', async () => {
+  it('requires a manual phone-facing private network URL before remote-node QR creation', async () => {
     await bindRemoteNodeWindow();
 
     const store = usePhoneAccessStore();
@@ -214,7 +249,7 @@ describe('phoneAccessStore', () => {
     await store.createPairingSession();
 
     expect(apiServiceMock.post).not.toHaveBeenCalled();
-    expect(store.error).toContain('phone-facing private HTTPS URL');
+    expect(store.error).toContain('phone-facing private network URL');
   });
 
   it('rejects loopback or local-only advertised URLs for remote nodes before status verification', async () => {
@@ -230,7 +265,7 @@ describe('phoneAccessStore', () => {
 
     expect(globalThis.fetch).not.toHaveBeenCalled();
     expect(apiServiceMock.post).not.toHaveBeenCalled();
-    expect(store.error).toContain('phone-facing private HTTPS URL');
+    expect(store.error).toContain('phone-facing URL');
   });
 
   it('fails closed when the remote-node advertised URL reaches a different server instance', async () => {
@@ -252,6 +287,44 @@ describe('phoneAccessStore', () => {
     expect(apiServiceMock.post).not.toHaveBeenCalled();
     expect(store.error).toContain('different AutoByteUs node');
     expect(store.advertisedUrlVerified).toBe(false);
+  });
+
+  it('verifies remote-node private HTTP advertised URL server identity before creating a trusted-network QR', async () => {
+    await bindRemoteNodeWindow();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_same_http_node_id_12345678901234567890' }),
+    }));
+    apiServiceMock.get.mockResolvedValue({ data: { serverInstanceId: 'srv_same_http_node_id_12345678901234567890' } });
+    apiServiceMock.post.mockResolvedValue({
+      data: {
+        payload: {
+          version: 1,
+          serverBaseUrl: 'http://192.168.1.25:29695',
+          pairingCode: 'code',
+          expiresAt: '2026-05-22T00:05:00.000Z',
+          serverName: 'AutoByteus Remote Node',
+        },
+        qrText: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+        mobileUrl: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+      },
+    });
+
+    const store = usePhoneAccessStore();
+    store.settings.phoneAccessEnabled = true;
+    store.manualServerBaseUrl = 'http://192.168.1.25:29695/mobile';
+    store.selectedServerBaseUrl = 'http://192.168.1.25:29695/mobile';
+    store.trustedPrivateHttpAcknowledged = true;
+
+    await store.createPairingSession();
+
+    expect(globalThis.fetch).toHaveBeenCalledWith('http://192.168.1.25:29695/rest/remote-access/status', { method: 'GET' });
+    expect(apiServiceMock.post).toHaveBeenCalledWith('/remote-access/pairing-sessions', {
+      serverBaseUrl: 'http://192.168.1.25:29695',
+      serverName: 'AutoByteus Remote Node',
+      trustedPrivateHttpAcknowledged: true,
+    });
+    expect(store.advertisedUrlVerified).toBe(true);
   });
 
   it('verifies remote-node advertised URL server identity before creating a trusted-network QR', async () => {
@@ -288,6 +361,32 @@ describe('phoneAccessStore', () => {
       serverName: 'AutoByteus Remote Node',
     });
     expect(store.advertisedUrlVerified).toBe(true);
+  });
+
+  it('clears acknowledgement, verification, and active QR state when the selected URL changes', async () => {
+    const store = usePhoneAccessStore();
+    store.trustedPrivateHttpAcknowledged = true;
+    store.advertisedUrlVerified = true;
+    store.advertisedUrlVerificationMessage = 'verified';
+    store.activePairing = {
+      payload: {
+        version: 1,
+        serverBaseUrl: 'http://192.168.1.25:29695',
+        pairingCode: 'code',
+        expiresAt: '2026-05-22T00:05:00.000Z',
+        serverName: 'AutoByteus Desktop',
+      },
+      qrText: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+      mobileUrl: 'http://192.168.1.25:29695/mobile?pairing=encoded',
+    };
+
+    store.selectedServerBaseUrl = 'http://192.168.1.26:29695';
+    await nextTick();
+
+    expect(store.trustedPrivateHttpAcknowledged).toBe(false);
+    expect(store.advertisedUrlVerified).toBe(false);
+    expect(store.advertisedUrlVerificationMessage).toBeNull();
+    expect(store.activePairing).toBeNull();
   });
 });
 

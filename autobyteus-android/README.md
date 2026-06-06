@@ -6,7 +6,7 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 
 - first-run setup for scan/paste/manual node URL entry;
 - app-owned Phone Access QR scanning, Android camera permission handling, and scan cancel/denial diagnostics;
-- native persistence of a clean saved node profile, for example `https://desktop.tailnet-name.ts.net/mobile`;
+- native persistence of a clean saved node profile, for example `https://desktop.tailnet-name.ts.net/mobile` or an acknowledged trusted private HTTP `/mobile` URL;
 - reachability checks against `/rest/remote-access/status`;
 - WebView containment for the saved AutoByteus origin;
 - Tailscale-oriented diagnostics and recovery actions.
@@ -33,16 +33,16 @@ Agent/team run setup is not native Android code. The WebView-served **Start new*
    ```
 
 5. Enable Phone Access.
-6. Copy the HTTPS MagicDNS URL from `serve status`, append `/mobile`, and paste it into the Tailscale Serve HTTPS URL field before creating the QR/link. The preferred URL looks like `https://desktop.tailnet-name.ts.net/mobile` without `:29695`; IPv4/IPv6 and HTTP interface candidates are diagnostics only.
+6. Copy the HTTPS MagicDNS URL from `serve status`, append `/mobile`, and paste it into the Phone-facing private network URL field before creating the QR/link. The preferred travel URL looks like `https://desktop.tailnet-name.ts.net/mobile` without `:29695`. For trusted home/local pairing, the desktop Phone Access flow can also create QR links from acknowledged private LAN/tailnet HTTP candidates such as `http://192.168.x.x:29695/mobile`.
 7. Pair from Android by tapping **Scan QR** in AutoByteus Android, sharing/pasting the link into AutoByteus Android, or manually entering the stable URL.
 
-Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage. Pair with the final stable HTTPS origin, such as `https://desktop.tailnet-name.ts.net/mobile`; switching from a different origin later can require pairing again.
+Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage. Pair with the final stable origin, preferably HTTPS for travel such as `https://desktop.tailnet-name.ts.net/mobile`; switching from a LAN HTTP origin to a different HTTPS origin later can require pairing again.
 
 ## QR scanning
 
 The Android app includes its own QR scanner activity through `com.journeyapps:zxing-android-embedded` and requests `android.permission.CAMERA` when **Scan QR** is used. Users do not need to install a separate ZXing-compatible scanner app.
 
-Decoded QR text is passed into the same connection input resolver used by paste, Android text-share, and manual entry. Cancelling the scanner, denying camera permission, or receiving an empty scan result returns to the connection screen with recoverable guidance instead of crashing or leaving a stale busy state.
+Decoded QR text is passed into the same connection input resolver used by paste, Android text-share, and manual entry. Trusted private HTTP QR links remain pending until the user acknowledges cleartext LAN/tailnet use before WebView load. Cancelling the scanner, denying camera permission, or receiving an empty scan result returns to the connection screen with recoverable guidance instead of crashing or leaving a stale busy state.
 
 ## Build
 

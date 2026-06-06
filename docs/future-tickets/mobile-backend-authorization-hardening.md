@@ -4,7 +4,7 @@
 
 Future / Phase Two. Split from Phase One Android/Phone Access pairing over trusted private-network node URLs.
 
-Phase One focuses on pairing Android/phone clients with the intended AutoByteus node over a trusted private HTTPS URL while keeping desktop management access on the trusted private-network product model.
+Phase One focuses on pairing Android/phone clients with the intended AutoByteus node over a trusted private-network URL, preferring HTTPS and allowing acknowledged trusted private HTTP for LAN/tailnet use, while keeping desktop management access on the trusted private-network product model.
 
 Phase Two must harden what a mobile session can do **after** pairing. Runtime isolation can reduce blast radius, but it does not replace backend authorization, token/session safety, or credential custody.
 
@@ -40,7 +40,7 @@ Token/session hardening touches many surfaces:
 - Android secure storage / native bridge
 - revoke/session UI and tests
 
-Putting all of that into Phase One would delay the primary first milestone: Android/phone pairing with a trusted private HTTPS node URL.
+Putting all of that into Phase One would delay the primary first milestone: Android/phone pairing with a trusted private-network node URL.
 
 ## In-Scope Use Cases
 
@@ -104,7 +104,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 - R-P2-ANDROID-001: Android durable session/refresh material must be stored in native protected storage, not raw WebView `localStorage`.
 - R-P2-ANDROID-002: The Android WebView should receive only short-lived access tokens or authorized request mediation from a native token broker.
 - R-P2-ANDROID-003: If pure PWA/mobile browser support remains, it must be treated as lower trust with shorter sessions and reduced capabilities.
-- R-P2-ANDROID-004: Android release builds must not persist/use mobile sessions over cleartext HTTP except an explicit development mode.
+- R-P2-ANDROID-004: Android release builds must not persist/use mobile sessions over cleartext HTTP unless the user explicitly acknowledges a trusted private LAN/tailnet path or enables a development-only mode.
 - R-P2-ANDROID-005: Android local unpair should delete local secure material and attempt server-side session revoke when online.
 
 ### Audit / Revocation Requirements
