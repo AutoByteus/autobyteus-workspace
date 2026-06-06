@@ -1,0 +1,1 @@
+$ git diff --check (after local Electron build/report updates)

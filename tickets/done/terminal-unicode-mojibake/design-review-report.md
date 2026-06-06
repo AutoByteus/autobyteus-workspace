@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/design-spec.md`
 - Current Review Round: 1
 - Trigger: Solution designer handoff for terminal Unicode/mojibake bug fix design review.
 - Prior Review Round Reviewed: N/A

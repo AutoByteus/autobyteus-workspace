@@ -27,7 +27,7 @@ File Explorer watcher physical close is isolated in the File Explorer watcher ru
 1. The route authorizes remote access for the WebSocket request.
 2. It resolves and validates `cwd` / `rootPath`; omitted query values resolve to the server process home directory.
 3. `TerminalHandler.connect()` asks `PtySessionManager` to create the PTY session.
-4. The handler starts a read loop that forwards PTY output as base64 JSON messages.
+4. The handler starts a read loop that forwards raw PTY output bytes as base64 JSON messages.
 5. Client input and resize messages are forwarded to the active session.
 6. WebSocket `close`/`error`, startup abort, invalid cwd, and late connect completion all call the same cleanup path.
 
@@ -56,6 +56,8 @@ The close path asks the helper to close over IPC, ends stdin, waits briefly, the
 
 ## Protocol Summary
 
+Terminal `data` payloads are base64-encoded bytes, not base64-encoded JavaScript/browser text. Client input messages are decoded from base64 into a `Buffer` and written unchanged to the interactive session. Server output messages are base64 encodings of the raw bytes read from the PTY/session backend. Browser clients that turn those bytes into display text must maintain their own streaming UTF-8 decoder so multibyte code points split across WebSocket messages are not corrupted.
+
 Client-to-server messages:
 
 ```json
@@ -77,6 +79,9 @@ Durable validation should keep covering:
 - invalid cwd rejection before PTY creation;
 - omitted cwd/rootPath resolution to the server process home directory;
 - attached terminal command output and normal disconnect cleanup;
+- deterministic Unicode/box-drawing output without Latin-1 mojibake or replacement characters;
+- split UTF-8 output chunks decoded as one continuous terminal byte stream by browser clients;
+- non-ASCII terminal input reaching the PTY as UTF-8 bytes;
 - close-before-connect / early-close cleanup;
 - macOS descriptor pressure for repeated Terminal WebSocket churn;
 - absence of child-process and PTY descriptor residue after churn;

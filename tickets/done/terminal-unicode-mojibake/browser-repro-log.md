@@ -24,7 +24,7 @@ The `âº` sequence is consistent with UTF-8 bytes being passed to xterm as Lati
 
 ## Screenshot
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/browser-repro-terminal.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/browser-repro-terminal.png`
 
 ## Notes
 
@@ -46,6 +46,6 @@ printf '\342\224\214\342\224\200\342\224\220\n'
 Expected terminal output: `┌─┐`.
 Actual terminal output in the UI: mojibake beginning with `â...`.
 
-Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/browser-repro-byte-output.png`
+Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/browser-repro-byte-output.png`
 
 This removes Codex as a variable: any PTY output containing non-ASCII UTF-8 bytes is decoded incorrectly before being written into xterm.

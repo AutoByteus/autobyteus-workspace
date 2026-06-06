@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/code-review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review passed and requested API/E2E validation of terminal Unicode/mojibake fix.
 - Prior Round Reviewed: N/A
@@ -111,20 +111,20 @@ No repository-resident test code was added or updated during API/E2E validation.
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-focused-test.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-web-boundary.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-diff-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-legacy-search.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-terminal-ws-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-terminal-ws-probe.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-smoke.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-smoke.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-terminal-dom.html`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-terminal-validation.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-codex-smoke.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-focused-test.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-web-boundary.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-legacy-search.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-terminal-ws-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-terminal-ws-probe.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-smoke.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-smoke.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-terminal-dom.html`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-terminal-validation.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-codex-smoke.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/api-e2e-browser-claude-smoke.png`
 
 ## Temporary Validation Methods / Scaffolding
 

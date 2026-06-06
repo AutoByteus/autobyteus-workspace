@@ -25,7 +25,7 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/t
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake`
 - Current Branch: `codex/terminal-unicode-mojibake`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake`
 - Bootstrap Base Branch: `origin/personal`

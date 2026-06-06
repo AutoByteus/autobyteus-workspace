@@ -15,6 +15,6 @@ Method:
 Result:
 - Terminal DOM text contained `┌─┐`, `│✓│`, and `└─┘`.
 - Terminal DOM text did not contain `â` mojibake.
-- Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/browser-smoke-terminal-fixed.png`
+- Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/browser-smoke-terminal-fixed.png`
 
 Conclusion: Pass for the deterministic browser-path Unicode smoke.

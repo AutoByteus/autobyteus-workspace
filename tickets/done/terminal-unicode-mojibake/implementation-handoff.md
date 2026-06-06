@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/design-review-report.md`
 
 ## What Changed
 
@@ -69,17 +69,17 @@
 
 - Passed: `pnpm test:nuxt composables/__tests__/useTerminalSession.spec.ts utils/__tests__/terminalTransportCodec.spec.ts`
   - Result: 2 files / 18 tests passed.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/focused-test.log`
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/focused-test.log`
 - Passed: deterministic browser-path smoke in the local frontend Terminal tab.
   - Result: terminal DOM contained `┌─┐`, `│✓│`, and `└─┘`; no `â` mojibake detected.
-  - Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/browser-smoke-report.md`
-  - Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/browser-smoke-terminal-fixed.png`
+  - Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/browser-smoke-report.md`
+  - Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/browser-smoke-terminal-fixed.png`
 - Passed: `git diff --check`
 - Informational / not green due unrelated baseline issues: `pnpm exec nuxi typecheck`
   - Exit code: 1.
   - Changed-file diagnostics grep: none for `terminalTransportCodec` or `useTerminalSession`.
-  - Summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/typecheck-summary.txt`
-  - Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/in-progress/terminal-unicode-mojibake/typecheck.log`
+  - Summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/typecheck-summary.txt`
+  - Full log: `/Users/normy/autobyteus_org/autobyteus-worktrees/terminal-unicode-mojibake/tickets/done/terminal-unicode-mojibake/typecheck.log`
 
 ## Downstream Validation Hints / Suggested Scenarios
 
