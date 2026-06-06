@@ -3,21 +3,21 @@
 ## Ticket
 
 - Ticket: `remove-autobyteus-ts-tui-cli`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli`
+- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli` (`cleaned up after finalization`)
 - Branch: `codex/remove-autobyteus-ts-tui-cli`
 - Recorded finalization target: `origin/personal` / local `personal`
 - Bootstrap base: `origin/personal` at `4a3bf83b2c221fad092e97b03bc1728bfd5f7558`
 
 ## Current Delivery State
 
-User verification received at 2026-06-06 13:38:07 CEST; repository finalization is in progress.
+Finalized at 2026-06-06 13:41:23 CEST. User verification was received, the ticket was merged into `personal`, no release/version bump was performed, and the dedicated worktree was cleaned up.
 
 Finalization actions now authorized by user verification:
 
 - ticket folder moved from `tickets/in-progress/` to `tickets/done/`;
-- ticket branch commit/push, target merge/push, and cleanup are being finalized;
-- `personal` update/merge is being finalized;
-- no release or version bump will be run; cleanup is requested after safe finalization.
+- ticket branch commit/push completed: `48770ecf`;
+- `personal` merge/push completed via merge commit `4d3a0e7a`;
+- no release or version bump was run; dedicated worktree and ticket branches were cleaned up.
 
 ## Integrated-State Refresh
 
@@ -50,14 +50,30 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 ```
 
 - Electron build result: Pass.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/logs/electron-build-mac-20260606T111741Z.log`
-- SHA256 file: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/logs/electron-build-mac-20260606T111741Z-shasums.txt`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/logs/electron-build-mac-20260606T111741Z.log`
+- SHA256 file: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/logs/electron-build-mac-20260606T111741Z-shasums.txt`
 - Generated macOS artifacts, ignored by git and not intended for source commit:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg.blockmap`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip.blockmap`
 - Note: This was a local unsigned/no-notarization macOS packaging build, not a release or publication.
+
+
+## Finalization Completion
+
+- Completed at: 2026-06-06 13:41:23 CEST
+- Ticket branch commit: `48770ecf7f686589cafab678252e9d2ecc1575b9`
+- Ticket branch push: completed to `origin/codex/remove-autobyteus-ts-tui-cli` before target merge.
+- Target branch: `personal`
+- Target merge commit: `4d3a0e7aa19096eecc74b4bbc3b6f800836a17e7`
+- Target push: completed to `origin/personal`.
+- Release/version bump: not performed per user request.
+- Dedicated worktree cleanup: completed for `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli`.
+- Local ticket branch cleanup: completed.
+- Remote ticket branch cleanup: completed (`origin/codex/remove-autobyteus-ts-tui-cli` deleted after merge).
+- Archived ticket path in finalized repository: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli`
+- Note: local Electron `.dmg`/`.zip` build outputs were ignored validation artifacts in the dedicated worktree and were removed with worktree cleanup; the build log and checksums remain archived in this ticket.
 
 ## What Changed
 
@@ -76,7 +92,7 @@ The current branch state removes the unused native CLI/TUI surface from `autobyt
 
 ## Docs Sync
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/docs-sync-report.md`
 - Result: Pass.
 - Long-lived docs/examples aligned in the current branch:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-ts/docs/nodejs_architecture.md`
@@ -113,15 +129,15 @@ Key successful checks recorded upstream:
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/code-review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/tickets/done/remove-autobyteus-ts-tui-cli/delivery-release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/code-review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-autobyteus-ts-tui-cli/delivery-release-deployment-report.md`
 - Durable validation test: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-ts-tui-cli/autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts`
 
 ## User Verification Request
