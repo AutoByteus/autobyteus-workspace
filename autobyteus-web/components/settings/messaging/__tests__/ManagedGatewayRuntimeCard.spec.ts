@@ -31,7 +31,7 @@ describe('ManagedGatewayRuntimeCard', () => {
       providerConfig: store.providerConfig,
       providerStatusByProvider: {},
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: true,
@@ -50,7 +50,7 @@ describe('ManagedGatewayRuntimeCard', () => {
     expect(wrapper.get('[data-testid="managed-gateway-message"]').text()).toContain(
       'Managed messaging gateway is running.',
     );
-    expect(wrapper.text()).toContain('Excluded providers: WECHAT');
+    expect(wrapper.text()).toContain('Excluded providers: WHATSAPP, WECOM, WECHAT');
   });
 
   it('uses install/start language when nothing is installed yet', () => {
@@ -145,7 +145,7 @@ describe('ManagedGatewayRuntimeCard', () => {
       providerConfig: store.providerConfig,
       providerStatusByProvider: store.providerStatusByProvider,
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: false,

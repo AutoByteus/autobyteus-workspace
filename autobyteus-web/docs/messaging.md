@@ -10,7 +10,9 @@ When you open `Settings -> Messaging`, the page is split into four layers:
    - Shared runtime for all messaging providers on the selected node.
    - Install, start, restart, disable, and status live here.
 2. `Provider Selection`
-   - Choose WhatsApp Business, WeCom App, Discord Bot, or Telegram Bot.
+   - Choose one of the active providers currently available in the managed
+     distribution. The default setup surface currently offers Discord Bot and
+     Telegram Bot.
 3. `Provider Configuration`
    - The selected provider's configuration stays visible directly under the provider cards.
 4. `Channel Binding`
@@ -19,6 +21,10 @@ When you open `Settings -> Messaging`, the page is split into four layers:
    - Run readiness checks after gateway and binding setup.
 
 The runtime card at the top is global. Provider configuration sits below it and remains visible while you work through binding and verification.
+
+WhatsApp Business, WeCom App, and WeChat are intentionally listed as excluded
+providers in the managed gateway status for the current distribution. They are
+not shown as selectable provider cards in the normal managed setup flow.
 
 ## Managed Gateway Lifecycle
 

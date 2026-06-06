@@ -15,6 +15,7 @@ describe('useMessagingProviderStepFlow', () => {
   it('uses manual selection over guided step until user returns to guided mode', async () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['DIRECT_PERSONAL_SESSION'],
       defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
       wechatPersonalEnabled: true,
@@ -83,6 +84,7 @@ describe('useMessagingProviderStepFlow', () => {
   it('keeps step selections scoped by provider', async () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -107,6 +109,7 @@ describe('useMessagingProviderStepFlow', () => {
   it('clears invalid manual selection when step is not allowed for provider', async () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,

@@ -256,8 +256,8 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       "DISCORD",
       "TELEGRAM",
     ]);
-    expect(status.managedMessagingGatewayStatus.excludedProviders).toContain(
-      "WECHAT",
+    expect(status.managedMessagingGatewayStatus.excludedProviders).toEqual(
+      expect.arrayContaining(["WHATSAPP", "WECOM", "WECHAT"]),
     );
     expect(status.managedMessagingGatewayStatus.runtimeReliabilityStatus).toMatchObject({
       runtime: { state: "HEALTHY" },

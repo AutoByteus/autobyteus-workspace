@@ -16,6 +16,7 @@ describe('PersonalSessionSetupCard', () => {
   it('shows not-required state for WECOM scope', async () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,
@@ -65,6 +66,7 @@ describe('PersonalSessionSetupCard', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,

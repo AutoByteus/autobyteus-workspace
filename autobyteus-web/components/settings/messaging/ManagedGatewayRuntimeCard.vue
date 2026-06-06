@@ -215,12 +215,18 @@ const runtimeReliabilityStatus = computed<GatewayRuntimeReliabilityStatusModel |
   () => gatewayStore.runtimeReliabilityStatus,
 );
 
-const providerIssues = computed(() =>
-  Object.values(gatewayStore.providerStatusByProvider).filter(
+const providerIssues = computed(() => {
+  const excludedProviders = new Set(gatewayStore.managedStatus?.excludedProviders || []);
+  return Object.values(gatewayStore.providerStatusByProvider).filter(
     (status): status is NonNullable<typeof status> =>
-      Boolean(status && typeof status.blockedReason === 'string' && status.blockedReason.length > 0),
-  ),
-);
+      Boolean(
+        status &&
+          !excludedProviders.has(status.provider) &&
+          typeof status.blockedReason === 'string' &&
+          status.blockedReason.length > 0,
+      ),
+  );
+});
 
 const inboxHeartbeatLabel = computed(() =>
   runtimeReliabilityStatus.value?.runtime.locks.inbox.lastHeartbeatAt || 'missing',

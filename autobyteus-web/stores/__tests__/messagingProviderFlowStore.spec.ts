@@ -14,7 +14,20 @@ describe('messagingProviderFlowStore', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
     const providerFlowStore = useMessagingProviderFlowStore();
     const gatewayStore = useGatewaySessionSetupStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
 
+    providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: false,
+      telegramAccountId: null,
+    });
+    providerScopeStore.setSelectedProvider('WHATSAPP');
     gatewayStore.gatewayStatus = 'READY';
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
@@ -56,6 +69,7 @@ describe('messagingProviderFlowStore', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['DIRECT_PERSONAL_SESSION'],
       defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
       wechatPersonalEnabled: true,
@@ -86,6 +100,7 @@ describe('messagingProviderFlowStore', () => {
     const providerFlowStore = useMessagingProviderFlowStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,
@@ -136,6 +151,7 @@ describe('messagingProviderFlowStore', () => {
     const providerFlowStore = useMessagingProviderFlowStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,

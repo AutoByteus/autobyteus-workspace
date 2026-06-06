@@ -46,7 +46,7 @@ server:
 4. starts it as a managed child process
 5. reports lifecycle state, version, and diagnostics back to the frontend
 
-## Managed Messaging Setup (WhatsApp Business, WeCom, Discord, Telegram)
+## Managed Messaging Setup (Discord, Telegram)
 
 For a user-facing managed setup guide, including the recommended Telegram polling flow, see:
 
@@ -70,15 +70,12 @@ pnpm dev
    - confirm the card reports `RUNNING`
 
 5. Enter provider configuration in the provider card directly below the provider selector and save it.
-   - WhatsApp uses the business secret flow.
-   - WeCom requires a webhook token plus at least one app account.
    - Discord requires bot token plus account id.
    - Telegram requires bot token plus a stable account label such as `telegram-main`.
    - Managed Telegram is polling-only in the product flow.
 
 6. Use `Channel Binding Setup` to bind provider accounts or discovered peers to AutoByteus targets.
    - Discord and Telegram peer discovery are available through the managed server boundary.
-   - WhatsApp and WeCom use the configured business-mode account information.
    - Bound team channels deliver eligible coordinator or entry-node outputs while the linked run remains active, including follow-up outputs triggered by internal team handoffs.
 
 7. If troubleshooting is needed, use the managed gateway diagnostics shown in the UI.
@@ -131,6 +128,9 @@ Under the hood, the gateway persists inbound and outbound queues, retries transi
 
 ## Unsupported Or Non-Default Messaging Flows
 
+- WhatsApp Business and WeCom App are excluded from the current default managed
+  messaging setup because these provider flows are not currently available in
+  the managed distribution.
 - WeChat is excluded from the managed messaging capability described above.
 - The old direct gateway URL/token setup flow is no longer the default product path.
 - Personal-session messaging flows are not part of this managed setup.

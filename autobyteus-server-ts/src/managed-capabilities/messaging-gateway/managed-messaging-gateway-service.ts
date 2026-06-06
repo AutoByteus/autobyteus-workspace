@@ -12,8 +12,10 @@ import { ManagedMessagingGatewayStorage } from "./managed-messaging-gateway-stor
 import { ManagedMessagingGatewaySupervision } from "./managed-messaging-gateway-supervision.js";
 import { buildManagedMessagingProviderStatuses } from "./managed-messaging-gateway-runtime-env.js";
 import {
-  MANAGED_MESSAGING_EXCLUDED_PROVIDERS,
-  MANAGED_MESSAGING_SUPPORTED_PROVIDERS,
+  getManagedMessagingExcludedProviders,
+  getManagedMessagingSupportedProviders,
+} from "./managed-messaging-provider-availability.js";
+import {
   normalizeManagedMessagingProviderConfig,
   type ManagedMessagingPersistedState,
   type ManagedMessagingReleaseDescriptor,
@@ -116,8 +118,8 @@ export class ManagedMessagingGatewayService {
       pid: runtime.running ? runtime.pid : state.pid,
       providerConfig,
       providerStatuses,
-      supportedProviders: [...MANAGED_MESSAGING_SUPPORTED_PROVIDERS],
-      excludedProviders: [...MANAGED_MESSAGING_EXCLUDED_PROVIDERS],
+      supportedProviders: getManagedMessagingSupportedProviders(),
+      excludedProviders: getManagedMessagingExcludedProviders(),
       diagnostics,
       runtimeReliabilityStatus,
       runtimeRunning,
