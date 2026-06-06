@@ -1,0 +1,5 @@
+total_count=4
+macos-x64 size=855321207 expired=False created=2026-06-06T18:27:41Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456815331/zip
+macos-arm64 size=805583625 expired=False created=2026-06-06T18:25:17Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456797848/zip
+windows-x64 size=280787165 expired=False created=2026-06-06T18:23:04Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456782646/zip
+linux-x64 size=349429389 expired=False created=2026-06-06T18:15:49Z url=https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7456735043/zip

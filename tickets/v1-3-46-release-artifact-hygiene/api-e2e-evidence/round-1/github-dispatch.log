@@ -1,0 +1,10 @@
+# Desktop Release manual dispatch
+utc_start=2026-06-06T18:11:45Z
+workflow=Desktop Release
+ref=codex/v1-3-46-release-artifact-hygiene
+publish_release=false
+prerelease=true
+start_epoch=1780769505
+
+dispatch_exit_code=0
+utc_end=2026-06-06T18:11:47Z

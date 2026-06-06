@@ -1,0 +1,40 @@
+[2026-06-06T18:12:27Z] iteration=1 run_status=in_progress run_conclusion=
+  windows_job_id=79897479216 status=in_progress conclusion= started=2026-06-06T18:12:05Z completed=0001-01-01T00:00:00Z
+    step 1: Set up job status=completed conclusion=success started=2026-06-06T18:12:06Z completed=2026-06-06T18:12:08Z
+    step 2: Checkout workspace + submodules status=completed conclusion=success started=2026-06-06T18:12:08Z completed=2026-06-06T18:12:26Z
+    step 3: Setup pnpm status=in_progress conclusion= started=2026-06-06T18:12:26Z completed=0001-01-01T00:00:00Z
+    step 4: Setup Node status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 5: Install workspace dependencies status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 6: Install Python setuptools for node-gyp status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 7: Build Electron Windows x64 status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 8: Upload Windows artifacts status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 15: Post Setup pnpm status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 16: Post Checkout workspace + submodules status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+[2026-06-06T18:12:59Z] iteration=2 run_status=in_progress run_conclusion=
+  windows_job_id=79897479216 status=in_progress conclusion= started=2026-06-06T18:12:05Z completed=0001-01-01T00:00:00Z
+    step 1: Set up job status=completed conclusion=success started=2026-06-06T18:12:06Z completed=2026-06-06T18:12:08Z
+    step 2: Checkout workspace + submodules status=completed conclusion=success started=2026-06-06T18:12:08Z completed=2026-06-06T18:12:26Z
+    step 3: Setup pnpm status=completed conclusion=success started=2026-06-06T18:12:26Z completed=2026-06-06T18:12:30Z
+    step 4: Setup Node status=completed conclusion=success started=2026-06-06T18:12:30Z completed=2026-06-06T18:12:37Z
+    step 5: Install workspace dependencies status=in_progress conclusion= started=2026-06-06T18:12:37Z completed=0001-01-01T00:00:00Z
+    step 6: Install Python setuptools for node-gyp status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 7: Build Electron Windows x64 status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 8: Upload Windows artifacts status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 14: Post Setup Node status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 15: Post Setup pnpm status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 16: Post Checkout workspace + submodules status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+[2026-06-06T18:13:30Z] iteration=3 run_status=in_progress run_conclusion=
+  windows_job_id=79897479216 status=in_progress conclusion= started=2026-06-06T18:12:05Z completed=0001-01-01T00:00:00Z
+    step 1: Set up job status=completed conclusion=success started=2026-06-06T18:12:06Z completed=2026-06-06T18:12:08Z
+    step 2: Checkout workspace + submodules status=completed conclusion=success started=2026-06-06T18:12:08Z completed=2026-06-06T18:12:26Z
+    step 3: Setup pnpm status=completed conclusion=success started=2026-06-06T18:12:26Z completed=2026-06-06T18:12:30Z
+    step 4: Setup Node status=completed conclusion=success started=2026-06-06T18:12:30Z completed=2026-06-06T18:12:37Z
+    step 5: Install workspace dependencies status=completed conclusion=success started=2026-06-06T18:12:37Z completed=2026-06-06T18:13:22Z
+    step 6: Install Python setuptools for node-gyp status=completed conclusion=success started=2026-06-06T18:13:22Z completed=2026-06-06T18:13:30Z
+    step 7: Build Electron Windows x64 status=in_progress conclusion= started=2026-06-06T18:13:30Z completed=0001-01-01T00:00:00Z
+    step 8: Upload Windows artifacts status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 14: Post Setup Node status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 15: Post Setup pnpm status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+    step 16: Post Checkout workspace + submodules status=pending conclusion= started=0001-01-01T00:00:00Z completed=0001-01-01T00:00:00Z
+Watch condition reached at 2026-06-06T18:13:30Z
+Final snapshot:

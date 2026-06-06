@@ -1,0 +1,4 @@
+     525 /Users/normy/autobyteus_org/autobyteus-worktrees/v1-3-46-release-artifact-hygiene/tickets/v1-3-46-release-artifact-hygiene/api-e2e-evidence/round-1/github-prepare-release-job.log
+    4315 /Users/normy/autobyteus_org/autobyteus-worktrees/v1-3-46-release-artifact-hygiene/tickets/v1-3-46-release-artifact-hygiene/api-e2e-evidence/round-1/github-windows-job.log
+      37 /Users/normy/autobyteus_org/autobyteus-worktrees/v1-3-46-release-artifact-hygiene/tickets/v1-3-46-release-artifact-hygiene/api-e2e-evidence/round-1/github-run-view.txt
+    4877 total
