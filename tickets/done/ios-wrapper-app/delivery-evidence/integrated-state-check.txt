@@ -1,0 +1,95 @@
+# Delivery integrated-state check
+
+Date: 2026-06-06
+Delivery pass: post API/E2E round 3 plus user-authorized GitHub runner build-only probe
+Branch: codex/ios-wrapper-app
+Original API/E2E validated HEAD: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
+User-authorized GitHub runner build-only head tested: c32f20f3a10274307efc92cdd35675f1ccfc98b9
+Latest user-authorized pushed ticket-branch head before final delivery refresh: origin/codex/ios-wrapper-app at 864024a06da5d9ac36cbd7dab213855906eb830e
+Latest tracked base checked after runner probe: origin/personal at 01ea087bfd168dbc24113711bf16b420656a409a
+Base advanced since prior delivery handoff: Yes
+
+## First delivery integration after API/E2E round 3
+
+- Created local delivery checkpoint commit before integrating latest base: fbae0246 (`chore(delivery): checkpoint ios wrapper before base refresh`).
+- Merged `origin/personal` at 74c0fd5905c85a4f52b7fecec16bf4c644a745de into `codex/ios-wrapper-app`: 7d08ebdb (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`).
+- Merge conflicts occurred in long-lived docs only:
+  - `README.md`
+  - `autobyteus-web/docs/remote_access.md`
+- Conflict resolution preserved both latest-base trusted Local LAN/private HTTP Phone Access docs and the iOS wrapper/docs links.
+- Delivery-local cleanup after merge: trimmed one trailing-whitespace line in `.github/workflows/release-ios.yml` found by scoped diff hygiene check.
+
+Post-integration checks for the first delivery refresh:
+
+- iOS release contract check: PASS.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log`
+- Relevant diff hygiene check: PASS.
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log`
+
+## User-authorized GitHub runner build-only probe
+
+The user authorized committing/pushing the ticket branch and running a safe build-only GitHub Actions probe.
+
+- GitHub Actions run ID: 27066610907
+- Run URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27066610907
+- Temporary trigger head tested: c32f20f3a10274307efc92cdd35675f1ccfc98b9
+- Result: PASS / success
+- Metadata job: PASS
+- Build/test/smoke job: PASS in 10m18s
+- Runner core tests: 21 tests, 0 failures
+- Runner UI smoke: 2 tests, 0 failures/skips
+- Uploaded artifact: ios-build-test-artifacts, digest sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393
+- Publish requested: false; publish gate and TestFlight upload jobs were skipped.
+- Temporary branch-push trigger was reverted; final `.github/workflows/release-ios.yml` keeps `push.tags: v*` plus `workflow_dispatch` and no branch trigger.
+
+Evidence:
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
+
+## Second delivery integration after runner probe
+
+After the runner probe, delivery fetched `origin` again and found `origin/personal` had advanced to 01ea087bfd168dbc24113711bf16b420656a409a. Delivery merged that latest tracked base into `codex/ios-wrapper-app`:
+
+- Merge commit: cb8442f8c4ae70957f2fdb2d77189fadfc974bbf (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`)
+- Conflicts: none
+- Ancestry: `origin/personal` is an ancestor of the post-merge ticket branch.
+
+Post-run refined check command set:
+
+```bash
+git merge-base --is-ancestor origin/personal HEAD
+python3 - <<'PY'
+from pathlib import Path
+s = Path('.github/workflows/release-ios.yml').read_text()
+pre_permissions = s.split('\npermissions:', 1)[0]
+assert 'workflow_dispatch:' in pre_permissions
+assert 'push:' in pre_permissions
+assert 'tags:' in pre_permissions
+assert '"v*"' in pre_permissions or "'v*'" in pre_permissions
+assert 'branches:' not in pre_permissions
+print('workflow trigger contract OK')
+PY
+ruby -e 'require "yaml"; YAML.load_file(ARGV.fetch(0)); puts "ruby yaml ok"' .github/workflows/release-ios.yml
+actionlint .github/workflows/release-ios.yml
+python3 autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app
+git diff --check origin/personal -- \
+  .github/workflows/release-ios.yml README.md autobyteus-web/docs/remote_access.md \
+  autobyteus-ios docs/ios_mobile_access.md \
+  tickets/done/ios-wrapper-app/handoff-summary.md \
+  tickets/done/ios-wrapper-app/docs-sync-report.md \
+  tickets/done/ios-wrapper-app/delivery-release-deployment-report.md \
+  tickets/done/ios-wrapper-app/api-e2e-validation-report.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt \
+  tickets/done/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt
+```
+
+Result: PASS. Evidence:
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
+
+Note: raw GitHub/Xcode runner logs intentionally preserve their original whitespace, so delivery's final diff hygiene check scoped to source, workflow, long-lived docs, and delivery markdown artifacts rather than normalizing evidence logs.
+
+## Finalization note
+
+The ticket branch push/build-only probe was user-authorized. Final target merge to `personal`, ticket archival, tag/release, TestFlight upload, deployment, and cleanup remain held until explicit final user verification of the updated handoff state.

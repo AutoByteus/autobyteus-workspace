@@ -1,0 +1,7 @@
+Simulator UDID: 8E8844A9-04F1-4729-A417-52DE909E0A92
+Fake node URL: http://127.0.0.1:29876/mobile
+Smoke UI tests: executed and passed without skips
+Expected fake marker: AUTOBYTEUS_FAKE_MOBILE_READY
+Xcode result bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-2/simulator-smoke/AutoByteusMobile.xcresult
+Test log: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-2/simulator-smoke/xcodebuild-test.log
+Signing readiness: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-2/simulator-smoke/signing-readiness/ios-signing-readiness.txt

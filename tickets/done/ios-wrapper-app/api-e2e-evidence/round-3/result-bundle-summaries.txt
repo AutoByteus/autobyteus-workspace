@@ -1,0 +1,90 @@
+# Round 3 result bundle summaries
+UTC 2026-06-06T12:57:15Z
+
+## tickets/ios-wrapper-app/api-e2e-evidence/round-3/core-tests/AutoByteusMobileCoreTests.xcresult
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "8E8844A9-04F1-4729-A417-52DE909E0A92",
+        "deviceName" : "iPhone 17 Pro",
+        "modelName" : "iPhone 17 Pro",
+        "osBuildNumber" : "23B86",
+        "osVersion" : "26.1",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 21,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "AutoByteusMobile · Built with macOS 26.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1780750421.644,
+  "passedTests" : 21,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1780750412.591,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - AutoByteusMobile",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 21
+}
+
+## tickets/ios-wrapper-app/api-e2e-evidence/round-3/simulator-smoke-custom-bundle/AutoByteusMobile.xcresult
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "8E8844A9-04F1-4729-A417-52DE909E0A92",
+        "deviceName" : "iPhone 17 Pro",
+        "modelName" : "iPhone 17 Pro",
+        "osBuildNumber" : "23B86",
+        "osVersion" : "26.1",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 2,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "AutoByteusMobile · Built with macOS 26.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1780750462.886,
+  "passedTests" : 2,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1780750432.49,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - AutoByteusMobile",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 2
+}

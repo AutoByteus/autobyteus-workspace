@@ -1,0 +1,15 @@
+## actionlint release-ios.yml
+## bash syntax
+## python compile
+## release contract
+iOS release contract checks passed.
+## plist lint
+autobyteus-ios/AutoByteusMobile/Info.plist: OK
+autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements: OK
+autobyteus-ios/AutoByteusMobileShareExtension/Info.plist: OK
+autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements: OK
+autobyteus-ios/AutoByteusMobileUITests/Info.plist: OK
+## stale workflow metadata search
+No version_name token in release-ios workflow.
+No prerelease suffix assigned to MARKETING_VERSION / CFBundleShortVersionString authorities.
+YAML parse ok

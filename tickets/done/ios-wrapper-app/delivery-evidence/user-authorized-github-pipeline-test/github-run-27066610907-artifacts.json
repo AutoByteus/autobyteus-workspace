@@ -1,0 +1,25 @@
+{
+    "total_count": 1,
+    "artifacts": [
+        {
+            "id": 7455760368,
+            "node_id": "MDg6QXJ0aWZhY3Q3NDU1NzYwMzY4",
+            "name": "ios-build-test-artifacts",
+            "size_in_bytes": 1028570,
+            "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7455760368",
+            "archive_download_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/7455760368/zip",
+            "expired": false,
+            "digest": "sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393",
+            "created_at": "2026-06-06T15:53:24Z",
+            "updated_at": "2026-06-06T15:53:24Z",
+            "expires_at": "2026-06-20T15:53:22Z",
+            "workflow_run": {
+                "id": 27066610907,
+                "repository_id": 1167236748,
+                "head_repository_id": 1167236748,
+                "head_branch": "codex/ios-wrapper-app",
+                "head_sha": "c32f20f3a10274307efc92cdd35675f1ccfc98b9"
+            }
+        }
+    ]
+}

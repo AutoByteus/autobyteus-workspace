@@ -1,0 +1,70 @@
+# iOS Signing Readiness
+
+Date: 2026-06-06T07:22:02Z
+App bundle ID: org.autobyteus.mobile
+Share extension bundle ID: org.autobyteus.mobile.share
+Requested App Group: group.org.autobyteus.mobile
+Development team input: 7Y86YBQ7B4
+Detected provisioning teams: 7Y86YBQ7B4
+Xcode path: /Applications/Xcode.app/Contents/Developer
+Xcode version: Xcode 26.1.1 Build version 17B100
+Development signing identities detected: 1
+Distribution signing identities detected: 0
+Provisioning profile search directories:
+ - legacyMobileDevice: /Users/normy/Library/MobileDevice/Provisioning Profiles (missing, files: 0)
+ - xcodeUserData: /Users/normy/Library/Developer/Xcode/UserData/Provisioning Profiles (found, files: 4)
+Provisioning profiles discovered: 4
+iOS provisioning profiles detected: 1
+Team-filtered iOS profiles considered: 1
+iOS development profiles detected: 1
+iOS development wildcard profiles detected: 1
+App development profiles matching bundle exact-or-wildcard: 1
+App development profiles with requested App Group: 0
+Share extension development profiles matching bundle exact-or-wildcard: 1
+Share extension development profiles with requested App Group: 0
+App Store/TestFlight app profiles matching exact bundle: 0
+App Store/TestFlight app profiles with requested App Group: 0
+App Store/TestFlight share-extension profiles matching exact bundle: 0
+App Store/TestFlight share-extension profiles with requested App Group: 0
+Development-device profile prerequisites complete: true
+Development-device App Group prerequisites complete: false
+Profile/App Group entitlement prerequisites complete: false
+App Store/TestFlight archive prerequisites complete without dry run: false
+Archive dry run: skipped
+Archive note: Set IOS_DEVELOPMENT_TEAM and IOS_SIGNING_READINESS_ARCHIVE=1 to attempt a local archive dry run.
+Final readiness classification: development-device-profile-ready-app-group-incomplete
+Readiness reasons:
+ - No app development profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension development profile with App Group group.org.autobyteus.mobile detected
+ - No Apple/iOS Distribution signing identity detected
+ - No exact App Store/TestFlight distribution profile detected for app bundle org.autobyteus.mobile
+ - No exact App Store/TestFlight distribution profile detected for share extension bundle org.autobyteus.mobile.share
+ - No app App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+ - No share-extension App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+
+Provisioning profile summaries (public metadata only):
+ - Mac Team Provisioning Profile: org.autobyteus.phoneavbridge.camera | uuid 07bad751-f26c-4986-ba49-3af9d2dae29c | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.org.autobyteus.phoneavbridge.camera | get-task-allow None | devices 1 | app-groups none | expires 2027-02-18T08:41:15Z
+ - Mac Team Provisioning Profile: org.autobyteus.prc.camera | uuid 29d1eca3-c9f7-445f-9485-a6f07089574c | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.org.autobyteus.prc.camera | get-task-allow None | devices 1 | app-groups none | expires 2027-02-17T09:41:36Z
+ - Mac Team Provisioning Profile: * | uuid 3e72238f-ec91-42f0-bbd4-bac6013c848b | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms OSX | app-id 7Y86YBQ7B4.* | get-task-allow None | devices 1 | app-groups none | expires 2027-02-18T09:24:29Z
+ - iOS Team Provisioning Profile: * | uuid a7aba7f4-f485-4ee0-83da-71214dacba88 | source xcodeUserData | team 7Y86YBQ7B4 YU ZHENG | platforms iOS,xrOS,visionOS | app-id 7Y86YBQ7B4.* | get-task-allow True | devices 1 | app-groups none | expires 2027-01-30T20:57:21Z
+
+Simulator inventory excerpt:
+== Devices ==
+-- iOS 26.1 --
+    iPhone 17 Pro (8E8844A9-04F1-4729-A417-52DE909E0A92) (Booted) 
+    iPhone 17 Pro Max (AB6627C9-9DAD-4375-812D-D68BDBD17E00) (Shutdown) 
+    iPhone Air (BA08FFFA-1A99-41F8-A5EB-FCE625200E18) (Shutdown) 
+    iPhone 17 (AED15013-49CB-4DEE-9FCA-5A94B0E5650B) (Shutdown) 
+    iPhone 16e (2E763428-ABEB-4B68-B56E-A64A4CBFD78B) (Shutdown) 
+    iPad Pro 13-inch (M5) (A2078C80-5BA6-4F73-81F1-73AF29766DBC) (Shutdown) 
+    iPad Pro 11-inch (M5) (7BAFC0FE-172E-44A6-A354-D2ECB622D618) (Shutdown) 
+    iPad mini (A17 Pro) (97C90071-F426-4819-8126-C20DA4F92799) (Shutdown) 
+    iPad (A16) (C8E8B884-39BC-448E-A4F9-862674AF2654) (Shutdown) 
+    iPad Air 13-inch (M3) (49C6A85B-D0F5-4A3D-8C45-4706C1035BE9) (Shutdown) 
+    iPad Air 11-inch (M3) (9CEA043D-E7DF-4E44-BFFE-97CCE691B633) (Shutdown)
+
+Codesigning identities (public certificate names/hashes only; no private keys):
+1) 37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA "Developer ID Application: YU ZHENG (7Y86YBQ7B4)"
+  2) EE6B4315694B7B689AA4E93CA01329156B1DB9DD "Apple Development: YU ZHENG (WB8QCBB75J)"
+     2 valid identities found
+JSON report: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-2/signing-readiness-team-7Y86YBQ7B4/ios-signing-readiness.json

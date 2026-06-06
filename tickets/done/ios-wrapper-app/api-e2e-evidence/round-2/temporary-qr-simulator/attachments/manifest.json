@@ -1,0 +1,17 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "AED15013-49CB-4DEE-9FCA-5A94B0E5650B",
+        "deviceName" : "iPhone 17",
+        "exportedFileName" : "94E472F7-EEE0-45AB-96A2-CAC7418AFB17.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "qr-simulator-graceful-diagnostic_0_E176BBD4-7B9B-41EA-B924-493475633B5A.png",
+        "timestamp" : 1780730719.122
+      }
+    ],
+    "testIdentifier" : "QRSimulatorUITests/testQRScannerReturnsGracefulSimulatorDiagnosticOrCancellation()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/QRSimulatorUITests/testQRScannerReturnsGracefulSimulatorDiagnosticOrCancellation"
+  }
+]

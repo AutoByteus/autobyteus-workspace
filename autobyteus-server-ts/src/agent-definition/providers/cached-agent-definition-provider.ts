@@ -104,15 +104,6 @@ export class CachedAgentDefinitionProvider {
     return success;
   }
 
-  async duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition> {
-    const created = await this.persistenceProvider.duplicate(sourceId, newId, newName);
-    if (this.cachePopulated && created.id) {
-      this.cache.set(created.id, created);
-      logger.info(`In-memory cache: Added duplicated agent definition with ID ${created.id}.`);
-    }
-    return created;
-  }
-
   async refresh(): Promise<void> {
     this.cache.clear();
     this.cachePopulated = false;

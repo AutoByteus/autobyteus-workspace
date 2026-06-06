@@ -1,0 +1,41 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8E8844A9-04F1-4729-A417-52DE909E0A92",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "FB05D4B4-CFBB-4B12-A5AA-C8F6CEE61254.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "fake-mobile-restored_0_BA3807B9-8C76-45A5-AB85-A5E3E4CB80A0.png",
+        "timestamp" : 1780725627.091
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8E8844A9-04F1-4729-A417-52DE909E0A92",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "0F966763-C02D-4A2A-8B49-1ED0E3BF0BF2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "fake-mobile-opened_0_D486184B-32B5-4B4C-B8FD-0E3423F37C76.png",
+        "timestamp" : 1780725621.604
+      }
+    ],
+    "testIdentifier" : "AutoByteusMobileUITests/testFakeNodeOpensAndRestoresWithFakeMobileMarker()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/AutoByteusMobileUITests/testFakeNodeOpensAndRestoresWithFakeMobileMarker"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8E8844A9-04F1-4729-A417-52DE909E0A92",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "ACE19FC7-2A4F-41C6-BC88-7AF535E32AE2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "native-unreachable-diagnostic_0_AB3C7B8F-224F-4753-B066-C25769E2B444.png",
+        "timestamp" : 1780725636.143
+      }
+    ],
+    "testIdentifier" : "AutoByteusMobileUITests/testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent()",
+    "testIdentifierURL" : "test://com.apple.xcode/AutoByteusMobile/AutoByteusMobileUITests/AutoByteusMobileUITests/testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent"
+  }
+]

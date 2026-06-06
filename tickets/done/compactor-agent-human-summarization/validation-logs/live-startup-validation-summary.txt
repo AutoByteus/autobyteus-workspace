@@ -1,0 +1,11 @@
+live_data_dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//autobyteus-live-startup.koV46V
+server_port=60293
+health=ready
+graphql_no_duplicate_mutation_or_input=pass
+built_in_memory_compactor_overwritten=pass
+built_in_skill_evolver_overwritten=pass
+standalone_local_agent_preserved=pass
+user_package_root_preserved=pass
+application_package_root_preserved=pass
+web_codegen_against_live_schema=pass_generated_graphql_changed
+Cleaned /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//autobyteus-live-startup.koV46V

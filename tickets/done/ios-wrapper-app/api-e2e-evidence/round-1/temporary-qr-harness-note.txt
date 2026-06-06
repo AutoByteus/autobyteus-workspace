@@ -1,0 +1,5 @@
+Temporary QR simulator harness note:
+- First scratch harness attempted to dismiss the simulator camera-permission alert using only English button labels. The simulator locale showed German buttons ("Nicht erlauben" / "Erlauben"), so that scratch harness failed before exercising the app diagnostic.
+- The scratch failed harness was removed from the canonical evidence package to avoid confusing it with an app failure.
+- The rerun harness at ./temporary-qr-simulator-rerun added localized/position fallback handling, denied the camera permission path, and passed; its screenshot shows the native "Camera permission is needed" diagnostic.
+- After the passing rerun, API/E2E attempted to reset camera privacy for org.autobyteus.mobile on all available iPhone simulators to avoid leaving simulator privacy state dirty.

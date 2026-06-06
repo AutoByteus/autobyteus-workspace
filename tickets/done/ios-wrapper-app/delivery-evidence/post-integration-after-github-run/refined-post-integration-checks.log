@@ -1,0 +1,28 @@
+# Refined Post-Integration Checks After User-Authorized GitHub Runner Probe
+date_utc=2026-06-06T16:04:45Z
+repo=/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app
+branch=codex/ios-wrapper-app
+head=cb8442f8c4ae70957f2fdb2d77189fadfc974bbf
+origin_personal=01ea087bfd168dbc24113711bf16b420656a409a
+origin_codex_ios_wrapper_app=864024a06da5d9ac36cbd7dab213855906eb830e
+
+Note: raw GitHub/Xcode runner logs intentionally preserve their original whitespace.
+This refined check covers source, workflow, long-lived docs, and delivery markdown artifacts.
+
+## ancestry
+origin/personal is an ancestor of HEAD
+
+## workflow trigger contract text assertion
+workflow trigger contract OK: push.tags v* plus workflow_dispatch; no branch trigger
+
+## Ruby YAML parse
+ruby yaml ok
+
+## actionlint
+actionlint ok
+
+## iOS release contract check
+iOS release contract checks passed.
+
+## source/docs/delivery markdown diff whitespace check
+git diff --check ok for source/docs/delivery markdown paths

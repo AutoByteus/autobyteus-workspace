@@ -1,0 +1,17 @@
+# Local simulation of GitHub Actions publish-secret-gate missing-secret behavior
+UTC 2026-06-06T12:56:15Z
+Runner execution status: unavailable for current untracked workflow state; this reproduces the gate shell exactly from release-ios.yml lines 277-304.
+Exit status: 1
+--- stdout ---
+::error::iOS App Store Connect/TestFlight publish was requested, but required iOS secrets are missing: IOS_DISTRIBUTION_CERTIFICATE_P12_BASE64 IOS_DISTRIBUTION_CERTIFICATE_P12_PASSWORD IOS_APPSTORE_PROVISIONING_PROFILE_BASE64 IOS_DEVELOPMENT_TEAM APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_API_KEY_P8_BASE64 IOS_SHARE_EXTENSION_APPSTORE_PROVISIONING_PROFILE_BASE64
+Configure the missing repository secrets before publishing:
+  gh secret set IOS_DISTRIBUTION_CERTIFICATE_P12_BASE64
+  gh secret set IOS_DISTRIBUTION_CERTIFICATE_P12_PASSWORD
+  gh secret set IOS_APPSTORE_PROVISIONING_PROFILE_BASE64
+  gh secret set IOS_DEVELOPMENT_TEAM
+  gh secret set APP_STORE_CONNECT_KEY_ID
+  gh secret set APP_STORE_CONNECT_ISSUER_ID
+  gh secret set APP_STORE_CONNECT_API_KEY_P8_BASE64
+  gh secret set IOS_SHARE_EXTENSION_APPSTORE_PROVISIONING_PROFILE_BASE64
+Existing desktop APPLE_* secrets and Developer ID Application certificates are not valid iOS App Store signing inputs.
+--- stderr ---

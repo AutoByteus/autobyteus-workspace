@@ -1,0 +1,169 @@
+{
+  "appBundleId": "org.autobyteus.mobile",
+  "shareExtensionBundleId": "org.autobyteus.mobile.share",
+  "requestedAppGroup": "group.org.autobyteus.mobile",
+  "developmentTeamProvided": false,
+  "developmentTeamInput": "",
+  "detectedProvisioningTeams": [
+    "7Y86YBQ7B4"
+  ],
+  "xcodePath": "/Applications/Xcode.app/Contents/Developer",
+  "xcodeVersion": "Xcode 26.1.1 Build version 17B100",
+  "developmentIdentityCount": 1,
+  "distributionIdentityCount": 0,
+  "profileSearchDirectories": [
+    {
+      "kind": "legacyMobileDevice",
+      "path": "/Users/normy/Library/MobileDevice/Provisioning Profiles",
+      "exists": false,
+      "filesDiscovered": 0
+    },
+    {
+      "kind": "xcodeUserData",
+      "path": "/Users/normy/Library/Developer/Xcode/UserData/Provisioning Profiles",
+      "exists": true,
+      "filesDiscovered": 4
+    }
+  ],
+  "profileCount": 4,
+  "iosProfileCount": 1,
+  "teamFilteredIosProfileCount": 1,
+  "developmentProfileCount": 1,
+  "developmentWildcardProfileCount": 1,
+  "appProfileCount": 1,
+  "appProfileWithAppGroupCount": 0,
+  "shareExtensionProfileCount": 1,
+  "shareExtensionProfileWithAppGroupCount": 0,
+  "appDevelopmentProfileCount": 1,
+  "appDevelopmentProfileWithAppGroupCount": 0,
+  "shareExtensionDevelopmentProfileCount": 1,
+  "shareExtensionDevelopmentProfileWithAppGroupCount": 0,
+  "appStoreAppProfileCount": 0,
+  "appStoreAppProfileWithAppGroupCount": 0,
+  "appStoreShareExtensionProfileCount": 0,
+  "appStoreShareExtensionProfileWithAppGroupCount": 0,
+  "developmentDeviceProfileReady": true,
+  "developmentDeviceAppGroupReady": false,
+  "profileEntitlementsReady": false,
+  "archivePrerequisitesReady": false,
+  "archiveStatus": "skipped",
+  "archiveReason": "Set IOS_DEVELOPMENT_TEAM and IOS_SIGNING_READINESS_ARCHIVE=1 to attempt a local archive dry run.",
+  "readiness": "development-device-profile-ready-app-group-incomplete",
+  "readinessReasons": [
+    "No app development profile with App Group group.org.autobyteus.mobile detected",
+    "No share-extension development profile with App Group group.org.autobyteus.mobile detected",
+    "No Apple/iOS Distribution signing identity detected",
+    "No exact App Store/TestFlight distribution profile detected for app bundle org.autobyteus.mobile",
+    "No exact App Store/TestFlight distribution profile detected for share extension bundle org.autobyteus.mobile.share",
+    "No app App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected",
+    "No share-extension App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected"
+  ],
+  "profileSummaries": [
+    {
+      "name": "Mac Team Provisioning Profile: org.autobyteus.phoneavbridge.camera",
+      "uuid": "07bad751-f26c-4986-ba49-3af9d2dae29c",
+      "sourceKind": "xcodeUserData",
+      "fileName": "07bad751-f26c-4986-ba49-3af9d2dae29c.provisionprofile",
+      "teamIds": [
+        "7Y86YBQ7B4"
+      ],
+      "teamName": "YU ZHENG",
+      "platforms": [
+        "OSX"
+      ],
+      "expirationDate": "2027-02-18T08:41:15Z",
+      "appIdentifier": "7Y86YBQ7B4.org.autobyteus.phoneavbridge.camera",
+      "getTaskAllow": null,
+      "deviceCount": 1,
+      "appGroups": [],
+      "isIosProfile": false,
+      "isDevelopmentProfile": false,
+      "isAppStoreDistributionCandidate": false,
+      "matchesTeamFilter": true,
+      "matchesAppBundleDevelopment": false,
+      "matchesShareExtensionDevelopment": false,
+      "matchesAppBundleAppStore": false,
+      "matchesShareExtensionAppStore": false
+    },
+    {
+      "name": "Mac Team Provisioning Profile: org.autobyteus.prc.camera",
+      "uuid": "29d1eca3-c9f7-445f-9485-a6f07089574c",
+      "sourceKind": "xcodeUserData",
+      "fileName": "29d1eca3-c9f7-445f-9485-a6f07089574c.provisionprofile",
+      "teamIds": [
+        "7Y86YBQ7B4"
+      ],
+      "teamName": "YU ZHENG",
+      "platforms": [
+        "OSX"
+      ],
+      "expirationDate": "2027-02-17T09:41:36Z",
+      "appIdentifier": "7Y86YBQ7B4.org.autobyteus.prc.camera",
+      "getTaskAllow": null,
+      "deviceCount": 1,
+      "appGroups": [],
+      "isIosProfile": false,
+      "isDevelopmentProfile": false,
+      "isAppStoreDistributionCandidate": false,
+      "matchesTeamFilter": true,
+      "matchesAppBundleDevelopment": false,
+      "matchesShareExtensionDevelopment": false,
+      "matchesAppBundleAppStore": false,
+      "matchesShareExtensionAppStore": false
+    },
+    {
+      "name": "Mac Team Provisioning Profile: *",
+      "uuid": "3e72238f-ec91-42f0-bbd4-bac6013c848b",
+      "sourceKind": "xcodeUserData",
+      "fileName": "3e72238f-ec91-42f0-bbd4-bac6013c848b.provisionprofile",
+      "teamIds": [
+        "7Y86YBQ7B4"
+      ],
+      "teamName": "YU ZHENG",
+      "platforms": [
+        "OSX"
+      ],
+      "expirationDate": "2027-02-18T09:24:29Z",
+      "appIdentifier": "7Y86YBQ7B4.*",
+      "getTaskAllow": null,
+      "deviceCount": 1,
+      "appGroups": [],
+      "isIosProfile": false,
+      "isDevelopmentProfile": false,
+      "isAppStoreDistributionCandidate": false,
+      "matchesTeamFilter": true,
+      "matchesAppBundleDevelopment": false,
+      "matchesShareExtensionDevelopment": false,
+      "matchesAppBundleAppStore": false,
+      "matchesShareExtensionAppStore": false
+    },
+    {
+      "name": "iOS Team Provisioning Profile: *",
+      "uuid": "a7aba7f4-f485-4ee0-83da-71214dacba88",
+      "sourceKind": "xcodeUserData",
+      "fileName": "a7aba7f4-f485-4ee0-83da-71214dacba88.mobileprovision",
+      "teamIds": [
+        "7Y86YBQ7B4"
+      ],
+      "teamName": "YU ZHENG",
+      "platforms": [
+        "iOS",
+        "xrOS",
+        "visionOS"
+      ],
+      "expirationDate": "2027-01-30T20:57:21Z",
+      "appIdentifier": "7Y86YBQ7B4.*",
+      "getTaskAllow": true,
+      "deviceCount": 1,
+      "appGroups": [],
+      "isIosProfile": true,
+      "isDevelopmentProfile": true,
+      "isAppStoreDistributionCandidate": false,
+      "matchesTeamFilter": true,
+      "matchesAppBundleDevelopment": true,
+      "matchesShareExtensionDevelopment": true,
+      "matchesAppBundleAppStore": false,
+      "matchesShareExtensionAppStore": false
+    }
+  ]
+}

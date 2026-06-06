@@ -185,8 +185,8 @@ Optional compaction settings:
   - default runtime behavior is `0.8`
 - `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`
   - agent definition id for the memory compactor agent
-  - on startup, a normal shared default compactor agent `autobyteus-memory-compactor` is seeded and selected when this setting is blank
-  - configure the selected/default agent's instructions, runtime, model, and model config in the normal agent editor; if those launch defaults are still missing, required compaction fails clearly instead of falling back to the active run model
+  - on startup, the product-managed built-in compactor agent `autobyteus-memory-compactor` is synced from the bundled template and selected when this setting is blank
+  - configure a custom selected agent's instructions, runtime, model, and model config in the normal agent editor or package source; blank runtime/model defaults inherit from the triggering parent run, and required compaction fails clearly only when no selected definition exists or a required field is absent from both the selected definition and parent run
 - `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`
   - optional lower effective context ceiling in tokens
   - useful when a provider fails before its advertised maximum context

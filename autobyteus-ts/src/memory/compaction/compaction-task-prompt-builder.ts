@@ -7,8 +7,8 @@ export type CompactionTaskPromptBuildOptions = {
   maxItemChars?: number | null;
 };
 
-export const COMPACTION_OUTPUT_CONTRACT = [
-  'Return JSON only with this shape:',
+export const COMPACTION_RESULT_SHAPE = [
+  'Your final answer must be one JSON object with this shape:',
   '{',
   '  "episodic_summary": "string",',
   '  "critical_issues": [{ "fact": "string" }],',
@@ -17,7 +17,7 @@ export const COMPACTION_OUTPUT_CONTRACT = [
   '  "user_preferences": [{ "fact": "string" }],',
   '  "important_artifacts": [{ "fact": "string" }]',
   '}',
-  'The output contract is mandatory. Do not return prose outside the JSON object.'
+  'Do not add Markdown fences or any text outside the JSON object.'
 ].join('\n');
 
 const safeStringify = (value: unknown): string => formatToCleanString(value);
@@ -53,12 +53,12 @@ const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): stri
 export class CompactionTaskPromptBuilder {
   buildTaskPrompt(blocks: InteractionBlock[], options: CompactionTaskPromptBuildOptions = {}): string {
     return [
-      'Summarize the earlier conversation history below so future work can continue with refreshed context.',
-      'Use the current output contract exactly.',
+      'Summarize the earlier conversation history below so the same work can continue after a context refresh.',
+      'Use the required final JSON shape exactly.',
       'Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.',
       '',
-      '[OUTPUT_CONTRACT]',
-      COMPACTION_OUTPUT_CONTRACT,
+      '[REQUIRED_FINAL_JSON_SHAPE]',
+      COMPACTION_RESULT_SHAPE,
       '',
       '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
       ...this.renderBlocks(blocks, options.maxItemChars),

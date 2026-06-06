@@ -1,0 +1,13 @@
+tickets/ios-wrapper-app/api-e2e-evidence/round-3/signing-readiness/default/ios-signing-readiness.json
+ readiness: development-device-profile-ready-app-group-incomplete
+ dev identity count: 1 distribution identity count: 0
+ developmentDeviceProfileReady: True developmentDeviceAppGroupReady: False archivePrerequisitesReady: False
+tickets/ios-wrapper-app/api-e2e-evidence/round-3/signing-readiness/team-7Y86YBQ7B4/ios-signing-readiness.json
+ readiness: development-device-profile-ready-app-group-incomplete
+ dev identity count: 1 distribution identity count: 0
+ developmentDeviceProfileReady: True developmentDeviceAppGroupReady: False archivePrerequisitesReady: False
+tickets/ios-wrapper-app/api-e2e-evidence/round-3/signing-readiness/custom-bundle/ios-signing-readiness.json
+ readiness: development-device-profile-ready-app-group-incomplete
+ dev identity count: 1 distribution identity count: 0
+ developmentDeviceProfileReady: True developmentDeviceAppGroupReady: False archivePrerequisitesReady: False
+signing readiness classification assertions passed

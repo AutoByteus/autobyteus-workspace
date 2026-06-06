@@ -13,7 +13,7 @@ export { CompactionResultNormalizer } from './compaction/compaction-result-norma
 export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from './compaction/compaction-result-normalizer.js';
 export { Summarizer } from './compaction/summarizer.js';
 export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
-export { CompactionTaskPromptBuilder, COMPACTION_OUTPUT_CONTRACT } from './compaction/compaction-task-prompt-builder.js';
+export { CompactionTaskPromptBuilder, COMPACTION_RESULT_SHAPE } from './compaction/compaction-task-prompt-builder.js';
 export { WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
 export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
 export type {

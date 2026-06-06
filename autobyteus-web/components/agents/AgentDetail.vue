@@ -72,12 +72,6 @@
                 <span class="block i-heroicons-pencil-square-20-solid w-5 h-5 mr-2"></span>
                 {{ $t('agents.components.agents.AgentDetail.edit') }}
               </button>
-              <AgentDuplicateButton
-                v-if="isShared"
-                :agent-id="agentDef.id"
-                :default-name="agentDef.name"
-                @duplicated="handleDuplicated"
-              />
               <button v-if="isShared" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
                 {{ $t('agents.components.agents.AgentDetail.delete') }}
@@ -106,7 +100,6 @@
 import { ref, computed, onMounted, toRefs, watch } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
-import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
 import AgentDefinitionDetailSections from '~/components/agents/AgentDefinitionDetailSections.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
@@ -238,7 +231,4 @@ const goBackToList = () => {
   emit('navigate', { view: 'list' });
 };
 
-const handleDuplicated = (duplicatedId: string) => {
-  emit('navigate', { view: 'edit', id: duplicatedId });
-};
 </script>

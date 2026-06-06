@@ -420,46 +420,4 @@ export class FileAgentDefinitionProvider {
     return true;
   }
 
-  async duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition> {
-    if (parseCanonicalApplicationOwnedAgentId(sourceId)) {
-      throw new Error("Application-owned agent definitions cannot be duplicated from the shared agent provider.");
-    }
-
-    const sourcePaths = await findAgentSourcePaths({
-      agentId: sourceId,
-      readAgentRoots: this.getReadAgentRoots(),
-      readTeamRoots: this.getReadTeamRoots(),
-      applicationBundleService: this.applicationBundleService,
-      warn: logger.warn,
-    });
-    if (!sourcePaths) {
-      throw new Error(`Agent definition '${sourceId}' not found.`);
-    }
-    const sourceMdContent = await fs.readFile(sourcePaths.mdPath, "utf-8");
-    const parsed = parseAgentMd(sourceMdContent, sourcePaths.mdPath);
-    const sourceConfig = await readJsonFile<AgentConfigRecord>(sourcePaths.configPath, defaultAgentConfig());
-
-    const newAgentDir = this.getAgentDir(newId);
-    await fs.mkdir(newAgentDir, { recursive: true });
-
-    const newMdContent = serializeAgentMd(
-      {
-        name: newName,
-        description: parsed.description,
-        category: parsed.category,
-        role: parsed.role,
-      },
-      parsed.instructions,
-    );
-    await writeRawFile(path.join(newAgentDir, "agent.md"), newMdContent);
-
-    const newConfigRecord = normalizeAgentConfigRecord(sourceConfig);
-    await writeJsonFile(path.join(newAgentDir, "agent-config.json"), newConfigRecord);
-
-    const created = await this.getById(newId);
-    if (!created) {
-      throw new Error(`Failed to duplicate agent definition '${sourceId}' to '${newId}'.`);
-    }
-    return created;
-  }
 }

@@ -1,0 +1,42 @@
+# Delivery post-rebase static checks
+Date: 2026-06-06T12:03:01Z
+HEAD: 4c1e8afea64d7ea8e840d6c9647b22861fb37a6f
+origin/personal: 5e188c1c9210be3ff82dd8f9282f2802773446d4
+Ahead/behind: 1	0
+Intent-to-add untracked files for whitespace check: 16
+
+## git diff --check origin/personal (including intent-to-add untracked delivery artifacts)
+PASS: git diff --check origin/personal
+
+## git status --short --branch
+## codex/compactor-agent-human-summarization...origin/personal [ahead 1]
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/self_evolution.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-web/docs/agent_management.md
+ A tickets/in-progress/compactor-agent-human-summarization/delivery-release-deployment-report.md
+ A tickets/in-progress/compactor-agent-human-summarization/docs-sync-report.md
+ A tickets/in-progress/compactor-agent-human-summarization/electron-build-artifacts.sha256
+ A tickets/in-progress/compactor-agent-human-summarization/electron-build-summary.md
+ A tickets/in-progress/compactor-agent-human-summarization/handoff-summary.md
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/autobyteus-ts-memory-tests.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-autobyteus-ts-memory-tests.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-docs-sync-checks.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-electron-macos-build-final.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-electron-macos-build-personal.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-electron-macos-build.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-final-preverification-checks.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-post-integration-static-checks.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-removed-duplicate-fork-static-grep.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-server-agent-definitions-graphql-e2e.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-server-built-in-agent-unit-tests.log
+ A tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-web-agent-detail-integration-tests.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/live-server-startup.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/server-agent-definitions-graphql-e2e-after-codegen.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/server-agent-definitions-graphql-e2e.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/server-built-in-unit-tests.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/web-agent-detail-integration-tests-after-codegen.log
+ M tickets/in-progress/compactor-agent-human-summarization/validation-logs/web-agent-detail-integration-tests.log
+?? tickets/in-progress/compactor-agent-human-summarization/validation-logs/delivery-post-rebase-static-checks.log

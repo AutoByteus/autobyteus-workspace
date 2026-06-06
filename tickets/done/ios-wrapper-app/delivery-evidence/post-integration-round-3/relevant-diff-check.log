@@ -1,0 +1,5 @@
+# Round-3 relevant diff hygiene check
+Date: 2026-06-06
+Command: git diff --check origin/personal -- README.md autobyteus-web/docs/remote_access.md autobyteus-ios .github/workflows/release-ios.yml docs/ios_mobile_access.md
+.github/workflows/release-ios.yml:432: trailing whitespace.
++          

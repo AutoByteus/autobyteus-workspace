@@ -1,0 +1,38 @@
+# Delivery post-second-rebase autobyteus-ts memory tests
+Date: 2026-06-06T12:08:18Z
+HEAD: 9073a073f81112309e47404051e486b76875e315
+origin/personal: 74c0fd5905c85a4f52b7fecec16bf4c644a745de
+Command: pnpm -C autobyteus-ts exec vitest run tests/unit/memory/agent-compaction-summarizer.test.ts tests/unit/memory/compaction-response-parser.test.ts tests/unit/memory/compaction-task-prompt-builder.test.ts tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-ts
+
+stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-task-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/agent-compaction-summarizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-response-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/compaction-task-prompt-builder.test.ts (3 tests) 3ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (5 tests) 4ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (3 tests) 6ms
+
+ Test Files  4 passed (4)
+      Tests  13 passed (13)
+   Start at  14:08:19
+   Duration  229ms (transform 293ms, setup 126ms, import 284ms, tests 16ms, environment 0ms)

@@ -1,0 +1,24 @@
+## App bundle/version settings
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj -target AutoByteusMobile -showBuildSettings IOS_BUNDLE_ID=com.example.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=com.example.autobyteus.mobile.share MARKETING_VERSION=1.2.7 CURRENT_PROJECT_VERSION=456
+    CURRENT_PROJECT_VERSION = 456
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    MARKETING_VERSION = 1.2.7
+    CURRENT_PROJECT_VERSION = 456
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    MARKETING_VERSION = 1.2.7
+    PRODUCT_BUNDLE_IDENTIFIER = com.example.autobyteus.mobile
+## Share extension bundle/version settings
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj -target AutoByteusMobileShareExtension -showBuildSettings IOS_BUNDLE_ID=com.example.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=com.example.autobyteus.mobile.share MARKETING_VERSION=1.2.7 CURRENT_PROJECT_VERSION=456
+    CURRENT_PROJECT_VERSION = 456
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    MARKETING_VERSION = 1.2.7
+    CURRENT_PROJECT_VERSION = 456
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    MARKETING_VERSION = 1.2.7
+    PRODUCT_BUNDLE_IDENTIFIER = com.example.autobyteus.mobile.share

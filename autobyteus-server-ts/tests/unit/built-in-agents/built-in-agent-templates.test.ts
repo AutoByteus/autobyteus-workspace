@@ -11,14 +11,21 @@ describe("built-in agent templates", () => {
     const content = await fs.readFile(templatePath("memory-compactor"), "utf-8");
 
     expect(content).toContain("name: Memory Compactor");
-    expect(content).toContain("Manual testing");
-    expect(content).toContain("Automated context-summary tasks");
-    expect(content).toContain("[CONVERSATION_HISTORY_TO_SUMMARIZE]");
-    expect(content).toContain("When an automated task supplies an exact output contract, that contract wins");
+    expect(content).toContain("description: Summarizes earlier work so the same agent can continue later.");
+    expect(content).toContain("You summarize earlier work so the same agent can continue later without rereading the full history.");
+    expect(content).toContain("Keep the information that would let someone resume safely");
+    expect(content).toContain("Omit chatter, repeated status updates, and details that will not help future continuation.");
+    expect(content).toContain("When manually given pasted history, infer the same fields from the content.");
     expect(content).not.toContain("AutoByteus Memory Compactor");
     expect(content).not.toContain("AutoByteus conversation");
     expect(content).not.toContain("[SETTLED_BLOCKS]");
     expect(content).not.toMatch(/\bsettled\b/i);
+    expect(content).not.toContain("output " + "contract");
+    expect(content).not.toContain("parser-compatible");
+    expect(content).not.toContain("raw trace");
+    expect(content).not.toContain("block id");
+    expect(content).not.toContain("turn id");
+    expect(content).not.toContain("source event");
 
     for (const category of [
       "episodic_summary",
@@ -31,12 +38,10 @@ describe("built-in agent templates", () => {
       expect(content).toContain(category);
     }
 
-    expect(content).toContain("Preserve:");
     expect(content).toContain("decisions and rationale");
-    expect(content).toContain("validation evidence");
-    expect(content).toContain("Drop or compress:");
-    expect(content).toContain("transient progress/status messages");
-    expect(content).toContain("Return JSON only");
+    expect(content).toContain("validation results");
+    expect(content).toContain("repeated status updates");
+    expect(content).toContain("The final answer must be exactly one JSON object");
     expect(content).toContain("Do not invent facts");
     expect(content).not.toContain('"tags"');
     expect(content).not.toContain("tags:");

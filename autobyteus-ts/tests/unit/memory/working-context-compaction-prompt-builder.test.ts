@@ -45,10 +45,14 @@ describe('WorkingContextCompactionPromptBuilder', () => {
       },
     ]);
 
-    expect(prompt).toContain('Summarize the earlier conversation history below so future work can continue with refreshed context.');
+    expect(prompt).toContain('Summarize the earlier conversation history below so the same work can continue after a context refresh.');
+    expect(prompt).toContain('[REQUIRED_FINAL_JSON_SHAPE]');
+    expect(prompt).toContain('Your final answer must be one JSON object with this shape:');
     expect(prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
     expect(prompt).toContain('Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.');
     expect(prompt).not.toContain('AutoByteus memory');
+    expect(prompt).not.toContain('output ' + 'contract');
+    expect(prompt).not.toContain('[OUTPUT' + '_CONTRACT]');
     expect(prompt).not.toContain('working-context transcript');
     expect(prompt).not.toContain('runtime internals');
     expect(prompt).not.toContain('turn ids');

@@ -1,0 +1,7 @@
+Temporary QR simulator UI harness executed against copied autobyteus-ios tree under /tmp.
+Harness source copied to: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-1/temporary-qr-simulator-rerun/QRSimulatorUITests.swift
+Result bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-1/temporary-qr-simulator-rerun/QRSimulatorUITests.xcresult
+Attachments: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-1/temporary-qr-simulator-rerun/attachments
+Test Case '-[AutoByteusMobileUITests.QRSimulatorUITests testQRScannerReturnsGracefulSimulatorDiagnosticOrCancellation]' passed (25.263 seconds).
+Test Suite 'Selected tests' passed at 2026-06-06 08:06:07.979.
+** TEST SUCCEEDED **

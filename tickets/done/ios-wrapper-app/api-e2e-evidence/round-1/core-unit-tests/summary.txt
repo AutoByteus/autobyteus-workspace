@@ -1,0 +1,13 @@
+Core unit test run: xcodebuild -only-testing:AutoByteusMobileCoreTests
+Destination: platform=iOS Simulator,name=iPhone 17
+Result bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-1/core-unit-tests/AutoByteusMobileCoreTests.xcresult
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.004 (0.059) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.095 (0.223) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.007 (0.035) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.032 (0.033) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.150 (0.453) seconds
+Test Suite 'All tests' passed at 2026-06-06 08:01:16.263.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.150 (0.453) seconds
+** TEST SUCCEEDED **

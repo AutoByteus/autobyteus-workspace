@@ -1,0 +1,5 @@
+Simulator UDID: 8E8844A9-04F1-4729-A417-52DE909E0A92
+Core unit tests: AutoByteusMobileCoreTests executed and passed
+Bundle/version settings: org.autobyteus.mobile / org.autobyteus.mobile.share, MARKETING_VERSION=0.1.0, CURRENT_PROJECT_VERSION=1
+Xcode result bundle: tickets/ios-wrapper-app/implementation-evidence/core-tests-after-release-rework/AutoByteusMobileCoreTests.xcresult
+Test log: tickets/ios-wrapper-app/implementation-evidence/core-tests-after-release-rework/xcodebuild-core-tests.log

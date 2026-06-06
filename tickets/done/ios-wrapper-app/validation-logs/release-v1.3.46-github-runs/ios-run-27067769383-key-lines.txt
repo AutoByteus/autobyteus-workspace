@@ -1,0 +1,6 @@
+iOS App Store Connect Release run 27067769383 (v1.3.46) result: failure.
+Successful jobs: Resolve iOS Release Metadata; Build And Test iOS App; Validate iOS Publish Secrets.
+Failed job: Archive And Upload To App Store Connect.
+Archive/export reached signing and produced an IPA successfully: ** ARCHIVE SUCCEEDED ** and ** EXPORT SUCCEEDED **.
+Upload failure: No suitable application records were found for bundle identifier org.autobyteus.mobile in App Store Connect / Apple ID access. App Store operation failed (-19000).
+Published artifact evidence: ios-app-store-connect-artifacts, artifact id 7456090288, digest cb02d4164bade1e347e660ed04bd7031d1674704716eb22ae43f670c94edccb5.

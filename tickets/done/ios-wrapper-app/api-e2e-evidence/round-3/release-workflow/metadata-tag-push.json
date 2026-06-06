@@ -1,0 +1,11 @@
+{
+  "release_tag": "v2.3.4-rc2",
+  "release_ref": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "semantic_version_core": "2.3.4",
+  "prerelease_label": "rc2",
+  "ios_marketing_version": "2.3.4",
+  "artifact_version": "2.3.4-rc2",
+  "build_number": "987",
+  "publish_requested": "true",
+  "prerelease": "true"
+}

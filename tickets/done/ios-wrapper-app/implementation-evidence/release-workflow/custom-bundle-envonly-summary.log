@@ -1,0 +1,10 @@
+## App bundle settings from env-generated project (no xcodebuild bundle override)
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    PRODUCT_BUNDLE_IDENTIFIER = com.example.autobyteus.mobile
+## Share extension bundle settings from env-generated project (no xcodebuild bundle override)
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    IOS_BUNDLE_ID = com.example.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = com.example.autobyteus.mobile.share
+    PRODUCT_BUNDLE_IDENTIFIER = com.example.autobyteus.mobile.share

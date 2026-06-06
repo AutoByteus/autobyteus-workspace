@@ -8,6 +8,8 @@ Monorepo workspace for the AutoByteus TypeScript platform.
 - `autobyteus-server-ts`
 - `autobyteus-ts`
 - `autobyteus-message-gateway`
+- `autobyteus-android` native wrapper for the existing `/mobile` shell
+- `autobyteus-ios` native wrapper for the existing `/mobile` shell
 - `autobyteus-application-sdk-contracts`
 - `autobyteus-application-frontend-sdk`
 - `autobyteus-application-backend-sdk`
@@ -38,9 +40,9 @@ Full guide:
 
 ## Phone Access / Remote Access
 
-AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android and travel use.
+AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android, iOS, and travel use.
 
-For remote-node Phone Access, create or open the current AutoByteus node in its own desktop window, then create the QR with a phone-facing private-network `/mobile` URL that the phone can reach and that maps to that same node. HTTPS is preferred; trusted private HTTP requires explicit cleartext acknowledgement, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md) and [`docs/android_mobile_access.md`](docs/android_mobile_access.md).
+For remote-node Phone Access, create or open the current AutoByteus node in its own desktop window, then create the QR with a phone-facing private-network `/mobile` URL that the phone can reach and that maps to that same node. HTTPS is preferred; trusted private HTTP requires explicit cleartext acknowledgement, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/iOS/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md), [`docs/android_mobile_access.md`](docs/android_mobile_access.md), and [`docs/ios_mobile_access.md`](docs/ios_mobile_access.md).
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 
@@ -299,6 +301,7 @@ pnpm android:server:stop
 - Workflow files:
   - `.github/workflows/release-desktop.yml`
   - `.github/workflows/release-android.yml`
+  - `.github/workflows/release-ios.yml`
   - `.github/workflows/release-messaging-gateway.yml`
   - `.github/workflows/release-server-docker.yml`
 - Triggers:
@@ -308,6 +311,7 @@ pnpm android:server:stop
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
   - signed Android APK on the same GitHub Release
+  - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - managed messaging runtime package assets on the same GitHub Release
   - Docker Hub server image for `linux/amd64,linux/arm64`
 - Release notes:
@@ -323,6 +327,14 @@ pnpm android:server:stop
   - release tags and publish-enabled manual runs require signing secrets and build `AutoByteus_personal_android-X.Y.Z-release.apk`
   - manual workflow-dispatch build-only runs can upload a private `android-apk` workflow artifact without publishing a GitHub Release
   - debug APKs are allowed only as manual build-only workflow artifacts and must not be uploaded to GitHub Releases
+- iOS App Store Connect/TestFlight release:
+  - iOS automation uses `.github/workflows/release-ios.yml`
+  - release tags and publish-enabled manual runs build/test first, then require complete iOS/App Store Connect secrets before signed archive/export/upload
+  - manual workflow-dispatch build-only runs use `publish_app_store_connect=false` and upload private simulator build/test artifacts without requiring Apple distribution secrets
+  - publish requests with missing iOS secrets fail fast with exact missing `IOS_*` / `APP_STORE_CONNECT_*` names before keychain/profile/archive/upload
+  - prerelease tags split metadata for App Store compatibility: `v1.2.7-rc1` builds with `MARKETING_VERSION=1.2.7`, uses numeric GitHub run number for `CURRENT_PROJECT_VERSION`, and keeps `1.2.7-rc1` only in artifact names/summaries
+  - `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` drive generated Xcode target bundle IDs, simulator build/test/smoke, profile verification, archive/export mapping, and summaries
+  - the workflow uploads to App Store Connect/TestFlight only; final public App Store review, listing, privacy, and release approval remain external
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
   - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
@@ -331,12 +343,26 @@ pnpm android:server:stop
   - `ANDROID_KEYSTORE_PASSWORD`
   - `ANDROID_KEY_ALIAS`
   - `ANDROID_KEY_PASSWORD`
+- Required GitHub repository secrets for iOS App Store Connect/TestFlight publish:
+  - `IOS_DISTRIBUTION_CERTIFICATE_P12_BASE64`
+  - `IOS_DISTRIBUTION_CERTIFICATE_P12_PASSWORD`
+  - `IOS_APPSTORE_PROVISIONING_PROFILE_BASE64`
+  - `IOS_SHARE_EXTENSION_APPSTORE_PROVISIONING_PROFILE_BASE64`
+  - `IOS_DEVELOPMENT_TEAM`
+  - `APP_STORE_CONNECT_KEY_ID`
+  - `APP_STORE_CONNECT_ISSUER_ID`
+  - `APP_STORE_CONNECT_API_KEY_P8_BASE64`
 - Required GitHub repository secrets for Docker Hub publish:
   - `DOCKERHUB_USERNAME`
   - `DOCKERHUB_TOKEN`
 - Optional GitHub repository variable:
   - `DOCKERHUB_IMAGE_NAME`
   - use this if the image repo should not be `autobyteus/autobyteus-server`
+- Optional GitHub repository variables for iOS publish defaults:
+  - `IOS_BUNDLE_ID`
+  - `IOS_SHARE_EXTENSION_BUNDLE_ID`
+  - `IOS_APP_SCHEME`
+  - `IOS_ARTIFACT_PREFIX`
 - No git submodules are required in this workspace.
 
 ### Consistent release commands
@@ -348,7 +374,7 @@ Use the release helper script from repo root:
 # 1) Write short functional release notes in the ticket, for example:
 #    tickets/done/<ticket-name>/release-notes.md
 # 2) Prepare the release (bump desktop + gateway package versions, sync curated notes and managed messaging manifest, commit, create tag, push branch+tag)
-#    This starts the desktop, Android APK, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
+#    This starts the desktop, Android APK, iOS, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
 
 # Optional manual build-only validation (no GitHub release publish)
@@ -362,7 +388,7 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
+- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-ios.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 - Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
 
