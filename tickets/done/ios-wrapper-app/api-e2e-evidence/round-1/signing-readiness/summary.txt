@@ -1,0 +1,12 @@
+Readiness: simulator-ready-development-signing-partial
+Xcode: Xcode 26.1.1 Build version 17B100
+Development identities: 1
+Distribution identities: 0
+Profiles total/app/share: 0/0/0
+Archive status: skipped
+Reasons:
+- No Apple/iOS Distribution signing identity detected
+- No provisioning profile detected for app bundle org.autobyteus.mobile
+- No app bundle profile with App Group group.org.autobyteus.mobile detected
+- No provisioning profile detected for share extension bundle org.autobyteus.mobile.share
+- No share extension profile with App Group group.org.autobyteus.mobile detected

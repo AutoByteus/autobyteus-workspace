@@ -1,0 +1,26 @@
+# Static/boundary supplemental checks round 2
+Date: 2026-06-06T07:23:19Z
+
+## bash -n scripts
+passed
+
+## python fake server compile
+passed
+
+## plist/entitlements lint
+autobyteus-ios/AutoByteusMobile/Info.plist: OK
+autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements: OK
+autobyteus-ios/AutoByteusMobileShareExtension/Info.plist: OK
+autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements: OK
+autobyteus-ios/AutoByteusMobileUITests/Info.plist: OK
+
+## signing JSON validation
+passed
+
+## core boundary forbidden UIKit/WebKit/AVFoundation imports
+passed: no forbidden core imports
+
+## native credential persistence grep
+autobyteus-ios/AutoByteusMobileCore/SavedNodeProfile.swift:5:/// This model intentionally stores only node metadata. Phone Access credentials such as `mra_...`
+autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeStoreTests.swift:21:        XCTAssertFalse(String(data: suite.data(forKey: "autobyteus.saved-node-profiles")!, encoding: .utf8)!.contains("mra_"))
+Review: only expected no-storage comment/test references or non-credential request headers should appear.

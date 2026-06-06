@@ -1,0 +1,62 @@
+# API/E2E round 3 release/static validation
+UTC 2026-06-06T12:52:14Z
+Repo: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app
+Branch: codex/ios-wrapper-app
+HEAD: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
+Status:
+ M .gitignore
+ M README.md
+ M autobyteus-web/docs/remote_access.md
+?? .github/workflows/release-ios.yml
+?? autobyteus-ios/
+?? docs/ios_mobile_access.md
+?? tickets/ios-wrapper-app/
+
+## Tool versions
+Xcode 26.1.1
+Build version 17B100
+xcrun version 72.
+Version: 2.44.1
+1.7.11
+installed by building from source
+built with go1.26.0 compiler for darwin/arm64
+ruby 2.6.10p210 (2022-04-12 revision 67958) [universal.arm64e-darwin25]
+Python 3.9.6
+
+## Workflow YAML parse
+ruby YAML parse ok
+
+## actionlint
+actionlint ok
+
+## Shell syntax
+bash -n autobyteus-ios/scripts/generate-project.sh
+bash -n autobyteus-ios/scripts/ios-signing-readiness.sh
+bash -n autobyteus-ios/scripts/ios-simulator-smoke.sh
+shell syntax ok
+
+## Python compile
+python compile ok
+
+## Release contract check
+iOS release contract checks passed.
+release contract ok
+
+## plist lint
+autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements: OK
+autobyteus-ios/AutoByteusMobile/Info.plist: OK
+autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements: OK
+autobyteus-ios/AutoByteusMobileShareExtension/Info.plist: OK
+autobyteus-ios/AutoByteusMobileUITests/Info.plist: OK
+plist lint ok
+
+## JSON lint
+autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/Contents.json: OK
+autobyteus-ios/AutoByteusMobile/Assets.xcassets/Contents.json: OK
+json lint ok
+
+## Core forbidden native imports
+core forbidden native imports absent
+
+## Native credential grep
+native credential grep clean

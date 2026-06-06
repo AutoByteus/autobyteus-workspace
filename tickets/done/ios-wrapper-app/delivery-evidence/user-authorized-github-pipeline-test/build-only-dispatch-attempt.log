@@ -1,0 +1,4 @@
+# Attempt safe workflow_dispatch build-only run
+UTC 2026-06-06T15:36:17Z
+Command: gh workflow run release-ios.yml --ref codex/ios-wrapper-app -F publish_app_store_connect=false -F prerelease=true
+HTTP 404: workflow release-ios.yml not found on the default branch (https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/workflows/release-ios.yml)

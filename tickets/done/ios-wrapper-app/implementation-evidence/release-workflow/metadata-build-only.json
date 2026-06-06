@@ -1,0 +1,11 @@
+{
+  "release_tag": "",
+  "release_ref": "personal",
+  "semantic_version_core": "0.1.0",
+  "prerelease_label": "",
+  "ios_marketing_version": "0.1.0",
+  "artifact_version": "ci-789",
+  "build_number": "789",
+  "publish_requested": "false",
+  "prerelease": "true"
+}

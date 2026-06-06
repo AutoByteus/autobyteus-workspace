@@ -1,0 +1,11 @@
+{
+  "release_tag": "v1.2.7-rc1",
+  "release_ref": "abc123",
+  "semantic_version_core": "1.2.7",
+  "prerelease_label": "rc1",
+  "ios_marketing_version": "1.2.7",
+  "artifact_version": "1.2.7-rc1",
+  "build_number": "456",
+  "publish_requested": "true",
+  "prerelease": "true"
+}

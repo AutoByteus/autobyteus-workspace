@@ -1,0 +1,15 @@
+# User-authorized pre-push checks
+UTC 2026-06-06T15:35:07Z
+Branch: codex/ios-wrapper-app
+HEAD: 7d08ebdb6fc07a6381346961522b6f1afa7d9811
+
+## git diff --check
+git diff --check passed
+
+## release contract check
+iOS release contract checks passed.
+release contract check passed
+
+## workflow YAML parse/actionlint
+ruby YAML parse ok
+actionlint passed

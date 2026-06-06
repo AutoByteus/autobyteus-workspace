@@ -1,0 +1,7 @@
+# Negative App Store profile verification
+UTC 2026-06-06T12:55:12Z
+Profile: /Users/normy/Library/Developer/Xcode/UserData/Provisioning Profiles/a7aba7f4-f485-4ee0-83da-71214dacba88.mobileprovision
+Exit status: 1
+--- stdout ---
+--- stderr ---
+error: app profile iOS Team Provisioning Profile: * application-identifier must be 7Y86YBQ7B4.org.autobyteus.mobile; found 7Y86YBQ7B4.*

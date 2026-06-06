@@ -1,0 +1,20 @@
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:43:52.9863730Z iOS release contract checks passed.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:44:19.7482160Z ** BUILD SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:11.5848290Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.021 (0.023) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:11.7873510Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.022 (0.023) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:11.9257430Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.060 (0.061) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.0527240Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.006 (0.026) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.1705650Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.018 (0.019) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.2662320Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.010 (0.010) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.2866130Z 	 Executed 21 tests, with 0 failures (0 unexpected) in 0.145 (0.372) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.3076600Z 	 Executed 21 tests, with 0 failures (0 unexpected) in 0.145 (0.372) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:45:12.4718210Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:14.8781880Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 54.756 (54.758) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:14.8984700Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 54.756 (54.759) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:14.9469180Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 54.756 (54.761) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:16.1148620Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:20.4683900Z Final readiness classification: simulator-ready-signing-assets-missing
+Build And Test iOS App	Generate, build, and run implementation checks	2026-06-06T15:53:21.5834700Z Smoke UI tests: executed and passed without skips
+Build And Test iOS App	Write publish secret readiness summary	2026-06-06T15:53:21.6623890Z [36;1m  echo "Publish requested: false"[0m
+Build And Test iOS App	Write publish secret readiness summary	2026-06-06T15:53:21.6624770Z [36;1m    echo "Missing iOS publish secrets: ${missing[*]}"[0m
+Build And Test iOS App	Write publish secret readiness summary	2026-06-06T15:53:21.6625280Z [36;1m    echo "Missing iOS publish secrets: none detected"[0m
