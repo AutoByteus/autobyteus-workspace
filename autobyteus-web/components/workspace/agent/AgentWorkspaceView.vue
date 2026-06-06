@@ -43,7 +43,11 @@
         :agent-name="selectedAgent.config.agentDefinitionName"
         :agent-avatar-url="selectedAgent.config.agentAvatarUrl"
         class="h-full"
-      />
+      >
+        <template #composerContext>
+          <SelfEvolutionComposerCta :target="selfEvolutionTarget" />
+        </template>
+      </AgentEventMonitor>
       <div v-else class="p-4 text-center text-gray-500">{{ $t('workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a') }}</div>
     </div>
 
@@ -56,6 +60,8 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import CopyButton from '~/components/common/CopyButton.vue';
+import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
+import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
@@ -73,6 +79,7 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const selectedAgent = computed(() => agentContextsStore.activeRun);
 const headerAvatarLoadError = ref(false);
+const SKILL_EVOLVER_AGENT_DEFINITION_ID = 'autobyteus-skill-evolver';
 
 const headerTitle = computed(() => {
   if (selectedAgent.value) {
@@ -117,6 +124,20 @@ const headerAvatarInitials = computed(() => {
       .map((part) => part[0]?.toUpperCase() ?? '')
       .join('') || 'AI'
   );
+});
+
+const selfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() => {
+  const run = selectedAgent.value;
+  if (!run) {
+    return null;
+  }
+  return {
+    kind: 'agent',
+    runId: run.state.runId,
+    isHelperRun:
+      run.config.agentDefinitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ||
+      run.config.agentDefinitionName === 'Skill Self-Evolver',
+  };
 });
 
 watch(selectedAgentAvatarUrl, () => {

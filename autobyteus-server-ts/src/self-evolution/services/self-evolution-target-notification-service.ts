@@ -1,5 +1,4 @@
-import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { SelfEvolutionNotificationSummary, SelfEvolutionSkillTarget, SelfEvolutionTargetRef } from "../domain/models.js";
@@ -28,21 +27,21 @@ export class SelfEvolutionTargetNotificationService {
       return { status: "skipped_busy", message: `Target run is ${status}; notification is next-run only.` };
     }
 
-    const skillRoots = input.skillTargets
-      .filter((target) => target.isWritable)
-      .map((target) => `- ${target.skillName}: ${target.skillRootPath}`);
     const message = [
-      `A self-evolution run completed for your configured skill playbooks: ${input.evolutionRunId}.`,
-      skillRoots.length ? `Affected skill packages:\n${skillRoots.join("\n")}` : "No writable skill package was listed for active reload.",
-      "Please reload or re-read the affected skills before continuing when relevant.",
-      "Helper-run completion does not by itself prove downstream improvement; use the updated skills only when they are relevant.",
+      "Self improve finished for this run.",
+      "Future runs will use any updated skill guidance. No changes may have been made.",
     ].join("\n\n");
 
     try {
-      const result = await activeRun.postUserMessage(new AgentInputUserMessage(message, SenderType.SYSTEM));
-      if (!result.accepted) {
-        return { status: "failed", message, error: result.message ?? "Runtime rejected notification." };
-      }
+      activeRun.emitLocalEvent({
+        eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+        runId: activeRun.runId,
+        payload: {
+          sender_id: "system.self_evolution",
+          content: message,
+        },
+        statusHint: null,
+      });
       return { status: "sent_active_idle", message };
     } catch (error) {
       return { status: "failed", message, error: String(error) };

@@ -1,0 +1,60 @@
+{
+  "evolutionRunId": "c72c4117-df38-41ba-9c34-8de7925e119e",
+  "status": "completed",
+  "requestedAt": "2026-06-05T20:49:42.760Z",
+  "completedAt": "2026-06-05T20:49:56.913Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "team_member_run",
+    "teamRunId": "team_calibration-ux-team-r10-round7-ux_1209de60",
+    "memberRunId": "calibrator_61d123d6ecb3d14a"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-05T20:49:00.328Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "team_run_launch",
+        "fields": [
+          "enabled"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibrator_61d123d6ecb3d14a"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_5568",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/temp_workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_r10_round7_ux",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/skills/calibration_marker_r10_round7_ux",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/skills/calibration_marker_r10_round7_ux/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true
+    }
+  ],
+  "evidenceSummaryHash": "c85e8e9eadf36f9c05bbb7c4d6c9707d5db3f73672a82dce62a3b2aa9bf19311",
+  "notificationSummary": {
+    "status": "next_run_only",
+    "message": "Team member active reload is not implemented in the MVP; future runs load any updated skills."
+  },
+  "errors": []
+}

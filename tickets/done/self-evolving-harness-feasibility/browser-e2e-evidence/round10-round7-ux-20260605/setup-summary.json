@@ -1,0 +1,14 @@
+{
+  "token": "r10_round7_ux",
+  "runRoot": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/workspace",
+  "skillName": "calibration_marker_r10_round7_ux",
+  "skillRootPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/skills/calibration_marker_r10_round7_ux",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/skills/calibration_marker_r10_round7_ux/SKILL.md",
+  "agentDefinitionId": "calibration-marker-agent-r10-round7-ux",
+  "agentName": "Calibration UX Agent r10_round7_ux",
+  "teamDefinitionId": "calibration-marker-team-r10-round7-ux",
+  "teamName": "Calibration UX Team r10_round7_ux",
+  "markerBefore": "CALIBRATION_MARKER_R10_V1",
+  "markerAfter": "CALIBRATION_MARKER_R10_V2"
+}

@@ -148,6 +148,7 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => {
           agentAvatarUrl: null,
         },
         state: {
+          runId: 'professor-run',
           currentStatus: AgentStatus.Running,
           conversation: { agentName: 'Professor', messages: [] },
         },
@@ -159,6 +160,7 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => {
           agentAvatarUrl: null,
         },
         state: {
+          runId: 'student-run',
           currentStatus: AgentStatus.Idle,
           conversation: { agentName: 'Student', messages: [] },
         },
@@ -180,7 +182,11 @@ describe('TeamWorkspaceView', () => {
   const mountComponent = () => mount(TeamWorkspaceView, {
     global: {
       stubs: {
-        AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor" />' },
+        AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
+        SelfEvolutionComposerCta: {
+          props: ['target'],
+          template: '<div data-test="self-evolution-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
+        },
         TeamGridView: {
           props: ['focusedMemberRouteKey'],
           template: '<button type="button" data-test="team-grid" :data-focused-route-key="focusedMemberRouteKey" @click="$emit(\'select-member\', \'student\')" />',
@@ -337,6 +343,14 @@ describe('TeamWorkspaceView', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('[data-test="team-event-monitor"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
+  });
+
+  it('passes the focused member run to the composer self-evolution CTA', () => {
+    const wrapper = mountComponent();
+    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    expect(cta.attributes('data-kind')).toBe('team-member');
+    expect(cta.attributes('data-team-run-id')).toBe('team-1');
+    expect(cta.attributes('data-member-run-id')).toBe('professor-run');
   });
 
   it('sets the requested mode from the mode switcher', async () => {

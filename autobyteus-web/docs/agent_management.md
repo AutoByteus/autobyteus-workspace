@@ -90,7 +90,9 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 Self-evolution is explicitly excluded from persisted agent definition defaults.
 A run may carry a run-launch `selfEvolution` override and backend metadata
 snapshot, but `AgentDefinition`, `agent-config.json`, and the agent create/edit
-forms do not own self-evolution eligibility.
+forms do not own self-evolution eligibility. The standalone run configuration
+form, not the definition editor, exposes the launch-time **Self-evolution
+eligibility** control when the global capability is enabled.
 
 ## Store Ownership
 

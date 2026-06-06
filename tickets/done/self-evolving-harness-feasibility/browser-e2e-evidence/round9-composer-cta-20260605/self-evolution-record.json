@@ -1,0 +1,59 @@
+{
+  "evolutionRunId": "2a900a03-37b8-466e-a475-6795045ca9b4",
+  "status": "completed",
+  "requestedAt": "2026-06-05T18:44:03.030Z",
+  "completedAt": "2026-06-05T18:44:23.496Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "agent_run",
+    "runId": "calibration_cta_agent_r9_cta_loop_disposable_target_agent_for_round_9_ui_self_evolution_validation_5605"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-05T18:42:26.564Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "agent_run_launch",
+        "fields": [
+          "enabled"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibration_cta_agent_r9_cta_loop_disposable_target_agent_for_round_9_ui_self_evolution_validation_5605"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_6683",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/temp_workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_r9_cta_loop",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/skills/calibration_marker_r9_cta_loop",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/skills/calibration_marker_r9_cta_loop/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true
+    }
+  ],
+  "evidenceSummaryHash": "4fb1066f9c7de26063b426c5935cdb5401ed987fddaa7e776666e26553f6af10",
+  "notificationSummary": {
+    "status": "sent_active_idle",
+    "message": "A self-evolution run completed for your configured skill playbooks: 2a900a03-37b8-466e-a475-6795045ca9b4.\n\nAffected skill packages:\n- calibration_marker_r9_cta_loop: /tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/skills/calibration_marker_r9_cta_loop\n\nPlease reload or re-read the affected skills before continuing when relevant.\n\nHelper-run completion does not by itself prove downstream improvement; use the updated skills only when they are relevant."
+  },
+  "errors": []
+}

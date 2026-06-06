@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "evolutionRunId": "eadb90d5-7bfc-4529-8970-4bde85ceb8a5",
+  "target": {
+    "kind": "team_member_run",
+    "teamRunId": "team_calibration-cta-team-r9-cta-loop_9a93578b",
+    "memberRunId": "calibrator_97dbf496f7d3f85e"
+  },
+  "sourceRunIds": [
+    "calibrator_97dbf496f7d3f85e"
+  ],
+  "targetUsesTeamRunIdAndMemberRunId": true,
+  "sourceRunIdsContainSelectedMemberOnly": true,
+  "notificationStatus": "next_run_only",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_6802"
+}

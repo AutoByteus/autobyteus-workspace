@@ -1,338 +1,591 @@
-# Settings Page Documentation
-
-The Settings page provides a centralized interface for managing application configuration, runtime tools, localization preferences, app metadata, and usage statistics. It is accessible via the sidebar navigation and is divided into several key sections.
+# Agent Execution Architecture
 
 ## Overview
 
-The Settings page is implemented in \`pages/settings.vue\` and serves as a container for several specialized management components. The main sections are:
+This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
-1.  **API Keys**
-2.  **Token Usage Statistics**
-3.  **Nodes**
-4.  **Messaging**
-5.  **Display**
-6.  **Language**
-7.  **Local Tools**
-8.  **MCP Servers**
-9.  **Application Packages**
-10. **Agent Packages**
-11. **Server Settings**
-12. **Extensions**
-13. **Updates**
+The data flow follows a top-down approach:
 
-## Sections Detail
+1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.
+2.  **Service Layer (Event Routing)**: Dispatches incoming structured WebSocket events to specific handlers.
+3.  **Segment Processing (Handlers)**: Updates the reactive `AgentContext` and sidecar stores based on event payloads.
 
-### 1. API Keys
+```mermaid
+graph TD
+    User-->|Input| Store[Pinia Store Layer]
+    Store-->|Mutation| Backend[Backend API]
+    Backend-->|WebSocket Event| Store
+    Store-->|Event Data| Service[Service Layer]
 
-**Component:** \`components/settings/ProviderAPIKeyManager.vue\`
+    Service-->|Dispatch| Handler{Event Handlers}
 
-This section allows users to manage connections to various LLM (Large Language Model) providers.
+    Handler-->|Segment Created/Updated| Context[Agent Context State]
+    Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
+    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+    Handler-->|Activity Log| ActivityStore[Activity Store]
+    Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
-- **Provider Browser:** Built-in providers and saved custom providers appear in
-  one provider-centered browser instead of separate management surfaces.
-- **Built-In Key Management:** Securely enter and update API keys for providers
-  like OpenAI, Anthropic, Gemini, etc. Built-in secret hydration stays
-  write-only in the product UI; the page reloads configured-status booleans, not
-  raw secret values.
-- **Custom OpenAI-Compatible Providers:** Use the visible `New Provider`
-  draft row in the provider browser sidebar to create a reusable
-  OpenAI-compatible provider by entering:
-  - provider name
-  - base URL
-  - API key
-- **Draft Provider Row:** The draft provider entry uses the same rectangular
-  sidebar row shape as the other providers, with the visible label `New
-  Provider`.
-- **Probe Before Save:** The custom-provider flow probes the remote `/models`
-  endpoint before save. Save stays disabled until a successful probe matches the
-  current draft.
-- **Duplicate-Name Protection:** Custom-provider names must be unique across
-  both built-in and already-saved providers.
-- **Saved Custom Provider Details:** Once saved, a custom provider shows a
-  details card with its base URL, model count, status, and a remove action.
-- **Custom Provider Delete:** Removing a saved custom provider deletes its
-  persisted record and then runs an authoritative refresh so the provider and
-  its models disappear from the browser. Selection falls back to the next
-  available provider row automatically.
-- **Model Discovery:** The selected provider panel lists available LLM, Audio,
-  and Image models grouped under the provider object returned by the backend.
-- **Custom-Only Friendly Labels:** Custom `OPENAI_COMPATIBLE` models display
-  friendly `provider.name / model.name` labels in shared selector consumers,
-  while built-in AutoByteus/runtime-backed models keep identifier-based labels.
-- **Reload Models:** Reload all models refreshes the full provider/model catalog.
-- **Reload Provider Models:** Reload selected provider refreshes just that
-  provider's catalog slice through the backend provider-targeted reload path.
-- **Custom Provider Status:** Saved custom providers show their base URL plus a
-  status summary:
-  - `READY`: latest probe/load succeeded
-  - `STALE_ERROR`: last refresh failed but the app kept last-known-good models
-  - `ERROR`: the provider currently has no successful load to serve from
+    Context-->|Reactivity| UI[Vue Component UI]
+    RunFileChangeStore-->|Reactivity| UI
+    TeamCommunicationStore-->|Reactivity| UI
+    ActivityStore-->|Reactivity| UI
+```
 
-### 2. Token Usage Statistics
+---
 
-**Component:** \`components/settings/TokenUsageStatistics.vue\`
+## Level 1: Orchestration Layer (Stores)
 
-Provides insights into the application's token consumption and associated costs.
+The Pinia stores act as the primary interface for the UI components to interact with the agent backend. They are responsible for initiating actions (Mutations) and listening for updates (WebSocket streams).
 
-- **Date Filtering:** Select a start and end date to filter usage data.
-- **Cost Analysis:** detailed breakdown of:
-  - Prompt Tokens (Input)
-  - Assistant Tokens (Output)
-  - Estimated Costs (based on model pricing)
-- **Visualization:** A bar chart visualizes the total cost per model.
+### `agentRunStore.ts` (Single Agents)
 
-### 3. Nodes
+- **Role**: Manages the execution lifecycle of individual agents.
+- **Key Actions**:
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
+  - `interruptGeneration()`: Sends the backend `INTERRUPT_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
+  - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
+  - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
+  - `closeAgent()`: Cleans up local state and unsubscribes.
 
-**Component:** `components/settings/NodeManager.vue`
+### `agentTeamRunStore.ts` (Agent Teams)
 
-Manage local/remote node registrations, capability display, and remote-access operations.
+- **Role**: Manages multi-agent team sessions.
+- **Key Actions**:
+  - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
+  - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
+  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., server task-delegation lifecycle events, status changes, member events) via WebSocket.
+  - `sendMessageToFocusedMember()`: Routes user input to the active-execution focused member, which can intentionally differ from the roster/history member selected for visual Focus display. After validation, it immediately begins a local submission for that command member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
+  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member selected by the same active-execution command focus as the shared composer, without locally clearing that member's `isSending` flag. The member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
+  - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
-- **Tabbed layout:** `components/settings/NodeManagerTabs.vue` is the visible page header for Settings → Nodes. It splits the page into **Manage Nodes**, **Phone Setup**, and **Docker Guide** tabs without rendering an additional redundant `Node Manager` title.
-- **Manage Nodes tab:** contains the actionable node-management settings and operations: current window node (`components/settings/CurrentWindowNodeCard.vue`), `Remote Browser Sharing`, Add Remote Node, and Configured Nodes.
-- **Phone Setup tab:** contains `components/settings/PhoneSetupGuideCard.vue` plus `components/settings/PhoneAccessCard.vue` in both embedded and remote-node windows. Remote-node windows follow the trusted private-network product model for desktop/Electron access; Phone Access pairing remains separate and issues only mobile `mra_...` credentials to paired phones.
-- **Phone Access controls:** the Phone Access card is the pairing and revocation surface for the current window's node. Operators can enable or disable Phone Access, choose or manually enter a Tailscale/VPN/private-network HTTPS URL, create a short-lived pairing QR/link, inspect active phones, view revoked/history records separately, revoke one active phone, or revoke all active phones. New QR creation blocks HTTP URLs. In remote-node windows, QR creation requires a manual phone-facing private HTTPS URL and verifies its `serverInstanceId` matches the desktop management URL before creating the pairing session. See [Phone Access / Remote Access](./remote_access.md) for the user and packaging guide.
-- **Phone setup guide data:** `utils/phoneSetupGuideCommands.ts` owns the macOS Tailscale.app install link and copyable app-direct Serve commands (`/Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695`, `serve --bg 29695`, `serve status`, and `serve reset`) so the guide component does not embed command catalogs in its template.
-  - The guide tells macOS users to run the commands themselves; AutoByteus does not run Tailscale, inspect local Tailscale state, or parse `serve status` output.
-  - The guide tells users to copy the full MagicDNS hostname/FQDN, for example `machine.tailnet.ts.net`, append `/mobile`, and paste that HTTPS URL into Phone Access. IPv4/IPv6 and `:29695` HTTP interface addresses are diagnostics rather than the preferred HTTPS Serve QR target.
-  - The Phone Access card makes the manual Tailscale Serve HTTPS URL field the primary post-Serve QR path. HTTP-only discovered candidates remain selectable for diagnostics but are not auto-selected under HTTPS-required pairing.
-- **Docker Guide tab:** `components/settings/DockerNodeStartGuideCard.vue` gives packaged-app users copyable no-clone commands for running a published server Docker node. This content is tutorial/help guidance rather than saved node settings, so it is intentionally separated from the management form flow.
-  - macOS/Linux and Windows PowerShell primary commands install or replace the local `autobyteus-docker` launcher once from the public raw GitHub URL.
-  - After install, the guide shows direct local commands such as `autobyteus-docker new-container`, `autobyteus-docker upgrade --all`, `autobyteus-docker destroy --all`, `autobyteus-docker reset`, `autobyteus-docker workspace paths`, `autobyteus-docker workspace apply --all`, `autobyteus-docker storage`, `autobyteus-docker urls`, `autobyteus-docker status`, `autobyteus-docker logs`, and `autobyteus-docker stop`.
-  - The command catalog lives in `utils/dockerNodeLauncherCommands.ts`; public script paths, the raw GitHub owner/repo/ref, install commands, and direct command variants should be changed there rather than duplicated in the component template.
-  - The guide tells users to paste the launcher-printed Backend URL into Add Remote Node on the Manage Nodes tab and open it only over a trusted LAN, VPN, tailnet, or equivalent private-network path. The app remains responsible for remote-node registration/probing, while the external launcher owns Docker lifecycle.
-  - `new-container` creates the next indexed managed node (`autobyteus-server-0`, `autobyteus-server-1`, ...). `upgrade --all`, `destroy --all`, and `reset` provide explicit all-node lifecycle actions while keeping Docker volumes.
-  - Docker guide copy presents the normal launcher path only: `new-container` creates a managed Docker node with named volumes, published server/browser ports, and host-visible workspace/shared-folder bind mounts.
-  - Existing managed containers can receive the current host-visible workspace bind mounts through `autobyteus-docker workspace apply --all`.
-- Register and rename remote nodes from the Manage Nodes tab.
-- Validate connectivity/capabilities from the Manage Nodes tab.
-- Use packages, Git/folders, and catalog Reload for agent/team definition updates; configure MCP servers explicitly on each machine from Settings → MCP Servers.
-- In Electron, `Remote Browser Sharing` is an advanced opt-in setting for sharing the local Browser runtime with selected remote nodes.
-- Changing the remote-browser-sharing listener host requires restarting Electron because the Browser bridge listener is started by Electron main during desktop bootstrap.
-- Pairing and revoke actions are per remote node, and successful pair/unpair operations refresh remote browser-tool availability without restarting the remote node server.
+### Stopped-Run Follow-Up Recovery
 
-### 4. Messaging
+Single-agent and team follow-up chat share the same backend-owned recovery
+principle, but the standalone runtime activation boundary is now the
+`SEND_MESSAGE` command:
 
-**Component:** `components/settings/MessagingSetupManager.vue`
+- frontend single-agent stores do not call `RestoreAgentRun` as a send precondition; team stores may still use the team restore/resolve path owned by the team container;
+- standalone WebSocket connect can attach to an inactive durable run identity without restoring it, and standalone `SEND_MESSAGE` is the backend-owned recoverable command that publishes `initializing`, restores/activates, and forwards the message;
+- team WebSocket connect and `SEND_MESSAGE` remain restore-aware through the team container, so follow-up chat can still recover stopped-but-persisted team runs when the frontend cache is stale, missing, or was updated after a local stop;
+- accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
+- interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
-Managed setup for external messaging providers on the selected node.
+Tool approval controls use the selected active context only. Inline approval
+buttons call the active context store, which routes to the single-agent or team
+run store and emits `APPROVE_TOOL` / `DENY_TOOL` to the backend. The frontend
+must not treat a click as local execution success, local denial finality beyond
+the immediate requested command, or stopped-run recovery. Authoritative state
+comes back through backend `TOOL_APPROVED`, `TOOL_DENIED`,
+`TOOL_EXECUTION_*`, `ERROR`, and status/lifecycle projections; stale/no-active
+or interrupted approval attempts remain backend-rejected control outcomes. A
+visible tool row is not itself approval authority: approval buttons should be
+shown only for `awaiting-approval` rows, and backend rejection remains
+authoritative when a stale client attempts to approve an active-but-not-pending
+tool invocation. For team streams, approval dispatch must use the structured
+`ToolApprovalTarget` captured from the backend approval event, such as a member
+route key/path. When the pending approval belongs to a delegated task-agent run,
+the target must also carry the concrete `task_agent_run_id` emitted by the
+backend so approval/denial routes to that task-scoped runtime rather than the
+logical member template. The frontend must not rebuild approval targets from the
+current focused member, scalar aliases, or invocation-id fallbacks after focus
+changes.
 
-- The `Managed Messaging Gateway` card at the top installs, starts, restarts, disables, and diagnoses the shared messaging runtime.
-- Provider selection and configuration sit below the runtime card.
-- Channel binding maps external identities to either an agent definition plus saved launch preset or a team definition plus saved team launch preset.
-- Inbound messages can auto-start the bound agent runtime when no cached bot-owned live run is available, or lazily create and later reuse the team run for the selected team definition only while that bot-owned run remains live in the current server session.
-- Verification runs readiness checks across runtime, binding, and provider state.
-- Telegram is easiest in polling mode and is mostly configured from inside the app after bot creation.
+Interrupt dispatch is intentionally not a local completion event. The frontend must
+keep the affected single run or focused team member in its current sending
+state until `TURN_COMPLETED`, `AGENT_STATUS`, or `ERROR` stream handling clears
+that state. This keeps the primary input from advertising follow-up readiness
+before provider runtimes such as Claude Agent SDK have settled interrupted
+query/process resources.
 
-For the full managed flow, including Telegram setup and a live acceptance checklist, see:
+### Runtime Status And Interrupt Authority
 
-- **[Managed Messaging Setup](./messaging.md)**
+The frontend runtime status model is intentionally coarse:
 
-### 5. Display
+- single-agent and team status enums expose `offline`, `initializing`, `idle`, `running`, and `error`;
+- single-agent `AGENT_STATUS` payloads are
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
+- team member interrupt authority comes from the selected member's most recent
+  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+- legacy transition-field names and detailed runtime
+  phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
+  are not part of the frontend WebSocket status contract.
 
-**Component:** `components/settings/DisplaySettingsManager.vue`
+Runtime adapters may still use richer provider/native status internally. The
+server boundary projects those details into the coarse API status and computes
+`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+remains a local submit-flight and disabled-input signal only; it must not be
+used to show the stop button or to infer that an interrupt can be accepted.
+When the backend accepts a standalone `SEND_MESSAGE` command for an inactive or
+prepared run identity, `AgentRunCommandCoordinator` is responsible for
+publishing non-interruptible `initializing` before slow restore/start/activation
+work; the frontend displays that streamed status or `AGENT_COMMAND_ACK.status`
+instead of inventing a lifecycle placeholder. Restored runtime readiness or a
+restored status snapshot is not a frontend-visible replacement for this
+overlay; keep showing backend `initializing` until command-correlated
+`TURN_STARTED`, `AGENT_STATUS`, terminal/error, or coordinator failure evidence
+arrives. When the backend accepts a
+focused team-member command for an `offline` or `idle` member, the team backend
+publishes member-scoped non-interruptible `initializing` before slow member
+startup/send work.
+Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
+and active `uninitialized` project as active non-interruptible
+`initializing`; they keep send readiness blocked without granting the red
+interrupt affordance. Active processing/tool/LLM tokens project as `running`.
+When the selected context is a team, stop/interrupt dispatch must resolve the
+same active-execution command member as the composer send path at click time.
+That command member can intentionally differ from roster/history visual focus:
+for example, an all-offline historical team row can show `api_e2e_engineer` in
+Focus/Grid/Spotlight while the composer remains safely targeted at the
+coordinator. The frontend sends team `INTERRUPT_GENERATION` with
+`target_member_route_key` set to the active-execution command member route key
+and `target_member_run_id` set only as an optional member run-id guard. If there
+is no command-eligible focused leaf member, the focused context is stale, or no
+active team streaming service exists, the frontend must not send a team
+interrupt command.
+Run-history refresh, active recovery, and run-open hydration must preserve an
+already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
+single run or focused team member while that live stream remains authoritative,
+but terminal `offline` or `error` history projections must clear stale
+`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
+`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+browser-visible stop affordance.
 
-App-wide font-size controls for accessibility and readability.
+Active team recovery and refresh must keep aggregate and member status separate.
+If a team row is `running` or `initializing` but only one member has a
+member-scoped active history/snapshot/event, the other members must stay at
+their own member-scoped status, or default to `offline/canInterrupt=false`
+until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
+out aggregate team `running` or `initializing` state to every member row.
+Delegated task-agent instances are task-scoped transient child entities under
+their logical member/template. When team stream payloads carry explicit
+task-agent identity (`task_agent_instance_id`, `task_agent_run_id`, `task_id`)
+plus logical member metadata (`member_path` / `member_route_key` and
+`source_path` / `source_route_key`), `TeamStreamingService` creates a temporary
+task-agent context/node keyed by the task-agent run id.
+`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
+strip as concrete task children, and shows pending approvals on the task-agent
+card when the task-agent runtime is waiting for tool approval. Running and
+awaiting-acceptance task-agent children must remain visible and addressable
+after active team reopen/hydration, even when server resume metadata only lists
+the stable logical coordinator/member rows. Run-open hydration therefore
+restores concrete children from live task-agent projection/identity instead of
+collapsing them into the logical member parent. Stream message routing is owned
+by the team-stream member context resolver: task-agent identity wins first,
+then exact logical route/path identity, then compatible run-id fallback. The
+frontend must not recreate the removed `isTaskAgentRunId` generated-run-id
+heuristic or any other run-id-format parser as a routing authority. After
+delegator acceptance and backend settlement/offline cleanup, the frontend
+removes the transient child node/card while preserving the logical member
+parent and the coordinator/member history that records the delegated task
+completion.
 
-- Presets: `Default`, `Large`, `Extra Large`
-- Preset metrics:
-  - `Default` = root `100%`, Monaco `14px`, Terminal `14px`
-  - `Large` = root `112.5%`, Monaco `16px`, Terminal `16px`
-  - `Extra Large` = root `125%`, Monaco `18px`, Terminal `18px`
-- The selected preset applies live without a full app restart.
-- The preference persists across reloads and desktop restarts.
-- The current window updates immediately; already-open secondary windows pick up the saved preset after reload/reopen.
-- Root app scaling keeps rem-based UI text aligned while Monaco and Terminal receive explicit numeric font-size updates.
-- The setting is intended to cover high-frequency workspace, explorer, artifact, and conversation surfaces instead of introducing viewer-only font controls.
+When a single-agent run is terminated successfully, the backend publishes
+`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+stream before teardown. Frontend live state and history merge logic should treat
+`offline` as the canonical inactive non-error terminal state instead of waiting
+for a socket close or a later history reload to infer that transition.
 
-### 6. Language
+### Compaction Lifecycle Activity And Center Feed
 
-**Component:** `components/settings/LanguageSettingsManager.vue`
+Native AutoByteus memory compaction status is projected as Activity lifecycle
+state first. The right-side Activity panel should retain the full compaction
+operation identity and phase progression, including requested/queued,
+execution, terminal success/failure, timestamps, and surrounding tool-result
+detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+LLM-facing text and must not replace the backend memory artifact contract.
 
-Manual locale selection for the product UI.
+The center conversation feed is narrower. Requested/queued compaction phases are
+internal scheduling states and stay out of the center feed so a pending
+tool-call turn is not split before tool results arrive. The first
+center-eligible execution phase for a compaction operation marks the current
+frontend assistant visual block complete, allowing the `Memory compacted` row to
+appear after the tool-call/result block and before the post-compaction assistant
+continuation. Completed/failed execution rows may be shown in the center feed;
+requested/queued rows must not.
 
-- Preference modes: `System`, `English`, `简体中文`
-- The active choice persists across reloads.
-- `System` resolves through the browser locale list in web mode and Electron `app.getLocale()` in desktop mode.
-- Unsupported system locales fall back to English.
-- The selected locale is applied live without a full app restart.
+Historical run reopen uses the backend replay bundle as the display source for
+actual user, assistant, reasoning, and tool trace content. Native compaction
+projection cards are intentionally live-only center feedback in this slice:
+reopened historical conversations should replay the real work trace from active
+plus archived raw traces and should not synthesize center compaction cards from
+compaction lifecycle/status entries.
 
-For runtime details and contributor guidance, see:
+### Run Reopen Projection Hydration
 
-- **[Localization](./localization.md)**
+Run-history reopen consumes a backend replay bundle with sibling
+`conversation` and `activities` projections. Frontend open coordinators must
+apply those siblings together when replacing from projection, or preserve both
+existing live surfaces when an already-subscribed live context is kept. They
+must not hydrate projected Activity rows into a context whose live conversation
+is being preserved, because that can create right-pane-only tool entries after
+restart. For active team reopen, projected Activity hydration is limited to
+newly materialized member contexts whose projected conversation is also being
+applied.
 
-### 7. Local Tools
+### Workspace History Row Titles
 
-**Component:** `components/tools/ToolsManagementWorkspace.vue`
+Workspace history rows render `RunTreeRow.summary` as the visible one-line task
+title. For standalone agent runs that title should represent the initial
+non-empty user message, not the latest follow-up. When the history tree is
+merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
+overlays active status and the live context's activity timestamp while using the
+live conversation's first non-empty user message as the row summary when
+available. Persisted standalone and team history rows arrive from GraphQL with
+`createdAt` plus derived live status fields, not durable `lastActivityAt`,
+`lastKnownStatus`, or delete-lifecycle fields. The frontend read model maps
+`createdAt` into the shared tree sort field for stored rows and derives local
+team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
+catalog facts plus live status. This prevents an active persisted row with a
+stale latest-message summary from overriding the known initial-message title in
+the sidebar while keeping backend history catalogs out of live-status storage.
 
-Local tool browser embedded directly inside Settings.
+If no live first-user-message summary is available, the frontend keeps the
+backend-provided history summary. Team row title behavior remains owned by the
+team-history path and is not reinterpreted by the standalone live-context
+overlay.
 
-- Browse built-in/local tools by category.
-- Search tool names and descriptions.
-- Inspect tool schemas and parameters.
+### Workspace History Progressive Disclosure
 
-For the full module behavior, see:
+The Workspaces sidebar history tree uses progressive disclosure for its
+ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+from `useWorkspaceHistoryTreeState(...)`, and
+`WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
+current expansion state.
 
-- **[Tools and MCP](./tools_and_mcp.md)**
+- Workspace rows default collapsed after history loads, so the initial tree
+  shows workspace names only.
+- Expanding a workspace reveals the next-level standalone-agent groups and
+  team-definition groups for that workspace.
+- Standalone run rows and team-run rows stay collapsed until the user expands
+  the specific agent group or team-definition group.
+- Manual workspace, agent-group, team-definition-group, and team-run expansion
+  choices are kept in component-local tree state and are not reset by quiet
+  history refreshes while the history panel remains mounted.
+- Newly added workspaces are explicitly opened after creation so the add flow
+  still lands the user in the workspace they just created.
 
-### 8. MCP Servers
+When an existing run or team run is selected before its history ancestry is
+visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
+reveal. The reveal expands only the selected run/team's workspace and containing
+agent or team-definition group, and for selected team runs also opens that team
+run's member row. After the selected path has been revealed for the stable
+selection key, later quiet refreshes must not reopen the same path if the user
+manually collapses it.
 
-**Component:** `components/tools/ToolsManagementWorkspace.vue`
+For team-run member rows, selection state uses roster/history visual focus, not
+active-execution command focus. Clicking a member row whose route key exists in
+the team's `memberTree` should keep that route key selected in the history tree
+and Focus display even when the member is offline or has no active runtime
+context. Live/hydrated team-context merges must preserve the persisted history
+row's workspace grouping and use this roster focus for selected-row
+highlighting; the shared composer remains active-execution-owned separately.
 
-MCP server management embedded directly inside Settings.
+### Workspace History Archive And Delete Actions
 
-- Add, edit, delete, and bulk import MCP server configurations.
-- Discover tools from configured MCP servers.
-- Inspect the tools registered for a specific MCP server.
+`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+workspace history tree wiring and delegates row rendering to
+`WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
+archive, termination, draft removal, and permanent delete separate:
 
-For the full module behavior, see:
+- active standalone runs and active team runs expose stop/terminate actions, not
+  archive;
+- temporary draft rows use local remove/discard behavior and are not sent to the
+  archive API;
+- inactive persisted standalone runs call `runHistoryStore.archiveRun(runId)`,
+  which uses the backend `archiveStoredRun` mutation; and
+- inactive persisted team runs call `runHistoryStore.archiveTeamRun(teamRunId)`,
+  which uses the backend `archiveStoredTeamRun` mutation.
 
-- **[Tools and MCP](./tools_and_mcp.md)**
+Successful archive removes the row from the current default history tree,
+clears selected/open local context for the hidden run or team when applicable,
+and refreshes history from the backend. Failed archive leaves the visible tree
+and current selection unchanged and reports the error. The destructive delete
+affordance remains separate and continues to use the existing permanent-delete
+confirmation path for users who intend to remove stored memory. There is
+currently no archived-history browser or unarchive UI in this frontend slice.
 
-### 9. Application Packages
+### Uploaded Context Attachment Orchestration
 
-**Component:** `components/settings/ApplicationPackagesManager.vue`
+Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, team, and application-backed conversations:
 
-Manage application package sources used by the current node.
+1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
+2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
+3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
+4. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+5. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
-- Platform-owned built-in applications appear as `Platform Applications` only when the managed built-in package currently contains at least one application. The current built-in application set may legitimately be empty.
-- The default list distinguishes platform-owned, linked local, and GitHub-imported sources instead of presenting every source as an equivalent filesystem root.
-- Raw internal built-in paths stay off the default list; `Show details` reveals root/source/managed-path metadata only on demand for support/debug work.
-- Linked local packages keep the user-chosen local path visible in the default list because that path is part of the operator's import choice.
-- GitHub-installed packages use repository identity in the default list while keeping the managed install path in the details panel.
-- Import and removal refresh Applications, Agents, and Agent Teams in the same session.
+This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
 
-### 10. Agent Packages
+### Existing Run Configuration Inspection
 
-**Component:** `components/settings/AgentPackagesManager.vue`
+`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
+editable new-run launch configuration and inspect-only configuration for an
+already selected run. When `selectionStore.selectedRunId` is present, the panel
+passes read-only mode to the agent/team configuration forms instead of treating
+the selected run's config as a launch buffer.
 
-Manage agent package sources used by the app.
+Selected existing single-agent and team run configuration is intentionally
+inspect-only:
 
-- Import a package from a local filesystem path. Local folders remain user-owned:
-  AutoByteus validates and reads them, but it does not pull Git, overwrite files,
-  or otherwise mutate the folder. Use the row-level **Reload** action after
-  editing or pulling that folder externally.
-- Import a package from a public GitHub repository URL. GitHub imports are
-  installed into AutoByteus-managed storage from the repository archive; the app
-  does not require a system `git` binary for import or update.
-- Review installed package inventory, source type, package counts, and
-  source-aware update state. GitHub rows can be `Not checked`, `Unknown
-  installed version`, `Up to date`, `Update available`, `Check failed`, or
-  `Last update failed`; local rows show that reload is available.
-- Use **Check again** on GitHub rows to refresh default-branch revision metadata.
-  When the remote revision is newer, or when a legacy GitHub import has unknown
-  installed revision metadata, use **Update** to download, validate, and replace
-  the managed package. Failed checks or updates keep the existing package
-  available and show the recorded error.
-- Duplicate GitHub imports direct operators back to the existing package row's
-  check/update flow instead of requiring delete/re-import.
-- Direct private GitHub URL imports are not authenticated in this flow. Clone or
-  sync private repositories locally, import the local path, and use **Reload**
-  after external updates.
-- Package agents may carry package-private or team-shared skills referenced from
-  `agent-config.json.skillNames`. Those skills travel with the imported package,
-  resolve context-first at agent runtime, and appear as standalone rows in the
-  normal Skills page/catalog so users can browse their `SKILL.md` content and
-  package files through the existing Skill Detail/File Explorer flow.
-- Remove removable imported packages from app-managed storage. Built-in/default
-  package rows are platform-owned and do not expose user update, reload, or
-  remove actions.
-- Import, removal, local reload, and managed GitHub update refresh the dependent
-  Applications, Agents, and Agent Teams catalogs in the same session.
+- runtime, model, workspace, auto-approve, skill-access, and team-member
+  override controls render disabled;
+- form update handlers and shared runtime/model normalization emissions no-op in
+  read-only mode so historical context is not locally mutated;
+- the launch/run button is absent while an existing run is selected;
+- localized read-only notices explain that the selected run can be inspected but
+  not edited; and
+- advanced model/thinking controls remain visible or expandable so persisted
+  values such as backend-provided `reasoning_effort: "xhigh"` can be inspected.
 
-### 11. Server Settings
+The frontend consumes historical model configuration exactly as provided by the
+backend. If the backend-provided `llmConfig` is missing/null, the model config UI
+may show a localized `Not recorded for this historical run` state, but it must
+not infer a current default, recover a runtime value, or materialize metadata.
+Backend/runtime/history recovery or persistence semantics belong to a separate
+backend ticket, not this frontend inspection boundary.
 
-**Component:** `components/settings/ServerSettingsManager.vue`
+The model-config surface is schema-driven, not thinking-only. It renders
+explicit `llmConfig` values first and valid schema defaults second; showing a
+default does not write that value into the launch buffer. The top-level
+**Thinking** state is computed from provider schema keys such as
+`reasoning_effort`, `thinking_enabled`, `thinking_type`, `thinking_level`, and
+`include_thoughts`, not from model/display names. If a schema-backed model has
+reasoning enabled by default but no supported off value, the UI can show
+**Thinking** on in a non-disable-capable state instead of emitting an unsupported
+off payload.
 
-A flexible key-value store for backend configurations.
+Editable primary/global agent and team launch config initializes **Advanced**
+from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
+by default so users can see defaults such as Codex `reasoning_effort: "medium"`
+or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
+unavailable leaves **Advanced** collapsed initially, but still openable.
+Toggling a supported **Thinking** control ON opens **Advanced** automatically;
+toggling OFF after inspection does not force-collapse the section.
 
-- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Featured catalog items`, `Codex full access`, `Streaming parser`, `Web Search Configuration`, `Self-evolution`, and a dedicated `Compaction config` card.
-- **Default media models:** `components/settings/MediaDefaultModelsCard.vue` exposes model selectors for the media-tool defaults without requiring operators to remember raw env keys:
-  - **Image editing:** saved to `DEFAULT_IMAGE_EDIT_MODEL`.
-  - **Image generation:** saved to `DEFAULT_IMAGE_GENERATION_MODEL`.
-  - **Speech generation:** saved to `DEFAULT_SPEECH_GENERATION_MODEL`.
-  - Image selectors use the existing image model catalog; speech uses the existing audio model catalog.
-  - If a saved model is not currently present in the loaded catalog, the selector keeps that current value visible until the operator chooses and saves another model.
-  - Defaults apply to future/new media tool use. Existing active sessions or already-created media clients may keep the model they started with.
-- **Featured catalog items:** `components/settings/FeaturedCatalogItemsCard.vue` saves the versioned JSON list behind `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` without requiring operators to edit raw JSON.
-  - Entries can target either an `AGENT` or an `AGENT_TEAM` definition and are ordered with stable `sortOrder` values.
-  - Fresh server startup does not auto-feature Daily Assistant or any other agent; operators choose featured agents and teams from this card.
-  - Daily Assistant is a private/user-managed agent when loaded from a package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/`, and it can be featured here like any other resolvable agent definition.
-  - Existing non-blank settings are preserved, including an intentional empty `{"version":1,"items":[]}` list.
-  - The card supports adding, removing, and reordering featured agents and teams; duplicate entries are blocked before save and again at the server-setting boundary.
-  - If a saved definition id no longer resolves, Settings keeps the unresolved row visible so an operator can remove it, while catalog pages ignore the unresolved id safely.
-  - Agents and Agent Teams pages consume this server setting as the only featured-placement source; agent `category` values and `agent-config.json` metadata do not control featured placement.
-- **Codex full access:** `components/settings/CodexFullAccessCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common Codex filesystem-access decision without requiring operators to edit the raw `CODEX_APP_SERVER_SANDBOX` key.
-  - Toggle on saves `danger-full-access`.
-  - Toggle off saves `workspace-write`, the default/recommended mode.
-  - The Advanced/API path still accepts all runtime-valid values: `read-only`, `workspace-write`, and `danger-full-access`.
-  - `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
-  - Changes apply to new/future Codex sessions. Existing active Codex sessions keep the sandbox mode they were started with.
-  - Agent/team launch `Auto approve tools` is a separate high-trust per-run policy for Codex. When enabled, the backend automatically allows Codex tool calls and access/permission requests for that run and starts/resumes Codex with effective `danger-full-access`, even if this saved full-access toggle is off. When disabled, Codex dynamic tools and permission requests use the visible tool-approval flow.
-- **Streaming parser:** `components/settings/StreamingParserCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common XML streaming parser override without requiring operators to edit the raw `AUTOBYTEUS_STREAM_PARSER` key.
-  - Toggle on saves `xml`.
-  - Toggle off saves `api_tool_call`, the provider-native/default non-XML mode.
-  - Only `xml` renders the Basics toggle as on. `api_tool_call`, `json`, `sentinel`, blank, and unsupported values render as off; non-XML Advanced values are not overwritten unless the operator explicitly makes and saves a Basics toggle change.
-  - The Advanced/API path still accepts all runtime-valid values: `xml`, `json`, `sentinel`, and `api_tool_call`.
-  - Changes apply to new streamed agent responses. Already-active streams are not mutated in place.
-- **Compaction config:** The typed compaction card saves the main memory-compaction controls without requiring operators to remember raw env keys:
-  - **Compactor agent:** saved to `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; choose a normal agent definition whose instructions/default launch config own compaction behavior. Fresh servers seed platform built-in agents through the unified backend built-in-agent subsystem and auto-select the normal shared `autobyteus-memory-compactor` definition when this setting is blank. Configure that selected/default agent's runtime and model in the normal agent editor; missing launch defaults fail compaction clearly instead of falling back to the active run model. The compactor `agent.md` owns stable behavior and manual-test guidance; automated compaction still adds the current exact JSON contract before the `[CONVERSATION_HISTORY_TO_SUMMARIZE]` conversation-history section for parser compatibility. That compactor-facing contract uses facts-only semantic entries and does not ask the model for optional `reference` strings or free-form `tags`. Existing user-edited compactor definitions are preserved by bootstrap and may keep older wording until an operator edits them.
-  - **Compaction trigger ratio (%):** saved to `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`; defaults to `80%`.
-  - **Effective context override:** saved to `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`; use this when a provider (for example LM Studio) fails before its advertised maximum context.
-  - **Enable detailed compaction logs:** saved to `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`; turns on verbose budget/execution/result diagnostics in server logs.
-- **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and visible compactor-agent runs without restarting the server.
-- **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
-- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings. `AUTOBYTEUS_STREAM_PARSER` is also predefined, editable, and non-deletable; it normalizes valid parser values and rejects values outside `xml`, `json`, `sentinel`, and `api_tool_call`. `DEFAULT_IMAGE_EDIT_MODEL`, `DEFAULT_IMAGE_GENERATION_MODEL`, and `DEFAULT_SPEECH_GENERATION_MODEL` are also predefined editable, non-deletable settings while still accepting dynamic model identifiers from the runtime catalog. `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` is likewise predefined and validates/normalizes its versioned JSON payload before persistence.
-- **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` now appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node’s runtime Applications capability.
-- **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
-- **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.
-- **Initialization source visibility:** The card surfaces whether the current value came from an explicit persisted server setting or from one-time discovery-seeded initialization during cutover.
-- **Self-evolution feature toggle:** `components/settings/SelfEvolutionFeatureToggleCard.vue` appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node's manual skill self-evolution capability.
-  - Toggle on saves `ENABLE_SELF_EVOLUTION=true`; toggle off saves `false`. If the backend setting was missing, the capability initializes as disabled before the UI shows it.
-  - This is a global hard gate only. It does not schedule evolution or make every run eligible; manual starts still require a run/member `selfEvolutionEffective` metadata snapshot, implemented `manual_only`/`single_agent` strategies, and at least one writable configured `SKILL.md` target.
-  - The selected helper agent is controlled by the predefined advanced setting `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID`. Fresh servers seed the built-in `autobyteus-skill-evolver`; operators can choose another agent through the raw setting if it includes `run_bash`. Blank runtime/model defaults on that helper inherit from the target run at launch.
-  - When disabled, workspace history self-evolution actions are hidden. When enabled, those actions still lazy-load backend eligibility and stay disabled until the backend reports the target is eligible.
-- **View & Edit:** precise control over server-side flags and parameters.
-- **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
-- **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
-- **Workspace feedback:** Compaction activity is surfaced back in the active agent/team workspace as a status banner (`Compaction queued`, `Compacting memory…`, `Memory compacted`, or failure text) rather than only appearing as an unexplained pause.
+Compact member override rows may stay collapsed to avoid expanding large team
+forms. They still display inherited/effective defaults when expanded, and
+explicit member-local runtime or model selections that resolve to an effective-ON
+model can open only that member's **Advanced** controls. Display-only inherited
+or schema-default values must not create member overrides. Non-thinking
+runtime/model parameters render through the same advanced schema component; for
+Codex, a fast-capable model can therefore expose `service_tier` with the
+user-facing label **Fast mode** beside reasoning settings.
 
-### 12. Extensions
 
-**Component:** `components/settings/ExtensionsManager.vue`
+### Self-Evolution Snapshots And Manual Composer Action
 
-Managed optional capabilities that download their runtime assets on demand instead of shipping inside the base app bundle.
+Self-evolution is run-owned, not definition-owned. Frontend run-config types can
+carry an optional `selfEvolution` override for standalone runs, team runs, and
+team agent-member launch records, and the backend snapshots the effective result
+into run/member metadata as `selfEvolutionEffective`. Agent/team definition
+forms and persisted definition defaults must not add `selfEvolution`; changing a
+definition later must not change historical run eligibility. Existing runs with
+no snapshot are ineligible.
 
-- **Install / Reinstall / Remove:** Downloads or refreshes release-hosted runtime assets under `~/.autobyteus/extensions/<extension-id>`.
-- **Install / Reinstall / Remove:** Downloads or refreshes the lightweight runtime bundle under `~/.autobyteus/extensions/<extension-id>` and performs local backend/model bootstrap during install.
-- **Enable / Disable:** Separates installation from active usage so installed extensions can stay on disk while disabled.
-- **Open Folder:** Opens the managed install root for the selected extension.
-- **Voice Input:** The current managed extension ships a local bilingual dictation runtime.
-  - Language modes: `Auto`, `English`, `Chinese`
-  - Lifecycle states: not installed, installing, installed and disabled, installed and enabled, needs attention
-  - The shared composer microphone appears only when Voice Input is installed, enabled, and not in an error state.
+The visible launch forms own the user-facing eligibility choice. Standalone
+agent launches expose a **Self-evolution eligibility** control when the backend
+capability is enabled; team launches expose a team-level default plus leaf
+member overrides. The controls are launch-time inputs only: turning them on
+sets the next run's `selfEvolution` override before launch, while history rows
+and existing runs continue to rely on the backend `selfEvolutionEffective`
+snapshot already stored for that run/member.
 
-### 13. Updates
+`useSelfEvolutionCapabilityStore` owns the global typed capability query/mutation
+for `ENABLE_SELF_EVOLUTION`. `useSelfEvolutionStore` owns backend eligibility and
+manual start calls. Run-history rows do not expose self-evolution controls. The
+only user-facing manual start entrypoint is the concise composer-adjacent
+**Self improve** CTA for the selected active standalone run or team member. That
+CTA is hidden when the global capability is disabled, hidden for Skill
+Self-Evolver helper runs, hidden for old/pre-snapshot/ineligible runs, and
+lazy-loads backend eligibility before rendering. The UI must not show technical
+backend ineligibility reasons in chat and must not recompute eligibility from
+current definitions or local skill lists.
 
-**Component:** `components/settings/AboutSettingsManager.vue`
+Starting self-evolution from the composer CTA calls
+`startAgentRunSelfEvolution` or `startTeamMemberSelfEvolution` without run-time
+overrides. The backend uses the stored snapshot, starts a separate visible
+evolver `AgentRun`, and records the `evolutionRunId` / optional `evolverRunId`.
+The current UI stores the returned record summary only internally and shows at
+most a short transient toast/status after start. It must not render a persistent
+composer card, evolution record id, or helper-run navigation button.
+Active idle standalone target notifications originate as local runtime-neutral
+`AgentRunEventType.SYSTEM_TASK_NOTIFICATION` events emitted by the server-side
+target-notification service, then render through `SystemTaskNotificationSegment`
+via the standalone stream handler. Team/member stream notifications use the same
+frontend segment handler, while self-evolution team-member active notification
+remains next-run-only in the MVP. The UI notification is separate from any
+runtime/model skill-refresh instruction. The MVP does not expose a
+metrics/reporting query and the UI must not imply helper completion proves
+downstream improvement.
 
-Canonical app metadata and manual update controls.
+### New Run From Existing Run
 
-- Shows current desktop app version.
-- Shows updater status and last-checked timestamp.
-- Provides one manual **Check for Updates** action.
-- Shows contextual actions (`Download Update`, `Install & Restart`) when update state requires it.
-- Shows safe, localized update failure messages from the shared updater
-  `errorKind` contract; raw provider errors, stack traces, `net::ERR_*`, and
-  `ERR_UPDATER_*` diagnostics stay in Electron logs.
-- When result is already-latest (`no-update`), the update notice remains visible for at least 3 seconds before auto-dismiss.
+When the user clicks the workspace header add/new-run action while an existing
+single-agent or team run is selected, the frontend treats that selected run as a
+launch template for the new editable draft. The selected run itself remains
+inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
+the selected run config, including runtime kind, model identifier, workspace,
+auto-approve/skill-access settings, `llmConfig`, and team member overrides.
+
+That source-copy path must preserve backend-provided model-thinking fields such
+as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
+loading. Schema arrival may sanitize invalid model-config keys after a real
+schema is available, but an empty/loading schema must not clear the copied
+`llmConfig`. Explicit user runtime/model changes remain the owner for stale
+model-config cleanup.
+
+Schema arrival is also the cleanup boundary for runtime-specific non-thinking
+parameters. For example, when a copied or default Codex config contains
+`service_tier: "fast"` and the user switches to a model whose active schema does
+not include `service_tier`, the stale key is removed before launch.
+
+If there is no selected same-definition source run, workspace add/new-run flows
+fall back to the existing definition/default launch preferences instead of
+inventing historical config.
+
+---
+
+## Level 2: Service Layer (Event Routing)
+
+The service layer bridges the gap between the WebSocket transport and the application's business logic. It essentially functions as a router.
+
+### `AgentStreamingService.ts`
+
+- **Role**: WebSocket facade for single-agent streams.
+- **Responsibilities**:
+  1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
+  2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
+  3.  Dispatches messages to the appropriate pure-function handler.
+
+### Dispatch Logic
+
+Incoming events are routed based on their `type`:
+
+| Event Type                | Handler Function                                   | Purpose                                                         |
+| :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
+| `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
+| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Appends streaming content (deltas) to an existing segment.      |
+| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
+| `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
+| `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent identity update the transient task-agent context and remove its card after terminal `offline`; resolver-owned routing must not depend on generated run-id patterns. |
+| `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
+| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
+| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
+| `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
+| `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
+| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id and logical member route/path for card-level approve/deny routing. |
+| `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
+| `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
+| `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |
+| `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload; hydrates arguments when the terminal payload carries them. |
+| `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details; hydrates arguments when the terminal payload carries them. |
+| `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
+| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
+| `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
+| `EXTERNAL_USER_MESSAGE`   | `externalUserMessageHandler.handleExternalUserMessage` | Inserts or updates a user/input row by backend `message_id` / `dedupe_key`. In team streams this renders accepted member input, including parent-to-subteam delivery prompts, in the focused leaf transcript before assistant output. Repeated rows with no identity remain separate. |
+| `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
+| `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
+| `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
+
+---
+
+## Level 3: Segment Processing & State Management
+
+Unlike the previous architecture, the frontend **does not** parse raw text/XML tags. The backend is responsible for all parsing and sends "Segments" as its primary unit of communication.
+
+### Segment Handlers (`services/agentStreaming/handlers`)
+
+These handlers are pure functions that take a payload and an `AgentContext`, and mutate the context.
+
+#### `segmentHandler.ts`
+
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
+- **`handleSegmentContent`**: Finds the segment by backend-provided `segment_type` + `id` and appends string deltas. This powers the "typewriter" effect. The frontend intentionally trusts that identity contract; provider adapters must emit different ids for distinct text blocks that belong on different sides of tool cards instead of relying on frontend runtime-specific reorder logic.
+- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). When the backend sends `interrupted` or `failed` terminal metadata, it marks the segment/tool row terminal (`interrupted` or `error`) and stores the reason/error instead of leaving a spinner. It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for successful execution and terminal result/error state.
+
+#### `toolLifecycleHandler.ts`
+
+- Routes explicit lifecycle events through dedicated parse/state modules.
+- Enforces normal non-terminal progress while allowing provider order where `TOOL_EXECUTION_STARTED` can arrive before `TOOL_APPROVAL_REQUESTED`; in that case `awaiting-approval` remains the active UI state until approval/denial/terminal events arrive.
+- Enforces terminal precedence: `success` / `error` / `denied` are terminal and cannot be regressed by later non-terminal events or logs.
+- Hydrates arguments from lifecycle payloads. `TOOL_APPROVAL_REQUESTED` and `TOOL_EXECUTION_STARTED` are the primary sources; `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` may also carry arguments as a defensive result-first recovery path for runtimes whose start event is missed or arrives out of order.
+- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by exact invocation id only.
+
+#### `toolActivityProjection.ts`
+
+- Owns the shared live Activity projection policy used by both segment and lifecycle handlers.
+- Seeds pending/running Activity visibility from eligible tool-like `SEGMENT_START` payloads so the right-side Activity panel appears when the middle tool card appears.
+- Deduplicates segment-first and lifecycle-first paths by exact invocation id only, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Treats backend/provider invocation ids as opaque identity tokens for distinct tool calls. Colon suffixes are never stripped or aliased by frontend projection: provider-generated ordinals such as `run_bash:0`, `run_bash:1`, semantic-looking suffixes such as `call_1:write_file`, and approval metadata suffixes such as `call_1:approval-1` are distinct ids unless the backend emits the same canonical id on every related event. Producer adapters must keep approval ids and other provider metadata out of public `invocation_id`.
+- Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
+
+### Sidecar Store Pattern
+
+A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
+
+1.  **Run File Changes (`RunFileChangesStore`)**:
+    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Owns the run-scoped projection for touched files and generated outputs.
+    - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
+    - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
+2.  **Team Communication (`TeamCommunicationStore`)**:
+    - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files`.
+    - Exposes focused-member sent/received message perspectives grouped by counterpart member.
+    - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
+    - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+    - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
+3.  **Activity (`AgentActivityStore`)**:
+    - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`.
+    - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, and through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads.
+    - Segment events provide immediate pending tool visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration. Tool mutations are constrained to `kind: 'tool'` rows.
+    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as MCP-prefixed Claude browser/team tools must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+    - Powers the right-side Progress/Activity feed UI and the mobile run Activity list.
+    - Feeds intentionally different presentation surfaces:
+      - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation and routes non-awaiting cards into the matching tool activity item by `activityId`/invocation id.
+      - `components/workspace/agent/CompactionStatusRow.vue` renders compact compaction rows inside the event monitor feed.
+      - `components/progress/ToolActivityItem.vue` renders the right-side tool activity row, including the textual status chip and short invocation id.
+      - `components/progress/CompactionActivityItem.vue` renders the right-side compaction activity row without pretending it is a tool invocation.
+    - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual tool activity-status changes should stay in `ToolActivityItem.vue`; compaction row presentation should stay in the compaction row components.
+4.  **Todos (`AgentTodoStore`)**:
+    - Maintains the agent's Todo list separately from the chat history.
+
+### Run-Level Compaction Activity
+
+Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
+visible history is projected through `AgentActivityStore` as `CompactionActivity`
+rows.
+
+- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
+- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
+- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
+- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
+- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
+- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
+- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
+
+---
+
+## Error Event Nuance (Tool vs System)
+
+The backend can emit:
+
+- Explicit tool terminal lifecycle events (`TOOL_EXECUTION_FAILED`, `TOOL_DENIED`) for invocation-scoped failures.
+- A generic `ERROR` event for unrecoverable system/agent failures.
+- Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`) for one accepted user turn.
+
+`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
+aggregate team state. `TURN_COMPLETED` is now the preferred signal when a client
+needs to know that one exact turn has finished.
+
+`TOOL_LOG` is diagnostic-only and never the lifecycle authority for completion/failure.
 
 ## Related Documentation
 
 - **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, run-owned snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
-- **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
-- **[Agent Execution Architecture](./agent_execution_architecture.md)**: streamed runtime events, including compaction status propagation into the workspace banner.
-- **[Applications](./applications.md)**: runtime Applications availability, routing, and catalog behavior consume the capability managed from Settings.
-- **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.
-- **[Localization](./localization.md)**: language selection, locale resolution, and localization contributor workflow.
-- **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.
-- **[Tools and MCP](./tools_and_mcp.md)**: local tools browsing and MCP server management embedded in Settings.
+- **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
+- **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
+- **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

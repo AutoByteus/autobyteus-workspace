@@ -209,12 +209,19 @@ may be changed when a reusable improvement needs them. Agent/team definitions,
 MCP/tool config, source code, run memory, sibling skills, and files outside the
 listed roots are out of MVP scope.
 
-The frontend does not decide whether a skill is eligible for evolution.
-Workspace history calls backend eligibility, which returns writable target
-roots, primary `SKILL.md` paths, warnings, and reasons. The backend launches a
-visible helper run with anonymized work-history evidence and records minimal
-provenance; it does not compute changed paths or policy-violation metrics in
-the MVP.
+The frontend does not decide whether a skill is eligible for evolution. The
+composer-adjacent **Self improve** CTA lazy-loads backend eligibility for the
+selected active run or team member and stays hidden for ineligible, old, or
+pre-snapshot runs. Run-history rows do not own self-evolution actions. The
+backend launches a visible helper run with anonymized work-history evidence and
+records minimal provenance; it does not compute changed paths or
+policy-violation metrics in the MVP. After launch, the workspace may show only
+a short transient start status, while active idle standalone completion
+notifications render as system-task notification segments from a local
+runtime-neutral server event. That UI notification is not a runtime/model
+skill-refresh instruction; next-run correctness is the MVP baseline. Users
+should still inspect any Git-backed skill changes directly before treating them
+as accepted improvements.
 
 Git-backed skill packages remain the recommended testing and rollback mode for
 this MVP. The feature is globally disabled by default and direct editing is

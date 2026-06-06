@@ -121,7 +121,11 @@ describe('AgentWorkspaceView', () => {
         AgentEventMonitor: {
           name: 'AgentEventMonitor',
           props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl'],
-          template: '<div data-test="agent-event-monitor" />',
+          template: '<div data-test="agent-event-monitor"><slot name="composerContext" /></div>',
+        },
+        SelfEvolutionComposerCta: {
+          props: ['target'],
+          template: '<div data-test="self-evolution-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
         },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
@@ -166,6 +170,28 @@ describe('AgentWorkspaceView', () => {
     const wrapper = mountComponent();
     await wrapper.get('[data-test="edit-config"]').trigger('click');
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes the selected run to the composer self-evolution CTA', () => {
+    const wrapper = mountComponent();
+    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    expect(cta.attributes('data-run-id')).toBe('agent-1234');
+    expect(cta.attributes('data-helper-run')).toBe('false');
+  });
+
+  it('marks the Skill Self-Evolver helper run for CTA hiding', () => {
+    state.activeRun = buildAgentContext({
+      config: {
+        agentDefinitionId: 'autobyteus-skill-evolver',
+        agentDefinitionName: 'Skill Self-Evolver',
+        agentAvatarUrl: null,
+        isLocked: true,
+      },
+    });
+
+    const wrapper = mountComponent();
+    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    expect(cta.attributes('data-helper-run')).toBe('true');
   });
 
   it('seeds a new agent config from the selected run without sharing nested llmConfig', async () => {

@@ -950,6 +950,68 @@ describe('TeamStreamingService', () => {
     });
   });
 
+  it('renders team member system task notifications as conversation segments', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const workerConversation = { messages: [], updatedAt: '' } as any;
+    const reviewerConversation = { messages: [], updatedAt: '' } as any;
+    const teamContext = {
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'worker-run-1', compactionStatus: null },
+            conversation: workerConversation,
+          },
+        ],
+        [
+          'reviewer',
+          {
+            state: { runId: 'reviewer-run-1', compactionStatus: null },
+            conversation: reviewerConversation,
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SYSTEM_TASK_NOTIFICATION',
+        payload: {
+          sender_id: 'system.self_evolution',
+          content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+          agent_name: 'worker-a',
+          agent_id: 'worker-run-1',
+          member_route_key: 'worker-a',
+          member_path: ['worker-a'],
+          source_route_key: 'worker-a',
+          source_path: ['worker-a'],
+        },
+      }),
+    );
+
+    expect(workerConversation.messages).toHaveLength(1);
+    expect(workerConversation.messages[0].segments).toContainEqual({
+      type: 'system_task_notification',
+      senderId: 'system.self_evolution',
+      content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+    });
+    expect(reviewerConversation.messages).toHaveLength(0);
+  });
+
   it('routes derived team communication messages to the team communication store', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {

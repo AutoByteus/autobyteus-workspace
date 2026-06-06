@@ -1,0 +1,20 @@
+diff --git a/SKILL.md b/SKILL.md
+index 01d82a2..c6682b8 100644
+--- a/SKILL.md
++++ b/SKILL.md
+@@ -11,7 +11,7 @@ Use this disposable validation skill when the user asks exactly: "What is the du
+
+ Answer with exactly:
+
+-CALIBRATION_MARKER_R10_V1
++CALIBRATION_MARKER_R10_V2
+
+ No extra words.
+
+@@ -20,6 +20,7 @@ No extra words.
+ | Version | Marker | Source |
+ |---------|--------|--------|
+ | 1 | CALIBRATION_MARKER_R10_V1 | Initial skill definition |
++| 2 | CALIBRATION_MARKER_R10_V2 | Durable skill update from self-evolution validation |
+
+ ## Reusable correction rule for self-evolution validation

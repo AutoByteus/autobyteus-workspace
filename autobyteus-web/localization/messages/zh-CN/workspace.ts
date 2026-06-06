@@ -20,13 +20,13 @@ const messages = {
   "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
     "自我演进资格",
   "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
-    "允许此运行在工作完成后显示“从此运行改进技能”。该设置会在启动时快照保存。",
+    "允许此运行在工作完成后显示“自我改进”。该设置会在启动时快照保存。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
   "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
     "自我演进资格",
   "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
-    "允许此团队运行的成员在工作完成后显示技能改进操作。成员覆盖可在启动前进一步调整。",
+    "允许此团队运行的成员在工作完成后显示“自我改进”。成员覆盖可在启动前进一步调整。",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -158,8 +158,13 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_skills_from_run": "从此运行改进技能",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_member_skills_from_run": "从此成员运行改进技能",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "自我改进",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "此运行",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "该成员的运行",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "为{{scope}}进行自我改进",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "为{{scope}}启动一个可见的 Skill Self-Evolver。它可能更新已配置的技能包，也可能不做更改。",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "此运行不符合自我改进条件。",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "自我改进已启动。技能可能会被更新，也可能不做更改。",
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -20,13 +20,13 @@ const messages = {
   "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
     "Self-evolution eligibility",
   "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
-    "Allow this run to offer “Improve skills from this run” after work completes. The setting is snapshotted at launch.",
+    "Allow this run to offer “Self improve” after work completes. The setting is snapshotted at launch.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
   "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
     "Self-evolution eligibility",
   "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
-    "Allow this team run’s members to offer skill improvement actions after work completes. Member overrides can refine this before launch.",
+    "Allow this team run’s members to offer “Self improve” after work completes. Member overrides can refine this before launch.",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -159,8 +159,13 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_skills_from_run": "Improve skills from this run",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.improve_member_skills_from_run": "Improve member skills from this run",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "Self improve",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "this run",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "this member's run",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "Self improve {{scope}}",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "Start a visible Skill Self-Evolver for {{scope}}. It may update configured skill packages or make no changes.",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "This run is not eligible for self-improvement.",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "Self improve started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;

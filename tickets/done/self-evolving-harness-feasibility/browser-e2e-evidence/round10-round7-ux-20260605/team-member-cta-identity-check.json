@@ -1,0 +1,16 @@
+{
+  "teamRunId": "team_calibration-ux-team-r10-round7-ux_1209de60",
+  "memberRunId": "calibrator_61d123d6ecb3d14a",
+  "targetKind": "team_member_run",
+  "sourceRunIds": [
+    "calibrator_61d123d6ecb3d14a"
+  ],
+  "identityOnlyTargetingUsesTeamRunAndMemberRun": true,
+  "teamEffectiveConfigEnabled": true,
+  "teamEffectiveConfigSourceTraceIncludesTeamLaunch": true,
+  "teamMemberCtaText": "Self improve",
+  "teamMemberCtaAriaVerifiedInBrowser": "Self improve this member's run",
+  "teamMemberCtaTooltipVerifiedInBrowser": "Start a visible Skill Self-Evolver for this member's run. It may update configured skill packages or make no changes.",
+  "teamRecordStatus": "completed",
+  "teamNotificationStatus": "next_run_only"
+}

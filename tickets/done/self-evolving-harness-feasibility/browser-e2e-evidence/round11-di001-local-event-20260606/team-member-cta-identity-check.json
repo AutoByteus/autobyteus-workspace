@@ -1,0 +1,14 @@
+{
+  "targetKind": "team_member_run",
+  "teamRunId": "team_calibration-di001-team-r11-di001-local-e_fd743947",
+  "memberRunId": "calibrator_f23d90ffc402d5ec",
+  "sourceRunIds": [
+    "calibrator_f23d90ffc402d5ec"
+  ],
+  "sourceRunIdsEqualMemberRunIdOnly": true,
+  "notificationSummaryStatus": "next_run_only",
+  "notificationSummaryMessage": "Team member active reload is not implemented in the MVP; future runs load any updated skills.",
+  "memberTraceContainsSystemTaskNotificationCopy": false,
+  "memberTraceContainsSystemNotificationPrefix": false,
+  "memberAnsweredV2": true
+}

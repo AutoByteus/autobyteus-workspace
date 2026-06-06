@@ -23,11 +23,6 @@ export interface WorkspaceHistorySectionState {
   runStatusClass: (status: AgentStatus) => string;
   teamStatusClass: (status: AgentTeamStatus) => string;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
-  isSelfEvolutionEnabled: boolean;
-  isSelfEvolutionEligible: (key: string) => boolean;
-  isSelfEvolutionEligibilityLoading: (key: string) => boolean;
-  selfEvolutionEligibilityTitle: (key: string, fallback: string) => string;
-  isSelfEvolutionStarting: (key: string) => boolean;
 }
 
 export interface WorkspaceHistoryAvatarBindings {
@@ -64,6 +59,4 @@ export interface WorkspaceHistorySectionActions {
   onArchiveTeam: (team: TeamTreeNode) => Promise<void> | void;
   onDeleteTeam: (team: TeamTreeNode) => void;
   onSelectTeamMember: (member: TeamMemberTreeRow) => Promise<void> | void;
-  onStartRunSelfEvolution: (run: RunTreeRow) => Promise<void> | void;
-  onStartTeamMemberSelfEvolution: (member: TeamMemberTreeRow) => Promise<void> | void;
 }

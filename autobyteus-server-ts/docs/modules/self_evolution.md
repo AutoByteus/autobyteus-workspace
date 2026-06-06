@@ -53,6 +53,9 @@ The schema exposes `selfEvolution` only on run-launch inputs. Agent/team definit
 8. `SelfEvolutionTargetNotificationService` notifies an active idle standalone target when possible. Team-member targets and inactive/busy targets are recorded as next-run-only or skipped.
 
 The evolver is never inserted into the target's ordinary business team roster.
+Team-member manual starts are member-scoped: the request/record target is
+`team_member_run` with both `teamRunId` and `memberRunId`, and source run ids are
+recorded for the selected member run rather than for the whole team container.
 
 ## Direct-Edit Scope
 
@@ -69,6 +72,7 @@ The MVP permits direct edits by the helper agent under prompt/tool-contract cons
 Prompt-facing evidence is an anonymized work-history digest, not raw trace JSON.
 
 - The projector keeps useful conversation facts, tool outcomes, corrections, review feedback, and reusable improvement signals.
+- Explicit durable-skill update markers such as `DURABLE_SKILL_UPDATE:` / `SKILL_UPDATE:` are classified as high-signal feedback for the helper prompt, while ordinary one-off exact-answer task instructions must not be inflated into durable update requests.
 - It omits/redacts bookkeeping IDs, raw trace IDs, raw trace paths, provider event IDs, private home paths, credentials, tokens, private messages, and long raw tool payloads.
 - Exact editable skill root paths remain unredacted because the helper needs them to edit.
 - Evolution records store an evidence hash and source run IDs, not raw trace file paths.
@@ -77,7 +81,20 @@ Prompt-facing evidence is an anonymized work-history digest, not raw trace JSON.
 
 Harness-updating and harness-benefit remain useful future concepts, but there is no MVP metrics/reporting service and no `getSelfEvolutionMetricsReport` API.
 
-The UI may link to the visible evolver run and minimal evolution record. It must not state that helper completion proves file changes, quality improvement, or downstream benefit. Future measurement should be added as a separate design after the manual loop proves useful.
+The UI exposes manual starts through the concise composer-adjacent **Self
+improve** CTA for the selected eligible source run/member, not through
+run-history row controls. Ineligible, old, or pre-snapshot runs hide that CTA by
+default. After start, the UI may show only a short transient toast/status. It
+must not render a persistent composer card, evolution record id, or helper-run
+open button, and it must not state that helper completion proves file changes,
+quality improvement, or downstream benefit. Active idle standalone target notifications are emitted as local runtime-neutral
+`AgentRunEventType.SYSTEM_TASK_NOTIFICATION` events and render through the
+system-task notification segment with concise copy that omits raw skill paths,
+evolution record ids, and implementation details. The MVP does not post a
+`SenderType.SYSTEM` runtime message merely to render the UI notification; active
+runtime/model skill refresh is a separate future/gated concern. Future
+measurement should be added as a separate design after the manual loop proves
+useful.
 
 ## MVP Limitations To Preserve
 

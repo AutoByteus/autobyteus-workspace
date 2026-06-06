@@ -35,9 +35,12 @@ export {
 } from './todoHandler';
 
 export {
+  handleSystemTaskNotification,
+} from './systemTaskNotificationHandler';
+
+export {
   handleInterAgentMessage,
   handleTeamCommunicationMessage,
-  handleSystemTaskNotification,
   handleTeamStatus,
 } from './teamHandler';
 
