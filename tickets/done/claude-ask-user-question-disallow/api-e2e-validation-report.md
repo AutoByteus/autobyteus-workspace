@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/code-review-report.md`
 - Current Validation Round: 2
 - Trigger: User requested real live Claude E2E validation after Round 1 used mocked/controlled executable validation only.
 - Prior Round Reviewed: Round 1
@@ -140,7 +140,7 @@ Note: Existing repository-resident durable unit coverage was added by the implem
 
 ## Other Validation Artifacts
 
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/api-e2e-validation-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/api-e2e-validation-report.md`
 - Temporary logs captured under `/tmp/claude-ask-user-question-*.log` during local validation; these are non-authoritative scratch logs.
 
 ## Temporary Validation Methods / Scaffolding

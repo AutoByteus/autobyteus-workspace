@@ -1,5 +1,7 @@
-== build started 2026-06-06 10:34:01 CEST ==
+== post-merge build started 2026-06-06 10:42:19 CEST ==
 workdir=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web
+base=cbfdf657
+head=99fdfea1
 node=v22.21.1
 pnpm=10.28.1
 command=NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
@@ -22,7 +24,7 @@ command=NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
 > node ./scripts/audit-localization-literals.mjs
 
 [audit:localization-literals] Passed with zero unresolved findings.
-(node:80736) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+(node:91252) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
 Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
 To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/package.json.
 (Use `node --trace-warnings ...` to show where the warning was created)
@@ -51,11 +53,11 @@ Scope: all 11 workspace projects
 Done in 1.2s using pnpm v10.28.1
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 120ms
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 89ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
 
 
 > autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-server-ts
@@ -75,11 +77,11 @@ autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
 autobyteus-application-backend-sdk build: Done
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 91ms
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 57ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
 
 
 > autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-server-ts
@@ -114,7 +116,7 @@ AgentTeamFactory (Singleton) initialized.
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-server-ts
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-server-ts
-(node:81603) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:91786) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 
@@ -137,7 +139,7 @@ isElectronBuild false
 ℹ Building client...
 ℹ vite v7.3.1 building client environment for production...
 ℹ transforming...
-ℹ ✓ 3493 modules transformed.
+ℹ ✓ 3494 modules transformed.
 ℹ rendering chunks...
 ℹ computing gzip size...
 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff              4.42 kB
@@ -211,7 +213,7 @@ isElectronBuild false
 ℹ .nuxt/dist/client/_nuxt/workspace.BRhO3Yws.css                         6.93 kB │ gzip:     1.89 kB
 ℹ .nuxt/dist/client/_nuxt/skills.DgQDsQ24.css                           21.72 kB │ gzip:     4.28 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.C_z0J9Y2.css         46.65 kB │ gzip:    12.11 kB
-ℹ .nuxt/dist/client/_nuxt/entry.C7bYY-49.css                           113.10 kB │ gzip:    17.72 kB
+ℹ .nuxt/dist/client/_nuxt/entry.DoBfkmw4.css                           113.21 kB │ gzip:    17.73 kB
 ℹ .nuxt/dist/client/_nuxt/ACAKZrI2.js                                    0.09 kB │ gzip:     0.10 kB
 ℹ .nuxt/dist/client/_nuxt/B3ap8DLs.js                                    0.10 kB │ gzip:     0.12 kB
 ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                    0.15 kB │ gzip:     0.13 kB
@@ -298,9 +300,9 @@ isElectronBuild false
 ℹ .nuxt/dist/client/_nuxt/C6HjqHJa.js                                  148.56 kB │ gzip:    41.98 kB
 ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                  441.64 kB │ gzip:   141.47 kB
 ℹ .nuxt/dist/client/_nuxt/CAg2x-Bq.js                                  452.84 kB │ gzip:   107.02 kB
-ℹ .nuxt/dist/client/_nuxt/BDUhMKi9.js                                  524.64 kB │ gzip:   141.18 kB
+ℹ .nuxt/dist/client/_nuxt/DgFBUUc7.js                                  527.78 kB │ gzip:   142.13 kB
 ℹ .nuxt/dist/client/_nuxt/5ZCsgtzg.js                                  638.76 kB │ gzip:   169.90 kB
-ℹ .nuxt/dist/client/_nuxt/BXkSRDxS.js                                  927.53 kB │ gzip:   255.43 kB
+ℹ .nuxt/dist/client/_nuxt/CRMpc812.js                                  927.96 kB │ gzip:   255.53 kB
 ℹ .nuxt/dist/client/_nuxt/BqSoNvVO.js                                3,742.90 kB │ gzip: 1,204.75 kB
 
  WARN
@@ -309,32 +311,32 @@ isElectronBuild false
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 
-ℹ ✓ built in 15.06s
-✔ Client built in 15067ms
+ℹ ✓ built in 16.39s
+✔ Client built in 16406ms
 ℹ Building server...
 ℹ vite v7.3.1 building ssr environment for production...
 ℹ transforming...
 ℹ ✓ 1 modules transformed.
 ℹ rendering chunks...
-ℹ ✓ built in 7ms
-✔ Server built in 33ms
+ℹ ✓ built in 10ms
+✔ Server built in 66ms
 [nitro] ℹ Initializing prerenderer
 [nitro] ℹ Prerendering 14 initial routes with crawler
-[nitro]   ├─ /agents (35ms)
-[nitro]   ├─ /memory (36ms)
-[nitro]   ├─ /skills (36ms)
-[nitro]   ├─ /settings (36ms)
-[nitro]   ├─ /tools (35ms)
-[nitro]   ├─ /media (35ms)
-[nitro]   ├─ /workspace (37ms)
-[nitro]   ├─ /agent-teams (36ms)
-[nitro]   ├─ / (35ms)
-[nitro]   ├─ /mobile (36ms)
-[nitro]   ├─ /applications (36ms)
-[nitro]   ├─ /index.html (37ms)
-[nitro]   ├─ /404.html (37ms)
-[nitro]   ├─ /200.html (36ms)
-[nitro] ℹ Prerendered 14 routes in 0.591 seconds
+[nitro]   ├─ /media (37ms)
+[nitro]   ├─ /agents (38ms)
+[nitro]   ├─ /skills (38ms)
+[nitro]   ├─ /memory (38ms)
+[nitro]   ├─ /settings (38ms)
+[nitro]   ├─ /workspace (39ms)
+[nitro]   ├─ /tools (38ms)
+[nitro]   ├─ /applications (40ms)
+[nitro]   ├─ /agent-teams (39ms)
+[nitro]   ├─ / (38ms)
+[nitro]   ├─ /mobile (38ms)
+[nitro]   ├─ /index.html (40ms)
+[nitro]   ├─ /200.html (40ms)
+[nitro]   ├─ /404.html (40ms)
+[nitro] ℹ Prerendered 14 routes in 0.864 seconds
 [nitro] ✔ Generated public dist/public
 [nitro] ✔ You can preview this build using npx serve dist/public
 │
@@ -352,8 +354,8 @@ Packages are cloned from the content-addressable store to the virtual store.
   Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
 Progress: resolved 1, reused 0, downloaded 0, added 0
 autobyteus-web                           |  WARN  deprecated electron-rebuild@3.2.9
-Progress: resolved 1267, reused 0, downloaded 0, added 0
-Progress: resolved 1905, reused 1, downloaded 0, added 0
+Progress: resolved 1846, reused 0, downloaded 0, added 0
+Progress: resolved 1912, reused 1, downloaded 0, added 0
  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, boolean@3.2.0, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
 Progress: resolved 1924, reused 1, downloaded 0, added 0, done
  WARN  Issues with peer dependencies found
@@ -381,28 +383,18 @@ Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktree
 Environment variables loaded from .env
 Prisma schema loaded from resources/server/prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 144ms
+✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 81ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
 
-┌─────────────────────────────────────────────────────────┐
-│  Update available 5.22.0 -> 7.8.0                       │
-│                                                         │
-│  This is a major update - please follow the guide at    │
-│  https://pris.ly/d/major-version-upgrade                │
-│                                                         │
-│  Run the following to update                            │
-│    npm i --save-dev prisma@latest                       │
-│    npm i @prisma/client@latest                          │
-└─────────────────────────────────────────────────────────┘
 
 [0;33mPruning native prebuilds for host platform...[0m
 
 [0;33mRebuilding native modules for Electron...[0m
 - Searching dependency tree
-(node:82530) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(node:92316) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
   CXX(target) Release/obj.target/pty/src/unix/pty.o
@@ -446,7 +438,7 @@ isElectronBuild true
 [Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
 ℹ vite v7.3.1 building client environment for production...
 ℹ transforming...
-ℹ ✓ 3493 modules transformed.
+ℹ ✓ 3494 modules transformed.
 ℹ rendering chunks...
 ℹ computing gzip size...
 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff               4.42 kB
@@ -508,7 +500,7 @@ isElectronBuild true
 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                   51.34 kB
 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf                53.58 kB
 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                 63.63 kB
-ℹ .nuxt/dist/client/manifest.json                                        70.31 kB │ gzip:     6.27 kB
+ℹ .nuxt/dist/client/manifest.json                                        70.31 kB │ gzip:     6.28 kB
 ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                  0.20 kB │ gzip:     0.12 kB
 ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                              0.23 kB │ gzip:     0.13 kB
 ℹ .nuxt/dist/client/_nuxt/settings.CxTZU0Nv.css                           0.27 kB │ gzip:     0.21 kB
@@ -520,7 +512,7 @@ isElectronBuild true
 ℹ .nuxt/dist/client/_nuxt/workspace.BRhO3Yws.css                          6.93 kB │ gzip:     1.89 kB
 ℹ .nuxt/dist/client/_nuxt/skills.DgQDsQ24.css                            21.72 kB │ gzip:     4.28 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.C_z0J9Y2.css          46.65 kB │ gzip:    12.11 kB
-ℹ .nuxt/dist/client/_nuxt/entry.C7bYY-49.css                            113.10 kB │ gzip:    17.72 kB
+ℹ .nuxt/dist/client/_nuxt/entry.DoBfkmw4.css                            113.21 kB │ gzip:    17.73 kB
 ℹ .nuxt/dist/client/_nuxt/clone.DIhTQfR_.js                               0.10 kB │ gzip:     0.11 kB
 ℹ .nuxt/dist/client/_nuxt/channel.C6Or3L_F.js                             0.13 kB │ gzip:     0.14 kB
 ℹ .nuxt/dist/client/_nuxt/init.Gi6I4Gst.js                                0.15 kB │ gzip:     0.13 kB
@@ -607,9 +599,9 @@ isElectronBuild true
 ℹ .nuxt/dist/client/_nuxt/architectureDiagram-VXUJARFQ.B6mbWKYF.js      148.67 kB │ gzip:    42.07 kB
 ℹ .nuxt/dist/client/_nuxt/cytoscape.esm.5J0xJHOV.js                     441.64 kB │ gzip:   141.47 kB
 ℹ .nuxt/dist/client/_nuxt/treemap-GDKQZRPO.ClTcV2am.js                  452.91 kB │ gzip:   107.06 kB
-ℹ .nuxt/dist/client/_nuxt/settings.BQ0Hgrkx.js                          524.91 kB │ gzip:   141.32 kB
+ℹ .nuxt/dist/client/_nuxt/settings.BRDbzovo.js                          528.05 kB │ gzip:   142.27 kB
 ℹ .nuxt/dist/client/_nuxt/workspace.CT989lNk.js                         639.10 kB │ gzip:   170.10 kB
-ℹ .nuxt/dist/client/_nuxt/entry.OGVXAqXG.js                             928.27 kB │ gzip:   255.76 kB
+ℹ .nuxt/dist/client/_nuxt/entry.BGwPd1Po.js                             928.70 kB │ gzip:   255.87 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.AIsh37PZ.js        3,744.43 kB │ gzip: 1,205.70 kB
 
  WARN
@@ -618,8 +610,8 @@ isElectronBuild true
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 
-ℹ ✓ built in 14.46s
-✔ Client built in 14464ms
+ℹ ✓ built in 14.82s
+✔ Client built in 14833ms
 [Electron Module] Extending Vite config
 ℹ Building server...
 [Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
@@ -627,9 +619,9 @@ isElectronBuild true
 ℹ transforming...
 ℹ ✓ 1 modules transformed.
 ℹ rendering chunks...
-ℹ ✓ built in 9ms
+ℹ ✓ built in 8ms
 [Electron Module] Processing build manifest
-✔ Server built in 66ms
+✔ Server built in 35ms
 [Electron Module] Build process completed
 [Electron Module] Running production build steps
 [Electron Module] Building entry: electron/main.ts
@@ -639,7 +631,7 @@ transforming...
 rendering chunks...
 computing gzip size...
 dist/electron/main.js  658.19 kB │ gzip: 188.22 kB
-✓ built in 1.24s
+✓ built in 1.09s
 [Electron Module] Building entry: electron/preload.ts
 vite v7.3.1 building client environment for production...
 transforming...
@@ -647,14 +639,14 @@ transforming...
 rendering chunks...
 computing gzip size...
 dist/electron/preload.js  3.96 kB │ gzip: 1.06 kB
-✓ built in 6ms
+✓ built in 7ms
 [Electron Module] Production build completed successfully
 [nitro] ℹ Initializing prerenderer
 [nitro] ℹ Prerendering 3 initial routes with crawler
-[nitro]   ├─ /index.html (23ms)
 [nitro]   ├─ /404.html (23ms)
-[nitro]   ├─ /200.html (23ms)
-[nitro] ℹ Prerendered 3 routes in 0.556 seconds
+[nitro]   ├─ /index.html (23ms)
+[nitro]   ├─ /200.html (22ms)
+[nitro] ℹ Prerendered 3 routes in 0.608 seconds
 [nitro] ✔ Generated public dist/renderer
 [nitro] ✔ You can preview this build using npx serve dist/renderer
 │
@@ -669,8 +661,8 @@ dist/electron/preload.js  3.96 kB │ gzip: 1.06 kB
 
 Building with environment: production
 Using environment file: .env.production
-Resolved build flavor: personal
-Artifact base name: AutoByteus_personal
+Resolved build flavor: enterprise
+Artifact base name: AutoByteus_enterprise
 Requested architecture: AUTO
 Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
 Generating application icons...
@@ -696,15 +688,15 @@ To ensure your native dependencies are always matched electron version, simply a
   • packaging       platform=darwin arch=arm64 electron=38.8.2 appOutDir=electron-dist/mac-arm64
 [WARN] APPLE_SIGNING_IDENTITY not set, skipping extra resource signing
   • skipped macOS code signing  reason=identity explicitly is set to null
-  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg
-  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.zip
   • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
-  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg.blockmap
-  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.zip.blockmap
 Build completed: [
-  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg.blockmap',
-  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.dmg',
-  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip.blockmap',
-  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.43.zip'
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.43.zip'
 ]
-== build finished 2026-06-06 10:37:57 CEST ==
+== post-merge build finished 2026-06-06 10:46:21 CEST ==

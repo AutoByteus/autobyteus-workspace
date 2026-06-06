@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `claude-ask-user-question-disallow`
-- Trigger: Superseding delivery-stage docs sync refresh after API/E2E Round 2 added real live Claude validation and passed.
+- Trigger: Delivery-stage docs sync refresh after API/E2E Round 2 live validation passed, user requested a local Electron build, and the ticket branch was refreshed against latest tracked `origin/personal`.
 - Bootstrap base reference: `origin/personal@c62a78d6a63abae3a0693bfd9f81efcb4b467f89` (`chore(ticket): clarify final delivery status`)
-- Integrated base reference used for docs sync: `origin/personal@c62a78d6a63abae3a0693bfd9f81efcb4b467f89` after `git fetch origin --prune` on 2026-06-06; ticket branch was still current with the tracked base after the Round 2 validation handoff.
-- Post-integration verification reference: No new base commits were integrated. Delivery reran `git diff --check` and `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts` successfully after the Round 2 report update, then reran `git diff --check` successfully after refreshing delivery artifacts.
+- Integrated base reference used for docs sync: `origin/personal@c4a7c613` (`chore(ticket): record phone setup cleanup`) after `git fetch origin --prune` on 2026-06-06.
+- Post-integration verification reference: Latest base advanced after the initial delivery handoff. Delivery created local safety checkpoint `ef038dff`, merged `origin/personal` in two merge commits (`99fdfea1`, `306ece86`), rebuilt the macOS Electron app after the code-affecting base merge, then reran `git diff --check` and `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts` successfully after the final docs-only base merge.
 
 ## Why Docs Were Updated
 
@@ -17,10 +17,10 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/agent_execution.md` | Canonical module doc for Claude Agent SDK runtime ownership, tool normalization, first-party MCP handling, and session lifecycle. | `Updated` | Added the `disallowedTools: ["AskUserQuestion"]` provider-policy default and clarified why it must not be replaced with a restrictive SDK `tools` allowlist. Round 2 live validation re-confirms the same doc target. |
+| `autobyteus-server-ts/docs/modules/agent_execution.md` | Canonical module doc for Claude Agent SDK runtime ownership, tool normalization, first-party MCP handling, and session lifecycle. | `Updated` | Added the `disallowedTools: ["AskUserQuestion"]` provider-policy default and clarified why it must not be replaced with a restrictive SDK `tools` allowlist. Rechecked after latest-base merges; still the right canonical doc target. |
 | `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Covers team-member communication/tool exposure and Claude first-party MCP `send_message_to` behavior. | `No change` | Team MCP exposure remains unchanged; Round 2 live MCP validation passed, and the disallowed Claude built-in remains provider SDK launch policy better recorded in the runtime execution owner doc. |
-| `autobyteus-server-ts/README.md` | Checked user/admin Claude Agent SDK setup, Docker settings inheritance, and permission-mode documentation. | `No change` | No new user-facing setting, environment variable, setup command, or Docker/auth workflow was introduced. `RUN_CLAUDE_E2E=1` is a validation opt-in, not a product setup change. |
-| `README.md` | Checked top-level Docker and Claude Agent SDK setup notes. | `No change` | No top-level setup or operator workflow changed. |
+| `autobyteus-server-ts/README.md` | Checked user/admin Claude Agent SDK setup, Docker settings inheritance, permission-mode documentation, and latest integrated remote-access README changes. | `No change` | No new user-facing Claude setting, environment variable, setup command, or Docker/auth workflow was introduced. `RUN_CLAUDE_E2E=1` is a validation opt-in, not a product setup change. |
+| `README.md` | Checked top-level Docker/desktop/release notes after the latest phone-access base merge. | `No change` | The latest base added unrelated phone-access docs; no Claude AskUserQuestion documentation change is needed at top level. |
 | `autobyteus-web/docs/tools_and_mcp.md` | Checked frontend/tooling documentation that mentions MCP server and allowed-tool surfaces. | `No change` | AutoByteus MCP tools and frontend tool projection contracts are unchanged. |
 
 ## Docs Updated
@@ -44,13 +44,13 @@
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 
 - Docs impact: `N/A`
-- Rationale: Long-lived docs are changed in this delivery package and were re-confirmed after Round 2 live validation.
+- Rationale: Long-lived docs are changed in this delivery package and were re-confirmed after Round 2 live validation plus latest-base merges.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is current with the latest tracked `origin/personal` state and the latest authoritative API/E2E Round 2 report. Repository finalization, ticket archival, push/merge, and any release/deployment remain paused until explicit user verification.
+- Notes: Docs sync is current with the latest tracked `origin/personal` state and the latest authoritative API/E2E Round 2 report. Repository finalization, ticket archival, push/final target merge, and any release/deployment remain paused until explicit user verification.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

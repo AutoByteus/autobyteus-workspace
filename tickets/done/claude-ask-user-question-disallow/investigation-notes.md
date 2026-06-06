@@ -22,7 +22,7 @@ Reference image from user: `/Users/normy/.autobyteus/server-data/memory/agent_te
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow`
 - Current Branch: `codex/claude-ask-user-questions-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis`
 - Bootstrap Base Branch: `origin/personal`

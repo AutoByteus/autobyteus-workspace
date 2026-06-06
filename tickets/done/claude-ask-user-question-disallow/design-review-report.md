@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/design-spec.md`
 - Current Review Round: 1
 - Trigger: `solution_designer` handoff requesting pre-implementation architecture review for Claude `AskUserQuestion` disallow task.
 - Prior Review Round Reviewed: N/A
@@ -23,7 +23,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/in-progress/claude-ask-user-question-disallow/design-spec.md` against the architecture-reviewer design principles and current code.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-ask-user-questions-analysis/tickets/done/claude-ask-user-question-disallow/design-spec.md` against the architecture-reviewer design principles and current code.
 
 The design proposes adding a bare `disallowedTools: ["AskUserQuestion"]` option in `ClaudeSdkClient.buildQueryOptions`, preserving existing `allowedTools`, `mcpServers`, permission mode, `canUseTool`, resume, cwd, env, abort, and settings-source behavior. It rejects a restrictive `tools` allowlist and rejects post-call denial in `canUseTool`.
 
