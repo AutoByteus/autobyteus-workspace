@@ -39,7 +39,7 @@
             <input
               v-model="store.manualServerBaseUrl"
               type="text"
-              placeholder="https://desktop.tailnet-name.ts.net/mobile"
+              placeholder="https://desktop.tailnet-name.ts.net/mobile or http://192.168.1.25:29695/mobile"
               class="min-w-0 flex-1 rounded-lg border border-blue-200 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
               data-testid="phone-access-manual-url"
               @input="onAdvertisedUrlInput(($event.target as HTMLInputElement).value)"
@@ -61,9 +61,22 @@
             class="mt-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900"
             data-testid="phone-access-url-warning"
           >
-            <p class="font-semibold">{{ $t('settings.components.settings.PhoneAccessCard.httpsRequiredTitle') }}</p>
+            <p class="font-semibold">{{ selectedUrlWarningTitle }}</p>
             <p class="mt-1">{{ selectedUrlWarning }}</p>
           </div>
+          <label
+            v-if="store.selectedUrlRequiresTrustedPrivateHttpAcknowledgement"
+            class="mt-2 flex items-start gap-2 rounded-lg border border-amber-200 bg-white p-3 text-xs text-amber-900"
+            data-testid="phone-access-private-http-ack"
+          >
+            <input
+              v-model="store.trustedPrivateHttpAcknowledged"
+              type="checkbox"
+              class="mt-0.5 rounded border-amber-300 text-amber-600 focus:ring-amber-200"
+              data-testid="phone-access-private-http-ack-checkbox"
+            />
+            <span>{{ $t('settings.components.settings.PhoneAccessCard.privateHttpAcknowledgement') }}</span>
+          </label>
         </div>
 
         <div>
@@ -83,7 +96,7 @@
               {{ candidate.label }} — {{ candidate.serverBaseUrl }}
             </option>
           </select>
-          <p class="mt-2 text-xs text-slate-500" data-testid="phone-access-candidate-diagnostic-note">
+          <p class="mt-2 text-xs text-slate-500" data-testid="phone-access-candidate-note">
             {{ store.isRemoteNodeWindow ? $t('settings.components.settings.PhoneAccessCard.remoteCandidateDiagnosticNote') : $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
           </p>
         </div>
@@ -210,20 +223,17 @@ const deviceListView = ref<'active' | 'revoked'>('active');
 
 const selectedUrlWarning = computed(() => (
   store.selectedServerBaseUrl.trim()
-    ? store.selectedUrlValidation.isValid && !store.selectedUrlValidation.isHttps
-      ? $t('settings.components.settings.PhoneAccessCard.httpsRequiredBody')
-      : store.selectedUrlValidation.message
+    ? store.selectedUrlWarning
     : null
 ));
 
-const canCreatePairingSession = computed(() => (
-  store.phoneAccessEnabled
-  && Boolean(store.selectedServerBaseUrl.trim())
-  && (!store.isRemoteNodeWindow || Boolean(store.manualServerBaseUrl.trim()))
-  && store.selectedUrlValidation.isValid
-  && store.selectedUrlValidation.isHttps
-  && (!store.isRemoteNodeWindow || store.selectedUrlValidation.isAndroidFacing)
+const selectedUrlWarningTitle = computed(() => (
+  store.selectedUrlRequiresTrustedPrivateHttpAcknowledgement
+    ? $t('settings.components.settings.PhoneAccessCard.privateHttpWarningTitle')
+    : $t('settings.components.settings.PhoneAccessCard.urlNeedsAttentionTitle')
 ));
+
+const canCreatePairingSession = computed(() => store.canCreatePairingSession);
 
 const visibleDevices = computed(() => (
   deviceListView.value === 'active' ? store.activeDevices : store.revokedDevices
@@ -243,8 +253,6 @@ async function onToggle(enabled: boolean): Promise<void> {
 
 function onAdvertisedUrlInput(value: string): void {
   store.selectedServerBaseUrl = value;
-  store.advertisedUrlVerified = false;
-  store.advertisedUrlVerificationMessage = null;
 }
 
 async function onCreateQr(): Promise<void> {

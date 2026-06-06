@@ -53,12 +53,13 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
   });
 
   app.post<{
-    Body: { serverBaseUrl?: string; serverName?: string | null };
+    Body: { serverBaseUrl?: string; serverName?: string | null; trustedPrivateHttpAcknowledged?: boolean };
   }>("/remote-access/pairing-sessions", async (request, reply) => {
     try {
       const result = await getRemoteAccessPairingService().createPairingSession({
         serverBaseUrl: request.body?.serverBaseUrl ?? "",
         serverName: request.body?.serverName,
+        trustedPrivateHttpAcknowledged: request.body?.trustedPrivateHttpAcknowledged,
       });
       return reply.code(201).send(result);
     } catch (error) {

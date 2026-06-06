@@ -31,6 +31,20 @@ class PairingLinkParserTest {
     }
 
     @Test
+    fun parsesGeneratedPrivateHttpPairingUrlAndLeavesAcknowledgementPending() {
+        val payload = payloadParam("http://192.168.1.25:29695", "Home Desktop")
+        val parsed = PairingLinkParser.parse("http://192.168.1.25:29695/mobile?pairing=$payload")
+
+        assertTrue(parsed.hasPairingPayload)
+        assertEquals("http://192.168.1.25:29695/mobile?pairing=$payload", parsed.webViewUrl)
+        assertEquals("http://192.168.1.25:29695", parsed.profile.baseUrl)
+        assertEquals("http://192.168.1.25:29695/mobile", parsed.profile.mobileUrl)
+        assertTrue(parsed.profile.isHttp)
+        assertFalse(parsed.profile.httpAcknowledged)
+        assertEquals("Home Desktop", parsed.profile.displayName)
+    }
+
+    @Test
     fun parsesRawJsonPairingPayload() {
         val json = """{"version":1,"serverBaseUrl":"http://desktop.local:29695","pairingCode":"abc","expiresAt":"2026-05-21T00:00:00.000Z","serverName":"Home Desktop"}"""
         val parsed = PairingLinkParser.parse(json)
