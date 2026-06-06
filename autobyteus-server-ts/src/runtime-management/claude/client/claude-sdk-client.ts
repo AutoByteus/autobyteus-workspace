@@ -82,6 +82,8 @@ const allowToolUseWithoutPrompt: ClaudeSdkCanUseTool = async (
     : {}),
 });
 
+const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = ["AskUserQuestion"] as const;
+
 const canScopeProcessCwd = (workingDirectory: string | null): workingDirectory is string => {
   const targetWorkingDirectory = workingDirectory?.trim();
   if (!targetWorkingDirectory) {
@@ -368,6 +370,7 @@ export class ClaudeSdkClient {
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
       env: sdkSpawnEnvironment,
+      disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionId ? { resume: options.sessionId } : {}),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),

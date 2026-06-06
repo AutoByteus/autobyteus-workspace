@@ -137,6 +137,16 @@ streaming handlers or by `RunFileChangeService`; that service consumes
 
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
+Claude Agent SDK query options also carry the AutoByteus provider-policy default
+`disallowedTools: ["AskUserQuestion"]` at the `ClaudeSdkClient` boundary. This
+bare disallow entry hides the Claude Code built-in clarification-question tool
+from context; it is not an AutoByteus MCP tool preapproval rule. Do not replace
+this default with a Claude SDK `tools` allowlist, because that would require
+enumerating every desired Claude built-in and could accidentally remove tools
+AutoByteus still expects. AutoByteus MCP tools continue to be supplied through
+`mcpServers` and pre-approved through `allowedTools` according to the configured
+tool exposure.
+
 Claude Agent SDK active-turn closure is owned by the session, not by websocket,
 GraphQL, or frontend button state. Each active Claude turn is tracked with its
 own `AbortController`, and that controller is passed into the SDK query options.
