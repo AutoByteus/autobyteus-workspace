@@ -1,0 +1,17 @@
+# Personal post-merge checks before push/release
+date_utc=2026-06-06T16:31:43Z
+branch=personal
+head=4db276470a49832b1aac290c7852f5b98501c526
+origin_personal=01ea087bfd168dbc24113711bf16b420656a409a
+
+## actionlint
+actionlint ok
+
+## iOS release contract
+iOS release contract checks passed.
+
+## archived ticket check
+ticket archive ok
+
+## scoped diff check against pre-merge origin/personal
+scoped diff check ok
