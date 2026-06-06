@@ -58,7 +58,7 @@ describe("Agent definitions GraphQL e2e", () => {
       variableValues: variables,
     });
 
-  it("creates, updates, duplicates, lists templates, and deletes agent definitions", async () => {
+  it("creates, updates, lists templates, and deletes agent definitions", async () => {
     const unique = uniqueId("agent_def");
     const dataDir = appConfigProvider.config.getAppDataDir();
 
@@ -163,49 +163,6 @@ describe("Agent definitions GraphQL e2e", () => {
     expect(updated.updateAgentDefinition.avatarUrl).toBeNull();
     expect(updated.updateAgentDefinition.skillNames).toContain("skill_two");
 
-    const duplicateMutation = `
-      mutation DuplicateAgentDefinition($input: DuplicateAgentDefinitionInput!) {
-        duplicateAgentDefinition(input: $input) {
-          id
-          name
-          description
-          category
-          instructions
-          toolNames
-          skillNames
-        }
-      }
-    `;
-    const duplicated = await execGraphql<{
-      duplicateAgentDefinition: {
-        id: string;
-        name: string;
-        description: string;
-        category: string | null;
-        instructions: string;
-        toolNames: string[];
-        skillNames: string[];
-      };
-    }>(duplicateMutation, {
-      input: {
-        sourceId: created.createAgentDefinition.id,
-        newName: `agent_${unique}_copy`,
-      },
-    });
-
-    cleanupPaths.add(path.join(dataDir, "agents", duplicated.duplicateAgentDefinition.id));
-
-    const duplicatedDir = path.join(dataDir, "agents", duplicated.duplicateAgentDefinition.id);
-    const [sourceConfigRaw, duplicatedConfigRaw, duplicatedMdRaw] = await Promise.all([
-      fs.readFile(path.join(createdAgentDir, "agent-config.json"), "utf-8"),
-      fs.readFile(path.join(duplicatedDir, "agent-config.json"), "utf-8"),
-      fs.readFile(path.join(duplicatedDir, "agent.md"), "utf-8"),
-    ]);
-
-    expect(JSON.parse(duplicatedConfigRaw)).toEqual(JSON.parse(sourceConfigRaw));
-    expect(duplicatedMdRaw).toContain(`name: agent_${unique}_copy`);
-    expect(duplicatedMdRaw).toContain("You are the updated md-centric e2e validation agent.");
-
     const templateId = `_template_${unique}`;
     const templateDir = path.join(dataDir, "agents", templateId);
     cleanupPaths.add(templateDir);
@@ -269,7 +226,6 @@ describe("Agent definitions GraphQL e2e", () => {
       }
     `;
 
-    await execGraphql(deleteMutation, { id: duplicated.duplicateAgentDefinition.id });
     const deleted = await execGraphql<{ deleteAgentDefinition: { success: boolean } }>(
       deleteMutation,
       { id: created.createAgentDefinition.id },
@@ -694,6 +650,35 @@ describe("Agent definitions GraphQL e2e", () => {
     expect(updateCategory?.type.kind).toBe("SCALAR");
     expect(updateCategory?.type.name).toBe("String");
     expect(updateFields.some((field) => field.name === "activePromptVersion")).toBe(false);
+  });
+
+  it("does not expose the removed duplicate agent definition mutation or input", async () => {
+    const introspection = await execGraphql<{
+      mutationType: {
+        fields: Array<{ name: string }>;
+      } | null;
+      duplicateInput: {
+        name: string;
+      } | null;
+    }>(`
+      query RemovedCopyAgentDefinitionApi($removedInputName: String!) {
+        mutationType: __type(name: "Mutation") {
+          fields {
+            name
+          }
+        }
+        duplicateInput: __type(name: $removedInputName) {
+          name
+        }
+      }
+    `, {
+      removedInputName: ["Duplicate", "AgentDefinitionInput"].join(""),
+    });
+
+    const mutationNames = introspection.mutationType?.fields.map((field) => field.name) ?? [];
+
+    expect(mutationNames).not.toContain(["duplicate", "AgentDefinition"].join(""));
+    expect(introspection.duplicateInput).toBeNull();
   });
 
   it("returns GraphQL validation error for removed activePromptVersion field", async () => {

@@ -43,7 +43,6 @@ type AgentDefinitionProvider = {
   getTemplates: () => Promise<AgentDefinition[]>;
   update: (definition: AgentDefinition) => Promise<AgentDefinition>;
   delete: (id: string) => Promise<boolean>;
-  duplicate: (sourceId: string, newId: string, newName: string) => Promise<AgentDefinition>;
   refresh?: () => Promise<void>;
 };
 
@@ -55,17 +54,6 @@ const normalizeOptionalString = (value: unknown): string | null => {
   }
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
-};
-
-const slugify = (value: string): string => {
-  const normalized = value
-    .toLowerCase()
-    .trim()
-    .replace(/[_\s]+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return normalized || "agent";
 };
 
 export type AgentDefinitionCreateInput = {
@@ -155,10 +143,6 @@ export class AgentDefinitionService {
       this.registries.lifecycle,
     );
     return definition;
-  }
-
-  private nextAgentId(name: string): string {
-    return slugify(name);
   }
 
   async createAgentDefinition(data: AgentDefinitionCreateInput): Promise<AgentDefinition> {
@@ -320,20 +304,6 @@ export class AgentDefinitionService {
       logger.warn(`Failed to delete agent definition with ID ${definitionId}.`);
     }
     return success;
-  }
-
-  async duplicateAgentDefinition(sourceId: string, newName: string): Promise<AgentDefinition> {
-    const source = await this.provider.getById(sourceId);
-    if (!source) {
-      throw new Error(`Agent Definition with ID ${sourceId} not found.`);
-    }
-    if (source.ownershipScope !== "shared") {
-      throw new Error("Duplicating non-shared agent definitions is not supported.");
-    }
-    const newId = this.nextAgentId(newName);
-    const duplicated = await this.provider.duplicate(sourceId, newId, newName);
-    logger.info(`Agent Definition duplicated from '${sourceId}' to '${duplicated.id}'.`);
-    return this.stripMandatoryProcessors(duplicated) ?? duplicated;
   }
 
   async refreshCache(): Promise<void> {

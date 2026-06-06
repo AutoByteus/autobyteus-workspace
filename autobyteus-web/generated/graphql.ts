@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -425,6 +422,7 @@ export type CreateAgentRunInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
+  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
@@ -450,6 +448,7 @@ export type CreateAgentTeamDefinitionInput = {
 
 export type CreateAgentTeamRunInput = {
   memberConfigs: Array<TeamMemberConfigInput>;
+  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   teamDefinitionId: Scalars['String']['input'];
 };
 
@@ -547,11 +546,6 @@ export type DiscoverAndRegisterMcpServerToolsResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type DuplicateAgentDefinitionInput = {
-  newName: Scalars['String']['input'];
-  sourceId: Scalars['String']['input'];
-};
-
 export type EnableSkillVersioningInput = {
   skillName: Scalars['String']['input'];
 };
@@ -642,6 +636,107 @@ export type GeminiSetupConfig = {
   vertexApiKeyConfigured: Scalars['Boolean']['output'];
   vertexLocation?: Maybe<Scalars['String']['output']>;
   vertexProject?: Maybe<Scalars['String']['output']>;
+};
+
+export type GraphqlSelfEvolutionConfigOverrideInput = {
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  evolverAgentDefinitionId?: InputMaybe<Scalars['String']['input']>;
+  evolverStrategy?: InputMaybe<Scalars['String']['input']>;
+  triggerStrategy?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GraphqlSelfEvolutionConfigSourceTraceEntry = {
+  __typename?: 'GraphqlSelfEvolutionConfigSourceTraceEntry';
+  fields: Array<Scalars['String']['output']>;
+  source: Scalars['String']['output'];
+};
+
+export type GraphqlSelfEvolutionEffectiveConfig = {
+  __typename?: 'GraphqlSelfEvolutionEffectiveConfig';
+  enabled: Scalars['Boolean']['output'];
+  evolverAgentDefinitionId?: Maybe<Scalars['String']['output']>;
+  evolverStrategy: Scalars['String']['output'];
+  resolvedAt: Scalars['String']['output'];
+  sourceTrace: Array<GraphqlSelfEvolutionConfigSourceTraceEntry>;
+  triggerStrategy: Scalars['String']['output'];
+};
+
+export type GraphqlSelfEvolutionEligibility = {
+  __typename?: 'GraphqlSelfEvolutionEligibility';
+  effectiveConfig?: Maybe<GraphqlSelfEvolutionEffectiveConfig>;
+  eligible: Scalars['Boolean']['output'];
+  reasons: Array<Scalars['String']['output']>;
+  skillTargets: Array<GraphqlSelfEvolutionSkillTarget>;
+  warnings: Array<Scalars['String']['output']>;
+};
+
+export type GraphqlSelfEvolutionNotificationSummary = {
+  __typename?: 'GraphqlSelfEvolutionNotificationSummary';
+  error?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+};
+
+export type GraphqlSelfEvolutionRunRecord = {
+  __typename?: 'GraphqlSelfEvolutionRunRecord';
+  completedAt?: Maybe<Scalars['String']['output']>;
+  effectiveConfig: GraphqlSelfEvolutionEffectiveConfig;
+  errors: Array<Scalars['String']['output']>;
+  evidenceSummaryHash?: Maybe<Scalars['String']['output']>;
+  evolutionRunId: Scalars['String']['output'];
+  evolverAgentDefinitionId: Scalars['String']['output'];
+  evolverRunId?: Maybe<Scalars['String']['output']>;
+  evolverStrategy: Scalars['String']['output'];
+  llmModelIdentifier?: Maybe<Scalars['String']['output']>;
+  notificationSummary?: Maybe<GraphqlSelfEvolutionNotificationSummary>;
+  requestedAt: Scalars['String']['output'];
+  runtimeKind?: Maybe<Scalars['String']['output']>;
+  skillTargets: Array<GraphqlSelfEvolutionSkillTarget>;
+  sourceRunIds: Array<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+  target: GraphqlSelfEvolutionTargetRef;
+  triggerStrategy: Scalars['String']['output'];
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
+
+export type GraphqlSelfEvolutionSkillTarget = {
+  __typename?: 'GraphqlSelfEvolutionSkillTarget';
+  isWritable: Scalars['Boolean']['output'];
+  skillMdPath: Scalars['String']['output'];
+  skillName: Scalars['String']['output'];
+  skillRootPath: Scalars['String']['output'];
+  sourceLabel?: Maybe<Scalars['String']['output']>;
+};
+
+export type GraphqlSelfEvolutionStartResult = {
+  __typename?: 'GraphqlSelfEvolutionStartResult';
+  evolutionRunId: Scalars['String']['output'];
+  evolverRunId?: Maybe<Scalars['String']['output']>;
+  record: GraphqlSelfEvolutionRunRecord;
+};
+
+export type GraphqlSelfEvolutionStrategyCatalog = {
+  __typename?: 'GraphqlSelfEvolutionStrategyCatalog';
+  defaultEvolverStrategy: Scalars['String']['output'];
+  defaultTriggerStrategy: Scalars['String']['output'];
+  evolverStrategies: Array<GraphqlSelfEvolutionStrategyDescriptor>;
+  triggerStrategies: Array<GraphqlSelfEvolutionStrategyDescriptor>;
+};
+
+export type GraphqlSelfEvolutionStrategyDescriptor = {
+  __typename?: 'GraphqlSelfEvolutionStrategyDescriptor';
+  description: Scalars['String']['output'];
+  label: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+};
+
+export type GraphqlSelfEvolutionTargetRef = {
+  __typename?: 'GraphqlSelfEvolutionTargetRef';
+  kind: Scalars['String']['output'];
+  memberRunId?: Maybe<Scalars['String']['output']>;
+  runId?: Maybe<Scalars['String']['output']>;
+  teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
 export type HealthStatus = {
@@ -829,7 +924,6 @@ export type Mutation = {
   disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   disableSkill: Skill;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
-  duplicateAgentDefinition: AgentDefinition;
   enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
   enableSkillVersioning: SkillVersion;
@@ -858,6 +952,9 @@ export type Mutation = {
   setGeminiSetupConfig: Scalars['String']['output'];
   setLlmProviderApiKey: Scalars['String']['output'];
   setSearchConfig: Scalars['String']['output'];
+  setSelfEvolutionEnabled: SelfEvolutionCapability;
+  startAgentRunSelfEvolution: GraphqlSelfEvolutionStartResult;
+  startTeamMemberSelfEvolution: GraphqlSelfEvolutionStartResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
   updateAgentDefinition: AgentDefinition;
@@ -1023,11 +1120,6 @@ export type MutationDiscoverAndRegisterMcpServerToolsArgs = {
 };
 
 
-export type MutationDuplicateAgentDefinitionArgs = {
-  input: DuplicateAgentDefinitionInput;
-};
-
-
 export type MutationEnableSkillArgs = {
   name: Scalars['String']['input'];
 };
@@ -1169,6 +1261,21 @@ export type MutationSetSearchConfigArgs = {
 };
 
 
+export type MutationSetSelfEvolutionEnabledArgs = {
+  enabled: Scalars['Boolean']['input'];
+};
+
+
+export type MutationStartAgentRunSelfEvolutionArgs = {
+  input: StartAgentRunSelfEvolutionInput;
+};
+
+
+export type MutationStartTeamMemberSelfEvolutionArgs = {
+  input: StartTeamMemberSelfEvolutionInput;
+};
+
+
 export type MutationTerminateAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
 };
@@ -1268,16 +1375,19 @@ export type Query = {
   folderChildren: Scalars['String']['output'];
   getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
+  getAgentRunSelfEvolutionEligibility: GraphqlSelfEvolutionEligibility;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getGeminiSetupConfig: GeminiSetupConfig;
   getLlmProviderApiKeyConfigured: Scalars['Boolean']['output'];
   getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
+  getSelfEvolutionRunRecord?: Maybe<GraphqlSelfEvolutionRunRecord>;
   getServerSettings: Array<ServerSetting>;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
+  getTeamMemberSelfEvolutionEligibility: GraphqlSelfEvolutionEligibility;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   health: HealthStatus;
   listAgentRunsWithMemory: AgentRunMemoryPage;
@@ -1293,6 +1403,8 @@ export type Query = {
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
+  selfEvolutionCapability: SelfEvolutionCapability;
+  selfEvolutionStrategyCatalog: GraphqlSelfEvolutionStrategyCatalog;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
   skillFileTree?: Maybe<Scalars['String']['output']>;
@@ -1372,6 +1484,11 @@ export type QueryGetAgentRunResumeConfigArgs = {
 };
 
 
+export type QueryGetAgentRunSelfEvolutionEligibilityArgs = {
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetLlmProviderApiKeyConfiguredArgs = {
   providerId: Scalars['String']['input'];
 };
@@ -1384,6 +1501,11 @@ export type QueryGetRunFileChangesArgs = {
 
 export type QueryGetRunProjectionArgs = {
   runId: Scalars['String']['input'];
+};
+
+
+export type QueryGetSelfEvolutionRunRecordArgs = {
+  evolutionRunId: Scalars['String']['input'];
 };
 
 
@@ -1406,6 +1528,12 @@ export type QueryGetTeamMemberRunMemoryViewArgs = {
 
 export type QueryGetTeamMemberRunProjectionArgs = {
   memberRouteKey: Scalars['String']['input'];
+  teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTeamMemberSelfEvolutionEligibilityArgs = {
+  memberRunId: Scalars['String']['input'];
   teamRunId: Scalars['String']['input'];
 };
 
@@ -1655,6 +1783,13 @@ export type SearchConfig = {
   vertexAiSearchServingConfig?: Maybe<Scalars['String']['output']>;
 };
 
+export type SelfEvolutionCapability = {
+  __typename?: 'SelfEvolutionCapability';
+  enabled: Scalars['Boolean']['output'];
+  settingKey: Scalars['String']['output'];
+  source: Scalars['String']['output'];
+};
+
 export type ServerSetting = {
   __typename?: 'ServerSetting';
   description: Scalars['String']['output'];
@@ -1700,6 +1835,15 @@ export type SkillVersion = {
   isActive: Scalars['Boolean']['output'];
   message: Scalars['String']['output'];
   tag: Scalars['String']['output'];
+};
+
+export type StartAgentRunSelfEvolutionInput = {
+  runId: Scalars['String']['input'];
+};
+
+export type StartTeamMemberSelfEvolutionInput = {
+  memberRunId: Scalars['String']['input'];
+  teamRunId: Scalars['String']['input'];
 };
 
 export type StdioMcpServerConfig = {
@@ -1805,6 +1949,7 @@ export type TeamMemberConfigInput = {
   memberName: Scalars['String']['input'];
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
@@ -2116,13 +2261,6 @@ export type DeleteAgentDefinitionMutationVariables = Exact<{
 
 export type DeleteAgentDefinitionMutation = { __typename?: 'Mutation', deleteAgentDefinition: { __typename: 'DeleteAgentDefinitionResult', success: boolean, message: string } };
 
-export type DuplicateAgentDefinitionMutationVariables = Exact<{
-  input: DuplicateAgentDefinitionInput;
-}>;
-
-
-export type DuplicateAgentDefinitionMutation = { __typename?: 'Mutation', duplicateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
-
 export type RefreshAgentDefinitionCatalogMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2403,6 +2541,27 @@ export type ArchiveStoredTeamRunMutationVariables = Exact<{
 
 
 export type ArchiveStoredTeamRunMutation = { __typename?: 'Mutation', archiveStoredTeamRun: { __typename?: 'ArchiveStoredTeamRunMutationResult', success: boolean, message: string } };
+
+export type SetSelfEvolutionEnabledMutationVariables = Exact<{
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetSelfEvolutionEnabledMutation = { __typename?: 'Mutation', setSelfEvolutionEnabled: { __typename?: 'SelfEvolutionCapability', enabled: boolean, settingKey: string, source: string } };
+
+export type StartAgentRunSelfEvolutionMutationVariables = Exact<{
+  input: StartAgentRunSelfEvolutionInput;
+}>;
+
+
+export type StartAgentRunSelfEvolutionMutation = { __typename?: 'Mutation', startAgentRunSelfEvolution: { __typename?: 'GraphqlSelfEvolutionStartResult', evolutionRunId: string, evolverRunId?: string | null, record: { __typename?: 'GraphqlSelfEvolutionRunRecord', evolutionRunId: string, status: string, evolverRunId?: string | null, errors: Array<string> } } };
+
+export type StartTeamMemberSelfEvolutionMutationVariables = Exact<{
+  input: StartTeamMemberSelfEvolutionInput;
+}>;
+
+
+export type StartTeamMemberSelfEvolutionMutation = { __typename?: 'Mutation', startTeamMemberSelfEvolution: { __typename?: 'GraphqlSelfEvolutionStartResult', evolutionRunId: string, evolverRunId?: string | null, record: { __typename?: 'GraphqlSelfEvolutionRunRecord', evolutionRunId: string, status: string, evolverRunId?: string | null, errors: Array<string> } } };
 
 export type UpdateServerSettingMutationVariables = Exact<{
   key: Scalars['String']['input'];
@@ -2699,6 +2858,43 @@ export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: neve
 
 
 export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvailabilities: Array<{ __typename?: 'RuntimeAvailabilityObject', runtimeKind: string, enabled: boolean, reason?: string | null }> };
+
+export type SelfEvolutionCapabilityFieldsFragment = { __typename?: 'SelfEvolutionCapability', enabled: boolean, settingKey: string, source: string };
+
+export type SelfEvolutionEffectiveConfigFieldsFragment = { __typename?: 'GraphqlSelfEvolutionEffectiveConfig', enabled: boolean, triggerStrategy: string, evolverStrategy: string, evolverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSelfEvolutionConfigSourceTraceEntry', source: string, fields: Array<string> }> };
+
+export type SelfEvolutionSkillTargetFieldsFragment = { __typename?: 'GraphqlSelfEvolutionSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean };
+
+export type SelfEvolutionEligibilityFieldsFragment = { __typename?: 'GraphqlSelfEvolutionEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSelfEvolutionSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSelfEvolutionEffectiveConfig', enabled: boolean, triggerStrategy: string, evolverStrategy: string, evolverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSelfEvolutionConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null };
+
+export type SelfEvolutionRunRecordSummaryFieldsFragment = { __typename?: 'GraphqlSelfEvolutionRunRecord', evolutionRunId: string, status: string, evolverRunId?: string | null, errors: Array<string> };
+
+export type GetSelfEvolutionCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSelfEvolutionCapabilityQuery = { __typename?: 'Query', selfEvolutionCapability: { __typename?: 'SelfEvolutionCapability', enabled: boolean, settingKey: string, source: string } };
+
+export type GetAgentRunSelfEvolutionEligibilityQueryVariables = Exact<{
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunSelfEvolutionEligibilityQuery = { __typename?: 'Query', getAgentRunSelfEvolutionEligibility: { __typename?: 'GraphqlSelfEvolutionEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSelfEvolutionSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSelfEvolutionEffectiveConfig', enabled: boolean, triggerStrategy: string, evolverStrategy: string, evolverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSelfEvolutionConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null } };
+
+export type GetTeamMemberSelfEvolutionEligibilityQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  memberRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTeamMemberSelfEvolutionEligibilityQuery = { __typename?: 'Query', getTeamMemberSelfEvolutionEligibility: { __typename?: 'GraphqlSelfEvolutionEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSelfEvolutionSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSelfEvolutionEffectiveConfig', enabled: boolean, triggerStrategy: string, evolverStrategy: string, evolverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSelfEvolutionConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null } };
+
+export type GetSelfEvolutionRunRecordQueryVariables = Exact<{
+  evolutionRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetSelfEvolutionRunRecordQuery = { __typename?: 'Query', getSelfEvolutionRunRecord?: { __typename?: 'GraphqlSelfEvolutionRunRecord', evolutionRunId: string, status: string, evolverRunId?: string | null, errors: Array<string> } | null };
 
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3028,6 +3224,57 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
+export const SelfEvolutionCapabilityFieldsFragmentDoc = gql`
+    fragment SelfEvolutionCapabilityFields on SelfEvolutionCapability {
+  enabled
+  settingKey
+  source
+}
+    `;
+export const SelfEvolutionSkillTargetFieldsFragmentDoc = gql`
+    fragment SelfEvolutionSkillTargetFields on GraphqlSelfEvolutionSkillTarget {
+  skillName
+  skillRootPath
+  skillMdPath
+  sourceLabel
+  isWritable
+}
+    `;
+export const SelfEvolutionEffectiveConfigFieldsFragmentDoc = gql`
+    fragment SelfEvolutionEffectiveConfigFields on GraphqlSelfEvolutionEffectiveConfig {
+  enabled
+  triggerStrategy
+  evolverStrategy
+  evolverAgentDefinitionId
+  resolvedAt
+  sourceTrace {
+    source
+    fields
+  }
+}
+    `;
+export const SelfEvolutionEligibilityFieldsFragmentDoc = gql`
+    fragment SelfEvolutionEligibilityFields on GraphqlSelfEvolutionEligibility {
+  eligible
+  reasons
+  warnings
+  skillTargets {
+    ...SelfEvolutionSkillTargetFields
+  }
+  effectiveConfig {
+    ...SelfEvolutionEffectiveConfigFields
+  }
+}
+    ${SelfEvolutionSkillTargetFieldsFragmentDoc}
+${SelfEvolutionEffectiveConfigFieldsFragmentDoc}`;
+export const SelfEvolutionRunRecordSummaryFieldsFragmentDoc = gql`
+    fragment SelfEvolutionRunRecordSummaryFields on GraphqlSelfEvolutionRunRecord {
+  evolutionRunId
+  status
+  evolverRunId
+  errors
+}
+    `;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -3404,35 +3651,6 @@ export function useDeleteAgentDefinitionMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>(DeleteAgentDefinitionDocument, options);
 }
 export type DeleteAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>;
-export const DuplicateAgentDefinitionDocument = gql`
-    mutation DuplicateAgentDefinition($input: DuplicateAgentDefinitionInput!) {
-  duplicateAgentDefinition(input: $input) {
-    ...AgentDefinitionMutationFields
-  }
-}
-    ${AgentDefinitionMutationFieldsFragmentDoc}`;
-
-/**
- * __useDuplicateAgentDefinitionMutation__
- *
- * To run a mutation, you first call `useDuplicateAgentDefinitionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDuplicateAgentDefinitionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useDuplicateAgentDefinitionMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useDuplicateAgentDefinitionMutation(options: VueApolloComposable.UseMutationOptions<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>(DuplicateAgentDefinitionDocument, options);
-}
-export type DuplicateAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>;
 export const RefreshAgentDefinitionCatalogDocument = gql`
     mutation RefreshAgentDefinitionCatalog {
   refreshAgentDefinitionCatalog
@@ -4667,6 +4885,101 @@ export function useArchiveStoredTeamRunMutation(options: VueApolloComposable.Use
   return VueApolloComposable.useMutation<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>(ArchiveStoredTeamRunDocument, options);
 }
 export type ArchiveStoredTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>;
+export const SetSelfEvolutionEnabledDocument = gql`
+    mutation SetSelfEvolutionEnabled($enabled: Boolean!) {
+  setSelfEvolutionEnabled(enabled: $enabled) {
+    ...SelfEvolutionCapabilityFields
+  }
+}
+    ${SelfEvolutionCapabilityFieldsFragmentDoc}`;
+
+/**
+ * __useSetSelfEvolutionEnabledMutation__
+ *
+ * To run a mutation, you first call `useSetSelfEvolutionEnabledMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSetSelfEvolutionEnabledMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSetSelfEvolutionEnabledMutation({
+ *   variables: {
+ *     enabled: // value for 'enabled'
+ *   },
+ * });
+ */
+export function useSetSelfEvolutionEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetSelfEvolutionEnabledMutation, SetSelfEvolutionEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetSelfEvolutionEnabledMutation, SetSelfEvolutionEnabledMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SetSelfEvolutionEnabledMutation, SetSelfEvolutionEnabledMutationVariables>(SetSelfEvolutionEnabledDocument, options);
+}
+export type SetSelfEvolutionEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetSelfEvolutionEnabledMutation, SetSelfEvolutionEnabledMutationVariables>;
+export const StartAgentRunSelfEvolutionDocument = gql`
+    mutation StartAgentRunSelfEvolution($input: StartAgentRunSelfEvolutionInput!) {
+  startAgentRunSelfEvolution(input: $input) {
+    evolutionRunId
+    evolverRunId
+    record {
+      ...SelfEvolutionRunRecordSummaryFields
+    }
+  }
+}
+    ${SelfEvolutionRunRecordSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useStartAgentRunSelfEvolutionMutation__
+ *
+ * To run a mutation, you first call `useStartAgentRunSelfEvolutionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useStartAgentRunSelfEvolutionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useStartAgentRunSelfEvolutionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useStartAgentRunSelfEvolutionMutation(options: VueApolloComposable.UseMutationOptions<StartAgentRunSelfEvolutionMutation, StartAgentRunSelfEvolutionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StartAgentRunSelfEvolutionMutation, StartAgentRunSelfEvolutionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<StartAgentRunSelfEvolutionMutation, StartAgentRunSelfEvolutionMutationVariables>(StartAgentRunSelfEvolutionDocument, options);
+}
+export type StartAgentRunSelfEvolutionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartAgentRunSelfEvolutionMutation, StartAgentRunSelfEvolutionMutationVariables>;
+export const StartTeamMemberSelfEvolutionDocument = gql`
+    mutation StartTeamMemberSelfEvolution($input: StartTeamMemberSelfEvolutionInput!) {
+  startTeamMemberSelfEvolution(input: $input) {
+    evolutionRunId
+    evolverRunId
+    record {
+      ...SelfEvolutionRunRecordSummaryFields
+    }
+  }
+}
+    ${SelfEvolutionRunRecordSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useStartTeamMemberSelfEvolutionMutation__
+ *
+ * To run a mutation, you first call `useStartTeamMemberSelfEvolutionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useStartTeamMemberSelfEvolutionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useStartTeamMemberSelfEvolutionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useStartTeamMemberSelfEvolutionMutation(options: VueApolloComposable.UseMutationOptions<StartTeamMemberSelfEvolutionMutation, StartTeamMemberSelfEvolutionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StartTeamMemberSelfEvolutionMutation, StartTeamMemberSelfEvolutionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<StartTeamMemberSelfEvolutionMutation, StartTeamMemberSelfEvolutionMutationVariables>(StartTeamMemberSelfEvolutionDocument, options);
+}
+export type StartTeamMemberSelfEvolutionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartTeamMemberSelfEvolutionMutation, StartTeamMemberSelfEvolutionMutationVariables>;
 export const UpdateServerSettingDocument = gql`
     mutation UpdateServerSetting($key: String!, $value: String!) {
   updateServerSetting(key: $key, value: $value)
@@ -6425,6 +6738,127 @@ export function useGetRuntimeAvailabilitiesLazyQuery(options: VueApolloComposabl
   return VueApolloComposable.useLazyQuery<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>(GetRuntimeAvailabilitiesDocument, {}, options);
 }
 export type GetRuntimeAvailabilitiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>;
+export const GetSelfEvolutionCapabilityDocument = gql`
+    query GetSelfEvolutionCapability {
+  selfEvolutionCapability {
+    ...SelfEvolutionCapabilityFields
+  }
+}
+    ${SelfEvolutionCapabilityFieldsFragmentDoc}`;
+
+/**
+ * __useGetSelfEvolutionCapabilityQuery__
+ *
+ * To run a query within a Vue component, call `useGetSelfEvolutionCapabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSelfEvolutionCapabilityQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetSelfEvolutionCapabilityQuery();
+ */
+export function useGetSelfEvolutionCapabilityQuery(options: VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>(GetSelfEvolutionCapabilityDocument, {}, options);
+}
+export function useGetSelfEvolutionCapabilityLazyQuery(options: VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>(GetSelfEvolutionCapabilityDocument, {}, options);
+}
+export type GetSelfEvolutionCapabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSelfEvolutionCapabilityQuery, GetSelfEvolutionCapabilityQueryVariables>;
+export const GetAgentRunSelfEvolutionEligibilityDocument = gql`
+    query GetAgentRunSelfEvolutionEligibility($runId: String!) {
+  getAgentRunSelfEvolutionEligibility(runId: $runId) {
+    ...SelfEvolutionEligibilityFields
+  }
+}
+    ${SelfEvolutionEligibilityFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentRunSelfEvolutionEligibilityQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunSelfEvolutionEligibilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunSelfEvolutionEligibilityQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunSelfEvolutionEligibilityQuery({
+ *   runId: // value for 'runId'
+ * });
+ */
+export function useGetAgentRunSelfEvolutionEligibilityQuery(variables: GetAgentRunSelfEvolutionEligibilityQueryVariables | VueCompositionApi.Ref<GetAgentRunSelfEvolutionEligibilityQueryVariables> | ReactiveFunction<GetAgentRunSelfEvolutionEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>(GetAgentRunSelfEvolutionEligibilityDocument, variables, options);
+}
+export function useGetAgentRunSelfEvolutionEligibilityLazyQuery(variables?: GetAgentRunSelfEvolutionEligibilityQueryVariables | VueCompositionApi.Ref<GetAgentRunSelfEvolutionEligibilityQueryVariables> | ReactiveFunction<GetAgentRunSelfEvolutionEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>(GetAgentRunSelfEvolutionEligibilityDocument, variables, options);
+}
+export type GetAgentRunSelfEvolutionEligibilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunSelfEvolutionEligibilityQuery, GetAgentRunSelfEvolutionEligibilityQueryVariables>;
+export const GetTeamMemberSelfEvolutionEligibilityDocument = gql`
+    query GetTeamMemberSelfEvolutionEligibility($teamRunId: String!, $memberRunId: String!) {
+  getTeamMemberSelfEvolutionEligibility(
+    teamRunId: $teamRunId
+    memberRunId: $memberRunId
+  ) {
+    ...SelfEvolutionEligibilityFields
+  }
+}
+    ${SelfEvolutionEligibilityFieldsFragmentDoc}`;
+
+/**
+ * __useGetTeamMemberSelfEvolutionEligibilityQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberSelfEvolutionEligibilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberSelfEvolutionEligibilityQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberSelfEvolutionEligibilityQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   memberRunId: // value for 'memberRunId'
+ * });
+ */
+export function useGetTeamMemberSelfEvolutionEligibilityQuery(variables: GetTeamMemberSelfEvolutionEligibilityQueryVariables | VueCompositionApi.Ref<GetTeamMemberSelfEvolutionEligibilityQueryVariables> | ReactiveFunction<GetTeamMemberSelfEvolutionEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>(GetTeamMemberSelfEvolutionEligibilityDocument, variables, options);
+}
+export function useGetTeamMemberSelfEvolutionEligibilityLazyQuery(variables?: GetTeamMemberSelfEvolutionEligibilityQueryVariables | VueCompositionApi.Ref<GetTeamMemberSelfEvolutionEligibilityQueryVariables> | ReactiveFunction<GetTeamMemberSelfEvolutionEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>(GetTeamMemberSelfEvolutionEligibilityDocument, variables, options);
+}
+export type GetTeamMemberSelfEvolutionEligibilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberSelfEvolutionEligibilityQuery, GetTeamMemberSelfEvolutionEligibilityQueryVariables>;
+export const GetSelfEvolutionRunRecordDocument = gql`
+    query GetSelfEvolutionRunRecord($evolutionRunId: String!) {
+  getSelfEvolutionRunRecord(evolutionRunId: $evolutionRunId) {
+    ...SelfEvolutionRunRecordSummaryFields
+  }
+}
+    ${SelfEvolutionRunRecordSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useGetSelfEvolutionRunRecordQuery__
+ *
+ * To run a query within a Vue component, call `useGetSelfEvolutionRunRecordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSelfEvolutionRunRecordQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetSelfEvolutionRunRecordQuery({
+ *   evolutionRunId: // value for 'evolutionRunId'
+ * });
+ */
+export function useGetSelfEvolutionRunRecordQuery(variables: GetSelfEvolutionRunRecordQueryVariables | VueCompositionApi.Ref<GetSelfEvolutionRunRecordQueryVariables> | ReactiveFunction<GetSelfEvolutionRunRecordQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>(GetSelfEvolutionRunRecordDocument, variables, options);
+}
+export function useGetSelfEvolutionRunRecordLazyQuery(variables?: GetSelfEvolutionRunRecordQueryVariables | VueCompositionApi.Ref<GetSelfEvolutionRunRecordQueryVariables> | ReactiveFunction<GetSelfEvolutionRunRecordQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>(GetSelfEvolutionRunRecordDocument, variables, options);
+}
+export type GetSelfEvolutionRunRecordQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSelfEvolutionRunRecordQuery, GetSelfEvolutionRunRecordQueryVariables>;
 export const GetServerSettingsDocument = gql`
     query GetServerSettings {
   getServerSettings {

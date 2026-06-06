@@ -1,0 +1,16 @@
+
+> autobyteus@1.3.43 codegen /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to ./generated/graphql.ts
+[SUCCESS] Generate outputs

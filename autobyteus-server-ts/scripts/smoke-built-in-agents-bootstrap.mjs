@@ -82,6 +82,19 @@ const fakeServerSettingsService = {
 };
 
 try {
+  const staleCompactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+  const staleSkillEvolverAgentDir = path.join(agentsDir, SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  const standaloneAgentDir = path.join(agentsDir, "daily-assistant");
+  await fs.mkdir(staleCompactorAgentDir, { recursive: true });
+  await fs.mkdir(staleSkillEvolverAgentDir, { recursive: true });
+  await fs.mkdir(standaloneAgentDir, { recursive: true });
+  await fs.writeFile(path.join(staleCompactorAgentDir, "agent.md"), "stale memory compactor", "utf8");
+  await fs.writeFile(path.join(staleCompactorAgentDir, "agent-config.json"), "{\"toolNames\":[\"stale_tool\"]}", "utf8");
+  await fs.writeFile(path.join(staleSkillEvolverAgentDir, "agent.md"), "stale skill evolver", "utf8");
+  await fs.writeFile(path.join(staleSkillEvolverAgentDir, "agent-config.json"), "{\"skillNames\":[\"stale_skill\"]}", "utf8");
+  await fs.writeFile(path.join(standaloneAgentDir, "agent.md"), "standalone local agent", "utf8");
+  await fs.writeFile(path.join(standaloneAgentDir, "agent-config.json"), "{\"toolNames\":[\"calendar\"]}", "utf8");
+
   const result = await bootstrapBuiltInAgents({
     agentsDir,
     agentDefinitionService: fakeAgentDefinitionService,
@@ -96,8 +109,10 @@ try {
   assert.equal(result.refreshedCache, true);
 
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
-  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).seededAgentMd, true);
-  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).seededAgentConfig, true);
+  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentConfig, true);
+  assert.equal(resultById.get(SKILL_EVOLVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(resultById.get(SKILL_EVOLVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
 
   const compactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   const [compactorAgentMd, compactorAgentConfig, compactorDistAgentMd, compactorDistAgentConfig] =
@@ -125,11 +140,10 @@ try {
   assert.match(skillEvolverAgentMd, /Skill Self-Evolver/);
   assert.equal(settingsByKey.get(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID), MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   assert.equal(settingsByKey.get(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID), SKILL_EVOLVER_AGENT_DEFINITION_ID);
-  await assert.rejects(
-    () => fs.stat(path.join(agentsDir, "daily-assistant")),
-    (error) => error && error.code === "ENOENT",
-    "Daily Assistant must not be server-seeded as a built-in agent",
-  );
+  const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
+  const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");
+  assert.equal(standaloneAgentMd, "standalone local agent");
+  assert.equal(standaloneAgentConfig, "{\"toolNames\":[\"calendar\"]}");
   console.info("Built-in agents bootstrap smoke check passed.");
 } finally {
   await fs.rm(tempRoot, { recursive: true, force: true });

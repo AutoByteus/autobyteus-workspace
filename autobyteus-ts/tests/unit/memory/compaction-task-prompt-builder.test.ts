@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import {
-  COMPACTION_OUTPUT_CONTRACT,
+  COMPACTION_RESULT_SHAPE,
   CompactionTaskPromptBuilder,
 } from '../../../src/memory/compaction/compaction-task-prompt-builder.js';
 import type { InteractionBlock } from '../../../src/memory/compaction/interaction-block.js';
@@ -35,19 +35,26 @@ const makeBlock = (): InteractionBlock => {
 };
 
 describe('CompactionTaskPromptBuilder', () => {
-  it('builds a short natural task envelope with the exact current JSON contract and conversation history', () => {
+  it('builds a short natural task envelope with the exact current JSON shape and conversation history', () => {
     const prompt = new CompactionTaskPromptBuilder().buildTaskPrompt([makeBlock()]);
 
-    expect(prompt).toContain('Summarize the earlier conversation history below so future work can continue with refreshed context.');
-    expect(prompt).toContain('Use the current output contract exactly.');
+    expect(prompt).toContain('Summarize the earlier conversation history below so the same work can continue after a context refresh.');
+    expect(prompt).toContain('Use the required final JSON shape exactly.');
     expect(prompt).toContain('Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.');
-    expect(prompt).toContain('[OUTPUT_CONTRACT]');
-    expect(prompt).toContain(COMPACTION_OUTPUT_CONTRACT);
+    expect(prompt).toContain('[REQUIRED_FINAL_JSON_SHAPE]');
+    expect(prompt).toContain(COMPACTION_RESULT_SHAPE);
+    expect(prompt).toContain('Your final answer must be one JSON object with this shape:');
     expect(prompt).toContain('"critical_issues": [{ "fact": "string" }]');
     expect(prompt).not.toContain('"tags"');
     expect(prompt).not.toContain('"reference"');
     expect(prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
     expect(prompt).not.toContain('AutoByteus memory');
+    expect(prompt).not.toContain('output ' + 'contract');
+    expect(prompt).not.toContain('[OUTPUT' + '_CONTRACT]');
+    expect(prompt).not.toContain('raw trace');
+    expect(prompt).not.toContain('block id');
+    expect(prompt).not.toContain('turn id');
+    expect(prompt).not.toContain('source event');
     expect(prompt).not.toMatch(/\bsettled\b/i);
     expect(prompt).not.toContain('[SETTLED_BLOCKS]');
     expect(prompt).not.toContain('[BLOCK');
@@ -62,7 +69,7 @@ describe('CompactionTaskPromptBuilder', () => {
     expect(prompt).not.toContain('Preserve key decisions, plans, constraints');
     expect(prompt).not.toContain('Drop repeated chatter, low-value operational noise');
     expect(prompt).not.toContain('Keep the result concise, durable, and future-useful');
-    expect(prompt.split('\n').indexOf('[OUTPUT_CONTRACT]')).toBeLessThan(5);
+    expect(prompt.split('\n').indexOf('[REQUIRED_FINAL_JSON_SHAPE]')).toBeLessThan(5);
   });
 
   it('includes tool call IDs on raw tool result and digest lines when available', () => {

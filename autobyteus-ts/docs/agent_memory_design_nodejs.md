@@ -353,14 +353,15 @@ Compaction produces **structured memory artifacts** and a new working context sn
    natural context-refresh task with `[CONVERSATION_HISTORY_TO_SUMMARIZE]`,
    preserving useful conversation facts while omitting low-level bookkeeping.
 6. Resolve the configured compactor agent from
-   `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and selects
-   `autobyteus-memory-compactor` when the setting is blank. Blank or invalid
-   selected runtime/model fields inherit from the triggering parent run's
-   effective runtime/model; compaction fails if the selected definition is
-   missing or a required runtime/model field is absent from both sources.
+   `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup syncs/overwrites
+   the product-managed `autobyteus-memory-compactor` built-in from the bundled
+   template and selects it when the setting is blank. Blank or invalid selected
+   runtime/model fields inherit from the triggering parent run's effective
+   runtime/model; compaction fails if the selected definition is missing or a
+   required runtime/model field is absent from both sources.
 7. Create a normal visible compactor agent run, post one compaction task, collect
    the final JSON-only assistant output, terminate the run, and leave the run in
-   history for inspection. The task output contract remains:
+   history for inspection. The required result shape remains:
    - `episodic_summary`
    - `critical_issues[]`
    - `unresolved_work[]`
@@ -401,15 +402,15 @@ Compaction produces **structured memory artifacts** and a new working context sn
 | Setting | Purpose | Default / Behavior |
 | --- | --- | --- |
 | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Overrides the post-response trigger ratio used for subsequent budget checks. | Defaults to `0.8`; parsed as a positive decimal and clamped to `<= 1`. |
-| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config can explicitly override runtime/model and provide model config. | Server startup seeds and selects `autobyteus-memory-compactor` when blank. Blank or invalid runtime/model fields on the selected/default agent inherit from the running parent agent; required compaction fails clearly only when no selected definition exists or a required field is absent from both sources. |
+| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config can explicitly override runtime/model and provide model config. | Server startup syncs/overwrites the built-in `autobyteus-memory-compactor` from the bundled template and selects it when blank. Blank or invalid runtime/model fields on the selected/default agent inherit from the running parent agent; required compaction fails clearly only when no selected definition exists or a required field is absent from both sources. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Lowers the effective context ceiling for safer budgeting (for example when a provider fails before its advertised maximum). | Blank disables the override; positive values are floored to an integer token ceiling. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables verbose compaction diagnostics. | Disabled by default; truthy values such as `1`, `true`, `yes`, `on` enable detailed logs. |
 
 ### Compactor Prompt Ownership
 
-The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
+The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The synced `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
 
-Automated compaction still includes the current exact JSON output contract in every task envelope before `[CONVERSATION_HISTORY_TO_SUMMARIZE]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata. Existing user-edited compactor definitions are preserved by bootstrap and may keep older wording until an operator edits them.
+Automated compaction still includes the current exact required final JSON shape in every task envelope under `[REQUIRED_FINAL_JSON_SHAPE]` before `[CONVERSATION_HISTORY_TO_SUMMARIZE]`. That shape is owned by memory compaction/parser code, not solely by editable agent instructions, so custom selected compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata. App-data edits to the product-managed `autobyteus-memory-compactor` id are overwritten by built-in-agent startup sync; operators who want custom compactor behavior should select a separate user/package-managed agent definition through `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`.
 
 ### Snapshot Cache / Schema-4 Bootstrap
 
@@ -751,10 +752,11 @@ src/agent/
 
 **Implemented integration shape**
 
-- Server startup runs `DefaultCompactorAgentBootstrapper` before normal
-  agent-run use: it seeds the editable shared `autobyteus-memory-compactor`
-  files if missing, preserves existing user edits, refreshes agent-definition
-  cache, and selects it only when `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`
+- Server startup runs the unified `BuiltInAgentBootstrapper` before normal
+  agent-run use: it syncs/overwrites registry-defined internal built-in agent
+  files from bundled templates, leaves non-built-in local agents and package
+  roots untouched, refreshes the agent-definition cache, and selects
+  `autobyteus-memory-compactor` only when `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`
   is blank and the definition resolves.
 - Agent runtime composition creates `MemoryManager` with an optional
   `CompactionAgentRunner` supplied by server-backed `AgentFactory` wiring.
@@ -1487,17 +1489,21 @@ without reintroducing direct-model compaction summarization.
 
 ### Server Runtime Adapter / Default Agent Setup
 
-- `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent-bootstrapper.ts`
-  - Seeds the normal shared `autobyteus-memory-compactor` definition into the
-    configured agents directory, preserves existing files/user edits, refreshes
-    the definition cache, and selects it only when the compactor setting is blank
-    and the definition resolves successfully.
+- `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts`
+  - Syncs registry-defined internal built-in agent definitions into the
+    configured agents directory, overwrites their `agent.md` and
+    `agent-config.json` from bundled templates, leaves non-built-in local agents
+    and package roots untouched, refreshes the definition cache, and initializes
+    the compactor setting only when it is blank and the definition resolves
+    successfully.
 
-- `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/`
-  - File-backed default agent template. `agent-config.json` intentionally keeps
-    `defaultLaunchConfig: null`; by default it inherits runtime/model from the
-    running parent agent, while operators can still configure explicit
-    runtime/model overrides through the normal agent editor.
+- `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/`
+  - Product-managed built-in compactor template. `agent-config.json`
+    intentionally keeps `defaultLaunchConfig: null`; by default it inherits
+    runtime/model from the running parent agent, while operators can still
+    configure explicit runtime/model overrides by selecting a separate
+    user/package-managed compactor definition through the normal agent editor and
+    `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`.
 
 - `autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts`
   - Resolves `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` to the selected normal
