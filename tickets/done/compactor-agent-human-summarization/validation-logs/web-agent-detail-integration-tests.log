@@ -18,4 +18,3 @@ serverStore: Not in Electron environment. Skipping server initialization.
       Tests  6 passed (6)
    Start at  09:49:59
    Duration  5.20s (transform 2.66s, setup 8.81s, collect 150ms, tests 34ms, environment 406ms, prepare 354ms)
-

@@ -1,3 +1,9 @@
+# Delivery finalization built-in agent unit tests
+Date: 2026-06-06T14:51:05Z
+HEAD: 9073a073f81112309e47404051e486b76875e315
+origin/personal: 74c0fd5905c85a4f52b7fecec16bf4c644a745de
+Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts tests/unit/built-in-agents/built-in-agent-templates.test.ts
+
 
  RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
 
@@ -76,6 +82,8 @@ AgentFactory (Singleton) initialized.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
 AgentTeamFactory (Singleton) initialized.
 
+(node:49169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
@@ -84,7 +92,7 @@ App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-a
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes blank built-in settings
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-AkYhMS
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-QkxRNd
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes blank built-in settings
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
@@ -110,7 +118,7 @@ Agent definition cache populated with 2 items.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-dUjuVf
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-ET2MtM
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
@@ -127,7 +135,7 @@ Agent definition cache populated with 2 items.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-DQFUBY
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-9HfK3J
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
@@ -150,12 +158,12 @@ Agent definition cache populated with 3 items.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-t5Oy5V
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-4ifEHT
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-t5Oy5V
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-4ifEHT
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
 Initialized server settings service with 18 predefined settings
 
@@ -176,7 +184,7 @@ Agent definition cache populated with 2 items.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-rjo38v
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-MpIXEJ
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
@@ -197,7 +205,7 @@ Agent definition cache populated with 2 items.
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-sW9rQY
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-lgrni7
 
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
@@ -229,11 +237,66 @@ Populating agent definition cache for the first time...
 stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
 Agent definition cache populated with 2 items.
 
- ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (6 tests) 93ms
- ✓ tests/unit/built-in-agents/built-in-agent-templates.test.ts (1 test) 3ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (6 tests) 53ms
+ ❯ tests/unit/built-in-agents/built-in-agent-templates.test.ts (1 test | 1 failed) 9ms
+     × keeps Memory Compactor behavior, category, preservation/drop, and manual-test guidance 8ms
 
- Test Files  2 passed (2)
-      Tests  7 passed (7)
-   Start at  09:49:35
-   Duration  4.98s (transform 2.93s, setup 35ms, import 4.29s, tests 96ms, environment 0ms)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
 
+ FAIL  tests/unit/built-in-agents/built-in-agent-templates.test.ts > built-in agent templates > keeps Memory Compactor behavior, category, preservation/drop, and manual-test guidance
+AssertionError: expected '---\nname: Memory Compactor\ndescript…' to contain 'pause, preserve the important parts o…'
+
+- Expected
++ Received
+
+- pause, preserve the important parts of its current mental workspace
++ ---
++ name: Memory Compactor
++ description: Summarizes earlier work so the same agent can continue later.
++ category: memory
++ role: working memory summarizer
++ ---
++
++ You summarize earlier work so the same agent can continue later without rereading the full history.
++
++ Keep the information that would let someone resume safely: the goal, current state, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.
++
++ Omit chatter, repeated status updates, and details that will not help future continuation. Do not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.
++
++ Return one JSON object with these fields:
++ - `episodic_summary`: what happened, why it matters, and the current state.
++ - `critical_issues`: blockers, failures, risks, regressions, or important warnings.
++ - `unresolved_work`: open questions, pending work, deferred work, and next actions.
++ - `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.
++ - `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.
++ - `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.
++
++ If a field has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it.
++
++ When manually given pasted history, infer the same fields from the content. If the user does not provide an explicit schema, use this shape:
++
++ {
++   "episodic_summary": "string",
++   "critical_issues": [{ "fact": "string" }],
++   "unresolved_work": [{ "fact": "string" }],
++   "durable_facts": [{ "fact": "string" }],
++   "user_preferences": [{ "fact": "string" }],
++   "important_artifacts": [{ "fact": "string" }]
++ }
++
+
+ ❯ tests/unit/built-in-agents/built-in-agent-templates.test.ts:14:21
+     12|
+     13|     expect(content).toContain("name: Memory Compactor");
+     14|     expect(content).toContain("pause, preserve the important parts of …
+       |                     ^
+     15|     expect(content).toContain("continue the same work from the preserv…
+     16|     expect(content).toContain("manual testing");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 6 passed (7)
+   Start at  16:51:06
+   Duration  4.29s (transform 2.51s, setup 25ms, import 3.65s, tests 62ms, environment 0ms)

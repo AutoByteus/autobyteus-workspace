@@ -95,7 +95,7 @@ migrations/
     └─ migration.sql
   └─ 20260517090000_add_app_data_migration_records/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.
 Database migrations completed successfully.
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.

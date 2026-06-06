@@ -117,4 +117,3 @@ Agent Definition with ID team-local-agent:team_team_local_agent_1780732191563_8d
       Tests  7 passed (7)
    Start at  09:49:45
    Duration  5.75s (transform 3.22s, setup 18ms, import 5.09s, tests 209ms, environment 0ms)
-

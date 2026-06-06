@@ -1,0 +1,32 @@
+# Delivery post-rebase web AgentDetail/integration tests
+Date: 2026-06-06T12:03:43Z
+HEAD: 4c1e8afea64d7ea8e840d6c9647b22861fb37a6f
+origin/personal: 5e188c1c9210be3ff82dd8f9282f2802773446d4
+
+## NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/agents/__tests__/AgentDetail.spec.ts tests/integration/agent-definition.integration.test.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-web
+
+stderr | tests/integration/agent-definition.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/agent-definition.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/agent-definition.integration.test.ts (1 test) 4ms
+ ✓ components/agents/__tests__/AgentDetail.spec.ts (5 tests) 47ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  14:03:46
+   Duration  7.39s (transform 3.68s, setup 12.75s, collect 243ms, tests 51ms, environment 559ms, prepare 426ms)

@@ -1,3 +1,9 @@
+# Delivery post-integration server agent definitions GraphQL E2E
+Date: 2026-06-06T09:34:29Z
+HEAD: f9f8386c428081b84daadf5bfbe559cb2f96186f
+origin/personal: c4a7c61394bda6789809473c4e170ce96b2c79ed
+
+## pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
 
  RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
 
@@ -76,6 +82,8 @@ AgentFactory (Singleton) initialized.
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
 AgentTeamFactory (Singleton) initialized.
 
+(node:57075) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-server-ts
@@ -85,7 +93,7 @@ stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Age
 CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
-Agent Definition created successfully with ID: agent-agent-def-1780735788143-4edb569a7244
+Agent Definition created successfully with ID: agent-agent-def-1780738475379-ac9d8abc1f1c3
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
 Populating agent definition cache for the first time...
@@ -97,24 +105,26 @@ stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Age
 Agent definition cache populated with 47 items.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
-In-memory cache: Updated agent definition with ID agent-agent-def-1780735788143-4edb569a7244.
+In-memory cache: Updated agent definition with ID agent-agent-def-1780738475379-ac9d8abc1f1c3.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
-Agent Definition with ID agent-agent-def-1780735788143-4edb569a7244 updated successfully.
+Agent Definition with ID agent-agent-def-1780738475379-ac9d8abc1f1c3 updated successfully.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
-In-memory cache: Removed agent definition with ID agent-agent-def-1780735788143-4edb569a7244.
+In-memory cache: Removed agent definition with ID agent-agent-def-1780738475379-ac9d8abc1f1c3.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > creates, updates, lists templates, and deletes agent definitions
-Agent Definition with ID agent-agent-def-1780735788143-4edb569a7244 deleted successfully.
+Agent Definition with ID agent-agent-def-1780738475379-ac9d8abc1f1c3 deleted successfully.
 
 stdout | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > lists and updates team-local agent definitions with ownership metadata
-Agent Definition with ID team-local-agent:team_team_local_agent_1780735788240_b15f821e76c6:agent_team_local_agent_1780735788240_b15f821e76c6 updated successfully.
+Agent Definition with ID team-local-agent:team_team_local_agent_1780738475494_be5ad3d9bea49:agent_team_local_agent_1780738475494_be5ad3d9bea49 updated successfully.
 
- ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 202ms
+stderr | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts > Agent definitions GraphQL e2e > lists and updates team-local agent definitions with ownership metadata
+Error deleting agent definition with ID team-local-agent:team_team_local_agent_1780738475494_be5ad3d9bea49:agent_team_local_agent_1780738475494_be5ad3d9bea49: Error: Deleting non-shared agent definitions is not supported.
+
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 230ms
 
  Test Files  1 passed (1)
       Tests  7 passed (7)
-   Start at  10:49:43
-   Duration  4.74s (transform 2.77s, setup 15ms, import 4.11s, tests 202ms, environment 0ms)
-
+   Start at  11:34:29
+   Duration  5.70s (transform 3.24s, setup 19ms, import 4.96s, tests 230ms, environment 0ms)

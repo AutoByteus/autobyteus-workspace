@@ -9,7 +9,7 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 - `src/agent-definition`
 - `src/api/graphql/types/agent-definition.ts`
 - `src/agent-tools/agent-management`
-- `src/built-in-agents` (platform-provided built-in agent templates and startup seeding)
+- `src/built-in-agents` (platform-provided built-in agent templates and startup sync)
 
 ## Main Service
 
@@ -58,22 +58,26 @@ These defaults are consumed by:
 
 The generic Applications host no longer launches embedded agents directly at page-load time.
 
-## Built-In Agent Seeds
+## Built-In Agent Sync
 
-Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform infrastructure agent templates, copies them into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
+Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform infrastructure agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
 
 Built-in templates are centralized under `src/built-in-agents/templates/`:
 
-- `memory-compactor/` seeds the normal shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
+- `memory-compactor/` syncs the normal shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
+- `skill-evolver/` syncs the normal shared `agents/autobyteus-skill-evolver/` definition with display name **Skill Self-Evolver**.
 
 The built-in-agent bootstrapper owns this lifecycle:
 
-- missing `agent.md` and `agent-config.json` files are copied from the built-in template registry;
-- existing user-edited built-in agent files are preserved by default;
-- `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is initialized to `autobyteus-memory-compactor` only when the setting is blank; and
+- registry-defined built-in `agent.md` and `agent-config.json` files are overwritten from the built-in template registry on startup;
+- standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
+- `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is initialized to `autobyteus-memory-compactor` only when the setting is blank;
+- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-skill-evolver` only when the setting is blank; and
 - the agent-definition cache is refreshed after built-in definitions resolve.
 
-Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. Compaction runtime depends on `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; it does not own the Memory Compactor template/seeding lifecycle. Daily Assistant is not a server built-in or server-selected featured default; keep it in a user/private agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/` and feature it through Settings when desired.
+Internal built-in agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting; app-data edits to registry-defined built-in ids are product-managed and will be overwritten by startup sync.
+
+Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. Compaction runtime depends on `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; it does not own the Memory Compactor template/sync lifecycle. Daily Assistant is not a server built-in or server-selected featured default; keep it in a user/private agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/` and feature it through Settings when desired.
 
 ## Notes
 
@@ -81,5 +85,6 @@ Do not add separate one-off built-in-agent bootstrappers or scatter platform tem
 - Team-local agent ids use the subject-specific nested-safe shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. The owner team id can itself be a canonical team-local team id, so local agents owned by local subteams resolve under the local subteam's `agents/` folder rather than the root parent team's `agents/` folder.
 - `AgentDefinitionService` and the file provider remain the authoritative read/write boundary; callers should not reimplement ownership-path resolution.
 - Application-owned agents can be edited in place when the owning bundle source is writable.
-- Application-owned agents are not created, deleted, or duplicated through the shared standalone provider path.
+- Application-owned agents are not created or deleted through the shared standalone provider path.
+- No generic agent Duplicate/Fork API exists; customization should happen in source packages, direct edits to user-owned standalone agents, or a newly created shared agent.
 - `getAllAgentDefinitions()` still uses batched prompt mapping retrieval to avoid N+1 query patterns.

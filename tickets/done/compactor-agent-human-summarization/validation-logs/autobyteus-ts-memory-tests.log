@@ -30,4 +30,3 @@ stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
       Tests  13 passed (13)
    Start at  09:49:24
    Duration  218ms (transform 279ms, setup 120ms, import 266ms, tests 13ms, environment 0ms)
-
