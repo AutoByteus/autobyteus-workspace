@@ -1,0 +1,12 @@
+--- simulator-smoke xcresult summary ---
+result Passed
+tests 2 passed 2 failed 0 skipped 0
+iPhone 17 Pro 8E8844A9-04F1-4729-A417-52DE909E0A92 26.1 23B86
+--- core-unit-tests xcresult summary ---
+result Passed
+tests 21 passed 21 failed 0 skipped 0
+iPhone 17 AED15013-49CB-4DEE-9FCA-5A94B0E5650B 26.1 23B86
+--- temporary-qr-simulator xcresult summary ---
+result Passed
+tests 1 passed 1 failed 0 skipped 0
+iPhone 17 AED15013-49CB-4DEE-9FCA-5A94B0E5650B 26.1 23B86

@@ -1,0 +1,16 @@
+Signing readiness (team 7Y86YBQ7B4)
+Readiness: development-device-profile-ready-app-group-incomplete
+Development team provided: True
+Detected teams: 7Y86YBQ7B4
+Team-filtered iOS profiles: 1
+Development device profile ready: True
+Development device App Group ready: False
+Archive prerequisites ready: False
+Reasons:
+- No app development profile with App Group group.org.autobyteus.mobile detected
+- No share-extension development profile with App Group group.org.autobyteus.mobile detected
+- No Apple/iOS Distribution signing identity detected
+- No exact App Store/TestFlight distribution profile detected for app bundle org.autobyteus.mobile
+- No exact App Store/TestFlight distribution profile detected for share extension bundle org.autobyteus.mobile.share
+- No app App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected
+- No share-extension App Store/TestFlight profile with App Group group.org.autobyteus.mobile detected

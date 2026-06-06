@@ -1,0 +1,26 @@
+# Custom bundle/version project generation and settings
+UTC 2026-06-06T12:53:06Z
+⚙️  Generating plists...
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/autobyteus-ios/AutoByteusMobile.xcodeproj
+
+## App target settings
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj -target AutoByteusMobile -showBuildSettings IOS_BUNDLE_ID=com.e2e.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=com.e2e.autobyteus.mobile.share MARKETING_VERSION=1.2.7 CURRENT_PROJECT_VERSION=456
+    CURRENT_PROJECT_VERSION = 456
+    MARKETING_VERSION = 1.2.7
+    CODE_SIGN_ENTITLEMENTS = AutoByteusMobile/AutoByteusMobile.entitlements
+    CURRENT_PROJECT_VERSION = 456
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    MARKETING_VERSION = 1.2.7
+    PRODUCT_BUNDLE_IDENTIFIER = com.e2e.autobyteus.mobile
+
+## Share extension target settings
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj -target AutoByteusMobileShareExtension -showBuildSettings IOS_BUNDLE_ID=com.e2e.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=com.e2e.autobyteus.mobile.share MARKETING_VERSION=1.2.7 CURRENT_PROJECT_VERSION=456
+    CURRENT_PROJECT_VERSION = 456
+    MARKETING_VERSION = 1.2.7
+    CODE_SIGN_ENTITLEMENTS = AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements
+    CURRENT_PROJECT_VERSION = 456
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO
+    MARKETING_VERSION = 1.2.7
+    PRODUCT_BUNDLE_IDENTIFIER = com.e2e.autobyteus.mobile.share

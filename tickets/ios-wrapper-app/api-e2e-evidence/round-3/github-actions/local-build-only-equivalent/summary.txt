@@ -1,0 +1,8 @@
+# Local build-only equivalent summary
+UTC 2026-06-06T12:55:53Z
+Exit status: 0
+Simulator UDID: 8E8844A9-04F1-4729-A417-52DE909E0A92
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=8E8844A9-04F1-4729-A417-52DE909E0A92" IOS_BUNDLE_ID=com.e2e.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=com.e2e.autobyteus.mobile.share MARKETING_VERSION=1.2.7 CURRENT_PROJECT_VERSION=456 build
+    CURRENT_PROJECT_VERSION = 456
+    MARKETING_VERSION = 1.2.7
+** BUILD SUCCEEDED **

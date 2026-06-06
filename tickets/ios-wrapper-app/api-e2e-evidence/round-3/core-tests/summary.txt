@@ -1,0 +1,22 @@
+# Core test summary
+UTC 2026-06-06T12:53:41Z
+Exit status: 0
+Selected simulator UDID: 8E8844A9-04F1-4729-A417-52DE909E0A92
+Test Suite 'ConnectionInputResolverTests' passed at 2026-06-06 14:53:41.317.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'ConnectionValidatorTests' passed at 2026-06-06 14:53:41.326.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.008) seconds
+Test Suite 'NodeURLNormalizerTests' passed at 2026-06-06 14:53:41.333.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'PairingLinkParserTests' passed at 2026-06-06 14:53:41.340.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.007) seconds
+Test Suite 'PendingSharedInputStoreTests' passed at 2026-06-06 14:53:41.347.
+Test Suite 'SavedNodeStoreTests' passed at 2026-06-06 14:53:41.359.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+Test Suite 'TrustedNavigationPolicyTests' passed at 2026-06-06 14:53:41.361.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'AutoByteusMobileCoreTests.xctest' passed at 2026-06-06 14:53:41.362.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.036 (0.050) seconds
+Test Suite 'All tests' passed at 2026-06-06 14:53:41.362.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.036 (0.050) seconds
+** TEST SUCCEEDED **

@@ -1,0 +1,37 @@
+# GitHub Actions access probe
+UTC 2026-06-06T12:55:24Z
+Repo: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app
+Branch: codex/ios-wrapper-app
+HEAD: c62a78d6a63abae3a0693bfd9f81efcb4b467f89
+
+## remotes
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (fetch)
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (push)
+
+## upstream
+origin/personal
+
+## remote branch
+
+## local workflow tracked/untracked
+?? .github/workflows/release-ios.yml
+
+## gh availability/auth
+gh version 2.86.0 (2026-01-21)
+https://github.com/cli/cli/releases/tag/v2.86.0
+github.com
+  ✓ Logged in to github.com account ryan-zheng-teki (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
+
+## gh workflow list
+Android APK Release	active	281539345
+Desktop Release	active	238882760
+Release Messaging Gateway	active	243279978
+Server Docker Release	active	243566323
+Voice Runtime Release	active	243177421
+
+## gh workflow view release-ios.yml
+HTTP 404: workflow release-ios.yml not found on the default branch (https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/workflows/release-ios.yml)

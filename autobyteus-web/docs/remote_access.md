@@ -1,6 +1,6 @@
 # Phone Access / Remote Access
 
-Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to the desktop-owned AutoByteus node over a private network path that the user or organization already trusts. The shared client surface is the Nuxt mobile web shell served by the backend under `/mobile`; native wrappers reuse the same pairing and transport protocol rather than bundling a separate AutoByteus runtime.
+Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus iOS shell connect to the desktop-owned AutoByteus node over a private network path that the user or organization already trusts. The shared client surface is the Nuxt mobile web shell served by the backend under `/mobile`; native wrappers reuse the same pairing and transport protocol rather than bundling a separate AutoByteus runtime.
 
 ## What Phone Access Does
 
@@ -65,7 +65,7 @@ Supported setup profiles include:
 
 - **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it.
 - **Tailscale:** use the desktop's full MagicDNS hostname/FQDN when possible.
-- **Tailscale Serve HTTPS:** recommended for Android/travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
+- **Tailscale Serve HTTPS:** recommended for Android, iOS, and travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
 - **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
 - **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
 - **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
@@ -109,7 +109,7 @@ QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
 5. Configure a phone-facing private HTTPS URL that maps to the Docker node, for example Tailscale Serve or company-controlled HTTPS ingress.
 6. Paste the HTTPS `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values.
-7. Enable Phone Access, create the QR, and scan it on Android. The pairing exchange and paired-device records belong to the Docker node.
+7. Enable Phone Access, create the QR, and scan it with the Android/iOS native wrapper or open it in the mobile browser. The pairing exchange and paired-device records belong to the Docker node.
 
 The embedded host desktop node should not mint QR codes for a different remote node, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
 
@@ -143,7 +143,7 @@ Use this when the embedded desktop node itself is the node your phone should use
 7. Enable **Phone Access**.
 8. Paste the HTTPS MagicDNS `/mobile` URL into the **Tailscale Serve HTTPS URL** field. HTTP-only discovered candidates are left as diagnostics and are not auto-selected for new HTTPS-required QR creation.
 9. Click **Create QR code**.
-10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android owns its **Scan QR** flow with a bundled scanner and camera permission handling; it does not require a separately installed generic QR scanner app.
+10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android and iOS own their **Scan QR** flows with app-owned scanner/camera permission handling; they do not require a separately installed generic QR scanner app.
 11. The phone exchanges the code for a per-device credential and stores the paired session.
 
 Pairing codes are short-lived and single-use. The long-lived credential is returned only to the phone after the code exchange.
@@ -156,9 +156,9 @@ Official Tailscale references for this setup:
 
 ## Paired Phone Behavior
 
-A paired phone stores its session in browser `localStorage` under the mobile web origin. That is acceptable for the PWA MVP but should be treated as less protected than native secure storage. A future native wrapper should move the same credential into platform secure storage.
+A paired phone stores its session in browser/WebView `localStorage` under the mobile web origin. That is acceptable for the current Phone Access MVP but should be treated as less protected than native secure storage. The current native Android/iOS wrappers deliberately load the same `/mobile` shell and do not persist `mra_...` credentials natively; the iOS wrapper saves only node profile metadata. Any future native credential-storage hardening should be designed separately with backend authorization changes.
 
-Because this storage is origin-scoped, pair through the stable travel URL when possible. For example, pairing with `http://192.168.1.25:29695/mobile` and later opening `https://desktop.tailnet-name.ts.net/mobile` uses a different origin and may require re-pairing. The Android app saves the clean stable `/mobile` URL profile, not the one-time `?pairing=` URL.
+Because this storage is origin-scoped, pair through the stable travel URL when possible. For example, pairing with `http://192.168.1.25:29695/mobile` and later opening `https://desktop.tailnet-name.ts.net/mobile` uses a different origin and may require re-pairing. The native Android/iOS wrappers save the clean stable `/mobile` URL profile, not the one-time `?pairing=` URL.
 
 After pairing, the mobile shell:
 
@@ -220,21 +220,34 @@ ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assem
 
 The Android shell loads the desktop-served `/mobile` URL in WebView. It does not bundle a separate copy of the AutoByteus mobile UI, run AutoByteus locally, or create a second pairing/credential protocol.
 
-When a change touches mobile web code used under `/mobile`, treat the mobile web bundle and the Android APK as separate freshness gates:
+The native iOS shell is generated and built separately from `autobyteus-ios/`:
+
+```bash
+autobyteus-ios/scripts/generate-project.sh
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  build
+```
+
+The iOS shell loads the desktop-served `/mobile` URL in `WKWebView`. It does not bundle a separate copy of the AutoByteus mobile UI, run AutoByteus locally, or create a second pairing/credential protocol.
+
+When a change touches mobile web code used under `/mobile`, treat the mobile web bundle and native wrapper builds as separate freshness gates:
 
 - rebuild `autobyteus-web/dist-mobile/public`;
 - rebuild or refresh the desktop/server package that serves `mobile-web/`;
 - verify the served `/mobile/index.html` hash matches the corrected `dist-mobile/public/index.html`;
-- install the corrected Android APK when native shell behavior changed.
+- install the corrected Android APK or iOS app build when native shell behavior changed.
 
-Installing a new APK does not update the desktop-served `/mobile` bundle. A stale packaged `mobile-web/` directory can keep serving old JavaScript to Android WebView even when the Android APK is current.
+Installing a new native wrapper build does not update the desktop-served `/mobile` bundle. A stale packaged `mobile-web/` directory can keep serving old JavaScript to Android WebView or iOS `WKWebView` even when the native wrapper build is current.
 
 ## Troubleshooting
 
 - **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
 - **Create QR is blocked for HTTP:** run Tailscale Serve and use the private HTTPS URL before creating a new desktop pairing QR.
-- **Android over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
-- **Android Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK and verify the app has camera permission. Current AutoByteus Android does not depend on an external ZXing scanner app.
+- **Android/iOS over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
+- **Native Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK or iOS app, then verify the app has camera permission. Current AutoByteus native wrappers do not depend on an external QR scanner app.
 - **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
 - **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
 - **Mobile Files shows no files for a selected run/team run:** confirm the selected run's workspace root is registered on the paired node, then retry from Files. The mobile shell should show a workspace-unavailable state rather than silently browsing a different workspace.

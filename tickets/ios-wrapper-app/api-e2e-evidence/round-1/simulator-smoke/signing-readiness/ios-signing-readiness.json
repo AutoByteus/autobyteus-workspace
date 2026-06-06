@@ -1,0 +1,27 @@
+{
+  "appBundleId": "org.autobyteus.mobile",
+  "shareExtensionBundleId": "org.autobyteus.mobile.share",
+  "requestedAppGroup": "group.org.autobyteus.mobile",
+  "developmentTeamProvided": false,
+  "xcodePath": "/Applications/Xcode.app/Contents/Developer",
+  "xcodeVersion": "Xcode 26.1.1 Build version 17B100",
+  "developmentIdentityCount": 1,
+  "distributionIdentityCount": 0,
+  "profileCount": 0,
+  "appProfileCount": 0,
+  "appProfileWithAppGroupCount": 0,
+  "shareExtensionProfileCount": 0,
+  "shareExtensionProfileWithAppGroupCount": 0,
+  "profileEntitlementsReady": false,
+  "archivePrerequisitesReady": false,
+  "archiveStatus": "skipped",
+  "archiveReason": "Set IOS_DEVELOPMENT_TEAM and IOS_SIGNING_READINESS_ARCHIVE=1 to attempt a local archive dry run.",
+  "readiness": "simulator-ready-development-signing-partial",
+  "readinessReasons": [
+    "No Apple/iOS Distribution signing identity detected",
+    "No provisioning profile detected for app bundle org.autobyteus.mobile",
+    "No app bundle profile with App Group group.org.autobyteus.mobile detected",
+    "No provisioning profile detected for share extension bundle org.autobyteus.mobile.share",
+    "No share extension profile with App Group group.org.autobyteus.mobile detected"
+  ]
+}

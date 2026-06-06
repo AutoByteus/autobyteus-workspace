@@ -14,3 +14,10 @@ autobyteus-web/dist-mobile/
 autobyteus-android/.gradle/
 autobyteus-android/local.properties
 autobyteus-android/**/build/
+# iOS local/generated artifacts
+autobyteus-ios/AutoByteusMobile.xcodeproj/
+autobyteus-ios/build/
+autobyteus-ios/DerivedData/
+autobyteus-ios/**/*.xcuserstate
+autobyteus-ios/**/*.xcuserdata/
+autobyteus-ios/**/*.xcresult/
