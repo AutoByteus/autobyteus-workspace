@@ -22,43 +22,59 @@ const assertDistTemplateAbsent = async (templateDirName) => {
   );
 };
 
-const [compactorDistAgentMdPath, compactorDistAgentConfigPath] = await Promise.all([
+const [
+  compactorDistAgentMdPath,
+  compactorDistAgentConfigPath,
+  skillEvolverDistAgentMdPath,
+  skillEvolverDistAgentConfigPath,
+] = await Promise.all([
   assertDistAssetPresent("memory-compactor", "agent.md"),
   assertDistAssetPresent("memory-compactor", "agent-config.json"),
+  assertDistAssetPresent("skill-evolver", "agent.md"),
+  assertDistAssetPresent("skill-evolver", "agent-config.json"),
 ]);
 await assertDistTemplateAbsent("daily-assistant");
 
 const { bootstrapBuiltInAgents } = await import(
   "../dist/built-in-agents/built-in-agent-bootstrapper.js"
 );
-const { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } = await import(
+const {
+  MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+  SKILL_EVOLVER_AGENT_DEFINITION_ID,
+} = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
 );
-const { AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID } = await import(
+const {
+  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+} = await import(
   "../dist/services/server-settings-service.js"
 );
 
 const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-built-in-agents-smoke-"));
 const agentsDir = path.join(tempRoot, "agents");
-let compactionSettingValue = null;
+const settingsByKey = new Map();
 
 const fakeAgentDefinitionService = {
   async getFreshAgentDefinitionById(definitionId) {
     return {
       id: definitionId,
-      name: "Memory Compactor",
+      name: definitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ? "Skill Self-Evolver" : "Memory Compactor",
     };
   },
   async refreshCache() {},
 };
 
 const fakeServerSettingsService = {
-  getCompactionAgentDefinitionId() {
-    return compactionSettingValue;
+  getSettingValue(key) {
+    return settingsByKey.get(key) ?? null;
   },
   updateSetting(key, value) {
-    if (key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID) {
-      compactionSettingValue = value;
+    if (
+      key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID ||
+      key === AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID
+    ) {
+      settingsByKey.set(key, value);
       return [true, "ok"];
     }
     return [false, `unexpected setting key ${key}`];
@@ -76,7 +92,7 @@ try {
     },
   });
 
-  assert.equal(result.builtInAgents.length, 1);
+  assert.equal(result.builtInAgents.length, 2);
   assert.equal(result.refreshedCache, true);
 
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
@@ -95,7 +111,20 @@ try {
   assert.equal(compactorAgentMd, compactorDistAgentMd);
   assert.equal(compactorAgentConfig, compactorDistAgentConfig);
   assert.match(compactorAgentMd, /Memory Compactor/);
-  assert.equal(compactionSettingValue, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+  const skillEvolverAgentDir = path.join(agentsDir, SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  const [skillEvolverAgentMd, skillEvolverAgentConfig, skillEvolverDistAgentMd, skillEvolverDistAgentConfig] =
+    await Promise.all([
+      fs.readFile(path.join(skillEvolverAgentDir, "agent.md"), "utf8"),
+      fs.readFile(path.join(skillEvolverAgentDir, "agent-config.json"), "utf8"),
+      fs.readFile(skillEvolverDistAgentMdPath, "utf8"),
+      fs.readFile(skillEvolverDistAgentConfigPath, "utf8"),
+    ]);
+
+  assert.equal(skillEvolverAgentMd, skillEvolverDistAgentMd);
+  assert.equal(skillEvolverAgentConfig, skillEvolverDistAgentConfig);
+  assert.match(skillEvolverAgentMd, /Skill Self-Evolver/);
+  assert.equal(settingsByKey.get(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID), MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+  assert.equal(settingsByKey.get(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID), SKILL_EVOLVER_AGENT_DEFINITION_ID);
   await assert.rejects(
     () => fs.stat(path.join(agentsDir, "daily-assistant")),
     (error) => error && error.code === "ENOENT",

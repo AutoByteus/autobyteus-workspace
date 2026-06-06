@@ -1,0 +1,5 @@
+{
+  "composerCtaCount": 1,
+  "rowActionCountOutsideComposer": 0,
+  "note": "Browser DOM check before starting self-evolution: only the composer-adjacent CTA carried the Improve skills label; no run-history row action outside the composer CTA container was present."
+}

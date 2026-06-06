@@ -29,6 +29,7 @@ import {
   handleTodoListUpdate,
   handleError,
   handleFileChange,
+  handleSystemTaskNotification,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
@@ -348,6 +349,10 @@ export class AgentStreamingService {
 
       case 'ERROR':
         handleError(message.payload, context);
+        break;
+
+      case 'SYSTEM_TASK_NOTIFICATION':
+        handleSystemTaskNotification(message.payload, context);
         break;
 
       case 'ARTIFACT_PERSISTED':

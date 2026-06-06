@@ -28,6 +28,7 @@ import { ApplicationPackageResolver } from './types/application-packages.js';
 import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gateway.js';
 import { RemoteBrowserBridgeResolver } from './types/remote-browser-bridge.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
+import { SelfEvolutionResolver } from './types/self-evolution.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 
 export async function buildGraphqlSchema() {
@@ -62,6 +63,7 @@ export async function buildGraphqlSchema() {
       ManagedMessagingGatewayResolver,
       RemoteBrowserBridgeResolver,
       AppDataMigrationResolver,
+      SelfEvolutionResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

@@ -1,0 +1,1248 @@
+{
+  "timestamp": "2026-06-05T09:45:12.197Z",
+  "runRoot": "/tmp/autobyteus-self-evolution-round5-mvp-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/workspace",
+  "markerBefore": "CALIBRATION_MARKER_R5_V1",
+  "markerAfter": "CALIBRATION_MARKER_R5_V2",
+  "skillName": "calibration_marker_r5_lp0xzhyj",
+  "agentName": "Calibration Marker Agent r5_lp0xzhyj",
+  "agentDefinitionId": "calibration-marker-agent-r5-lp0xzhyj",
+  "runId": "calibration_marker_agent_r5_lp0xzhyj_validation_target_agent_2440",
+  "skillRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md",
+  "realSkillMdPath": "/private/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md",
+  "graphqlUrl": "http://127.0.0.1:54810/graphql",
+  "frontendUrl": "http://127.0.0.1:54811",
+  "capabilityBefore": {
+    "selfEvolutionCapability": {
+      "enabled": false,
+      "settingKey": "ENABLE_SELF_EVOLUTION",
+      "source": "INITIALIZED_DISABLED"
+    }
+  },
+  "disabledSet": {
+    "setSelfEvolutionEnabled": {
+      "enabled": false,
+      "settingKey": "ENABLE_SELF_EVOLUTION",
+      "source": "SERVER_SETTING"
+    }
+  },
+  "catalog": {
+    "selfEvolutionStrategyCatalog": {
+      "defaultTriggerStrategy": "manual_only",
+      "defaultEvolverStrategy": "single_agent",
+      "triggerStrategies": [
+        {
+          "name": "manual_only",
+          "status": "implemented"
+        },
+        {
+          "name": "scheduled",
+          "status": "not_implemented"
+        },
+        {
+          "name": "signal_based",
+          "status": "not_implemented"
+        }
+      ],
+      "evolverStrategies": [
+        {
+          "name": "single_agent",
+          "status": "implemented"
+        },
+        {
+          "name": "agent_team",
+          "status": "not_implemented"
+        }
+      ]
+    }
+  },
+  "schemaCheck": {
+    "queryType": {
+      "fields": [
+        {
+          "name": "health"
+        },
+        {
+          "name": "workspaces"
+        },
+        {
+          "name": "workspaceMetadata"
+        },
+        {
+          "name": "totalCostInPeriod"
+        },
+        {
+          "name": "usageStatisticsInPeriod"
+        },
+        {
+          "name": "fileContent"
+        },
+        {
+          "name": "searchFiles"
+        },
+        {
+          "name": "folderChildren"
+        },
+        {
+          "name": "getAgentRunMemoryView"
+        },
+        {
+          "name": "getTeamMemberRunMemoryView"
+        },
+        {
+          "name": "runtimeAvailabilities"
+        },
+        {
+          "name": "managedMessagingGatewayStatus"
+        },
+        {
+          "name": "managedMessagingGatewayWeComAccounts"
+        },
+        {
+          "name": "managedMessagingGatewayPeerCandidates"
+        },
+        {
+          "name": "getServerSettings"
+        },
+        {
+          "name": "getSearchConfig"
+        },
+        {
+          "name": "listApplications"
+        },
+        {
+          "name": "application"
+        },
+        {
+          "name": "applicationsCapability"
+        },
+        {
+          "name": "skills"
+        },
+        {
+          "name": "skill"
+        },
+        {
+          "name": "skillFileTree"
+        },
+        {
+          "name": "skillFileContent"
+        },
+        {
+          "name": "skillSources"
+        },
+        {
+          "name": "skillVersions"
+        },
+        {
+          "name": "skillVersionDiff"
+        },
+        {
+          "name": "agentDefinition"
+        },
+        {
+          "name": "agentDefinitions"
+        },
+        {
+          "name": "agentTemplates"
+        },
+        {
+          "name": "agentTeamDefinition"
+        },
+        {
+          "name": "agentTeamDefinitions"
+        },
+        {
+          "name": "agentTeamTemplates"
+        },
+        {
+          "name": "availableToolNames"
+        },
+        {
+          "name": "availableOptionalInputProcessorNames"
+        },
+        {
+          "name": "availableOptionalLlmResponseProcessorNames"
+        },
+        {
+          "name": "availableOptionalSystemPromptProcessorNames"
+        },
+        {
+          "name": "availableOptionalToolExecutionResultProcessorNames"
+        },
+        {
+          "name": "availableOptionalToolInvocationPreprocessorNames"
+        },
+        {
+          "name": "availableOptionalLifecycleProcessorNames"
+        },
+        {
+          "name": "getLlmProviderApiKeyConfigured"
+        },
+        {
+          "name": "getGeminiSetupConfig"
+        },
+        {
+          "name": "availableLlmProvidersWithModels"
+        },
+        {
+          "name": "availableAudioProvidersWithModels"
+        },
+        {
+          "name": "availableImageProvidersWithModels"
+        },
+        {
+          "name": "tools"
+        },
+        {
+          "name": "toolsGroupedByCategory"
+        },
+        {
+          "name": "mcpServers"
+        },
+        {
+          "name": "previewMcpServerTools"
+        },
+        {
+          "name": "listAgentsWithMemory"
+        },
+        {
+          "name": "listAgentRunsWithMemory"
+        },
+        {
+          "name": "listAgentTeamsWithMemory"
+        },
+        {
+          "name": "listAgentTeamRunsWithMemory"
+        },
+        {
+          "name": "externalChannelCapabilities"
+        },
+        {
+          "name": "externalChannelBindings"
+        },
+        {
+          "name": "externalChannelTeamDefinitionOptions"
+        },
+        {
+          "name": "listWorkspaceRunHistory"
+        },
+        {
+          "name": "getRunProjection"
+        },
+        {
+          "name": "getAgentRunResumeConfig"
+        },
+        {
+          "name": "getRunFileChanges"
+        },
+        {
+          "name": "getTeamCommunicationMessages"
+        },
+        {
+          "name": "getTeamRunResumeConfig"
+        },
+        {
+          "name": "getTeamMemberRunProjection"
+        },
+        {
+          "name": "agentPackages"
+        },
+        {
+          "name": "applicationPackages"
+        },
+        {
+          "name": "applicationPackageDetails"
+        },
+        {
+          "name": "getAppDataMigrations"
+        },
+        {
+          "name": "selfEvolutionCapability"
+        },
+        {
+          "name": "selfEvolutionStrategyCatalog"
+        },
+        {
+          "name": "getAgentRunSelfEvolutionEligibility"
+        },
+        {
+          "name": "getTeamMemberSelfEvolutionEligibility"
+        },
+        {
+          "name": "getSelfEvolutionRunRecord"
+        }
+      ]
+    },
+    "startInput": {
+      "inputFields": [
+        {
+          "name": "runId",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "createdSkill": {
+    "createSkill": {
+      "name": "calibration_marker_r5_lp0xzhyj",
+      "description": "Round 5 self-evolution validation skill r5_lp0xzhyj",
+      "content": "# Calibration Marker Skill r5_lp0xzhyj\n\nUse this disposable validation skill when the user asks exactly: \"What is the durable calibration marker?\"\n\n## Durable behavior rule\n\nAnswer with exactly:\n\nCALIBRATION_MARKER_R5_V1\n\nNo extra words.\n\n## Reusable correction rule for self-evolution validation\n\nIf run evidence contains a user message beginning with `DURABLE_SKILL_UPDATE:`, treat that message as an intentional reusable validation correction for this skill, not as a private one-off request. Update this SKILL.md so the durable behavior rule reflects the new marker specified in that line. Do not copy credential-looking text, bearer tokens, private paths, emails, raw run IDs, or one-off canaries from the evidence into durable skill content.\n\nIf a user provides a durable skill correction during a normal target-agent run, acknowledge briefly but do not claim the skill file changed unless a later self-evolution run changes it.",
+      "rootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj",
+      "isReadonly": false,
+      "isVersioned": true
+    }
+  },
+  "createdAgent": {
+    "createAgentDefinition": {
+      "id": "calibration-marker-agent-r5-lp0xzhyj",
+      "name": "Calibration Marker Agent r5_lp0xzhyj",
+      "description": "Disposable validation target for round 5 simplified self-evolution MVP r5_lp0xzhyj",
+      "toolNames": [],
+      "skillNames": [
+        "calibration_marker_r5_lp0xzhyj"
+      ],
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        }
+      }
+    }
+  },
+  "prepare": {
+    "prepareAgentRun": {
+      "success": true,
+      "message": "Agent run prepared successfully.",
+      "runId": "calibration_marker_agent_r5_lp0xzhyj_validation_target_agent_2440",
+      "activationState": "PREPARED",
+      "preparedExpiresAt": "2026-06-06T09:45:03.352Z"
+    }
+  },
+  "before": {
+    "tag": "before_marker",
+    "connected": true,
+    "acked": true,
+    "messageTypes": [
+      "CONNECTED",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "TURN_STARTED",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "AGENT_COMMAND_ACK",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_END",
+      "SEGMENT_END",
+      "AGENT_STATUS",
+      "ASSISTANT_COMPLETE",
+      "TURN_COMPLETED",
+      "AGENT_STATUS"
+    ],
+    "assistantText": "CALIBRATION_MARKER_R5_V1",
+    "segmentText": "",
+    "assistantCompleteText": "CALIBRATION_MARKER_R5_V1"
+  },
+  "correction": {
+    "tag": "durable_correction",
+    "connected": true,
+    "acked": true,
+    "messageTypes": [
+      "CONNECTED",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "TURN_STARTED",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "AGENT_STATUS",
+      "AGENT_COMMAND_ACK",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_END",
+      "SEGMENT_END",
+      "AGENT_STATUS",
+      "ASSISTANT_COMPLETE",
+      "TURN_COMPLETED",
+      "AGENT_STATUS"
+    ],
+    "assistantText": "Acknowledged.",
+    "segmentText": "",
+    "assistantCompleteText": "Acknowledged."
+  },
+  "correctionMessageRedacted": "DURABLE_SKILL_UPDATE: The durable calibration marker for this skill is now CALIBRATION_MARKER_R5_V2. Future answers to \"What is the durable calibration marker?\" must be exactly CALIBRATION_MARKER_R5_V2. This is intentionally reusable validation data for this disposable skill, not a private or one-off request. Do not copy this fake credential-like canary into durable skills: Authorization: Bearer <redacted-fake-secret>",
+  "disabledEligibility": {
+    "getAgentRunSelfEvolutionEligibility": {
+      "eligible": false,
+      "reasons": [
+        "Self-evolution is disabled for this server."
+      ],
+      "warnings": [],
+      "skillTargets": [
+        {
+          "skillName": "calibration_marker_r5_lp0xzhyj",
+          "skillRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj",
+          "skillMdPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md",
+          "sourceLabel": null,
+          "isWritable": true
+        }
+      ],
+      "effectiveConfig": {
+        "enabled": true,
+        "triggerStrategy": "manual_only",
+        "evolverStrategy": "single_agent",
+        "evolverAgentDefinitionId": null,
+        "sourceTrace": [
+          {
+            "source": "default",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy",
+              "evolverAgentDefinitionId"
+            ]
+          },
+          {
+            "source": "agent_run_launch",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "disabledStart": {
+    "ok": false,
+    "status": 200,
+    "json": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Self-evolution is disabled for this server. Enable it before starting an evolution run.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 53
+            }
+          ],
+          "path": [
+            "startAgentRunSelfEvolution"
+          ]
+        }
+      ]
+    }
+  },
+  "enabledSet": {
+    "setSelfEvolutionEnabled": {
+      "enabled": true,
+      "settingKey": "ENABLE_SELF_EVOLUTION",
+      "source": "SERVER_SETTING"
+    }
+  },
+  "enabledEligibility": {
+    "getAgentRunSelfEvolutionEligibility": {
+      "eligible": true,
+      "reasons": [],
+      "warnings": [],
+      "skillTargets": [
+        {
+          "skillName": "calibration_marker_r5_lp0xzhyj",
+          "skillRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj",
+          "skillMdPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md",
+          "sourceLabel": null,
+          "isWritable": true
+        }
+      ],
+      "effectiveConfig": {
+        "enabled": true,
+        "triggerStrategy": "manual_only",
+        "evolverStrategy": "single_agent",
+        "evolverAgentDefinitionId": null,
+        "sourceTrace": [
+          {
+            "source": "default",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy",
+              "evolverAgentDefinitionId"
+            ]
+          },
+          {
+            "source": "agent_run_launch",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "capabilityAfter": {
+    "selfEvolutionCapability": {
+      "enabled": true,
+      "settingKey": "ENABLE_SELF_EVOLUTION",
+      "source": "SERVER_SETTING"
+    }
+  },
+  "skillBefore": "---\nname: calibration_marker_r5_lp0xzhyj\ndescription: Round 5 self-evolution validation skill r5_lp0xzhyj\n---\n\n# Calibration Marker Skill r5_lp0xzhyj\n\nUse this disposable validation skill when the user asks exactly: \"What is the durable calibration marker?\"\n\n## Durable behavior rule\n\nAnswer with exactly:\n\nCALIBRATION_MARKER_R5_V1\n\nNo extra words.\n\n## Reusable correction rule for self-evolution validation\n\nIf run evidence contains a user message beginning with `DURABLE_SKILL_UPDATE:`, treat that message as an intentional reusable validation correction for this skill, not as a private one-off request. Update this SKILL.md so the durable behavior rule reflects the new marker specified in that line. Do not copy credential-looking text, bearer tokens, private paths, emails, raw run IDs, or one-off canaries from the evidence into durable skill content.\n\nIf a user provides a durable skill correction during a normal target-agent run, acknowledge briefly but do not claim the skill file changed unless a later self-evolution run changes it.\n\n",
+  "checks": {
+    "model": "deepseek-v4-flash",
+    "runtime": "autobyteus",
+    "capabilityDefaultDisabledOrPreviouslyDisabled": true,
+    "disabledEligibilityRejected": true,
+    "disabledStartRejectedByCapability": true,
+    "enabledEligibilityAccepted": true,
+    "startInputIdentityOnly": true,
+    "metricsQueryAbsent": true,
+    "beforeAnsweredV1": true,
+    "correctionAcknowledged": true,
+    "skillRootWritable": true
+  }
+}

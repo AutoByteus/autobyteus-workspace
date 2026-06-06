@@ -7,6 +7,24 @@ import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 
+const {
+  selfEvolutionCapabilityState,
+  selfEvolutionCapabilityStoreMock,
+} = vi.hoisted(() => {
+  const selfEvolutionCapabilityState = {
+    isEnabled: false,
+  }
+  return {
+    selfEvolutionCapabilityState,
+    selfEvolutionCapabilityStoreMock: {
+      get isEnabled() {
+        return selfEvolutionCapabilityState.isEnabled
+      },
+      ensureResolved: vi.fn(async () => null),
+    },
+  }
+})
+
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
 }))
@@ -17,6 +35,10 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: vi.fn(),
+}))
+
+vi.mock('~/stores/selfEvolutionCapabilityStore', () => ({
+  useSelfEvolutionCapabilityStore: () => selfEvolutionCapabilityStoreMock,
 }))
 
 const mockTeamDef = {
@@ -223,6 +245,8 @@ describe('TeamRunConfigForm', () => {
     ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
     ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore)
     ;(useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore)
+    selfEvolutionCapabilityState.isEnabled = false
+    selfEvolutionCapabilityStoreMock.ensureResolved.mockClear()
   })
 
   const buildWrapper = (
@@ -250,7 +274,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'selfEvolutionControlsEnabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -304,6 +328,34 @@ describe('TeamRunConfigForm', () => {
     expect(config.runtimeKind).toBe('codex_app_server')
     expect(config.llmModelIdentifier).toBe('')
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
+  })
+
+  it('marks team launch configs self-evolution eligible and passes controls to member overrides', async () => {
+    selfEvolutionCapabilityState.isEnabled = true
+    const { wrapper, config } = buildWrapper({
+      selfEvolution: null,
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    expect(selfEvolutionCapabilityStoreMock.ensureResolved).toHaveBeenCalledTimes(1)
+    expect(wrapper.get('[data-testid="team-run-self-evolution-control"]').text()).toContain('Self evolution eligibility')
+    const toggle = wrapper.get('[data-testid="team-run-self-evolution-toggle"]')
+    expect(toggle.attributes('aria-checked')).toBe('false')
+    expect(wrapper.findAllComponents({ name: 'MemberOverrideItem' })[0].props('selfEvolutionControlsEnabled')).toBe(true)
+
+    await toggle.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(config.selfEvolution).toEqual({ enabled: true })
+    expect(toggle.attributes('aria-checked')).toBe('true')
+
+    await toggle.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(config.selfEvolution).toEqual({ enabled: false })
+    expect(toggle.attributes('aria-checked')).toBe('false')
   })
 
   it('renders Codex effort-only reasoning defaults visibly on the team-global config path', async () => {

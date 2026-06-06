@@ -1,0 +1,36 @@
+{
+  "runId": "skill_self_evolver_skill_improvement_coach_7390",
+  "agentDefinitionId": "autobyteus-skill-evolver",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/temp_workspace",
+  "memoryDir": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/memory/agents/skill_self_evolver_skill_improvement_coach_7390",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "llmConfig": {
+    "thinking_type": "disabled"
+  },
+  "autoExecuteTools": true,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "skill_self_evolver_skill_improvement_coach_7390",
+  "preparedAt": "2026-06-06T03:59:50.063Z",
+  "preparedExpiresAt": "2026-06-07T03:59:50.063Z",
+  "startedAt": "2026-06-06T03:59:50.099Z",
+  "applicationExecutionContext": null,
+  "selfEvolutionEffective": {
+    "enabled": false,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-06T03:59:50.063Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      }
+    ]
+  }
+}

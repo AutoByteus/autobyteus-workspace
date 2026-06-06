@@ -1,0 +1,120 @@
+{
+  "evolutionRunId": "9ff45e02-973a-4a4f-9237-e4e58f866b0d",
+  "status": "completed",
+  "requestedAt": "2026-06-04T19:21:49.912Z",
+  "completedAt": "2026-06-04T19:22:04.803Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "agent_run",
+    "runId": "calibration_marker_agent_r4_mpzvra5g_validation_target_2236"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-04T19:20:25.927Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "agent_run_launch",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibration_marker_agent_r4_mpzvra5g_validation_target_2236"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_evolution_specialist_4111",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round4-e2e/workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_r4_mpzvra5g",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true,
+      "gitRootPath": "/private/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g",
+      "rollbackMode": "git"
+    }
+  ],
+  "evidenceSummaryHash": "64df8853182c2239009f03f471ec0a68b47fd089bac0931402165aa821ca208e",
+  "changeSummary": {
+    "detectionMode": "file_hash",
+    "changedSkillPaths": [
+      "/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g/SKILL.md"
+    ],
+    "offTargetChangePaths": [],
+    "gitRoots": [
+      "/private/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g"
+    ],
+    "diffStat": "Git root /private/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g:\nWorking tree:\nSKILL.md | 3 +--\n 1 file changed, 1 insertion(+), 2 deletions(-)",
+    "warnings": [],
+    "policyViolations": []
+  },
+  "updateMetrics": {
+    "evolverRunCompleted": true,
+    "evolverRunStatus": "completed",
+    "noOp": false,
+    "changedSkillCount": 1,
+    "changedSkillPaths": [
+      "/tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g/SKILL.md"
+    ],
+    "offTargetChangeCount": 0,
+    "offTargetChangePaths": [],
+    "policyViolationCount": 0,
+    "gitBackedTargetCount": 1,
+    "unversionedTargetCount": 0,
+    "warningCount": 0,
+    "errorCount": 0,
+    "notificationStatus": "sent_active_idle"
+  },
+  "benefitMetrics": {
+    "linkedPostEvolutionRunIds": [
+      "calibration_marker_agent_r4_mpzvra5g_validation_target_1300"
+    ],
+    "linkMethod": "target_identity_and_skill_overlap",
+    "completedLinkedRuns": 1,
+    "failedLinkedRuns": 0,
+    "userPositiveFeedbackCount": null,
+    "userNegativeFeedbackCount": null,
+    "validationPassedCount": null,
+    "validationFailedCount": null,
+    "skillActivation": {
+      "status": "not_observed",
+      "loadSkillToolUseCount": null,
+      "configuredSkillPreloaded": true,
+      "directSkillReferenceCount": null
+    },
+    "skillAdherence": {
+      "status": "not_collectible",
+      "supportingTraceCount": null,
+      "contradictoryTraceCount": null
+    },
+    "assessment": "neutral_signal",
+    "notes": [
+      "Linked post-evolution runs found; proxy benefit assessment remains neutral until feedback/validation is available."
+    ]
+  },
+  "notificationSummary": {
+    "status": "sent_active_idle",
+    "message": "Your configured skill files were updated by self-evolution run 9ff45e02-973a-4a4f-9237-e4e58f866b0d.\n\nChanged skills/files:\n- /tmp/autobyteus-self-evolution-round4-e2e/server-data/skills/calibration_marker_r4_mpzvra5g/SKILL.md\n\nPlease reload or re-read the affected skills before continuing when relevant."
+  },
+  "errors": []
+}

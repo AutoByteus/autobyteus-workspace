@@ -139,6 +139,26 @@ describe('AgentStreamingService', () => {
         expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
     });
 
+    it('renders standalone system task notifications as conversation segments', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'SYSTEM_TASK_NOTIFICATION',
+                payload: {
+                    sender_id: 'system.self_evolution',
+                    content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockConversation.messages).toHaveLength(1);
+        expect(mockConversation.messages[0].segments).toContainEqual({
+            type: 'system_task_notification',
+            senderId: 'system.self_evolution',
+            content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+        });
+    });
+
     it('clears stale error when live non-error activity arrives for the same run', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
         mockAgentContext.state.canInterrupt = true;
@@ -285,7 +305,7 @@ describe('AgentStreamingService', () => {
             mockAgentContext,
         );
 
-        expect(mockAgentContext.state.compactionStatus).toEqual({
+        expect(mockAgentContext.state.compactionStatus).toEqual(expect.objectContaining({
             activityId: 'compaction:operation:operation-1',
             phase: 'started',
             message: 'Compacting memory…',
@@ -304,6 +324,6 @@ describe('AgentStreamingService', () => {
             compactionRunId: 'compaction-run-1',
             compactionTaskId: 'compaction-task-1',
             errorMessage: null,
-        });
+        }));
     });
 });

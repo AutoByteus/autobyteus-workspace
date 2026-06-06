@@ -2,12 +2,12 @@
  * Team-specific event handlers.
  * 
  * Layer 3 of the agent streaming architecture - handles team-only events:
- * INTER_AGENT_MESSAGE, TEAM_COMMUNICATION_MESSAGE, SYSTEM_TASK_NOTIFICATION
+ * INTER_AGENT_MESSAGE, TEAM_COMMUNICATION_MESSAGE
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { InterAgentMessageSegment, SystemTaskNotificationSegment } from '~/types/segments';
+import type { InterAgentMessageSegment } from '~/types/segments';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
   normalizeAgentRuntimeStatus,
@@ -15,7 +15,6 @@ import {
 } from '~/services/runHydration/runtimeStatusNormalization';
 import type { 
   InterAgentMessagePayload, 
-  SystemTaskNotificationPayload,
   TeamCommunicationMessagePayload,
   TeamStatusPayload,
 } from '../protocol/messageTypes';
@@ -52,24 +51,6 @@ export function handleTeamCommunicationMessage(
 }
 
 /**
- * Handle SYSTEM_TASK_NOTIFICATION event.
- */
-export function handleSystemTaskNotification(
-  payload: SystemTaskNotificationPayload,
-  context: AgentContext
-): void {
-  const aiMessage = findOrCreateAIMessage(context);
-  
-  const segment: SystemTaskNotificationSegment = {
-    type: 'system_task_notification',
-    senderId: payload.sender_id,
-    content: payload.content,
-  };
-  
-  aiMessage.segments.push(segment);
-}
-
-/**
  * Handle TEAM_STATUS event.
  */
 export function handleTeamStatus(
@@ -87,4 +68,3 @@ export function handleTeamStatus(
 
   context.currentStatus = normalizeTeamRuntimeStatus(payload.status) as AgentTeamStatus;
 }
-

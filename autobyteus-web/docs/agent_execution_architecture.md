@@ -373,6 +373,53 @@ runtime/model parameters render through the same advanced schema component; for
 Codex, a fast-capable model can therefore expose `service_tier` with the
 user-facing label **Fast mode** beside reasoning settings.
 
+
+### Self-Evolution Snapshots And Manual Composer Action
+
+Self-evolution is run-owned, not definition-owned. Frontend run-config types can
+carry an optional `selfEvolution` override for standalone runs, team runs, and
+team agent-member launch records, and the backend snapshots the effective result
+into run/member metadata as `selfEvolutionEffective`. Agent/team definition
+forms and persisted definition defaults must not add `selfEvolution`; changing a
+definition later must not change historical run eligibility. Existing runs with
+no snapshot are ineligible.
+
+The visible launch forms own the user-facing eligibility choice. Standalone
+agent launches expose a **Self-evolution eligibility** control when the backend
+capability is enabled; team launches expose a team-level default plus leaf
+member overrides. The controls are launch-time inputs only: turning them on
+sets the next run's `selfEvolution` override before launch, while history rows
+and existing runs continue to rely on the backend `selfEvolutionEffective`
+snapshot already stored for that run/member.
+
+`useSelfEvolutionCapabilityStore` owns the global typed capability query/mutation
+for `ENABLE_SELF_EVOLUTION`. `useSelfEvolutionStore` owns backend eligibility and
+manual start calls. Run-history rows do not expose self-evolution controls. The
+only user-facing manual start entrypoint is the concise composer-adjacent
+**Self improve** CTA for the selected active standalone run or team member. That
+CTA is hidden when the global capability is disabled, hidden for Skill
+Self-Evolver helper runs, hidden for old/pre-snapshot/ineligible runs, and
+lazy-loads backend eligibility before rendering. The UI must not show technical
+backend ineligibility reasons in chat and must not recompute eligibility from
+current definitions or local skill lists.
+
+Starting self-evolution from the composer CTA calls
+`startAgentRunSelfEvolution` or `startTeamMemberSelfEvolution` without run-time
+overrides. The backend uses the stored snapshot, starts a separate visible
+evolver `AgentRun`, and records the `evolutionRunId` / optional `evolverRunId`.
+The current UI stores the returned record summary only internally and shows at
+most a short transient toast/status after start. It must not render a persistent
+composer card, evolution record id, or helper-run navigation button.
+Active idle standalone target notifications originate as local runtime-neutral
+`AgentRunEventType.SYSTEM_TASK_NOTIFICATION` events emitted by the server-side
+target-notification service, then render through `SystemTaskNotificationSegment`
+via the standalone stream handler. Team/member stream notifications use the same
+frontend segment handler, while self-evolution team-member active notification
+remains next-run-only in the MVP. The UI notification is separate from any
+runtime/model skill-refresh instruction. The MVP does not expose a
+metrics/reporting query and the UI must not imply helper completion proves
+downstream improvement.
+
 ### New Run From Existing Run
 
 When the user clicks the workspace header add/new-run action while an existing
@@ -538,6 +585,7 @@ needs to know that one exact turn has finished.
 
 ## Related Documentation
 
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, run-owned snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

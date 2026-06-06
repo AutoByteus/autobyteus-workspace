@@ -40,7 +40,11 @@
       />
 
       <div class="flex-grow min-h-0">
-        <AgentTeamEventMonitor v-if="currentMode === 'focus'" />
+        <AgentTeamEventMonitor v-if="currentMode === 'focus'">
+          <template #composerContext>
+            <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
+          </template>
+        </AgentTeamEventMonitor>
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
@@ -58,6 +62,7 @@
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
         </p>
+        <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
         <AgentUserInputForm v-if="focusedMemberContext" />
         <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
           <textarea
@@ -102,6 +107,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
+import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
+import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
 import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
 import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
 import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
@@ -121,6 +128,7 @@ const headerAvatarLoadError = ref(false);
 const subteamDraft = ref('');
 const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
+const SKILL_EVOLVER_AGENT_DEFINITION_ID = 'autobyteus-skill-evolver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
@@ -195,6 +203,22 @@ const composerTargetTitle = computed(() => {
     || getMemberDisplayName(focusedMemberRouteKey, focusedMemberContext.value)
     || team.config.teamDefinitionName
     || 'Team';
+});
+
+const teamMemberSelfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() => {
+  const team = activeTeamContext.value;
+  const member = focusedMemberContext.value;
+  if (!team || !member) {
+    return null;
+  }
+  return {
+    kind: 'team-member',
+    teamRunId: team.teamRunId,
+    memberRunId: member.state.runId,
+    isHelperRun:
+      member.config.agentDefinitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ||
+      member.config.agentDefinitionName === 'Skill Self-Evolver',
+  };
 });
 
 const headerAvatarUrl = computed(() => {

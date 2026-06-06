@@ -1,0 +1,36 @@
+{
+  "runId": "calibration_ui_agent_r8_v2_loop_disposable_target_agent_for_round_8_ui_self_evolution_validation_4192",
+  "agentDefinitionId": "calibration-marker-agent-r8-v2-loop",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/temp_workspace",
+  "memoryDir": "/tmp/autobyteus-self-evolution-round8-ui-e2e/server-data/memory/agents/calibration_ui_agent_r8_v2_loop_disposable_target_agent_for_round_8_ui_self_evolution_validation_4192",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "llmConfig": {
+    "thinking_type": "disabled"
+  },
+  "autoExecuteTools": false,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "calibration_ui_agent_r8_v2_loop_disposable_target_agent_for_round_8_ui_self_evolution_validation_4192",
+  "preparedAt": "2026-06-05T12:25:24.527Z",
+  "preparedExpiresAt": "2026-06-06T12:25:24.527Z",
+  "startedAt": "2026-06-05T12:25:24.629Z",
+  "applicationExecutionContext": null,
+  "selfEvolutionEffective": {
+    "enabled": false,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-05T12:25:24.526Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      }
+    ]
+  }
+}

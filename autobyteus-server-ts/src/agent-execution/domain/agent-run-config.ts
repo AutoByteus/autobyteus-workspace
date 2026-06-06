@@ -2,6 +2,7 @@ import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-m
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/models.js";
 
 export class AgentRunConfig {
   readonly agentDefinitionId: string;
@@ -14,6 +15,7 @@ export class AgentRunConfig {
   readonly runtimeKind: RuntimeKind;
   readonly memberTeamContext: MemberTeamContext | null;
   readonly applicationExecutionContext: ApplicationExecutionContext | null;
+  readonly selfEvolution: SelfEvolutionConfigOverride | null;
 
   constructor(input: {
     agentDefinitionId: string;
@@ -26,6 +28,7 @@ export class AgentRunConfig {
     runtimeKind: RuntimeKind;
     memberTeamContext?: MemberTeamContext | null;
     applicationExecutionContext?: ApplicationExecutionContext | null;
+    selfEvolution?: SelfEvolutionConfigOverride | null;
   }) {
     this.agentDefinitionId = input.agentDefinitionId;
     this.llmModelIdentifier = input.llmModelIdentifier;
@@ -37,5 +40,6 @@ export class AgentRunConfig {
     this.runtimeKind = input.runtimeKind;
     this.memberTeamContext = input.memberTeamContext ?? null;
     this.applicationExecutionContext = input.applicationExecutionContext ?? null;
+    this.selfEvolution = input.selfEvolution ?? null;
   }
 }

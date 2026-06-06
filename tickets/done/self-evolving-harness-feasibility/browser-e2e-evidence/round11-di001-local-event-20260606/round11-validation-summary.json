@@ -1,0 +1,81 @@
+{
+  "round": "round11-di001-local-event-20260606",
+  "decision": "PASS",
+  "executedAt": "2026-06-06T04:10:00Z",
+  "frontendUrl": "http://127.0.0.1:54861",
+  "backendUrl": "http://127.0.0.1:54860",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "deepSeekApiKeySource": "process environment because the main repo autobyteus-server-ts/.env did not contain DEEPSEEK_API_KEY",
+  "standalone": {
+    "sourceRunId": "calibration_di001_agent_r11_di001_local_event_disposable_target_agent_for_round_11_di_001_browser_self_evolution_validation_8416",
+    "selfEvolutionEnabledSnapshot": true,
+    "firstAnswer": "CALIBRATION_MARKER_R11_V1",
+    "ctaVisibleText": "Self improve",
+    "recordId": "b0b1efb0-c472-454d-8689-bc6eaa2e3cea",
+    "recordStatus": "completed",
+    "notificationStatus": "sent_active_idle",
+    "notificationCopy": "Self improve finished for this run.\n\nFuture runs will use any updated skill guidance. No changes may have been made.",
+    "notificationRenderedInBrowserAsSystemTaskNotificationSegment": true,
+    "localEventProof": {
+      "rawTraceLineCount": 4,
+      "containsSystemTaskNotificationCopyInRuntimeTrace": false,
+      "containsSystemNotificationPrefixInRuntimeTrace": false,
+      "containsSenderSystemNotificationTextInRuntimeTrace": false
+    },
+    "helperRunId": "skill_self_evolver_skill_improvement_coach_7390",
+    "helperVisibleThroughNormalSidebar": true,
+    "noSpecialOpenHelperButtonOrStartedCard": true
+  },
+  "skillUpdate": {
+    "skillName": "calibration_marker_r11_di001_local_event",
+    "beforeMarker": "CALIBRATION_MARKER_R11_V1",
+    "afterMarker": "CALIBRATION_MARKER_R11_V2",
+    "skillDiffEvidence": "skill.diff",
+    "helperPromptContainsDurableV2Feedback": true,
+    "fakeCanaryAbsentFromSkill": true,
+    "fakeCanaryAbsentFromHelperTrace": true
+  },
+  "postEvolutionNextRun": {
+    "runId": "calibration_di001_agent_r11_di001_local_event_disposable_target_agent_for_round_11_di_001_browser_self_evolution_validation_6903",
+    "selfEvolutionEffectiveEnabled": false,
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "deepseek-v4-flash",
+    "observedAnswer": "CALIBRATION_MARKER_R11_V2",
+    "selfImproveHiddenInBrowserForIneligibleRun": true
+  },
+  "teamMember": {
+    "targetKind": "team_member_run",
+    "teamRunId": "team_calibration-di001-team-r11-di001-local-e_fd743947",
+    "memberRunId": "calibrator_f23d90ffc402d5ec",
+    "sourceRunIds": [
+      "calibrator_f23d90ffc402d5ec"
+    ],
+    "sourceRunIdsEqualMemberRunIdOnly": true,
+    "notificationSummaryStatus": "next_run_only",
+    "notificationSummaryMessage": "Team member active reload is not implemented in the MVP; future runs load any updated skills.",
+    "memberTraceContainsSystemTaskNotificationCopy": false,
+    "memberTraceContainsSystemNotificationPrefix": false,
+    "memberAnsweredV2": true
+  },
+  "focusedChecks": {
+    "gitDiffCheckPassed": true,
+    "webFocusedTestsPassed": true,
+    "serverFocusedTestsPassed": true,
+    "serverTscPassed": true
+  },
+  "secretScan": {
+    "fakeCanaryPresentInTextEvidence": false,
+    "hitFiles": [],
+    "skillContainsFakeCanary": false,
+    "helperTraceContainsFakeCanary": false,
+    "sourceRawTraceContainsFakeCanary": true,
+    "evidenceDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolving-harness-feasibility/tickets/done/self-evolving-harness-feasibility/browser-e2e-evidence/round11-di001-local-event-20260606",
+    "postRunTraceContainsFakeCanary": false,
+    "teamMemberTraceContainsFakeCanary": false
+  },
+  "residuals": [
+    "Full web nuxi typecheck remains covered by the known upstream limitation; not rerun in this API/E2E round.",
+    "Team active-member notification remains MVP next_run_only by design."
+  ]
+}

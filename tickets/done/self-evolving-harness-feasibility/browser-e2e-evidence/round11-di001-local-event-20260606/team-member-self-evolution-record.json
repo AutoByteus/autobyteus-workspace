@@ -1,0 +1,61 @@
+{
+  "evolutionRunId": "76573bc0-a93b-49d6-bc1d-5f4397754aad",
+  "status": "completed",
+  "requestedAt": "2026-06-06T04:05:52.752Z",
+  "completedAt": "2026-06-06T04:06:05.069Z",
+  "triggerStrategy": "manual_only",
+  "evolverStrategy": "single_agent",
+  "target": {
+    "kind": "team_member_run",
+    "teamRunId": "team_calibration-di001-team-r11-di001-local-e_fd743947",
+    "memberRunId": "calibrator_f23d90ffc402d5ec"
+  },
+  "effectiveConfig": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-06T04:05:19.892Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "team_run_launch",
+        "fields": [
+          "enabled"
+        ]
+      }
+    ]
+  },
+  "sourceRunIds": [
+    "calibrator_f23d90ffc402d5ec"
+  ],
+  "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+  "evolverRunId": "skill_self_evolver_skill_improvement_coach_9460",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "workspaceRootPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/temp_workspace",
+  "skillTargets": [
+    {
+      "skillName": "calibration_marker_r11_di001_local_event",
+      "skillRootPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/skills/calibration_marker_r11_di001_local_event",
+      "skillMdPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/skills/calibration_marker_r11_di001_local_event/SKILL.md",
+      "sourceLabel": null,
+      "isWritable": true
+    }
+  ],
+  "evidenceSummaryHash": "c6197fed4f1b58e63993995022980cb92d12d7e396ed03a468e937cb1356c888",
+  "notificationSummary": {
+    "status": "next_run_only",
+    "message": "Team member active reload is not implemented in the MVP; future runs load any updated skills."
+  },
+  "errors": [],
+  "_recordPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/memory/self_evolution/evolution_runs/76573bc0-a93b-49d6-bc1d-5f4397754aad/record.json"
+}

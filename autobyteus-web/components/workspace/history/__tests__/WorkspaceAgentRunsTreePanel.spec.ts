@@ -125,7 +125,6 @@ const {
       },
     ] as any[],
   };
-
   return {
     runHistoryState: state,
     runHistoryStoreMock: {
@@ -544,6 +543,15 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const configButton = wrapper.find('[data-test="workspace-run-config-run-1"]');
     expect(configButton.exists()).toBe(false);
+  });
+
+  it('does not render self-evolution actions on run-history rows', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    expect(wrapper.find('button[aria-label="Improve skills from this run"]').exists()).toBe(false);
+    expect(wrapper.find('button[title="Improve skills from this run"]').exists()).toBe(false);
   });
 
   it('renders grouped team rows under workspace and selects the team run when clicked', async () => {

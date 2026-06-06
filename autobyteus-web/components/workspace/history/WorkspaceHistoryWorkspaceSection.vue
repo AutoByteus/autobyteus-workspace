@@ -293,6 +293,7 @@
                       class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
                     >Team</span>
                   </div>
+
                   <span class="ml-2 text-xs text-gray-400">
                     {{ state.formatRelativeTime(team.lastActivityAt) }}
                   </span>

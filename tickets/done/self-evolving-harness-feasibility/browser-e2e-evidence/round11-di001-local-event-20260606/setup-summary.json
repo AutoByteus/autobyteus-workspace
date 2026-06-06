@@ -1,0 +1,16 @@
+{
+  "token": "r11_di001_local_event",
+  "runRoot": "/tmp/autobyteus-self-evolution-round11-di001-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round11-di001-e2e/workspace",
+  "skillName": "calibration_marker_r11_di001_local_event",
+  "skillRootPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/skills/calibration_marker_r11_di001_local_event",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round11-di001-e2e/server-data/skills/calibration_marker_r11_di001_local_event/SKILL.md",
+  "agentDefinitionId": "calibration-marker-agent-r11-di001-local-event",
+  "agentName": "Calibration DI001 Agent r11_di001_local_event",
+  "teamDefinitionId": "calibration-marker-team-r11-di001-local-event",
+  "teamName": "Calibration DI001 Team r11_di001_local_event",
+  "markerBefore": "CALIBRATION_MARKER_R11_V1",
+  "markerAfter": "CALIBRATION_MARKER_R11_V2",
+  "backendUrl": "http://127.0.0.1:54860",
+  "frontendUrl": "http://127.0.0.1:54861"
+}

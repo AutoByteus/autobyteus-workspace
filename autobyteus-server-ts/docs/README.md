@@ -10,7 +10,7 @@ The goal is to keep architecture and module docs close to the actual Node.js/Typ
 - `PROJECT_OVERVIEW.md`: runtime lifecycle, transport layers, and development flow.
 - `URL_GENERATION_AND_ENV_STRATEGY.md`: base URL strategy and environment ownership.
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`: media and file-serving pipeline.
-- `modules/`: per-module design docs.
+- `modules/`: per-module design docs, including `modules/self_evolution.md` for the manual skill self-evolution capability.
 - `design/`: focused ADR-style design notes.
 - `features/`: feature-level documents, including Remote Access / Phone Access.
 

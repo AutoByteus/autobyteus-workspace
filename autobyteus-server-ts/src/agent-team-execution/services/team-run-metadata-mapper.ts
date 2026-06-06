@@ -162,6 +162,7 @@ export class TeamRunMetadataMapper {
       llmConfig: member.llmConfig ?? null,
       workspaceRootPath: member.workspaceRootPath,
       applicationExecutionContext: member.applicationExecutionContext ?? null,
+      selfEvolutionEffective: member.selfEvolutionEffective ?? null,
     } satisfies TeamMemberRunConfig;
   }
 
@@ -211,6 +212,7 @@ export class TeamRunMetadataMapper {
       llmConfig: memberConfig.llmConfig ?? null,
       workspaceRootPath: await this.resolveMemberWorkspaceRootPath(memberConfig),
       applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
+      selfEvolutionEffective: memberConfig.selfEvolutionEffective ?? null,
     } satisfies TeamRunAgentMemberMetadata;
   }
 

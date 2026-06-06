@@ -69,6 +69,7 @@ const buildAgentRunConfig = (
     llmConfig: member.llmConfig ?? null,
     skillAccessMode: member.skillAccessMode,
     applicationExecutionContext: member.applicationExecutionContext ?? null,
+    selfEvolution: member.selfEvolutionEffective ?? null,
   });
 
 const buildMixedRuntimeContextFromMetadata = (input: {

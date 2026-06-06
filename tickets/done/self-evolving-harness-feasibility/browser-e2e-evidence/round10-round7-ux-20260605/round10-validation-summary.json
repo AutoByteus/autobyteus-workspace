@@ -1,0 +1,98 @@
+{
+  "result": "PASS",
+  "primaryEvolutionRunId": "6a83518b-db41-4f19-b665-96326cfbd269",
+  "teamEvolutionRunId": "c72c4117-df38-41ba-9c34-8de7925e119e",
+  "sourceRunId": "calibration_ux_agent_r10_round7_ux_disposable_target_agent_for_round_10_browser_self_evolution_ux_validation_8195",
+  "postEvolutionRunId": "calibration_ux_agent_r10_round7_ux_disposable_target_agent_for_round_10_browser_self_evolution_ux_validation_2891",
+  "checks": {
+    "environment": {
+      "backendUrl": "http://127.0.0.1:54850",
+      "frontendUrl": "http://127.0.0.1:54851",
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "llmConfig": {
+        "thinking_type": "disabled"
+      },
+      "skillPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/skills/calibration_marker_r10_round7_ux/SKILL.md"
+    },
+    "standaloneUiCreatedEligibleRun": {
+      "runId": "calibration_ux_agent_r10_round7_ux_disposable_target_agent_for_round_10_browser_self_evolution_ux_validation_8195",
+      "selfEvolutionEffectiveEnabled": true,
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "sourceTraceIncludesLaunchOverride": true,
+      "firstAnswerWasV1": true,
+      "ctaVisibleText": "Self improve",
+      "ctaTooltipVerifiedInBrowser": "Start a visible Skill Self-Evolver for this run. It may update configured skill packages or make no changes.",
+      "ctaAriaVerifiedInBrowser": "Self improve this run",
+      "rowHistorySelfEvolutionActionAbsent": true,
+      "oldEntrypointLabelsAbsent": [
+        "Improve skills from this run",
+        "Open Skill Self-Evolver run",
+        "Evolution record"
+      ]
+    },
+    "standaloneSelfEvolutionStartAndNotification": {
+      "primaryEvolutionRunId": "6a83518b-db41-4f19-b665-96326cfbd269",
+      "status": "completed",
+      "evolverRunId": "skill_self_evolver_skill_improvement_coach_2660",
+      "sourceRunIds": [
+        "calibration_ux_agent_r10_round7_ux_disposable_target_agent_for_round_10_browser_self_evolution_ux_validation_8195"
+      ],
+      "notificationStatus": "sent_active_idle",
+      "notificationMessage": "Self improve finished for this run.\n\nRe-read relevant skills before continuing. Skill guidance may have changed, or no changes may have been made.",
+      "notificationCopyForbiddenTermsPresent": [],
+      "composerStartedCardAbsent": true,
+      "composerRecordIdAbsent": true,
+      "composerOpenHelperButtonAbsent": true,
+      "normalHistoryShowsHelperRun": true,
+      "duplicateManualClickProducedSecondNoopRecord": {
+        "evolutionRunId": "7e9f6dce-cc4b-40e8-9d80-aa152cdeb814",
+        "status": "completed",
+        "explanation": "A second manual validation click was made while observing the UI; the primary record above is authoritative for the start-flow assertion."
+      }
+    },
+    "helperPromptAndSkillUpdate": {
+      "feedbackSignalsIncludeDurableCorrection": true,
+      "helperPromptContainsV2": true,
+      "helperPromptContainsRawFakeCanary": false,
+      "skillContainsV2": true,
+      "skillContainsV1InstructionAsCurrent": false,
+      "skillContainsRawFakeCanary": false,
+      "currentSkillInstructionIsV2": true,
+      "currentSkillInstructionIsNotV1": true,
+      "currentSkillInstructionIsV1": false
+    },
+    "postEvolutionNextRun": {
+      "runId": "calibration_ux_agent_r10_round7_ux_disposable_target_agent_for_round_10_browser_self_evolution_ux_validation_2891",
+      "selfEvolutionEffectiveEnabled": false,
+      "answerContainsV2": true,
+      "answerContainsOnlyV1": false,
+      "note": "This follow-up run intentionally left launch eligibility off; it validates that the updated skill behavior is loaded on the next normal UI-created run."
+    },
+    "teamMemberUiAndIdentity": {
+      "teamRunId": "team_calibration-ux-team-r10-round7-ux_1209de60",
+      "memberRunId": "calibrator_61d123d6ecb3d14a",
+      "targetKind": "team_member_run",
+      "sourceRunIds": [
+        "calibrator_61d123d6ecb3d14a"
+      ],
+      "identityOnlyTargetingUsesTeamRunAndMemberRun": true,
+      "teamEffectiveConfigEnabled": true,
+      "teamEffectiveConfigSourceTraceIncludesTeamLaunch": true,
+      "teamMemberCtaText": "Self improve",
+      "teamMemberCtaAriaVerifiedInBrowser": "Self improve this member's run",
+      "teamMemberCtaTooltipVerifiedInBrowser": "Start a visible Skill Self-Evolver for this member's run. It may update configured skill packages or make no changes.",
+      "teamRecordStatus": "completed",
+      "teamNotificationStatus": "next_run_only"
+    },
+    "hiddenStateChecks": {
+      "runConfigDraftBeforeFirstMessageHidden": true,
+      "standaloneIneligibleRunHidden": true,
+      "helperRunHidden": true,
+      "globalDisabledEligibleSourceRunHidden": true,
+      "technicalBackendReasonsHiddenInChatUi": true,
+      "legacyPreSnapshot": "Covered by focused executable component test (`SelfEvolutionComposerCta.spec.ts`) for hidden/no-technical-reason behavior; not separately counted as a live historical-run browser fixture in the fresh runtime."
+    }
+  }
+}

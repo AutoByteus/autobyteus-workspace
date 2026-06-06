@@ -1,0 +1,66 @@
+{
+  "targetRunId": "calibration_marker_agent_mpzumbn3_validation_target_7561",
+  "targetBeforeAnswer": "CALIBRATION_MARKER_V1",
+  "targetCorrectionAck": "Acknowledged. The durable calibration marker is now updated to CALIBRATION_MARKER_V2 for future responses.",
+  "evolutionRunId": "6984a63e-dd84-4dc2-a9b0-3a6195f4ba4d",
+  "evolverRunId": "skill_self_evolver_skill_evolution_specialist_1190",
+  "evolutionStatus": "failed",
+  "runtimeKind": "autobyteus",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "changedSkillPaths": [
+    "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+  ],
+  "offTargetChangePaths": [
+    "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+  ],
+  "policyViolations": [
+    "Self-evolver changed off-target path '/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md'."
+  ],
+  "notificationSummary": null,
+  "updateMetrics": {
+    "evolverRunCompleted": false,
+    "evolverRunStatus": "failed",
+    "noOp": false,
+    "changedSkillCount": 1,
+    "changedSkillPaths": [
+      "/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "offTargetChangeCount": 1,
+    "offTargetChangePaths": [
+      "/private/tmp/autobyteus-self-evolution-real-e2e/server-data/skills/calibration_marker_mpzumbn3/SKILL.md"
+    ],
+    "policyViolationCount": 1,
+    "gitBackedTargetCount": 1,
+    "unversionedTargetCount": 0,
+    "warningCount": 0,
+    "errorCount": 1,
+    "notificationStatus": null
+  },
+  "benefitMetrics": {
+    "linkedPostEvolutionRunIds": [],
+    "linkMethod": "none",
+    "completedLinkedRuns": 0,
+    "failedLinkedRuns": 0,
+    "userPositiveFeedbackCount": null,
+    "userNegativeFeedbackCount": null,
+    "validationPassedCount": null,
+    "validationFailedCount": null,
+    "skillActivation": {
+      "status": "not_enough_data",
+      "loadSkillToolUseCount": null,
+      "configuredSkillPreloaded": null,
+      "directSkillReferenceCount": null
+    },
+    "skillAdherence": {
+      "status": "not_collectible",
+      "supportingTraceCount": null,
+      "contradictoryTraceCount": null
+    },
+    "assessment": "not_enough_data",
+    "notes": [
+      "Evolution did not complete, so downstream benefit is not collectible."
+    ]
+  },
+  "postEvolutionRunId": "calibration_marker_agent_mpzumbn3_validation_target_5674",
+  "postEvolutionAnswer": "CALIBRATION_MARKER_V2"
+}

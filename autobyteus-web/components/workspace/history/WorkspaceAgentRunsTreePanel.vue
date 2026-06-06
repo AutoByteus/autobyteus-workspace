@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
@@ -141,13 +141,15 @@ const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
+const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => {
+  addToast(message, type === 'warning' ? 'info' : type);
+};
 
 const treeState = useWorkspaceHistoryTreeState({
   runHistoryStore,
   selectionStore,
 });
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
-
 const {
   getAgentInitials,
   getTeamInitials,
@@ -214,7 +216,7 @@ const {
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
-  addToast,
+  addToast: addWorkspaceToast,
   canTerminateTeam: treeState.canTerminateTeam,
 });
 
@@ -228,7 +230,13 @@ const {
   selectionStore,
   setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
-  emitRunSelected: (payload) => emit('run-selected', payload),
+  emitRunSelected: (payload) => {
+    if (payload.type === 'agent') {
+      emit('run-selected', { type: 'agent', runId: payload.runId });
+      return;
+    }
+    emit('run-selected', { type: 'team', runId: payload.runId });
+  },
   emitRunCreated: (payload) => emit('run-created', payload),
 });
 

@@ -273,6 +273,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       runtimeKind: this.options.config.runtimeKind,
       memberTeamContext,
       applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
+      selfEvolution: this.options.config.selfEvolutionEffective ?? this.options.config.selfEvolution ?? null,
     });
   }
 

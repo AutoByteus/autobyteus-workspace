@@ -27,6 +27,9 @@ import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { SelfEvolutionConfigOverride, SelfEvolutionEffectiveConfig } from "../../self-evolution/domain/models.js";
+import { normalizeSelfEvolutionConfigOverride } from "../../self-evolution/domain/config.js";
+import { SelfEvolutionEffectiveConfigResolver } from "../../self-evolution/services/self-evolution-effective-config-resolver.js";
 import { getAgentRunCommandRegistry } from "./agent-run-command-registry.js";
 import type {
   CancelPreparedAgentRunResult,
@@ -106,6 +109,7 @@ export class AgentRunProvisioningService {
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
       applicationExecutionContext: preparedInput.applicationExecutionContext,
+      selfEvolutionEffective: preparedInput.selfEvolutionEffective,
     };
 
     await this.historyCatalogService.recordPreparedRun({
@@ -166,6 +170,7 @@ export class AgentRunProvisioningService {
         llmConfig: metadata.llmConfig,
         skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         applicationExecutionContext: metadata.applicationExecutionContext ?? null,
+        selfEvolution: metadata.selfEvolutionEffective ?? null,
       }),
       normalizedRunId,
     );
@@ -243,6 +248,8 @@ export class AgentRunProvisioningService {
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
     applicationExecutionContext: ApplicationExecutionContext | null;
+    selfEvolution: SelfEvolutionConfigOverride | null;
+    selfEvolutionEffective: SelfEvolutionEffectiveConfig;
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error(`agentDefinitionId is required when ${action} a run.`);
@@ -264,6 +271,11 @@ export class AgentRunProvisioningService {
       throw new Error(`runtimeKind '${input.runtimeKind}' is not supported.`);
     }
 
+    const selfEvolution = normalizeSelfEvolutionConfigOverride(input.selfEvolution);
+    const selfEvolutionEffective = new SelfEvolutionEffectiveConfigResolver().resolveForStandalone({
+      runLaunchOverride: selfEvolution,
+    });
+
     return {
       agentDefinitionId: input.agentDefinitionId.trim(),
       runtimeKind,
@@ -277,6 +289,8 @@ export class AgentRunProvisioningService {
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: resolveSkillAccessMode(input.skillAccessMode, 0),
       applicationExecutionContext: input.applicationExecutionContext ?? null,
+      selfEvolution,
+      selfEvolutionEffective,
     };
   }
 
@@ -289,6 +303,7 @@ export class AgentRunProvisioningService {
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
     applicationExecutionContext: ApplicationExecutionContext | null;
+    selfEvolution: SelfEvolutionConfigOverride | null;
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.generateFreshRunId(input.runtimeKind, input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getRunDirPath(runId);
@@ -304,6 +319,7 @@ export class AgentRunProvisioningService {
         llmConfig: input.llmConfig,
         skillAccessMode: input.skillAccessMode,
         applicationExecutionContext: input.applicationExecutionContext,
+        selfEvolution: input.selfEvolution,
       }),
     };
   }

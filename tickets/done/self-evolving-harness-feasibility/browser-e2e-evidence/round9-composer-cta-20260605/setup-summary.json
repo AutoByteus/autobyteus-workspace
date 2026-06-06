@@ -1,0 +1,14 @@
+{
+  "token": "r9_cta_loop",
+  "runRoot": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/workspace",
+  "skillName": "calibration_marker_r9_cta_loop",
+  "skillRootPath": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/skills/calibration_marker_r9_cta_loop",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round9-composer-cta-e2e/server-data/skills/calibration_marker_r9_cta_loop/SKILL.md",
+  "agentDefinitionId": "calibration-marker-agent-r9-cta-loop",
+  "agentName": "Calibration CTA Agent r9_cta_loop",
+  "teamDefinitionId": "calibration-marker-team-r9-cta-loop",
+  "teamName": "Calibration CTA Team r9_cta_loop",
+  "markerBefore": "CALIBRATION_MARKER_R9_V1",
+  "markerAfter": "CALIBRATION_MARKER_R9_V2"
+}

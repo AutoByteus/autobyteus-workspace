@@ -1,0 +1,376 @@
+{
+  "graphqlRecord": {
+    "getSelfEvolutionRunRecord": {
+      "evolutionRunId": "90ef18df-edf4-4700-9270-dad73723a368",
+      "status": "completed",
+      "requestedAt": "2026-06-05T09:50:24.138Z",
+      "completedAt": "2026-06-05T09:51:19.061Z",
+      "triggerStrategy": "manual_only",
+      "evolverStrategy": "single_agent",
+      "target": {
+        "kind": "agent_run",
+        "runId": "calibration_marker_agent_r5_lp0xzhyj_validation_target_agent_2440",
+        "teamRunId": null,
+        "memberRunId": null
+      },
+      "effectiveConfig": {
+        "enabled": true,
+        "triggerStrategy": "manual_only",
+        "evolverStrategy": "single_agent",
+        "evolverAgentDefinitionId": null,
+        "resolvedAt": "2026-06-05T09:45:03.352Z",
+        "sourceTrace": [
+          {
+            "source": "default",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy",
+              "evolverAgentDefinitionId"
+            ]
+          },
+          {
+            "source": "agent_run_launch",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy"
+            ]
+          }
+        ]
+      },
+      "sourceRunIds": [
+        "calibration_marker_agent_r5_lp0xzhyj_validation_target_agent_2440"
+      ],
+      "evolverAgentDefinitionId": "autobyteus-skill-evolver",
+      "evolverRunId": "skill_self_evolver_skill_improvement_coach_1501",
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "workspaceRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/workspace",
+      "skillTargets": [
+        {
+          "skillName": "calibration_marker_r5_lp0xzhyj",
+          "skillRootPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj",
+          "skillMdPath": "/tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj/SKILL.md",
+          "sourceLabel": null,
+          "isWritable": true
+        }
+      ],
+      "evidenceSummaryHash": "f27457015e9103986bf08b28ca367701dd5f1bcafdfe1eb6b74a992122fdd296",
+      "notificationSummary": {
+        "status": "sent_active_idle",
+        "message": "A self-evolution run completed for your configured skill playbooks: 90ef18df-edf4-4700-9270-dad73723a368.\n\nAffected skill packages:\n- calibration_marker_r5_lp0xzhyj: /tmp/autobyteus-self-evolution-round5-mvp-e2e/server-data/skills/calibration_marker_r5_lp0xzhyj\n\nPlease reload or re-read the affected skills before continuing when relevant.\n\nHelper-run completion does not by itself prove downstream improvement; use the updated skills only when they are relevant.",
+        "error": null
+      },
+      "errors": []
+    }
+  },
+  "introspection": {
+    "queryType": {
+      "fields": [
+        {
+          "name": "health"
+        },
+        {
+          "name": "workspaces"
+        },
+        {
+          "name": "workspaceMetadata"
+        },
+        {
+          "name": "totalCostInPeriod"
+        },
+        {
+          "name": "usageStatisticsInPeriod"
+        },
+        {
+          "name": "fileContent"
+        },
+        {
+          "name": "searchFiles"
+        },
+        {
+          "name": "folderChildren"
+        },
+        {
+          "name": "getAgentRunMemoryView"
+        },
+        {
+          "name": "getTeamMemberRunMemoryView"
+        },
+        {
+          "name": "runtimeAvailabilities"
+        },
+        {
+          "name": "managedMessagingGatewayStatus"
+        },
+        {
+          "name": "managedMessagingGatewayWeComAccounts"
+        },
+        {
+          "name": "managedMessagingGatewayPeerCandidates"
+        },
+        {
+          "name": "getServerSettings"
+        },
+        {
+          "name": "getSearchConfig"
+        },
+        {
+          "name": "listApplications"
+        },
+        {
+          "name": "application"
+        },
+        {
+          "name": "applicationsCapability"
+        },
+        {
+          "name": "skills"
+        },
+        {
+          "name": "skill"
+        },
+        {
+          "name": "skillFileTree"
+        },
+        {
+          "name": "skillFileContent"
+        },
+        {
+          "name": "skillSources"
+        },
+        {
+          "name": "skillVersions"
+        },
+        {
+          "name": "skillVersionDiff"
+        },
+        {
+          "name": "agentDefinition"
+        },
+        {
+          "name": "agentDefinitions"
+        },
+        {
+          "name": "agentTemplates"
+        },
+        {
+          "name": "agentTeamDefinition"
+        },
+        {
+          "name": "agentTeamDefinitions"
+        },
+        {
+          "name": "agentTeamTemplates"
+        },
+        {
+          "name": "availableToolNames"
+        },
+        {
+          "name": "availableOptionalInputProcessorNames"
+        },
+        {
+          "name": "availableOptionalLlmResponseProcessorNames"
+        },
+        {
+          "name": "availableOptionalSystemPromptProcessorNames"
+        },
+        {
+          "name": "availableOptionalToolExecutionResultProcessorNames"
+        },
+        {
+          "name": "availableOptionalToolInvocationPreprocessorNames"
+        },
+        {
+          "name": "availableOptionalLifecycleProcessorNames"
+        },
+        {
+          "name": "getLlmProviderApiKeyConfigured"
+        },
+        {
+          "name": "getGeminiSetupConfig"
+        },
+        {
+          "name": "availableLlmProvidersWithModels"
+        },
+        {
+          "name": "availableAudioProvidersWithModels"
+        },
+        {
+          "name": "availableImageProvidersWithModels"
+        },
+        {
+          "name": "tools"
+        },
+        {
+          "name": "toolsGroupedByCategory"
+        },
+        {
+          "name": "mcpServers"
+        },
+        {
+          "name": "previewMcpServerTools"
+        },
+        {
+          "name": "listAgentsWithMemory"
+        },
+        {
+          "name": "listAgentRunsWithMemory"
+        },
+        {
+          "name": "listAgentTeamsWithMemory"
+        },
+        {
+          "name": "listAgentTeamRunsWithMemory"
+        },
+        {
+          "name": "externalChannelCapabilities"
+        },
+        {
+          "name": "externalChannelBindings"
+        },
+        {
+          "name": "externalChannelTeamDefinitionOptions"
+        },
+        {
+          "name": "listWorkspaceRunHistory"
+        },
+        {
+          "name": "getRunProjection"
+        },
+        {
+          "name": "getAgentRunResumeConfig"
+        },
+        {
+          "name": "getRunFileChanges"
+        },
+        {
+          "name": "getTeamCommunicationMessages"
+        },
+        {
+          "name": "getTeamRunResumeConfig"
+        },
+        {
+          "name": "getTeamMemberRunProjection"
+        },
+        {
+          "name": "agentPackages"
+        },
+        {
+          "name": "applicationPackages"
+        },
+        {
+          "name": "applicationPackageDetails"
+        },
+        {
+          "name": "getAppDataMigrations"
+        },
+        {
+          "name": "selfEvolutionCapability"
+        },
+        {
+          "name": "selfEvolutionStrategyCatalog"
+        },
+        {
+          "name": "getAgentRunSelfEvolutionEligibility"
+        },
+        {
+          "name": "getTeamMemberSelfEvolutionEligibility"
+        },
+        {
+          "name": "getSelfEvolutionRunRecord"
+        }
+      ]
+    },
+    "startInput": {
+      "inputFields": [
+        {
+          "name": "runId"
+        }
+      ]
+    },
+    "recordType": {
+      "fields": [
+        {
+          "name": "evolutionRunId"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "requestedAt"
+        },
+        {
+          "name": "completedAt"
+        },
+        {
+          "name": "triggerStrategy"
+        },
+        {
+          "name": "evolverStrategy"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "effectiveConfig"
+        },
+        {
+          "name": "sourceRunIds"
+        },
+        {
+          "name": "evolverAgentDefinitionId"
+        },
+        {
+          "name": "evolverRunId"
+        },
+        {
+          "name": "runtimeKind"
+        },
+        {
+          "name": "llmModelIdentifier"
+        },
+        {
+          "name": "workspaceRootPath"
+        },
+        {
+          "name": "skillTargets"
+        },
+        {
+          "name": "evidenceSummaryHash"
+        },
+        {
+          "name": "notificationSummary"
+        },
+        {
+          "name": "errors"
+        }
+      ]
+    }
+  },
+  "checks": {
+    "recordCompleted": true,
+    "graphqlRecordCompleted": true,
+    "notificationSentActiveIdle": true,
+    "sourceRunReceivedNotificationTrace": true,
+    "skillContainsV2": true,
+    "skillNoLongerUsesV1AsAnswer": true,
+    "skillDoesNotContainFakeSecret": true,
+    "helperPromptNoRawSourceRunId": true,
+    "helperMetadataNoRawSourceRunId": true,
+    "helperSnapshotNoRawSourceRunId": true,
+    "helperNoRawFakeSecret": true,
+    "helperPromptShowsSecretRedaction": true,
+    "helperPromptNeutralSourceWording": true,
+    "helperPromptSkillRootInstructions": true,
+    "helperPromptNoRawTracePath": true,
+    "minimalRecordNoRemovedFields": true,
+    "schemaMetricsQueryAbsent": true,
+    "schemaStartIdentityOnly": true,
+    "schemaRecordNoRemovedFields": true,
+    "visibleEvolverRunLinked": true,
+    "postRunAnsweredV2": true,
+    "postRunDidNotAnswerV1Only": true
+  }
+}

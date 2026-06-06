@@ -1,0 +1,1 @@
+Main repo server .env checked first and lacked DEEPSEEK_API_KEY; autobyteus-ts/.env.test key failed live auth; DEEPSEEK_API_KEY loaded for validation from process environment.

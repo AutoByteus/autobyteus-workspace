@@ -33,6 +33,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |
+| Self-Evolution | [self_evolution.md](./self_evolution.md) |
 | Skill Versioning | [skill_versioning.md](./skill_versioning.md) |
 | Skills | [skills.md](./skills.md) |
 | Terminal | [terminal.md](./terminal.md) |

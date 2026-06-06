@@ -1,6 +1,7 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { SelfEvolutionEffectiveConfig } from "../../self-evolution/domain/models.js";
 
 export type AgentRunMetadata = {
   runId: string;
@@ -17,4 +18,5 @@ export type AgentRunMetadata = {
   preparedExpiresAt?: string | null;
   startedAt?: string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
+  selfEvolutionEffective?: SelfEvolutionEffectiveConfig | null;
 };

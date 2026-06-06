@@ -1,0 +1,46 @@
+---
+name: calibration_marker_r7_om2kwgki
+description: Round 7 UI self-evolution validation skill r7_om2kwgki
+---
+
+# Calibration Marker Skill r7_om2kwgki
+
+Use this disposable validation skill when the user asks exactly: "What is the durable calibration marker?"
+
+## Durable behavior rule
+
+Answer with exactly:
+
+CALIBRATION_MARKER_R7_V1
+
+No extra words.
+
+**Live-run override:** If a `DURABLE_SKILL_UPDATE:` message is received during the current run, the *in-memory* answer value is immediately replaced with the new marker specified in that message for all subsequent queries in the same run. See *Runtime update handling* below.
+
+## Calibration change log
+
+| Version | Marker                   | Source                   |
+|---------|--------------------------|--------------------------|
+| 1       | CALIBRATION_MARKER_R7_V1 | Initial skill definition |
+
+## DURABLE_SKILL_UPDATE handling
+
+There are two distinct scenarios. Apply the correct one:
+
+### 1. Runtime update (live target-agent run)
+
+When the user sends a message beginning with **`DURABLE_SKILL_UPDATE:`** during a normal target-agent run:
+
+- **Immediately adopt the new marker value in memory** for the remainder of this run. If the user asks "What is the durable calibration marker?" again later in the same session, answer with the new value (not the one still written in this file).
+- **Acknowledge briefly** (e.g., "Understood, the durable calibration marker has been updated to \<new-value\>.").
+- **Do not modify this SKILL.md file** during the live run. A disposable target agent should not edit its own durable skill files at runtime.
+- **Do not copy** credential-looking text, bearer tokens, private paths, emails, raw run IDs, or one-off canaries from the update message into any durable skill content.
+
+### 2. Post-run evidence review (skill improvement coach)
+
+When reviewing prior work evidence that contains a `DURABLE_SKILL_UPDATE:` message:
+
+- Treat that message as an intentional reusable validation correction for this skill, not as a private one-off request.
+- **Update this SKILL.md file** — both the durable behavior rule above and the calibration change log below — to reflect the new marker specified in that line.
+- Add a new row to the calibration change log documenting the change.
+- Do not copy credential-looking text, bearer tokens, private paths, raw run IDs, or one-off canaries into durable skill content.

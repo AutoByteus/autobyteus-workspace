@@ -1,0 +1,38 @@
+{
+  "token": "r7_om2kwgki",
+  "runRoot": "/tmp/autobyteus-self-evolution-round7-ui-e2e",
+  "workspace": "/tmp/autobyteus-self-evolution-round7-ui-e2e/workspace",
+  "skillName": "calibration_marker_r7_om2kwgki",
+  "skillMdPath": "/tmp/autobyteus-self-evolution-round7-ui-e2e/server-data/skills/calibration_marker_r7_om2kwgki/SKILL.md",
+  "agentDefinitionId": "calibration-marker-agent-r7-om2kwgki",
+  "agentName": "Calibration UI Agent r7_om2kwgki",
+  "teamDefinitionId": "calibration-marker-team-r7-om2kwgki",
+  "teamName": "Calibration UI Team r7_om2kwgki",
+  "markerBefore": "CALIBRATION_MARKER_R7_V1",
+  "markerAfter": "CALIBRATION_MARKER_R7_V2",
+  "uiCreatedRunId": "calibration_ui_agent_r7_om2kwgki_disposable_validation_target_for_round_7_ui_self_evolution_mvp_r7_om2kwgki_9267",
+  "selfEvolutionSnapshot": {
+    "enabled": true,
+    "triggerStrategy": "manual_only",
+    "evolverStrategy": "single_agent",
+    "evolverAgentDefinitionId": null,
+    "resolvedAt": "2026-06-05T11:34:21.216Z",
+    "sourceTrace": [
+      {
+        "source": "default",
+        "fields": [
+          "enabled",
+          "triggerStrategy",
+          "evolverStrategy",
+          "evolverAgentDefinitionId"
+        ]
+      },
+      {
+        "source": "agent_run_launch",
+        "fields": [
+          "enabled"
+        ]
+      }
+    ]
+  }
+}

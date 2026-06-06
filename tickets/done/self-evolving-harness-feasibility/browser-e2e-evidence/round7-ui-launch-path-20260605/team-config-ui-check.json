@@ -1,0 +1,14 @@
+{
+  "teamRunSelfEvolutionControlVisible": true,
+  "teamRunToggleBefore": false,
+  "teamRunToggleAfter": true,
+  "memberOverrideControlVisible": true,
+  "memberOverrideRoundTrip": {
+    "initial": "use_team_default",
+    "setDisabled": "disabled",
+    "setEnabled": "enabled",
+    "cleared": "use_team_default"
+  },
+  "executionSnapshotNotRun": true,
+  "note": "Team controls were validated in the browser UI. Team execution snapshot was not run because standalone simplified MVP loop had already failed on next-run behavior."
+}

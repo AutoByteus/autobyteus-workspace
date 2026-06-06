@@ -1,0 +1,56 @@
+{
+  "teamRunId": "team_calibration-ux-team-r10-round7-ux_1209de60",
+  "teamDefinitionId": "calibration-marker-team-r10-round7-ux",
+  "teamDefinitionName": "Calibration UX Team r10_round7_ux",
+  "coordinatorMemberRouteKey": "calibrator",
+  "createdAt": "2026-06-05T20:49:00.360Z",
+  "archivedAt": null,
+  "memberTree": [
+    {
+      "memberKind": "agent",
+      "memberRouteKey": "calibrator",
+      "memberPath": [
+        "calibrator"
+      ],
+      "memberName": "calibrator",
+      "memberRunId": "calibrator_61d123d6ecb3d14a",
+      "role": null,
+      "description": null,
+      "runtimeKind": "autobyteus",
+      "platformAgentRunId": "calibrator_61d123d6ecb3d14a",
+      "agentDefinitionId": "calibration-marker-agent-r10-round7-ux",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "llmConfig": {
+        "thinking_type": "disabled"
+      },
+      "workspaceRootPath": "/tmp/autobyteus-self-evolution-round10-round7-ux-e2e/server-data/temp_workspace",
+      "applicationExecutionContext": null,
+      "selfEvolutionEffective": {
+        "enabled": true,
+        "triggerStrategy": "manual_only",
+        "evolverStrategy": "single_agent",
+        "evolverAgentDefinitionId": null,
+        "resolvedAt": "2026-06-05T20:49:00.328Z",
+        "sourceTrace": [
+          {
+            "source": "default",
+            "fields": [
+              "enabled",
+              "triggerStrategy",
+              "evolverStrategy",
+              "evolverAgentDefinitionId"
+            ]
+          },
+          {
+            "source": "team_run_launch",
+            "fields": [
+              "enabled"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
