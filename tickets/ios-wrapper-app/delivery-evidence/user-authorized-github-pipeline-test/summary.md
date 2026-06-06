@@ -18,7 +18,7 @@ gh workflow run release-ios.yml --ref codex/ios-wrapper-app -F publish_app_store
 
 Result: not triggered. GitHub returned `HTTP 404: workflow release-ios.yml not found on the default branch`.
 
-Interpretation: pushing the new workflow to a feature branch is not enough for `workflow_dispatch` discovery by filename; the workflow is visible in the branch but not installed on the default branch (`personal`) yet.
+Interpretation: pushing the new workflow to a feature branch is not enough for GitHub Actions workflow endpoint / `workflow_dispatch` discovery by filename. The workflow file exists in the pushed branch (verified separately through the GitHub contents API), but the Actions workflow is not installed on the default branch (`personal`) yet.
 
 ## GitHub Secrets / Variables
 
