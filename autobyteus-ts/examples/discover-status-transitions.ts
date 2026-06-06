@@ -5,15 +5,12 @@ import {
   AgentIdleEvent,
   ShutdownRequestedEvent,
   BootstrapStartedEvent,
-  BootstrapStepRequestedEvent,
-  BootstrapStepCompletedEvent,
   BootstrapCompletedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
   LLMUserMessageReadyEvent,
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
-  ApprovedToolInvocationEvent,
   ToolExecutionApprovalEvent,
   ToolResultEvent
 } from '../src/agent/events/agent-events.js';
@@ -45,8 +42,6 @@ const sampleInvocation = new ToolInvocation('write_file', { path: 'test.txt', co
 
 const eventFactories = [
   { name: 'BootstrapStartedEvent', make: () => new BootstrapStartedEvent() },
-  { name: 'BootstrapStepRequestedEvent', make: () => new BootstrapStepRequestedEvent(1) },
-  { name: 'BootstrapStepCompletedEvent', make: () => new BootstrapStepCompletedEvent(1, 'step', true) },
   { name: 'BootstrapCompletedEvent', make: () => new BootstrapCompletedEvent(true) },
   { name: 'AgentReadyEvent', make: () => new AgentReadyEvent() },
   { name: 'AgentIdleEvent', make: () => new AgentIdleEvent() },
@@ -58,7 +53,6 @@ const eventFactories = [
   { name: 'LLMUserMessageReadyEvent', make: () => new LLMUserMessageReadyEvent(sampleLlmUserMessage, 'turn-1') },
   { name: 'LLMCompleteResponseReceivedEvent', make: () => new LLMCompleteResponseReceivedEvent(sampleCompleteResponse) },
   { name: 'PendingToolInvocationEvent', make: () => new PendingToolInvocationEvent(sampleInvocation) },
-  { name: 'ApprovedToolInvocationEvent', make: () => new ApprovedToolInvocationEvent(sampleInvocation) },
   { name: 'ToolExecutionApprovalEvent(approved)', make: () => new ToolExecutionApprovalEvent('tool-1', true) },
   { name: 'ToolExecutionApprovalEvent(denied)', make: () => new ToolExecutionApprovalEvent('tool-1', false) },
   { name: 'ToolResultEvent', make: () => new ToolResultEvent('write_file', 'ok', 'tool-1') }
@@ -72,7 +66,9 @@ type Transition = {
 };
 
 function discoverTransitions(autoExecuteTools: boolean): Transition[] {
-  const statuses = Object.values(AgentStatus);
+  const statuses = Object.values(AgentStatus).filter(
+    (status): status is AgentStatus => typeof status === 'string'
+  );
   const transitions: Transition[] = [];
 
   for (const status of statuses) {
