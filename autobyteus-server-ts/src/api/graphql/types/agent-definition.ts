@@ -200,15 +200,6 @@ export class UpdateAgentDefinitionInput {
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
 }
 
-@InputType()
-export class DuplicateAgentDefinitionInput {
-  @Field(() => String)
-  sourceId!: string;
-
-  @Field(() => String)
-  newName!: string;
-}
-
 @ObjectType()
 export class DeleteAgentDefinitionResult {
   @Field(() => Boolean)
@@ -302,20 +293,6 @@ export class AgentDefinitionResolver {
     } catch (error) {
       logger.error(`Error creating agent definition: ${String(error)}`);
       throw new Error(`Failed to create agent definition: ${String(error)}`);
-    }
-  }
-
-  @Mutation(() => AgentDefinition)
-  async duplicateAgentDefinition(
-    @Arg("input", () => DuplicateAgentDefinitionInput) input: DuplicateAgentDefinitionInput,
-  ): Promise<AgentDefinition> {
-    try {
-      const service = AgentDefinitionService.getInstance();
-      const duplicated = await service.duplicateAgentDefinition(input.sourceId, input.newName);
-      return await AgentDefinitionConverter.toGraphql(duplicated);
-    } catch (error) {
-      logger.error(`Error duplicating agent definition: ${String(error)}`);
-      throw new Error(`Failed to duplicate agent definition: ${String(error)}`);
     }
   }
 

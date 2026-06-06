@@ -1,0 +1,3 @@
+$ git diff --check
+$ rg removed/legacy identifiers
+$ rg prohibited prompt terms in compactor template and prompt builders

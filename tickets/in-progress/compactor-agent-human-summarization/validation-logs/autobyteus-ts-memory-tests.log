@@ -1,0 +1,33 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-ts
+
+stdout | tests/unit/memory/agent-compaction-summarizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-response-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-task-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/compaction-task-prompt-builder.test.ts (3 tests) 3ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (5 tests) 3ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (3 tests) 4ms
+
+ Test Files  4 passed (4)
+      Tests  13 passed (13)
+   Start at  09:49:24
+   Duration  218ms (transform 279ms, setup 120ms, import 266ms, tests 13ms, environment 0ms)
+

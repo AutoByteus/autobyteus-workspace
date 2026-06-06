@@ -1,0 +1,21 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/compactor-agent-human-summarization/autobyteus-web
+
+stdout | tests/integration/agent-definition.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/agent-definition.integration.test.ts (1 test) 2ms
+ ✓ components/agents/__tests__/AgentDetail.spec.ts (5 tests) 26ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  10:49:50
+   Duration  4.80s (transform 2.38s, setup 8.04s, collect 154ms, tests 28ms, environment 411ms, prepare 305ms)
+
