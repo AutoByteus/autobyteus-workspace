@@ -7,10 +7,20 @@ describe('messagingProviderScopeStore', () => {
     setActivePinia(createPinia());
   });
 
+  it('starts with no available providers before gateway capabilities initialize', () => {
+    const store = useMessagingProviderScopeStore();
+
+    expect(store.availableProviders).toEqual([]);
+    expect(store.options).toEqual([]);
+    expect(store.initialized).toBe(false);
+    expect(store.hasActiveProvider).toBe(false);
+  });
+
   it('initializes available providers from gateway capabilities', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['DIRECT_PERSONAL_SESSION', 'WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
       wechatPersonalEnabled: true,
@@ -36,12 +46,38 @@ describe('messagingProviderScopeStore', () => {
       'TELEGRAM',
     ]);
     expect(store.initialized).toBe(true);
+    expect(store.hasActiveProvider).toBe(true);
+  });
+
+  it('uses Discord and Telegram only for the default managed active providers', () => {
+    const store = useMessagingProviderScopeStore();
+
+    store.initialize({
+      whatsappBusinessEnabled: false,
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: true,
+      discordAccountId: 'discord-acct-1',
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+
+    expect(store.availableProviders).toEqual(['DISCORD', 'TELEGRAM']);
+    expect(store.options.map((entry) => entry.provider)).toEqual([
+      'DISCORD',
+      'TELEGRAM',
+    ]);
+    expect(store.selectedProvider).toBe('DISCORD');
+    expect(store.hasActiveProvider).toBe(true);
   });
 
   it('falls back to first available provider when current selection is no longer available', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: ['DIRECT_PERSONAL_SESSION'],
       defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
       wechatPersonalEnabled: true,
@@ -54,23 +90,25 @@ describe('messagingProviderScopeStore', () => {
     store.setSelectedProvider('WECHAT');
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,
       wecomAppEnabled: false,
-      discordEnabled: false,
-      discordAccountId: null,
-      telegramEnabled: false,
-      telegramAccountId: null,
+      discordEnabled: true,
+      discordAccountId: 'discord-acct-1',
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
     });
 
-    expect(store.selectedProvider).toBe('WHATSAPP');
+    expect(store.selectedProvider).toBe('DISCORD');
   });
 
   it('resolves transport and personal-session requirement based on provider', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,
@@ -90,6 +128,7 @@ describe('messagingProviderScopeStore', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -110,6 +149,7 @@ describe('messagingProviderScopeStore', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -130,6 +170,7 @@ describe('messagingProviderScopeStore', () => {
     const store = useMessagingProviderScopeStore();
 
     store.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,

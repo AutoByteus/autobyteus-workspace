@@ -95,7 +95,7 @@ export const writeManifest = async (
             sha256Url: `${input.baseUrl}/${archiveBaseName}.sha256`,
             metadataUrl: `${input.baseUrl}/${archiveBaseName}.json`,
             supportedProviders: ["WHATSAPP", "WECOM", "DISCORD", "TELEGRAM"],
-            excludedProviders: ["WECHAT"],
+            excludedProviders: ["WHATSAPP", "WECOM", "WECHAT"],
           },
         ],
       },

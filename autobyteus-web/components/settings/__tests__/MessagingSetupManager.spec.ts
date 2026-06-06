@@ -11,10 +11,10 @@ import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeS
 describe('MessagingSetupManager', () => {
   let pinia: ReturnType<typeof createPinia>;
   const capabilitiesFixture = {
-    whatsappBusinessEnabled: true,
-    wechatModes: ['WECOM_APP_BRIDGE'],
-    defaultWeChatMode: 'WECOM_APP_BRIDGE',
-    wecomAppEnabled: true,
+    whatsappBusinessEnabled: false,
+    wechatModes: [],
+    defaultWeChatMode: null,
+    wecomAppEnabled: false,
     wechatPersonalEnabled: false,
     discordEnabled: true,
     discordAccountId: 'discord-1',
@@ -123,6 +123,11 @@ describe('MessagingSetupManager', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-testid="managed-provider-config-section"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="provider-scope-WHATSAPP"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="provider-scope-WECOM"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="provider-scope-DISCORD"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="provider-scope-TELEGRAM"]').exists()).toBe(true);
+    expect(providerScopeStore.selectedProvider).toBe('DISCORD');
 
     gatewayStore.managedStatus = {
       supported: true,
@@ -150,7 +155,7 @@ describe('MessagingSetupManager', () => {
         },
       },
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: true,
@@ -158,6 +163,43 @@ describe('MessagingSetupManager', () => {
     await nextTick();
 
     expect(providerScopeStore.telegramAccountId).toBe('telegram-main');
+  });
+
+  it('does not render provider setup sections when no active providers are available', async () => {
+    const gatewayStore = useGatewaySessionSetupStore();
+    const capabilityStore = useGatewayCapabilityStore();
+    const bindingStore = useMessagingChannelBindingSetupStore();
+
+    vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
+    vi.spyOn(gatewayStore, 'refreshManagedGatewayStatus').mockResolvedValue(null);
+    vi.spyOn(capabilityStore, 'loadCapabilities').mockImplementation(async () => {
+      const capabilities = {
+        ...capabilitiesFixture,
+        discordEnabled: false,
+        telegramEnabled: false,
+        discordAccountId: null,
+        telegramAccountId: null,
+      };
+      capabilityStore.capabilities = capabilities;
+      return capabilities;
+    });
+    vi.spyOn(capabilityStore, 'loadWeComAccounts').mockResolvedValue([]);
+    vi.spyOn(bindingStore, 'loadCapabilities').mockResolvedValue({
+      bindingCrudEnabled: true,
+      reason: undefined,
+    });
+    vi.spyOn(bindingStore, 'loadBindingsIfEnabled').mockResolvedValue([]);
+
+    const wrapper = mount(MessagingSetupManager, {
+      global: {
+        plugins: [pinia],
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="messaging-no-active-providers"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="managed-provider-config-section"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid^="provider-scope-"]').exists()).toBe(false);
   });
 
 });

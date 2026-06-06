@@ -17,6 +17,8 @@
         "TELEGRAM"
       ],
       "excludedProviders": [
+        "WHATSAPP",
+        "WECOM",
         "WECHAT"
       ]
     }

@@ -1,0 +1,14 @@
+[2026-06-06T16:25:11.942Z] stub listening on 127.0.0.1:29696
+[2026-06-06T16:26:10.710Z] graphql op=GetAvailableLLMProvidersWithModels query=query GetAvailableLLMProvidersWithModels($runtimeKind: String) { availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { __typename provider { __typename i
+[2026-06-06T16:26:10.711Z] graphql op=ManagedMessagingGatewayStatus query=query ManagedMessagingGatewayStatus { managedMessagingGatewayStatus { __typename supported enabled lifecycleState message lastError activeVersion desiredVersion
+[2026-06-06T16:26:10.744Z] graphql op=ManagedMessagingGatewayWeComAccounts query=query ManagedMessagingGatewayWeComAccounts { managedMessagingGatewayWeComAccounts { __typename accountId label mode } }
+[2026-06-06T16:26:10.751Z] graphql op=GetRuntimeAvailabilities query=query GetRuntimeAvailabilities { runtimeAvailabilities { runtimeKind enabled reason __typename } }
+[2026-06-06T16:26:10.753Z] graphql op=GetAvailableLLMProvidersWithModels query=query GetAvailableLLMProvidersWithModels($runtimeKind: String) { availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { __typename provider { __typename i
+[2026-06-06T16:26:10.789Z] graphql op=ExternalChannelCapabilities query=query ExternalChannelCapabilities { externalChannelCapabilities { __typename bindingCrudEnabled reason acceptedProviderTransportPairs } }
+[2026-06-06T16:26:10.807Z] graphql op=ExternalChannelBindings query=query ExternalChannelBindings { externalChannelBindings { __typename id provider transport accountId peerId threadId targetType targetAgentDefinitionId targetTe
+[2026-06-06T16:26:10.908Z] graphql op=ExternalChannelTeamDefinitionOptions query=query ExternalChannelTeamDefinitionOptions { externalChannelTeamDefinitionOptions { __typename teamDefinitionId teamDefinitionName description coordinatorMember
+[2026-06-06T16:27:25.095Z] graphql op=SaveManagedMessagingGatewayProviderConfig query=mutation SaveManagedMessagingGatewayProviderConfig($input: JSONObject!) { saveManagedMessagingGatewayProviderConfig(input: $input) { __typename supported enable
+[2026-06-06T16:27:25.859Z] graphql op=GetRuntimeAvailabilities query=query GetRuntimeAvailabilities { runtimeAvailabilities { runtimeKind enabled reason __typename } }
+[2026-06-06T16:27:25.866Z] graphql op=GetAvailableLLMProvidersWithModels query=query GetAvailableLLMProvidersWithModels($runtimeKind: String) { availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { __typename provider { __typename i
+[2026-06-06T16:27:26.839Z] graphql op=SaveManagedMessagingGatewayProviderConfig query=mutation SaveManagedMessagingGatewayProviderConfig($input: JSONObject!) { saveManagedMessagingGatewayProviderConfig(input: $input) { __typename supported enable
+[2026-06-06T16:27:40.256Z] graphql op=DisableManagedMessagingGateway query=mutation DisableManagedMessagingGateway { disableManagedMessagingGateway { __typename supported enabled lifecycleState message lastError activeVersion desiredVe

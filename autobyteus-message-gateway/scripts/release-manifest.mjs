@@ -89,7 +89,7 @@ export function buildReleaseManifest(input) {
         sha256Url: `${releaseAssetBaseUrl}/${input.archiveFileName}.sha256`,
         metadataUrl: `${releaseAssetBaseUrl}/${input.archiveFileName}.json`,
         supportedProviders: ["WHATSAPP", "WECOM", "DISCORD", "TELEGRAM"],
-        excludedProviders: ["WECHAT"],
+        excludedProviders: ["WHATSAPP", "WECOM", "WECHAT"],
       },
     ],
   };

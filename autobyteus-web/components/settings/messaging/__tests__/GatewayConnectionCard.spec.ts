@@ -43,7 +43,7 @@ describe('GatewayConnectionCard', () => {
         },
       },
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: true,
@@ -58,7 +58,7 @@ describe('GatewayConnectionCard', () => {
     expect(wrapper.text()).toContain('Discord Bot Configuration');
     expect(wrapper.find('[data-testid="provider-discord-token"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="provider-whatsapp-secret"]').exists()).toBe(false);
-    expect(wrapper.text()).toContain('Excluded providers: WECHAT');
+    expect(wrapper.text()).toContain('Excluded providers: WHATSAPP, WECOM, WECHAT');
   });
 
   it('surfaces provider blocking feedback for the selected provider', () => {
@@ -140,7 +140,7 @@ describe('GatewayConnectionCard', () => {
       providerConfig: store.providerConfig,
       providerStatusByProvider: {},
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: false,
@@ -156,6 +156,6 @@ describe('GatewayConnectionCard', () => {
     expect(wrapper.text()).not.toContain('Validate Connection');
     expect(wrapper.text()).not.toContain('Gateway URL');
     expect(wrapper.find('[data-testid="provider-whatsapp-secret"]').attributes('placeholder') || '').toMatch(/whats?app business secret/i);
-    expect(wrapper.text()).toContain('Excluded providers: WECHAT');
+    expect(wrapper.text()).toContain('Excluded providers: WHATSAPP, WECOM, WECHAT');
   });
 });

@@ -15,10 +15,10 @@ function createBinding(overrides: Partial<ReturnType<typeof buildBinding>> = {})
 function buildBinding() {
   return {
     id: 'binding-1',
-    provider: 'WHATSAPP' as const,
+    provider: 'DISCORD' as const,
     transport: 'BUSINESS_API' as const,
-    accountId: 'whatsapp-business',
-    peerId: 'peer-1',
+    accountId: 'discord-acct-1',
+    peerId: 'user:123456',
     threadId: null,
     targetType: 'AGENT' as const,
     targetAgentDefinitionId: 'agent-definition-1',
@@ -35,6 +35,22 @@ function buildBinding() {
     teamRunId: null,
     updatedAt: '2026-02-09T12:00:00.000Z',
   };
+}
+
+function initializeDiscordScope() {
+  const providerScopeStore = useMessagingProviderScopeStore();
+  providerScopeStore.initialize({
+    whatsappBusinessEnabled: false,
+    wechatModes: [],
+    defaultWeChatMode: null,
+    wechatPersonalEnabled: false,
+    wecomAppEnabled: false,
+    discordEnabled: true,
+    discordAccountId: 'discord-acct-1',
+    telegramEnabled: false,
+    telegramAccountId: null,
+  });
+  providerScopeStore.setSelectedProvider('DISCORD');
 }
 
 describe('messagingVerificationStore', () => {
@@ -54,16 +70,17 @@ describe('messagingVerificationStore', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
     const verificationStore = useMessagingVerificationStore();
 
+    initializeDiscordScope();
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.providerStatusByProvider = {
-      WHATSAPP: {
-        provider: 'WHATSAPP',
+      DISCORD: {
+        provider: 'DISCORD',
         supported: true,
         selectedTransport: 'BUSINESS_API',
         configured: true,
         effectivelyEnabled: true,
         blockedReason: null,
-        accountId: null,
+        accountId: 'discord-acct-1',
       },
     };
     stubGatewayHealthRefresh();
@@ -82,16 +99,17 @@ describe('messagingVerificationStore', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
     const verificationStore = useMessagingVerificationStore();
 
+    initializeDiscordScope();
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.providerStatusByProvider = {
-      WHATSAPP: {
-        provider: 'WHATSAPP',
+      DISCORD: {
+        provider: 'DISCORD',
         supported: true,
         selectedTransport: 'BUSINESS_API',
         configured: true,
         effectivelyEnabled: true,
         blockedReason: null,
-        accountId: null,
+        accountId: 'discord-acct-1',
       },
     };
     stubGatewayHealthRefresh();
@@ -112,6 +130,7 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['DIRECT_PERSONAL_SESSION'],
       defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
       wechatPersonalEnabled: true,
@@ -160,27 +179,19 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     providerScopeStore.initialize({
-      wechatModes: ['WECOM_APP_BRIDGE'],
-      defaultWeChatMode: 'WECOM_APP_BRIDGE',
+      whatsappBusinessEnabled: false,
+      wechatModes: [],
+      defaultWeChatMode: null,
       wechatPersonalEnabled: false,
-      wecomAppEnabled: true,
+      wecomAppEnabled: false,
       discordEnabled: true,
       discordAccountId: 'discord-1',
-      telegramEnabled: false,
-      telegramAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-1',
     });
 
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.providerStatusByProvider = {
-      WHATSAPP: {
-        provider: 'WHATSAPP',
-        supported: true,
-        selectedTransport: 'BUSINESS_API',
-        configured: true,
-        effectivelyEnabled: true,
-        blockedReason: null,
-        accountId: null,
-      },
       DISCORD: {
         provider: 'DISCORD',
         supported: true,
@@ -190,16 +201,25 @@ describe('messagingVerificationStore', () => {
         blockedReason: null,
         accountId: 'discord-1',
       },
+      TELEGRAM: {
+        provider: 'TELEGRAM',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: 'telegram-1',
+      },
     };
     stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
-    bindingStore.bindings = [createBinding()];
+    bindingStore.bindings = [createBinding({ accountId: 'discord-1' })];
 
-    providerScopeStore.setSelectedProvider('WHATSAPP');
+    providerScopeStore.setSelectedProvider('DISCORD');
     await verificationStore.runSetupVerification();
     expect(verificationStore.verificationResult?.ready).toBe(true);
 
-    providerScopeStore.setSelectedProvider('DISCORD');
+    providerScopeStore.setSelectedProvider('TELEGRAM');
     expect(verificationStore.verificationResult).toBeNull();
     expect(verificationStore.verificationChecks.every((check) => check.status === 'PENDING')).toBe(
       true,
@@ -211,16 +231,17 @@ describe('messagingVerificationStore', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
     const verificationStore = useMessagingVerificationStore();
 
+    initializeDiscordScope();
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.providerStatusByProvider = {
-      WHATSAPP: {
-        provider: 'WHATSAPP',
+      DISCORD: {
+        provider: 'DISCORD',
         supported: true,
         selectedTransport: 'BUSINESS_API',
         configured: true,
         effectivelyEnabled: true,
         blockedReason: null,
-        accountId: null,
+        accountId: 'discord-acct-1',
       },
     };
     stubGatewayHealthRefresh();
@@ -283,6 +304,7 @@ describe('messagingVerificationStore', () => {
 
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -305,16 +327,17 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
 
+    initializeDiscordScope();
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.providerStatusByProvider = {
-      WHATSAPP: {
-        provider: 'WHATSAPP',
+      DISCORD: {
+        provider: 'DISCORD',
         supported: true,
         selectedTransport: 'BUSINESS_API',
         configured: true,
         effectivelyEnabled: true,
         blockedReason: null,
-        accountId: null,
+        accountId: 'discord-acct-1',
       },
     };
     gatewayStore.runtimeReliabilityStatus = {
@@ -366,6 +389,7 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: true,
       wechatModes: ['WECOM_APP_BRIDGE'],
       defaultWeChatMode: 'WECOM_APP_BRIDGE',
       wechatPersonalEnabled: false,

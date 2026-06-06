@@ -1,0 +1,129 @@
+# Delivery post-integration checks
+Date: 2026-06-06T16:34:02Z
+HEAD: a3c0126d922ea92eba6bd1e96aa4d24675baf50f
+origin/personal: 7b519f879b018ba472169390220225b970c879fb
+
+## git diff --check
+
+## pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+
+## pnpm --filter autobyteus-server-ts exec vitest run tests/unit/managed-capabilities/messaging-gateway/provider-config-normalization.test.ts tests/unit/managed-capabilities/messaging-gateway/managed-messaging-gateway-runtime-env.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+ ✓ tests/unit/managed-capabilities/messaging-gateway/managed-messaging-gateway-runtime-env.test.ts (2 tests) 15ms
+ ✓ tests/unit/managed-capabilities/messaging-gateway/provider-config-normalization.test.ts (2 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  18:34:41
+   Duration  2.64s (transform 411ms, setup 201ms, import 403ms, tests 18ms, environment 1ms)
+
+
+## node autobyteus-message-gateway/scripts/build-runtime-package.mjs --check-release-manifest --release-tag v1.3.46
+[32mManaged messaging release manifest matches release tag v1.3.46.[0m
+
+## Delivery check status note
+Previous interrupted shell reached targeted server unit tests and v1.3.46 manifest check; both logged as passing above. Re-running focused frontend provider-visibility tests below for integrated UI state.
+
+## pnpm --filter autobyteus exec cross-env NUXT_TEST=true vitest run stores/__tests__/gatewayCapabilityStore.spec.ts stores/__tests__/messagingProviderScopeStore.spec.ts components/settings/__tests__/MessagingSetupManager.spec.ts components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/disable-broken-messaging-providers/autobyteus-web
+
+stderr | components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MessagingSetupManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/gatewayCapabilityStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/messagingProviderScopeStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/gatewayCapabilityStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MessagingSetupManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/messagingProviderScopeStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/gatewayCapabilityStore.spec.ts (2 tests) 4ms
+ ✓ stores/__tests__/messagingProviderScopeStore.spec.ts (8 tests) 5ms
+ ✓ components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts (4 tests) 16ms
+ ✓ components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts (4 tests) 17ms
+ ✓ components/settings/__tests__/MessagingSetupManager.spec.ts (4 tests) 90ms
+
+ Test Files  5 passed (5)
+      Tests  22 passed (22)
+   Start at  18:36:31
+   Duration  6.19s (transform 2.87s, setup 24.38s, collect 797ms, tests 131ms, environment 1.83s, prepare 963ms)
+

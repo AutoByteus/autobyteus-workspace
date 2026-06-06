@@ -78,7 +78,7 @@ function buildStatus(overrides: Record<string, unknown> = {}) {
       },
     },
     supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-    excludedProviders: ['WECHAT'],
+    excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
     diagnostics: {
       logsRoot: '/tmp/logs',
     },
@@ -212,7 +212,7 @@ describe('gatewaySessionSetupStore', () => {
     expect(store.providerConfig.discordAccountId).toBe('discord-updated');
   });
 
-  it('normalizes non-WeChat provider flags to active when saving config', async () => {
+  it('normalizes provider config flags when saving config', async () => {
     apolloMock.mutate.mockResolvedValue({
       data: {
         saveManagedMessagingGatewayProviderConfig: buildStatus({
