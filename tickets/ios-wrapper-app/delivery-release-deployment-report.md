@@ -66,8 +66,8 @@ No version bump, release tag, GitHub Release, TestFlight upload, public App Stor
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/investigation-notes.md` (`origin/personal` / finalization target `personal` inferred from remote HEAD and bootstrap notes).
 - Ticket branch: `codex/ios-wrapper-app`
-- Ticket branch commit result: `Completed for user-authorized branch push/probe through remote head 864024a06da5d9ac36cbd7dab213855906eb830e; latest delivery refresh and artifact updates are prepared on the ticket branch for push as delivery handoff state.`
-- Ticket branch push result: `Completed for the runner-tested branch state; delivery handoff update push to the ticket branch is allowed by the same ticket-branch push authorization. Final target merge remains held.`
+- Ticket branch commit result: `Completed for user-authorized branch push/probe and latest delivery refresh/artifact update on the ticket branch.`
+- Ticket branch push result: `Completed to origin/codex/ios-wrapper-app for the runner-tested branch state and delivery handoff state. Final target merge remains held.`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `N/A — final verification not yet received`
