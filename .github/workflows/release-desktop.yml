@@ -67,10 +67,12 @@ jobs:
             fi
           fi
 
-          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
-          echo "release_ref=$RELEASE_REF" >> "$GITHUB_OUTPUT"
-          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
-          echo "enforce_version=$ENFORCE_VERSION" >> "$GITHUB_OUTPUT"
+          {
+            echo "release_tag=$RELEASE_TAG"
+            echo "release_ref=$RELEASE_REF"
+            echo "prerelease=$PRERELEASE"
+            echo "enforce_version=$ENFORCE_VERSION"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Checkout release ref
         uses: actions/checkout@v4
@@ -78,6 +80,9 @@ jobs:
           ref: ${{ steps.meta.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
+
+      - name: Check repository artifact hygiene
+        run: python3 scripts/check_repository_artifact_hygiene.py
 
       - name: Validate workspace package versions match release tag
         if: ${{ steps.meta.outputs.enforce_version == 'true' }}
