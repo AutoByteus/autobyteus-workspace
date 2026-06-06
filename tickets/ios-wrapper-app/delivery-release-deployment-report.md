@@ -2,100 +2,98 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery of the integrated iOS wrapper implementation plus iOS GitHub Actions/App Store Connect/TestFlight release-contract automation. Actual GitHub Actions runner execution, TestFlight upload, App Store Connect archive/export/upload, public App Store release, tag creation, and deployment are not performed in this handoff because explicit user verification/finalization has not been received and the required external runner visibility, exact iOS distribution/App Store Connect secrets, App Group-enabled profiles, exact App Store/TestFlight profiles, live node, and physical iPhone evidence are not available.
+Delivery of the integrated iOS wrapper implementation plus iOS GitHub Actions/App Store Connect/TestFlight release-contract automation. The user authorized ticket-branch commit/push and a safe real GitHub Actions build-only runner probe; that probe passed. Actual TestFlight upload, App Store Connect archive/export/upload, public App Store release, tag creation, deployment, ticket archival, target-branch merge, and cleanup are not performed in this handoff because explicit final user verification/finalization has not been received.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records API/E2E round 3, latest-base integration, checkpoint/merge commits, post-integration iOS release contract check, docs sync, residual non-claims, and user-verification hold.
+- Notes: Handoff summary records API/E2E round 3, user-authorized GitHub runner run `27066610907`, latest-base integrations, post-integration checks, docs sync/no-impact reassessment, residual non-claims, and finalization hold.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal`; task worktree was originally created at `00631e7a091f3202eb31fd7b03161a24b8730ccd`.
-- Latest tracked remote base reference checked: `origin/personal` at `74c0fd5905c85a4f52b7fecec16bf4c644a745de` after delivery `git fetch origin --prune`.
-- Base advanced since bootstrap or previous refresh: `Yes` — latest `origin/personal` was 14 commits ahead of the API/E2E-validated `c62a78d6a63abae3a0693bfd9f81efcb4b467f89` branch state.
-- New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed` — `fbae0246` (`chore(delivery): checkpoint ios wrapper before base refresh`).
-- Integration method: `Merge`
-- Integration result: `Completed` — `7d08ebdb` (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`).
-- Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Passed`
+- Latest tracked remote base reference checked: `origin/personal` at `01ea087bfd168dbc24113711bf16b420656a409a` after delivery `git fetch origin --prune` following the user-authorized runner probe.
+- Base advanced since bootstrap or previous refresh: `Yes`.
+- New base commits integrated into the ticket branch: `Yes`.
+- Local checkpoint commit result: `Completed` during the earlier delivery refresh — `fbae0246` (`chore(delivery): checkpoint ios wrapper before base refresh`). No additional checkpoint was needed before the post-run refresh because the branch was clean and the prior pushed ticket state was already preserved on `origin/codex/ios-wrapper-app` at `864024a06da5d9ac36cbd7dab213855906eb830e`.
+- Integration method: `Merge`.
+- Integration result: `Completed`.
+- Post-integration executable checks rerun: `Yes`.
+- Post-integration verification result: `Passed`.
 - No-rerun rationale (only if no new base commits were integrated): N/A.
-- Delivery edits started only after integrated state was current: `Yes` for round-3 delivery-owned edits; the pre-existing reviewed/validated candidate state was protected in checkpoint commit `fbae0246` before the latest-base merge.
-- Handoff state current with latest tracked remote base: `Yes`, as of `origin/personal` `74c0fd5905c85a4f52b7fecec16bf4c644a745de`.
+- Delivery edits started only after integrated state was current: `Yes`.
+- Handoff state current with latest tracked remote base: `Yes`, as of `origin/personal` `01ea087bfd168dbc24113711bf16b420656a409a`.
 - Blocker (if applicable): N/A.
 
-Integration details:
+Integration history:
 
-- Merge conflicts occurred only in long-lived docs:
-  - `README.md`
-  - `autobyteus-web/docs/remote_access.md`
-- Conflict resolution preserved both latest-base trusted Local LAN/private HTTP Phone Access policy and iOS wrapper/release docs.
-- Delivery-local cleanup removed one trailing-whitespace line in `.github/workflows/release-ios.yml` after a scoped diff hygiene check.
+1. API/E2E round-3 candidate was validated at `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`.
+2. Delivery merged `origin/personal` `74c0fd5905c85a4f52b7fecec16bf4c644a745de` using merge commit `7d08ebdb`. Conflicts were docs-only in `README.md` and `autobyteus-web/docs/remote_access.md`; delivery preserved both latest-base Local LAN/private HTTP Phone Access wording and iOS wrapper/release docs. Post-integration iOS release contract and relevant diff hygiene checks passed.
+3. The user authorized ticket-branch commit/push and safe GitHub-hosted iOS build-only runner testing. The branch was pushed, temporarily exercised with a branch-push trigger, and restored to the reviewed trigger contract.
+4. After that probe, delivery fetched again and found `origin/personal` advanced to `01ea087bfd168dbc24113711bf16b420656a409a`. Delivery merged it into the ticket branch with `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf` without conflicts.
 
-Post-integration evidence:
+Post-run integration evidence:
 
-- Integrated-state report: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/integrated-state-check.txt`
-- iOS release contract check: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log`
-- Relevant diff hygiene check: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log`
+- Refined post-integration checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`
+- The refined check passed ancestry, workflow trigger assertion, Ruby YAML parse, `actionlint`, iOS release contract check, and source/docs/delivery-markdown diff hygiene check. Raw GitHub/Xcode runner logs intentionally retain their original whitespace and are not normalized by delivery.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: Awaiting user response to this final handoff.
-- Renewed verification required after later re-integration: `No` at this point; would become `Yes` if the finalization target advances again and materially changes the handoff state before finalization.
-- Renewed verification received: `Not needed`
-- Renewed verification reference: N/A
+- Initial explicit user completion/verification received: `No` for final repository finalization. `Yes` only for ticket-branch commit/push and safe GitHub Actions build-only runner probe.
+- Initial verification reference: user/API-E2E handoff message reporting authorization for ticket branch commit/push and real GitHub runner build-only testing.
+- Renewed verification required after later re-integration: `Yes` before final merge/archive/release, because `origin/personal` advanced again and delivery merged it after the runner probe.
+- Renewed verification received: `No`
+- Renewed verification reference: Awaiting user final verification of this updated handoff.
 
 ## Docs Sync Result
 
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: `README.md`; `autobyteus-web/docs/remote_access.md`; delivery-local hygiene in `.github/workflows/release-ios.yml`.
-- No-impact rationale (if applicable): N/A — latest-base merge required docs conflict resolution. No additional edits were needed in `docs/ios_mobile_access.md` or `autobyteus-ios/README.md` because they already document the iOS release workflow, signing readiness, secrets, bundle-ID authority, metadata split, and residual App Store/TestFlight gaps.
+- Docs sync result: `Updated` for earlier integrated docs; `No additional long-lived docs impact` after user-authorized runner probe.
+- Docs updated: `README.md`; `autobyteus-web/docs/remote_access.md`; earlier delivery-local hygiene in `.github/workflows/release-ios.yml`; ticket-local handoff/evidence reports.
+- No-impact rationale (if applicable): The GitHub runner proof is run-specific evidence. Existing long-lived docs already describe build-only versus publish behavior, required iOS/App Store Connect secrets and variables, bundle-ID authority, metadata split, release contract, and residual App Store/TestFlight gaps.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: N/A until explicit user verification/completion is received.
+- Archived ticket path: N/A until explicit final user verification/completion is received.
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, release commit, GitHub Release, TestFlight upload, or public App Store release is performed in this pre-verification handoff. Latest integrated base already carries tag `v1.3.44` from `origin/personal`; this ticket does not create a new release tag before user verification.
+No version bump, release tag, GitHub Release, TestFlight upload, public App Store release, or deployment release commit is performed in this handoff. The latest integrated base contains workspace release `v1.3.45`, but this ticket has not created an iOS release tag/version for publishing. A real publish still requires explicit release tag/version selection and acceptance of a possible TestFlight upload attempt.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/investigation-notes.md` (`origin/personal` / finalization target `personal` inferred from remote HEAD and bootstrap notes).
 - Ticket branch: `codex/ios-wrapper-app`
-- Ticket branch commit result: `Local checkpoint and merge commits completed as delivery integration safety steps; final ticket commit not started — awaiting explicit user verification`
-- Ticket branch push result: `Not started — awaiting explicit user verification`
+- Ticket branch commit result: `Completed for user-authorized branch push/probe through remote head 864024a06da5d9ac36cbd7dab213855906eb830e; latest delivery refresh and artifact updates are prepared on the ticket branch for push as delivery handoff state.`
+- Ticket branch push result: `Completed for the runner-tested branch state; delivery handoff update push to the ticket branch is allowed by the same ticket-branch push authorization. Final target merge remains held.`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A — verification not yet received`
-- Delivery-owned edits protected before re-integration: `Completed` by local checkpoint commit `fbae0246` before merging latest base.
-- Re-integration before final merge result: `Completed` for this handoff state via merge commit `7d08ebdb`; must be checked again after user verification before final merge.
-- Target branch update result: `Not started — awaiting explicit user verification`
-- Merge into target result: `Not started — awaiting explicit user verification`
-- Push target branch result: `Not started — awaiting explicit user verification`
-- Repository finalization status: `Not started — user-verification hold`
+- Target advanced after user verification: `N/A — final verification not yet received`
+- Delivery-owned edits protected before re-integration: `Completed` by checkpoint commit `fbae0246` before the first delivery base merge; later runner-tested state was preserved on `origin/codex/ios-wrapper-app` at `864024a06da5d9ac36cbd7dab213855906eb830e` before the second base merge.
+- Re-integration before final merge result: `Completed` for this handoff state via merge commit `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf`; must be checked again after final user verification before target merge.
+- Target branch update result: `Not started — awaiting explicit final user verification`
+- Merge into target result: `Not started — awaiting explicit final user verification`
+- Push target branch result: `Not started — awaiting explicit final user verification`
+- Repository finalization status: `Not started — final user-verification hold`
 - Blocker (if applicable): N/A; this is the required workflow hold before finalization.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` for actual release/publication/deployment in this handoff; `Yes` only for delivering the release workflow implementation and docs.
+- Applicable: `No` for actual release/publication/deployment in this handoff; `Yes` only for delivering and safely exercising the build-only release workflow implementation.
 - Method: `Other`
-- Method reference / command: Local post-integration validation command: `autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`.
-- Release/publication/deployment result: `Not required`
+- Method reference / command: GitHub Actions run `27066610907` plus local post-integration validation in `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log`.
+- Release/publication/deployment result: `Not required` for actual publish/deploy; `Completed` for user-authorized build-only runner validation.
 - Release notes handoff result: `Not required`
-- Blocker (if applicable): N/A for handoff. Future TestFlight/App Store publishing is gated by exact iOS/App Store Connect secrets, matching app/share App Store profiles, runner visibility, and physical/live validation evidence.
+- Blocker (if applicable): N/A for handoff. Future TestFlight/App Store publishing is gated by explicit release tag/version selection, user acceptance of a possible TestFlight upload, exact iOS/App Store Connect signing assets, matching app/share App Store profiles, App Group profile setup, and physical/live validation evidence.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`
-- Worktree cleanup result: `Not required before user verification/finalization`
-- Worktree prune result: `Not required before user verification/finalization`
-- Local ticket branch cleanup result: `Not required before user verification/finalization`
+- Worktree cleanup result: `Not required before final user verification/finalization`
+- Worktree prune result: `Not required before final user verification/finalization`
+- Local ticket branch cleanup result: `Not required before final user verification/finalization`
 - Remote branch cleanup result: `Not required`
 - Blocker (if applicable): N/A
 
@@ -111,30 +109,35 @@ N/A. Final handoff can complete to user-verification hold; no issue requires rer
 
 ## Deployment Steps
 
-N/A. No deployment path or TestFlight upload is in scope for this handoff. If a future verified release task proceeds, first ensure the workflow is visible to GitHub Actions, run build-only and missing-secret gate workflows on a real runner, then provide exact iOS distribution/App Store Connect secrets and matching app/share profiles before any archive/export/upload.
+N/A. No deployment path or TestFlight upload is in scope for this handoff. If a future verified release task proceeds, first ensure the final workflow is visible on default branch `personal` or invoke it through an approved release tag, then provide exact iOS distribution/App Store Connect secrets and matching app/share profiles before any archive/export/upload.
 
 ## Environment Or Migration Notes
 
-- API/E2E round 3 validated the pre-merge candidate at `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`; delivery merged latest `origin/personal` at `74c0fd5905c85a4f52b7fecec16bf4c644a745de` and reran the iOS release contract check plus relevant diff hygiene check.
+- API/E2E round 3 validated the candidate at `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`.
+- User-authorized GitHub runner build-only run `27066610907` tested temporary trigger commit `c32f20f3a10274307efc92cdd35675f1ccfc98b9` and succeeded on GitHub-hosted macOS.
+- The temporary branch-push trigger was reverted; final `.github/workflows/release-ios.yml` has only `push.tags: v*` and `workflow_dispatch`.
+- Delivery merged latest `origin/personal` at `01ea087bfd168dbc24113711bf16b420656a409a` after the runner probe and reran relevant checks.
 - Current local signing readiness remains `development-device-profile-ready-app-group-incomplete`; development-device wildcard profile exists for team `7Y86YBQ7B4`, but App Group and App Store/TestFlight archive readiness are incomplete.
-- GitHub Actions runner execution was not performed because workflow visibility requires committed/pushed state; API/E2E local equivalents passed and the real-runner gap is preserved as a non-claim.
 - No data migration is required because this is the first iOS wrapper project and no previous iOS app state exists.
-- Physical iPhone QR, full `WKWebView` file upload, live-node/Tailscale pairing, App Group profile setup, distribution signing, exact App Store/TestFlight profiles, real GitHub Actions runner execution, and optional archive/export/upload remain release-readiness gaps.
+- Physical iPhone QR, full `WKWebView` file upload, live-node/Tailscale pairing, App Group profile setup, distribution signing, exact App Store/TestFlight profiles, and actual archive/export/upload remain release-readiness gaps.
 
 ## Verification Checks
 
 - API/E2E authoritative pass: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-validation-report.md`
 - API/E2E round-3 evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-3`
-- Delivery base refresh: `git fetch origin --prune`; latest checked `origin/personal` `74c0fd5905c85a4f52b7fecec16bf4c644a745de`.
-- Delivery checkpoint commit: `fbae0246`.
-- Delivery merge commit: `7d08ebdb`.
-- Delivery post-integration executable check: `autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app` passed.
-- Delivery relevant diff hygiene check passed after workflow whitespace cleanup.
+- User-authorized GitHub runner evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
+- GitHub Actions run: `27066610907` — success.
+- Runner core tests: 21 tests, 0 failures.
+- Runner UI smoke: 2 tests, 0 failures/skips.
+- Runner artifact: `ios-build-test-artifacts`, digest `sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393`.
+- Delivery latest-base refresh after runner probe: `git fetch origin --prune`; latest checked `origin/personal` `01ea087bfd168dbc24113711bf16b420656a409a`.
+- Delivery post-run merge commit: `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf`.
+- Delivery post-run verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` passed.
 
 ## Rollback Criteria
 
-If finalization later proceeds and a release/deployment task is added, rollback criteria should include inability to build/test the iOS simulator target, failed iOS release contract check, failed core/UI smoke validation, evidence of native `mra_...` credential persistence, broken `/mobile` WebView containment, failed signing readiness for the intended release target, missing App Group-enabled profiles when share extension signing is required, failed GitHub Actions build-only/publish-gate runs, failed archive/export/upload, or new physical-device/live-node validation failures. No deployment rollback action is needed in this pre-verification handoff.
+If finalization later proceeds and a release/deployment task is added, rollback criteria should include inability to build/test the iOS simulator target, failed iOS release contract check, failed core/UI smoke validation, evidence of native `mra_...` credential persistence, broken `/mobile` WebView containment, failed signing readiness for the intended release target, missing App Group-enabled profiles when share extension signing is required, failed GitHub Actions build-only/publish-gate runs, failed archive/export/upload, or new physical-device/live-node validation failures. No deployment rollback action is needed in this pre-final-verification handoff.
 
 ## Final Status
 
-`Ready for user verification; repository finalization, archival, push, merge, release, TestFlight upload, deployment, and cleanup are intentionally held until explicit user completion/verification is received.`
+`Ready for final user verification. User-authorized ticket-branch push and GitHub-hosted build-only validation are complete; target-branch merge, ticket archival, release tag, TestFlight/App Store upload, deployment, and cleanup remain intentionally held until explicit final user completion/verification is received.`

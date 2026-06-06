@@ -5,14 +5,11 @@
 - Delivery status: `Ready for user verification / finalization hold`
 - Ticket branch/worktree: `codex/ios-wrapper-app` at `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app`
 - Original API/E2E round-3 validated HEAD: `c62a78d6a63abae3a0693bfd9f81efcb4b467f89`
-- Latest tracked base checked and integrated by delivery: `origin/personal` at `74c0fd5905c85a4f52b7fecec16bf4c644a745de` (`v1.3.44`)
-- Delivery checkpoint commit: `fbae0246` (`chore(delivery): checkpoint ios wrapper before base refresh`)
-- Delivery base merge commit: `7d08ebdb` (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`)
-- Integration method/result: `Merge`; latest base advanced by 14 commits and was merged locally. Conflicts occurred only in `README.md` and `autobyteus-web/docs/remote_access.md` and were resolved by preserving both latest-base Local LAN/private HTTP Phone Access docs and iOS wrapper/release docs.
-- Post-integration check: `autobyteus-ios/scripts/ios-release-contract-check.py --repo-root /Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app` passed after the base merge.
-- Relevant diff hygiene check: passed after delivery trimmed one trailing-whitespace line in `.github/workflows/release-ios.yml`.
-- Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/integrated-state-check.txt`
-- User verification received: `No`; repository finalization, ticket archival, push, merge, release, TestFlight upload, and deployment are intentionally not performed yet.
+- User-authorized GitHub runner build-only workflow head tested: `c32f20f3a10274307efc92cdd35675f1ccfc98b9`
+- Latest user-authorized pushed ticket-branch head before this delivery refresh: `origin/codex/ios-wrapper-app` at `864024a06da5d9ac36cbd7dab213855906eb830e`
+- Latest tracked base checked and integrated by delivery after the runner probe: `origin/personal` at `01ea087bfd168dbc24113711bf16b420656a409a` (base now contains release `v1.3.45` work)
+- Latest delivery base merge commit before this handoff artifact update: `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf` (`Merge remote-tracking branch 'origin/personal' into codex/ios-wrapper-app`)
+- User authorization received: `Partial` — user authorized ticket-branch commit/push and a safe GitHub Actions build-only runner probe. Final merge to `personal`, ticket archival, release tagging, TestFlight/App Store upload, deployment, and cleanup remain intentionally held until explicit final verification.
 
 ## Delivered Implementation
 
@@ -31,19 +28,18 @@
 - Release automation supports numeric iOS marketing/build versions, prerelease suffixes only in artifact metadata, one app/share bundle-ID authority, custom bundle/version smoke/build settings, exact missing-secret gate, App Store profile verification, and rejection of development/wildcard profiles for App Store export.
 - Updated ignore rules for local/generated iOS artifacts.
 - Added/updated long-lived docs for iOS setup, simulator validation, signing readiness, GitHub Actions/TestFlight workflow, private HTTP/ATS, stale `/mobile` bundle risk, and mobile wrapper ownership.
-- After latest-base integration, delivery preserved the new `origin/personal` trusted Local LAN/private HTTP Phone Access docs alongside the iOS wrapper docs.
+- Final workflow trigger contract is restored to the reviewed state: `push.tags: v*` plus `workflow_dispatch`; no branch-push trigger remains.
 
 ## Delivery Docs Sync
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/docs-sync-report.md`
-- Long-lived docs updated/resolved in delivery state:
+- Long-lived docs updated/resolved during delivery:
   - `README.md`
   - `autobyteus-web/docs/remote_access.md`
 - Long-lived docs already added/updated by implementation and reviewed during delivery:
   - `docs/ios_mobile_access.md`
   - `autobyteus-ios/README.md`
-- Release workflow hygiene cleanup:
-  - `.github/workflows/release-ios.yml` trailing whitespace removed; release contract check still passes.
+- Post-run docs reassessment: no additional long-lived docs changes were required for the GitHub runner proof because the docs already describe the build-only/publish split, secrets, variables, release metadata, and TestFlight non-claims. Ticket-local evidence and handoff artifacts were updated instead.
 
 ## Authoritative Validation Result
 
@@ -61,40 +57,71 @@ Passed validation summary from API/E2E round 3:
 - Custom bundle/version build settings and local build-only equivalent passed.
 - Signing readiness classified `development-device-profile-ready-app-group-incomplete` for default, team-filtered, custom-bundle, and smoke-captured runs.
 - Negative App Store profile verification rejected the local wildcard/development profile as invalid for App Store export.
-- GitHub Actions runner execution was explicitly deferred because the workflow was not yet visible on a remote/default branch; local build-only and missing-secret gate equivalents passed.
 - Repository-resident durable validation added/updated by API/E2E round 3: `No`; implementation-owned workflow/project/script/docs updates were already reviewed by code review round 5.
 
 Key round-3 evidence root:
 `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/api-e2e-evidence/round-3`
 
-## Delivery Post-Integration Validation
+## User-Authorized GitHub Runner Build-Only Probe
 
-Because `origin/personal` advanced after API/E2E validation, delivery integrated the latest base and ran a relevant executable check against the integrated state:
+The user authorized committing/pushing the ticket branch and safely exercising the iOS workflow on a real GitHub-hosted runner without publishing. Evidence root:
+`/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test`
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/ios-release-contract-check-after-whitespace-fix.log` — passed.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-round-3/relevant-diff-check-after-whitespace-fix.log` — passed.
+Result summary:
 
-Full simulator smoke, GitHub-hosted runner execution, and TestFlight upload were not rerun by delivery after the base merge; they remain governed by API/E2E evidence and the residual non-claims below.
+- Run ID: `27066610907`
+- Run URL: <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27066610907>
+- Trigger used: temporary branch-push trigger on `codex/ios-wrapper-app`, added only for the probe because `workflow_dispatch` by filename was not available until the workflow exists on default branch `personal`.
+- Result: `success`
+- Metadata job: passed.
+- Build/test/smoke job: passed in 10m18s on GitHub-hosted macOS.
+- Core tests on runner: 21 tests, 0 failures.
+- UI smoke on runner: 2 tests, 0 failures/skips; `Smoke UI tests: executed and passed without skips`.
+- Uploaded artifact: `ios-build-test-artifacts`, artifact id `7455760368`, digest `sha256:7cadfe9e8e1c2a81e08b0f722299c868143e773087d7c8e87ff34dbb1b407393`.
+- Publish requested: `false`; publish gate and TestFlight upload jobs were skipped.
+- Runner publish-readiness artifact reported all required iOS/App Store Connect secret names present, but this was not a publish/upload run.
+- Temporary branch-push trigger was reverted after the probe; final `.github/workflows/release-ios.yml` keeps only `push.tags: v*` and `workflow_dispatch`.
+
+Key runner evidence files:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-result.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-key-lines.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-smoke/summary.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/user-authorized-github-pipeline-test/github-run-27066610907-artifacts/ios-build/publish-secret-readiness.txt`
+
+## Delivery Integrated-State Validation
+
+Delivery performed two latest-base refreshes:
+
+1. After API/E2E round 3, `origin/personal` at `74c0fd5905c85a4f52b7fecec16bf4c644a745de` was merged into the ticket branch with delivery merge commit `7d08ebdb`; conflicts were docs-only and were resolved in `README.md` and `autobyteus-web/docs/remote_access.md`. The iOS release contract check and relevant diff hygiene check passed.
+2. After the user-authorized GitHub runner probe, `origin/personal` advanced again to `01ea087bfd168dbc24113711bf16b420656a409a`. Delivery merged that base into the ticket branch with merge commit `cb8442f8c4ae70957f2fdb2d77189fadfc974bbf` without conflicts and reran relevant checks.
+
+Latest post-run check evidence:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/ios-wrapper-app/tickets/ios-wrapper-app/delivery-evidence/post-integration-after-github-run/refined-post-integration-checks.log` — passed ancestry check, workflow trigger assertion, Ruby YAML parse, `actionlint`, iOS release contract check, and source/docs/delivery-markdown diff hygiene check.
 
 ## Residual Release-Readiness Gaps / Non-Claims
 
 These gaps are explicitly preserved and do not block this delivery handoff, but they must be completed before production/TestFlight/App Store readiness claims:
 
-- Actual GitHub Actions build-only and publish missing-secret paths must run after the workflow is committed/pushed to a branch/default branch where Actions can see it.
-- Full TestFlight/App Store Connect publish remains externally gated by exact iOS distribution/App Store Connect secrets and matching app/share App Store profiles.
-- Physical iPhone QR grant/deny/cancel/decode evidence.
-- Full `WKWebView` attachment/file-upload evidence against a live node/device.
-- Live-node/Tailscale Phone Access pairing evidence; no live node URL/device was provided and Tailscale CLI was present but stopped.
-- App Group profile setup for the app/share targets.
-- Distribution signing identity and exact App Store/TestFlight app/share provisioning profiles.
-- Optional archive/export/upload evidence and any public App Store listing/privacy/review approval.
+- Full TestFlight/App Store Connect publish remains unproven; run `27066610907` was build-only and intentionally skipped publish gate/upload jobs because `publish_requested=false`.
+- A real publish still requires an explicit release tag/version decision and user acceptance of a possible TestFlight upload attempt.
+- Exact iOS distribution/App Store Connect signing assets, matching app/share App Store/TestFlight provisioning profiles, and App Group profile setup remain required for archive/export/upload readiness.
+- Physical iPhone QR grant/deny/cancel/decode evidence remains required.
+- Full `WKWebView` attachment/file-upload evidence against a live node/device remains required.
+- Live-node/Tailscale Phone Access pairing remains untested; no live node URL/device was provided and Tailscale CLI was present but stopped during validation.
+- Optional public App Store listing/privacy/review approval remains out of scope.
+- Non-blocking runner-maintenance note: GitHub emitted a Node.js 20 deprecation warning for current marketplace actions before future Node 24 enforcement.
 
 ## Finalization Hold
 
-Per delivery workflow, stop here until the user explicitly verifies/completes this handoff state. After explicit verification, delivery should:
+Stop here until the user explicitly verifies/completes this handoff state for final repository finalization. The ticket branch push/build-only probe was authorized and completed, but final merge to `personal`, ticket archival, tag/release, TestFlight upload, deployment, and cleanup were not authorized.
 
-1. Refresh the finalization target (`origin/personal`) from remote again.
-2. If the target advanced beyond `74c0fd5905c85a4f52b7fecec16bf4c644a745de`, protect delivery edits, re-integrate, rerun required checks, update docs/handoff if the user-facing state materially changes, and request renewed verification if needed.
+After explicit final verification, delivery should:
+
+1. Fetch `origin` and refresh the finalization target (`origin/personal`) again.
+2. If `origin/personal` advanced beyond `01ea087bfd168dbc24113711bf16b420656a409a`, re-integrate, rerun required checks, update docs/handoff if the user-facing state materially changes, and request renewed verification if needed.
 3. Move `tickets/ios-wrapper-app/` to `tickets/done/ios-wrapper-app/`.
-4. Commit the final ticket branch state, push it, update the finalization target branch, merge the ticket branch, and push the target according to repository flow.
-5. Do not claim TestFlight/App Store release readiness until the residual GitHub-runner/signing/profile/live-device gaps above are closed.
+4. Commit/push the final ticket branch state if not already current, update the finalization target branch, merge the ticket branch, and push the target according to repository flow.
+5. Do not claim TestFlight/App Store release readiness until the residual signing/profile/live-device/live-node/upload gaps above are closed.
