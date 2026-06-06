@@ -1,4 +1,6 @@
-# Release Notes
+## Fixes
+- Hid WhatsApp Business and WeCom App from the default managed Messaging setup because those provider flows are not currently available.
 
-- Restores Windows desktop release packaging by removing generated validation artifacts that blocked Windows checkout.
-- Adds a repository artifact-hygiene guard so raw Xcode result bundles and checkout-hostile generated evidence cannot break future desktop release builds.
+## Improvements
+- Kept Discord Bot and Telegram Bot as the default managed Messaging provider choices.
+- Updated managed messaging metadata and docs so excluded providers are reported consistently.
