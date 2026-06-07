@@ -103,3 +103,29 @@ Artifact verification:
 - `hdiutil verify` on the DMG: passed.
 
 Note: while preparing this test build, the shared tracked `origin/personal` ref advanced to `c2317fa830afbac9762a6afafc1fd207166313b8` (`v1.3.47`). This local test build was produced from the already-integrated branch head `72d688184fc94ea928c0689118b57adc1ade55a5` plus delivery docs/log artifacts, not from the newer `origin/personal`. Before repository finalization, delivery must refresh/integrate `origin/personal` again and rerun required checks; if that materially changes the handoff state, renewed verification will be required.
+
+## Branch-Only Soak Publication Addendum (2026-06-07)
+
+User confirmed the local Electron build worked and requested a safer stabilization workflow: publish the ticket branch to remote for continued testing, but do **not** merge it into `origin/personal` yet.
+
+Current branch-only state:
+
+- Local worktree kept: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis`
+- Local branch kept: `codex/mixed-team-manager-simplification-analysis`
+- Latest `origin/personal` merged into this ticket branch only: `dfc26eec54cdf685442740691ce5469754ab945f` (`v1.3.48`)
+- Ticket-branch merge commit for latest base: `b3ed4252c7f4841e18666af503fbdbc2edc9d3c3`
+- Remote branch publication target: `origin/codex/mixed-team-manager-simplification-analysis`
+- `origin/personal`: intentionally untouched by this branch-soak publication
+- Ticket archive/move to `tickets/done`: intentionally not performed
+- Cleanup of worktree/local branch: intentionally not performed
+
+Post-merge checks after integrating latest `origin/personal` into the ticket branch:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-history-catalog-service.test.ts --pool=forks --fileParallelism=false` | Passed, 10/10 tests | `validation-logs/delivery-branch-soak-postmerge-run-history-unit.log` |
+| `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` | Passed, exit 0 | `validation-logs/delivery-branch-soak-postmerge-tsc-noemit.log` |
+| `git diff --check` | Passed, exit 0 | `validation-logs/delivery-branch-soak-postmerge-git-diff-check.log` |
+| Obsolete docs grep for specialized/native team-manager wording | Passed, no stale matches | `validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log` |
+
+Important testing note: the user-tested local Electron artifact was built before the final merge of `origin/personal` `v1.3.48` into the ticket branch. It proved the mixed-team-manager candidate worked in a local packaged app. The now-published soak branch is newer because it also includes the latest `origin/personal`; build a fresh artifact from this branch for exact branch-tip testing if needed.

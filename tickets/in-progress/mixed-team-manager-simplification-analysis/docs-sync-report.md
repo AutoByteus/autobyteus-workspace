@@ -67,3 +67,25 @@
 - Classification: `N/A`
 - Recommended recipient: `N/A`
 - Why docs could not be finalized truthfully: `N/A`
+
+## Branch-Only Soak Publication Addendum (2026-06-07)
+
+User requested a branch-only stabilization publication instead of true repository finalization. The latest tracked `origin/personal` was fetched and merged into the ticket branch only:
+
+- Latest tracked remote base integrated into ticket branch: `dfc26eec54cdf685442740691ce5469754ab945f` (`chore(release): bump workspace release version to 1.3.48`).
+- Ticket-branch merge commit: `b3ed4252c7f4841e18666af503fbdbc2edc9d3c3`.
+- `origin/personal` was not updated or merged into by this workflow.
+- Worktree and local ticket branch are intentionally retained for soak testing.
+
+Docs sync remains valid on the latest integrated branch state. The long-lived docs changed by this ticket remain:
+
+- `autobyteus-server-ts/docs/modules/agent_team_execution.md`
+- `autobyteus-server-ts/docs/modules/codex_integration.md`
+- `autobyteus-server-ts/docs/modules/agent_artifacts.md`
+- `autobyteus-server-ts/docs/features/artifact_file_serving_design.md`
+- `autobyteus-server-ts/docs/modules/run_history.md`
+
+Post-merge docs validation:
+
+- Obsolete specialized/native team-manager docs grep: passed, no stale matches. Evidence: `validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log`.
+- `git diff --check`: passed. Evidence: `validation-logs/delivery-branch-soak-postmerge-git-diff-check.log`.

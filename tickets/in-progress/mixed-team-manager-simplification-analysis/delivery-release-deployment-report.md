@@ -146,3 +146,28 @@ Pre-verification delivery handoff is ready. Repository finalization, ticket arch
 - DMG verification: `hdiutil verify` passed.
 - Signing/notarization: intentionally skipped per local README command (`APPLE_TEAM_ID=` / no timestamping); this is a local test build, not a release artifact.
 - Remote-base note: during the build, `origin/personal` advanced to `c2317fa830afbac9762a6afafc1fd207166313b8` (`v1.3.47`). Repository finalization remains blocked pending explicit user verification and must first refresh/reintegrate the latest target branch state.
+
+## Branch-Only Soak Publication Addendum (2026-06-07)
+
+This workflow is explicitly **not** true repository finalization. Per user request, it publishes the ticket branch for extended testing while keeping `origin/personal` untouched.
+
+- Branch-only publication requested: `Yes`
+- Latest tracked `origin/personal` merged into ticket branch only: `dfc26eec54cdf685442740691ce5469754ab945f`
+- Ticket-branch latest-base merge commit: `b3ed4252c7f4841e18666af503fbdbc2edc9d3c3`
+- Remote branch publication target: `origin/codex/mixed-team-manager-simplification-analysis`
+- `origin/personal` merge/update performed: `No`
+- Ticket moved to `tickets/done`: `No`
+- Worktree cleanup performed: `No`
+- Local branch cleanup performed: `No`
+- Release/deployment performed: `No`
+
+Post-merge branch-soak checks:
+
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-history-catalog-service.test.ts --pool=forks --fileParallelism=false` | Passed, 10/10 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-run-history-unit.log` |
+| `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` | Passed, exit 0 | `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-tsc-noemit.log` |
+| `git diff --check` | Passed, exit 0 | `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-git-diff-check.log` |
+| Docs obsolete specialized/native team-manager grep | Passed, no stale matches | `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log` |
+
+Next true-finalization gate: after soak testing, explicitly request merge to `origin/personal`. Delivery should then fetch latest `origin/personal` again, merge/rebase as project policy requires, rerun required checks and any requested packaged-app validation, then merge/push `personal` only after renewed confirmation.
