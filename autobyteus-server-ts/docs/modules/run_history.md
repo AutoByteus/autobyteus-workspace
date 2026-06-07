@@ -342,7 +342,7 @@ read path must resolve the same run identity. `RunFileChangeProjectionService`
 uses `AgentRunMetadataService` for standalone runs and team metadata plus
 `TeamMemberMemoryLayout` for team-member run ids. This lets
 `getRunFileChanges(runId)` and `/runs/:runId/file-change-content` read
-AutoByteus/native team-member `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`
+team-member `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`
 without adding a separate team-file route or treating produced files as
 message-reference rows.
 
@@ -449,7 +449,7 @@ For team runs:
 7. Codex and Claude team-member projection use the same local member memory
    directory path as AutoByteus; they do not preload, merge, or fallback to
    runtime-native provider projection.
-7. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
+8. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
 
 This keeps create, restore, and projection aligned on the same persisted team/member contract instead of inferring storage or identity later.
 

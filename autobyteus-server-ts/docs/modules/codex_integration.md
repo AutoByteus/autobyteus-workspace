@@ -164,11 +164,11 @@ Event normalization:
 Team runtime:
 
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
 - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
 - `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
-- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 
 ## Skills
 

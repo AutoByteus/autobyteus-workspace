@@ -11,16 +11,17 @@ Artifacts tab.
 1. Runtime backends convert provider events into normalized `AgentRunEvent`
    batches.
 2. `AgentRunEventPipeline` processes each batch once before subscriber fan-out.
-   Native AutoByteus teams keep one backend-owned native event bridge per active
-   team run so a native event is converted, enriched, processed once, and then
-   fanned out to subscribers.
+   Server team runs execute through `MixedTeamManager`; mixed member handles
+   subscribe to child `AgentRun` or child `TeamRun` streams, enrich the already
+   normalized runtime event with team/member provenance, and fan it out once to
+   team subscribers.
 3. `FileChangeEventProcessor` derives `FILE_CHANGE` only for explicit file
    mutations or known generated-output tools (`generate_image`, `edit_image`,
    `generate_speech`, including AutoByteus image/audio MCP forms).
 4. `RunFileChangeService` consumes `FILE_CHANGE`, canonicalizes path identity,
    and updates the run projection. Team-member projections remain scoped to the
    member run id.
-5. Metadata-only state persists to `<run-memory-dir>/file_changes.json`; native
+5. Metadata-only state persists to `<run-memory-dir>/file_changes.json`;
    team-member runs use `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`.
 6. The frontend hydrates rows through `getRunFileChanges(runId)` and applies live
    `FILE_CHANGE` updates through `runFileChangesStore`.

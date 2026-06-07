@@ -1,0 +1,3 @@
+timestamp_utc=2026-06-06T18:00:00Z
+head=72d688184fc94ea928c0689118b57adc1ade55a5
+docs obsolete grep command=rg -n '(native AutoByteus team backend|native AutoByteus pure-team|Codex and Claude team managers|AutoByteus Team Event Bridge|AutoByteus/native team-member|Native AutoByteus teams keep|TeamBackendKind\.(AUTOBYTEUS|CODEX|CLAUDE)|agent-team-execution/backends/(autobyteus|codex|claude))' autobyteus-server-ts/docs

@@ -93,7 +93,8 @@ safety.
 The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
-   `MemberTeamContext` / native team context and calls `TaskDelegationToolService`.
+   server-owned `MemberTeamContext` and the runtime-compatible team context
+   payload derived from it, then calls `TaskDelegationToolService`.
 2. The service resolves the active `TeamRun`, creates ledger records, validates
    exact `member_name` targets against the team roster, and treats the submitted
    tasks as independent ready-to-run work. Dependent follow-up work is sequenced
@@ -148,17 +149,15 @@ task-agent executions for the same logical member, and route approvals to the
 task-scoped runtime instead of inferring task-agent identity from generated run
 id formats.
 
-Current settlement support is backend-specific. Codex and Claude team managers
-use the server-managed task-agent registry for task-agent instance start/settle
-operations; Mixed team managers use the mixed member registry for the same
-task-agent lifecycle across Codex, Claude, and AutoByteus member runtimes. The
-native AutoByteus pure-team backend still reports `UNSUPPORTED_RUNTIME_COMMAND`
-for per-member/task-agent settlement, so native pure-team agent configs gate
-task-delegation tool exposure until that native boundary
-exists. Mixed AutoByteus task-agent runs are supported because the mixed manager
-owns task-agent lifecycle and the AutoByteus adapter preserves
+Current settlement support is owned by `MixedTeamManager` for every server team
+run. `MixedTeamMemberRegistry` starts one task-agent `MixedAgentMemberHandle`
+for each concrete delegated task, keyed by the generated `taskAgentRunId`, and
+settles it only when the logical member route key and task-agent run id still
+match. Runtime-specific AgentRun backends execute the task-agent turn below that
+boundary, but they do not own the team-level task-agent registry. AutoByteus
+task-agent runs receive the same task identity through native custom data:
 `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and
-`logicalMemberRouteKey` in native custom data.
+`logicalMemberRouteKey`.
 
 
 ### Task Delegation Validation Notes
@@ -173,8 +172,9 @@ flags are set, so local/default validation can run the file and expect a skipped
 test while live validation can opt in with:
 
 ```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
-  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b \
+RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
+  AUTOBYTEUS_STREAM_PARSER=api_tool_call \
+  LMSTUDIO_MODEL_ID=qwen3.6-35b-a3b \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \
     tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
@@ -230,21 +230,21 @@ RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and `accept_task`).
 
-## AutoByteus Team Event Bridge
+## Mixed Member Event Bridge
 
-- The native AutoByteus team backend owns a single `AgentTeamEventStream` bridge
-  while it has active server subscribers.
-- Native agent events are converted through `AutoByteusStreamEventConverter`,
-  enriched with team/member provenance by the backend, processed through the
-  shared `AgentRunEventPipeline`, and then fanned out to all listeners.
-- This keeps the converter boundary conversion-only while letting the backend
-  supply team context required by `FILE_CHANGE` derivation and
-  `TEAM_COMMUNICATION_MESSAGE` derivation/projection.
+- `MixedTeamManager` is the only active server team manager; it subscribes to
+  child `AgentRun` and child `TeamRun` streams through mixed member handles.
+- Runtime AgentRun backends convert provider-native events below the agent-run
+  boundary. Mixed member handles then enrich emitted events with
+  team/member/task-agent provenance and forward them through the team stream.
+- This keeps provider conversion runtime-local while letting the mixed team
+  boundary supply the context required by `FILE_CHANGE` derivation and
+  `TEAM_COMMUNICATION_MESSAGE` projection.
 - Produced `FILE_CHANGE` events remain scoped to the producing member run id and
   persist through the existing run-file-change service/content route. Explicit
   `reference_files` remain child metadata on team-level Team Communication messages.
-- Multiple websocket/API subscribers must not create multiple native stream
-  listeners or multiple independent pipeline passes for the same native event.
+- Multiple websocket/API subscribers must not create duplicate member runtime
+  listeners or duplicate team projection passes for the same child runtime event.
 
 ## Restore / Persistence Notes
 

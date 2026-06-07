@@ -741,3 +741,53 @@ User reviewed the architecture design and approved sending it to `architecture_r
 - refactor AutoByteus member prompt/context parity inside the AutoByteus `AgentRun` path;
 - do not delete the full `autobyteus-ts/src/agent-team/**` package surface in this ticket; keep that as a later cleanup;
 - use explicit AutoByteus server-managed team prompt sections, not `{{team}}` placeholder replacement.
+
+## MixedTeamManager Status Handling Analysis (2026-06-06)
+
+User asked how agent/team status is handled in `MixedTeamManager`.
+
+### Current status flow
+
+| Layer | Source | Behavior |
+| --- | --- | --- |
+| Member status snapshot | `backends/mixed/members/mixed-agent-member-handle.ts` | `getStatusSnapshot()` returns either a temporary command overlay or the underlying `AgentRun.getStatusSnapshot()`. It always decorates the payload with `agent_id = memberRunId`, `agent_name = memberName`, `member_route_key`, `member_path`, `source_route_key`, and `source_path`. Task-agent handles also add task-agent ids. |
+| Subteam status snapshot | `backends/mixed/members/mixed-sub-team-member-handle.ts` | Represents a child `TeamRun` as one member status. Fallback status is `childRun.getStatusSnapshot().status` or `offline`. Child team events are prefixed into parent source paths. |
+| Offline default | `backends/mixed/mixed-team-manager.ts` | If a configured runtime member has no active handle yet, `getMemberStatusSnapshots()` reports `{ status: "offline", can_interrupt: false }`, then `buildServerManagedMemberStatusSnapshots(...)` decorates it with member identity. |
+| Task-agent status | `MixedTeamManager.getMemberStatusSnapshots()` and `MixedTeamMemberRegistry.listTaskAgentHandles()` | Task-agent handles are appended to normal member status snapshots, so active delegated task agents appear as additional status entries carrying task-agent identity. |
+| Aggregate team status | `domain/team-status-aggregation.ts` | `deriveTeamApiStatus(...)` aggregates member snapshots with priority: running, initializing, error, idle, offline. |
+| Status event publishing | `MixedTeamManager.publishTeamStatusIfChanged()` | Recomputes aggregate team status and publishes a root `TeamRunEventSourceType.TEAM` event only when status changes. The event has `sourcePath: []` and data `{ status }`. |
+| Agent event propagation | `MixedAgentMemberHandle.bindEvents(...)` | Subscribes to the underlying `AgentRun`; every `AgentRunEvent` is wrapped as `TeamRunEventSourceType.AGENT` with member identity and published. Status events also clear command overlays and trigger aggregate status recomputation. |
+| Initial websocket snapshot | `TeamRuntimeStatusSnapshotService.getInitialMessages(...)` | Sends one `AGENT_STATUS` message for each member/task-agent snapshot and one root `TEAM_STATUS` snapshot. |
+| WebSocket live mapping | `team-run-event-websocket-message-mapper.ts` | `AGENT` events are converted through the normal agent event mapper and decorated with member identity. `TEAM` events become `TEAM_STATUS` messages with `source_path`. |
+
+### Command status overlay behavior
+
+`TeamCommandStatusOverlayStore` gives mixed members a temporary status before the runtime backend emits its own status event:
+
+1. `MixedAgentMemberHandle.postMessage(...)` / `deliverInterMemberMessage(...)` calls `publishCommandStatus("initializing")` before `ensureReady()` / `AgentRun.postUserMessage(...)`.
+2. The overlay publishes an `AGENT_STATUS` event and stores an overlay keyed by logical member route key or task-agent run id.
+3. `getStatusSnapshot()` uses the overlay while waiting for actual runtime status.
+4. When a real `AgentRunEventType.AGENT_STATUS` arrives, `recordReplacementEvents(...)` clears the overlay.
+5. Rejected commands or thrown errors publish an `error` overlay.
+
+This avoids a UI gap where a lazy-started mixed member would appear offline until the runtime backend starts emitting status.
+
+### Design implication for mixed-only cutover
+
+The mixed status model is already the right status spine for a universal team manager:
+
+```text
+AgentRun backend status/event
+  -> AgentRun.getStatusSnapshot / AgentRunEvent
+  -> MixedAgentMemberHandle status decoration + TeamRunEvent wrapping
+  -> MixedTeamManager aggregate status
+  -> TeamRun / WebSocket / history consumers
+```
+
+No specialized team manager is needed for status if all runtime-specific agent backends keep producing normalized `AgentStatusPayload` / `AgentRunEvent` data.
+
+### Mixed-only cutover caveats
+
+- `AgentTeamRunManager.registerActiveRun(...)` currently attaches `RunFileChangeService` only when `teamBackendKind === AUTOBYTEUS`; after mixed-only cutover this should attach for all team runs. This is not status itself, but it is part of event projection attached alongside status/communication.
+- `deriveTeamApiStatus(...)` prioritizes `running` and `initializing` ahead of `error`. This means a team with one running member and one errored member reports `running`. This appears to be the existing policy; if product wants errors to dominate running, that should be a separate status-policy decision, not a mixed-only blocker.
+- `MixedTeamManager.lastTeamStatus` starts as uppercase `"INITIALIZING"` while normalized statuses are lowercase. The first status recomputation will therefore publish even if the first normalized status is `initializing`. This is harmless but can be cleaned up by initializing it to `null` or lowercase `"initializing"` if desired.

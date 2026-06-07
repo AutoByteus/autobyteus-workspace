@@ -638,3 +638,32 @@ The exact text should come from `MemberRunInstructionComposer` and the existing 
 `TeamManifestInjectorProcessor` is too small for the server mixed-team contract. It only reads a native-style `communicationContext.members` list and appends/replaces a simple team manifest. It does not inject the team definition instruction, current member runtime instruction, send-message protocol, task-delegation protocol, or server parent-boundary roster semantics. Its self-exclusion also depends on `AgentConfig.name`, which can differ from the team member name.
 
 The target keeps `TeamManifestInjectorProcessor` available for any remaining native package behavior, but server-managed mixed AutoByteus members should get their team prompt from the server composer instead. Per user decision, the server path does not need to preserve `{{team}}` placeholder replacement.
+
+## Status Handling Addendum For Mixed-Only Cutover
+
+Current `MixedTeamManager` status handling is already suitable as the universal team status spine.
+
+```text
+runtime-specific AgentRun backend
+  -> AgentRun status snapshot / AgentRunEvent
+  -> MixedAgentMemberHandle or MixedSubTeamMemberHandle
+  -> MixedTeamManager.getMemberStatusSnapshots()
+  -> deriveTeamApiStatus(...)
+  -> TeamRun.getStatusSnapshot()
+  -> WebSocket initial snapshots and live TeamRunEvents
+```
+
+Important design points:
+
+- Normal agent members report status from their underlying `AgentRun`, decorated with team member identity.
+- Members that have not been lazily started yet report `offline`.
+- Task-agent runs are appended as additional status snapshots with task-agent identity.
+- Subteam members collapse child `TeamRun.getStatusSnapshot().status` into the representative subteam member snapshot, while child live events are prefixed upward.
+- `TeamCommandStatusOverlayStore` publishes temporary `initializing`/`error` statuses during lazy command startup, then clears those overlays when real runtime status events arrive.
+- Team aggregate status is derived from member snapshots using existing priority: `running`, then `initializing`, then `error`, then `idle`, then `offline`.
+
+Design consequence:
+
+- No specialized server team backend is needed for status after mixed-only cutover, as long as each runtime-specific `AgentRun` backend continues to emit normalized `AgentRunEvent` / `AgentStatusPayload` data.
+- Keep `RunFileChangeService` attachment separate from backend kind; attach to all team runs and let the service filter actual file-change events.
+- Optional cleanup: initialize `MixedTeamManager.lastTeamStatus` to `null` instead of uppercase `"INITIALIZING"` to avoid a case-only first-change artifact.
