@@ -129,3 +129,12 @@ Post-merge checks after integrating latest `origin/personal` into the ticket bra
 | Obsolete docs grep for specialized/native team-manager wording | Passed, no stale matches | `validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log` |
 
 Important testing note: the user-tested local Electron artifact was built before the final merge of `origin/personal` `v1.3.48` into the ticket branch. It proved the mixed-team-manager candidate worked in a local packaged app. The now-published soak branch is newer because it also includes the latest `origin/personal`; build a fresh artifact from this branch for exact branch-tip testing if needed.
+
+
+### Branch Push Evidence Update
+
+- Remote branch created/published: `origin/codex/mixed-team-manager-simplification-analysis`
+- Initial pushed head: `0d979fae27f62264423f7134d6c43d637c9f9938`
+- Push log: `validation-logs/delivery-branch-soak-initial-push.log`
+- Local branch upstream is now `origin/codex/mixed-team-manager-simplification-analysis`, not `origin/personal`.
+- `origin/personal` remains untouched.

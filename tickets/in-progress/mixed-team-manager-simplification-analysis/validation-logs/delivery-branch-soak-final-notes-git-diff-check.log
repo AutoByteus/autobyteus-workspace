@@ -1,0 +1,4 @@
+timestamp_utc=2026-06-07T03:42:16Z
+head=0d979fae27f62264423f7134d6c43d637c9f9938
+command=git diff --check before final push-evidence commit
+git_diff_check_exit=0

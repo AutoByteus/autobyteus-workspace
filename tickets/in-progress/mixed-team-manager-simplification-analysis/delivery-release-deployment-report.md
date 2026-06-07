@@ -171,3 +171,12 @@ Post-merge branch-soak checks:
 | Docs obsolete specialized/native team-manager grep | Passed, no stale matches | `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log` |
 
 Next true-finalization gate: after soak testing, explicitly request merge to `origin/personal`. Delivery should then fetch latest `origin/personal` again, merge/rebase as project policy requires, rerun required checks and any requested packaged-app validation, then merge/push `personal` only after renewed confirmation.
+
+
+### Branch Push Evidence Update
+
+- Remote branch created/published: `origin/codex/mixed-team-manager-simplification-analysis`
+- Initial pushed head: `0d979fae27f62264423f7134d6c43d637c9f9938`
+- Push log: `validation-logs/delivery-branch-soak-initial-push.log`
+- Local branch upstream is now `origin/codex/mixed-team-manager-simplification-analysis`, not `origin/personal`.
+- `origin/personal` remains untouched.
