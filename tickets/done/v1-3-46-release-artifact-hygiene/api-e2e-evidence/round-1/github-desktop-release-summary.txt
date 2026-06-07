@@ -1,0 +1,23 @@
+# GitHub Desktop Release evidence summary
+utc=2026-06-06T18:23:51Z
+run_id=27070018231
+run_url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231
+head_sha=ec989ecfabaa9e2671a9a146e4aeaf68497a5da5
+branch=codex/v1-3-46-release-artifact-hygiene
+prepare_job_id=79897465860
+windows_job_id=79897479216
+
+run_status=in_progress
+run_conclusion=
+Resolve Release Metadata: status=completed conclusion=success url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897465860
+  Check repository artifact hygiene: status=completed conclusion=success started=2026-06-06T18:12:00Z completed=2026-06-06T18:12:00Z
+Build Windows x64: status=completed conclusion=success url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897479216
+  Checkout workspace + submodules: status=completed conclusion=success started=2026-06-06T18:12:08Z completed=2026-06-06T18:12:26Z
+  Build Electron Windows x64: status=completed conclusion=success started=2026-06-06T18:13:30Z completed=2026-06-06T18:22:53Z
+  Upload Windows artifacts: status=completed conclusion=success started=2026-06-06T18:22:53Z completed=2026-06-06T18:23:04Z
+Build Linux x64: status=completed conclusion=success url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897479213
+  Checkout workspace + submodules: status=completed conclusion=success started=2026-06-06T18:12:06Z completed=2026-06-06T18:12:13Z
+Build macOS ARM64: status=in_progress conclusion= url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897479219
+  Checkout workspace + submodules: status=completed conclusion=success started=2026-06-06T18:12:07Z completed=2026-06-06T18:12:15Z
+Build macOS Intel x64: status=in_progress conclusion= url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27070018231/job/79897479221
+  Checkout workspace + submodules: status=completed conclusion=success started=2026-06-06T18:12:09Z completed=2026-06-06T18:12:21Z

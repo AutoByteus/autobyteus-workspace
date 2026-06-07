@@ -1,16 +1,10 @@
 import { randomUUID } from "node:crypto";
 
-export const MANAGED_MESSAGING_SUPPORTED_PROVIDERS = [
-  "WHATSAPP",
-  "WECOM",
-  "DISCORD",
-  "TELEGRAM",
-] as const;
-
-export const MANAGED_MESSAGING_EXCLUDED_PROVIDERS = ["WECHAT"] as const;
-
 export type ManagedMessagingProvider =
-  (typeof MANAGED_MESSAGING_SUPPORTED_PROVIDERS)[number];
+  | "WHATSAPP"
+  | "WECOM"
+  | "DISCORD"
+  | "TELEGRAM";
 
 export type ManagedMessagingLifecycleState =
   | "DISABLED"
@@ -239,7 +233,9 @@ export const normalizeManagedMessagingProviderConfig = (
     })
     .filter((entry): entry is ManagedMessagingWeComAccount => entry !== null);
 
-  // Managed nodes run Telegram in polling mode only because the managed runtime is bound to loopback.
+  // Provider config keeps legacy enable flags inferred true; provider visibility is
+  // reported separately by managed provider availability metadata. Managed nodes run
+  // Telegram in polling mode only because the managed runtime is bound to loopback.
   const inferredNonWechatEnabled = true;
 
   return {

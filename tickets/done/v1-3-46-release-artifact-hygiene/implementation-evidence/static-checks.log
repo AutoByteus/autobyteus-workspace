@@ -1,0 +1,4 @@
+$ python3 -m py_compile scripts/check_repository_artifact_hygiene.py
+$ actionlint .github/workflows/release-desktop.yml
+$ ruby -e 'require "yaml"; YAML.load_file(".github/workflows/release-desktop.yml"); puts "YAML parse ok"'
+YAML parse ok

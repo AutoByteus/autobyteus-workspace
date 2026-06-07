@@ -199,9 +199,11 @@ describe('ChannelBindingSetupCard', () => {
     const wrapper = mountWithPinia();
     await flushPromises();
 
-    expect(wrapper.text()).toContain('WHATSAPP / BUSINESS_API / home-whatsapp / wa-peer');
-    expect(wrapper.text()).toContain('runtime: AUTOBYTEUS | model: gpt-test | workspace: /tmp/workspace');
-    expect(wrapper.text()).not.toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
+    expect(wrapper.text()).toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
+    expect(wrapper.text()).toContain(
+      'runtime: AUTOBYTEUS | model: gpt-other | workspace: /tmp/discord-workspace',
+    );
+    expect(wrapper.text()).not.toContain('WHATSAPP / BUSINESS_API / home-whatsapp / wa-peer');
   });
 
   it('shows gateway recovery guidance and manual fallback when peer discovery is unavailable', async () => {

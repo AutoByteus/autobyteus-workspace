@@ -1,0 +1,525 @@
+Resolve Release Metadata	Set up job	﻿2026-06-06T18:11:52.7419209Z Current runner version: '2.334.0'
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7445138Z ##[group]Runner Image Provisioner
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7446003Z Hosted Compute Agent
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7446591Z Version: 20260520.533
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7447330Z Commit: 189110e25284a9812c124fd27b339e2fb4f2f9db
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7448047Z Build Date: 2026-05-20T17:44:04Z
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7448984Z Worker ID: {d5cca52a-c385-44c6-9798-15e7f34b2154}
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7449790Z Azure Region: northcentralus
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7450408Z ##[endgroup]
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7452238Z ##[group]Operating System
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7452973Z Ubuntu
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7453580Z 24.04.4
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7454129Z LTS
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7454643Z ##[endgroup]
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7455275Z ##[group]Runner Image
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7455881Z Image: ubuntu-24.04
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7456419Z Version: 20260525.161.1
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7457522Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260525.161/images/ubuntu/Ubuntu2404-Readme.md
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7459577Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260525.161
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7460562Z ##[endgroup]
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7461664Z ##[group]GITHUB_TOKEN Permissions
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7463808Z Contents: write
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7464465Z Metadata: read
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7465125Z ##[endgroup]
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7467203Z Secret source: Actions
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7468595Z Prepare workflow directory
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7813287Z Prepare all required actions
+Resolve Release Metadata	Set up job	2026-06-06T18:11:52.7851491Z Getting action download info
+Resolve Release Metadata	Set up job	2026-06-06T18:11:53.1688189Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+Resolve Release Metadata	Set up job	2026-06-06T18:11:53.3807525Z Complete job name: Resolve Release Metadata
+Resolve Release Metadata	Resolve release metadata	﻿2026-06-06T18:11:53.4606391Z ##[group]Run if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4607364Z [36;1mif [[ "${GITHUB_REF}" == refs/tags/* ]]; then[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4608070Z [36;1m  RELEASE_TAG="${GITHUB_REF_NAME}"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4609020Z [36;1m  RELEASE_REF="${GITHUB_REF_NAME}"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4609667Z [36;1m  ENFORCE_VERSION="true"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4610241Z [36;1m  PRERELEASE="false"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4610788Z [36;1melif [[ -n "" ]]; then[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4611336Z [36;1m  RELEASE_TAG=""[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4611864Z [36;1m  RELEASE_REF=""[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4612392Z [36;1m  ENFORCE_VERSION="true"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4612987Z [36;1m  if [[ "true" == "true" ]]; then[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4613598Z [36;1m    PRERELEASE="true"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4614138Z [36;1m  else[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4614631Z [36;1m    PRERELEASE="false"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4615187Z [36;1m  fi[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4615638Z [36;1melse[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4616141Z [36;1m  RELEASE_TAG=""[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4616694Z [36;1m  RELEASE_REF="${GITHUB_REF_NAME}"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4617332Z [36;1m  ENFORCE_VERSION="false"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4617921Z [36;1m  if [[ "true" == "true" ]]; then[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4618532Z [36;1m    PRERELEASE="true"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4619214Z [36;1m  else[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4619717Z [36;1m    PRERELEASE="false"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4620259Z [36;1m  fi[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4620704Z [36;1mfi[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4621138Z [36;1m[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4621565Z [36;1m{[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4622049Z [36;1m  echo "release_tag=$RELEASE_TAG"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4622704Z [36;1m  echo "release_ref=$RELEASE_REF"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4623329Z [36;1m  echo "prerelease=$PRERELEASE"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4623979Z [36;1m  echo "enforce_version=$ENFORCE_VERSION"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4624620Z [36;1m} >> "$GITHUB_OUTPUT"[0m
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4655650Z shell: /usr/bin/bash -e {0}
+Resolve Release Metadata	Resolve release metadata	2026-06-06T18:11:53.4656625Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	﻿2026-06-06T18:11:53.4995878Z ##[group]Run actions/checkout@v4
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.4996546Z with:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.4997055Z   ref: codex/v1-3-46-release-artifact-hygiene
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.4997917Z   fetch-depth: 0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.4998385Z   submodules: recursive
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.4999193Z   repository: AutoByteus/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5004174Z   token: ***
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5004642Z   ssh-strict: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5005107Z   ssh-user: git
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5005584Z   persist-credentials: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5006102Z   clean: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5006575Z   sparse-checkout-cone-mode: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5007146Z   fetch-tags: false
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5007616Z   show-progress: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5008079Z   lfs: false
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5008528Z   set-safe-directory: true
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.5009178Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6106323Z Syncing repository: AutoByteus/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6108373Z ##[group]Getting Git version info
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6109941Z Working directory is '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6111225Z [command]/usr/bin/git version
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6198172Z git version 2.54.0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6225033Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6240326Z Temporarily overriding HOME='/home/runner/work/_temp/f3f98392-e2ea-4913-9666-450f519e8a48' before making global git config changes
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6242797Z Adding repository directory to the temporary git global config as a safe directory
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6249676Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6306521Z Deleting the contents of '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6310354Z ##[group]Initializing the repository
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6314548Z [command]/usr/bin/git init /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6416547Z hint: Using 'master' as the name for the initial branch. This default branch name
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6417975Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6419268Z hint: to use in all of your new repositories, which will suppress this warning,
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6420114Z hint: call:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6420561Z hint:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6421126Z hint: 	git config --global init.defaultBranch <name>
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6421846Z hint:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6422824Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6424326Z hint: 'development'. The just-created branch can be renamed via this command:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6425206Z hint:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6425680Z hint: 	git branch -m <name>
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6426221Z hint:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6426961Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6428558Z Initialized empty Git repository in /home/runner/work/autobyteus-workspace/autobyteus-workspace/.git/
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6434494Z [command]/usr/bin/git remote add origin https://github.com/AutoByteus/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6478247Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6479345Z ##[group]Disabling automatic garbage collection
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6482645Z [command]/usr/bin/git config --local gc.auto 0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6510382Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6511197Z ##[group]Setting up auth
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6517023Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6549111Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6890985Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.6925390Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7155109Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7191593Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7434076Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7468349Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7470139Z ##[group]Fetching the repository
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:53.7480577Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9095529Z From https://github.com/AutoByteus/autobyteus-workspace
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9099679Z  * [new branch]        codex/agent-based-compaction -> origin/codex/agent-based-compaction
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9102047Z  * [new branch]        codex/agent-package-multiple-skills-analysis -> origin/codex/agent-package-multiple-skills-analysis
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9103969Z  * [new branch]        codex/agent-run-id-sanitization -> origin/codex/agent-run-id-sanitization
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9105822Z  * [new branch]        codex/agent-status-event-analysis -> origin/codex/agent-status-event-analysis
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9108167Z  * [new branch]        codex/agent-team-local-member-import-analysis -> origin/codex/agent-team-local-member-import-analysis
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9111002Z  * [new branch]        codex/agent-turn-model-refactor -> origin/codex/agent-turn-model-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9113460Z  * [new branch]        codex/application-communication-api-clarity -> origin/codex/application-communication-api-clarity
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9116666Z  * [new branch]        codex/application-execution-resource-naming -> origin/codex/application-execution-resource-naming
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9120055Z  * [new branch]        codex/archive-run-history -> origin/codex/archive-run-history
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9122943Z  * [new branch]        codex/artifact-edit-file-content-view-bug -> origin/codex/artifact-edit-file-content-view-bug
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9126517Z  * [new branch]        codex/artifact-edit-file-external-path-view-bug -> origin/codex/artifact-edit-file-external-path-view-bug
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9130127Z  * [new branch]        codex/artifact-maximize-button -> origin/codex/artifact-maximize-button
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9132977Z  * [new branch]        codex/artifact-touched-files-redesign -> origin/codex/artifact-touched-files-redesign
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9136709Z  * [new branch]        codex/autobyteus-tool-result-continuation-regression -> origin/codex/autobyteus-tool-result-continuation-regression
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9140936Z  * [new branch]        codex/autobyteus-ts-bash-html-corruption -> origin/codex/autobyteus-ts-bash-html-corruption
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9144961Z  * [new branch]        codex/autobyteus-ts-custom-openai-compatible-endpoint-support -> origin/codex/autobyteus-ts-custom-openai-compatible-endpoint-support
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9148951Z  * [new branch]        codex/browser-empty-tabstrip-cleanup -> origin/codex/browser-empty-tabstrip-cleanup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9151701Z  * [new branch]        codex/browser-mobile-view-support -> origin/codex/browser-mobile-view-support
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9154493Z  * [new branch]        codex/browser-navigate-load-hang -> origin/codex/browser-navigate-load-hang
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9157494Z  * [new branch]        codex/clarify-agent-definition-id-vs-run-id -> origin/codex/clarify-agent-definition-id-vs-run-id
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9160808Z  * [new branch]        codex/claude-agent-sdk-runtime-support -> origin/codex/claude-agent-sdk-runtime-support
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9163449Z  * [new branch]        codex/claude-read-artifacts -> origin/codex/claude-read-artifacts
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9166179Z  * [new branch]        codex/claude-sdk-interrupt-followup-ebadf -> origin/codex/claude-sdk-interrupt-followup-ebadf
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9169988Z  * [new branch]        codex/claude-sdk-interrupt-resume-session -> origin/codex/claude-sdk-interrupt-resume-session
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9173327Z  * [new branch]        codex/claude-sdk-tool-arguments-activity -> origin/codex/claude-sdk-tool-arguments-activity
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9176309Z  * [new branch]        codex/codex-history-reload-toolcalls -> origin/codex/codex-history-reload-toolcalls
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9179209Z  * [new branch]        codex/codex-installed-skill-dedup -> origin/codex/codex-installed-skill-dedup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9182015Z  * [new branch]        codex/codex-installed-skill-dedup-redo -> origin/codex/codex-installed-skill-dedup-redo
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9185105Z  * [new branch]        codex/codex-runtime-image-input-support -> origin/codex/codex-runtime-image-input-support
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9187762Z  * [new branch]        codex/codex-stream-stall -> origin/codex/codex-stream-stall
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9190583Z  * [new branch]        codex/codex-team-member-runtime-communication -> origin/codex/codex-team-member-runtime-communication
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9193585Z  * [new branch]        codex/compaction-config-save-button -> origin/codex/compaction-config-save-button
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9196436Z  * [new branch]        codex/compaction-frontier-llm-rendering -> origin/codex/compaction-frontier-llm-rendering
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9200007Z  * [new branch]        codex/context-attachment-draft-transfer-refactor -> origin/codex/context-attachment-draft-transfer-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9203118Z  * [new branch]        codex/context-file-reference-paths -> origin/codex/context-file-reference-paths
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9205961Z  * [new branch]        codex/default-temp-workspace-run-config -> origin/codex/default-temp-workspace-run-config
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9209234Z  * [new branch]        codex/desktop-auto-update-restart-errors -> origin/codex/desktop-auto-update-restart-errors
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9212580Z  * [new branch]        codex/desktop-invalid-package-agent-definitions -> origin/codex/desktop-invalid-package-agent-definitions
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9215747Z  * [new branch]        codex/desktop-release-linux-macos-arm64 -> origin/codex/desktop-release-linux-macos-arm64
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9218490Z  * [new branch]        codex/disable-artifact-auto-focus -> origin/codex/disable-artifact-auto-focus
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9221304Z  * [new branch]        codex/docker-cli-latest-install -> origin/codex/docker-cli-latest-install
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9223790Z  * [new branch]        codex/docker-guide-command-hotfix -> origin/codex/docker-guide-command-hotfix
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9226580Z  * [new branch]        codex/docker-launcher-container-lifecycle -> origin/codex/docker-launcher-container-lifecycle
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9229489Z  * [new branch]        codex/draggable-left-panel-divider -> origin/codex/draggable-left-panel-divider
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9232323Z  * [new branch]        codex/electron-agent-prompt-file-resolution -> origin/codex/electron-agent-prompt-file-resolution
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9234928Z  * [new branch]        codex/electron-auto-update -> origin/codex/electron-auto-update
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9237712Z  * [new branch]        codex/electron-embedded-server-config-consistency -> origin/codex/electron-embedded-server-config-consistency
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9240795Z  * [new branch]        codex/event-monitor-tool-text-ux -> origin/codex/event-monitor-tool-text-ux
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9243605Z  * [new branch]        codex/external-channel-receipt-state-machine -> origin/codex/external-channel-receipt-state-machine
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9246407Z  * [new branch]        codex/external-channel-sql-removal -> origin/codex/external-channel-sql-removal
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9249295Z  * [new branch]        codex/external-turn-reply-aggregation -> origin/codex/external-turn-reply-aggregation
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9251989Z  * [new branch]        codex/featured-default-assistant -> origin/codex/featured-default-assistant
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9254382Z  * [new branch]        codex/file-based-agent-refactor -> origin/codex/file-based-agent-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9256909Z  * [new branch]        codex/fix-server-docker-build -> origin/codex/fix-server-docker-build
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9259771Z  * [new branch]        codex/focused-agent-interrupt-routing -> origin/codex/focused-agent-interrupt-routing
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9262694Z  * [new branch]        codex/frontend-agent-team-memory-visibility -> origin/codex/frontend-agent-team-memory-visibility
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9265722Z  * [new branch]        codex/frontend-file-explorer-context-menu -> origin/codex/frontend-file-explorer-context-menu
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9268560Z  * [new branch]        codex/gateway-dead-code-investigation -> origin/codex/gateway-dead-code-investigation
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9271451Z  * [new branch]        codex/gemini-latest-image-model-support -> origin/codex/gemini-latest-image-model-support
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9274115Z  * [new branch]        codex/gemini-rpa-thinking-config-ts -> origin/codex/gemini-rpa-thinking-config-ts
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9276621Z  * [new branch]        codex/github-agent-package-import -> origin/codex/github-agent-package-import
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9279307Z  * [new branch]        codex/hide-middle-success-tool-label -> origin/codex/hide-middle-success-tool-label
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9282027Z  * [new branch]        codex/historical-run-config-readonly-ux -> origin/codex/historical-run-config-readonly-ux
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9285413Z  * [new branch]        codex/imported-definition-editability-skill-import -> origin/codex/imported-definition-editability-skill-import
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9288954Z  * [new branch]        codex/instruction-panel-expand-collapse -> origin/codex/instruction-panel-expand-collapse
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9291578Z  * [new branch]        codex/intel-mac-zip-release -> origin/codex/intel-mac-zip-release
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9293843Z  * [new branch]        codex/kimi-tool-stream-visibility -> origin/codex/kimi-tool-stream-visibility
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9296479Z  * [new branch]        codex/linux-appimage-memory-dir-startup -> origin/codex/linux-appimage-memory-dir-startup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9299549Z  * [new branch]        codex/linux-appimage-prisma-erofs -> origin/codex/linux-appimage-prisma-erofs
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9302365Z  * [new branch]        codex/live-run-stream-reconnect-after-reload -> origin/codex/live-run-stream-reconnect-after-reload
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9305103Z  * [new branch]        codex/llm-runtime-real-compaction -> origin/codex/llm-runtime-real-compaction
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9307685Z  * [new branch]        codex/lmstudio-thinking-investigation -> origin/codex/lmstudio-thinking-investigation
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9310480Z  * [new branch]        codex/logging-best-practice-refactor -> origin/codex/logging-best-practice-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9313264Z  * [new branch]        codex/mac-intel-desktop-release-pipeline -> origin/codex/mac-intel-desktop-release-pipeline
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9316212Z  * [new branch]        codex/mac-intel-prisma-engine-arch-mismatch -> origin/codex/mac-intel-prisma-engine-arch-mismatch
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9319420Z  * [new branch]        codex/managed-gateway-runtime-versioning -> origin/codex/managed-gateway-runtime-versioning
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9322100Z  * [new branch]        codex/message-delivery-robustness -> origin/codex/message-delivery-robustness
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9324719Z  * [new branch]        codex/messaging-gateway-404-install-start -> origin/codex/messaging-gateway-404-install-start
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9327661Z  * [new branch]        codex/messaging-gateway-distribution-analysis -> origin/codex/messaging-gateway-distribution-analysis
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9330857Z  * [new branch]        codex/messaging-gateway-release-hotfix -> origin/codex/messaging-gateway-release-hotfix
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9333446Z  * [new branch]        codex/messaging-runtime-visibility -> origin/codex/messaging-runtime-visibility
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9335831Z  * [new branch]        codex/mobile-run-config-chat-flow -> origin/codex/mobile-run-config-chat-flow
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9338314Z  * [new branch]        codex/mobile-ux-simplification -> origin/codex/mobile-ux-simplification
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9340934Z  * [new branch]        codex/model-context-metadata -> origin/codex/model-context-metadata
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9343102Z  * [new branch]        codex/node-manager-tabs -> origin/codex/node-manager-tabs
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9345114Z  * [new branch]        codex/node-manager-ui-cleanup -> origin/codex/node-manager-ui-cleanup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9347216Z  * [new branch]        codex/personal-docker-setup -> origin/codex/personal-docker-setup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9349888Z  * [new branch]        codex/port-team-memory-layout-to-superrepo -> origin/codex/port-team-memory-layout-to-superrepo
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9352768Z  * [new branch]        codex/preview-session-multi-runtime-design -> origin/codex/preview-session-multi-runtime-design
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9355651Z  * [new branch]        codex/provider-native-tool-history-rendering -> origin/codex/provider-native-tool-history-rendering
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9358494Z  * [new branch]        codex/publish-artifacts-plural-refactor -> origin/codex/publish-artifacts-plural-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9361514Z  * [new branch]        codex/read-media-file-tool-continuation -> origin/codex/read-media-file-tool-continuation
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9364158Z  * [new branch]        codex/release-server-dockerhub-publish -> origin/codex/release-server-dockerhub-publish
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9366868Z  * [new branch]        codex/remote-node-telegram-agent-delivery -> origin/codex/remote-node-telegram-agent-delivery
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9369881Z  * [new branch]        codex/remove-assistant-chunk-legacy-path -> origin/codex/remove-assistant-chunk-legacy-path
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9372742Z  * [new branch]        codex/remove-deprecated-deepseek-kimi-models -> origin/codex/remove-deprecated-deepseek-kimi-models
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9375541Z  * [new branch]        codex/remove-file-persistence-provider -> origin/codex/remove-file-persistence-provider
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9378317Z  * [new branch]        codex/remove-media-output-path-restriction -> origin/codex/remove-media-output-path-restriction
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9381399Z  * [new branch]        codex/right-panel-resizer-visibility -> origin/codex/right-panel-resizer-visibility
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9384042Z  * [new branch]        codex/rpa-gemini-include-thoughts-removal -> origin/codex/rpa-gemini-include-thoughts-removal
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9386454Z  * [new branch]        codex/rpa-llm-session-resume -> origin/codex/rpa-llm-session-resume
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9388942Z  * [new branch]        codex/rpa-visible-resume-prompt-cleanup -> origin/codex/rpa-visible-resume-prompt-cleanup
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9391454Z  * [new branch]        codex/run-bash-posix-spawn-failure -> origin/codex/run-bash-posix-spawn-failure
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9393674Z  * [new branch]        codex/run-bash-tool-benchmarks -> origin/codex/run-bash-tool-benchmarks
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9395940Z  * [new branch]        codex/run-history-index-consistency -> origin/codex/run-history-index-consistency
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9398565Z  * [new branch]        codex/run-history-worktree-live-stream-loss -> origin/codex/run-history-worktree-live-stream-loss
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9401284Z  * [new branch]        codex/run-service-layering-refactor -> origin/codex/run-service-layering-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9403649Z  * [new branch]        codex/runtime-decoupling-refactor -> origin/codex/runtime-decoupling-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9406034Z  * [new branch]        codex/runtime-interrupt-functionality -> origin/codex/runtime-interrupt-functionality
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9408786Z  * [new branch]        codex/runtime-model-identifier-dropdown -> origin/codex/runtime-model-identifier-dropdown
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9411762Z  * [new branch]        codex/runtime-termination-separation-of-concerns -> origin/codex/runtime-termination-separation-of-concerns
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9414610Z  * [new branch]        codex/self-evolving-harness-feasibility -> origin/codex/self-evolving-harness-feasibility
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9417297Z  * [new branch]        codex/server-docker-codex-claude-cli -> origin/codex/server-docker-codex-claude-cli
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9420413Z  * [new branch]        codex/server-docker-desktop-only-analysis -> origin/codex/server-docker-desktop-only-analysis
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9423297Z  * [new branch]        codex/server-settings-applications-toggle-card -> origin/codex/server-settings-applications-toggle-card
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9426114Z  * [new branch]        codex/server-settings-basics-loading-fix -> origin/codex/server-settings-basics-loading-fix
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9429075Z  * [new branch]        codex/simplify-agent-workspace-to-path-string -> origin/codex/simplify-agent-workspace-to-path-string
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9431726Z  * [new branch]        codex/simplify-server-settings-cards -> origin/codex/simplify-server-settings-cards
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9434159Z  * [new branch]        codex/skill-load-guidance-global-only -> origin/codex/skill-load-guidance-global-only
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9436542Z  * [new branch]        codex/skill-prompt-absolute-paths -> origin/codex/skill-prompt-absolute-paths
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9439099Z  * [new branch]        codex/skill-source-removal-refresh -> origin/codex/skill-source-removal-refresh
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9441369Z  * [new branch]        codex/status-lifecycle-hardening -> origin/codex/status-lifecycle-hardening
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9443899Z  * [new branch]        codex/task-agent-identity-projection-refactor -> origin/codex/task-agent-identity-projection-refactor
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9446630Z  * [new branch]        codex/team-agent-instruction-composition -> origin/codex/team-agent-instruction-composition
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9449336Z  * [new branch]        codex/team-communication-white-gap -> origin/codex/team-communication-white-gap
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9451538Z  * [new branch]        codex/team-history-grouped-runs -> origin/codex/team-history-grouped-runs
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9454057Z  * [new branch]        codex/telegram-external-channel-outbound-reply -> origin/codex/telegram-external-channel-outbound-reply
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9456817Z  * [new branch]        codex/temp-team-selection-metadata-error -> origin/codex/temp-team-selection-metadata-error
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9459567Z  * [new branch]        codex/terminal-unicode-mojibake -> origin/codex/terminal-unicode-mojibake
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9461866Z  * [new branch]        codex/v1-3-46-release-artifact-hygiene -> origin/codex/v1-3-46-release-artifact-hygiene
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9463978Z  * [new branch]        codex/video-url-size-crash -> origin/codex/video-url-size-crash
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9466202Z  * [new branch]        codex/voice-input-audio-source-selection -> origin/codex/voice-input-audio-source-selection
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9468796Z  * [new branch]        codex/voice-input-bilingual-runtime -> origin/codex/voice-input-bilingual-runtime
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9471053Z  * [new branch]        codex/voice-input-extension-flow -> origin/codex/voice-input-extension-flow
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9473201Z  * [new branch]        codex/voice-input-mac-recording -> origin/codex/voice-input-mac-recording
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9475549Z  * [new branch]        codex/whole-skill-symlink-materialization -> origin/codex/whole-skill-symlink-materialization
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9477928Z  * [new branch]        codex/windows-prisma-sqlite-url -> origin/codex/windows-prisma-sqlite-url
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9480191Z  * [new branch]        codex/xml-tool-array-parser-fix -> origin/codex/xml-tool-array-parser-fix
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9481961Z  * [new branch]        enterprise              -> origin/enterprise
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9483353Z  * [new branch]        personal                -> origin/personal
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9484620Z  * [new tag]           v1.1.10                 -> v1.1.10
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9485846Z  * [new tag]           v1.1.11                 -> v1.1.11
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9487056Z  * [new tag]           v1.1.11-rc1             -> v1.1.11-rc1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9488258Z  * [new tag]           v1.1.12                 -> v1.1.12
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9489938Z  * [new tag]           v1.1.13                 -> v1.1.13
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9491135Z  * [new tag]           v1.1.14                 -> v1.1.14
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9492517Z  * [new tag]           v1.1.15                 -> v1.1.15
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9493809Z  * [new tag]           v1.1.16                 -> v1.1.16
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9494983Z  * [new tag]           v1.1.17                 -> v1.1.17
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9496161Z  * [new tag]           v1.1.18                 -> v1.1.18
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9497327Z  * [new tag]           v1.1.19                 -> v1.1.19
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9498498Z  * [new tag]           v1.1.9                  -> v1.1.9
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9500103Z  * [new tag]           v1.2.0                  -> v1.2.0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9501291Z  * [new tag]           v1.2.1                  -> v1.2.1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9502458Z  * [new tag]           v1.2.10                 -> v1.2.10
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9503633Z  * [new tag]           v1.2.100                -> v1.2.100
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9504827Z  * [new tag]           v1.2.11                 -> v1.2.11
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9506009Z  * [new tag]           v1.2.12                 -> v1.2.12
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9507196Z  * [new tag]           v1.2.13                 -> v1.2.13
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9508361Z  * [new tag]           v1.2.14                 -> v1.2.14
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9509696Z  * [new tag]           v1.2.15                 -> v1.2.15
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9510872Z  * [new tag]           v1.2.16                 -> v1.2.16
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9512051Z  * [new tag]           v1.2.17                 -> v1.2.17
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9513229Z  * [new tag]           v1.2.18                 -> v1.2.18
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9514395Z  * [new tag]           v1.2.19                 -> v1.2.19
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9515564Z  * [new tag]           v1.2.2                  -> v1.2.2
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9516745Z  * [new tag]           v1.2.20                 -> v1.2.20
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9517960Z  * [new tag]           v1.2.21                 -> v1.2.21
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9519446Z  * [new tag]           v1.2.22                 -> v1.2.22
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9520675Z  * [new tag]           v1.2.23                 -> v1.2.23
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9521898Z  * [new tag]           v1.2.24                 -> v1.2.24
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9523128Z  * [new tag]           v1.2.25                 -> v1.2.25
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9524357Z  * [new tag]           v1.2.26                 -> v1.2.26
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9525617Z  * [new tag]           v1.2.26-rc1             -> v1.2.26-rc1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9526882Z  * [new tag]           v1.2.26-rc2             -> v1.2.26-rc2
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9528141Z  * [new tag]           v1.2.26-rc3             -> v1.2.26-rc3
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9529677Z  * [new tag]           v1.2.27                 -> v1.2.27
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9530879Z  * [new tag]           v1.2.28                 -> v1.2.28
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9532066Z  * [new tag]           v1.2.29                 -> v1.2.29
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9533274Z  * [new tag]           v1.2.3                  -> v1.2.3
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9534460Z  * [new tag]           v1.2.30                 -> v1.2.30
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9535654Z  * [new tag]           v1.2.31                 -> v1.2.31
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9536842Z  * [new tag]           v1.2.32                 -> v1.2.32
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9538043Z  * [new tag]           v1.2.33                 -> v1.2.33
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9539655Z  * [new tag]           v1.2.34                 -> v1.2.34
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9540886Z  * [new tag]           v1.2.35                 -> v1.2.35
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9542083Z  * [new tag]           v1.2.36                 -> v1.2.36
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9543283Z  * [new tag]           v1.2.37                 -> v1.2.37
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9544487Z  * [new tag]           v1.2.38                 -> v1.2.38
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9612237Z  * [new tag]           v1.2.39                 -> v1.2.39
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9614370Z  * [new tag]           v1.2.4                  -> v1.2.4
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9616955Z  * [new tag]           v1.2.40                 -> v1.2.40
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9619701Z  * [new tag]           v1.2.41                 -> v1.2.41
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9621308Z  * [new tag]           v1.2.42                 -> v1.2.42
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9622634Z  * [new tag]           v1.2.43                 -> v1.2.43
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9624618Z  * [new tag]           v1.2.44                 -> v1.2.44
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9626606Z  * [new tag]           v1.2.45                 -> v1.2.45
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9628625Z  * [new tag]           v1.2.46                 -> v1.2.46
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9631064Z  * [new tag]           v1.2.47                 -> v1.2.47
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9633033Z  * [new tag]           v1.2.48                 -> v1.2.48
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9634999Z  * [new tag]           v1.2.49                 -> v1.2.49
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9637232Z  * [new tag]           v1.2.5                  -> v1.2.5
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9639370Z  * [new tag]           v1.2.50                 -> v1.2.50
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9641371Z  * [new tag]           v1.2.52                 -> v1.2.52
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9643325Z  * [new tag]           v1.2.53                 -> v1.2.53
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9645255Z  * [new tag]           v1.2.54                 -> v1.2.54
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9647189Z  * [new tag]           v1.2.55                 -> v1.2.55
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9649344Z  * [new tag]           v1.2.56                 -> v1.2.56
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9651321Z  * [new tag]           v1.2.57                 -> v1.2.57
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9653232Z  * [new tag]           v1.2.58                 -> v1.2.58
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9655140Z  * [new tag]           v1.2.59                 -> v1.2.59
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9657052Z  * [new tag]           v1.2.6                  -> v1.2.6
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9659576Z  * [new tag]           v1.2.60                 -> v1.2.60
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9661555Z  * [new tag]           v1.2.61                 -> v1.2.61
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9663493Z  * [new tag]           v1.2.62                 -> v1.2.62
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9665399Z  * [new tag]           v1.2.63                 -> v1.2.63
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9667314Z  * [new tag]           v1.2.64                 -> v1.2.64
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9669429Z  * [new tag]           v1.2.65                 -> v1.2.65
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9671361Z  * [new tag]           v1.2.66                 -> v1.2.66
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9673274Z  * [new tag]           v1.2.67                 -> v1.2.67
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9675189Z  * [new tag]           v1.2.68                 -> v1.2.68
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9677105Z  * [new tag]           v1.2.69                 -> v1.2.69
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9679249Z  * [new tag]           v1.2.7                  -> v1.2.7
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9681189Z  * [new tag]           v1.2.70                 -> v1.2.70
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9683102Z  * [new tag]           v1.2.71                 -> v1.2.71
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9685080Z  * [new tag]           v1.2.72                 -> v1.2.72
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9687018Z  * [new tag]           v1.2.73                 -> v1.2.73
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9689117Z  * [new tag]           v1.2.74                 -> v1.2.74
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9691061Z  * [new tag]           v1.2.75                 -> v1.2.75
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9692960Z  * [new tag]           v1.2.76                 -> v1.2.76
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9694879Z  * [new tag]           v1.2.77                 -> v1.2.77
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9696792Z  * [new tag]           v1.2.78                 -> v1.2.78
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9698881Z  * [new tag]           v1.2.79                 -> v1.2.79
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9700831Z  * [new tag]           v1.2.8                  -> v1.2.8
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9702734Z  * [new tag]           v1.2.80                 -> v1.2.80
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9704650Z  * [new tag]           v1.2.81                 -> v1.2.81
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9706569Z  * [new tag]           v1.2.82                 -> v1.2.82
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9708489Z  * [new tag]           v1.2.83                 -> v1.2.83
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9710932Z  * [new tag]           v1.2.84                 -> v1.2.84
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9712859Z  * [new tag]           v1.2.85                 -> v1.2.85
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9714973Z  * [new tag]           v1.2.86                 -> v1.2.86
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9716901Z  * [new tag]           v1.2.87                 -> v1.2.87
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9719024Z  * [new tag]           v1.2.88                 -> v1.2.88
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9720967Z  * [new tag]           v1.2.89                 -> v1.2.89
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9722904Z  * [new tag]           v1.2.9                  -> v1.2.9
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9724819Z  * [new tag]           v1.2.90                 -> v1.2.90
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9726732Z  * [new tag]           v1.2.91                 -> v1.2.91
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9728844Z  * [new tag]           v1.2.92                 -> v1.2.92
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9730776Z  * [new tag]           v1.2.93                 -> v1.2.93
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9732708Z  * [new tag]           v1.2.94                 -> v1.2.94
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9734615Z  * [new tag]           v1.2.95                 -> v1.2.95
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9736517Z  * [new tag]           v1.2.96                 -> v1.2.96
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9738438Z  * [new tag]           v1.2.97                 -> v1.2.97
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9740892Z  * [new tag]           v1.2.98                 -> v1.2.98
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9742791Z  * [new tag]           v1.2.99                 -> v1.2.99
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9744708Z  * [new tag]           v1.3.0                  -> v1.3.0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9746196Z  * [new tag]           v1.3.1                  -> v1.3.1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9747389Z  * [new tag]           v1.3.10                 -> v1.3.10
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9748579Z  * [new tag]           v1.3.11                 -> v1.3.11
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9750093Z  * [new tag]           v1.3.12                 -> v1.3.12
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9751283Z  * [new tag]           v1.3.13                 -> v1.3.13
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9752470Z  * [new tag]           v1.3.14                 -> v1.3.14
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9753644Z  * [new tag]           v1.3.15                 -> v1.3.15
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9754827Z  * [new tag]           v1.3.16                 -> v1.3.16
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9756007Z  * [new tag]           v1.3.17                 -> v1.3.17
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9757171Z  * [new tag]           v1.3.18                 -> v1.3.18
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9758334Z  * [new tag]           v1.3.19                 -> v1.3.19
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9759750Z  * [new tag]           v1.3.2                  -> v1.3.2
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9760910Z  * [new tag]           v1.3.20                 -> v1.3.20
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9762071Z  * [new tag]           v1.3.21                 -> v1.3.21
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9763247Z  * [new tag]           v1.3.22                 -> v1.3.22
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9764440Z  * [new tag]           v1.3.23                 -> v1.3.23
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9765744Z  * [new tag]           v1.3.24                 -> v1.3.24
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9766917Z  * [new tag]           v1.3.25                 -> v1.3.25
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9768247Z  * [new tag]           v1.3.26                 -> v1.3.26
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9769688Z  * [new tag]           v1.3.27                 -> v1.3.27
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9770930Z  * [new tag]           v1.3.28                 -> v1.3.28
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9772235Z  * [new tag]           v1.3.29                 -> v1.3.29
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9773419Z  * [new tag]           v1.3.3                  -> v1.3.3
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9774753Z  * [new tag]           v1.3.30                 -> v1.3.30
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9776103Z  * [new tag]           v1.3.31                 -> v1.3.31
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9777284Z  * [new tag]           v1.3.32                 -> v1.3.32
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9778452Z  * [new tag]           v1.3.33                 -> v1.3.33
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9780252Z  * [new tag]           v1.3.34                 -> v1.3.34
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9781520Z  * [new tag]           v1.3.35                 -> v1.3.35
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9782946Z  * [new tag]           v1.3.36                 -> v1.3.36
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9784352Z  * [new tag]           v1.3.37                 -> v1.3.37
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9785903Z  * [new tag]           v1.3.38                 -> v1.3.38
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9787063Z  * [new tag]           v1.3.39                 -> v1.3.39
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9788213Z  * [new tag]           v1.3.4                  -> v1.3.4
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9789894Z  * [new tag]           v1.3.40                 -> v1.3.40
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9791066Z  * [new tag]           v1.3.41                 -> v1.3.41
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9792248Z  * [new tag]           v1.3.42                 -> v1.3.42
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9793417Z  * [new tag]           v1.3.43                 -> v1.3.43
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9794593Z  * [new tag]           v1.3.44                 -> v1.3.44
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9795757Z  * [new tag]           v1.3.45                 -> v1.3.45
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9796916Z  * [new tag]           v1.3.46                 -> v1.3.46
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9798085Z  * [new tag]           v1.3.5                  -> v1.3.5
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9799514Z  * [new tag]           v1.3.6                  -> v1.3.6
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9800694Z  * [new tag]           v1.3.7                  -> v1.3.7
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9801847Z  * [new tag]           v1.3.8                  -> v1.3.8
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9803014Z  * [new tag]           v1.3.9                  -> v1.3.9
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9804544Z  * [new tag]           v2026.02.26-personal-desktop-e2e.1 -> v2026.02.26-personal-desktop-e2e.1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9806750Z  * [new tag]           v2026.02.26-personal-desktop-e2e.2 -> v2026.02.26-personal-desktop-e2e.2
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9808856Z  * [new tag]           v2026.02.26-personal-desktop-e2e.3 -> v2026.02.26-personal-desktop-e2e.3
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9811666Z  * [new tag]           voice-runtime-v0.1.0    -> voice-runtime-v0.1.0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9814029Z  * [new tag]           voice-runtime-v0.1.1    -> voice-runtime-v0.1.1
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9819653Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9821499Z ##[group]Determining the checkout info
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9823718Z [command]/usr/bin/git branch --list --remote origin/codex/v1-3-46-release-artifact-hygiene
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9825764Z   origin/codex/v1-3-46-release-artifact-hygiene
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9829436Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9830971Z [command]/usr/bin/git sparse-checkout disable
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9833998Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9836917Z ##[group]Checking out the ref
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:11:58.9839348Z [command]/usr/bin/git checkout --progress --force -B codex/v1-3-46-release-artifact-hygiene refs/remotes/origin/codex/v1-3-46-release-artifact-hygiene
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0315476Z Updating files:  73% (8266/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0448371Z Updating files:  74% (8360/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0542606Z Updating files:  75% (8472/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0645406Z Updating files:  76% (8585/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0756385Z Updating files:  77% (8698/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.0873748Z Updating files:  78% (8811/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.1094553Z Updating files:  79% (8924/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.1405421Z Updating files:  80% (9037/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.1477475Z Updating files:  81% (9150/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.1668243Z Updating files:  82% (9263/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.1955091Z Updating files:  83% (9376/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2126702Z Updating files:  84% (9489/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2281234Z Updating files:  85% (9602/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2377619Z Updating files:  86% (9715/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2475401Z Updating files:  87% (9828/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2587971Z Updating files:  88% (9941/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2705282Z Updating files:  89% (10054/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.2916923Z Updating files:  90% (10167/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.3282108Z Updating files:  91% (10280/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.3502226Z Updating files:  92% (10393/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.3589757Z Updating files:  93% (10506/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.3651112Z Updating files:  94% (10619/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.3751224Z Updating files:  95% (10732/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4310051Z Updating files:  96% (10845/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4401149Z Updating files:  97% (10958/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4489686Z Updating files:  98% (11071/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4580982Z Updating files:  99% (11184/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4581964Z Updating files: 100% (11296/11296)
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4582883Z Updating files: 100% (11296/11296), done.
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4732839Z Switched to a new branch 'codex/v1-3-46-release-artifact-hygiene'
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4736948Z branch 'codex/v1-3-46-release-artifact-hygiene' set up to track 'origin/codex/v1-3-46-release-artifact-hygiene'.
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4812923Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4813688Z ##[group]Setting up auth for fetching submodules
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4834506Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4862223Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4890723Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4919911Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-132748500@github.com:
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4945019Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4945620Z ##[group]Fetching submodules
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.4950063Z [command]/usr/bin/git submodule sync --recursive
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5188911Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --recursive
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5437929Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5669004Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5669784Z ##[group]Persisting credentials for submodules
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5676641Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.5912820Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.6146540Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.6379706Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-132748500@github.com:'
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.6611000Z ##[endgroup]
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.6654443Z [command]/usr/bin/git log -1 --format=%H
+Resolve Release Metadata	Checkout release ref	2026-06-06T18:12:00.6678305Z ec989ecfabaa9e2671a9a146e4aeaf68497a5da5
+Resolve Release Metadata	Check repository artifact hygiene	﻿2026-06-06T18:12:00.6801462Z ##[group]Run python3 scripts/check_repository_artifact_hygiene.py
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6801974Z [36;1mpython3 scripts/check_repository_artifact_hygiene.py[0m
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6829601Z shell: /usr/bin/bash -e {0}
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.6829889Z ##[endgroup]
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7402774Z Repository artifact hygiene check passed.
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7403388Z Tracked files scanned: 11296
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7403831Z Path-length threshold: 200
+Resolve Release Metadata	Check repository artifact hygiene	2026-06-06T18:12:00.7404954Z Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+Resolve Release Metadata	Resolve release commit SHA	﻿2026-06-06T18:12:00.7524435Z ##[group]Run RELEASE_SHA="$(git rev-list -n 1 "codex/v1-3-46-release-artifact-hygiene")"
+Resolve Release Metadata	Resolve release commit SHA	2026-06-06T18:12:00.7525107Z [36;1mRELEASE_SHA="$(git rev-list -n 1 "codex/v1-3-46-release-artifact-hygiene")"[0m
+Resolve Release Metadata	Resolve release commit SHA	2026-06-06T18:12:00.7525617Z [36;1mecho "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"[0m
+Resolve Release Metadata	Resolve release commit SHA	2026-06-06T18:12:00.7553088Z shell: /usr/bin/bash -e {0}
+Resolve Release Metadata	Resolve release commit SHA	2026-06-06T18:12:00.7553366Z ##[endgroup]
+Resolve Release Metadata	Post Checkout release ref	﻿2026-06-06T18:12:00.7710661Z Post job cleanup.
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8732711Z [command]/usr/bin/git version
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8769764Z git version 2.54.0
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8814856Z Temporarily overriding HOME='/home/runner/work/_temp/95b79448-e24f-414f-b1e8-a4c7a3fb1c78' before making global git config changes
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8816265Z Adding repository directory to the temporary git global config as a safe directory
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8822057Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8857828Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.8890491Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9136551Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9161714Z http.https://github.com/.extraheader
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9175151Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9205273Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9446011Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve Release Metadata	Post Checkout release ref	2026-06-06T18:12:00.9477059Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve Release Metadata	Complete job	﻿2026-06-06T18:12:00.9825110Z Evaluate and set job outputs
+Resolve Release Metadata	Complete job	2026-06-06T18:12:00.9832935Z Set output 'release_ref'
+Resolve Release Metadata	Complete job	2026-06-06T18:12:00.9834979Z Set output 'prerelease'
+Resolve Release Metadata	Complete job	2026-06-06T18:12:00.9835607Z Set output 'enforce_version'
+Resolve Release Metadata	Complete job	2026-06-06T18:12:00.9835996Z Set output 'release_sha'
+Resolve Release Metadata	Complete job	2026-06-06T18:12:00.9836708Z Cleaning up orphan processes
+Resolve Release Metadata	Complete job	2026-06-06T18:12:01.0153312Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4. Actions will be forced to run with Node.js 24 by default starting June 16th, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

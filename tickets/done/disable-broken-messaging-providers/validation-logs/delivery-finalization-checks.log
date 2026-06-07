@@ -1,0 +1,9 @@
+# Delivery finalization checks
+Date: 2026-06-06T19:06:51Z
+HEAD: 40fd4c149c693ded36bc2ba4cd5bc7c8898e8515
+origin/personal: c2317fa830afbac9762a6afafc1fd207166313b8
+
+## git diff --check
+
+## node autobyteus-message-gateway/scripts/build-runtime-package.mjs --check-release-manifest --release-tag v1.3.47
+[32mManaged messaging release manifest matches release tag v1.3.47.[0m

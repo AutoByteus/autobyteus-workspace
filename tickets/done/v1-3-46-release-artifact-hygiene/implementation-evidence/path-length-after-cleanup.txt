@@ -1,0 +1,5 @@
+tracked_file_count=11287
+threshold=200
+paths_over_threshold=0
+longest_path_length=197
+longest_path=tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json

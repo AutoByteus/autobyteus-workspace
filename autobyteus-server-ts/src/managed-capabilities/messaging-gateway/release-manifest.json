@@ -3,13 +3,13 @@
   "releases": [
     {
       "serverVersion": "0.1.1",
-      "releaseTag": "v1.3.46",
-      "artifactVersion": "1.3.46",
+      "releaseTag": "v1.3.48",
+      "artifactVersion": "1.3.48",
       "platformKey": "node-generic",
       "archiveType": "tar.gz",
-      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.46/autobyteus-message-gateway-1.3.46-node-generic.tar.gz",
-      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.46/autobyteus-message-gateway-1.3.46-node-generic.tar.gz.sha256",
-      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.46/autobyteus-message-gateway-1.3.46-node-generic.tar.gz.json",
+      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.48/autobyteus-message-gateway-1.3.48-node-generic.tar.gz",
+      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.48/autobyteus-message-gateway-1.3.48-node-generic.tar.gz.sha256",
+      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.48/autobyteus-message-gateway-1.3.48-node-generic.tar.gz.json",
       "supportedProviders": [
         "WHATSAPP",
         "WECOM",
@@ -17,6 +17,8 @@
         "TELEGRAM"
       ],
       "excludedProviders": [
+        "WHATSAPP",
+        "WECOM",
         "WECHAT"
       ]
     }

@@ -1,0 +1,61 @@
+{
+  "timestamp": "2026-06-06T16:27:40Z",
+  "frontendUrl": "http://127.0.0.1:3311/settings?section=messaging",
+  "backendStubUrl": "http://127.0.0.1:29696/graphql",
+  "initialRunningState": {
+    "providerCards": [
+      { "testid": "provider-scope-DISCORD", "text": "Discord Bot" },
+      { "testid": "provider-scope-TELEGRAM", "text": "Telegram Bot" }
+    ],
+    "hasWhatsappCard": false,
+    "hasWecomCard": false,
+    "hasDiscordCard": true,
+    "hasTelegramCard": true,
+    "hasDisableButton": true,
+    "providerConfigHeading": "Discord Bot Configuration",
+    "providerIssuesVisible": false,
+    "status": {
+      "lifecycleBadge": "RUNNING",
+      "runtimeState": "Running",
+      "runtimeEndpoint": "127.0.0.1:8010",
+      "message": "Browser E2E managed gateway running."
+    },
+    "supportedProvidersLabel": "WHATSAPP, WECOM, DISCORD, TELEGRAM",
+    "excludedProvidersLabel": "WHATSAPP, WECOM, WECHAT"
+  },
+  "telegramSelectionAndSave": {
+    "providerCards": [
+      { "testid": "provider-scope-DISCORD", "selected": false, "text": "Discord Bot" },
+      { "testid": "provider-scope-TELEGRAM", "selected": true, "text": "Telegram Bot" }
+    ],
+    "providerConfigHeading": "Telegram Bot Configuration",
+    "hasTelegramTokenInput": true,
+    "hasTelegramAccountInput": true,
+    "telegramAccountValue": "telegram-browser-e2e",
+    "hasDiscordTokenInput": false,
+    "saveError": null,
+    "configuredStatusTextVisible": true
+  },
+  "discordSelectionAndSave": {
+    "providerConfigHeading": "Discord Bot Configuration",
+    "saveError": null,
+    "configuredStatusTextVisible": true,
+    "discordAccountValue": "discord-browser-e2e"
+  },
+  "disableActionResult": {
+    "lifecycleBadge": "DISABLED",
+    "runtimeState": "Disabled",
+    "runtimeEndpoint": "Not running",
+    "message": "Browser E2E managed gateway disabled.",
+    "providerCards": [
+      { "testid": "provider-scope-DISCORD", "text": "Discord Bot" },
+      { "testid": "provider-scope-TELEGRAM", "text": "Telegram Bot" }
+    ],
+    "hasWhatsappCard": false,
+    "hasWecomCard": false
+  },
+  "notes": [
+    "Browser screenshot capture returned an empty file in this environment, so DOM/script evidence and the GraphQL stub operation log are the recorded UI evidence.",
+    "The backend stub emulated the messaging GraphQL boundary only; unrelated page-level GraphQL probes were ignored and did not render visible errors."
+  ]
+}

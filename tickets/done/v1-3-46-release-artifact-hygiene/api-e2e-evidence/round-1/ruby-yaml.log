@@ -1,0 +1,8 @@
+## ruby-yaml
+utc_start=2026-06-06T18:10:35Z
+command=ruby -e require "yaml"; YAML.load_file(".github/workflows/release-desktop.yml"); puts "release-desktop.yml parsed"
+
+release-desktop.yml parsed
+
+exit_code=0
+utc_end=2026-06-06T18:10:35Z

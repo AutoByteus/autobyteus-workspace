@@ -61,20 +61,23 @@ export const useGatewayCapabilityStore = defineStore('gatewayCapabilityStore', {
         const status =
           gatewaySessionStore.managedStatus ||
           (await gatewaySessionStore.refreshManagedGatewayStatus());
-        const supportedProviders = new Set(status?.supportedProviders || []);
+        const supportedProviders = new Set<string>(status?.supportedProviders || []);
+        const excludedProviders = new Set<string>(status?.excludedProviders || []);
+        const isProviderActive = (provider: string) =>
+          supportedProviders.has(provider) && !excludedProviders.has(provider);
         const providerStatus = status?.providerStatusByProvider || {};
         const capabilities = normalizeCapabilities({
-          whatsappBusinessEnabled: supportedProviders.has('WHATSAPP'),
-          wechatModes: supportedProviders.has('WECOM') ? ['WECOM_APP_BRIDGE'] : [],
-          defaultWeChatMode: supportedProviders.has('WECOM') ? 'WECOM_APP_BRIDGE' : null,
-          wecomAppEnabled: supportedProviders.has('WECOM'),
+          whatsappBusinessEnabled: isProviderActive('WHATSAPP'),
+          wechatModes: isProviderActive('WECOM') ? ['WECOM_APP_BRIDGE'] : [],
+          defaultWeChatMode: isProviderActive('WECOM') ? 'WECOM_APP_BRIDGE' : null,
+          wecomAppEnabled: isProviderActive('WECOM'),
           wechatPersonalEnabled: false,
-          discordEnabled: supportedProviders.has('DISCORD'),
+          discordEnabled: isProviderActive('DISCORD'),
           discordAccountId:
             typeof providerStatus.DISCORD?.accountId === 'string'
               ? providerStatus.DISCORD.accountId
               : null,
-          telegramEnabled: supportedProviders.has('TELEGRAM'),
+          telegramEnabled: isProviderActive('TELEGRAM'),
           telegramAccountId:
             typeof providerStatus.TELEGRAM?.accountId === 'string'
               ? providerStatus.TELEGRAM.accountId

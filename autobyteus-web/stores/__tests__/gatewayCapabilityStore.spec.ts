@@ -46,7 +46,7 @@ describe('gatewayCapabilityStore', () => {
         },
       },
       supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
-      excludedProviders: ['WECHAT'],
+      excludedProviders: ['WHATSAPP', 'WECOM', 'WECHAT'],
       diagnostics: {},
       runtimeReliabilityStatus: null,
       runtimeRunning: true,
@@ -55,8 +55,11 @@ describe('gatewayCapabilityStore', () => {
     const store = useGatewayCapabilityStore();
     const capabilities = await store.loadCapabilities();
 
-    expect(capabilities.whatsappBusinessEnabled).toBe(true);
+    expect(capabilities.whatsappBusinessEnabled).toBe(false);
     expect(capabilities.wechatPersonalEnabled).toBe(false);
+    expect(capabilities.wecomAppEnabled).toBe(false);
+    expect(capabilities.wechatModes).toEqual([]);
+    expect(capabilities.defaultWeChatMode).toBeNull();
     expect(capabilities.discordEnabled).toBe(true);
     expect(capabilities.discordAccountId).toBe('discord-acct-1');
     expect(capabilities.telegramEnabled).toBe(true);

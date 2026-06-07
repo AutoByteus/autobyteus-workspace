@@ -19,6 +19,8 @@ interface MessagingProviderScopeState {
   initialized: boolean;
 }
 
+const DEFAULT_SELECTED_PROVIDER: MessagingProvider = 'DISCORD';
+
 function normalizeOptionalAccountId(value: string | null | undefined): string | null {
   if (typeof value !== 'string') {
     return null;
@@ -55,7 +57,7 @@ function resolveAvailableProviders(
   capabilities: GatewayCapabilitiesModel | null | undefined,
 ): MessagingProvider[] {
   const providers: MessagingProvider[] = [];
-  if (capabilities?.whatsappBusinessEnabled !== false) {
+  if (capabilities?.whatsappBusinessEnabled === true) {
     providers.push('WHATSAPP');
   }
   if (capabilities?.wechatPersonalEnabled) {
@@ -77,8 +79,8 @@ export const useMessagingProviderScopeStore = defineStore(
   'messagingProviderScopeStore',
   {
     state: (): MessagingProviderScopeState => ({
-      selectedProvider: 'WHATSAPP',
-      availableProviders: ['WHATSAPP'],
+      selectedProvider: DEFAULT_SELECTED_PROVIDER,
+      availableProviders: [],
       discordAccountId: null,
       telegramAccountId: null,
       initialized: false,
@@ -93,6 +95,10 @@ export const useMessagingProviderScopeStore = defineStore(
       selectedOption(state): ProviderScopeOption {
         localizationRuntime.resolvedLocale.value;
         return providerOption(state.selectedProvider);
+      },
+
+      hasActiveProvider(state): boolean {
+        return state.availableProviders.includes(state.selectedProvider);
       },
 
       requiresPersonalSession(state): boolean {
@@ -120,7 +126,8 @@ export const useMessagingProviderScopeStore = defineStore(
             : null;
 
         if (!nextAvailableProviders.includes(this.selectedProvider)) {
-          this.selectedProvider = nextAvailableProviders[0] || 'WHATSAPP';
+          this.selectedProvider =
+            nextAvailableProviders[0] || DEFAULT_SELECTED_PROVIDER;
         }
 
         this.initialized = true;

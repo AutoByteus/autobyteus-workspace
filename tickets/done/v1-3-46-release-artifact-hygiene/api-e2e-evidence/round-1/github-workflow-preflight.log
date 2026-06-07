@@ -1,0 +1,14 @@
+# GitHub workflow preflight
+utc=2026-06-06T18:11:24Z
+repo=AutoByteus/autobyteus-workspace
+branch=codex/v1-3-46-release-artifact-hygiene
+head=ec989ecfabaa9e2671a9a146e4aeaf68497a5da5
+remote_head=ec989ecfabaa9e2671a9a146e4aeaf68497a5da5
+
+## Workflows matching release
+Android APK Release	active	281539345
+Desktop Release	active	238882760
+iOS App Store Connect Release	active	290428681
+Release Messaging Gateway	active	243279978
+Server Docker Release	active	243566323
+Voice Runtime Release	active	243177421
