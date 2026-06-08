@@ -217,6 +217,14 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   suppressed before they create extra Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks` and `accept_task`).
+- Task-delegation and communication tools are configured agent capabilities, not
+  runtime-level provider policy. Runtime adapters must expose `send_message_to`,
+  `delegate_tasks`, and `accept_task` only when the current member/tool
+  configuration includes them, and must not add provider `tool_choice` special
+  cases, forced-tool dampening, or framework auto-accept behavior for
+  `accept_task`. If a model does not call an available tool despite clear
+  instructions, treat that as prompt/model/test configuration until a framework
+  invariant above is violated.
 
 ## Mixed Member Event Bridge
 

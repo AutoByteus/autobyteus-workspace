@@ -1,0 +1,606 @@
+# Round 14 code review focused checks
+# 2026-06-08T11:49:15Z
+
+## git diff --check
+
+## Forbidden Round 13 policy scan
+autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts:336:  it('should accept tools without forced tool_choice and continue if the model chooses a tool call', async () => {
+Forbidden scan produced matches above; reviewer must classify each.
+
+## Generic tool_choice occurrence scan
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:455:                tool_choice: "required",
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts:144:          tool_choice: "required",
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:320:            tool_choice: "required",
+autobyteus-ts/tests/integration/llm/api/kimi-llm.test.ts:49:    tool_choice: 'required'
+autobyteus-ts/tests/integration/llm/api/openai-llm.test.ts:214:      tool_choice: "required" // Force tool usage
+autobyteus-ts/src/llm/api/openai-compatible-request-builder.ts:29:const CONTROLLED_KWARG_KEYS = new Set(['tools', 'tool_choice']);
+autobyteus-ts/src/llm/api/openai-compatible-request-builder.ts:100:      const toolChoice = kwargs.tool_choice;
+autobyteus-ts/src/llm/api/openai-compatible-request-builder.ts:102:        params.tool_choice = toolChoice as ChatCompletionToolChoiceOption;
+autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts:203:      expect(params).not.toHaveProperty('tool_choice');
+autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts:336:  it('should accept tools without forced tool_choice and continue if the model chooses a tool call', async () => {
+autobyteus-ts/tests/integration/llm/api/glm-llm.test.ts:53:    tool_choice: 'required'
+autobyteus-ts/src/llm/api/openai-responses-llm.ts:191:    if (kwargs.tool_choice !== undefined) {
+autobyteus-ts/src/llm/api/openai-responses-llm.ts:192:      params.tool_choice = kwargs.tool_choice;
+autobyteus-ts/src/llm/api/openai-responses-llm.ts:242:    if (kwargs.tool_choice !== undefined) {
+autobyteus-ts/src/llm/api/openai-responses-llm.ts:243:      params.tool_choice = kwargs.tool_choice;
+autobyteus-ts/tests/integration/agent/memory-tool-call-flow.test.ts:54:          tool_choice: 'required'
+autobyteus-ts/tests/integration/agent/handlers/api-tool-call-handler-live.test.ts:52:        tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/kimi-llm.test.ts:84:        tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/kimi-llm.test.ts:91:      tool_choice: 'required',
+autobyteus-ts/tests/unit/llm/api/openai-compatible-llm.test.ts:378:      tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/openai-compatible-llm.test.ts:392:      tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts:470:      tool_choice: 'auto'
+autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts:539:      tool_choice: 'auto'
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:6:  it('maps LLMConfig controls, filters internal kwargs, and attaches tools/tool_choice', () => {
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:39:        tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:57:      tool_choice: 'required'
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:62:  it('does not emit tool_choice when no tools are attached', () => {
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:67:      kwargs: { tool_choice: 'required' }
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts:70:    expect(params).not.toHaveProperty('tool_choice');
+Generic tool_choice occurrences listed above for review classification.
+
+## Result-tool/remnant scan
+No removed result-tool/dynamic-alias remnants found.
+
+## Native agent-team active source import/remnant scan
+autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts:28:} from "../../agent-team-definition/providers/application-owned-team-source.js";
+autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts:29:import { assertApplicationOwnedTeamIntegrity } from "../../agent-team-definition/utils/application-owned-team-integrity-validator.js";
+autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts:2:import { buildTeamLocalTeamDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts:15:} from "../../agent-team-definition/providers/team-definition-config.js";
+autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts:20:} from "../../agent-team-definition/providers/team-definition-source-paths.js";
+autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts:21:import { parseTeamMd } from "../../agent-team-definition/utils/team-md-parser.js";
+autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts:26:} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
+autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts:5:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/services/agent-streaming/team-member-selector-payload-adapter.ts:5:} from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/services/agent-streaming/index.ts:5:export { AgentTeamStreamHandler, getAgentTeamStreamHandler } from "./agent-team-stream-handler.js";
+autobyteus-server-ts/src/services/agent-streaming/index.ts:6:export type { WebSocketConnection as TeamWebSocketConnection } from "./agent-team-stream-handler.js";
+autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts:1:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper.ts:10:} from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/services/agent-streaming/team-communication-message-payload.ts:1:import type { TeamRunCommunicationEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts:1:import type { TeamMemberSelector } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:7:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:11:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:12:import { selectorToRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:13:import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/services/agent-streaming/team-member-input-message-payload.ts:1:import type { TeamRunMemberInputEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/services/agent-streaming/external-user-message-server-message.ts:6:} from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts:5:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts:17:import type { TeamLeafAgentMember } from "../../agent-team-execution/services/team-definition-traversal-service.js";
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:2:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts:6:} from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts:9:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts:13:} from "../../agent-team-execution/services/team-definition-traversal-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:5:} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:21:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:22:import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:23:import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:24:import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:15:import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:44:} from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/services/team-communication/team-communication-projection-service.ts:2:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/services/team-communication/team-communication-service.ts:2:import { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/services/team-communication/team-communication-service.ts:8:} from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-resolver.ts:7:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts:3:import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/services/team-communication/team-communication-normalizer.ts:9:import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+autobyteus-server-ts/src/services/team-communication/team-communication-types.ts:1:import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts:4:import { buildTeamLocalAgentDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts:9:} from "../../agent-team-definition/providers/team-definition-source-paths.js";
+autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts:10:import { listAllTeamSourcePaths } from "../../agent-team-definition/providers/team-local-team-discovery.js";
+autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts:11:import { parseTeamMd, TeamMdParseError } from "../../agent-team-definition/utils/team-md-parser.js";
+autobyteus-server-ts/src/agent-definition/providers/cached-agent-definition-provider.ts:3:import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-source-paths.ts:5:import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+autobyteus-server-ts/src/agent-definition/providers/agent-definition-source-paths.ts:8:import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
+autobyteus-server-ts/src/external-channel/services/channel-run-output-delivery-service.ts:10:import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts:20:import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
+autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts:38:import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
+autobyteus-server-ts/src/external-channel/services/channel-binding-team-definition-options-service.ts:2:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/external-channel/services/channel-binding-service.ts:15:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/external-channel/services/channel-binding-service.ts:21:import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/run-history/store/team-run-metadata-schema.ts:13:import { buildMemberRouteKeyFromPath, normalizeMemberPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:6:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:10:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts:10:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts:1:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts:5:} from "../../agent-team-execution/domain/team-run-context.js";
+autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts:11:} from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/startup/cache-preloader.ts:2:import { AgentTeamDefinitionService } from "../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts:8:} from "../../agent-team-execution/domain/team-run-event.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:11:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:18:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:22:} from "../../agent-team-execution/domain/team-run-context.js";
+autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:29:} from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts:6:import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
+autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts:7:import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
+autobyteus-server-ts/src/agent-execution/domain/agent-run-config.ts:4:import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts:2:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts:3:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts:4:import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:4:import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:5:import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/team-communication/send-message-to.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:8:  canCreateBoundAutoByteusSendMessageToTool,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:9:  createAutoByteusSendMessageToToolForMember,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:10:  isSendMessageToToolName,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:43:    if (isSendMessageToToolName(name)) {
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:45:        if (!canCreateBoundAutoByteusSendMessageToTool(memberTeamContext)) {
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:49:          tools.push(createAutoByteusSendMessageToToolForMember(memberTeamContext));
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts:58:      ensureAutoByteusSendMessageToToolRegistered();
+autobyteus-server-ts/src/external-channel/runtime/channel-run-output-eligibility.ts:2:import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts:9:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts:10:import { getRuntimeMemberContexts } from "../../agent-team-execution/domain/team-run-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts:1:import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:3:import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:4:import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts:1:import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts:2:import { composeMemberRunInstructions } from "../../../agent-team-execution/services/member-run-instruction-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:2:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:3:import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:4:import { createBoundAutoByteusSendMessageToTool } from "../../../../agent-tools/team-communication/send-message-to.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:6:export const isSendMessageToToolName = (toolName: string | null | undefined): boolean =>
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:9:export const canCreateBoundAutoByteusSendMessageToTool = (
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:17:export const createAutoByteusSendMessageToToolForMember = (
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/autobyteus-send-message-tool-factory.ts:19:): BaseTool => createBoundAutoByteusSendMessageToTool(memberTeamContext);
+autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts:4:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/agent-team-definition/providers/agent-team-definition-persistence-provider.ts:2:import { FileAgentTeamDefinitionProvider } from "./file-agent-team-definition-provider.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to-parameter-schema.ts:6:import { SEND_MESSAGE_TO_FIELD_DESCRIPTIONS } from "../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to-parameter-schema.ts:8:export const buildSendMessageToParameterSchema = (): ParameterSchema =>
+autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts:2:import { AgentTeamDefinitionPersistenceProvider } from "./agent-team-definition-persistence-provider.js";
+autobyteus-server-ts/src/agent-tools/team-communication/register-team-communication-tools.ts:2:import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-tools/team-communication/register-team-communication-tools.ts:3:import { ensureAutoByteusSendMessageToToolRegistered } from "./send-message-to.js";
+autobyteus-server-ts/src/agent-tools/team-communication/register-team-communication-tools.ts:6:  ensureAutoByteusSendMessageToToolRegistered();
+autobyteus-server-ts/src/run-history/services/team-run-history-service.ts:1:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:7:import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:10:} from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:11:import { describeTeamMessageTargetSelector } from "../../agent-team-execution/domain/team-message-target-selector.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:13:  parseSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:14:  validateParsedSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:15:} from "../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:19:} from "../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:20:import { buildSendMessageToParameterSchema } from "./send-message-to-parameter-schema.js";
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:24:export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string, unknown>, string> {
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:46:    return buildSendMessageToParameterSchema();
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:53:    const parsed = parseSendMessageToToolArguments(kwargs);
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:54:    const validationError = validateParsedSendMessageToToolArguments(
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:91:const createAutoByteusSendMessageToToolDefinition = (): ToolDefinition =>
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:97:    () => buildSendMessageToParameterSchema(),
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:100:      toolClass: AutoByteusSendMessageToTool,
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:105:export const ensureAutoByteusSendMessageToToolRegistered = (): ToolDefinition => {
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:111:  const definition = createAutoByteusSendMessageToToolDefinition();
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:116:export const createBoundAutoByteusSendMessageToTool = (
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:118:): AutoByteusSendMessageToTool => {
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:119:  const definition = ensureAutoByteusSendMessageToToolRegistered();
+autobyteus-server-ts/src/agent-tools/team-communication/send-message-to.ts:120:  const tool = new AutoByteusSendMessageToTool(undefined, { memberTeamContext });
+autobyteus-server-ts/src/agent-tools/agent-team-management/create-agent-team-definition.ts:3:import { AgentTeamDefinition, TeamMember, type TeamMemberRefScope } from "../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/create-agent-team-definition.ts:4:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts:3:import { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts:4:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts:7:} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts:3:import { AgentTeamDefinitionUpdate, TeamMember, type TeamMemberRefScope } from "../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts:4:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts:3:import { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts:4:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/delete-agent-team-definition.ts:3:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:4:} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/register-agent-team-tools.ts:1:import { registerCreateAgentTeamDefinitionTool } from "./create-agent-team-definition.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/register-agent-team-tools.ts:2:import { registerDeleteAgentTeamDefinitionTool } from "./delete-agent-team-definition.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/register-agent-team-tools.ts:3:import { registerGetAgentTeamDefinitionTool } from "./get-agent-team-definition.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/register-agent-team-tools.ts:4:import { registerListAgentTeamDefinitionsTool } from "./list-agent-team-definitions.js";
+autobyteus-server-ts/src/agent-tools/agent-team-management/register-agent-team-tools.ts:5:import { registerUpdateAgentTeamDefinitionTool } from "./update-agent-team-definition.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts:1:import { composeMemberRunInstructions } from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts:2:import { buildSendMessageToDynamicToolRegistrations } from "./codex-send-message-dynamic-tool-registration.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts:78:          ? buildSendMessageToDynamicToolRegistrations({
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts:7:} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:1:import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:2:import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:6:} from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:14:} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:15:import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:19:} from "../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts:5:} from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.ts:5:} from "../../../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.ts:9:export const buildSendMessageToToolSpec = () => ({
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts:3:} from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:6:  buildSendMessageToToolSpec,
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:9:  parseSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:10:  validateParsedSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:11:} from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:12:import type { InterAgentMessageDeliveryHandler } from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:13:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:14:import { buildInterAgentMessageDeliveryIntent } from "../../../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:15:import { describeTeamMessageTargetSelector } from "../../../../agent-team-execution/domain/team-message-target-selector.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:17:export const buildSendMessageToDynamicToolRegistrations = (input: {
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:28:      spec: buildSendMessageToToolSpec(),
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:30:        const parsed = parseSendMessageToToolArguments(toolArguments);
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts:31:        const validationError = validateParsedSendMessageToToolArguments(toolName, parsed);
+autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts:4:import type { ClaudeSendMessageToolApprovalHandler } from "../team-communication/claude-send-message-tool-call-handler.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts:39:  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
+autobyteus-server-ts/src/agent-execution/backends/claude/task-delegation/build-claude-task-delegation-tool-definitions.ts:8:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts:8:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-context.ts:7:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:8:const isSendMessageToToolName = (value: string | null): boolean => {
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:19:  if (isSendMessageToToolName(value)) {
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:285:        if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:362:        if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tooling-options.ts:1:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/claude-send-message-tool-name.ts:1:import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/claude-send-message-tool-name.ts:19:export const isClaudeCanonicalSendMessageToolName = (value: string | null): boolean =>
+autobyteus-server-ts/src/agent-execution/backends/claude/claude-send-message-tool-name.ts:25:export const isClaudeSendMessageToolName = (value: string | null): boolean => {
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrap-strategy.ts:3:import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts:5:} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts:6:import type { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts:7:import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:10:type SendMessageToValidationError = {
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:15:export type SendMessageToToolArguments = {
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:41:export const parseSendMessageToToolArguments = (
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:43:): SendMessageToToolArguments => {
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:71:export const validateParsedSendMessageToToolArguments = (
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:73:  input: SendMessageToToolArguments,
+autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts:74:): SendMessageToValidationError | null => {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts:5:  ClaudeSendMessageToolCallHandler,
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts:11:} from "../../../../agent-team-execution/services/send-message-to-tool-contract.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts:13:export const buildClaudeSendMessageToolDefinition = async (options: {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts:16:  handler: ClaudeSendMessageToolCallHandler;
+autobyteus-server-ts/src/run-history/services/team-run-status-projection-service.ts:1:import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts:1:import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:9:} from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:13:  parseSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:14:  validateParsedSendMessageToToolArguments,
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:15:} from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:16:import { buildInterAgentMessageDeliveryIntent } from "../../../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:18:export type ClaudeSendMessageToolApprovalDecision = {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:23:export type ClaudeSendMessageToolApprovalHandler = (input: {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:27:}) => Promise<ClaudeSendMessageToolApprovalDecision>;
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:29:type ClaudeSendMessageToolCallHandlerOptions = {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:31:  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:35:const emitSendMessageToolStart = (options: {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:67:const emitSendMessageToolCompleted = (options: {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:114:export class ClaudeSendMessageToolCallHandler {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:116:  private readonly requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:122:  constructor(options: ClaudeSendMessageToolCallHandlerOptions) {
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:133:    const parsed = parseSendMessageToToolArguments(args);
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:147:    emitSendMessageToolStart({
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:154:    const validationError = validateParsedSendMessageToToolArguments(
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:235:    emitSendMessageToolCompleted({
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts:270:    emitSendMessageToolCompleted({
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-traversal-service.ts:5:} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-traversal-service.ts:6:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts:1:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:8:import { AgentTeamRunManager } from "./agent-team-run-manager.js";
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:9:import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/api/graphql/converters/agent-team-definition-converter.ts:1:import type { AgentTeamDefinition as DomainAgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/api/graphql/converters/agent-team-definition-converter.ts:6:} from "../../../agent-team-definition/domain/enums.js";
+autobyteus-server-ts/src/api/graphql/converters/agent-team-definition-converter.ts:10:} from "../types/agent-team-definition.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:15:} from "../../../agent-team-definition/domain/enums.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:20:} from "../../../agent-team-definition/domain/models.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:21:import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:23:import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
+autobyteus-server-ts/src/api/graphql/schema.ts:8:import { AgentTeamRunResolver } from './types/agent-team-run.js';
+autobyteus-server-ts/src/api/graphql/schema.ts:11:import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:12:import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts:1:import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:4:  ClaudeSendMessageToolCallHandler,
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:5:  type ClaudeSendMessageToolApprovalHandler,
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:7:import { buildClaudeSendMessageToolDefinition } from "./claude-send-message-tool-definition-builder.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:14:  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:44:    const handler = new ClaudeSendMessageToolCallHandler({
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts:49:    const toolDefinition = await buildClaudeSendMessageToolDefinition({
+Native/remnant scan produced matches above; reviewer must classify each.
+
+## Active/recoverable/settled exact-run path scan
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:447:      target_agent_run_id: writerContext.memberRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:465:      kind: "target_agent_run_id",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:483:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:502:    expect(deliveredRequest.target).toEqual({ kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId });
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:526:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:560:    getTaskAgentDirectory(teamRunId).markSettledByTaskAgentRunId(taskAgentRunId);
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:569:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:589:      target_agent_run_id: "external-run-not-in-team",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:611:      target_agent_run_id: writerContext.memberRunId,
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:131:  it("delegates active work with target_agent_run_id and no result-tool work-packet protocol", async () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:143:      expect.objectContaining({ member_name: "worker", task_id: "task_0001", target_agent_run_id: "team-run-1__worker__task_0001", status: "active" }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:144:      expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "team-run-1__worker__task_0002", status: "active" }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:146:    expect(created.activationResults.map((result) => result.target_agent_run_id)).toEqual([
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:151:    expect(backend.taskAgentStarts[0]!.message.content).toContain("Your target_agent_run_id: team-run-1__worker__task_0001");
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:158:    expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("team-run-1__worker__task_0001")?.taskId).toBe("task_0001");
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:197:      service.acceptTask(buildContext(worker), { task_id: "task_0001" }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:200:    const accepted = await service.acceptTask(buildContext(), { task_id: "task_0001", message: "Accepted" });
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:202:    expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("team-run-1__worker__task_0001")).toBeNull();
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:221:      expect.objectContaining({ member_name: "worker", task_id: "task_0001", status: "not_started", target_agent_run_id: null }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:224:    expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("team-run-1__worker__task_0001")).toBeNull();
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:242:        target_agent_run_id: null,
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:249:        target_agent_run_id: null,
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:254:    expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("team-run-1__worker__task_0001")).toBeNull();
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:274:    expect(backend.taskAgentStarts[1]!.message.content).toContain("Delegator reply target_agent_run_id: team-run-1__worker__task_0001");
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:277:      service.acceptTask(buildContext({ ...parentCaller, taskId: "wrong" }), { task_id: "task_0002" }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:280:      service.acceptTask(buildContext(parentCaller), { task_id: "task_0002" }),
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:284:  it("exposes only delegate_tasks and accept_task parsers/tools", () => {
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts:285:    expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual(["delegate_tasks", "accept_task"]);
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:348:  it("runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path", async () => {
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:353:      expect.objectContaining({ member_name: "worker", task_id: "task_0001", target_agent_run_id: "task-delegation-codex-run__worker__task_0001", status: "active" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:354:      expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002", status: "active" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:357:      expect.objectContaining({ accepted: true, memberName: "worker", taskCount: 1, task_id: "task_0001", target_agent_run_id: "task-delegation-codex-run__worker__task_0001" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:358:      expect.objectContaining({ accepted: true, memberName: "worker", taskCount: 1, task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:421:      expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002", status: "active" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:423:    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Delegator reply target_agent_run_id: task-delegation-codex-run__worker__task_0001");
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:451:      expect.objectContaining({ task_id: "task_0001", status: "active", target_agent_run_id: "task-delegation-codex-run__worker__task_0001" }),
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:452:      expect.objectContaining({ task_id: "task_0002", status: "not_started", target_agent_run_id: null }),
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:128:    const targetAgentRunId = intent.target.kind === "target_agent_run_id"
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:135:    const taskAgentEntry = this.options.taskAgentDirectory.resolveTaskAgentRunId(targetAgentRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:173:    if (this.options.taskAgentDirectory.isTaskAgentRunSettled(targetAgentRunId)) {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:176:    const recoverableTaskAgent = this.resolveRecoverableTaskAgentRunId(targetAgentRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:212:  private resolveRecoverableTaskAgentRunId(targetAgentRunId: string): ResolvedTeamMessageRecipient | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:8:    return `Delegator reply target_agent_run_id: ${record.delegatorReplyTargetAgentRunId}`;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:20:      ? `You have been activated as task agent target_agent_run_id=${record.targetAgentRunId ?? "(unbound)"} for the delegated task below.`
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:30:      "4. Choose exactly one send_message_to target selector: recipient_name for a logical roster recipient, or target_agent_run_id for an exact concrete run supplied by a task packet, task event, or prior message.",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:33:      "7. The original delegator accepts the task with accept_task. After acceptance, this target_agent_run_id is no longer a valid active recipient and the framework settles the task-agent once idle.",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:48:      `Your target_agent_run_id: ${record.targetAgentRunId ?? "unbound"}`,
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts:40:      "Delegate one or more ready-to-run task work packets to exact logical team members. The framework derives you as delegator from tool context and starts one concrete task-agent per task. Task-agent progress, blockers, completion reports, feedback, and revisions use ordinary send_message_to messages; exact task-agent feedback uses target_agent_run_id returned by the framework.",
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts:53:      service.acceptTask(context, input as AcceptTaskInput),
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:56:          target_agent_run_id: null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:79:            target_agent_run_id: taskAgentInstance.taskAgentRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:103:          target_agent_run_id: result.accepted ? taskAgentInstance.taskAgentRunId : null,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts:113:          target_agent_run_id: null,
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts:39:      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not pass delegator; the framework derives the delegator from tool context. Task-agent communication after activation uses send_message_to; feedback to a concrete task-agent uses target_agent_run_id returned by the framework.",
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts:50:      description: "Required generated Task ID from delegate_tasks/activation events. Only the original delegator for that task may call accept_task.",
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts:83:  target_agent_run_id: string | null;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts:121:    target_agent_run_id: string | null;
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:75:  async acceptTask(
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts:80:    return this.getTaskDelegationService(run).acceptTask(context, input);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:110:  markSettledByTaskId(taskId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:122:  markSettledByTaskAgentRunId(taskAgentRunId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:132:    return this.markSettledByTaskId(taskId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:135:  resolveTaskAgentRunId(taskAgentRunId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:145:  isTaskAgentRunSettled(taskAgentRunId: string): boolean {
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts:43:    throw new Error(`Invalid accept_task input: ${parseZodIssues(result.error)}`);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:69:        target_agent_run_id: record.targetAgentRunId,
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:76:  async acceptTask(
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:84:      throw new TaskDelegationError("VALIDATION_ERROR", "task_id is required for accept_task.");
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:90:    this.assertOriginalDelegator(context, existing);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:93:    const updated = this.ledger.acceptTask({ taskId, message });
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:94:    this.taskAgentDirectory.markSettledByTaskId(updated.taskId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts:119:  private assertOriginalDelegator(
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts:199:  acceptTask(input: {
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts:10:export const ACCEPT_TASK_TOOL_NAME = "accept_task";
+
+## Focused task communication/delegation tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:53490) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > commits Team Communication projection only after static recipient accepts input
+Successfully registered tool definition: 'send_message_to'
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T11:49:31.404Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T11:49:31.404Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T11:49:31.419Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+ ✓ tests/unit/agent-tools/team-communication/send-message-to.test.ts (12 tests) 31ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:53528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and accept the child through tight task-agent identity
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and accept the child through tight task-agent identity
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of active exact-run targets and websocket activation events
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of active exact-run targets and websocket activation events
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (4 tests) 12ms
+ ✓ tests/unit/agent-team-execution/task-delegation-service.test.ts (7 tests) 11ms
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > fails malformed reference_files before delivery
+[team-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be absolute
+
+ ✓ tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts (5 tests) 3ms
+
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Start at  13:49:27
+   Duration  4.80s (transform 2.38s, setup 38ms, import 4.04s, tests 58ms, environment 0ms)
+
+
+## Server TypeScript check
+
+## Server build
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 96ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+(node:53880) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+
+## Changed + untracked source size audit
+  386 autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts (PASS)
+  230 autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts (PASS)
+  476 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts (PASS)
+  500 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts (PASS)
+  256 autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts (PASS)
+  385 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts (PASS)
+  235 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts (PASS)
+  405 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts (PASS)
+  446 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts (PASS)
+  268 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts (PASS)
+  241 autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts (PASS)
+  354 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts (PASS)
+  284 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts (PASS)
+  475 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.ts (PASS)
+  318 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts (PASS)
+  233 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts (PASS)
+  490 autobyteus-ts/src/memory/memory-manager.ts (PASS)
+
+## Reviewer classification notes for scans
+- Forbidden Round 13 policy scan single match is an existing DeepSeek LLM API integration test title about no forced tool_choice; not a task-delegation runtime policy or implementation symbol.
+- Generic tool_choice source occurrences are existing provider pass-through in autobyteus-ts/src/llm/api/*; test occurrences are validation prompt/config setup only. No task-specific accept_task/tool-choice dampening code found.
+- Native scan used a broad agent-team substring and matched valid server agent-team-definition/execution packages plus server-owned send_message_to adapters. No autobyteus-ts/src/agent-team active import, native TeamManifestInjectorProcessor, native TeamCommunicationContext, or native SendMessageTo runtime owner found.

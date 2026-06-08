@@ -1,0 +1,150 @@
+{
+  "data": [
+    {
+      "id": "qwen3.6-35b-a3b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "google/gemma-4-26b-a4b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b-mtplx-optimized-speed",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b-ud-mlx",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "nemotron-3-nano-omni-30b-a3b-reasoning",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "nvidia/nemotron-3-nano",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-35b-a3b-nvfp4",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.5-27b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "gemma-4-31b-it",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen/qwen3.5-35b-a3b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen/qwen3-coder-next",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "zai-org/glm-4.7-flash",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "text-embedding-nomic-embed-text-v1.5",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwenlong-l1.5-30b-a3b-i1",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "bu-30b-a3b-preview",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "zai-org/glm-4.6v-flash",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "lmstudio-community/qwen3-next-80b-a3b-thinking",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "mistralai/devstral-small-2-2512",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "unsloth/qwen3-next-80b-a3b-thinking",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen/qwen3-vl-30b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "kimi-linear-48b-a3b-instruct@6bit",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "kimi-linear-48b-a3b-instruct@4bit",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen/qwen3-30b-a3b-2507",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen/qwen3-next-80b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "deepseek-ocr",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "openai/gpt-oss-20b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    }
+  ],
+  "object": "list"
+}

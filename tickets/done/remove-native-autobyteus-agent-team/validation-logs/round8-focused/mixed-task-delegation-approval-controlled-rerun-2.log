@@ -1,0 +1,756 @@
+Started: 2026-06-08T14:17:52+0200
+Runtimes: LM Studio qwen3.6-35b-a3b + Codex live
+Command: RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_MIXED_TASK_DELEGATION_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b AUTOBYTEUS_STREAM_PARSER=api_tool_call CODEX_APP_SERVER_APPROVAL_POLICY=untrusted pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --pool=forks --fileParallelism=false
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:78291) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-8aUjsP
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-8aUjsP/.env
+Loading agent tool definitions...
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Team Communication Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=30
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_tasks'
+Successfully registered tool definition: 'accept_task'
+Loaded tool group: Task Delegation Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=96
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Finished LM Studio discovery. Total models registered: 29
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Successfully fetched 124 models from LLMFactory.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+LLM models cache populated with 124 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Definition created successfully with ID: mixed-task-coordinator-f6450fe3-2f42-4eb4-b1fd-6c31038fb662
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Definition created successfully with ID: mixed-task-worker-f6450fe3-2f42-4eb4-b1fd-6c31038fb662
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[2026-06-08T12:18:02.393Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Team Definition created successfully with ID: mixed-task-delegation-team-f6450fe3-2f42-4eb4-b1fd-6c31038fb662
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-3rmqUR
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-3rmqUR.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Created and registered workspace ID: agent_ws_76814a0ece16e2ffbcb5f914f2bc74c09447964977eef259948a3b576e192bb5
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[2026-06-08T12:18:02.399Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[2026-06-08T12:18:02.426Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 24 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Successfully created mixed team run 'team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent team websocket attached for team run team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6
+Created agent session beea5c5f-11ea-49de-873d-2c2f1336fbfb for run team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6
+Agent Team WebSocket connected: session=beea5c5f-11ea-49de-873d-2c2f1336fbfb, run=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Resolved system prompt from fresh definition instructions for AgentDefinition mixed-task-coordinator-f6450fe3-2f42-4eb4-b1fd-6c31038fb662.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentRuntimeState initialized for agent_id 'coordinator_6872248df98c651b'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'coordinator_6872248df98c651b': LLM instance 'LMStudioLLM' and 3 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_6872248df98c651b'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'coordinator_6872248df98c651b' with config: 'mixed-task-coordinator-f6450fe3-2f42-4eb4-b1fd-6c31038fb662'.
+AgentWorker initialized for agent_id 'coordinator_6872248df98c651b'.
+Registered AgentContext for agent_id 'coordinator_6872248df98c651b'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_6872248df98c651b'. Context registered.
+Agent facade initialized for agent_id 'coordinator_6872248df98c651b'.
+Agent 'coordinator_6872248df98c651b' created and stored successfully.
+Agent 'coordinator_6872248df98c651b' requesting runtime to start.
+AgentRuntime for 'coordinator_6872248df98c651b': Starting worker.
+AgentWorker 'coordinator_6872248df98c651b': Starting...
+AgentWorker 'coordinator_6872248df98c651b' asyncRun(): Starting.
+Agent 'coordinator_6872248df98c651b': Runtime init completed (event store initialized).
+Agent 'coordinator_6872248df98c651b': Runtime init completed (status deriver initialized).
+Agent 'coordinator_6872248df98c651b': Runtime init completed (AgentEventInbox initialized).
+Agent 'coordinator_6872248df98c651b': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'coordinator_6872248df98c651b' to become idle (timeout: 30s)...
+AgentEventStream (ID: 437316db-fb16-4ee0-94ea-a04905c1f684) initialized for agent_id 'coordinator_6872248df98c651b'. Subscribed to notifier.
+Agent 'coordinator_6872248df98c651b': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Bootstrapper starting direct lifecycle execution.
+Agent 'coordinator_6872248df98c651b': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'coordinator_6872248df98c651b': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'coordinator_6872248df98c651b': Executing SystemPromptProcessingStep.
+Agent 'coordinator_6872248df98c651b': Final processed system prompt configured on LLM instance. Final length: 3996.
+Agent 'coordinator_6872248df98c651b': Final processed system prompt:
+---
+## Team Instruction
+The coordinator delegates one task; the worker reports completion through send_message_to.
+
+## Agent Instruction
+If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. If the user asks you to call send_message_to with exact JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool. If the user asks you to call accept_task with exact JSON arguments, call accept_task exactly once with those exact arguments and do not call any other tool. Do not automatically accept framework task completion notifications; wait for an explicit user instruction with exact JSON arguments. Do not explore the environment.
+
+## Runtime Instruction
+Current team member: coordinator
+If you use `send_message_to`, choose exactly one target selector.
+Set `recipient_name` to one allowed roster name for a logical teammate.
+Set `target_agent_run_id` to an exact active/recoverable AgentRun id supplied by a task packet, task event, or prior message when the message must reach that exact run.
+Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.
+When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Team Communication messages.
+Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].
+Do not claim teammate delivery unless the tool call succeeds.
+
+Team membership roster
+
+You are: coordinator
+
+You are a member of these teams:
+1. mixed-task-delegation-team-f6450fe3-2f42-4eb4-b1fd-6c31038fb662
+   Your role: coordinator
+   Team members:
+   - coordinator (you, coordinator)
+   - worker
+
+   You can message:
+   - worker
+
+When using send_message_to, choose exactly one target selector.
+Use recipient_name for one logical roster recipient:
+- worker
+Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete active AgentRun id and the message must reach that exact run. Do not provide both selectors.
+
+Task delegation protocol
+- Use `delegate_tasks` to assign bounded work to exact logical team members; use a one-item `tasks` list for a single task. The framework derives you as the delegator from tool context; do not pass delegator.
+- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.
+- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.
+- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.
+- Task-agent progress, blockers, completion reports, feedback, and revision responses use ordinary `send_message_to` messages. Task-agents should send reports to the delegator reply recipient shown in their work packet.
+- `delegate_tasks` returns generated `task_id` values and `target_agent_run_id` values for concrete task-agent runs; use `send_message_to` with `target_agent_run_id` when feedback must reach that exact active task-agent.
+- Do not pass task-specific raw selector fields to `send_message_to`; the exact-run selector is the general `target_agent_run_id` field.
+- Original-delegator acceptance uses `accept_task` with the generated `task_id` after the task-agent's message report is satisfactory.
+- After the original delegator accepts the task, the task-agent's `target_agent_run_id` is no longer an active reachable message target and the framework settles or exits the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.
+---
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentWorker 'coordinator_6872248df98c651b' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentEventStream (ID: 437316db-fb16-4ee0-94ea-a04905c1f684) for 'coordinator_6872248df98c651b': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentEventStream (ID: accac134-e6ba-4429-80e0-576c26ed328b) initialized for agent_id 'coordinator_6872248df98c651b'. Subscribed to notifier.
+Successfully created autobyteus agent run 'coordinator_6872248df98c651b'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 2147,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Stored pending tool invocation '719843551' (delegate_tasks).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Retrieved pending tool invocation '719843551' (delegate_tasks).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Successfully created codex_app_server agent run 'team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6__worker__task_0001'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[team-communication] projection inserted teamRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6 messageId=teammsg_g_P7GiaIglQFjNHAN-3_UaU96z26E3zL senderRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6__worker__task_0001 receiverRunId=coordinator_6872248df98c651b referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-8aUjsP/memory/agent_teams/team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 2523,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 2740,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 2971,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Stored pending tool invocation '451034093' (send_message_to).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Retrieved pending tool invocation '451034093' (send_message_to).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[team-communication] projection inserted teamRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6 messageId=teammsg_ph98pEss0-8Wt_HeSAINoiZ0yAYittX6 senderRunId=coordinator_6872248df98c651b receiverRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6__worker__task_0001 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-8aUjsP/memory/agent_teams/team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 3170,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[team-communication] projection inserted teamRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6 messageId=teammsg_Bl0FcoPCnUgjysHClTEimiuNuA0aniV5 senderRunId=team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6__worker__task_0001 receiverRunId=coordinator_6872248df98c651b referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-8aUjsP/memory/agent_teams/team_mixed-task-delegation-team-f6450fe3-2f42_f60d8eb6/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 3363,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_6872248df98c651b',
+  prompt_tokens: 3503,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Stored pending tool invocation '555754414' (accept_task).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent 'coordinator_6872248df98c651b': Retrieved pending tool invocation '555754414' (accept_task).
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentEventStream (ID: accac134-e6ba-4429-80e0-576c26ed328b) for 'coordinator_6872248df98c651b': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'coordinator_6872248df98c651b'. Attempting graceful shutdown.
+Agent 'coordinator_6872248df98c651b' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentWorker 'coordinator_6872248df98c651b': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Closed agent session beea5c5f-11ea-49de-873d-2c2f1336fbfb
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Team WebSocket disconnected: beea5c5f-11ea-49de-873d-2c2f1336fbfb
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentWorker 'coordinator_6872248df98c651b' asyncRun() loop has finished.
+AgentWorker 'coordinator_6872248df98c651b': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentWorker 'coordinator_6872248df98c651b': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_6872248df98c651b': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: 6ce03792-0e4d-4597-8be3-5491b1c309c2, AgentID: coordinator_6872248df98c651b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Unregistered AgentContext for agent_id 'coordinator_6872248df98c651b'.
+AgentRuntime for 'coordinator_6872248df98c651b': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentRuntime for 'coordinator_6872248df98c651b' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[2026-06-08T12:19:05.645Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID mixed-task-delegation-team-f6450fe3-2f42-4eb4-b1fd-6c31038fb662.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Team Definition with ID mixed-task-delegation-team-f6450fe3-2f42-4eb4-b1fd-6c31038fb662 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+In-memory cache: Removed agent definition with ID mixed-task-coordinator-f6450fe3-2f42-4eb4-b1fd-6c31038fb662.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Definition with ID mixed-task-coordinator-f6450fe3-2f42-4eb4-b1fd-6c31038fb662 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+In-memory cache: Removed agent definition with ID mixed-task-worker-f6450fe3-2f42-4eb4-b1fd-6c31038fb662.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent Definition with ID mixed-task-worker-f6450fe3-2f42-4eb4-b1fd-6c31038fb662 deleted successfully.
+
+ ✓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test) 67883ms
+     ✓ AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run  67791ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:17:52
+   Duration  72.67s (transform 3.07s, setup 17ms, import 4.34s, tests 67.88s, environment 0ms)
+
+Completed: 2026-06-08T14:19:05+0200
+Exit status: 0

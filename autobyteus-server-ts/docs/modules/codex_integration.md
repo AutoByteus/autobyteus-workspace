@@ -47,9 +47,10 @@ ready-to-run/no-dependencies task guidance from the shared manifest/schema:
 dependent follow-up work should be delegated after ordinary `send_message_to`
 task-agent reports. Activation details are pushed to task-agent instances as
 work packets, and completion/revision reporting uses the shared team
-communication tool.
-task-delegation events and coordinator notifications rather than a model polling
-tool.
+communication tool plus task-delegation events rather than a model polling
+tool. This remains a configured-tool boundary: Codex runtime code must not add
+ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
+framework auto-accept behavior for `accept_task`.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display

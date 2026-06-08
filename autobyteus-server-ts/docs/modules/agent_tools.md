@@ -44,6 +44,10 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   manifest.
 - Claude receives first-party MCP tools on the team MCP server, built from the
   same manifest and service.
+- Tool availability is configuration-driven. Runtime adapters must not expose
+  these tools when the member is not configured for them, and this layer must
+  not add provider `tool_choice` policy, forced-tool dampening, or
+  framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
 member identity. `delegate_tasks` creates one or more internal delegation ledger

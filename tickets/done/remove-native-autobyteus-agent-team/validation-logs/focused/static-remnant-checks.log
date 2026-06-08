@@ -1,0 +1,5 @@
+### git diff --check
+### native directory absence
+native agent-team directories absent
+### active native remnant scan excluding explicit removal assertions
+no active native remnant matches in autobyteus-ts src/tests outside explicit removal assertions

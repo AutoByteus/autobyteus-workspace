@@ -1,8 +1,15 @@
 # Agent Team Runtime and Task Coordination
 
-`autobyteus-ts` owns native team lifecycle, member routing, scoped team
-communication, and team/agent/sub-team event streaming. It no longer owns a
-native team task ledger.
+The native `autobyteus-ts` agent-team runtime has been decommissioned. Team
+launch, restore, member routing, scoped team communication, task-agent
+activation, and team stream projection are owned by `autobyteus-server-ts` via
+the server stack:
+
+`TeamRun -> MixedTeamManager -> AgentRunManager -> runtime AgentRun backend`
+
+`autobyteus-ts` continues to own single-agent runtime primitives, local tools,
+messages, memory, and LLM integration. It must not reintroduce a native team
+lifecycle or native team task ledger.
 
 Server-managed bounded task delegation (`delegate_tasks` and `accept_task`) is
 implemented in `autobyteus-server-ts` and is the authoritative workflow for team
@@ -26,29 +33,30 @@ old local team-task `update_task_status`. Server-managed bounded team work uses
 the dedicated task-delegation tools above. Personal ToDo still uses
 `create_todo_list`, `add_todo`, `get_todo_list`, and `update_todo_status`.
 
-## Native Team Runtime Scope
+## Removed Native Team Runtime Scope
 
-Native teams now start through the runtime bootstrap path only:
+Native teams no longer start through an `autobyteus-ts` runtime bootstrap path.
+The removed native surface included:
 
-1. prepare member agent configurations and scoped `teamContext` communication;
-2. initialize the coordinator/member runtime via `TeamManager`;
-3. publish team, agent, and sub-team stream events.
+- member agent configuration preparation for native teams;
+- native scoped `teamContext` communication;
+- `TeamManager` coordinator/member runtime ownership;
+- native team, agent, and sub-team stream rebroadcasting.
 
-The native runtime does not create, persist, or mutate a team task list. Any
-future team-task UI or ledger must be designed from server-owned dedicated task
-delegation data, not from a native `autobyteus-ts` task plan.
+Server-created AutoByteus team members are ordinary `AgentRun`s configured by
+the server with `MemberTeamContext`-derived instructions and primitive
+`customData.teamContext` fields. Any future team-task UI or ledger must be
+designed from server-owned task-delegation data, not from native
+`autobyteus-ts` task state.
 
 ## Streaming Boundary
 
-`AgentTeamStreamEvent` supports these source categories only:
-
-- `TEAM`
-- `AGENT`
-- `SUB_TEAM`
-
-Agent-level events still include generic `SYSTEM_TASK_NOTIFICATION` and
-`TODO_LIST_UPDATE` stream items where the agent runtime emits them. These are
-not native team task-plan events.
+Native `AgentEventStream` records remain single-agent stream records. Server
+team streams enrich child agent events, Team Communication messages, task-agent
+status metadata, and reference-file entries under `autobyteus-server-ts`.
+Agent-level events can still include generic `SYSTEM_TASK_NOTIFICATION` and
+`TODO_LIST_UPDATE` stream items where the single-agent runtime emits them.
+These are not native team task-plan events.
 
 ## Server-Owned Task Delegation
 
@@ -94,7 +102,9 @@ model-facing task-state transition after delegation.
 
 Server team streams preserve explicit internal task-agent metadata on
 status/activity payloads for UI projection and approval routing. Those concrete
-runtime identities are transport metadata, not model-facing routing arguments.
+runtime identities are transport metadata. Model-facing exact feedback uses the
+general `send_message_to(target_agent_run_id=...)` selector supplied by
+delegation packets/events/messages.
 
 ## Event And Settlement Semantics
 
@@ -118,6 +128,9 @@ instance is not accidentally settled.
 
 - Use `send_message_to` for free-form conversation, handoff messages, task-agent
   progress, blockers, completion reports, revision feedback, and revised output.
+- Use `recipient_name` for logical teammates and `target_agent_run_id` only for
+  active concrete task-agent runs when the server supplied that exact-run
+  selector.
 - Use `delegate_tasks` and `accept_task` for bounded server-managed work with
   ledger state, activation/acceptance events, and safe task-agent settlement on
   supported server team backends.

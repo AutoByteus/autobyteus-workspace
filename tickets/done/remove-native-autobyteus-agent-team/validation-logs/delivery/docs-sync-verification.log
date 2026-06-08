@@ -1,0 +1,41 @@
+# Delivery docs-sync verification
+Date: 2026-06-08T14:55:03+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+HEAD/checkpoint: 244e1060185522b0ed4fb389b786ce33747a9469
+Note: includes uncommitted delivery-owned long-lived doc edits after the checkpoint.
+
+## git diff --check (working tree)
+PASS: git diff --check working tree
+
+## Stale concept scan in long-lived docs
+Command: rg -n '(owns native team|AgentTeamRuntime|AgentTeamBuilder|AgentTeamFactory|TeamManifestInjectorProcessor|create-scoped-native-team-context|mark_task_completed|mark_task_failed)' autobyteus-server-ts/docs autobyteus-ts/docs --glob '!**/tickets/**'
+PASS: no stale native-team/removal terms found in long-lived docs for the critical removed components above.
+
+## Expected legacy-tool mentions (negative guidance)
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:30:Do not reintroduce legacy model-facing task tools such as `assign_task_to`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:31:`create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or the
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:84:`tasks` array is the single-task form; do not use `create_task` or
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:85:`assign_task_to`. Do not encode dependencies in task items; if task B depends on
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:137:- Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:138:  `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_tools.md:33:`create_task`, `create_tasks`, `assign_task_to`, `get_my_tasks`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_tools.md:34:`get_task_plan_status`, and the old local task-plan `update_task_status` are not
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_tools.md:49:  not add provider `tool_choice` policy, forced-tool dampening, or
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_tools.md:50:  framework-driven auto-acceptance to compensate for model/prompt behavior.
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/codex_integration.md:44:legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/codex_integration.md:45:`get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/codex_integration.md:52:ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/codex_integration.md:53:framework auto-accept behavior for `accept_task`.
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_team_execution.md:85:Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_team_execution.md:86:`get_my_tasks`, `get_task_plan_status`, and the old local task-plan
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_team_execution.md:223:  configuration includes them, and must not add provider `tool_choice` special
+/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/docs/modules/agent_team_execution.md:224:  cases, forced-tool dampening, or framework auto-accept behavior for
+PASS: remaining old task-plan/tool_choice mentions are explicit negative/configured-boundary guidance.
+
+## Long-lived docs diff from checkpoint
+ .../docs/modules/agent_team_execution.md           |  8 ++++
+ autobyteus-server-ts/docs/modules/agent_tools.md   |  4 ++
+ .../docs/modules/codex_integration.md              |  7 +--
+ .../agent_team_runtime_and_task_coordination.md    | 55 +++++++++++++---------
+ autobyteus-ts/docs/event_driven_core_design.md     | 35 ++++++++------
+ 5 files changed, 70 insertions(+), 39 deletions(-)

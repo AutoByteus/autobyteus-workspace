@@ -1,0 +1,292 @@
+Started: 2026-06-08T08:50:46+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+Branch: codex/remove-native-autobyteus-agent-team
+Commit: bbd34030eb35fae528658745f1f7c9a7343f54f5
+--- git status --short ---
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/agent_tools.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/src/agent-definition/providers/agent-definition-source-paths.ts
+ M autobyteus-server-ts/src/agent-definition/providers/cached-agent-definition-provider.ts
+ M autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts
+ M autobyteus-server-ts/src/agent-definition/providers/team-local-agent-discovery.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts
+ D autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/claude-send-message-tool-name.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tooling-options.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-context.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-client-thread-router.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-config.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-id-resolver.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts
+ M autobyteus-server-ts/src/agent-team-definition/providers/team-local-team-discovery.ts
+ M autobyteus-server-ts/src/agent-team-definition/utils/scoped-team-member-resolution.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts
+ D autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-delivery-request-builder.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-argument-parser.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts
+ D autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-completion-notifier.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-event-publisher.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts
+ D autobyteus-server-ts/src/agent-tools/task-delegation/mark-task-completed.ts
+ D autobyteus-server-ts/src/agent-tools/task-delegation/mark-task-failed.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts
+ M autobyteus-server-ts/src/application-bundles/providers/application-owned-local-team-validator.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts
+ M autobyteus-server-ts/src/startup/agent-tool-loader.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-definition/agent-definition-service-batch-mapping.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-definition/cached-agent-definition-provider.test.ts
+ M autobyteus-server-ts/tests/unit/agent-definition/team-local-agent-discovery.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-definition/team-local-team-discovery.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-ts/docs/agent_team_design.md
+ M autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+ M autobyteus-ts/docs/event_driven_core_design.md
+ D autobyteus-ts/src/agent-team/agent-team-builder.ts
+ D autobyteus-ts/src/agent-team/agent-team.ts
+ D autobyteus-ts/src/agent-team/base-agent-team.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/agent-configuration-preparation-step.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/agent-team-bootstrapper.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/base-agent-team-bootstrap-step.ts
+ D autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts
+ D autobyteus-ts/src/agent-team/context/agent-team-config.ts
+ D autobyteus-ts/src/agent-team/context/agent-team-context.ts
+ D autobyteus-ts/src/agent-team/context/agent-team-runtime-state.ts
+ D autobyteus-ts/src/agent-team/context/create-scoped-native-team-context.ts
+ D autobyteus-ts/src/agent-team/context/index.ts
+ D autobyteus-ts/src/agent-team/context/team-communication-context.ts
+ D autobyteus-ts/src/agent-team/context/team-manager.ts
+ D autobyteus-ts/src/agent-team/context/team-node-config.ts
+ D autobyteus-ts/src/agent-team/events/agent-team-event-dispatcher.ts
+ D autobyteus-ts/src/agent-team/events/agent-team-events.ts
+ D autobyteus-ts/src/agent-team/events/agent-team-input-event-queue-manager.ts
+ D autobyteus-ts/src/agent-team/events/event-store.ts
+ D autobyteus-ts/src/agent-team/exceptions.ts
+ D autobyteus-ts/src/agent-team/factory/agent-team-factory.ts
+ D autobyteus-ts/src/agent-team/factory/index.ts
+ D autobyteus-ts/src/agent-team/handlers/agent-team-event-handler-registry.ts
+ D autobyteus-ts/src/agent-team/handlers/base-agent-team-event-handler.ts
+ D autobyteus-ts/src/agent-team/handlers/inter-agent-message-request-event-handler.ts
+ D autobyteus-ts/src/agent-team/handlers/lifecycle-agent-team-event-handler.ts
+ D autobyteus-ts/src/agent-team/handlers/process-user-message-event-handler.ts
+ D autobyteus-ts/src/agent-team/handlers/tool-approval-team-event-handler.ts
+ D autobyteus-ts/src/agent-team/runtime/agent-team-runtime.ts
+ D autobyteus-ts/src/agent-team/runtime/agent-team-worker.ts
+ D autobyteus-ts/src/agent-team/runtime/index.ts
+ D autobyteus-ts/src/agent-team/shutdown-steps/agent-team-shutdown-orchestrator.ts
+ D autobyteus-ts/src/agent-team/shutdown-steps/agent-team-shutdown-step.ts
+ D autobyteus-ts/src/agent-team/shutdown-steps/base-agent-team-shutdown-step.ts
+ D autobyteus-ts/src/agent-team/shutdown-steps/bridge-cleanup-step.ts
+ D autobyteus-ts/src/agent-team/shutdown-steps/sub-team-shutdown-step.ts
+ D autobyteus-ts/src/agent-team/status/agent-team-status-manager.ts
+ D autobyteus-ts/src/agent-team/status/agent-team-status.ts
+ D autobyteus-ts/src/agent-team/status/status-deriver.ts
+ D autobyteus-ts/src/agent-team/status/status-update-utils.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-event-bridge.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-event-multiplexer.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-team-event-notifier.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-team-event-stream.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-team-stream-event-payloads.ts
+ D autobyteus-ts/src/agent-team/streaming/agent-team-stream-events.ts
+ D autobyteus-ts/src/agent-team/streaming/index.ts
+ D autobyteus-ts/src/agent-team/streaming/team-event-bridge.ts
+ D autobyteus-ts/src/agent-team/system-prompt-processor/team-manifest-injector-processor.ts
+ D autobyteus-ts/src/agent-team/utils/team-local-definition-id.ts
+ D autobyteus-ts/src/agent-team/utils/wait-for-idle.ts
+ M autobyteus-ts/src/agent/message/index.ts
+ D autobyteus-ts/src/agent/message/send-message-to.ts
+ M autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts
+ M autobyteus-ts/src/index.ts
+ M autobyteus-ts/src/memory/memory-manager.ts
+ M autobyteus-ts/src/memory/working-context-llm-safe-projector.ts
+ M autobyteus-ts/src/tools/register-tools.ts
+ D autobyteus-ts/tests/integration/agent-team/agent-team-single-flow.test.ts
+ D autobyteus-ts/tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts
+ D autobyteus-ts/tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts
+ M autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts
+ D autobyteus-ts/tests/unit/agent-team/agent-team-builder.test.ts
+ D autobyteus-ts/tests/unit/agent-team/agent-team.test.ts
+ D autobyteus-ts/tests/unit/agent-team/bootstrap-steps/agent-configuration-preparation-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/bootstrap-steps/agent-team-bootstrapper.test.ts
+ D autobyteus-ts/tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/context/team-manager.test.ts
+ D autobyteus-ts/tests/unit/agent-team/events/agent-team-event-dispatcher.test.ts
+ D autobyteus-ts/tests/unit/agent-team/events/agent-team-events.test.ts
+ D autobyteus-ts/tests/unit/agent-team/factory/agent-team-factory.test.ts
+ D autobyteus-ts/tests/unit/agent-team/handlers/agent-team-event-handler-registry.test.ts
+ D autobyteus-ts/tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts
+ D autobyteus-ts/tests/unit/agent-team/handlers/lifecycle-agent-team-event-handler.test.ts
+ D autobyteus-ts/tests/unit/agent-team/handlers/process-user-message-event-handler.test.ts
+ D autobyteus-ts/tests/unit/agent-team/handlers/tool-approval-team-event-handler.test.ts
+ D autobyteus-ts/tests/unit/agent-team/runtime/agent-team-runtime.test.ts
+ D autobyteus-ts/tests/unit/agent-team/runtime/agent-team-worker.test.ts
+ D autobyteus-ts/tests/unit/agent-team/shutdown-steps/agent-team-shutdown-orchestrator.test.ts
+ D autobyteus-ts/tests/unit/agent-team/shutdown-steps/agent-team-shutdown-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/shutdown-steps/bridge-cleanup-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/shutdown-steps/sub-team-shutdown-step.test.ts
+ D autobyteus-ts/tests/unit/agent-team/status/agent-team-status-manager.test.ts
+ D autobyteus-ts/tests/unit/agent-team/status/status-deriver.test.ts
+ D autobyteus-ts/tests/unit/agent-team/status/status-update-utils.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/agent-event-bridge.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/agent-event-multiplexer.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/agent-team-event-notifier.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/agent-team-event-stream.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/agent-team-stream-events.test.ts
+ D autobyteus-ts/tests/unit/agent-team/streaming/team-event-bridge.test.ts
+ D autobyteus-ts/tests/unit/agent-team/system-prompt-processor/team-manifest-injector-processor.test.ts
+ D autobyteus-ts/tests/unit/agent-team/team-local-definition-id.test.ts
+ D autobyteus-ts/tests/unit/agent/message/send-message-to.test.ts
+ M autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts
+ M autobyteus-ts/tests/unit/memory/memory-manager.test.ts
+?? autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts
+?? autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts
+?? autobyteus-server-ts/src/agent-execution/backends/autobyteus/team-communication/
+?? autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-team-session-cohort-coordinator.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-team-thread-cohort-coordinator.ts
+?? autobyteus-server-ts/src/agent-execution/domain/team-runtime-cohort-identity.ts
+?? autobyteus-server-ts/src/agent-team-definition/utils/team-local-definition-id.ts
+?? autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/
+?? autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-handle-recovery-cache.ts
+?? autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-parent-boundary-delivery-intent.ts
+?? autobyteus-server-ts/src/agent-team-execution/domain/team-message-target-selector.ts
+?? autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts
+?? autobyteus-server-ts/src/agent-team-execution/services/send-message-to-tool-contract.ts
+?? autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts
+?? autobyteus-server-ts/src/agent-tools/team-communication/
+?? autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.test.ts
+?? autobyteus-server-ts/tests/unit/agent-team-definition/utils/
+?? autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/team-communication/
+?? autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts
+?? tickets/in-progress/remove-native-autobyteus-agent-team/
+--- code review latest key lines ---
+8:- Trigger: CR-008 local fix for exact-run-only `send_message_to` exposure.
+27:| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+36:| 8 | Fresh full-ticket review after Round 7 local fixes | CR-003, CR-004, CR-005 | CR-006, CR-007 | Fail / Design Impact | No | Found pre-resolved recipient endpoint / hidden alias boundary problem. |
+37:| 9 | Round 8 delivery-intent boundary rework | CR-006, CR-007 | CR-008 | Fail / Local Fix | No | Boundary issue fixed; exact-run-only exposure remained gated by static roster. |
+38:| 10 | CR-008 local fix | CR-008 | None | Pass | Yes | Ready for API/E2E to resume. |
+42:Round 10 focused on CR-008 while rechecking cumulative architecture invariants:
+62:| 8 | CR-006 | Major / Architecture | Resolved | Old request builder absent; adapters submit `InterAgentMessageDeliveryIntent`; resolver resolves from `intent.target`; resolved request is internal only. | Still resolved. |
+63:| 8 | CR-007 | Medium | Resolved | Parser rejects hidden aliases; alias read scan remains clean. | Still resolved. |
+64:| 9 | CR-008 | Major | Resolved | `MemberTeamContextBuilder` now sets `sendMessageToEnabled` from delivery availability; provider gates no longer require `allowedRecipientNames.length`; exact-run-only instruction/tooling tests pass across AutoByteus/Codex/Claude. | Local fix accepted. |
+68:Changed source implementation files remain under the 500 effective non-empty line hard limit. Files over the proactive 220-line pressure threshold from the Round 10 audit:
+77:| `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | <220 | Pass | Pass | Correctly separates delivery availability from roster display after CR-008. | Correct service owner. | None. | None. |
+84:| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+95:| Scope-appropriate separation of concerns and file responsibility clarity | Pass | CR-008 changes are placed in the context/tooling/instruction owners that own those concerns. | None. |
+99:| Flat-vs-over-split layout judgment | Pass | Layout remains readable; no artificial split added for CR-008. | None. |
+102:| No unjustified duplication of code / repeated structures in changed scope | Pass | CR-008 removed duplicated provider-level static roster gates. | None. |
+122:| `4` | `Separation of Concerns and File Placement` | 9.1 | CR-008 changes landed in context/instruction/provider tooling owners. | Several provider files are near size pressure but under limit. | Avoid future growth. |
+125:| `7` | `Validation Readiness` | 9.1 | Reviewer reran focused tests, regressions, typecheck, and build successfully. | Live API/E2E matrix not yet rerun after CR-008. | API/E2E should proceed. |
+167:### CR-006 — `recipient_name` resolution still happens above the mixed delivery boundary, leaving two authoritative target representations
+174:### CR-007 — `send_message_to` parser still accepts undocumented target selector aliases
+181:### CR-008 — `send_message_to` exposure still requires static roster recipients, so exact-run-only reachable messaging can be unavailable
+183:- Status: Resolved in Round 10.
+196:| Area | Check | Result (`Pass`/`Fail`) | Notes |
+198:| Validation Readiness | Ready for API / E2E | Pass | API/E2E should resume with the live matrix. |
+206:- CR-008 exposure gate scans — passed; remaining roster-length checks are display/instruction rendering only, not send-message exposure gates.
+209:- Focused CR-008 tests — passed (`8` files, `32` tests).
+217:| Check | Result (`Pass`/`Fail`) | Notes |
+241:- Latest Authoritative Result: Pass.
+256:## Latest Authoritative Result
+258:- Review Decision: Pass
+259:- Score Summary: `9.2/10` (`92/100`). The Round 8 boundary design and CR-008 exact-run-only exposure invariant are now implemented cleanly enough for API/E2E.
+--- design rework files present ---
+present: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/tickets/in-progress/remove-native-autobyteus-agent-team/round4-design-impact-rework.md
+present: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/tickets/in-progress/remove-native-autobyteus-agent-team/round4-simplified-task-agent-communication-design.md
+present: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/tickets/in-progress/remove-native-autobyteus-agent-team/round5-send-message-addressing-design.md
+present: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/tickets/in-progress/remove-native-autobyteus-agent-team/round8-delivery-intent-boundary-design.md
+--- codex version ---
+codex-cli 0.137.0
+--- claude version ---
+2.1.131 (Claude Code)
+--- LM Studio models ---
+model_count 29
+qwen3.6-27b-mtplx-optimized-speed
+qwen3.6-27b-ud-mlx
+qwen3.6-27b
+qwen3.6-35b-a3b
+qwen3.6-35b-a3b-nvfp4
+qwen3.5-27b-claude-4.6-opus-distilled-mlx
+qwen3.5-27b
+mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled
+qwen/qwen3.5-35b-a3b
+qwen/qwen3-coder-next
+lmstudio-community/qwen3-next-80b-a3b-thinking
+unsloth/qwen3-next-80b-a3b-thinking
+qwen/qwen3-vl-30b
+qwen/qwen3-30b-a3b-2507
+qwen/qwen3-next-80b
+qwen3.6-35b-a3b-present True
+Completed: 2026-06-08T08:50:47+02:00

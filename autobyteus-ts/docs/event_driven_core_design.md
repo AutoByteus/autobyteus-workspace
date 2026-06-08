@@ -2,10 +2,13 @@
 
 ## 1. Scope and Goals
 
-This document describes the event-driven core that powers Autobyteus agents,
-agent teams, and workflows. It focuses on how runtimes serialize work through
-event inboxes, route events to the active owner, publish streamable status/output,
-and shut down cleanly.
+This document describes the event-driven core that powers native AutoByteus
+agents and workflows. Team orchestration is no longer native to
+`autobyteus-ts`; server team execution lives in `autobyteus-server-ts` and
+drives AutoByteus team members through ordinary single-agent `AgentRun`
+boundaries. This document focuses on how native runtimes serialize work through
+event inboxes, route events to the active owner, publish streamable
+status/output, and shut down cleanly.
 
 The implementation intentionally separates two concerns:
 
@@ -21,7 +24,7 @@ or handler control flow.
 
 ## 2. Core Runtime Layers
 
-Each runtime (`AgentRuntime`, `AgentTeamRuntime`, `WorkflowRuntime`) owns:
+Each native runtime (`AgentRuntime`, `WorkflowRuntime`) owns:
 
 - the runtime context and mutable runtime state;
 - status derivation/projection;
@@ -111,14 +114,14 @@ new turn triggers.
 
 ---
 
-## 5. Team and Workflow Mailboxes
+## 5. Server Team Boundary and Workflow Mailboxes
 
-Agent team and workflow runtimes keep simpler serialized queues for their own
-coordination. Team code can route a command to a member agent, but member-agent
-turn controls must go through the member's public APIs. For example, team tool
-approval commands resolve the target member and call
-`memberAgent.postToolExecutionApproval(...)`; they do not bypass the member
-runtime state or inject tool events directly into a member event inbox.
+Server team execution has its own coordination stack in `autobyteus-server-ts`.
+Team code can route a command to a member agent, but member-agent turn controls
+must go through the member's public APIs. For example, team tool approval
+commands resolve the target member and call the member agent's public approval
+boundary; they do not bypass the member runtime state or inject tool events
+directly into a member event inbox.
 
 Team communication events are projected through the team/server stream pipeline.
 When inter-agent messages carry structured `reference_files`, the recipient
@@ -137,8 +140,8 @@ The event-driven core emits external, streamable events for UIs and monitoring:
 - The notifier emits status updates, segment events, tool lifecycle/log events,
   inter-agent/system-task data events, and assistant output events.
 - `AgentEventStream` maps notifier events into stream records.
-- Agent-team stream handlers enrich and project member events, team
-  communication messages, and reference-file entries.
+- Server-side team stream handlers enrich and project member events, Team
+  Communication messages, task-agent metadata, and reference-file entries.
 
 Server and web protocol layers use canonical `turn_id` in outbound segment
 payloads. Frontend stores/projectors treat interrupted and failed segments as
@@ -201,4 +204,6 @@ classes.
 - Tool phase: `src/agent/loop/tool-phase.ts`
 - Active-turn tool port: `src/agent/loop/turn-tool-input-port.ts`
 - Tool continuation builder: `src/agent/loop/tool-result-continuation-builder.ts`
-- Server team execution and team stream fan-out: `autobyteus-server-ts/src/agent-team-execution/` and `autobyteus-server-ts/src/services/agent-streaming/`
+- Server team execution and team stream fan-out:
+  `autobyteus-server-ts/src/agent-team-execution/` and
+  `autobyteus-server-ts/src/services/agent-streaming/`

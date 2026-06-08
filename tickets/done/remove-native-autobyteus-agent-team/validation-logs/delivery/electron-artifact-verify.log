@@ -1,0 +1,36 @@
+# Electron artifact verification
+Date: 2026-06-08T15:03:39+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+Branch: codex/remove-native-autobyteus-agent-team
+HEAD: 244e1060185522b0ed4fb389b786ce33747a9469
+
+## Artifact listing
+-rw-r--r--@ 1 normy  staff   360M Jun  8 15:02 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.dmg
+-rw-r--r--@ 1 normy  staff   384K Jun  8 15:02 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   357M Jun  8 15:03 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.zip
+-rw-r--r--@ 1 normy  staff   375K Jun  8 15:03 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.zip.blockmap
+
+## hdiutil verify
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $775EF8E6
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $B6F4B885
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $EA98AEFE
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $A4FA1774
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $EA98AEFE
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $B6AB677D
+Die überprüfte CRC32-Prüfsumme ist $E87108A1
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.dmg" is VALID
+PASS: hdiutil verify
+
+## zip test
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.48.zip.
+PASS: unzip -tq
