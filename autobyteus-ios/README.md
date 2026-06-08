@@ -99,9 +99,12 @@ IOS_BUNDLE_ID=org.autobyteus.mobile
 IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share
 IOS_APP_SCHEME=AutoByteusMobile
 IOS_ARTIFACT_PREFIX=AutoByteus_personal_ios
+IOS_XCODE_APP_PATH=/Applications/Xcode_26.3.app
 ```
 
 `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` are the single app/share target bundle-ID authority. The XcodeGen project defines target bundle identifiers from those build settings, and the workflow passes the same values to simulator build/test/smoke, profile verification, archive, `ExportOptions.plist`, and summaries.
+
+`IOS_XCODE_APP_PATH` selects the Xcode app bundle used by both the simulator build/test job and the App Store Connect archive/upload job. The workflow sets `DEVELOPER_DIR`, requires the selected Xcode major version to be 26 or newer, and logs the selected Xcode plus iPhoneOS SDK before building or archiving. Override this variable only when the GitHub-hosted runner moves the required Xcode 26+ installation to a different app path.
 
 Release metadata is split for App Store compatibility. For a tag such as `v1.2.7-rc1`, the workflow uses `ios_marketing_version=1.2.7` for `MARKETING_VERSION` / `CFBundleShortVersionString`, keeps `artifact_version=1.2.7-rc1` for artifact names, records `prerelease_label=rc1` for summaries/TestFlight notes, and uses numeric `GITHUB_RUN_NUMBER` for `CURRENT_PROJECT_VERSION` / `CFBundleVersion`.
 

@@ -1,0 +1,10 @@
+PASS	run conclusion success	status=completed conclusion=success
+PASS	build job selected Xcode 26+	expects /Applications/Xcode_26.3.app and Xcode 26.3
+PASS	build job selected iPhoneOS SDK 26+	expects Selected iPhoneOS SDK: 26.2
+PASS	build job no broken pipe crash	no NSFileHandleOperationException / Broken pipe
+PASS	archive/upload job selected Xcode 26+	expects /Applications/Xcode_26.3.app and Xcode 26.3
+PASS	archive/upload job selected iPhoneOS SDK 26+	expects Selected iPhoneOS SDK: 26.2
+PASS	archive/upload job no broken pipe crash	no NSFileHandleOperationException / Broken pipe
+PASS	no prior App Store Connect SDK rejection	old iOS 18.5 SDK rejection absent
+PASS	archive/upload job reached upload step	upload step present
+PASS	archive/upload job completed	archive/upload job conclusion success

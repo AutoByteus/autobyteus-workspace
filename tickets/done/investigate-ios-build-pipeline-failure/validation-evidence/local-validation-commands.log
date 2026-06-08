@@ -1,0 +1,35 @@
+# Local executable validation log
+Timestamp UTC: 2026-06-08T06:07:10Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-ios-build-pipeline-failure
+Branch: codex/investigate-ios-build-pipeline-failure
+HEAD: dfc26eec54cdf685442740691ce5469754ab945f
+
+## git status --short --branch
+## codex/investigate-ios-build-pipeline-failure...origin/personal
+ M .github/workflows/release-ios.yml
+ M autobyteus-ios/scripts/ios-release-contract-check.py
+?? tickets/investigate-ios-build-pipeline-failure/
+
+## Changed tracked files
+.github/workflows/release-ios.yml
+autobyteus-ios/scripts/ios-release-contract-check.py
+
+## ./autobyteus-ios/scripts/ios-release-contract-check.py
+iOS release contract checks passed.
+
+## python3 -m py_compile autobyteus-ios/scripts/ios-release-contract-check.py
+py_compile passed
+
+## PyYAML parse and Xcode step ordering/coverage assertions
+build-ios: Select step index 1; Install XcodeGen index 2; pre-select Apple tooling absent; required fragments present.
+upload-testflight: Select step index 1; Install XcodeGen index 2; pre-select Apple tooling absent; required fragments present.
+Workflow env and Xcode ordering assertions passed.
+
+## git diff --check
+git diff --check passed
+
+## actionlint .github/workflows/release-ios.yml
+actionlint passed
+
+## Diff scope / signing-secret stability assertion
+Only expected tracked files changed; release workflow diff is additive; no signing/certificate/profile/App Store Connect secret lines changed.

@@ -1,0 +1,42 @@
+# Local Fix workflow Xcode selection step simulation
+Timestamp UTC: 2026-06-08T08:20:51Z
+
+## build-ios success: full xcodebuild output captured without pipeline
+expected_rc=0 actual_rc=0
+Selected Xcode app: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-r3z5u58s/Applications/Xcode_26.3.app
+Xcode 26.3
+Build version FAKE
+Selected iPhoneOS SDK: 26.2
+
+## build-ios rejects Xcode 16.4
+expected_rc=1 actual_rc=1
+::error::Selected Xcode must be 26 or newer; found '16.4' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-6e_xug1o/Applications/Xcode_26.3.app.
+Xcode 16.4
+Build version FAKE
+
+## build-ios rejects missing path
+expected_rc=1 actual_rc=1
+::error::Configured Xcode 26+ app path is unavailable: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-5kterqq1/Applications/Xcode_26.3.app
+Installed Xcode apps:
+/Applications/Xcode.app
+
+## upload-testflight success: full xcodebuild output captured without pipeline
+expected_rc=0 actual_rc=0
+Selected Xcode app: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-ccupj0qe/Applications/Xcode_26.3.app
+Xcode 26.3
+Build version FAKE
+Selected iPhoneOS SDK: 26.2
+
+## upload-testflight rejects Xcode 16.4
+expected_rc=1 actual_rc=1
+::error::Selected Xcode must be 26 or newer; found '16.4' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-7q1rhm9e/Applications/Xcode_26.3.app.
+Xcode 16.4
+Build version FAKE
+
+## upload-testflight rejects missing path
+expected_rc=1 actual_rc=1
+::error::Configured Xcode 26+ app path is unavailable: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-local-fix-rrx05ea5/Applications/Xcode_26.3.app
+Installed Xcode apps:
+/Applications/Xcode.app
+
+Local Fix workflow-step simulation passed.

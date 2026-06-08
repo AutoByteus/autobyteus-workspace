@@ -1,0 +1,8 @@
+$ python3 autobyteus-ios/scripts/ios-release-contract-check.py
+iOS release contract checks passed.
+$ git diff --check
+$ python3 scripts/check_repository_artifact_hygiene.py (pre-stage tracked baseline)
+Repository artifact hygiene check passed.
+Tracked files scanned: 11350
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
