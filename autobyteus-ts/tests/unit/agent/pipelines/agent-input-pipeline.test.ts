@@ -45,21 +45,6 @@ const makeContextAndTurn = () => {
   return { context: new AgentContext('agent-1', config, state), turn };
 };
 
-const attachTeamCommunicationContext = (
-  context: AgentContext,
-  resolveMemberNameByAgentId: (agentId: string) => string | null
-) => {
-  context.state.customData = {
-    teamContext: {
-      communicationContext: {
-        members: [],
-        dispatchInterAgentMessageRequest: vi.fn(async () => undefined),
-        resolveMemberNameByAgentId
-      }
-    }
-  };
-};
-
 const countOccurrences = (content: string, needle: string): number =>
   content.split(needle).length - 1;
 
@@ -156,12 +141,8 @@ describe('AgentInputPipeline', () => {
     expect(String(result.llmUserMessage.content)).toContain('system task update');
   });
 
-  it('converts inter-agent messages with resolved sender display name and strict recipient input shape', async () => {
+  it('converts inter-agent messages with sender id and strict recipient input shape', async () => {
     const { context, turn } = makeContextAndTurn();
-    attachTeamCommunicationContext(
-      context,
-      (agentId) => (agentId === 'sender_agent_123' ? 'Professor' : null)
-    );
     const notifier = {
       notifyAgentDataInterAgentMessageReceived: vi.fn()
     };
@@ -190,7 +171,7 @@ describe('AgentInputPipeline', () => {
     });
     const contentSent = String(result.llmUserMessage.content);
     expect(contentSent).toContain(
-      'You received a message from sender name: Professor, sender id: sender_agent_123'
+      'You received a message from sender name: sender_agent_123, sender id: sender_agent_123'
     );
     expect(contentSent).toContain('message:\nThis is a test message from another agent.');
     expect(contentSent).not.toContain('Message Type:');
@@ -205,10 +186,6 @@ describe('AgentInputPipeline', () => {
 
   it('includes explicit reference files once in recipient runtime input and metadata', async () => {
     const { context, turn } = makeContextAndTurn();
-    attachTeamCommunicationContext(
-      context,
-      (agentId) => (agentId === 'sender_agent_123' ? 'Professor' : null)
-    );
     const notifier = {
       notifyAgentDataInterAgentMessageReceived: vi.fn()
     };
@@ -242,7 +219,6 @@ describe('AgentInputPipeline', () => {
 
   it('keeps strict inter-agent template when sender name cannot be resolved', async () => {
     const { context, turn } = makeContextAndTurn();
-    attachTeamCommunicationContext(context, () => null);
     const pipeline = new AgentInputPipeline();
     const senderId = 'member_1249a255a7c74b9b';
     const interAgentMsg = new InterAgentMessage(
@@ -261,44 +237,6 @@ describe('AgentInputPipeline', () => {
 
     expect(String(result.llmUserMessage.content)).toContain(
       `You received a message from sender name: ${senderId}, sender id: ${senderId}\nmessage:\nhello`
-    );
-  });
-
-  it('resolves inter-agent sender name when team communication method requires bound this context', async () => {
-    const { context, turn } = makeContextAndTurn();
-    const senderId = 'member_sender_1';
-    const communicationContextWithState = {
-      senderById: {
-        [senderId]: 'Professor'
-      } as Record<string, string>,
-      members: [],
-      dispatchInterAgentMessageRequest: vi.fn(async () => undefined),
-      resolveMemberNameByAgentId(agentId: string): string | null {
-        return this.senderById[agentId] ?? null;
-      }
-    };
-    context.state.customData = {
-      teamContext: {
-        communicationContext: communicationContextWithState
-      }
-    };
-    const pipeline = new AgentInputPipeline();
-    const interAgentMsg = new InterAgentMessage(
-      context.config.role,
-      context.agentId,
-      'hello from teammate',
-      'clarification',
-      senderId
-    );
-
-    const result = await pipeline.processExternalTrigger(
-      new InterAgentMessageReceivedEvent(interAgentMsg),
-      context,
-      turn
-    );
-
-    expect(String(result.llmUserMessage.content)).toContain(
-      `You received a message from sender name: Professor, sender id: ${senderId}\nmessage:\nhello from teammate`
     );
   });
 });

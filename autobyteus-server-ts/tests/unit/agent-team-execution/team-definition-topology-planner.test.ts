@@ -3,7 +3,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+} from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamDefinitionTopologyPlanner } from "../../../src/agent-team-execution/services/team-definition-topology-planner.js";

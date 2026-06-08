@@ -201,5 +201,4 @@ classes.
 - Tool phase: `src/agent/loop/tool-phase.ts`
 - Active-turn tool port: `src/agent/loop/turn-tool-input-port.ts`
 - Tool continuation builder: `src/agent/loop/tool-result-continuation-builder.ts`
-- Team workers: `src/agent-team/runtime/agent-team-worker.ts`
-- Stream multiplexing: `src/agent-team/streaming/agent-event-multiplexer.ts`
+- Server team execution and team stream fan-out: `autobyteus-server-ts/src/agent-team-execution/` and `autobyteus-server-ts/src/services/agent-streaming/`

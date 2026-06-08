@@ -4,8 +4,6 @@ import {
   type TaskDelegationDelegatorIdentity,
   type TaskDelegationMemberIdentity,
   type TaskDelegationRecord,
-  type TaskDelegationReportedTerminalStatus,
-  type TaskDelegationStatus,
   type TaskDelegationTaskInput,
 } from "./task-delegation-record.js";
 import {
@@ -45,7 +43,6 @@ const cloneRecord = (record: TaskDelegationRecord): TaskDelegationRecord => ({
   member: cloneIdentity(record.member),
   delegator: cloneDelegatorIdentity(record.delegator),
   referenceFiles: [...record.referenceFiles],
-  statusReferenceFiles: [...record.statusReferenceFiles],
   taskAgentInstance: record.taskAgentInstance
     ? cloneTaskAgentIdentity(record.taskAgentInstance)
     : null,
@@ -89,13 +86,13 @@ export class TaskDelegationLedger {
         delegator: cloneDelegatorIdentity(item.delegator),
         referenceFiles: [...(item.task.reference_files ?? [])],
         taskAgentInstance: null,
-        statusMessage: null,
-        statusReferenceFiles: [],
+        targetAgentRunId: null,
+        delegatorReplyRecipientName: null,
+        delegatorReplyTargetAgentRunId: null,
         acceptanceMessage: null,
         acceptedAt: null,
         createdAt: now,
         updatedAt: now,
-        queuedAt: null,
         terminalAt: null,
       };
       this.recordsById.set(taskId, record);
@@ -127,50 +124,11 @@ export class TaskDelegationLedger {
     return this.listRecords().filter((record) => record.status === "not_started");
   }
 
-  markQueued(
-    taskIds: string[],
-    taskAgentInstancesByTaskId: ReadonlyMap<string, TaskAgentInstanceIdentity> = new Map(),
-  ): TaskDelegationRecord[] {
-    const now = new Date().toISOString();
-    const queued: TaskDelegationRecord[] = [];
-    for (const taskId of taskIds) {
-      const record = this.recordsById.get(taskId);
-      if (!record || record.status !== "not_started") {
-        continue;
-      }
-      record.status = "queued";
-      record.taskAgentInstance = taskAgentInstancesByTaskId.get(taskId)
-        ? cloneTaskAgentIdentity(taskAgentInstancesByTaskId.get(taskId)!)
-        : record.taskAgentInstance;
-      record.queuedAt = now;
-      record.updatedAt = now;
-      queued.push(cloneRecord(record));
-    }
-    return queued;
-  }
-
-  markNotStarted(taskIds: string[]): TaskDelegationRecord[] {
-    const now = new Date().toISOString();
-    const records: TaskDelegationRecord[] = [];
-    for (const taskId of taskIds) {
-      const record = this.recordsById.get(taskId);
-      if (!record || record.status !== "queued") {
-        continue;
-      }
-      record.status = "not_started";
-      record.taskAgentInstance = null;
-      record.queuedAt = null;
-      record.updatedAt = now;
-      records.push(cloneRecord(record));
-    }
-    return records;
-  }
-
-  updateStatus(input: {
+  bindTaskAgent(input: {
     taskId: string;
-    status: TaskDelegationReportedTerminalStatus;
-    message?: string | null;
-    referenceFiles?: string[];
+    taskAgentInstance: TaskAgentInstanceIdentity;
+    delegatorReplyRecipientName?: string | null;
+    delegatorReplyTargetAgentRunId?: string | null;
   }): TaskDelegationRecord {
     const record = this.recordsById.get(input.taskId);
     if (!record) {
@@ -179,27 +137,63 @@ export class TaskDelegationLedger {
         `Delegated task '${input.taskId}' was not found.`,
       );
     }
-    if (isTaskDelegationTerminalStatus(record.status)) {
+    if (record.status !== "not_started") {
       throw new TaskDelegationError(
-        "TASK_ALREADY_TERMINAL",
+        "TASK_ALREADY_ACTIVE",
         `Delegated task '${input.taskId}' is already ${record.status}.`,
       );
     }
-    const nextStatus = input.status === "completed" ? "awaiting_acceptance" : input.status;
-    this.assertValidStatusTransition(record, nextStatus);
     const now = new Date().toISOString();
-    record.status = nextStatus;
+    record.taskAgentInstance = cloneTaskAgentIdentity(input.taskAgentInstance);
+    record.targetAgentRunId = input.taskAgentInstance.taskAgentRunId;
+    record.delegatorReplyRecipientName = input.delegatorReplyRecipientName?.trim() || null;
+    record.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
     record.updatedAt = now;
-    if (input.referenceFiles?.length) {
-      record.statusReferenceFiles.push(...input.referenceFiles);
-    }
-    if (input.message !== undefined) {
-      record.statusMessage = input.message?.trim() || null;
-    }
-    if (isTaskDelegationTerminalStatus(nextStatus)) {
-      record.terminalAt = now;
-    }
     return cloneRecord(record);
+  }
+
+  markActive(taskId: string): TaskDelegationRecord {
+    const record = this.recordsById.get(taskId);
+    if (!record) {
+      throw new TaskDelegationError(
+        "TASK_NOT_FOUND",
+        `Delegated task '${taskId}' was not found.`,
+      );
+    }
+    if (record.status !== "not_started") {
+      throw new TaskDelegationError(
+        "INVALID_STATUS_TRANSITION",
+        `Delegated task '${taskId}' cannot transition from ${record.status} to active.`,
+      );
+    }
+    if (!record.taskAgentInstance || !record.targetAgentRunId) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_NOT_BOUND",
+        `Delegated task '${taskId}' is not bound to a task-agent instance.`,
+      );
+    }
+    const now = new Date().toISOString();
+    record.status = "active";
+    record.updatedAt = now;
+    return cloneRecord(record);
+  }
+
+  markNotStarted(taskIds: string[]): TaskDelegationRecord[] {
+    const now = new Date().toISOString();
+    const records: TaskDelegationRecord[] = [];
+    for (const taskId of taskIds) {
+      const record = this.recordsById.get(taskId);
+      if (!record || record.status !== "not_started") {
+        continue;
+      }
+      record.taskAgentInstance = null;
+      record.targetAgentRunId = null;
+      record.delegatorReplyRecipientName = null;
+      record.delegatorReplyTargetAgentRunId = null;
+      record.updatedAt = now;
+      records.push(cloneRecord(record));
+    }
+    return records;
   }
 
   acceptTask(input: {
@@ -213,10 +207,10 @@ export class TaskDelegationLedger {
         `Delegated task '${input.taskId}' was not found.`,
       );
     }
-    if (record.status !== "awaiting_acceptance") {
+    if (record.status !== "active") {
       throw new TaskDelegationError(
-        "TASK_NOT_AWAITING_ACCEPTANCE",
-        `Delegated task '${input.taskId}' is ${record.status}, not awaiting acceptance.`,
+        "TASK_NOT_ACTIVE",
+        `Delegated task '${input.taskId}' is ${record.status}, not active.`,
       );
     }
     const now = new Date().toISOString();
@@ -233,13 +227,11 @@ export class TaskDelegationLedger {
     if (!normalizedRouteKey) {
       return false;
     }
-    const records = [...this.recordsById.values()].filter(
-      (record) => record.member.memberRouteKey === normalizedRouteKey,
+    return [...this.recordsById.values()].some(
+      (record) =>
+        record.member.memberRouteKey === normalizedRouteKey &&
+        !isTaskDelegationTerminalStatus(record.status),
     );
-    if (records.some((record) => record.status === "queued")) {
-      return true;
-    }
-    return records.some((record) => record.status === "not_started");
   }
 
   hasCurrentWorkForTaskAgentInstance(taskAgentRunId: string): boolean {
@@ -250,37 +242,12 @@ export class TaskDelegationLedger {
     return [...this.recordsById.values()].some(
       (record) =>
         record.taskAgentInstance?.taskAgentRunId === normalizedRunId &&
-        (
-          record.status === "queued" ||
-          record.status === "awaiting_acceptance"
-        ),
+        !isTaskDelegationTerminalStatus(record.status),
     );
   }
 
   private nextTaskId(): string {
     this.idCounter += 1;
     return `task_${String(this.idCounter).padStart(4, "0")}`;
-  }
-
-  private assertValidStatusTransition(
-    record: TaskDelegationRecord,
-    nextStatus: Exclude<TaskDelegationStatus, "not_started" | "queued">,
-  ): void {
-    if (record.status === "not_started") {
-      throw new TaskDelegationError(
-        "INVALID_STATUS_TRANSITION",
-        `Delegated task '${record.taskId}' has not been activated and cannot be updated to ${nextStatus}.`,
-      );
-    }
-    if (
-      record.status === "queued" ||
-      record.status === "awaiting_acceptance"
-    ) {
-      return;
-    }
-    throw new TaskDelegationError(
-      "INVALID_STATUS_TRANSITION",
-      `Delegated task '${record.taskId}' cannot transition from ${record.status} to ${nextStatus}.`,
-    );
   }
 }

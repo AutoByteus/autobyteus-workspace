@@ -1,6 +1,6 @@
 import { AgentDefinition } from "../domain/models.js";
 import { AgentDefinitionPersistenceProvider } from "./agent-definition-persistence-provider.js";
-import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),

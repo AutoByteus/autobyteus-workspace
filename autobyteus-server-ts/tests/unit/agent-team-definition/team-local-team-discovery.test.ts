@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { buildTeamLocalTeamDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { buildTeamLocalTeamDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { listAllTeamSourcePaths } from "../../../src/agent-team-definition/providers/team-local-team-discovery.js";
 import {
   findTeamSourcePaths,

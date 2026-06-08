@@ -6,8 +6,8 @@ import {
 } from "../../../src/agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type {
-  InterAgentMessageDeliveryRequest,
   InterAgentMessageParticipant,
+  ResolvedInterAgentMessageDeliveryRequest,
 } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 
@@ -38,9 +38,10 @@ const endpoint = (
 ) => ({ participant: member, selector });
 
 const buildRequest = (
-  overrides: Partial<InterAgentMessageDeliveryRequest> = {},
-): InterAgentMessageDeliveryRequest => ({
+  overrides: Partial<ResolvedInterAgentMessageDeliveryRequest> = {},
+): ResolvedInterAgentMessageDeliveryRequest => ({
   teamRunId: "team-1",
+  target: { kind: "recipient_name", recipientName: "Reviewer" },
   sender: endpoint(participant({
     memberName: "Writer",
     memberRunId: "run-writer",
@@ -54,6 +55,8 @@ const buildRequest = (
   content: "Please review the draft.",
   messageType: "direct_message",
   referenceFiles: [],
+  resolvedTargetKind: "logical_member",
+  targetAgentRunId: "run-reviewer",
   ...overrides,
 });
 

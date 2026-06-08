@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+} from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { findAgentSourcePaths } from "../../../src/agent-definition/providers/agent-definition-source-paths.js";
 import { listTeamLocalAgentDefinitions } from "../../../src/agent-definition/providers/team-local-agent-discovery.js";

@@ -35,7 +35,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   const sendMessageToToolingEnabled =
     input.configuredToolExposure.sendMessageToConfigured &&
     Boolean(input.memberTeamContext?.sendMessageToEnabled) &&
-    (input.memberTeamContext?.allowedRecipientNames ?? []).length > 0;
+    Boolean(input.memberTeamContext?.deliverInterAgentMessage);
   const publishArtifactsToolingEnabled =
     input.configuredToolExposure.publishArtifactsConfigured;
   const taskDelegationToolingEnabled =

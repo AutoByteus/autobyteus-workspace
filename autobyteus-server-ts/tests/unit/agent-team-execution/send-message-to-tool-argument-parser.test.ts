@@ -42,6 +42,41 @@ describe("send-message-to-tool-argument-parser", () => {
     expect(validateParsedSendMessageToToolArguments("send_message_to", empty)).toBeNull();
   });
 
+  it("accepts canonical exact-run selector and rejects both canonical selectors", () => {
+    const exact = parseSendMessageToToolArguments({
+      target_agent_run_id: "run-1",
+      content: "hello",
+    });
+    expect(exact.target).toEqual({
+      kind: "target_agent_run_id",
+      targetAgentRunId: "run-1",
+    });
+    expect(validateParsedSendMessageToToolArguments("send_message_to", exact)).toBeNull();
+
+    const both = parseSendMessageToToolArguments({
+      recipient_name: "reviewer",
+      target_agent_run_id: "run-1",
+      content: "hello",
+    });
+    expect(validateParsedSendMessageToToolArguments("send_message_to", both)).toMatchObject({
+      code: "TARGET_SELECTOR_INVALID",
+    });
+  });
+
+  it("rejects hidden target selector aliases", () => {
+    for (const alias of ["recipient", "recipientName", "targetAgentRunId"]) {
+      const parsed = parseSendMessageToToolArguments({
+        [alias]: alias === "targetAgentRunId" ? "run-1" : "reviewer",
+        content: "hello",
+      });
+
+      expect(validateParsedSendMessageToToolArguments("send_message_to", parsed)).toEqual({
+        code: "UNSUPPORTED_TARGET_SELECTOR_ALIAS",
+        message: `send_message_to target selector fields must use recipient_name or target_agent_run_id only. Unsupported field(s): ${alias}.`,
+      });
+    }
+  });
+
   it("fails malformed reference_files before delivery", () => {
     const parsed = parseSendMessageToToolArguments({
       recipient_name: "reviewer",

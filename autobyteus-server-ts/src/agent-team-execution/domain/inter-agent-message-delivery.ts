@@ -1,4 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { TeamMessageTargetSelector } from "./team-message-target-selector.js";
 import {
   buildMemberRouteKeyFromPath,
   selectorFromMemberPath,
@@ -43,20 +44,27 @@ export type InterAgentMessageDeliveryEndpoint = {
   selector: TeamMemberSelector;
 };
 
-export interface InterAgentMessageDeliveryRequest {
+export interface InterAgentMessageDeliveryIntent {
   teamRunId: string;
   sender: InterAgentMessageDeliveryEndpoint;
-  recipient: InterAgentMessageDeliveryEndpoint;
+  target: TeamMessageTargetSelector;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+}
+
+export interface ResolvedInterAgentMessageDeliveryRequest extends InterAgentMessageDeliveryIntent {
+  recipient: InterAgentMessageDeliveryEndpoint;
+  resolvedTargetKind: "logical_member" | "agent_run" | "task_agent_run";
+  targetAgentRunId: string;
+  taskId?: string | null;
   parentCommunicationMessageId?: string | null;
   recipientInputMessageId?: string | null;
   recipientInputDedupeKey?: string | null;
 }
 
 export type InterAgentMessageDeliveryHandler = (
-  request: InterAgentMessageDeliveryRequest,
+  intent: InterAgentMessageDeliveryIntent,
 ) => Promise<AgentOperationResult>;
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {

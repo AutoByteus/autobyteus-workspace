@@ -17,6 +17,7 @@ describe("claude-send-message-tool-definition-builder", () => {
           memberTeamContext: {
             teamRunId: "team-1",
             allowedRecipientNames: ["Reviewer"],
+            sendMessageToEnabled: true,
           },
         },
       } as any,

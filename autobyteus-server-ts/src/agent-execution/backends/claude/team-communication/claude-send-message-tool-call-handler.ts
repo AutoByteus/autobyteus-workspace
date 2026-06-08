@@ -13,7 +13,7 @@ import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
 } from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
-import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../../agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
+import { buildInterAgentMessageDeliveryIntent } from "../../../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 
 export type ClaudeSendMessageToolApprovalDecision = {
   approved: boolean;
@@ -133,12 +133,11 @@ export class ClaudeSendMessageToolCallHandler {
     const parsed = parseSendMessageToToolArguments(args);
 
     const normalizedArguments: Record<string, unknown> = {
-      recipient_name: parsed.recipientName ?? "",
+      ...(parsed.recipientName ? { recipient_name: parsed.recipientName } : {}),
+      ...(parsed.targetAgentRunId ? { target_agent_run_id: parsed.targetAgentRunId } : {}),
       content: parsed.content ?? "",
       message_type: parsed.messageType,
       ...(parsed.referenceFiles.length > 0 ? { reference_files: parsed.referenceFiles } : {}),
-      ...(parsed.taskAgentRunId ? { task_agent_run_id: parsed.taskAgentRunId } : {}),
-      ...(parsed.taskAgentInstanceId ? { task_agent_id: parsed.taskAgentInstanceId } : {}),
     };
 
     const invocationId = `${options.runContext.runId}:${CLAUDE_SEND_MESSAGE_TOOL_NAME}:${Date.now()}:${Math.random()
@@ -204,37 +203,34 @@ export class ClaudeSendMessageToolCallHandler {
       }
     }
 
-    if (!parsed.recipientName || !parsed.content) {
+    if (!parsed.target || !parsed.content) {
       return this.buildRejectedResult({
         runContext: options.runContext,
         invocationId,
         toolArguments: normalizedArguments,
         code: "INVALID_TOOL_ARGUMENTS",
-        message: "send_message_to requires non-empty recipientMemberName and content.",
+        message: "send_message_to requires exactly one target selector and non-empty content.",
       });
     }
 
-    const recipientMemberName = parsed.recipientName.trim();
     const content = parsed.content.trim();
-    const requestResult = buildInterAgentMessageDeliveryRequestFromRecipientName({
+    const intentResult = buildInterAgentMessageDeliveryIntent({
       memberTeamContext,
-      recipientName: recipientMemberName,
+      target: parsed.target,
       content,
       messageType: parsed.messageType,
       referenceFiles: parsed.referenceFiles,
-      taskAgentRunId: parsed.taskAgentRunId,
-      taskAgentInstanceId: parsed.taskAgentInstanceId,
     });
-    if (!requestResult.ok) {
+    if (!intentResult.ok) {
       return this.buildRejectedResult({
         runContext: options.runContext,
         invocationId,
         toolArguments: normalizedArguments,
-        code: requestResult.code,
-        message: requestResult.message,
+        code: intentResult.code,
+        message: intentResult.message,
       });
     }
-    const sendMessageToResult = await this.deliverInterAgentMessage(requestResult.request);
+    const sendMessageToResult = await this.deliverInterAgentMessage(intentResult.intent);
 
     emitSendMessageToolCompleted({
       runContext: options.runContext,

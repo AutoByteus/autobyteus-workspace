@@ -323,13 +323,11 @@ describe("ClaudeSession", () => {
     clearPendingToolApprovals.mockImplementation(() => {
       expect(startQueryOptions.abortController?.signal.aborted).toBe(false);
     });
-    closeQuery.mockImplementation((query: ClaudeSdkQueryLike | null) => {
-      expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
-      query?.close();
-    });
-
     const interruptPromise = session.interrupt();
-    await waitFor(() => closeQuery.mock.calls.length === 1, "interrupt query close");
+    await waitFor(
+      () => startQueryOptions.abortController?.signal.aborted === true,
+      "interrupt abort signal",
+    );
 
     expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
     expect(clearPendingToolApprovals).toHaveBeenCalledWith(
@@ -359,7 +357,7 @@ describe("ClaudeSession", () => {
     expect(session.activeTurnId).toBeNull();
     expect(session.hasCompletedTurn).toBe(false);
     expect(activeQueriesByRunId.has("run-1")).toBe(false);
-    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(closeQuery).not.toHaveBeenCalled();
     expect(sessionMessageCache.getCachedMessages("run-1")).toEqual([
       expect.objectContaining({
         role: "user",
@@ -438,7 +436,11 @@ describe("ClaudeSession", () => {
     expect(session.hasCompletedTurn).toBe(false);
 
     const interruptPromise = session.interrupt();
-    await waitFor(() => closeQuery.mock.calls.length === 1, "interrupt query close");
+    await waitFor(
+      () => (startQueryTurn.mock.calls[0]?.[0] as { abortController?: AbortController }).abortController?.signal.aborted === true,
+      "interrupt abort signal",
+    );
+    expect(closeQuery).not.toHaveBeenCalled();
     firstQuery.release();
     await interruptPromise;
 
@@ -462,7 +464,11 @@ describe("ClaudeSession", () => {
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "initial query start");
 
     const interruptPromise = session.interrupt();
-    await waitFor(() => closeQuery.mock.calls.length === 1, "placeholder interrupt query close");
+    await waitFor(
+      () => (startQueryTurn.mock.calls[0]?.[0] as { abortController?: AbortController }).abortController?.signal.aborted === true,
+      "placeholder interrupt abort signal",
+    );
+    expect(closeQuery).not.toHaveBeenCalled();
     firstQuery.release();
     await interruptPromise;
 

@@ -16,6 +16,8 @@ import {
   BROWSER_BRIDGE_TOKEN_ENV,
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
@@ -29,6 +31,7 @@ const WORKING_DIRECTORY = "/tmp/codex-workspace";
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
+  memberTeamContext?: MemberTeamContext | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-1",
@@ -40,6 +43,7 @@ const createRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      memberTeamContext: input.memberTeamContext ?? null,
     }),
     runtimeContext: null,
   });
@@ -47,6 +51,7 @@ const createRunContext = (input: {
 const createRestoreRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
+  memberTeamContext?: MemberTeamContext | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-restore",
@@ -58,6 +63,7 @@ const createRestoreRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      memberTeamContext: input.memberTeamContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {
@@ -73,6 +79,17 @@ const createRestoreRunContext = (input: {
       },
       threadId: "thread-existing",
     }),
+  });
+
+const createMemberTeamContext = () =>
+  new MemberTeamContext({
+    teamRunId: "team-1",
+    teamDefinitionId: "team-def-1",
+    teamName: "Codex team",
+    teamBackendKind: TeamBackendKind.MIXED,
+    memberName: "ping",
+    memberRouteKey: "ping",
+    memberRunId: "ping-run-1",
   });
 
 const createSkill = (name: string) =>
@@ -151,11 +168,13 @@ describe("CodexThreadBootstrapper", () => {
   const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
   const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
   const originalCodexSandboxMode = process.env.CODEX_APP_SERVER_SANDBOX;
+  const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
 
   beforeEach(() => {
     delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
     delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
     delete process.env.CODEX_APP_SERVER_SANDBOX;
+    delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
   });
 
   afterEach(() => {
@@ -173,6 +192,11 @@ describe("CodexThreadBootstrapper", () => {
       process.env.CODEX_APP_SERVER_SANDBOX = originalCodexSandboxMode;
     } else {
       delete process.env.CODEX_APP_SERVER_SANDBOX;
+    }
+    if (typeof originalCodexApprovalPolicy === "string") {
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
+    } else {
+      delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
     }
   });
 
@@ -223,6 +247,30 @@ describe("CodexThreadBootstrapper", () => {
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
     expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(runContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
+  });
+
+  it("keeps Codex team-member local runtime tools on the approval boundary in auto mode", async () => {
+    process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+    process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+    const memberTeamContext = createMemberTeamContext();
+
+    const createdRunContext = await bootstrapper.bootstrapForCreate(
+      createRunContext({ autoExecuteTools: true, memberTeamContext }),
+    );
+    const restoredRunContext = await bootstrapper.bootstrapForRestore(
+      createRestoreRunContext({ autoExecuteTools: true, memberTeamContext }),
+    );
+
+    expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
+    expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("workspace-write");
+    expect(restoredRunContext.runtimeContext.threadId).toBe("thread-existing");
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("workspace-write");
   });
 
   it("filters out configured skills that Codex already discovers by name", async () => {

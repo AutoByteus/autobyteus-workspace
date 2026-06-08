@@ -198,16 +198,15 @@ suppressed as duplicate MCP noise; they must not replace the handler-owned
 canonical lifecycle or create extra Activity rows.
 
 Claude team task delegation tools are also first-party MCP tools on the team
-server. `delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and
-`accept_task` are built from the
-server-owned task-delegation manifest and call `TaskDelegationToolService` with
-the current member/team context; raw SDK MCP plumbing must not own delegation
-state. Claude inherits the canonical ready-to-run/no-dependencies task guidance
-from the shared manifest/schema, including coordinator-sequenced dependent
-follow-up after framework terminal/completion notification. Tool results are
-canonical JSON payloads or canonical task-delegation error payloads, and normal
-lifecycle projection still owns the visible transcript/Activity state. The old
-task-plan polling and creation tool names are not exposed through this MCP
+server. `delegate_tasks` and `accept_task` are built from the server-owned
+task-delegation manifest and call `TaskDelegationToolService` with the current
+member/team context; raw SDK MCP plumbing must not own delegation state. Claude
+inherits the canonical ready-to-run/no-dependencies task guidance from the
+shared manifest/schema, including coordinator-sequenced dependent follow-up
+after ordinary `send_message_to` task-agent reports. Tool results are canonical
+JSON payloads or canonical task-delegation error payloads, and normal lifecycle
+projection still owns the visible transcript/Activity state. The old task-plan
+polling and creation tool names are not exposed through this MCP
 surface.
 
 The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

@@ -11,7 +11,6 @@ import { registerStartBackgroundProcessTool } from './terminal/tools/start-backg
 import { registerGetBackgroundProcessesTool } from './terminal/tools/get-background-processes.js';
 import { registerGetProcessOutputTool } from './terminal/tools/get-process-output.js';
 import { registerStopBackgroundProcessTool } from './terminal/tools/stop-background-process.js';
-import { SendMessageTo } from '../agent/message/send-message-to.js';
 import { Search } from './search-tool.js';
 import { ReadMediaFile } from './multimedia/media-reader-tool.js';
 import { DownloadMediaTool } from './multimedia/download-media-tool.js';
@@ -42,7 +41,6 @@ export function registerTools(): void {
   registerToolClass(ReadMediaFile);
   registerToolClass(DownloadMediaTool);
   registerToolClass(ReadUrl);
-  registerToolClass(SendMessageTo);
   registerToolClass(AddToDo);
   registerToolClass(CreateToDoList);
   registerToolClass(GetToDoList);
