@@ -28,6 +28,20 @@ Team runs:
 3. Codex member bootstrap consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
 4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
 
+Codex App Server client reuse is scoped by canonical workspace `cwd`.
+Standalone runs and same-workspace Codex team members can therefore share one
+`CodexAppServerClient` process; team identity, member identity, and active-turn
+routing stay above that client boundary in the thread/router layer rather than
+in a separate client scope key. The `CodexClientThreadRouter` owns app-server
+message classification for the shared client. Routeable thread/turn messages
+must carry enough thread or turn identity to reach one active thread. Known
+client-global notifications, such as account rate-limit and MCP startup-status
+updates, are not team-thread events and are skipped by default instead of being
+emitted as chat-visible runtime errors. Other no-identity messages that cannot
+be routed among multiple active threads remain server-side diagnostics; server
+requests receive a transport-level error response, but the router must not
+broadcast them or call per-thread runtime-error projection.
+
 Codex team communication uses the same dynamic-tool lifecycle normalization as
 other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool, but a
 successful delivery is no longer represented only by `SEGMENT_START` /

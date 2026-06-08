@@ -10,7 +10,6 @@ import {
 
 export type CodexThreadCleanupTarget = {
   workingDirectory: string;
-  clientScopeKey?: string | null;
   materializedConfiguredSkills?: MaterializedCodexWorkspaceSkill[] | null;
 };
 
@@ -34,7 +33,7 @@ export class CodexThreadCleanup {
 
   async cleanupThreadResources(input: CodexThreadCleanupTarget): Promise<void> {
     await this.cleanupMaterializedWorkspaceSkills(input.materializedConfiguredSkills);
-    await this.releaseWorkspaceClient(input.workingDirectory, input.clientScopeKey ?? null);
+    await this.releaseWorkspaceClient(input.workingDirectory);
   }
 
   private async cleanupMaterializedWorkspaceSkills(
@@ -45,11 +44,8 @@ export class CodexThreadCleanup {
     );
   }
 
-  private async releaseWorkspaceClient(
-    workingDirectory: string,
-    clientScopeKey: string | null,
-  ): Promise<void> {
-    await this.clientManager.releaseClient(workingDirectory, clientScopeKey);
+  private async releaseWorkspaceClient(workingDirectory: string): Promise<void> {
+    await this.clientManager.releaseClient(workingDirectory);
   }
 }
 

@@ -13,7 +13,7 @@ const createFakeClient = (cwd: string) => ({
 });
 
 describe("CodexAppServerClientManager", () => {
-  it("keeps scoped clients isolated while preserving default cwd reuse", async () => {
+  it("reuses one refcounted client per canonical cwd", async () => {
     const createdClients: ReturnType<typeof createFakeClient>[] = [];
     const manager = new CodexAppServerClientManager({
       createClient: (cwd) => {
@@ -26,26 +26,18 @@ describe("CodexAppServerClientManager", () => {
 
     const sharedOne = await manager.acquireClient(workspace);
     const sharedTwo = await manager.acquireClient(path.join(workspace, ".", "nested", ".."));
-    const scopedOne = await manager.acquireClient(workspace, "agent-run:one");
-    const scopedTwo = await manager.acquireClient(workspace, "agent-run:two");
+    const sharedThree = await manager.acquireClient(workspace);
 
     expect(sharedTwo).toBe(sharedOne);
-    expect(scopedOne).not.toBe(sharedOne);
-    expect(scopedTwo).not.toBe(sharedOne);
-    expect(scopedTwo).not.toBe(scopedOne);
-    expect(createdClients).toHaveLength(3);
+    expect(sharedThree).toBe(sharedOne);
+    expect(createdClients).toHaveLength(1);
+    expect(createdClients[0]?.cwd).toBe(path.resolve(workspace));
 
-    await manager.releaseClient(workspace, "agent-run:one");
-    expect(createdClients[1]?.close).toHaveBeenCalledTimes(1);
+    await manager.releaseClient(workspace);
     expect(createdClients[0]?.close).not.toHaveBeenCalled();
-    expect(createdClients[2]?.close).not.toHaveBeenCalled();
-
     await manager.releaseClient(workspace);
     expect(createdClients[0]?.close).not.toHaveBeenCalled();
     await manager.releaseClient(workspace);
     expect(createdClients[0]?.close).toHaveBeenCalledTimes(1);
-
-    await manager.releaseClient(workspace, "agent-run:two");
-    expect(createdClients[2]?.close).toHaveBeenCalledTimes(1);
   });
 });

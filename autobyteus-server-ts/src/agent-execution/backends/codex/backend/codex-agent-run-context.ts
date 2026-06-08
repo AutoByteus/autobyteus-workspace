@@ -25,10 +25,9 @@ export class CodexAgentRunContext {
     this.activeTurnId = input.activeTurnId ?? null;
   }
 
-  toCleanupTarget(clientScopeKey: string | null = null): CodexThreadCleanupTarget {
+  toCleanupTarget(): CodexThreadCleanupTarget {
     return {
       workingDirectory: this.codexThreadConfig.workingDirectory,
-      clientScopeKey,
       materializedConfiguredSkills: this.materializedConfiguredSkills,
     };
   }

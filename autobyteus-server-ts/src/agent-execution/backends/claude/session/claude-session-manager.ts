@@ -17,10 +17,6 @@ import {
   type ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import {
-  getClaudeTeamSessionCohortCoordinator,
-  type ClaudeTeamSessionCohortCoordinator,
-} from "./claude-team-session-cohort-coordinator.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
@@ -36,17 +32,14 @@ export class ClaudeSessionManager {
     (runContext, event) => this.requireRunSession(runContext.runId).emitRuntimeEvent(event),
   );
   private readonly sessionCleanup: ClaudeSessionCleanup;
-  private readonly teamSessionCohortCoordinator: ClaudeTeamSessionCohortCoordinator;
 
   constructor(
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    teamSessionCohortCoordinator: ClaudeTeamSessionCohortCoordinator = getClaudeTeamSessionCohortCoordinator(),
   ) {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
     this.sessionCleanup = new ClaudeSessionCleanup(this.toolingCoordinator);
-    this.teamSessionCohortCoordinator = teamSessionCohortCoordinator;
   }
 
   async createRunSession(
@@ -61,7 +54,6 @@ export class ClaudeSessionManager {
       dependencies: this.buildSessionDependencies(runContext.runId),
     });
     this.sessions.set(runContext.runId, session);
-    this.teamSessionCohortCoordinator.registerSession(runContext);
     this.sessionMessageCache.ensureSession(session.sessionId);
     return session;
   }
@@ -80,7 +72,6 @@ export class ClaudeSessionManager {
       dependencies: this.buildSessionDependencies(runContext.runId),
     });
     this.sessions.set(runContext.runId, session);
-    this.teamSessionCohortCoordinator.registerSession(runContext);
     this.sessionMessageCache.ensureSession(resolvedSessionId);
     return session;
   }
@@ -114,7 +105,6 @@ export class ClaudeSessionManager {
       return;
     }
     this.sessions.delete(runId);
-    this.teamSessionCohortCoordinator.unregisterSession(runId);
     await this.sessionCleanup.cleanupSessionResources({
       runId,
       session: state,

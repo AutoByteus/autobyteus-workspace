@@ -12,6 +12,19 @@ import {
 import type { CodexThread } from "./codex-thread.js";
 
 const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
+const CLIENT_GLOBAL_CODEX_NOTIFICATION_METHODS = new Set([
+  "account/rateLimits/updated",
+  "mcpServer/startupStatus/updated",
+  "mcp/startupComplete",
+]);
+
+const normalizeMethod = (method: string): string => method.trim();
+
+const isClientGlobalCodexNotification = (method: string): boolean =>
+  CLIENT_GLOBAL_CODEX_NOTIFICATION_METHODS.has(normalizeMethod(method));
+
+const paramKeysOf = (params: Record<string, unknown> | null | undefined): string[] =>
+  Object.keys(params ?? {});
 
 type ThreadRegistration = {
   thread: CodexThread;
@@ -42,21 +55,69 @@ const isAppServerMessageForThread = (
   return threadCount === 1;
 };
 
-
-const emitAmbiguousMessageError = (
-  registrations: ThreadRegistration[],
-  kind: "notification" | "server_request",
+const logClientGlobalNotificationSkip = (
   method: string,
+  params: Record<string, unknown>,
+  threadCount: number,
 ): void => {
-  if (registrations.length <= 1) {
+  if (!isRuntimeRawEventDebugEnabled) {
     return;
   }
-  const message = `Codex app server ${kind} '${method}' did not include enough thread or turn identity to route among ${registrations.length} active team threads.`;
-  for (const registration of registrations) {
-    const emitRuntimeError = (registration.thread as { emitRuntimeError?: (code: string, message: string) => void }).emitRuntimeError;
-    if (emitRuntimeError) {
-      emitRuntimeError.call(registration.thread, "CODEX_AMBIGUOUS_TEAM_THREAD_EVENT", message);
-    }
+  console.log("[CodexAppServerNotificationSkipped]", {
+    method,
+    threadCount,
+    reason: "client_global_notification",
+    paramKeys: paramKeysOf(params),
+  });
+};
+
+const logUnrouteableAppServerMessage = (
+  kind: "notification" | "server_request",
+  method: string,
+  params: Record<string, unknown>,
+  threadCount: number,
+  requestId?: string | number,
+): void => {
+  if (threadCount <= 1) {
+    return;
+  }
+  console.warn("[CodexClientThreadRouter] app-server message was not routed", {
+    kind,
+    method,
+    requestId,
+    threadCount,
+    paramKeys: paramKeysOf(params),
+  });
+};
+
+const respondUnrouteableServerRequest = (
+  client: CodexAppServerClient,
+  message: CodexServerRequestMessage,
+  threadCount: number,
+): void => {
+  if (threadCount <= 1) {
+    return;
+  }
+  try {
+    client.respondError(
+      message.id,
+      -32000,
+      `Codex app server request '${message.method}' could not be routed to a single active thread.`,
+      {
+        method: message.method,
+        threadCount,
+        paramKeys: paramKeysOf(message.params),
+      },
+    );
+  } catch (error) {
+    console.warn(
+      "[CodexClientThreadRouter] failed to respond to unrouteable app-server request",
+      {
+        id: message.id,
+        method: message.method,
+        error: String(error),
+      },
+    );
   }
 };
 
@@ -127,6 +188,11 @@ export class CodexClientThreadRouter {
 
     const registrations = Array.from(route.registrations.values());
     const threadCount = registrations.length;
+    if (isClientGlobalCodexNotification(message.method)) {
+      logClientGlobalNotificationSkip(message.method, message.params, threadCount);
+      return;
+    }
+
     let delivered = false;
     for (const registration of registrations) {
       const matchesThread = isAppServerMessageForThread(
@@ -153,7 +219,12 @@ export class CodexClientThreadRouter {
       registration.thread.handleAppServerNotification(message.method, message.params);
     }
     if (!delivered) {
-      emitAmbiguousMessageError(registrations, "notification", message.method);
+      logUnrouteableAppServerMessage(
+        "notification",
+        message.method,
+        message.params,
+        threadCount,
+      );
     }
   }
 
@@ -199,7 +270,14 @@ export class CodexClientThreadRouter {
       );
     }
     if (!delivered) {
-      emitAmbiguousMessageError(registrations, "server_request", message.method);
+      logUnrouteableAppServerMessage(
+        "server_request",
+        message.method,
+        message.params,
+        threadCount,
+        message.id,
+      );
+      respondUnrouteableServerRequest(client, message, threadCount);
     }
   }
 

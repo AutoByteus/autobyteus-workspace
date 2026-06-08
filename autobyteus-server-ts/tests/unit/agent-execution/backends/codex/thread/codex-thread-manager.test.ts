@@ -108,7 +108,6 @@ describe("CodexThreadManager", () => {
 
     expect(clientManager.acquireClient).toHaveBeenCalledWith(
       "/tmp/workspace",
-      "codex:agent-run:run-1",
     );
     expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(1);
     expect(request).toHaveBeenCalledWith(
@@ -122,23 +121,17 @@ describe("CodexThreadManager", () => {
     expect(thread.startup.status).toBe("ready");
   });
 
-  it("uses isolated app-server client scopes for same-workspace standalone agent runs", async () => {
-    const firstClient = {
-      request: vi.fn(async () => ({ thread: { id: "thread-one" } })),
-      onNotification: vi.fn(() => () => {}),
-      onServerRequest: vi.fn(() => () => {}),
-      onClose: vi.fn(() => () => {}),
-    } as unknown as CodexAppServerClient;
-    const secondClient = {
-      request: vi.fn(async () => ({ thread: { id: "thread-two" } })),
+  it("uses the workspace app-server client boundary for same-workspace standalone agent runs", async () => {
+    const sharedClient = {
+      request: vi.fn(async () => ({
+        thread: { id: `thread-${sharedClient.request.mock.calls.length}` },
+      })),
       onNotification: vi.fn(() => () => {}),
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
     const clientManager = {
-      acquireClient: vi.fn(async (_cwd: string, scopeKey: string | null) => (
-        scopeKey === "codex:agent-run:run-one" ? firstClient : secondClient
-      )),
+      acquireClient: vi.fn(async () => sharedClient),
       releaseClient: vi.fn(async () => undefined),
     } as unknown as CodexAppServerClientManager;
     const threadCleanup = {
@@ -156,15 +149,18 @@ describe("CodexThreadManager", () => {
     const firstThread = await manager.createThread(createRunContext("run-one", "/tmp/workspace"));
     const secondThread = await manager.createThread(createRunContext("run-two", "/tmp/workspace"));
 
-    expect(firstThread.client).toBe(firstClient);
-    expect(secondThread.client).toBe(secondClient);
-    expect(clientManager.acquireClient).toHaveBeenCalledWith(
-      "/tmp/workspace",
-      "codex:agent-run:run-one",
+    expect(firstThread.client).toBe(sharedClient);
+    expect(secondThread.client).toBe(sharedClient);
+    expect(clientManager.acquireClient).toHaveBeenNthCalledWith(1, "/tmp/workspace");
+    expect(clientManager.acquireClient).toHaveBeenNthCalledWith(2, "/tmp/workspace");
+    expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(2);
+    expect(clientThreadRouter.registerThread).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ client: sharedClient }),
     );
-    expect(clientManager.acquireClient).toHaveBeenCalledWith(
-      "/tmp/workspace",
-      "codex:agent-run:run-two",
+    expect(clientThreadRouter.registerThread).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ client: sharedClient }),
     );
   });
 
@@ -202,11 +198,9 @@ describe("CodexThreadManager", () => {
 
     expect(firstThread.client).toBe(sharedClient);
     expect(secondThread.client).toBe(sharedClient);
-    expect(clientManager.acquireClient).toHaveBeenCalledWith(
-      "/tmp/workspace",
-      "codex:team:team-1:workspace:/tmp/workspace",
-    );
+    expect(clientManager.acquireClient).toHaveBeenCalledWith("/tmp/workspace");
     expect(clientManager.acquireClient).toHaveBeenCalledTimes(2);
+    expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(2);
   });
 
   it("passes auto-approved access config to Codex thread start and resume", async () => {

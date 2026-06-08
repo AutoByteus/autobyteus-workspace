@@ -16,10 +16,6 @@ import { resolveThreadId } from "./codex-thread-id-resolver.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
 import type { CodexThreadConfig } from "./codex-thread-config.js";
-import {
-  getCodexTeamThreadCohortCoordinator,
-  type CodexTeamThreadCohortCoordinator,
-} from "./codex-team-thread-cohort-coordinator.js";
 
 export class CodexThreadManager {
   private readonly runContexts = new Map<string, CodexRunContext>();
@@ -27,18 +23,15 @@ export class CodexThreadManager {
   private readonly clientManager: CodexAppServerClientManager;
   private readonly threadCleanup: CodexThreadCleanup;
   private readonly clientThreadRouter: CodexClientThreadRouter;
-  private readonly teamThreadCohortCoordinator: CodexTeamThreadCohortCoordinator;
 
   constructor(
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
     threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
     clientThreadRouter: CodexClientThreadRouter = getCodexClientThreadRouter(),
-    teamThreadCohortCoordinator: CodexTeamThreadCohortCoordinator = getCodexTeamThreadCohortCoordinator(),
   ) {
     this.clientManager = clientManager;
     this.threadCleanup = threadCleanup;
     this.clientThreadRouter = clientThreadRouter;
-    this.teamThreadCohortCoordinator = teamThreadCohortCoordinator;
   }
 
   async createThread(
@@ -96,7 +89,7 @@ export class CodexThreadManager {
     }
     runContext.runtimeContext.activeTurnId = null;
     await this.threadCleanup.cleanupThreadResources(
-      runContext.runtimeContext.toCleanupTarget(this.threadClientScopeKey(runContext)),
+      runContext.runtimeContext.toCleanupTarget(),
     );
   }
 
@@ -105,11 +98,7 @@ export class CodexThreadManager {
     resumeThreadId: string | null,
   ): Promise<CodexThread> {
     const config = runContext.runtimeContext.codexThreadConfig;
-    const clientScopeKey = this.threadClientScopeKey(runContext);
-    const client = await this.clientManager.acquireClient(
-      config.workingDirectory,
-      clientScopeKey,
-    );
+    const client = await this.clientManager.acquireClient(config.workingDirectory);
     const thread = new CodexThread({
       runContext,
       client,
@@ -150,7 +139,7 @@ export class CodexThreadManager {
       thread.clearPendingMcpToolCalls();
       thread.unbindAll();
       await this.clientManager
-        .releaseClient(config.workingDirectory, clientScopeKey)
+        .releaseClient(config.workingDirectory)
         .catch(() => {});
       throw error;
     }
@@ -227,17 +216,12 @@ export class CodexThreadManager {
     thread.clearPendingMcpToolCalls();
     void this.threadCleanup
       .cleanupThreadResources(
-        runContext?.runtimeContext.toCleanupTarget(this.threadClientScopeKey(runContext)) ?? {
+        runContext?.runtimeContext.toCleanupTarget() ?? {
           workingDirectory: thread.workingDirectory,
-          clientScopeKey: `agent-run:${thread.runId}`,
           materializedConfiguredSkills: [],
         },
       )
       .catch(() => {});
-  }
-
-  private threadClientScopeKey(runContext: CodexRunContext): string {
-    return this.teamThreadCohortCoordinator.resolveClientScopeKey(runContext);
   }
 }
 
