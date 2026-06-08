@@ -1,0 +1,20 @@
+2026-06-08 delivery finalization artifact hygiene cleanup
+
+User explicitly requested avoiding commits of files that should not be committed.
+
+Pruned from ticket evidence before archival/commit:
+- validation-evidence/local-ios-build/DerivedData/ (generated Xcode build output)
+- validation-evidence/local-ios-build/AutoByteusMobileCoreTests.xcresult/ (raw Xcode result bundle; repository hygiene requires summaries/logs instead)
+- validation-evidence/local-ios-smoke/AutoByteusMobile.xcresult/ (raw Xcode result bundle; repository hygiene requires summaries/logs instead)
+
+Retained committed evidence:
+- Markdown requirements/design/review/implementation/validation/delivery artifacts
+- text logs and JSON summaries from local/static checks and remote GitHub Actions runs
+- local iOS build/test and simulator smoke text logs/summaries
+- local signing-readiness text/JSON summaries containing public certificate/profile metadata only, no private keys or secret values
+
+Follow-up checks to run after staging:
+- git diff --check
+- python3 autobyteus-ios/scripts/ios-release-contract-check.py
+- python3 scripts/check_repository_artifact_hygiene.py
+- staged-file audit for raw generated/binary artifacts and long paths

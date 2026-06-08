@@ -1,0 +1,41 @@
+# Workflow Xcode selection step simulation log
+Timestamp UTC: 2026-06-08T06:07:41Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-ios-build-pipeline-failure
+
+Both macOS jobs use identical Xcode-selection script bodies.
+
+### Valid selection simulation for build-ios
+
+## build-ios valid Xcode 26.3 / iPhoneOS 26.2
+expected_rc=0 actual_rc=0
+Selected Xcode app: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-kluqlscz/Applications/Xcode_26.3.app
+Xcode 26.3
+Build version FAKE
+Selected iPhoneOS SDK: 26.2
+GITHUB_ENV: DEVELOPER_DIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-kluqlscz/Applications/Xcode_26.3.app/Contents/Developer
+
+### Valid selection simulation for upload-testflight
+
+## upload-testflight valid Xcode 26.3 / iPhoneOS 26.2
+expected_rc=0 actual_rc=0
+Selected Xcode app: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-m00jm7z6/Applications/Xcode_26.3.app
+Xcode 26.3
+Build version FAKE
+Selected iPhoneOS SDK: 26.2
+GITHUB_ENV: DEVELOPER_DIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-m00jm7z6/Applications/Xcode_26.3.app/Contents/Developer
+
+## fail-fast rejects Xcode 16.4 even when app path exists
+expected_rc=1 actual_rc=1
+::error::Selected Xcode must be 26 or newer; found '16.4' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-ti4kagn3/Applications/Xcode_26.3.app.
+Xcode 16.4
+Build version FAKE
+GITHUB_ENV: DEVELOPER_DIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-ti4kagn3/Applications/Xcode_26.3.app/Contents/Developer
+
+## fail-fast rejects missing configured Xcode path
+expected_rc=1 actual_rc=1
+::error::Configured Xcode 26+ app path is unavailable: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ios-xcode-select-p25c4wgf/Applications/Xcode_26.3.app
+Installed Xcode apps:
+/Applications/Xcode.app
+GITHUB_ENV: <GITHUB_ENV not created>
+
+Simulation assertions passed.
