@@ -11,7 +11,8 @@ import {
 } from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
 import type { InterAgentMessageDeliveryHandler } from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
-import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../../agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
+import { buildInterAgentMessageDeliveryIntent } from "../../../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+import { describeTeamMessageTargetSelector } from "../../../../agent-team-execution/domain/team-message-target-selector.js";
 
 export const buildSendMessageToDynamicToolRegistrations = (input: {
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
@@ -24,9 +25,7 @@ export const buildSendMessageToDynamicToolRegistrations = (input: {
 
   return [
     {
-      spec: buildSendMessageToToolSpec({
-        allowedRecipientNames: input.memberTeamContext.allowedRecipientNames,
-      }),
+      spec: buildSendMessageToToolSpec(),
       handler: async ({ toolName, arguments: toolArguments }) => {
         const parsed = parseSendMessageToToolArguments(toolArguments);
         const validationError = validateParsedSendMessageToToolArguments(toolName, parsed);
@@ -36,27 +35,25 @@ export const buildSendMessageToDynamicToolRegistrations = (input: {
             false,
           );
         }
-        if (!parsed.recipientName || !parsed.content) {
+        if (!parsed.target || !parsed.content) {
           return createCodexDynamicToolTextResult(
-            `${toolName} requires non-empty recipientMemberName and content.`,
+            `${toolName} requires exactly one target selector and non-empty content.`,
             false,
           );
         }
-        const recipientMemberName = parsed.recipientName.trim();
+        const targetDescription = describeTeamMessageTargetSelector(parsed.target);
         const content = parsed.content.trim();
-        const requestResult = buildInterAgentMessageDeliveryRequestFromRecipientName({
+        const intentResult = buildInterAgentMessageDeliveryIntent({
           memberTeamContext: input.memberTeamContext,
-          recipientName: recipientMemberName,
+          target: parsed.target,
           content,
           messageType: parsed.messageType,
           referenceFiles: parsed.referenceFiles,
-          taskAgentRunId: parsed.taskAgentRunId,
-          taskAgentInstanceId: parsed.taskAgentInstanceId,
         });
-        if (!requestResult.ok) {
-          return createCodexDynamicToolTextResult(requestResult.message, false);
+        if (!intentResult.ok) {
+          return createCodexDynamicToolTextResult(intentResult.message, false);
         }
-        const result = await deliverInterAgentMessage(requestResult.request);
+        const result = await deliverInterAgentMessage(intentResult.intent);
         if (!result.accepted) {
           return createCodexDynamicToolTextResult(
             result.message ?? `${toolName} failed.`,
@@ -65,7 +62,7 @@ export const buildSendMessageToDynamicToolRegistrations = (input: {
         }
 
         return createCodexDynamicToolTextResult(
-          `Delivered message to ${recipientMemberName}.`,
+          `Delivered message to ${targetDescription}.`,
           true,
         );
       },

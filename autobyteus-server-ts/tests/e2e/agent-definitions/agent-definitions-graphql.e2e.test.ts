@@ -6,7 +6,7 @@ import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+} from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";

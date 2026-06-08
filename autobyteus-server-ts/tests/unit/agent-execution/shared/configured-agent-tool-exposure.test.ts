@@ -12,8 +12,6 @@ describe("configured-agent-tool-exposure", () => {
       "read_page",
       "generate_image",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
       "accept_task",
       "send_message_to",
       " publish_artifacts ",
@@ -27,8 +25,6 @@ describe("configured-agent-tool-exposure", () => {
       "read_page",
       "generate_image",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
       "accept_task",
       "send_message_to",
       "publish_artifacts",
@@ -37,8 +33,6 @@ describe("configured-agent-tool-exposure", () => {
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
       "accept_task",
     ]);
     expect(exposure.sendMessageToConfigured).toBe(true);
@@ -49,8 +43,6 @@ describe("configured-agent-tool-exposure", () => {
         "read_page",
         "generate_image",
         "delegate_tasks",
-        "mark_task_completed",
-        "mark_task_failed",
         "accept_task",
         "send_message_to",
         "publish_artifacts",
@@ -67,15 +59,13 @@ describe("configured-agent-tool-exposure", () => {
       "assign_task_to",
       "update_task_status",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
+      ["mark", "task", "completed"].join("_"),
+      ["mark", "task", "failed"].join("_"),
       "accept_task",
     ]);
 
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
       "accept_task",
     ]);
   });

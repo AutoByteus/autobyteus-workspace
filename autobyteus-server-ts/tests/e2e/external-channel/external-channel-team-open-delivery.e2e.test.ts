@@ -10,7 +10,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { InterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -167,10 +167,21 @@ describe("external channel team open delivery e2e", () => {
       });
 
       await teamRun.deliverInterAgentMessage({
-        senderRunId: "run-worker",
-        senderMemberName: "worker",
         teamRunId,
-        recipientMemberName: "coordinator",
+        sender: {
+          participant: {
+            memberKind: "agent",
+            memberName: "worker",
+            memberPath: ["worker"],
+            memberRouteKey: "worker",
+            memberRunId: "run-worker",
+            platformRunId: null,
+            teamDefinitionId: null,
+            address: { teamRunId, memberPath: ["worker"], memberRouteKey: "worker" },
+          },
+          selector: { kind: "path", memberPath: ["worker"] },
+        },
+        target: { kind: "recipient_name", recipientName: "coordinator" },
         content: "worker has completed the task",
         messageType: "validation",
       });
@@ -253,9 +264,9 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return { accepted: true, turnId: "turn-direct", memberRunId: "run-coordinator", memberName: "coordinator" };
   }
 
-  async deliverInterAgentMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
-    expect(request.senderMemberName).toBe("worker");
-    expect(request.recipientMemberName).toBe("coordinator");
+  async deliverInterAgentMessage(request: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
+    expect(request.sender.participant.memberName).toBe("worker");
+    expect(request.target).toEqual({ kind: "recipient_name", recipientName: "coordinator" });
     setTimeout(() => {
       this.emitTextTurn("worker", "run-worker", "turn-worker-internal", "worker internal only");
       this.emitFinalPrecedenceTurn(

@@ -19,7 +19,6 @@ import {
 } from "autobyteus-ts";
 import type { Agent } from "autobyteus-ts/agent/agent.js";
 import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
-import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
@@ -41,9 +40,9 @@ import {
   type AutoByteusAgentLike,
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
-import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
-import { buildAutoByteusStandaloneTeamContext } from "./autobyteus-team-communication-context-builder.js";
+import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
 import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
+import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -123,9 +122,6 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const isTeamManifestInjectorProcessor = (processor: unknown): boolean =>
-  processor?.constructor?.name === "TeamManifestInjectorProcessor";
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly agentFactory: AgentFactoryLike;
@@ -304,28 +300,11 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       );
     }
 
-    const resolvedToolNames = resolveAutoByteusStandaloneToolNames({
-      toolNames: agentDef.toolNames,
+    const { tools, actualToolNames } = resolveAutoByteusAgentTools({
+      agentDefinition: agentDef,
       memberTeamContext: options.memberTeamContext,
+      logger,
     });
-    const tools = [];
-    const actualToolNames: string[] = [];
-    for (const name of resolvedToolNames) {
-      if (!defaultToolRegistry.getToolDefinition(name)) {
-        logger.warn(
-          `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-        continue;
-      }
-      try {
-        tools.push(defaultToolRegistry.createTool(name));
-        actualToolNames.push(name);
-      } catch (error) {
-        logger.error(
-          `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
-        );
-      }
-    }
     const resolvedPrompt = composeAutoByteusMemberSystemPrompt({
       baseAgentInstruction: basePrompt,
       memberTeamContext: options.memberTeamContext ?? null,
@@ -366,9 +345,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     )) {
       const processor = this.registries.systemPrompt.getProcessor(name);
       if (processor) {
-        if (options.memberTeamContext && isTeamManifestInjectorProcessor(processor)) {
-          continue;
-        }
         systemPromptProcessors.push(processor);
       } else {
         logger.warn(
@@ -458,7 +434,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspace_is_temp:
         workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
       ...(options.memberTeamContext
-        ? { teamContext: buildAutoByteusStandaloneTeamContext(options.memberTeamContext) }
+        ? { teamContext: buildAutoByteusManagedTeamContext(options.memberTeamContext) }
         : {}),
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }

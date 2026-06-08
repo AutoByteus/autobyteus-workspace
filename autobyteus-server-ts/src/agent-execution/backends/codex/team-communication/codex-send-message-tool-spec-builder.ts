@@ -1,53 +1,40 @@
-export const SEND_MESSAGE_TO_TOOL_NAME = "send_message_to";
+import {
+  SEND_MESSAGE_TO_FIELD_DESCRIPTIONS,
+  SEND_MESSAGE_TO_TOOL_DESCRIPTION,
+  SEND_MESSAGE_TO_TOOL_NAME,
+} from "../../../../agent-team-execution/services/send-message-to-tool-contract.js";
 
-export const buildSendMessageToToolSpec = (options: {
-  allowedRecipientNames?: string[] | null;
-}) => {
-  const allowedRecipientNames = Array.isArray(options?.allowedRecipientNames)
-    ? options.allowedRecipientNames.filter(
-        (value): value is string => typeof value === "string" && value.trim().length > 0,
-      )
-    : [];
+export { SEND_MESSAGE_TO_TOOL_NAME };
 
-  return {
-    name: SEND_MESSAGE_TO_TOOL_NAME,
-    description: "Send a self-contained message to another member in the same team run. For task-delegation revisions, use recipient_name for the target member and task_agent_run_id from the completion notification so the message reaches the same task-agent instance.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        recipient_name: {
-          type: "string",
-          description: "Recipient team member name.",
-          ...(allowedRecipientNames.length > 0
-            ? {
-                enum: allowedRecipientNames,
-              }
-            : {}),
-        },
-        content: {
-          type: "string",
-          description: "Self-contained message body to deliver. Explain the handoff like an email body; you may naturally mention important absolute paths here, and also put files that should appear under the Team Communication message in reference_files. Example: 'Implementation is ready. The handoff is at /Users/me/project/implementation-handoff.md and the test log is at /Users/me/project/test.log; please review the risks below.'",
-        },
-        message_type: {
-          type: "string",
-          description: "Optional message type label.",
-        },
-        reference_files: {
-          type: "array",
-          description: "Optional attachment/reference list of absolute local file paths the recipient may need to inspect and that should appear in Team Communication messages. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ['/Users/me/project/implementation-handoff.md', '/Users/me/project/test.log'].",
-          items: { type: "string" },
-        },
-        task_agent_run_id: {
-          type: "string",
-          description: "Optional concrete task-agent run ID from a task-delegation completion notification. Use this for revision feedback to an awaiting-acceptance task-agent.",
-        },
-        task_agent_id: {
-          type: "string",
-          description: "Optional task-agent instance ID from a task-delegation completion notification, included for traceability when task_agent_run_id targets a revision.",
-        },
+export const buildSendMessageToToolSpec = () => ({
+  name: SEND_MESSAGE_TO_TOOL_NAME,
+  description: SEND_MESSAGE_TO_TOOL_DESCRIPTION,
+  inputSchema: {
+    type: "object",
+    properties: {
+      recipient_name: {
+        type: "string",
+        description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.recipientName,
       },
-      required: ["recipient_name", "content"],
-      additionalProperties: false,
+      target_agent_run_id: {
+        type: "string",
+        description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.targetAgentRunId,
+      },
+      content: {
+        type: "string",
+        description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.content,
+      },
+      message_type: {
+        type: "string",
+        description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.messageType,
+      },
+      reference_files: {
+        type: "array",
+        description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.referenceFiles,
+        items: { type: "string" },
+      },
     },
-  };
-};
+    required: ["content"],
+    additionalProperties: false,
+  },
+});

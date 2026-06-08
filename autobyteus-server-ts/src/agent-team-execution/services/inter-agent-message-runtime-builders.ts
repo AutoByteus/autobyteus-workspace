@@ -4,7 +4,7 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
-import type { InterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
+import type { ResolvedInterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
 import {
   buildTeamCommunicationMessageId,
   buildTeamCommunicationReferenceId,
@@ -67,7 +67,7 @@ const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
     : `\n\nReference files:\n${referenceFiles.map((filePath) => `- ${filePath}`).join("\n")}`;
 
 export const buildRecipientVisibleInterAgentMessageContent = (
-  request: InterAgentMessageDeliveryRequest,
+  request: ResolvedInterAgentMessageDeliveryRequest,
 ): string => {
   const sender = request.sender.participant;
   const senderName = sender.memberName?.trim() || sender.memberRunId;
@@ -79,7 +79,7 @@ export const buildRecipientVisibleInterAgentMessageContent = (
 };
 
 export const buildInterAgentDeliveryInputMessage = (
-  request: InterAgentMessageDeliveryRequest,
+  request: ResolvedInterAgentMessageDeliveryRequest,
 ): AgentInputUserMessage => {
   const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
   const sender = request.sender.participant;
@@ -129,7 +129,7 @@ export const buildInterAgentDeliveryInputMessage = (
 
 export const buildInterAgentMessageAgentRunEvent = (input: {
   recipientRunId: string;
-  request: InterAgentMessageDeliveryRequest;
+  request: ResolvedInterAgentMessageDeliveryRequest;
   createdAt?: string | null;
 }): AgentRunEvent => {
   const messageType = resolveMessageType(input.request.messageType);

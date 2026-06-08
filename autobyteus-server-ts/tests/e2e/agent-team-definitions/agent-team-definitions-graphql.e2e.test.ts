@@ -7,7 +7,7 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+} from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";

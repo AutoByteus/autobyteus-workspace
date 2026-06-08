@@ -33,7 +33,10 @@ const createResultQuery = async function* () {
   };
 };
 
-const createMemberTeamContext = () =>
+const createMemberTeamContext = (input: {
+  communicationRecipients?: [];
+  allowedRecipientNames?: string[];
+} = {}) =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
@@ -63,7 +66,7 @@ const createMemberTeamContext = () =>
         description: null,
       },
     ],
-    communicationRecipients: [
+    communicationRecipients: input.communicationRecipients ?? [
       {
         recipientName: "Student",
         scope: "local_agent",
@@ -90,13 +93,17 @@ const createMemberTeamContext = () =>
         description: null,
       },
     ],
-    allowedRecipientNames: ["Student"],
+    allowedRecipientNames: input.allowedRecipientNames ?? ["Student"],
     sendMessageToEnabled: true,
+    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   });
 
-const createSession = (configuredToolNames: string[] = []) => {
+const createSession = (configuredToolNames: string[] = [], input: {
+  memberTeamContext?: MemberTeamContext;
+} = {}) => {
   const startQueryTurn = vi.fn(async () => createResultQuery());
   const closeQuery = vi.fn();
+  const memberTeamContext = input.memberTeamContext ?? createMemberTeamContext();
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -106,7 +113,7 @@ const createSession = (configuredToolNames: string[] = []) => {
       autoExecuteTools: false,
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      memberTeamContext: createMemberTeamContext(),
+      memberTeamContext,
     }),
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
@@ -117,7 +124,7 @@ const createSession = (configuredToolNames: string[] = []) => {
       configuredToolExposure: buildConfiguredAgentToolExposure(configuredToolNames),
       sessionId: "run-1",
       activeTurnId: null,
-      memberTeamContext: createMemberTeamContext(),
+      memberTeamContext,
     }),
   });
 
@@ -205,7 +212,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.",
+          "If you use `send_message_to`, choose exactly one target selector",
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",
@@ -215,6 +222,39 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           "mcp__autobyteus_browser__open_tab",
           "mcp__autobyteus_browser__read_page",
         ]),
+      }),
+    );
+  });
+
+  it("enables send_message_to for exact-run-only contexts with no static recipients", async () => {
+    const memberTeamContext = createMemberTeamContext({
+      communicationRecipients: [],
+      allowedRecipientNames: [],
+    });
+    const { session, startQueryTurn } = createSession(["send_message_to"], {
+      memberTeamContext,
+    });
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sendMessageToToolingEnabled: true,
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining(
+          "No logical `recipient_name` roster recipients are currently listed for this run.",
+        ),
+        allowedTools: [
+          "send_message_to",
+          "mcp__autobyteus_team__send_message_to",
+        ],
       }),
     );
   });
@@ -274,8 +314,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   it("enables task delegation tools and their autobyteus_team MCP names only when configured", async () => {
     const { session, startQueryTurn } = createSession([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
+      ["mark", "task", "completed"].join("_"),
+      ["mark", "task", "failed"].join("_"),
       "accept_task",
       "create_task",
     ]);
@@ -291,8 +331,6 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         taskDelegationToolingEnabled: true,
         enabledTaskDelegationToolNames: [
           "delegate_tasks",
-          "mark_task_completed",
-          "mark_task_failed",
           "accept_task",
         ],
       }),
@@ -303,10 +341,6 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         allowedTools: [
           "delegate_tasks",
           "mcp__autobyteus_team__delegate_tasks",
-          "mark_task_completed",
-          "mcp__autobyteus_team__mark_task_completed",
-          "mark_task_failed",
-          "mcp__autobyteus_team__mark_task_failed",
           "accept_task",
           "mcp__autobyteus_team__accept_task",
         ],

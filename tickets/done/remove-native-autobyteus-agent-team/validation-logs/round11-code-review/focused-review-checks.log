@@ -1,0 +1,369 @@
+# Round 11 code review focused checks
+# 2026-06-08T07:30:18Z
+
+## git diff --check
+
+## Round 11 source scan
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:14:import type { TaskAgentDirectory } from "../../../task-delegation/task-agent-directory.js";
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:77:    taskAgentDirectory: TaskAgentDirectory;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:128:    const targetAgentRunId = intent.target.kind === "target_agent_run_id"
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:176:    const recoverableTaskAgent = this.resolveRecoverableTaskAgentRunId(targetAgentRunId);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:177:    if (recoverableTaskAgent) {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:178:      return recoverableTaskAgent;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts:212:  private resolveRecoverableTaskAgentRunId(targetAgentRunId: string): ResolvedTeamMessageRecipient | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:8:export type TaskAgentDirectoryEntryStatus = "starting" | "active" | "settled";
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:10:export type TaskAgentDirectoryEntry = {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:18:  status: TaskAgentDirectoryEntryStatus;
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:48:const cloneEntry = (entry: TaskAgentDirectoryEntry): TaskAgentDirectoryEntry => ({
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:55:export class TaskAgentDirectory {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:56:  private readonly entriesByTaskId = new Map<string, TaskAgentDirectoryEntry>();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:58:  private readonly settledTaskAgentRunIds = new Set<string>();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:62:  registerStartingTask(input: RegisterStartingTaskAgentInput): TaskAgentDirectoryEntry {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:65:    this.settledTaskAgentRunIds.delete(taskAgentRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:67:    if (existingByTask && existingByTask.status !== "settled") {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:75:    const entry: TaskAgentDirectoryEntry = {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:92:  markActive(taskId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:94:    if (!entry || entry.status === "settled") {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:110:  markSettledByTaskId(taskId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:116:    this.settledTaskAgentRunIds.add(entry.taskAgentInstance.taskAgentRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:117:    entry.status = "settled";
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:122:  markSettledByTaskAgentRunId(taskAgentRunId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:129:      this.settledTaskAgentRunIds.add(normalizedRunId);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:135:  resolveTaskAgentRunId(taskAgentRunId: string): TaskAgentDirectoryEntry | null {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:137:    if (this.settledTaskAgentRunIds.has(normalizedRunId)) {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:146:    return this.settledTaskAgentRunIds.has(taskAgentRunId.trim());
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:149:  listActiveEntries(): TaskAgentDirectoryEntry[] {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:158:    this.settledTaskAgentRunIds.clear();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:161:  private deleteEntry(entry: TaskAgentDirectoryEntry): void {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:167:const taskAgentDirectories = new Map<string, TaskAgentDirectory>();
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:169:export const getTaskAgentDirectory = (teamRunId: string): TaskAgentDirectory => {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:178:  const directory = new TaskAgentDirectory(normalized);
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts:183:export const disposeTaskAgentDirectory = (teamRunId: string): void => {
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:28:  disposeTaskAgentDirectory,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:29:  getTaskAgentDirectory,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:192:  const directory = getTaskAgentDirectory(teamRunId);
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:362:    disposeTaskAgentDirectory(teamRunId);
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:447:      target_agent_run_id: writerContext.memberRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:465:      kind: "target_agent_run_id",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:483:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:502:    expect(deliveredRequest.target).toEqual({ kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId });
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:506:  it("delivers to recoverable task-agent exact run targets when the directory active entry is missing", async () => {
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:526:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:527:      content: "Please revise the delegated task through the recoverable exact run.",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:536:      content: "Please revise the delegated task through the recoverable exact run.",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:546:    expect(feedbackMessage.content).toContain("Please revise the delegated task through the recoverable exact run.");
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:549:  it("rejects settled task-agent exact run targets even when a recoverable handle remains", async () => {
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:560:    getTaskAgentDirectory(teamRunId).markSettledByTaskAgentRunId(taskAgentRunId);
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:569:      target_agent_run_id: taskAgentRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:570:      content: "This settled task-agent target must not receive feedback.",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:580:  it("rejects unknown or settled exact run targets without publishing communication", async () => {
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:589:      target_agent_run_id: "external-run-not-in-team",
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:611:      target_agent_run_id: writerContext.memberRunId,
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts:665:  it("cleans up task-agent handles and recoverable records when initial task-agent post throws", async () => {
+
+## Old request builder / pre-resolved recipient scan
+OK: old inter-agent-message-delivery-request-builder.ts absent
+autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts:3:  MemberTeamRecipientDescriptor,
+autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts:61:  recipient: MemberTeamRecipientDescriptor,
+autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts:80:  recipients: MemberTeamRecipientDescriptor[],
+autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts:106:  recipients: MemberTeamRecipientDescriptor[],
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:4:  MemberTeamRecipientDescriptor,
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:64:): MemberTeamRecipientDescriptor["delivery"] => ({
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:79:  }): MemberTeamRecipientDescriptor[] {
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:80:    const recipients: MemberTeamRecipientDescriptor[] = [];
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:110:  ): MemberTeamRecipientDescriptor {
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:126:  ): MemberTeamRecipientDescriptor {
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:146:  ): MemberTeamRecipientDescriptor {
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:161:  private assertUniqueVisibleNames(recipients: MemberTeamRecipientDescriptor[]): void {
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts:162:    const byName = new Map<string, MemberTeamRecipientDescriptor[]>();
+
+## Legacy/remnant scan
+
+## focused send-message/task-delegation unit tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:25688) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > commits Team Communication projection only after static recipient accepts input
+Successfully registered tool definition: 'send_message_to'
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T07:30:34.946Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T07:30:34.947Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > delivers to recoverable task-agent exact run targets when the directory active entry is missing
+[2026-06-08T07:30:34.969Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+ ✓ tests/unit/agent-tools/team-communication/send-message-to.test.ts (12 tests) 40ms
+ ✓ tests/unit/agent-team-execution/task-delegation-service.test.ts (7 tests) 11ms
+stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts > send-message-to-tool-argument-parser > fails malformed reference_files before delivery
+[team-communication] invalid reference_files validation toolName=send_message_to index=0 reason=path must be absolute
+
+ ✓ tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts (5 tests) 3ms
+
+ Test Files  3 passed (3)
+      Tests  24 passed (24)
+   Start at  09:30:31
+   Duration  4.09s (transform 2.32s, setup 34ms, import 3.39s, tests 54ms, environment 0ms)
+
+
+## task-delegation lifecycle integration
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:25750) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and accept the child through tight task-agent identity
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and accept the child through tight task-agent identity
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of active exact-run targets and websocket activation events
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > keeps rejected task-agent activations out of active exact-run targets and websocket activation events
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (4 tests) 12ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  09:30:35
+   Duration  3.42s (transform 2.19s, setup 17ms, import 2.98s, tests 12ms, environment 0ms)
+
+
+## server TypeScript check
+
+## server build
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 80ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+(node:26212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+
+## changed source size audit
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-agent-directory.ts: 167 effective non-empty lines (PASS; OK)
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts: 358 effective non-empty lines (PASS; WATCH)
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-handle-recovery-cache.ts: 52 effective non-empty lines (PASS; OK)
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.ts: 475 effective non-empty lines (PASS; WATCH)
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts: 354 effective non-empty lines (PASS; WATCH)
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts: 228 effective non-empty lines (PASS; WATCH)
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts: 161 effective non-empty lines (PASS; OK)
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts: 128 effective non-empty lines (PASS; OK)

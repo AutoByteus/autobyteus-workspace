@@ -5,7 +5,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import type {
-  InterAgentMessageDeliveryRequest,
+  InterAgentMessageDeliveryIntent,
   TeamRepresentedSubTeam,
 } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import {
@@ -101,15 +101,16 @@ const createChildManager = (input: {
 };
 
 const buildChildToParentRequest = ({
-  teamRunId = "parent-1",
+  teamRunId = "child-1",
   senderPath = ["review_lead"],
   senderAddressTeamRunId = "child-1",
 }: {
   teamRunId?: string;
   senderPath?: string[];
   senderAddressTeamRunId?: string;
-} = {}): InterAgentMessageDeliveryRequest => ({
+} = {}): InterAgentMessageDeliveryIntent => ({
   teamRunId,
+  target: { kind: "recipient_name", recipientName: "program_manager" },
   sender: {
     participant: {
       memberKind: "agent",
@@ -125,21 +126,6 @@ const buildChildToParentRequest = ({
     },
     selector: { kind: "path", memberPath: ["review_lead"] },
   },
-  recipient: {
-    participant: {
-      memberKind: "agent",
-      memberName: "program_manager",
-      memberPath: ["program_manager"],
-      memberRouteKey: "program_manager",
-      memberRunId: "program-manager-run",
-      address: {
-        teamRunId: "parent-1",
-        memberPath: ["program_manager"],
-        memberRouteKey: "program_manager",
-      },
-    },
-    selector: { kind: "path", memberPath: ["program_manager"] },
-  },
   content: "Build is complete.",
   messageType: "status_update",
 });
@@ -152,7 +138,7 @@ describe("MixedTeamManager parent-boundary delivery", () => {
 
     expect(result.accepted).toBe(true);
     expect(parentDeliverInterAgentMessage).toHaveBeenCalledTimes(1);
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryRequest;
+    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
     expect(bridgedRequest).toEqual(expect.objectContaining({
       teamRunId: "parent-1",
       content: "Build is complete.",
@@ -175,7 +161,8 @@ describe("MixedTeamManager parent-boundary delivery", () => {
         }),
       }),
     }));
-    expect(bridgedRequest.recipient.selector).toEqual({ kind: "path", memberPath: ["program_manager"] });
+    expect(bridgedRequest.target).toEqual({ kind: "recipient_name", recipientName: "program_manager" });
+    expect(bridgedRequest).not.toHaveProperty("recipient");
     expect(bridgedRequest).not.toHaveProperty("replyAddress");
     expect(bridgedRequest).not.toHaveProperty("reply_to_sender");
   });
@@ -201,7 +188,7 @@ describe("MixedTeamManager parent-boundary delivery", () => {
       senderAddressTeamRunId: "parent-1",
     }));
 
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryRequest;
+    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
     expect(bridgedRequest.sender.participant.memberPath).toEqual(["BuildSquad", "review_lead"]);
     expect(bridgedRequest.sender.participant.memberRouteKey).toBe("BuildSquad/review_lead");
   });
@@ -227,7 +214,7 @@ describe("MixedTeamManager parent-boundary delivery", () => {
       senderAddressTeamRunId: "child-1",
     }));
 
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryRequest;
+    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
     expect(bridgedRequest.sender.participant.memberPath).toEqual([
       "BuildSquad",
       "Nested",

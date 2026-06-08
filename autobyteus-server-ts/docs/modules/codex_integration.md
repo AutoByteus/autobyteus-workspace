@@ -37,19 +37,20 @@ the dynamic tool invocation id.
 
 Codex team task delegation is projected as dynamic tools generated from the
 server-owned task-delegation manifest. When an agent definition enables
-`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and/or
-`accept_task`, Codex receives those tools with
-JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
+`delegate_tasks` and/or `accept_task`, Codex receives those tools with JSON
+schemas derived from `src/agent-tools/task-delegation`; handlers call
 `TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
 runtime does not mutate task state directly and must not expose the removed
 legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
 ready-to-run/no-dependencies task guidance from the shared manifest/schema:
-dependent follow-up work should be delegated after the framework
-terminal/completion notification. Activation details are pushed to task-agent
-instances as work packets, and completion/failure is observed through framework
-task-delegation events and coordinator notifications rather than a model polling
-tool.
+dependent follow-up work should be delegated after ordinary `send_message_to`
+task-agent reports. Activation details are pushed to task-agent instances as
+work packets, and completion/revision reporting uses the shared team
+communication tool plus task-delegation events rather than a model polling
+tool. This remains a configured-tool boundary: Codex runtime code must not add
+ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
+framework auto-accept behavior for `accept_task`.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -275,8 +276,7 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`, `delegate_tasks`, `mark_task_completed`,
-  `mark_task_failed`, and `accept_task`.
+  `send_message_to`, `delegate_tasks`, and `accept_task`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.

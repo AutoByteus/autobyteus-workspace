@@ -1,7 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { normalizeAgentApiStatus, type AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
-import type { InterAgentMessageDeliveryRequest } from "./inter-agent-message-delivery.js";
+import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import {
@@ -94,9 +94,9 @@ export class TeamRun {
   }
 
   async deliverInterAgentMessage(
-    request: InterAgentMessageDeliveryRequest,
+    intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
-    return this.backend.deliverInterAgentMessage(request);
+    return this.backend.deliverInterAgentMessage(intent);
   }
 
   async approveToolInvocation(

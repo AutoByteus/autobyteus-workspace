@@ -1,7 +1,7 @@
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+} from "./team-local-definition-id.js";
 import type { AgentTeamDefinitionOwnershipScope, TeamMember } from "../domain/models.js";
 
 export type ScopedMemberResolutionContext = {

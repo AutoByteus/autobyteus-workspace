@@ -1,0 +1,108 @@
+# Round 6 API/E2E Failure Summary
+
+Generated from the Round 6 live validation logs after Code Review Round 11 pass.
+
+## Focused mixed task-delegation rerun before full matrix
+
+Started: 2026-06-08T09:34:00+02:00
+Runtimes: LM Studio qwen3.6-35b-a3b + Codex live
+ ✓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test) 90013ms
+     ✓ AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run  89921ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:34:00
+   Duration  94.95s (transform 2.80s, setup 16ms, import 4.49s, tests 90.01s, environment 0ms)
+Completed: 2026-06-08T09:35:35+02:00
+Exit status: 0
+
+Result: focused `mixed-task-delegation.e2e.test.ts` passed with real LM Studio `qwen3.6-35b-a3b` + real Codex runtime.
+
+## Full live matrix summary
+
+Started: 2026-06-08T09:35:55+02:00
+Runtimes: LM Studio qwen3.6-35b-a3b, Codex live, Claude live
+ ✓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests) 89169ms
+     ✓ routes send_message_to between real AutoByteus team members and projects reference files  25321ms
+     ✓ creates a real team, approves a tool call, restores it, and continues on the same websocket  20159ms
+     ✓ interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket  16345ms
+     ✓ terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket  13136ms
+     ✓ serves team member projection after terminate, restore, and continue  14159ms
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test | 1 failed) 164210ms
+     × AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run 164118ms
+ ✓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests) 58341ms
+     ✓ routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime  19863ms
+     ✓ creates a nested team definition and routes live Codex inter-agent messaging between leaf members  13291ms
+     ✓ streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime  13726ms
+     ✓ preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId  9241ms
+     ✓ keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime  2177ms
+ ✓ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test) 60466ms
+     ✓ creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration  60423ms
+ ✓ tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts (1 test) 35855ms
+     ✓ launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores  35813ms
+ ✓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests) 35126ms
+     ✓ routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime  10444ms
+     ✓ interrupts a pending Claude team turn and accepts a follow-up on the same websocket  7255ms
+     ✓ creates a nested team definition and routes live Claude inter-agent messaging between leaf members  6821ms
+     ✓ preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId  3778ms
+     ✓ serves team member projection after terminate, restore, and continue in claude team runtime  6787ms
+ FAIL  tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ ❯ waitForMessageAfter tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:83:9
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:393:7
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 17 passed (18)
+   Start at  09:35:56
+   Duration  454.92s (transform 3.56s, setup 53ms, import 10.79s, tests 443.17s, environment 0ms)
+Completed: 2026-06-08T09:43:31+02:00
+Exit status: 1
+
+## Failure classification evidence
+
+- The full matrix passed all-AutoByteus, all-Codex, all-Claude, mixed AutoByteus+Codex, and nested mixed AutoByteus+Codex+Claude suites.
+- The only failure was `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` while waiting for `Team Communication revision feedback to concrete task-agent run`.
+- The test had not called `accept_task` yet; revision feedback is sent immediately after the initial task-agent completion report is observed.
+- The failure preview shows the coordinator tool turn reporting that the `target_agent_run_id` is no longer reachable before acceptance.
+- This violates the accepted exact-run task-agent lifecycle: concrete task-agent runs must remain active/recoverable targets for feedback until the delegator accepts the task; `accept_task` is the terminal transition.
+
+## Key full-matrix evidence snippets
+
+### Task-agent run creation and initial completion projection
+
+```text
+inition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Successfully created codex_app_server agent run 'team_mixed-task-delegation-team-8115c7c4-9825_31128e2e__worker__task_0001'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: f217ab25-e067-4b51-baf6-057a10c6142a, AgentID: coordinator_5d675f46bc81d4ad) e
+```
+
+### Failure preview
+
+```text
+
+     ✓ creates a nested team definition and routes live Claude inter-agent messaging between leaf members  6821ms
+     ✓ preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId  3778ms
+     ✓ serves team member projection after terminate, restore, and continue in claude team runtime  6787ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Error: Timed out waiting for team websocket message 'Team Communication revision feedback to concrete task-agent run'. preview='SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" is","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" no","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" longer","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator" | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" an","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" active","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator" | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" message","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" target","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator" | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":".","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","memb | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" Therefore","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinat | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":",","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","memb | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" revision","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" feedback","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" cannot","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator" | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" be","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a","delta":" sent","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_5d675f46bc81d4ad","member_route_key":"coordinator"," | SEGMENT_CONTENT:{"id":"turn_0e8f6a823643440ab3dea5f23e57c110:4e6c45467a604527b4832a17d8881b7a"
+```

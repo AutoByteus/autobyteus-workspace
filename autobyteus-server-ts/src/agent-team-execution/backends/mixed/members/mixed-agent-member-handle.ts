@@ -5,7 +5,10 @@ import { isAgentRunEvent } from "../../../../agent-execution/domain/agent-run-ev
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import {
   TeamRunEventSourceType,
@@ -46,7 +49,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     interAgentMessageRouter?: InterAgentMessageRouter;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
-    deliverInterAgentMessage: (request: InterAgentMessageDeliveryRequest) => Promise<AgentOperationResult>;
+    deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
   }) {
     this.context = options.context;
@@ -109,7 +112,10 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     }
   }
 
-  async deliverInterMemberMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
+  async deliverInterMemberMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null = null,
+  ): Promise<AgentOperationResult> {
     this.publishCommandStatus("initializing");
     try {
       const run = await this.ensureReady();
@@ -119,6 +125,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       });
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       if (result.accepted) {
+        beforePublishMemberInput?.();
         this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
       } else {
         this.publishCommandStatus("error", result.message ?? null);
@@ -171,7 +178,12 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    const result = this.agentRun ? await this.agentRun.terminate() : { accepted: true };
+    const canRestore = typeof this.context.platformAgentRunId === "string"
+      && this.context.platformAgentRunId.trim().length > 0;
+    const run = this.agentRun?.isActive() || canRestore
+      ? await this.ensureReady()
+      : this.agentRun;
+    const result = run ? await run.terminate() : { accepted: true };
     this.dispose();
     return result;
   }
@@ -181,6 +193,24 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe = null;
     this.agentRun = null;
     this.commandStatusOverlayStore.clear();
+  }
+
+  adoptExistingRun(run: AgentRun): void {
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+    this.agentRun = run;
+    this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
+    this.bindEvents(run);
+    this.options.notifyStatusChange();
+  }
+
+  releaseExistingRunForAdoption(): AgentRun | null {
+    const run = this.agentRun;
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+    this.agentRun = null;
+    this.commandStatusOverlayStore.clear();
+    return run;
   }
 
   private async ensureReady(): Promise<AgentRun> {

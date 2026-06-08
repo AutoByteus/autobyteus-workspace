@@ -18,7 +18,7 @@ import {
 } from "../backends/claude/session/claude-session-config.js";
 import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
-import { resolveApprovalPolicyForAutoExecuteTools } from "../backends/codex/backend/codex-thread-bootstrapper.js";
+import { resolveApprovalPolicyForRunConfig } from "../backends/codex/backend/codex-thread-bootstrapper.js";
 import { buildConfiguredAgentToolExposure } from "../shared/configured-agent-tool-exposure.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
 import {
@@ -212,7 +212,7 @@ export class AgentRunManager {
           workingDirectory: ".",
           reasoningEffort: null,
           serviceTier: null,
-          approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(config.autoExecuteTools),
+          approvalPolicy: resolveApprovalPolicyForRunConfig(config),
           sandbox: "workspace-write",
           dynamicTools: null,
         }),

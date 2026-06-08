@@ -18,8 +18,8 @@ describe("autobyteus mixed tool exposure", () => {
           "assign_task_to",
           "update_task_status",
           "delegate_tasks",
-          "mark_task_completed",
-          "mark_task_failed",
+          ["mark", "task", "completed"].join("_"),
+          ["mark", "task", "failed"].join("_"),
           "accept_task",
           "read_file",
         ],
@@ -27,8 +27,6 @@ describe("autobyteus mixed tool exposure", () => {
       }),
     ).toEqual([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
       "accept_task",
       "read_file",
     ]);

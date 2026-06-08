@@ -20,8 +20,7 @@ export const buildClaudeTeamMcpServers = async (options: {
   const sendMessageToEnabled =
     options.sendMessageToToolingEnabled === true &&
     Boolean(memberTeamContext?.deliverInterAgentMessage) &&
-    Boolean(memberTeamContext?.teamRunId) &&
-    (memberTeamContext?.allowedRecipientNames ?? []).length > 0;
+    Boolean(memberTeamContext?.teamRunId);
   const taskDelegationToolDefinitions = await buildClaudeTaskDelegationToolDefinitions({
     sdkClient: options.sdkClient,
     memberTeamContext,
@@ -37,8 +36,7 @@ export const buildClaudeTeamMcpServers = async (options: {
     if (
       !memberTeamContext ||
       !memberTeamContext.deliverInterAgentMessage ||
-      !memberTeamContext.teamRunId ||
-      memberTeamContext.allowedRecipientNames.length === 0
+      !memberTeamContext.teamRunId
     ) {
       return null;
     }

@@ -20,7 +20,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
 | Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
-| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | Server-composed `MemberTeamContext`/`MemberRunInstructionComposer` prompt path provides team instructions, roster, send-message guidance, and task-delegation guidance. `TeamManifestInjectorProcessor` is not added for mixed server team members. |
+| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | Server-composed `MemberTeamContext`/`MemberRunInstructionComposer` prompt path provides team instructions, roster, send-message guidance, and task-delegation guidance; native manifest injection is not used for server team members. |
 | Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation tools. |
 ## Nested Member Identity And Commands
 
@@ -46,7 +46,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   at a subteam member is rejected; approval clients must use the
   `source_path` / `source_route_key` or member path/route emitted with the
   approval request event. For delegated task-agent tool calls, approval
-  clients must also preserve the emitted concrete `task_agent_run_id` so the
+  clients must preserve the emitted concrete task-agent run identity so the
   approval/denial command routes to the active task-agent runtime rather than
   the logical member template.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
@@ -73,92 +73,80 @@ only model-facing task-delegation tools are:
   ready-to-run tasks in a `tasks` array. Each item contains `member_name`, rich
   `description`, and optional `reference_files`; dependency encoding is not part
   of the task item shape.
-- `mark_task_completed`: a task-agent instance reports completed worker output
-  for its bound task using only required `message` plus optional
-  `reference_files`; the task identity is inferred from task-agent context.
-- `mark_task_failed`: a task-agent instance reports failed worker output for
-  its bound task using only required `message` plus optional `reference_files`;
-  the task identity is inferred from task-agent context.
-- `accept_task`: the original delegator accepts completed work with the exact
-  framework-generated `task_id` from the completion notification and optional
-  `message`.
+- `accept_task`: the original delegator accepts active delegated work with the
+  exact framework-generated `task_id` and optional `message` after reviewing the
+  task-agent's ordinary `send_message_to` reports.
+
+Task-agent progress, blocker reports, completion reports, revision feedback, and
+revised completion reports all use ordinary `send_message_to`. Logical teammates
+are addressed with `recipient_name`; concrete active task-agent runs are
+addressed with the general exact-run selector `target_agent_run_id`.
 
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
 `update_task_status`) must not be exposed as a parallel model workflow. Task
 state is still held internally in a team-run-scoped delegation ledger for
-correlation, status messages, reference files, notifications, and settlement
-safety.
+correlation, activation, acceptance, stream projection, and settlement safety.
 
 The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
-   server-owned `MemberTeamContext` and the runtime-compatible team context
-   payload derived from it, then calls `TaskDelegationToolService`.
-2. The service resolves the active `TeamRun`, creates ledger records, validates
-   exact `member_name` targets against the team roster, and treats the submitted
-   tasks as independent ready-to-run work. Dependent follow-up work is sequenced
-   by the coordinator after receiving the framework terminal/completion
-   notification, then calling `delegate_tasks` again for the next task.
-3. `TaskDelegationActivationCoordinator` marks runnable records `queued` and
-   starts one concrete task-agent instance per task through
-   `TeamRun.startTaskAgentInstance(...)`. The packet includes a derived task
-   label, rich `description`, optional reference files, task-agent instance/run
-   identity, and instructions not to call `get_my_tasks` or pass task selectors
-   to task-agent result tools.
-4. Accepted activations emit `TASK_DELEGATION_ACTIVATED`; rejected activations
-   roll the affected records back to `not_started` and are returned to the tool
-   caller in `activationResults`.
-5. Accepted task-agent result reports emit `TASK_DELEGATION_STATUS_UPDATED`
-   before any terminal follow-up handling.
-6. `mark_task_completed` updates record message/reference files, marks
-   the record `awaiting_acceptance`, emit `TASK_DELEGATION_TERMINAL_STATUS`,
-   and post a framework-generated completion notification to the original
-   delegator plus the coordinator when different. The completion notification
-   includes the exact `task_id` the delegator must use if it accepts the result.
-   `mark_task_failed` updates record failure context, emits the same terminal
-   event, notifies the delegator/coordinator, and remains a terminal failure path.
-7. The original delegator accepts completed work by calling
-   `accept_task` with the exact framework-generated `task_id` from the
-   completion notification. Accepted updates emit
-   `TASK_DELEGATION_STATUS_UPDATED`, record acceptance message/time metadata,
-   and then request task-agent settlement.
-8. Settlement is requested after delegator acceptance, or after terminal
-   failure, only after the current tool call can finish.
-   `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
-   the bound task-agent run, verifies the task-agent instance still has no
-   queued/in-progress delegated work, protects the coordinator by default, and
-   calls `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId, reason)`.
-   The task-agent run id is a stale-route guard so a later replacement instance
-   is not accidentally settled.
+   server-owned `MemberTeamContext` and calls `TaskDelegationToolService`.
+2. The service resolves the active `TeamRun`, creates `not_started` ledger
+   records, validates exact `member_name` targets against the team roster, and
+   treats the submitted tasks as independent ready-to-run work.
+3. `TaskDelegationActivationCoordinator` registers the active task-agent run in
+   the team-run `TaskAgentDirectory`, binds the ledger record to the concrete
+   task-agent runtime identity, and starts one task-agent instance per task
+   through `TeamRun.startTaskAgentInstance(...)`. The work packet includes the
+   derived task label, rich `description`, optional reference files, the
+   task-agent `target_agent_run_id`, the delegator reply selector, and
+   instructions to report progress/completion with `send_message_to`.
+4. Accepted activations mark records `active`, mark the exact run reachable, and
+   emit `TASK_DELEGATION_ACTIVATED`; rejected activations unregister the
+   starting run, roll records back to `not_started`, and are returned to the
+   tool caller in `activationResults`.
+5. The task-agent reports progress, blockers, completion, and revised output to
+   the delegator reply selector with `send_message_to`. If the delegator needs
+   rework, it sends feedback to the active task-agent `target_agent_run_id`.
+   Unknown, external, settled, or rejected exact-run targets fail before Team
+   Communication projection, so successful communication rows are committed only
+   after recipient input acceptance.
+6. The original delegator accepts satisfactory work by calling `accept_task` with
+   the exact framework-generated `task_id`. Acceptance emits
+   `TASK_DELEGATION_STATUS_UPDATED`, records acceptance message/time metadata,
+   invalidates the exact run as an active message target, and requests
+   task-agent settlement.
+7. `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
+   the bound task-agent run, verifies the task-agent instance has no active
+   delegated child work, protects the coordinator by default, and calls
+   `TeamRun.settleTaskAgentInstance(routeKey, internal task-agent run id,
+   reason)`. The internal run identity is a stale-route guard so a later
+   replacement instance is not accidentally settled.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages with
-`event_type` set to `TASK_DELEGATION_ACTIVATED`,
-`TASK_DELEGATION_STATUS_UPDATED`, or `TASK_DELEGATION_TERMINAL_STATUS`. Event
-payloads carry `teamRunId`, internal task identity, member/delegator identity,
-task-agent instance identity, status, optional message/reference files, and
-accepted-work metadata such as acceptance message/time when present, plus
-canonical `source_path` / `source_route_key` metadata from the logical member.
-Member-scoped stream/status/tool-approval payloads for task-agent activity also
-carry concrete task-agent identity: `task_agent_instance_id`,
-`task_agent_run_id`, `task_id`, logical `member_path` / `member_route_key`, and
-canonical `source_path` / `source_route_key`. Clients must use that explicit
-identity to project transient task-agent UI entities, distinguish parallel
-task-agent executions for the same logical member, and route approvals to the
-task-scoped runtime instead of inferring task-agent identity from generated run
-id formats.
+`event_type` set to `TASK_DELEGATION_ACTIVATED` or
+`TASK_DELEGATION_STATUS_UPDATED`. Event payloads carry `teamRunId`, internal task
+identity, member/delegator identity, task-agent instance identity, exact-run
+target metadata, status, accepted-work metadata such as acceptance message/time
+when present, plus canonical `source_path` / `source_route_key` metadata from
+the logical member. Member-scoped stream/status/tool-approval payloads for
+task-agent activity also carry concrete task-agent identity, logical
+`member_path` / `member_route_key`, and canonical `source_path` /
+`source_route_key`. Clients use that explicit transport identity to project
+transient task-agent UI entities, distinguish parallel task-agent executions for
+the same logical member, and route approvals to the task-scoped runtime instead
+of inferring task-agent identity from generated run id formats.
 
 Current settlement support is owned by `MixedTeamManager` for every server team
 run. `MixedTeamMemberRegistry` starts one task-agent `MixedAgentMemberHandle`
-for each concrete delegated task, keyed by the generated `taskAgentRunId`, and
-settles it only when the logical member route key and task-agent run id still
-match. Runtime-specific AgentRun backends execute the task-agent turn below that
-boundary, but they do not own the team-level task-agent registry. AutoByteus
-task-agent runs receive the same task identity through native custom data:
-`taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and
-`logicalMemberRouteKey`.
-
+for each concrete delegated task, keyed by the generated internal task-agent run
+identity, and settles it only when the logical member route key and internal run
+identity still match. Runtime-specific AgentRun backends execute the task-agent
+turn below that boundary, but they do not own the team-level task-agent registry.
+AutoByteus task-agent runs receive primitive task-delegation context through
+server-provided custom data for runtime correlation only.
 
 ### Task Delegation Validation Notes
 
@@ -227,8 +215,16 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   terminal lifecycle events; raw MCP transport chunks such as
   `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
   suppressed before they create extra Activity rows.
-- AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
-- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and `accept_task`).
+- AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
+- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks` and `accept_task`).
+- Task-delegation and communication tools are configured agent capabilities, not
+  runtime-level provider policy. Runtime adapters must expose `send_message_to`,
+  `delegate_tasks`, and `accept_task` only when the current member/tool
+  configuration includes them, and must not add provider `tool_choice` special
+  cases, forced-tool dampening, or framework auto-accept behavior for
+  `accept_task`. If a model does not call an available tool despite clear
+  instructions, treat that as prompt/model/test configuration until a framework
+  invariant above is violated.
 
 ## Mixed Member Event Bridge
 

@@ -35,8 +35,4 @@ export * from './agent/tool-invocation-preprocessor/index.js';
 export * from './agent/tool-approval-result.js';
 export * from './agent/tool-result-posting.js';
 export * from './agent/utils/index.js';
-export * from './agent-team/context/index.js';
-export * from './agent-team/factory/index.js';
-export * from './agent-team/runtime/index.js';
-export * from './agent-team/streaming/index.js';
 export * from './utils/tool-call-format.js';

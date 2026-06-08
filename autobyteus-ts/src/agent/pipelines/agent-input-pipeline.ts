@@ -2,7 +2,6 @@ import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent } from '../eve
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
-import { resolveTeamCommunicationContext } from '../../agent-team/context/team-communication-context.js';
 import { getToolContinuationMode } from '../message/tool-continuation-metadata.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
@@ -45,15 +44,6 @@ function cloneAgentInputUserMessage(message: AgentInputUserMessage): AgentInputU
   return AgentInputUserMessage.fromDict(message.toDict());
 }
 
-const resolveSenderDisplayName = (context: AgentContext, senderAgentId: string): string | null => {
-  const communicationContext = resolveTeamCommunicationContext(context.customData?.teamContext);
-  const resolved = communicationContext?.resolveMemberNameByAgentId.call(
-    communicationContext,
-    senderAgentId
-  ) ?? null;
-  return typeof resolved === 'string' && resolved.trim().length > 0 ? resolved.trim() : null;
-};
-
 const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
   referenceFiles.length > 0
     ? `\n\nReference files:\n${referenceFiles.map((filePath) => `- ${filePath}`).join('\n')}`
@@ -67,7 +57,7 @@ export class AgentInputPipeline {
     notifier?: AgentExternalEventNotifier | null
   ): Promise<AgentInputPipelineResult> {
     const userEvent = event instanceof InterAgentMessageReceivedEvent
-      ? this.convertInterAgentEvent(event, context, notifier ?? null)
+      ? this.convertInterAgentEvent(event, notifier ?? null)
       : event;
     return this.processForLlm(userEvent, context, turn, { startsNewTurn: true, notifier });
   }
@@ -147,7 +137,6 @@ export class AgentInputPipeline {
 
   private convertInterAgentEvent(
     event: InterAgentMessageReceivedEvent,
-    context: AgentContext,
     notifier: AgentExternalEventNotifier | null
   ): UserMessageReceivedEvent {
     const interAgentMsg = event.interAgentMessage;
@@ -159,11 +148,9 @@ export class AgentInputPipeline {
       reference_files: interAgentMsg.referenceFiles
     });
 
-    const normalizedSenderName =
-      resolveSenderDisplayName(context, interAgentMsg.senderAgentId) ?? interAgentMsg.senderAgentId;
     const referenceFilesBlock = buildReferenceFilesBlock(interAgentMsg.referenceFiles);
     const contentForLlm =
-      `You received a message from sender name: ${normalizedSenderName}, sender id: ${interAgentMsg.senderAgentId}\n` +
+      `You received a message from sender name: ${interAgentMsg.senderAgentId}, sender id: ${interAgentMsg.senderAgentId}\n` +
       `message:\n${interAgentMsg.content}${referenceFilesBlock}`;
 
     return new UserMessageReceivedEvent(

@@ -19,7 +19,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../src/run-history/utils/team-member-run-id.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
-import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
+import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
 import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
@@ -90,7 +90,7 @@ const buildTestDeliveryRequest = (
   recipientName: string,
   content: string,
 ) => {
-  const result = buildInterAgentMessageDeliveryRequestFromRecipientName({
+  const result = buildInterAgentMessageDeliveryIntentFromRecipientName({
     memberTeamContext,
     recipientName,
     content,
@@ -100,7 +100,7 @@ const buildTestDeliveryRequest = (
   if (!result.ok) {
     throw new Error(result.message);
   }
-  return result.request;
+  return result.intent;
 };
 
 type SocketHarness = {

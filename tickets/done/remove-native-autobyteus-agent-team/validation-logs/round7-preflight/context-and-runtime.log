@@ -1,0 +1,83 @@
+Started: 2026-06-08T13:53:51+0200
+PWD: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+Branch/commit:
+codex/remove-native-autobyteus-agent-team
+bbd34030eb35fae528658745f1f7c9a7343f54f5
+
+Report round/result markers:
+- Current Validation Round: `6`
+- Latest Authoritative Round: `6`
+- Latest Authoritative Result: `Fail`
+## Latest Authoritative Result
+Result: `Fail`
+
+Code review Round 14 markers:
+8:- Trigger: Round 14 implementation/rework after the Round 12/13/14 architecture reset. Round 14 supersedes/retracts the Round 13 runtime `tool_choice` dampening proposal and keeps `delegate_tasks`, `accept_task`, and `send_message_to` as ordinary configured tools.
+21:| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+23:| 1 | Initial implementation review for native AutoByteus agent-team removal | N/A | CR-001 | Fail / Local Fix | No | Concrete task-agent handle recovery was message-only. |
+24:| 2 | CR-001 local fix | CR-001 | None | Pass | No | API/E2E proceeded. |
+26:| 4 | API/E2E Round 2 local fixes | Prior task-agent/Codex issues | CR-002 | Fail / Local Fix | No | Recoverable task-agent lifecycle cleanup gap. |
+27:| 5 | CR-002 local fix | CR-002 | None | Pass | No | API/E2E proceeded. |
+29:| 7 | Round 5 implementation rework review | Prior design-impact reset | CR-003, CR-004, CR-005 | Fail / Local Fix | No | Strict roster-name, transactional activation, dead receipt cleanup required. |
+30:| 8 | Fresh full-ticket review after Round 7 fixes | CR-003, CR-004, CR-005 | CR-006, CR-007 | Fail / Design Impact | No | Pre-resolved recipient endpoint / hidden alias boundary problem. |
+31:| 9 | Round 8 delivery-intent boundary rework | CR-006, CR-007 | CR-008 | Fail / Local Fix | No | Boundary fixed; exact-run-only exposure remained gated by static roster. |
+32:| 10 | CR-008 local fix | CR-008 | None | Pass | No | API/E2E resumed. |
+33:| 11 | Round 11 local fix for API/E2E Round 5 FAIL-001 | CR-001 through CR-008 | None | Pass | No | Recoverable pre-`accept_task` task-agent exact-run resolution and settled tombstone rejection aligned with Round 5/Round 8. |
+34:| 12 | API/E2E Round 6 failure analysis | CR-001 through CR-008 | Design issue raised | Fail / Design Impact | No | Routed as design-impact because task-agent acceptance/tool-choice behavior needed architectural clarification. |
+36:| 14 | Round 14 implementation/rework review | CR-001 through CR-008 and Round 12/13 design reset | None | Pass | Yes | Round 14 correctly preserves configured tools and excludes task-specific provider `tool_choice` policy. |
+40:Round 14 was reviewed as a fresh, full-ticket architecture-aware pass, not a delta-only review. Scope included:
+47:- Round 14 authoritative correction that task tools are configured capabilities, not runtime request-shaping policy.
+56:| 1 | CR-001 | Major | Resolved | `MixedTeamMemberRegistry.resolveTaskAgentHandle(...)` remains the shared resolver for task-agent message, approval, settlement, active-run adoption, and remembered-handle recovery. | Still resolved. |
+57:| 4 | CR-002 | Major | Resolved | Registry termination/disposal still includes the deduped union of local and recoverable task-agent handles for the current team run. | Still resolved. |
+58:| 7 | CR-003 | Major | Resolved | `recipient_name` remains strict logical roster-name mode; route-key fallback is rejected and covered in `send-message-to.test.ts`. | Still resolved. |
+59:| 7 | CR-004 | Major | Resolved | Task-agent activation/start rollback and thrown initial-post cleanup remain covered. | Still resolved. |
+60:| 7 | CR-005 | Minor | Resolved | `team-member-delivery-receipt.ts` / `TeamMemberDeliveryReceipt` are absent; no receipt remnant was found. | Still resolved. |
+61:| 8 | CR-006 | Major / Architecture | Resolved | Runtime adapters build unresolved `InterAgentMessageDeliveryIntent`; `recipient` is only created inside `ResolvedInterAgentMessageDeliveryRequest` after mixed resolver success. | Still resolved. |
+62:| 8 | CR-007 | Medium | Resolved | Parser rejects hidden aliases `recipient`, `recipientName`, and `targetAgentRunId`; canonical fields remain `recipient_name` and `target_agent_run_id`. | Still resolved. |
+63:| 9 | CR-008 | Major | Resolved | `send_message_to` exposure is gated by configured exposure plus delivery availability, not by static roster length; exact-run-only/no-roster contexts remain supported. | Still resolved. |
+64:| 12/13 | Design-impact reset | Major / Architecture | Resolved by Round 14 design correction | Round 14 explicitly retracts the proposed runtime `AgentTurnInputContext` / provider `tool_choice` dampening path and keeps task tools as normal configured tools. Source scans found no Round 13 policy implementation. | Latest authoritative design basis is Round 14. |
+97:| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements and Round 14 design identify the ticket as boundary/ownership cleanup plus task-tool configuration correction. Implementation preserves Round 14's no-runtime-policy posture. | None. |
+98:| Data-flow spine inventory clarity and preservation under shared principles | Pass | Round 14 spines R14-DS-001..R14-DS-007 are explicit; source preserves configured tool exposure, delegation, report/revision via `send_message_to`, acceptance, nested acceptance, and post-accept rejection spines. | None. |
+101:| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Round 14 work preserves existing owners rather than adding new provider request policy. | None. |
+105:| Empty indirection check (no pass-through-only boundary) | Pass | No Round 14 pass-through layer was introduced; Round 13 policy layer is absent. | None. |
+108:| Authoritative Boundary Rule check | Pass | Callers above the mixed delivery boundary depend on `TeamRun` / `MixedTeamManager` delivery intent, not on delivery plus internal run lookup. Round 14 rejects adding provider-level `accept_task` policy inside lower runtime request shaping. | None. |
+109:| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Round 14-relevant code sits under task delegation, mixed delivery/member lifecycle, shared send-message parser/contract, or provider adapter folders. | None. |
+114:| Patch-on-patch complexity control | Pass | Round 14 is preservation plus verification after retracting Round 13; no new speculative policy branch was added. | None. |
+122:## Review Scorecard (Mandatory)
+126:- Score calculation note: simple average across the ten categories; every category is at or above the clean-pass target. The scorecard does not override the pass/fail decision.
+128:| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+130:| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Round 14 explicitly names configured tool, delegation, communication, revision, acceptance, nested acceptance, and post-settlement rejection spines; implementation maps cleanly to them. | Live API/E2E still needs to prove the real provider path after Round 14. | Rerun the comprehensive real-runtime matrix. |
+132:| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Public tool contracts are explicit: XOR `recipient_name`/`target_agent_run_id`, `delegate_tasks` returns `task_id` plus run id, and `accept_task(task_id)` is terminal. | Long exact-run IDs remain a model usability challenge, but Round 14 assigns that to prompt/test shaping rather than framework policy. | Continue validating instructions in API/E2E. |
+136:| `7` | `Validation Readiness` | 9.2 | Reviewer checks passed and durable tests cover the framework invariants. | Full live API/E2E is still pending after Round 14. | API/E2E should rerun focused mixed task delegation and full matrix. |
+137:| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Active/recoverable exact-run feedback and settled-target no-projection behavior are covered; original-delegator and nested acceptance are covered. | Real provider timing/model-tool choice is still a validation risk. | Classify future failures by Round 14: framework invariant vs prompt/model/test instability. |
+139:| `10` | `Cleanup Completeness` | 9.1 | Round 14 introduced no new cleanup debt and remnant scans are clean. | Final docs sync still needs delivery after integrated validation. | Delivery should verify docs after API/E2E. |
+143:### CR-001 — Concrete task-agent handle recovery is message-only and can leave acceptance/settlement on the old not-found path
+150:### CR-002 — Recoverable task-agent handles are delivery-recoverable but not lifecycle-cleanup-complete
+157:### CR-003 — `recipient_name` still accepts and emits internal route-key aliases instead of strict roster names
+164:### CR-004 — Task-agent activation is not transactional when runtime start/post throws
+171:### CR-005 — Unused delivery receipt type remains after the Round 5 coordinator implementation
+178:### CR-006 — `recipient_name` resolution still happens above the mixed delivery boundary, leaving two authoritative target representations
+185:### CR-007 — `send_message_to` parser still accepts undocumented target selector aliases
+192:### CR-008 — `send_message_to` exposure still requires static roster recipients, so exact-run-only reachable messaging can be unavailable
+199:### Round 14 Design-Reset Verification — Round 13 runtime `tool_choice` dampening proposal must stay retracted
+204:### New Round 14 Findings
+236:| Dead/obsolete code cleanup completeness in changed scope | Pass | Round 14 did not add new dead code; stale/remnant scans are clean. |
+247:- Why: This ticket changes/removes public-ish architecture surfaces: native AutoByteus agent-team decommissioning, server-owned `send_message_to`, exact-run `target_agent_run_id`, simplified task delegation, and Round 14 configured-tool boundary guidance.
+253:- If future API/E2E fails, classify by Round 14:
+263:- Full live API/E2E has not rerun after Round 14. The next validation pass should rerun focused mixed task delegation, then the comprehensive all-AutoByteus/all-Codex/all-Claude/mixed/nested matrix.
+264:- Provider/model behavior around configured tools remains a live-validation risk. Round 14 intentionally keeps this outside task-delegation runtime architecture unless a framework invariant is violated.
+270:- Review Decision: `Pass`
+271:- Score Summary: `9.2/10` (`92/100`); every scorecard category is at or above `9.0`.
+272:- Notes: Round 14 source posture matches the corrected architecture. No design-impact issue was found in the current implementation. API/E2E may resume.
+
+Runtime versions:
+codex-cli 0.137.0
+2.1.131 (Claude Code)
+10.28.2
+v22.21.1
+
+LM Studio qwen3.6-35b-a3b availability:
+model_count 29
+qwen3.6-35b-a3b-present True
+qwen_matches ['qwen3.6-35b-a3b', 'qwen3.6-35b-a3b-nvfp4']
+Completed: 2026-06-08T13:53:52+0200

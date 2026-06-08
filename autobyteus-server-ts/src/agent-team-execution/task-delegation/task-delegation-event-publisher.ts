@@ -29,6 +29,7 @@ export class TaskDelegationEventPublisher {
         taskId: record.taskId,
         taskLabel: record.taskLabel,
         status: record.status,
+        targetAgentRunId: record.targetAgentRunId,
       })),
       activatedAt: new Date().toISOString(),
     };
@@ -54,12 +55,9 @@ export class TaskDelegationEventPublisher {
       member: input.record.member,
       delegator: input.record.delegator,
       taskAgentInstance: input.record.taskAgentInstance,
+      targetAgentRunId: input.record.targetAgentRunId,
       previousStatus: input.previousStatus,
       status: input.record.status,
-      message: input.record.status === "accepted"
-        ? input.record.acceptanceMessage
-        : input.record.statusMessage,
-      referenceFiles: input.record.statusReferenceFiles,
       acceptanceMessage: input.record.acceptanceMessage,
       acceptedAt: input.record.acceptedAt,
       updatedAt: input.record.updatedAt,

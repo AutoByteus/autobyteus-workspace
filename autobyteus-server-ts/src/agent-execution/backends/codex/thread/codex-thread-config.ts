@@ -5,6 +5,8 @@ const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 export enum CodexApprovalPolicy {
+  UNTRUSTED = "untrusted",
+  ON_FAILURE = "on-failure",
   NEVER = "never",
   ON_REQUEST = "on-request",
 }

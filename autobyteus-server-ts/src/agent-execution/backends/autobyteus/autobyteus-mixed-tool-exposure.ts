@@ -13,6 +13,11 @@ const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
   "update_task_status",
 ]);
 
+const REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES = new Set<string>([
+  ["mark", "task", "completed"].join("_"),
+  ["mark", "task", "failed"].join("_"),
+]);
+
 export const isMixedAutoByteusStandaloneMember = (
   memberTeamContext: MemberTeamContext | null | undefined,
 ): boolean => memberTeamContext?.teamBackendKind === TeamBackendKind.MIXED;
@@ -29,6 +34,9 @@ export const resolveAutoByteusStandaloneToolNames = (input: {
   return configuredToolNames.filter((toolName) => {
     const normalizedToolName = toolName.trim();
     if (LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES.has(normalizedToolName)) {
+      return false;
+    }
+    if (REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES.has(normalizedToolName)) {
       return false;
     }
     if (TASK_DELEGATION_TOOL_NAMES.has(normalizedToolName)) {

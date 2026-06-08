@@ -6,9 +6,7 @@ import {
 
 describe("codex-send-message-tool-spec-builder", () => {
   it("builds a Codex dynamic tool spec with inputSchema", () => {
-    const spec = buildSendMessageToToolSpec({
-      allowedRecipientNames: ["Reviewer", "Planner"],
-    }) as {
+    const spec = buildSendMessageToToolSpec() as {
       name: string;
       inputSchema?: {
         type?: string;
@@ -26,7 +24,7 @@ describe("codex-send-message-tool-spec-builder", () => {
     expect(spec.inputSchema).toEqual(
       expect.objectContaining({
         type: "object",
-        required: ["recipient_name", "content"],
+        required: ["content"],
         additionalProperties: false,
       }),
     );
@@ -34,7 +32,11 @@ describe("codex-send-message-tool-spec-builder", () => {
       expect.objectContaining({
         recipient_name: expect.objectContaining({
           type: "string",
-          enum: ["Reviewer", "Planner"],
+          description: expect.stringContaining("recipient_name"),
+        }),
+        target_agent_run_id: expect.objectContaining({
+          type: "string",
+          description: expect.stringContaining("target_agent_run_id"),
         }),
         content: expect.objectContaining({
           type: "string",

@@ -38,13 +38,13 @@ export class CodexAppServerClientManager {
     this.createClient = options.createClient ?? createDefaultClient;
   }
 
-  async getClient(cwd: string): Promise<CodexAppServerClient> {
-    const entry = this.getOrCreateEntry(cwd);
+  async getClient(cwd: string, scopeKey: string | null = null): Promise<CodexAppServerClient> {
+    const entry = this.getOrCreateEntry(cwd, scopeKey);
     return this.ensureStarted(entry);
   }
 
-  async acquireClient(cwd: string): Promise<CodexAppServerClient> {
-    const entry = this.getOrCreateEntry(cwd);
+  async acquireClient(cwd: string, scopeKey: string | null = null): Promise<CodexAppServerClient> {
+    const entry = this.getOrCreateEntry(cwd, scopeKey);
     entry.refCount += 1;
     try {
       return await this.ensureStarted(entry);
@@ -80,8 +80,8 @@ export class CodexAppServerClientManager {
     );
   }
 
-  async releaseClient(cwd: string): Promise<void> {
-    const key = this.normalizeClientKey(cwd);
+  async releaseClient(cwd: string, scopeKey: string | null = null): Promise<void> {
+    const key = this.normalizeClientKey(cwd, scopeKey);
     const entry = this.entries.get(key);
     if (!entry) {
       return;
@@ -103,15 +103,16 @@ export class CodexAppServerClientManager {
     }
   }
 
-  private getOrCreateEntry(cwd: string): ClientEntry {
-    const key = this.normalizeClientKey(cwd);
+  private getOrCreateEntry(cwd: string, scopeKey: string | null): ClientEntry {
+    const key = this.normalizeClientKey(cwd, scopeKey);
+    const normalizedCwd = this.normalizeCwd(cwd);
     const existing = this.entries.get(key);
     if (existing) {
       return existing;
     }
     const entry: ClientEntry = {
       key,
-      cwd: key,
+      cwd: normalizedCwd,
       client: null,
       startPromise: null,
       refCount: 0,
@@ -120,9 +121,17 @@ export class CodexAppServerClientManager {
     return entry;
   }
 
-  private normalizeClientKey(cwd: string): string {
+  private normalizeCwd(cwd: string): string {
     const normalized = typeof cwd === "string" && cwd.trim().length > 0 ? cwd.trim() : process.cwd();
     return path.resolve(normalized);
+  }
+
+  private normalizeClientKey(cwd: string, scopeKey: string | null): string {
+    const normalizedScopeKey =
+      typeof scopeKey === "string" && scopeKey.trim().length > 0
+        ? scopeKey.trim()
+        : "shared";
+    return `${this.normalizeCwd(cwd)}\0${normalizedScopeKey}`;
   }
 
   private async ensureStarted(entry: ClientEntry): Promise<CodexAppServerClient> {

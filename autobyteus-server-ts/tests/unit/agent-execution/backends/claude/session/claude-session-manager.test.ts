@@ -223,13 +223,11 @@ describe("ClaudeSessionManager", () => {
     clearPendingToolApprovals.mockImplementationOnce(() => {
       expect(startQueryOptions.abortController?.signal.aborted).toBe(false);
     });
-    closeQuery.mockImplementationOnce((query: ClaudeSdkQueryLike | null) => {
-      expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
-      query?.close();
-    });
-
     const terminatePromise = manager.terminateRun("run-active-terminate");
-    await waitFor(() => closeQuery.mock.calls.length === 1, "active terminate query close");
+    await waitFor(
+      () => startQueryOptions.abortController?.signal.aborted === true,
+      "active terminate abort signal",
+    );
 
     expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
     expect(clearPendingToolApprovals).toHaveBeenCalledWith(
@@ -254,6 +252,6 @@ describe("ClaudeSessionManager", () => {
         ?.activeTurnId,
     ).toBeNull();
     expect(manager.hasRunSession("run-active-terminate")).toBe(false);
-    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(closeQuery).not.toHaveBeenCalled();
   });
 });

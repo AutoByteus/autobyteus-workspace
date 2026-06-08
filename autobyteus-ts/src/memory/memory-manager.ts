@@ -391,7 +391,9 @@ export class MemoryManager {
     const reasonText = input.reason ? ` Reason: ${input.reason}.` : '';
     return (
       `System note: turn '${scopeId}' was interrupted before normal completion.${reasonText} ` +
-      'Preserve accepted user input and completed facts as history, but do not continue any incomplete tool-call protocol from that turn.'
+      'Preserve accepted user input and completed facts as history, but treat the interrupted request as cancelled. ' +
+      'Do not retry, resume, or execute any incomplete tool-call protocol or requested actions from that turn unless a later user message explicitly asks to perform them again. ' +
+      'Treat the next user message as the active instruction.'
     );
   }
 

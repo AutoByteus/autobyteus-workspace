@@ -6,10 +6,14 @@ import {
   MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const teamRunId = "team-focused-interrupt-1";
@@ -57,6 +61,7 @@ const createFakeAgentRun = () => ({
 });
 
 const createMixedManager = () => {
+  disposeTaskAgentDirectory(teamRunId);
   const context = new TeamRunContext({
     runId: teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
@@ -130,6 +135,41 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
   const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
     (context) => context.memberRouteKey === logicalRouteKey,
   ) as MixedAgentMemberContext;
+  const identity = {
+    taskAgentInstanceId: "task-agent-instance-1",
+    taskAgentRunId,
+    teamRunId,
+    taskId: "task_0001",
+    logicalMember: {
+      memberName: logicalContext.memberName,
+      memberPath: logicalContext.memberPath,
+      memberRouteKey: logicalContext.memberRouteKey,
+      templateMemberRunId: logicalContext.memberRunId,
+      runtimeKind: logicalContext.runtimeKind,
+    },
+    createdAt: "2026-01-01T00:00:00.000Z",
+  };
+  const directory = getTaskAgentDirectory(teamRunId);
+  directory.registerStartingTask({
+    taskId: identity.taskId,
+    logicalMember: {
+      memberName: logicalContext.memberName,
+      memberPath: logicalContext.memberPath,
+      memberRouteKey: logicalContext.memberRouteKey,
+      memberRunId: logicalContext.memberRunId,
+      runtimeKind: logicalContext.runtimeKind,
+    },
+    delegator: {
+      memberName: "Solution Designer",
+      memberPath: ["solution_designer"],
+      memberRouteKey: "solution_designer",
+      memberRunId: "team-1::solution_designer",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    },
+    taskAgentInstance: identity,
+    delegatorReplyRecipientName: "solution_designer",
+  });
+  directory.markActive(identity.taskId);
   mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
     context: {
       ...logicalContext,
@@ -143,7 +183,13 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
       memberRunId: taskAgentRunId,
       memberName: logicalContext.memberName,
     })),
-    deliverInterMemberMessage: vi.fn(),
+    deliverInterMemberMessage: vi.fn(async (request: ResolvedInterAgentMessageDeliveryRequest, beforeCommit?: (() => void) | null) => {
+      const result = await taskAgentRun.postUserMessage(expect.objectContaining({
+        content: expect.stringContaining(request.content),
+      }) as never);
+      if (result.accepted) beforeCommit?.();
+      return { ...result, memberRunId: taskAgentRunId, memberName: logicalContext.memberName };
+    }),
     approveToolInvocation: vi.fn(async (
       _target: unknown,
       invocationId: string,
@@ -246,7 +292,7 @@ describe("MixedTeamManager focused member routing", () => {
     const manager = createMixedManager();
     const { codeReviewerRun } = attachMemberRuns(manager);
     const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-    const request: InterAgentMessageDeliveryRequest = {
+    const request: InterAgentMessageDeliveryIntent = {
       teamRunId,
       sender: {
         participant: {
@@ -259,20 +305,7 @@ describe("MixedTeamManager focused member routing", () => {
         },
         selector: { kind: "route_key", memberRouteKey: "solution_designer" },
       },
-      recipient: {
-        participant: {
-          memberKind: "agent",
-          memberName: "Code Reviewer",
-          memberPath: ["code_reviewer"],
-          memberRouteKey: logicalRouteKey,
-          memberRunId: taskAgentRunId,
-          taskAgentRunId,
-          taskAgentInstanceId: "task-agent-instance-1",
-          logicalMemberRouteKey: logicalRouteKey,
-          address: { teamRunId, memberPath: ["code_reviewer"], memberRouteKey: logicalRouteKey },
-        },
-        selector: { kind: "route_key", memberRouteKey: logicalRouteKey },
-      },
+      target: { kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId },
       content: "Please revise the completed task.",
       messageType: "task_revision",
     };

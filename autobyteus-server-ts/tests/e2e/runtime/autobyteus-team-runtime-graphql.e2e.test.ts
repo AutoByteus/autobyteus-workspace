@@ -14,6 +14,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
+import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const describeAutoByteusTeamRuntime =
@@ -243,7 +244,13 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     return qwenMatch ?? modelIdentifiers[0]!;
   };
 
-  const createAgentDefinition = async (memberName: string): Promise<string> => {
+  const createAgentDefinition = async (
+    memberName: string,
+    overrides: {
+      instructions?: string;
+      toolNames?: string[];
+    } = {},
+  ): Promise<string> => {
     const mutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
         createAgentDefinition(input: $input) {
@@ -260,11 +267,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         role: "assistant",
         description: "AutoByteus team API e2e agent",
         instructions:
+          overrides.instructions ??
           "Follow the user's request exactly. " +
-          "If asked to create a file, use the write_file tool exactly once. " +
-          "If asked to reply with an exact token, output that token exactly.",
+            "If asked to create a file, use the write_file tool exactly once. " +
+            "If asked to reply with an exact token, output that token exactly.",
         category: "runtime-e2e",
-        toolNames: ["write_file"],
+        toolNames: overrides.toolNames ?? ["write_file"],
       },
     });
     return result.createAgentDefinition.id;
@@ -359,6 +367,189 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
     return { app, socket, messages };
   };
+
+  it("routes send_message_to between real AutoByteus team members and projects reference files", async () => {
+    const llmModelIdentifier = await fetchModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-send-message-workspace-"));
+    createdWorkspaceRoots.add(workspaceRootPath);
+
+    const unique = randomUUID().replace(/-/g, "_");
+    const referenceFilePath = path.join(workspaceRootPath, `handoff-${unique}.md`);
+    await writeFile(referenceFilePath, `# handoff\n\nAUTO_SEND_MESSAGE_REF_${unique}\n`, "utf-8");
+    const deliveryContent = `Please reply with exactly AUTO_SEND_MESSAGE_REPLY_${unique} and nothing else.`;
+    const replyToken = `AUTO_SEND_MESSAGE_REPLY_${unique}`;
+    const memberInstructions =
+      "You are participating in live all-AutoByteus team communication validation. " +
+      "If the user asks you to call send_message_to with exact JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool. " +
+      "If a teammate asks you to reply with an exact token, output that token exactly and do not call tools.";
+
+    const coordinatorAgentDefinitionId = await createAgentDefinition("coordinator", {
+      instructions: memberInstructions,
+      toolNames: ["send_message_to"],
+    });
+    const reviewerAgentDefinitionId = await createAgentDefinition("reviewer", {
+      instructions: memberInstructions,
+      toolNames: ["send_message_to"],
+    });
+
+    const teamDefinitionResult = await execGraphql<{
+      createAgentTeamDefinition: { id: string };
+    }>(
+      `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `,
+      {
+        input: {
+          name: `autobyteus-send-message-team-${randomUUID()}`,
+          description: "All-AutoByteus server-owned send_message_to API e2e team",
+          instructions: "Validate direct team member communication.",
+          coordinatorMemberName: "coordinator",
+          nodes: [
+            {
+              memberName: "coordinator",
+              ref: coordinatorAgentDefinitionId,
+              refType: "AGENT",
+              refScope: "SHARED",
+            },
+            {
+              memberName: "reviewer",
+              ref: reviewerAgentDefinitionId,
+              refType: "AGENT",
+              refScope: "SHARED",
+            },
+          ],
+        },
+      },
+    );
+
+    const createTeamRunResult = await execGraphql<{
+      createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+    }>(
+      `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `,
+      {
+        input: {
+          teamDefinitionId: teamDefinitionResult.createAgentTeamDefinition.id,
+          memberConfigs: [
+            {
+              memberName: "coordinator",
+              agentDefinitionId: coordinatorAgentDefinitionId,
+              llmModelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: "autobyteus",
+              workspaceRootPath,
+              llmConfig: {
+                temperature: 0,
+                tool_choice: "required",
+              },
+            },
+            {
+              memberName: "reviewer",
+              agentDefinitionId: reviewerAgentDefinitionId,
+              llmModelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: "autobyteus",
+              workspaceRootPath,
+              llmConfig: {
+                temperature: 0,
+              },
+            },
+          ],
+        },
+      },
+    );
+
+    expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+    const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+    expect(teamRunId).toBeTruthy();
+
+    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const terminateMutation = `
+      mutation TerminateAgentTeamRun($teamRunId: String!) {
+        terminateAgentTeamRun(teamRunId: $teamRunId) {
+          success
+          message
+        }
+      }
+    `;
+
+    try {
+      const toolArgs = {
+        recipient_name: "reviewer",
+        content: deliveryContent,
+        message_type: "all_autobyteus_reference_file_validation",
+        reference_files: [referenceFilePath],
+      };
+      const startIndex = messages.length;
+      sendE2eSendMessageCommand(socket, {
+        target_member_route_key: "coordinator",
+        content:
+          `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify(toolArgs)}. ` +
+          "Do not call any other tool and do not answer with plain text.",
+      });
+
+      await waitForMessageAfter(
+        messages,
+        startIndex,
+        (message) =>
+          message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+          message.payload.agent_name === "coordinator" &&
+          message.payload.tool_name === "send_message_to",
+        "coordinator send_message_to TOOL_EXECUTION_SUCCEEDED",
+        240_000,
+      );
+
+      await waitForMessageAfter(
+        messages,
+        startIndex,
+        (message) =>
+          isE2eTeamCommunicationMessage(message, {
+            senderMemberName: "coordinator",
+            recipientMemberName: "reviewer",
+            content: deliveryContent,
+          }) &&
+          message.payload.messageType === "all_autobyteus_reference_file_validation" &&
+          Array.isArray(message.payload.referenceFiles) &&
+          message.payload.referenceFiles.some((entry) => {
+            return (
+              entry &&
+              typeof entry === "object" &&
+              !Array.isArray(entry) &&
+              (entry as Record<string, unknown>).path === referenceFilePath
+            );
+          }),
+        "Team Communication message with reference-file projection",
+        120_000,
+      );
+
+      await waitForMessageAfter(
+        messages,
+        startIndex,
+        (message) => assistantTextMatches(message, "reviewer", replyToken),
+        `reviewer assistant text containing ${replyToken}`,
+        240_000,
+      );
+    } finally {
+      socket.close();
+      await app.close();
+      await execGraphql<{
+        terminateAgentTeamRun: { success: boolean; message: string };
+      }>(terminateMutation, { teamRunId }).catch(() => undefined);
+    }
+  }, 300_000);
 
   it("creates a real team, approves a tool call, restores it, and continues on the same websocket", async () => {
     const llmModelIdentifier = await fetchModelIdentifier();

@@ -2,19 +2,24 @@ import {
   normalizeExplicitTeamCommunicationReferenceFiles,
   type ExplicitTeamCommunicationReferenceFileValidationError,
 } from "../../services/team-communication/team-communication-reference-files.js";
+import {
+  buildTeamMessageTargetSelector,
+  type TeamMessageTargetSelector,
+} from "../domain/team-message-target-selector.js";
 
 type SendMessageToValidationError = {
-  code: "RECIPIENT_NOT_FOUND_OR_AMBIGUOUS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES";
+  code: "TARGET_SELECTOR_INVALID" | "UNSUPPORTED_TARGET_SELECTOR_ALIAS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES";
   message: string;
 };
 
 export type SendMessageToToolArguments = {
   recipientName: string | null;
+  targetAgentRunId: string | null;
+  target: TeamMessageTargetSelector | null;
+  unsupportedTargetSelectorFields: string[];
   content: string | null;
   messageType: string;
   referenceFiles: string[];
-  taskAgentRunId: string | null;
-  taskAgentInstanceId: string | null;
   referenceFilesError: ExplicitTeamCommunicationReferenceFileValidationError | null;
 };
 
@@ -28,32 +33,37 @@ const readReferenceFiles = (toolArguments: Record<string, unknown>): unknown =>
     ? toolArguments.reference_files
     : toolArguments.referenceFiles;
 
+const unsupportedTargetSelectorAliases = (toolArguments: Record<string, unknown>): string[] =>
+  ["recipient", "recipientName", "targetAgentRunId"].filter((fieldName) =>
+    Object.prototype.hasOwnProperty.call(toolArguments, fieldName),
+  );
+
 export const parseSendMessageToToolArguments = (
   toolArguments: Record<string, unknown>,
 ): SendMessageToToolArguments => {
   const referenceFilesResult = normalizeExplicitTeamCommunicationReferenceFiles(
     readReferenceFiles(toolArguments),
   );
+  const recipientName =
+    readString(toolArguments.recipient_name);
+  const targetAgentRunId =
+    readString(toolArguments.target_agent_run_id);
+  const targetResult = buildTeamMessageTargetSelector({
+    recipientName,
+    targetAgentRunId,
+  });
 
   return {
-    recipientName:
-      readString(toolArguments.recipient_name) ??
-      readString(toolArguments.recipientName) ??
-      readString(toolArguments.recipient),
+    recipientName,
+    targetAgentRunId,
+    target: targetResult.ok ? targetResult.target : null,
+    unsupportedTargetSelectorFields: unsupportedTargetSelectorAliases(toolArguments),
     content: readString(toolArguments.content),
     messageType:
       readString(toolArguments.message_type) ??
       readString(toolArguments.messageType) ??
       "agent_message",
     referenceFiles: referenceFilesResult.ok ? referenceFilesResult.referenceFiles : [],
-    taskAgentRunId:
-      readString(toolArguments.task_agent_run_id) ??
-      readString(toolArguments.taskAgentRunId) ??
-      readString(toolArguments.target_task_agent_run_id),
-    taskAgentInstanceId:
-      readString(toolArguments.task_agent_id) ??
-      readString(toolArguments.task_agent_instance_id) ??
-      readString(toolArguments.taskAgentInstanceId),
     referenceFilesError: referenceFilesResult.ok ? null : referenceFilesResult.error,
   };
 };
@@ -62,10 +72,21 @@ export const validateParsedSendMessageToToolArguments = (
   toolName: string,
   input: SendMessageToToolArguments,
 ): SendMessageToValidationError | null => {
-  if (!input.recipientName?.trim()) {
+  if (input.unsupportedTargetSelectorFields.length > 0) {
     return {
-      code: "RECIPIENT_NOT_FOUND_OR_AMBIGUOUS",
-      message: `${toolName} requires a non-empty recipient_name.`,
+      code: "UNSUPPORTED_TARGET_SELECTOR_ALIAS",
+      message: `${toolName} target selector fields must use recipient_name or target_agent_run_id only. Unsupported field(s): ${input.unsupportedTargetSelectorFields.join(", ")}.`,
+    };
+  }
+  const targetResult = buildTeamMessageTargetSelector({
+    recipientName: input.recipientName,
+    targetAgentRunId: input.targetAgentRunId,
+    toolName,
+  });
+  if (!targetResult.ok) {
+    return {
+      code: "TARGET_SELECTOR_INVALID",
+      message: targetResult.message,
     };
   }
   if (!input.content?.trim()) {

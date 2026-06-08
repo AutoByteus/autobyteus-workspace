@@ -27,7 +27,7 @@ type ClientRoute = {
 
 const isAppServerMessageForThread = (
   state: CodexThread,
-  method: string,
+  _method: string,
   params: Record<string, unknown>,
   threadCount: number,
 ): boolean => {
@@ -40,6 +40,24 @@ const isAppServerMessageForThread = (
     return turnId === state.activeTurnId;
   }
   return threadCount === 1;
+};
+
+
+const emitAmbiguousMessageError = (
+  registrations: ThreadRegistration[],
+  kind: "notification" | "server_request",
+  method: string,
+): void => {
+  if (registrations.length <= 1) {
+    return;
+  }
+  const message = `Codex app server ${kind} '${method}' did not include enough thread or turn identity to route among ${registrations.length} active team threads.`;
+  for (const registration of registrations) {
+    const emitRuntimeError = (registration.thread as { emitRuntimeError?: (code: string, message: string) => void }).emitRuntimeError;
+    if (emitRuntimeError) {
+      emitRuntimeError.call(registration.thread, "CODEX_AMBIGUOUS_TEAM_THREAD_EVENT", message);
+    }
+  }
 };
 
 export class CodexClientThreadRouter {
@@ -109,6 +127,7 @@ export class CodexClientThreadRouter {
 
     const registrations = Array.from(route.registrations.values());
     const threadCount = registrations.length;
+    let delivered = false;
     for (const registration of registrations) {
       const matchesThread = isAppServerMessageForThread(
         registration.thread,
@@ -130,7 +149,11 @@ export class CodexClientThreadRouter {
       if (!matchesThread) {
         continue;
       }
+      delivered = true;
       registration.thread.handleAppServerNotification(message.method, message.params);
+    }
+    if (!delivered) {
+      emitAmbiguousMessageError(registrations, "notification", message.method);
     }
   }
 
@@ -145,6 +168,7 @@ export class CodexClientThreadRouter {
 
     const registrations = Array.from(route.registrations.values());
     const threadCount = registrations.length;
+    let delivered = false;
     for (const registration of registrations) {
       const matchesThread = isAppServerMessageForThread(
         registration.thread,
@@ -167,11 +191,15 @@ export class CodexClientThreadRouter {
       if (!matchesThread) {
         continue;
       }
+      delivered = true;
       registration.thread.handleAppServerRequest(
         message.id,
         message.method,
         message.params,
       );
+    }
+    if (!delivered) {
+      emitAmbiguousMessageError(registrations, "server_request", message.method);
     }
   }
 

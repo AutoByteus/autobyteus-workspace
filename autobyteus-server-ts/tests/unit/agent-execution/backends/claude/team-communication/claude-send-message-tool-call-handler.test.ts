@@ -149,14 +149,9 @@ describe("ClaudeSendMessageToolCallHandler", () => {
         }),
         selector: { kind: "path", memberPath: ["professor"] },
       },
-      recipient: {
-        participant: expect.objectContaining({
-          memberName: "student",
-          memberPath: ["student"],
-          memberRouteKey: "student",
-          memberRunId: "run-student",
-        }),
-        selector: { kind: "path", memberPath: ["student"] },
+      target: {
+        kind: "recipient_name",
+        recipientName: "student",
       },
       content: "hello class",
       messageType: "classroom_update",
@@ -233,8 +228,9 @@ describe("ClaudeSendMessageToolCallHandler", () => {
 
     expect(result.accepted).toBe(true);
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      recipient: expect.objectContaining({
-        participant: expect.objectContaining({ memberName: "student" }),
+      target: expect.objectContaining({
+        kind: "recipient_name",
+        recipientName: "student",
       }),
       content: "Please inspect the listed file.",
       referenceFiles: ["/tmp/report.md", "/tmp/evidence.log"],
