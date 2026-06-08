@@ -204,8 +204,13 @@ def check_static_files(repo_root: Path) -> None:
         job = workflow_job_block(workflow_path, workflow, job_key)
         require_contains(workflow_path, job, "Select Xcode 26 or newer")
         require_contains(workflow_path, job, 'echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"')
+        require_contains(workflow_path, job, 'xcode_version_output="$(xcodebuild -version)"')
+        require_contains(workflow_path, job, 'while IFS= read -r line; do')
+        require_contains(workflow_path, job, 'printf \'%s\\n\' "$xcode_version_output"')
         require_contains(workflow_path, job, "xcode_major < 26")
         require_contains(workflow_path, job, "xcrun --sdk iphoneos --show-sdk-version")
+        if "xcodebuild -version |" in job:
+            fail(f"{workflow_path} must not pipe xcodebuild -version in {job_key}; capture full output before parsing.")
         require_order(
             workflow_path,
             job,

@@ -133,15 +133,22 @@ jobs:
           fi
           export DEVELOPER_DIR="$developer_dir"
           echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
-          xcode_version="$(xcodebuild -version | awk '/^Xcode / {print $2; exit}')"
+          xcode_version_output="$(xcodebuild -version)"
+          xcode_version=""
+          while IFS= read -r line; do
+            if [[ "$line" == Xcode\ * ]]; then
+              xcode_version="${line#Xcode }"
+              break
+            fi
+          done <<< "$xcode_version_output"
           xcode_major="${xcode_version%%.*}"
           if ! [[ "$xcode_major" =~ ^[0-9]+$ ]] || (( xcode_major < 26 )); then
             echo "::error::Selected Xcode must be 26 or newer; found '${xcode_version:-unknown}' at $selected_xcode."
-            xcodebuild -version
+            printf '%s\n' "$xcode_version_output"
             exit 1
           fi
           echo "Selected Xcode app: $selected_xcode"
-          xcodebuild -version
+          printf '%s\n' "$xcode_version_output"
           echo "Selected iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 
       - name: Install XcodeGen
@@ -373,15 +380,22 @@ jobs:
           fi
           export DEVELOPER_DIR="$developer_dir"
           echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
-          xcode_version="$(xcodebuild -version | awk '/^Xcode / {print $2; exit}')"
+          xcode_version_output="$(xcodebuild -version)"
+          xcode_version=""
+          while IFS= read -r line; do
+            if [[ "$line" == Xcode\ * ]]; then
+              xcode_version="${line#Xcode }"
+              break
+            fi
+          done <<< "$xcode_version_output"
           xcode_major="${xcode_version%%.*}"
           if ! [[ "$xcode_major" =~ ^[0-9]+$ ]] || (( xcode_major < 26 )); then
             echo "::error::Selected Xcode must be 26 or newer; found '${xcode_version:-unknown}' at $selected_xcode."
-            xcodebuild -version
+            printf '%s\n' "$xcode_version_output"
             exit 1
           fi
           echo "Selected Xcode app: $selected_xcode"
-          xcodebuild -version
+          printf '%s\n' "$xcode_version_output"
           echo "Selected iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 
       - name: Install XcodeGen
