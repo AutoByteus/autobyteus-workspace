@@ -86,4 +86,3 @@ App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approv
       Tests  5 passed (5)
    Start at  10:03:00
    Duration  4.73s (transform 2.91s, setup 31ms, import 4.07s, tests 10ms, environment 0ms)
-

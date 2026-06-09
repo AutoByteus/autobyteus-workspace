@@ -90,4 +90,3 @@ stderr | tests/unit/agent-team-execution/send-message-to-tool-argument-parser.te
       Tests  16 passed (16)
    Start at  09:38:20
    Duration  3.92s (transform 2.41s, setup 32ms, import 3.30s, tests 14ms, environment 0ms)
-

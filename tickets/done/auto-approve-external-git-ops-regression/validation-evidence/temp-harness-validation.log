@@ -62,4 +62,3 @@ AppConfig instance created.
       Tests  2 passed (2)
    Start at  09:43:27
    Duration  771ms (transform 138ms, setup 16ms, import 162ms, tests 195ms, environment 0ms)
-
