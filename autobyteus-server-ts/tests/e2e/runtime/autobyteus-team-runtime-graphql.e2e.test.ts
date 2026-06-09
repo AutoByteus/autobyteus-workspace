@@ -1002,12 +1002,13 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     }
   }, 240_000);
 
-  it("serves team member projection after terminate, restore, and continue", async () => {
+  it("serves every team member projection after terminate, restore, and continue", async () => {
     const llmModelIdentifier = await fetchModelIdentifier();
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-projection-workspace-"));
     createdWorkspaceRoots.add(workspaceRootPath);
 
-    const workerAgentDefinitionId = await createAgentDefinition("worker");
+    const coordinatorAgentDefinitionId = await createAgentDefinition("coordinator");
+    const reviewerAgentDefinitionId = await createAgentDefinition("reviewer");
 
     const createTeamDefinitionMutation = `
       mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
@@ -1023,11 +1024,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         name: `autobyteus-team-projection-${randomUUID()}`,
         description: "AutoByteus team projection API e2e team",
         instructions: "Reply concisely.",
-        coordinatorMemberName: "worker",
+        coordinatorMemberName: "coordinator",
         nodes: [
           {
-            memberName: "worker",
-            ref: workerAgentDefinitionId,
+            memberName: "coordinator",
+            ref: coordinatorAgentDefinitionId,
+            refType: "AGENT",
+            refScope: "SHARED",
+          },
+          {
+            memberName: "reviewer",
+            ref: reviewerAgentDefinitionId,
             refType: "AGENT",
             refScope: "SHARED",
           },
@@ -1052,8 +1059,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         teamDefinitionId,
         memberConfigs: [
           {
-            memberName: "worker",
-            agentDefinitionId: workerAgentDefinitionId,
+            memberName: "coordinator",
+            agentDefinitionId: coordinatorAgentDefinitionId,
+            llmModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: "autobyteus",
+            workspaceRootPath,
+          },
+          {
+            memberName: "reviewer",
+            agentDefinitionId: reviewerAgentDefinitionId,
             llmModelIdentifier,
             autoExecuteTools: true,
             skillAccessMode: "NONE",
@@ -1119,54 +1135,115 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     await waitForSocketOpen(teamSocket);
     await waitForMessage(streamMessages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
 
-    const firstToken = `TEAM_PROJECTION_FIRST_${randomUUID().replace(/-/g, "_")}`;
-    const secondToken = `TEAM_PROJECTION_SECOND_${randomUUID().replace(/-/g, "_")}`;
+    type TeamMemberProjection = {
+      agentRunId: string;
+      summary: string | null;
+      lastActivityAt: string | null;
+      conversation: Array<Record<string, unknown>>;
+    };
+
+    const resumeResult = await execGraphql<{
+      getTeamRunResumeConfig: { metadata: Record<string, unknown> };
+    }>(teamResumeQuery, { teamRunId });
+    const memberBindings = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
+    const coordinatorBinding = memberBindings.find((member) => member.memberName === "coordinator");
+    const reviewerBinding = memberBindings.find((member) => member.memberName === "reviewer");
+    expect(coordinatorBinding).toBeTruthy();
+    expect(reviewerBinding).toBeTruthy();
+    if (!coordinatorBinding || !reviewerBinding) {
+      throw new Error("Expected both AutoByteus team member bindings to be present.");
+    }
+
+    const members = [
+      {
+        memberName: "coordinator",
+        binding: coordinatorBinding,
+        firstToken: `TEAM_PROJECTION_COORDINATOR_FIRST_${randomUUID().replace(/-/g, "_")}`,
+        secondToken: `TEAM_PROJECTION_COORDINATOR_SECOND_${randomUUID().replace(/-/g, "_")}`,
+      },
+      {
+        memberName: "reviewer",
+        binding: reviewerBinding,
+        firstToken: `TEAM_PROJECTION_REVIEWER_FIRST_${randomUUID().replace(/-/g, "_")}`,
+        secondToken: `TEAM_PROJECTION_REVIEWER_SECOND_${randomUUID().replace(/-/g, "_")}`,
+      },
+    ];
+
+    const fetchProjection = async (memberRouteKey: string): Promise<TeamMemberProjection> => {
+      const result = await execGraphql<{
+        getTeamMemberRunProjection: TeamMemberProjection;
+      }>(projectionQuery, { teamRunId, memberRouteKey });
+      return result.getTeamMemberRunProjection;
+    };
+
+    const waitForProjectionTokens = async (
+      memberRouteKey: string,
+      requiredTokens: string[],
+    ): Promise<TeamMemberProjection> => {
+      const deadline = Date.now() + 120_000;
+      while (Date.now() < deadline) {
+        const projection = await fetchProjection(memberRouteKey);
+        const serializedConversation = JSON.stringify(projection.conversation);
+        if (requiredTokens.every((token) => serializedConversation.includes(token))) {
+          return projection;
+        }
+        await wait(2_000);
+      }
+      throw new Error(
+        `Timed out waiting for AutoByteus projection tokens: ${requiredTokens.join(", ")}`,
+      );
+    };
+
+    const expectTerminatedProjection = async (
+      member: (typeof members)[number],
+      requiredTokens: string[],
+    ): Promise<void> => {
+      const projection = await fetchProjection(member.binding.memberRouteKey);
+      if (member.binding.memberRunId) {
+        expect(projection.agentRunId).toBe(member.binding.memberRunId);
+      } else {
+        expect(projection.agentRunId).toBeTruthy();
+      }
+      const serializedConversation = JSON.stringify(projection.conversation);
+      for (const token of requiredTokens) {
+        expect(serializedConversation).toContain(token);
+      }
+    };
 
     try {
-      const firstStartIndex = streamMessages.length;
-      sendE2eSendMessageCommand(teamSocket, {
-            content: `Reply with exactly ${firstToken} and nothing else.`,
-          });
+      for (const member of members) {
+        const startIndex = streamMessages.length;
+        sendE2eSendMessageCommand(teamSocket, {
+          content: `Reply with exactly ${member.firstToken} and nothing else.`,
+          target_member_route_key: member.binding.memberRouteKey,
+        });
 
-      await waitForMessageAfter(
-        streamMessages,
-        firstStartIndex,
-        (message) => assistantTextMatches(message, "worker", firstToken),
-        `worker assistant text containing ${firstToken}`,
-      );
-      await waitForMessageAfter(
-        streamMessages,
-        firstStartIndex,
-        (message) =>
-          message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
-          message.payload.status === "idle",
-        "worker AGENT_STATUS IDLE for first projection turn",
-      );
+        await waitForMessageAfter(
+          streamMessages,
+          startIndex,
+          (message) => assistantTextMatches(message, member.memberName, member.firstToken),
+          `${member.memberName} assistant text containing ${member.firstToken}`,
+        );
+        await waitForMessageAfter(
+          streamMessages,
+          startIndex,
+          (message) =>
+            message.type === "AGENT_STATUS" &&
+            message.payload.agent_name === member.memberName &&
+            message.payload.status === "idle",
+          `${member.memberName} AGENT_STATUS IDLE for first projection turn`,
+        );
+        await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken]);
+      }
 
       const firstTerminateResult = await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId });
       expect(firstTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const firstResumeResult = await execGraphql<{
-        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
-      }>(teamResumeQuery, { teamRunId });
-      const memberRouteKey =
-        flattenE2eTeamMemberMetadata(firstResumeResult.getTeamRunResumeConfig.metadata).find(
-          (member) => member.memberName === "worker",
-        )?.memberRouteKey ?? "worker";
-
-      const firstProjectionResult = await execGraphql<{
-        getTeamMemberRunProjection: {
-          agentRunId: string;
-          summary: string | null;
-          lastActivityAt: string | null;
-          conversation: Array<Record<string, unknown>>;
-        };
-      }>(projectionQuery, { teamRunId, memberRouteKey });
-      expect(firstProjectionResult.getTeamMemberRunProjection.conversation.length).toBeGreaterThanOrEqual(2);
-      expect(JSON.stringify(firstProjectionResult.getTeamMemberRunProjection.conversation)).toContain(firstToken);
+      for (const member of members) {
+        await expectTerminatedProjection(member, [member.firstToken]);
+      }
 
       const restoreResult = await execGraphql<{
         restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
@@ -1174,44 +1251,39 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
       expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
 
-      const secondStartIndex = streamMessages.length;
-      sendE2eSendMessageCommand(teamSocket, {
-            content: `Reply with exactly ${secondToken} and nothing else.`,
-          });
+      for (const member of members) {
+        const startIndex = streamMessages.length;
+        sendE2eSendMessageCommand(teamSocket, {
+          content: `Reply with exactly ${member.secondToken} and nothing else.`,
+          target_member_route_key: member.binding.memberRouteKey,
+        });
 
-      await waitForMessageAfter(
-        streamMessages,
-        secondStartIndex,
-        (message) => assistantTextMatches(message, "worker", secondToken),
-        `worker assistant text containing ${secondToken}`,
-      );
-      await waitForMessageAfter(
-        streamMessages,
-        secondStartIndex,
-        (message) =>
-          message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
-          message.payload.status === "idle",
-        "worker AGENT_STATUS IDLE for second projection turn",
-      );
+        await waitForMessageAfter(
+          streamMessages,
+          startIndex,
+          (message) => assistantTextMatches(message, member.memberName, member.secondToken),
+          `${member.memberName} assistant text containing ${member.secondToken}`,
+        );
+        await waitForMessageAfter(
+          streamMessages,
+          startIndex,
+          (message) =>
+            message.type === "AGENT_STATUS" &&
+            message.payload.agent_name === member.memberName &&
+            message.payload.status === "idle",
+          `${member.memberName} AGENT_STATUS IDLE for second projection turn`,
+        );
+        await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken, member.secondToken]);
+      }
 
       const secondTerminateResult = await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId });
       expect(secondTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const secondProjectionResult = await execGraphql<{
-        getTeamMemberRunProjection: {
-          agentRunId: string;
-          summary: string | null;
-          lastActivityAt: string | null;
-          conversation: Array<Record<string, unknown>>;
-        };
-      }>(projectionQuery, { teamRunId, memberRouteKey });
-      const serializedConversation = JSON.stringify(secondProjectionResult.getTeamMemberRunProjection.conversation);
-      expect(secondProjectionResult.getTeamMemberRunProjection.conversation.length).toBeGreaterThanOrEqual(4);
-      expect(serializedConversation).toContain(firstToken);
-      expect(serializedConversation).toContain(secondToken);
+      for (const member of members) {
+        await expectTerminatedProjection(member, [member.firstToken, member.secondToken]);
+      }
     } finally {
       teamSocket.close();
       await streamApp.close();
@@ -1219,5 +1291,5 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);
     }
-  }, 240_000);
+  }, 300_000);
 });

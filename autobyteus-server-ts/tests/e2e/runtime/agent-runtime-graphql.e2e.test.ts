@@ -1381,6 +1381,93 @@ const defineRuntimeSuite = (input: {
     }, 180_000);
 
     if (input.runtimeKind === "codex_app_server") {
+      it("terminates an active Codex approval run, restores it, reconnects, and continues streaming", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-active-terminate-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition(["run_bash"]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const firstConnection = await openAgentSocket(runId);
+        let firstConnectionClosed = false;
+        let restoredConnection: Awaited<ReturnType<typeof openAgentSocket>> | null = null;
+        const targetAbsolutePath = path.join(
+          workspaceRootPath,
+          `codex-active-terminate-${randomUUID().replace(/-/g, "_")}.txt`,
+        );
+        const expectedContent = `CODEX_ACTIVE_TERMINATE_${randomUUID().replace(/-/g, "_")}`;
+        try {
+          const firstStartIndex = firstConnection.messages.length;
+          sendE2eSendMessageCommand(firstConnection.socket, {
+                content:
+                  `Use the terminal tool to execute this command exactly once:\n` +
+                  `printf '${escapeForSingleQuotedShell(expectedContent)}\\n' > '${escapeForSingleQuotedShell(targetAbsolutePath)}'\n` +
+                  "This command should require approval first. Do not simulate execution.",
+              });
+
+          const approvalRequested = await waitForMessageAfter(
+            firstConnection.messages,
+            firstStartIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "Codex TOOL_APPROVAL_REQUESTED before active terminate",
+            180_000,
+          );
+          expect(approvalRequested.payload.tool_name).toBe("run_bash");
+          expect(resolveInvocationId(approvalRequested.payload)).toBeTruthy();
+
+          await terminateAgentRun(runId);
+          await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+            code: "ENOENT",
+          });
+          firstConnection.socket.close();
+          await firstConnection.app.close();
+          firstConnectionClosed = true;
+
+          await restoreAgentRun(runId);
+          restoredConnection = await openAgentSocket(runId);
+
+          const followUpToken = `CODEX_ACTIVE_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+          const followUpStartIndex = restoredConnection.messages.length;
+          sendE2eSendMessageCommand(restoredConnection.socket, {
+                content: `Reply with exactly ${followUpToken} and nothing else.`,
+              });
+
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) => assistantTextMatches(message, followUpToken),
+            `Codex assistant text containing ${followUpToken} after active terminate restore`,
+            180_000,
+          );
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
+            "Codex AGENT_STATUS IDLE after active terminate restore follow-up",
+            180_000,
+          );
+        } finally {
+          if (!firstConnectionClosed) {
+            firstConnection.socket.close();
+            await firstConnection.app.close().catch(() => undefined);
+          }
+          if (restoredConnection) {
+            restoredConnection.socket.close();
+            await restoredConnection.app.close().catch(() => undefined);
+          }
+          await rm(targetAbsolutePath, { force: true }).catch(() => undefined);
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 240_000);
+
       it("auto-executes Codex tool calls over websocket without approval requests", async () => {
         const originalCodexSandbox = process.env.CODEX_APP_SERVER_SANDBOX;
         process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
