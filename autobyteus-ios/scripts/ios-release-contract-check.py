@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -25,6 +26,26 @@ def require_count_at_least(path: Path, text: str, needle: str, minimum: int) -> 
     count = text.count(needle)
     if count < minimum:
         fail(f"{path} must contain {needle!r} at least {minimum} times; found {count}.")
+
+
+def require_order(path: Path, text: str, first: str, second: str, label: str) -> None:
+    first_index = text.find(first)
+    second_index = text.find(second)
+    if first_index == -1:
+        fail(f"{path} is missing required release-contract text for {label}: {first}")
+    if second_index == -1:
+        fail(f"{path} is missing required release-contract text for {label}: {second}")
+    if first_index > second_index:
+        fail(f"{path} must place {first!r} before {second!r} for {label}.")
+
+
+def workflow_job_block(path: Path, workflow: str, job_key: str) -> str:
+    match = re.search(rf"(?m)^  {re.escape(job_key)}:\n", workflow)
+    if not match:
+        fail(f"{path} is missing required workflow job: {job_key}")
+    next_job = re.search(r"(?m)^  [A-Za-z0-9_-]+:\n", workflow[match.end() :])
+    end_index = match.end() + next_job.start() if next_job else len(workflow)
+    return workflow[match.start() : end_index]
 
 
 def read_required(path: Path) -> str:
@@ -174,8 +195,29 @@ def check_static_files(repo_root: Path) -> None:
         "ios_marketing_version",
         "artifact_version",
         "build_number",
+        "IOS_XCODE_APP_PATH",
+        "/Applications/Xcode_26.3.app",
     ):
         require_contains(workflow_path, workflow, key)
+
+    for job_key in ("build-ios", "upload-testflight"):
+        job = workflow_job_block(workflow_path, workflow, job_key)
+        require_contains(workflow_path, job, "Select Xcode 26 or newer")
+        require_contains(workflow_path, job, 'echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"')
+        require_contains(workflow_path, job, 'xcode_version_output="$(xcodebuild -version)"')
+        require_contains(workflow_path, job, 'while IFS= read -r line; do')
+        require_contains(workflow_path, job, 'printf \'%s\\n\' "$xcode_version_output"')
+        require_contains(workflow_path, job, "xcode_major < 26")
+        require_contains(workflow_path, job, "xcrun --sdk iphoneos --show-sdk-version")
+        if "xcodebuild -version |" in job:
+            fail(f"{workflow_path} must not pipe xcodebuild -version in {job_key}; capture full output before parsing.")
+        require_order(
+            workflow_path,
+            job,
+            "      - name: Select Xcode 26 or newer",
+            "      - name: Install XcodeGen",
+            f"{job_key} Xcode setup",
+        )
 
     require_count_at_least(workflow_path, workflow, 'IOS_BUNDLE_ID="$IOS_BUNDLE_ID"', 3)
     require_count_at_least(workflow_path, workflow, 'IOS_SHARE_EXTENSION_BUNDLE_ID="$IOS_SHARE_EXTENSION_BUNDLE_ID"', 3)

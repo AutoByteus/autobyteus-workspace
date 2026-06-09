@@ -37,6 +37,7 @@ env:
   IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID || 'org.autobyteus.mobile' }}
   IOS_SHARE_EXTENSION_BUNDLE_ID: ${{ vars.IOS_SHARE_EXTENSION_BUNDLE_ID || 'org.autobyteus.mobile.share' }}
   IOS_ARTIFACT_PREFIX: ${{ vars.IOS_ARTIFACT_PREFIX || 'AutoByteus_personal_ios' }}
+  IOS_XCODE_APP_PATH: ${{ vars.IOS_XCODE_APP_PATH || '/Applications/Xcode_26.3.app' }}
 
 jobs:
   prepare-release:
@@ -117,6 +118,38 @@ jobs:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
+
+      - name: Select Xcode 26 or newer
+        shell: bash
+        run: |
+          set -euo pipefail
+          selected_xcode="${IOS_XCODE_APP_PATH:-/Applications/Xcode_26.3.app}"
+          developer_dir="${selected_xcode}/Contents/Developer"
+          if [[ ! -d "$developer_dir" ]]; then
+            echo "::error::Configured Xcode 26+ app path is unavailable: $selected_xcode"
+            echo "Installed Xcode apps:"
+            ls -1d /Applications/Xcode*.app 2>/dev/null || true
+            exit 1
+          fi
+          export DEVELOPER_DIR="$developer_dir"
+          echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
+          xcode_version_output="$(xcodebuild -version)"
+          xcode_version=""
+          while IFS= read -r line; do
+            if [[ "$line" == Xcode\ * ]]; then
+              xcode_version="${line#Xcode }"
+              break
+            fi
+          done <<< "$xcode_version_output"
+          xcode_major="${xcode_version%%.*}"
+          if ! [[ "$xcode_major" =~ ^[0-9]+$ ]] || (( xcode_major < 26 )); then
+            echo "::error::Selected Xcode must be 26 or newer; found '${xcode_version:-unknown}' at $selected_xcode."
+            printf '%s\n' "$xcode_version_output"
+            exit 1
+          fi
+          echo "Selected Xcode app: $selected_xcode"
+          printf '%s\n' "$xcode_version_output"
+          echo "Selected iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 
       - name: Install XcodeGen
         shell: bash
@@ -332,6 +365,38 @@ jobs:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
+
+      - name: Select Xcode 26 or newer
+        shell: bash
+        run: |
+          set -euo pipefail
+          selected_xcode="${IOS_XCODE_APP_PATH:-/Applications/Xcode_26.3.app}"
+          developer_dir="${selected_xcode}/Contents/Developer"
+          if [[ ! -d "$developer_dir" ]]; then
+            echo "::error::Configured Xcode 26+ app path is unavailable: $selected_xcode"
+            echo "Installed Xcode apps:"
+            ls -1d /Applications/Xcode*.app 2>/dev/null || true
+            exit 1
+          fi
+          export DEVELOPER_DIR="$developer_dir"
+          echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
+          xcode_version_output="$(xcodebuild -version)"
+          xcode_version=""
+          while IFS= read -r line; do
+            if [[ "$line" == Xcode\ * ]]; then
+              xcode_version="${line#Xcode }"
+              break
+            fi
+          done <<< "$xcode_version_output"
+          xcode_major="${xcode_version%%.*}"
+          if ! [[ "$xcode_major" =~ ^[0-9]+$ ]] || (( xcode_major < 26 )); then
+            echo "::error::Selected Xcode must be 26 or newer; found '${xcode_version:-unknown}' at $selected_xcode."
+            printf '%s\n' "$xcode_version_output"
+            exit 1
+          fi
+          echo "Selected Xcode app: $selected_xcode"
+          printf '%s\n' "$xcode_version_output"
+          echo "Selected iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 
       - name: Install XcodeGen
         shell: bash

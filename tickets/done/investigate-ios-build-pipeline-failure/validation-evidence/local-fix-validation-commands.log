@@ -1,0 +1,28 @@
+# Local Fix API/E2E quick validation log
+Timestamp UTC: 2026-06-08T08:20:23Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/investigate-ios-build-pipeline-failure
+Branch: codex/investigate-ios-build-pipeline-failure
+HEAD before Local Fix commit: 9ea36d35956225c06cee59db3081dc7c084d8869
+
+## status
+## codex/investigate-ios-build-pipeline-failure...origin/codex/investigate-ios-build-pipeline-failure
+ M .github/workflows/release-ios.yml
+ M autobyteus-ios/scripts/ios-release-contract-check.py
+?? tickets/investigate-ios-build-pipeline-failure/
+
+## contract checker
+iOS release contract checks passed.
+
+## py_compile
+py_compile passed
+
+## PyYAML no-pipe/order/full-output-capture assertions
+build-ios: no pipe; capture/parse/log shape present; order before Install XcodeGen preserved.
+upload-testflight: no pipe; capture/parse/log shape present; order before Install XcodeGen preserved.
+Workflow Local Fix assertions passed.
+
+## git diff --check
+git diff --check passed
+
+## actionlint
+actionlint passed

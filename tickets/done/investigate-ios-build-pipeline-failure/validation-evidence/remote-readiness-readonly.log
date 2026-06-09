@@ -1,0 +1,21 @@
+# Remote validation readiness (read-only)
+Timestamp UTC: 2026-06-08T06:08:30Z
+
+## gh run list --workflow release-ios.yml --limit 8
+completed	failure	chore(release): bump workspace release version to 1.3.48	iOS App Store Connect Release	v1.3.48	push	27071479568	1m15s	2026-06-08T05:18:04Z
+completed	failure	chore(release): bump workspace release version to 1.3.47	iOS App Store Connect Release	v1.3.47	push	27070630073	8m24s	2026-06-06T18:40:02Z
+completed	failure	chore(release): bump workspace release version to 1.3.46	iOS App Store Connect Release	v1.3.46	push	27067769383	7m51s	2026-06-06T16:33:05Z
+completed	success	test(ci): temporarily run ios workflow on branch push	iOS App Store Connect Release	codex/ios-wrapper-app	push	27066610907	10m35s	2026-06-06T15:43:13Z
+
+## local branch/commit state relevant to remote execution
+## codex/investigate-ios-build-pipeline-failure...origin/personal
+ M .github/workflows/release-ios.yml
+ M autobyteus-ios/scripts/ios-release-contract-check.py
+?? tickets/investigate-ios-build-pipeline-failure/
+Current HEAD: dfc26eec54cdf685442740691ce5469754ab945f
+Tracked diff is uncommitted locally; remote workflow cannot exercise this exact changed implementation until it is committed/pushed or otherwise provided to GitHub Actions.
+
+## local xcodebuild -version (diagnostic only; remote runner is authoritative)
+Xcode 26.1.1
+Build version 17B100
+26.1

@@ -1,0 +1,17 @@
+# Validation cleanup log
+Timestamp UTC: 2026-06-08T06:13:09Z
+
+## Shut down simulator used by smoke validation
+    iPhone 17 Pro (8E8844A9-04F1-4729-A417-52DE909E0A92) (Shutdown)
+
+## Remove Python py_compile cache if produced by validation
+Removed autobyteus-ios/scripts/__pycache__ if present.
+
+## Remove default DerivedData created by smoke validation
+Removed /Users/normy/Library/Developer/Xcode/DerivedData/AutoByteusMobile-ahmxinzevdpllgeqokhklmnasros
+
+## Worktree status after cleanup
+## codex/investigate-ios-build-pipeline-failure...origin/personal
+ M .github/workflows/release-ios.yml
+ M autobyteus-ios/scripts/ios-release-contract-check.py
+?? tickets/investigate-ios-build-pipeline-failure/

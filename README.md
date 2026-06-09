@@ -334,6 +334,7 @@ pnpm android:server:stop
   - iOS automation uses `.github/workflows/release-ios.yml`
   - release tags and publish-enabled manual runs build/test first, then require complete iOS/App Store Connect secrets before signed archive/export/upload
   - manual workflow-dispatch build-only runs use `publish_app_store_connect=false` and upload private simulator build/test artifacts without requiring Apple distribution secrets
+  - simulator build/test and App Store archive/upload jobs select Xcode 26 or newer through `IOS_XCODE_APP_PATH` (default `/Applications/Xcode_26.3.app`) and log the selected Xcode plus iPhoneOS SDK before invoking `xcodebuild`
   - publish requests with missing iOS secrets fail fast with exact missing `IOS_*` / `APP_STORE_CONNECT_*` names before keychain/profile/archive/upload
   - prerelease tags split metadata for App Store compatibility: `v1.2.7-rc1` builds with `MARKETING_VERSION=1.2.7`, uses numeric GitHub run number for `CURRENT_PROJECT_VERSION`, and keeps `1.2.7-rc1` only in artifact names/summaries
   - `IOS_BUNDLE_ID` and `IOS_SHARE_EXTENSION_BUNDLE_ID` drive generated Xcode target bundle IDs, simulator build/test/smoke, profile verification, archive/export mapping, and summaries
@@ -366,6 +367,7 @@ pnpm android:server:stop
   - `IOS_SHARE_EXTENSION_BUNDLE_ID`
   - `IOS_APP_SCHEME`
   - `IOS_ARTIFACT_PREFIX`
+  - `IOS_XCODE_APP_PATH`
 - No git submodules are required in this workspace.
 
 ### Consistent release commands

@@ -1,0 +1,13 @@
+2026-06-08 staged artifact audit before ticket-branch finalization commit
+
+Commands/results:
+- git diff --cached --name-only | wc -l => 54 staged files
+- staged generated/binary-risk path scan for .xcresult, .zip, .dmg, .ipa, .app, .mobileprovision, .p12, .p8, .cer, .key, .sqlite, .db, DerivedData, ModuleCache, Build/Products, Intermediates.noindex => no matches
+- python3 scripts/check_repository_artifact_hygiene.py => pass
+- git diff --check && git diff --cached --check => pass after trimming trailing whitespace in committed text evidence logs
+- staged private-key block scan => no `-----BEGIN ... PRIVATE KEY-----` blocks
+- staged unmasked iOS/App Store secret assignment scan => no matches
+
+Decision:
+- Raw/generated Xcode artifacts were not staged or committed.
+- Text/JSON ticket evidence, delivery reports, release notes, and long-lived docs were staged intentionally.

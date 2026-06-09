@@ -1,0 +1,653 @@
+Resolve iOS Release Metadata	Set up job	﻿2026-06-08T08:49:18.9143199Z Current runner version: '2.334.0'
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9168753Z ##[group]Runner Image Provisioner
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9169914Z Hosted Compute Agent
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9170662Z Version: 20260520.533
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9171290Z Commit: 189110e25284a9812c124fd27b339e2fb4f2f9db
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9172085Z Build Date: 2026-05-20T17:44:04Z
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9172799Z Worker ID: {d27128de-f23a-4c15-8263-0fa9b7d74977}
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9173493Z Azure Region: westcentralus
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9174146Z ##[endgroup]
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9175634Z ##[group]Operating System
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9176340Z Ubuntu
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9176912Z 24.04.4
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9177413Z LTS
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9177962Z ##[endgroup]
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9178495Z ##[group]Runner Image
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9179061Z Image: ubuntu-24.04
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9179976Z Version: 20260525.161.1
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9181042Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260525.161/images/ubuntu/Ubuntu2404-Readme.md
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9183201Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260525.161
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9184154Z ##[endgroup]
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9185346Z ##[group]GITHUB_TOKEN Permissions
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9187368Z Contents: read
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9188080Z Metadata: read
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9188630Z ##[endgroup]
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9191497Z Secret source: Actions
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9192479Z Prepare workflow directory
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9744632Z Prepare all required actions
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:18.9782381Z Getting action download info
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:19.4561374Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+Resolve iOS Release Metadata	Set up job	2026-06-08T08:49:19.6830678Z Complete job name: Resolve iOS Release Metadata
+Resolve iOS Release Metadata	Checkout workflow helper scripts	﻿2026-06-08T08:49:19.7543402Z ##[group]Run actions/checkout@v4
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7544355Z with:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7544828Z   fetch-depth: 0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7545309Z   submodules: recursive
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7545872Z   repository: AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7551036Z   token: ***
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7551523Z   ssh-strict: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7551988Z   ssh-user: git
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7552457Z   persist-credentials: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7552976Z   clean: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7553456Z   sparse-checkout-cone-mode: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7554010Z   fetch-tags: false
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7554488Z   show-progress: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7555124Z   lfs: false
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7555760Z   set-safe-directory: true
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7556559Z env:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7557044Z   IOS_APP_SCHEME: AutoByteusMobile
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7557658Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7558370Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7559139Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7560073Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.7560724Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8709007Z Syncing repository: AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8711493Z ##[group]Getting Git version info
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8712482Z Working directory is '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8713772Z [command]/usr/bin/git version
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8797675Z git version 2.54.0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8824255Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8846942Z Temporarily overriding HOME='/home/runner/work/_temp/347670dd-dc62-4e2a-a7d4-5f7f1241bad9' before making global git config changes
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8850099Z Adding repository directory to the temporary git global config as a safe directory
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8854343Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8909322Z Deleting the contents of '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8912298Z ##[group]Initializing the repository
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.8917686Z [command]/usr/bin/git init /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9023566Z hint: Using 'master' as the name for the initial branch. This default branch name
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9024846Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9025886Z hint: to use in all of your new repositories, which will suppress this warning,
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9026688Z hint: call:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9027126Z hint:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9027668Z hint: 	git config --global init.defaultBranch <name>
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9028433Z hint:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9029056Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9030937Z hint: 'development'. The just-created branch can be renamed via this command:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9032396Z hint:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9033212Z hint: 	git branch -m <name>
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9034105Z hint:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9034836Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9036741Z Initialized empty Git repository in /home/runner/work/autobyteus-workspace/autobyteus-workspace/.git/
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9042964Z [command]/usr/bin/git remote add origin https://github.com/AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9086388Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9087258Z ##[group]Disabling automatic garbage collection
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9090289Z [command]/usr/bin/git config --local gc.auto 0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9119011Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9120243Z ##[group]Setting up auth
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9126824Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9158914Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9500569Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9528557Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9778716Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:19.9813839Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:20.0054484Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:20.0091779Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:20.0093393Z ##[group]Fetching the repository
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:20.0102631Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9789173Z From https://github.com/AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9791327Z  * [new branch]        codex/agent-based-compaction -> origin/codex/agent-based-compaction
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9793366Z  * [new branch]        codex/agent-package-multiple-skills-analysis -> origin/codex/agent-package-multiple-skills-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9795007Z  * [new branch]        codex/agent-run-id-sanitization -> origin/codex/agent-run-id-sanitization
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9796081Z  * [new branch]        codex/agent-status-event-analysis -> origin/codex/agent-status-event-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9797166Z  * [new branch]        codex/agent-team-local-member-import-analysis -> origin/codex/agent-team-local-member-import-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9798227Z  * [new branch]        codex/agent-turn-model-refactor -> origin/codex/agent-turn-model-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9799243Z  * [new branch]        codex/application-communication-api-clarity -> origin/codex/application-communication-api-clarity
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9800794Z  * [new branch]        codex/application-execution-resource-naming -> origin/codex/application-execution-resource-naming
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9802091Z  * [new branch]        codex/archive-run-history -> origin/codex/archive-run-history
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9802994Z  * [new branch]        codex/artifact-edit-file-content-view-bug -> origin/codex/artifact-edit-file-content-view-bug
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9804135Z  * [new branch]        codex/artifact-edit-file-external-path-view-bug -> origin/codex/artifact-edit-file-external-path-view-bug
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9805143Z  * [new branch]        codex/artifact-maximize-button -> origin/codex/artifact-maximize-button
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9806265Z  * [new branch]        codex/artifact-touched-files-redesign -> origin/codex/artifact-touched-files-redesign
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9807371Z  * [new branch]        codex/autobyteus-tool-result-continuation-regression -> origin/codex/autobyteus-tool-result-continuation-regression
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9808436Z  * [new branch]        codex/autobyteus-ts-bash-html-corruption -> origin/codex/autobyteus-ts-bash-html-corruption
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9809808Z  * [new branch]        codex/autobyteus-ts-custom-openai-compatible-endpoint-support -> origin/codex/autobyteus-ts-custom-openai-compatible-endpoint-support
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9810876Z  * [new branch]        codex/browser-empty-tabstrip-cleanup -> origin/codex/browser-empty-tabstrip-cleanup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9811636Z  * [new branch]        codex/browser-mobile-view-support -> origin/codex/browser-mobile-view-support
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9812352Z  * [new branch]        codex/browser-navigate-load-hang -> origin/codex/browser-navigate-load-hang
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9813154Z  * [new branch]        codex/clarify-agent-definition-id-vs-run-id -> origin/codex/clarify-agent-definition-id-vs-run-id
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9814011Z  * [new branch]        codex/claude-agent-sdk-runtime-support -> origin/codex/claude-agent-sdk-runtime-support
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9814937Z  * [new branch]        codex/claude-read-artifacts -> origin/codex/claude-read-artifacts
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9815706Z  * [new branch]        codex/claude-sdk-interrupt-followup-ebadf -> origin/codex/claude-sdk-interrupt-followup-ebadf
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9816606Z  * [new branch]        codex/claude-sdk-interrupt-resume-session -> origin/codex/claude-sdk-interrupt-resume-session
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9817468Z  * [new branch]        codex/claude-sdk-tool-arguments-activity -> origin/codex/claude-sdk-tool-arguments-activity
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9818320Z  * [new branch]        codex/codex-history-reload-toolcalls -> origin/codex/codex-history-reload-toolcalls
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9819074Z  * [new branch]        codex/codex-installed-skill-dedup -> origin/codex/codex-installed-skill-dedup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9820010Z  * [new branch]        codex/codex-installed-skill-dedup-redo -> origin/codex/codex-installed-skill-dedup-redo
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9820943Z  * [new branch]        codex/codex-runtime-image-input-support -> origin/codex/codex-runtime-image-input-support
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9821801Z  * [new branch]        codex/codex-stream-stall -> origin/codex/codex-stream-stall
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9822571Z  * [new branch]        codex/codex-team-member-runtime-communication -> origin/codex/codex-team-member-runtime-communication
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9823431Z  * [new branch]        codex/compaction-config-save-button -> origin/codex/compaction-config-save-button
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9824232Z  * [new branch]        codex/compaction-frontier-llm-rendering -> origin/codex/compaction-frontier-llm-rendering
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9825140Z  * [new branch]        codex/context-attachment-draft-transfer-refactor -> origin/codex/context-attachment-draft-transfer-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9826011Z  * [new branch]        codex/context-file-reference-paths -> origin/codex/context-file-reference-paths
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9826810Z  * [new branch]        codex/default-temp-workspace-run-config -> origin/codex/default-temp-workspace-run-config
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9827654Z  * [new branch]        codex/desktop-auto-update-restart-errors -> origin/codex/desktop-auto-update-restart-errors
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9828738Z  * [new branch]        codex/desktop-invalid-package-agent-definitions -> origin/codex/desktop-invalid-package-agent-definitions
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9829805Z  * [new branch]        codex/desktop-release-linux-macos-arm64 -> origin/codex/desktop-release-linux-macos-arm64
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9830643Z  * [new branch]        codex/disable-artifact-auto-focus -> origin/codex/disable-artifact-auto-focus
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9831382Z  * [new branch]        codex/docker-cli-latest-install -> origin/codex/docker-cli-latest-install
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9832137Z  * [new branch]        codex/docker-guide-command-hotfix -> origin/codex/docker-guide-command-hotfix
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9833000Z  * [new branch]        codex/docker-launcher-container-lifecycle -> origin/codex/docker-launcher-container-lifecycle
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9833873Z  * [new branch]        codex/draggable-left-panel-divider -> origin/codex/draggable-left-panel-divider
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9834782Z  * [new branch]        codex/electron-agent-prompt-file-resolution -> origin/codex/electron-agent-prompt-file-resolution
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9835595Z  * [new branch]        codex/electron-auto-update -> origin/codex/electron-auto-update
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9836467Z  * [new branch]        codex/electron-embedded-server-config-consistency -> origin/codex/electron-embedded-server-config-consistency
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9837367Z  * [new branch]        codex/event-monitor-tool-text-ux -> origin/codex/event-monitor-tool-text-ux
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9838255Z  * [new branch]        codex/external-channel-receipt-state-machine -> origin/codex/external-channel-receipt-state-machine
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9839130Z  * [new branch]        codex/external-channel-sql-removal -> origin/codex/external-channel-sql-removal
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9840408Z  * [new branch]        codex/external-turn-reply-aggregation -> origin/codex/external-turn-reply-aggregation
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9841241Z  * [new branch]        codex/featured-default-assistant -> origin/codex/featured-default-assistant
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9842048Z  * [new branch]        codex/file-based-agent-refactor -> origin/codex/file-based-agent-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9842771Z  * [new branch]        codex/fix-server-docker-build -> origin/codex/fix-server-docker-build
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9843548Z  * [new branch]        codex/focused-agent-interrupt-routing -> origin/codex/focused-agent-interrupt-routing
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9844453Z  * [new branch]        codex/frontend-agent-team-memory-visibility -> origin/codex/frontend-agent-team-memory-visibility
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9845396Z  * [new branch]        codex/frontend-file-explorer-context-menu -> origin/codex/frontend-file-explorer-context-menu
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9846279Z  * [new branch]        codex/gateway-dead-code-investigation -> origin/codex/gateway-dead-code-investigation
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9847198Z  * [new branch]        codex/gemini-latest-image-model-support -> origin/codex/gemini-latest-image-model-support
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9848053Z  * [new branch]        codex/gemini-rpa-thinking-config-ts -> origin/codex/gemini-rpa-thinking-config-ts
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9848851Z  * [new branch]        codex/github-agent-package-import -> origin/codex/github-agent-package-import
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9849886Z  * [new branch]        codex/hide-middle-success-tool-label -> origin/codex/hide-middle-success-tool-label
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9850784Z  * [new branch]        codex/historical-run-config-readonly-ux -> origin/codex/historical-run-config-readonly-ux
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9851788Z  * [new branch]        codex/imported-definition-editability-skill-import -> origin/codex/imported-definition-editability-skill-import
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9852807Z  * [new branch]        codex/instruction-panel-expand-collapse -> origin/codex/instruction-panel-expand-collapse
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9853643Z  * [new branch]        codex/intel-mac-zip-release -> origin/codex/intel-mac-zip-release
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9854486Z  * [new branch]        codex/investigate-ios-build-pipeline-failure -> origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9855544Z  * [new branch]        codex/kimi-tool-stream-visibility -> origin/codex/kimi-tool-stream-visibility
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9856393Z  * [new branch]        codex/linux-appimage-memory-dir-startup -> origin/codex/linux-appimage-memory-dir-startup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9857235Z  * [new branch]        codex/linux-appimage-prisma-erofs -> origin/codex/linux-appimage-prisma-erofs
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9858114Z  * [new branch]        codex/live-run-stream-reconnect-after-reload -> origin/codex/live-run-stream-reconnect-after-reload
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9858976Z  * [new branch]        codex/llm-runtime-real-compaction -> origin/codex/llm-runtime-real-compaction
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9859952Z  * [new branch]        codex/lmstudio-thinking-investigation -> origin/codex/lmstudio-thinking-investigation
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9860813Z  * [new branch]        codex/logging-best-practice-refactor -> origin/codex/logging-best-practice-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9861700Z  * [new branch]        codex/mac-intel-desktop-release-pipeline -> origin/codex/mac-intel-desktop-release-pipeline
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9862621Z  * [new branch]        codex/mac-intel-prisma-engine-arch-mismatch -> origin/codex/mac-intel-prisma-engine-arch-mismatch
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9863538Z  * [new branch]        codex/managed-gateway-runtime-versioning -> origin/codex/managed-gateway-runtime-versioning
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9864358Z  * [new branch]        codex/message-delivery-robustness -> origin/codex/message-delivery-robustness
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9865191Z  * [new branch]        codex/messaging-gateway-404-install-start -> origin/codex/messaging-gateway-404-install-start
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9866140Z  * [new branch]        codex/messaging-gateway-distribution-analysis -> origin/codex/messaging-gateway-distribution-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9867197Z  * [new branch]        codex/messaging-gateway-release-hotfix -> origin/codex/messaging-gateway-release-hotfix
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9868028Z  * [new branch]        codex/messaging-runtime-visibility -> origin/codex/messaging-runtime-visibility
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9868946Z  * [new branch]        codex/mixed-team-manager-simplification-analysis -> origin/codex/mixed-team-manager-simplification-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9869978Z  * [new branch]        codex/mobile-run-config-chat-flow -> origin/codex/mobile-run-config-chat-flow
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9870718Z  * [new branch]        codex/mobile-ux-simplification -> origin/codex/mobile-ux-simplification
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9871414Z  * [new branch]        codex/model-context-metadata -> origin/codex/model-context-metadata
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9872050Z  * [new branch]        codex/node-manager-tabs -> origin/codex/node-manager-tabs
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9872692Z  * [new branch]        codex/node-manager-ui-cleanup -> origin/codex/node-manager-ui-cleanup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9873382Z  * [new branch]        codex/personal-docker-setup -> origin/codex/personal-docker-setup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9874190Z  * [new branch]        codex/port-team-memory-layout-to-superrepo -> origin/codex/port-team-memory-layout-to-superrepo
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9875112Z  * [new branch]        codex/preview-session-multi-runtime-design -> origin/codex/preview-session-multi-runtime-design
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9876045Z  * [new branch]        codex/provider-native-tool-history-rendering -> origin/codex/provider-native-tool-history-rendering
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9876958Z  * [new branch]        codex/publish-artifacts-plural-refactor -> origin/codex/publish-artifacts-plural-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9877821Z  * [new branch]        codex/read-media-file-tool-continuation -> origin/codex/read-media-file-tool-continuation
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9878682Z  * [new branch]        codex/release-server-dockerhub-publish -> origin/codex/release-server-dockerhub-publish
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9879735Z  * [new branch]        codex/remote-node-telegram-agent-delivery -> origin/codex/remote-node-telegram-agent-delivery
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9880977Z  * [new branch]        codex/remove-assistant-chunk-legacy-path -> origin/codex/remove-assistant-chunk-legacy-path
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9881912Z  * [new branch]        codex/remove-deprecated-deepseek-kimi-models -> origin/codex/remove-deprecated-deepseek-kimi-models
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9882826Z  * [new branch]        codex/remove-file-persistence-provider -> origin/codex/remove-file-persistence-provider
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9883723Z  * [new branch]        codex/remove-media-output-path-restriction -> origin/codex/remove-media-output-path-restriction
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9884593Z  * [new branch]        codex/right-panel-resizer-visibility -> origin/codex/right-panel-resizer-visibility
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9885458Z  * [new branch]        codex/rpa-gemini-include-thoughts-removal -> origin/codex/rpa-gemini-include-thoughts-removal
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9886245Z  * [new branch]        codex/rpa-llm-session-resume -> origin/codex/rpa-llm-session-resume
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9887019Z  * [new branch]        codex/rpa-visible-resume-prompt-cleanup -> origin/codex/rpa-visible-resume-prompt-cleanup
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9887900Z  * [new branch]        codex/run-bash-posix-spawn-failure -> origin/codex/run-bash-posix-spawn-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9888638Z  * [new branch]        codex/run-bash-tool-benchmarks -> origin/codex/run-bash-tool-benchmarks
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9889383Z  * [new branch]        codex/run-history-index-consistency -> origin/codex/run-history-index-consistency
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9890543Z  * [new branch]        codex/run-history-worktree-live-stream-loss -> origin/codex/run-history-worktree-live-stream-loss
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9891413Z  * [new branch]        codex/run-service-layering-refactor -> origin/codex/run-service-layering-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9892186Z  * [new branch]        codex/runtime-decoupling-refactor -> origin/codex/runtime-decoupling-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9893142Z  * [new branch]        codex/runtime-interrupt-functionality -> origin/codex/runtime-interrupt-functionality
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9894001Z  * [new branch]        codex/runtime-model-identifier-dropdown -> origin/codex/runtime-model-identifier-dropdown
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9894953Z  * [new branch]        codex/runtime-termination-separation-of-concerns -> origin/codex/runtime-termination-separation-of-concerns
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9895903Z  * [new branch]        codex/self-evolving-harness-feasibility -> origin/codex/self-evolving-harness-feasibility
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9896738Z  * [new branch]        codex/server-docker-codex-claude-cli -> origin/codex/server-docker-codex-claude-cli
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9897591Z  * [new branch]        codex/server-docker-desktop-only-analysis -> origin/codex/server-docker-desktop-only-analysis
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9898532Z  * [new branch]        codex/server-settings-applications-toggle-card -> origin/codex/server-settings-applications-toggle-card
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9899622Z  * [new branch]        codex/server-settings-basics-loading-fix -> origin/codex/server-settings-basics-loading-fix
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9900567Z  * [new branch]        codex/simplify-agent-workspace-to-path-string -> origin/codex/simplify-agent-workspace-to-path-string
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9901459Z  * [new branch]        codex/simplify-server-settings-cards -> origin/codex/simplify-server-settings-cards
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9902272Z  * [new branch]        codex/skill-load-guidance-global-only -> origin/codex/skill-load-guidance-global-only
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9903071Z  * [new branch]        codex/skill-prompt-absolute-paths -> origin/codex/skill-prompt-absolute-paths
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9903830Z  * [new branch]        codex/skill-source-removal-refresh -> origin/codex/skill-source-removal-refresh
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9904578Z  * [new branch]        codex/status-lifecycle-hardening -> origin/codex/status-lifecycle-hardening
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9905441Z  * [new branch]        codex/task-agent-identity-projection-refactor -> origin/codex/task-agent-identity-projection-refactor
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9906371Z  * [new branch]        codex/team-agent-instruction-composition -> origin/codex/team-agent-instruction-composition
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9907326Z  * [new branch]        codex/team-communication-white-gap -> origin/codex/team-communication-white-gap
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9908073Z  * [new branch]        codex/team-history-grouped-runs -> origin/codex/team-history-grouped-runs
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9908926Z  * [new branch]        codex/telegram-external-channel-outbound-reply -> origin/codex/telegram-external-channel-outbound-reply
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9909987Z  * [new branch]        codex/temp-team-selection-metadata-error -> origin/codex/temp-team-selection-metadata-error
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9910785Z  * [new branch]        codex/terminal-unicode-mojibake -> origin/codex/terminal-unicode-mojibake
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9911570Z  * [new branch]        codex/v1-3-46-release-artifact-hygiene -> origin/codex/v1-3-46-release-artifact-hygiene
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9912294Z  * [new branch]        codex/video-url-size-crash -> origin/codex/video-url-size-crash
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9913059Z  * [new branch]        codex/voice-input-audio-source-selection -> origin/codex/voice-input-audio-source-selection
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9913890Z  * [new branch]        codex/voice-input-bilingual-runtime -> origin/codex/voice-input-bilingual-runtime
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9914655Z  * [new branch]        codex/voice-input-extension-flow -> origin/codex/voice-input-extension-flow
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9915373Z  * [new branch]        codex/voice-input-mac-recording -> origin/codex/voice-input-mac-recording
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9916182Z  * [new branch]        codex/whole-skill-symlink-materialization -> origin/codex/whole-skill-symlink-materialization
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9916990Z  * [new branch]        codex/windows-prisma-sqlite-url -> origin/codex/windows-prisma-sqlite-url
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9917834Z  * [new branch]        codex/xml-tool-array-parser-fix -> origin/codex/xml-tool-array-parser-fix
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9918440Z  * [new branch]        enterprise              -> origin/enterprise
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9918935Z  * [new branch]        personal                -> origin/personal
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9919382Z  * [new tag]           v1.1.10                 -> v1.1.10
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9920089Z  * [new tag]           v1.1.11                 -> v1.1.11
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9920532Z  * [new tag]           v1.1.11-rc1             -> v1.1.11-rc1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9920949Z  * [new tag]           v1.1.12                 -> v1.1.12
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9921343Z  * [new tag]           v1.1.13                 -> v1.1.13
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9921737Z  * [new tag]           v1.1.14                 -> v1.1.14
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9922139Z  * [new tag]           v1.1.15                 -> v1.1.15
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9922535Z  * [new tag]           v1.1.16                 -> v1.1.16
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9922939Z  * [new tag]           v1.1.17                 -> v1.1.17
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9923335Z  * [new tag]           v1.1.18                 -> v1.1.18
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9923725Z  * [new tag]           v1.1.19                 -> v1.1.19
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9924141Z  * [new tag]           v1.1.9                  -> v1.1.9
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9924538Z  * [new tag]           v1.2.0                  -> v1.2.0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9924927Z  * [new tag]           v1.2.1                  -> v1.2.1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9925315Z  * [new tag]           v1.2.10                 -> v1.2.10
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9925714Z  * [new tag]           v1.2.100                -> v1.2.100
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9926115Z  * [new tag]           v1.2.11                 -> v1.2.11
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9926516Z  * [new tag]           v1.2.12                 -> v1.2.12
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9926917Z  * [new tag]           v1.2.13                 -> v1.2.13
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9927301Z  * [new tag]           v1.2.14                 -> v1.2.14
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9927693Z  * [new tag]           v1.2.15                 -> v1.2.15
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9928078Z  * [new tag]           v1.2.16                 -> v1.2.16
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9928611Z  * [new tag]           v1.2.17                 -> v1.2.17
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9928998Z  * [new tag]           v1.2.18                 -> v1.2.18
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9929384Z  * [new tag]           v1.2.19                 -> v1.2.19
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9930030Z  * [new tag]           v1.2.2                  -> v1.2.2
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9930434Z  * [new tag]           v1.2.20                 -> v1.2.20
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9930822Z  * [new tag]           v1.2.21                 -> v1.2.21
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9931209Z  * [new tag]           v1.2.22                 -> v1.2.22
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9931597Z  * [new tag]           v1.2.23                 -> v1.2.23
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9931983Z  * [new tag]           v1.2.24                 -> v1.2.24
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9932368Z  * [new tag]           v1.2.25                 -> v1.2.25
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9932763Z  * [new tag]           v1.2.26                 -> v1.2.26
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9933164Z  * [new tag]           v1.2.26-rc1             -> v1.2.26-rc1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9933584Z  * [new tag]           v1.2.26-rc2             -> v1.2.26-rc2
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9933995Z  * [new tag]           v1.2.26-rc3             -> v1.2.26-rc3
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9934397Z  * [new tag]           v1.2.27                 -> v1.2.27
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9934785Z  * [new tag]           v1.2.28                 -> v1.2.28
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9935170Z  * [new tag]           v1.2.29                 -> v1.2.29
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9935561Z  * [new tag]           v1.2.3                  -> v1.2.3
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9935951Z  * [new tag]           v1.2.30                 -> v1.2.30
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9936333Z  * [new tag]           v1.2.31                 -> v1.2.31
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9936735Z  * [new tag]           v1.2.32                 -> v1.2.32
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9937273Z  * [new tag]           v1.2.33                 -> v1.2.33
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9937658Z  * [new tag]           v1.2.34                 -> v1.2.34
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9938045Z  * [new tag]           v1.2.35                 -> v1.2.35
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9938435Z  * [new tag]           v1.2.36                 -> v1.2.36
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9938821Z  * [new tag]           v1.2.37                 -> v1.2.37
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9939203Z  * [new tag]           v1.2.38                 -> v1.2.38
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9939810Z  * [new tag]           v1.2.39                 -> v1.2.39
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9940485Z  * [new tag]           v1.2.4                  -> v1.2.4
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9940980Z  * [new tag]           v1.2.40                 -> v1.2.40
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9941384Z  * [new tag]           v1.2.41                 -> v1.2.41
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9941782Z  * [new tag]           v1.2.42                 -> v1.2.42
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9942175Z  * [new tag]           v1.2.43                 -> v1.2.43
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9942583Z  * [new tag]           v1.2.44                 -> v1.2.44
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9942972Z  * [new tag]           v1.2.45                 -> v1.2.45
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9943362Z  * [new tag]           v1.2.46                 -> v1.2.46
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9943756Z  * [new tag]           v1.2.47                 -> v1.2.47
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9944142Z  * [new tag]           v1.2.48                 -> v1.2.48
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9944534Z  * [new tag]           v1.2.49                 -> v1.2.49
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9944922Z  * [new tag]           v1.2.5                  -> v1.2.5
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9945306Z  * [new tag]           v1.2.50                 -> v1.2.50
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9945692Z  * [new tag]           v1.2.52                 -> v1.2.52
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9946074Z  * [new tag]           v1.2.53                 -> v1.2.53
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9946502Z  * [new tag]           v1.2.54                 -> v1.2.54
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9946891Z  * [new tag]           v1.2.55                 -> v1.2.55
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9947283Z  * [new tag]           v1.2.56                 -> v1.2.56
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9947673Z  * [new tag]           v1.2.57                 -> v1.2.57
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9948215Z  * [new tag]           v1.2.58                 -> v1.2.58
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9948604Z  * [new tag]           v1.2.59                 -> v1.2.59
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9948998Z  * [new tag]           v1.2.6                  -> v1.2.6
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9949383Z  * [new tag]           v1.2.60                 -> v1.2.60
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9949920Z  * [new tag]           v1.2.61                 -> v1.2.61
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9950305Z  * [new tag]           v1.2.62                 -> v1.2.62
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9950688Z  * [new tag]           v1.2.63                 -> v1.2.63
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9951073Z  * [new tag]           v1.2.64                 -> v1.2.64
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9951456Z  * [new tag]           v1.2.65                 -> v1.2.65
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9951838Z  * [new tag]           v1.2.66                 -> v1.2.66
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9952230Z  * [new tag]           v1.2.67                 -> v1.2.67
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9952614Z  * [new tag]           v1.2.68                 -> v1.2.68
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9953006Z  * [new tag]           v1.2.69                 -> v1.2.69
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9953406Z  * [new tag]           v1.2.7                  -> v1.2.7
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9953810Z  * [new tag]           v1.2.70                 -> v1.2.70
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9954205Z  * [new tag]           v1.2.71                 -> v1.2.71
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9954595Z  * [new tag]           v1.2.72                 -> v1.2.72
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9954981Z  * [new tag]           v1.2.73                 -> v1.2.73
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9955367Z  * [new tag]           v1.2.74                 -> v1.2.74
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:25.9955754Z  * [new tag]           v1.2.75                 -> v1.2.75
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0018036Z  * [new tag]           v1.2.76                 -> v1.2.76
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0019267Z  * [new tag]           v1.2.77                 -> v1.2.77
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0020385Z  * [new tag]           v1.2.78                 -> v1.2.78
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0021192Z  * [new tag]           v1.2.79                 -> v1.2.79
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0021873Z  * [new tag]           v1.2.8                  -> v1.2.8
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0022550Z  * [new tag]           v1.2.80                 -> v1.2.80
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0023202Z  * [new tag]           v1.2.81                 -> v1.2.81
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0023905Z  * [new tag]           v1.2.82                 -> v1.2.82
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0024631Z  * [new tag]           v1.2.83                 -> v1.2.83
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0025325Z  * [new tag]           v1.2.84                 -> v1.2.84
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0026062Z  * [new tag]           v1.2.85                 -> v1.2.85
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0026818Z  * [new tag]           v1.2.86                 -> v1.2.86
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0027549Z  * [new tag]           v1.2.87                 -> v1.2.87
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0028290Z  * [new tag]           v1.2.88                 -> v1.2.88
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0028998Z  * [new tag]           v1.2.89                 -> v1.2.89
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0029977Z  * [new tag]           v1.2.9                  -> v1.2.9
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0030716Z  * [new tag]           v1.2.90                 -> v1.2.90
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0031412Z  * [new tag]           v1.2.91                 -> v1.2.91
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0032108Z  * [new tag]           v1.2.92                 -> v1.2.92
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0032826Z  * [new tag]           v1.2.93                 -> v1.2.93
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0033546Z  * [new tag]           v1.2.94                 -> v1.2.94
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0034290Z  * [new tag]           v1.2.95                 -> v1.2.95
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0035041Z  * [new tag]           v1.2.96                 -> v1.2.96
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0035799Z  * [new tag]           v1.2.97                 -> v1.2.97
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0036512Z  * [new tag]           v1.2.98                 -> v1.2.98
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0037230Z  * [new tag]           v1.2.99                 -> v1.2.99
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0037894Z  * [new tag]           v1.3.0                  -> v1.3.0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0038825Z  * [new tag]           v1.3.1                  -> v1.3.1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0039741Z  * [new tag]           v1.3.10                 -> v1.3.10
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0040472Z  * [new tag]           v1.3.11                 -> v1.3.11
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0041125Z  * [new tag]           v1.3.12                 -> v1.3.12
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0041803Z  * [new tag]           v1.3.13                 -> v1.3.13
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0042483Z  * [new tag]           v1.3.14                 -> v1.3.14
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0043146Z  * [new tag]           v1.3.15                 -> v1.3.15
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0043758Z  * [new tag]           v1.3.16                 -> v1.3.16
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0044363Z  * [new tag]           v1.3.17                 -> v1.3.17
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0045041Z  * [new tag]           v1.3.18                 -> v1.3.18
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0045835Z  * [new tag]           v1.3.19                 -> v1.3.19
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0046684Z  * [new tag]           v1.3.2                  -> v1.3.2
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0047477Z  * [new tag]           v1.3.20                 -> v1.3.20
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0048233Z  * [new tag]           v1.3.21                 -> v1.3.21
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0048980Z  * [new tag]           v1.3.22                 -> v1.3.22
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0049937Z  * [new tag]           v1.3.23                 -> v1.3.23
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0050644Z  * [new tag]           v1.3.24                 -> v1.3.24
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0051340Z  * [new tag]           v1.3.25                 -> v1.3.25
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0052060Z  * [new tag]           v1.3.26                 -> v1.3.26
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0052788Z  * [new tag]           v1.3.27                 -> v1.3.27
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0053564Z  * [new tag]           v1.3.28                 -> v1.3.28
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0054359Z  * [new tag]           v1.3.29                 -> v1.3.29
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0055349Z  * [new tag]           v1.3.3                  -> v1.3.3
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0056186Z  * [new tag]           v1.3.30                 -> v1.3.30
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0056927Z  * [new tag]           v1.3.31                 -> v1.3.31
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0057642Z  * [new tag]           v1.3.32                 -> v1.3.32
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0058226Z  * [new tag]           v1.3.33                 -> v1.3.33
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0058637Z  * [new tag]           v1.3.34                 -> v1.3.34
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0059065Z  * [new tag]           v1.3.35                 -> v1.3.35
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0059752Z  * [new tag]           v1.3.36                 -> v1.3.36
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0060216Z  * [new tag]           v1.3.37                 -> v1.3.37
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0060620Z  * [new tag]           v1.3.38                 -> v1.3.38
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0061035Z  * [new tag]           v1.3.39                 -> v1.3.39
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0061461Z  * [new tag]           v1.3.4                  -> v1.3.4
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0061867Z  * [new tag]           v1.3.40                 -> v1.3.40
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0062265Z  * [new tag]           v1.3.41                 -> v1.3.41
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0062673Z  * [new tag]           v1.3.42                 -> v1.3.42
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0063094Z  * [new tag]           v1.3.43                 -> v1.3.43
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0063500Z  * [new tag]           v1.3.44                 -> v1.3.44
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0063897Z  * [new tag]           v1.3.45                 -> v1.3.45
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0064291Z  * [new tag]           v1.3.46                 -> v1.3.46
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0064684Z  * [new tag]           v1.3.47                 -> v1.3.47
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0065077Z  * [new tag]           v1.3.48                 -> v1.3.48
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0065469Z  * [new tag]           v1.3.5                  -> v1.3.5
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0065865Z  * [new tag]           v1.3.6                  -> v1.3.6
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0066265Z  * [new tag]           v1.3.7                  -> v1.3.7
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0066661Z  * [new tag]           v1.3.8                  -> v1.3.8
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0067050Z  * [new tag]           v1.3.9                  -> v1.3.9
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0067778Z  * [new tag]           v2026.02.26-personal-desktop-e2e.1 -> v2026.02.26-personal-desktop-e2e.1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0068467Z  * [new tag]           v2026.02.26-personal-desktop-e2e.2 -> v2026.02.26-personal-desktop-e2e.2
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0069120Z  * [new tag]           v2026.02.26-personal-desktop-e2e.3 -> v2026.02.26-personal-desktop-e2e.3
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0069959Z  * [new tag]           voice-runtime-v0.1.0    -> voice-runtime-v0.1.0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0070479Z  * [new tag]           voice-runtime-v0.1.1    -> voice-runtime-v0.1.1
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0164612Z [command]/usr/bin/git branch --list --remote origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0192716Z   origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0202679Z [command]/usr/bin/git rev-parse refs/remotes/origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0224918Z be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0232174Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0233226Z ##[group]Determining the checkout info
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0234388Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0237283Z [command]/usr/bin/git sparse-checkout disable
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0286020Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0311233Z ##[group]Checking out the ref
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:26.0316194Z [command]/usr/bin/git checkout --progress --force -B codex/investigate-ios-build-pipeline-failure refs/remotes/origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.0748424Z Updating files:  72% (8255/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1095515Z Updating files:  73% (8286/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1225353Z Updating files:  74% (8399/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1349550Z Updating files:  75% (8513/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1419760Z Updating files:  76% (8626/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1533008Z Updating files:  77% (8740/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.1651429Z Updating files:  78% (8853/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2014293Z Updating files:  79% (8967/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2230135Z Updating files:  80% (9080/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2289029Z Updating files:  81% (9194/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2592686Z Updating files:  82% (9307/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2856225Z Updating files:  83% (9421/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.2944723Z Updating files:  84% (9534/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3099265Z Updating files:  85% (9648/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3190451Z Updating files:  86% (9761/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3303114Z Updating files:  87% (9875/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3397173Z Updating files:  88% (9988/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3521148Z Updating files:  89% (10102/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.3803767Z Updating files:  90% (10215/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.4204969Z Updating files:  91% (10329/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.4319650Z Updating files:  92% (10442/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.4402968Z Updating files:  93% (10556/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.4459411Z Updating files:  94% (10669/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.4942573Z Updating files:  95% (10783/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5120625Z Updating files:  96% (10896/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5198822Z Updating files:  97% (11010/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5288584Z Updating files:  98% (11123/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5378984Z Updating files:  99% (11237/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5379858Z Updating files: 100% (11350/11350)
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5380466Z Updating files: 100% (11350/11350), done.
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5533116Z Switched to a new branch 'codex/investigate-ios-build-pipeline-failure'
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5537288Z branch 'codex/investigate-ios-build-pipeline-failure' set up to track 'origin/codex/investigate-ios-build-pipeline-failure'.
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5610368Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5610819Z ##[group]Setting up auth for fetching submodules
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5620182Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5659168Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5691919Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5724465Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-132748500@github.com:
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5752477Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5753154Z ##[group]Fetching submodules
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5758162Z [command]/usr/bin/git submodule sync --recursive
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.5996462Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --recursive
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6259717Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6493825Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6494534Z ##[group]Persisting credentials for submodules
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6501270Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6735982Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.6972196Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.7208518Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-132748500@github.com:'
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.7439058Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.7494687Z [command]/usr/bin/git log -1 --format=%H
+Resolve iOS Release Metadata	Checkout workflow helper scripts	2026-06-08T08:49:27.7518773Z be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf
+Resolve iOS Release Metadata	Resolve release metadata	﻿2026-06-08T08:49:27.7695240Z ##[group]Run set -euo pipefail
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7695601Z [36;1mset -euo pipefail[0m
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7696020Z [36;1mpython3 autobyteus-ios/scripts/resolve-ios-release-metadata.py[0m
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7726945Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7727323Z env:
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7727542Z   IOS_APP_SCHEME: AutoByteusMobile
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7727846Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7728208Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7728589Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7728936Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7729263Z   INPUT_PUBLISH_APP_STORE_CONNECT: true
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7729748Z   INPUT_RELEASE_TAG: v1.3.48
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7730111Z   INPUT_RELEASE_REF: codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7730493Z   INPUT_PRERELEASE: false
+Resolve iOS Release Metadata	Resolve release metadata	2026-06-08T08:49:27.7730726Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	﻿2026-06-08T08:49:27.8346262Z ##[group]Run actions/checkout@v4
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8346565Z with:
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8346842Z   ref: codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8347195Z   fetch-depth: 0
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8347415Z   submodules: recursive
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8347682Z   repository: AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8351113Z   token: ***
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8351342Z   ssh-strict: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8351558Z   ssh-user: git
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8351779Z   persist-credentials: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8352026Z   clean: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8352252Z   sparse-checkout-cone-mode: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8352518Z   fetch-tags: false
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8352738Z   show-progress: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8352958Z   lfs: false
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8353166Z   set-safe-directory: true
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8353401Z env:
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8353614Z   IOS_APP_SCHEME: AutoByteusMobile
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8353899Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8354255Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8354664Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8355003Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.8355472Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9328585Z Syncing repository: AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9332060Z ##[group]Getting Git version info
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9332804Z Working directory is '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9375045Z [command]/usr/bin/git version
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9412317Z git version 2.54.0
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9437893Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9450702Z Temporarily overriding HOME='/home/runner/work/_temp/c469691c-a3a1-442c-b1d8-a874f819d997' before making global git config changes
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9451601Z Adding repository directory to the temporary git global config as a safe directory
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9464178Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9499255Z [command]/usr/bin/git config --local --get remote.origin.url
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9521345Z https://github.com/AutoByteus/autobyteus-workspace
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9535946Z ##[group]Removing previously created refs, to avoid conflicts
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9540466Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9561335Z refs/heads/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:27.9570861Z [command]/usr/bin/git checkout --detach
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.4885068Z HEAD is now at be52ad3c fix(ci): avoid Xcode version broken pipe
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.4941212Z [command]/usr/bin/git branch --delete --force codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.4971339Z Deleted branch codex/investigate-ios-build-pipeline-failure (was be52ad3c).
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.5035594Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.5040207Z [command]/usr/bin/git submodule status
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.5272671Z ##[group]Cleaning the repository
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.5277371Z [command]/usr/bin/git clean -ffdx
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.5608782Z [command]/usr/bin/git reset --hard HEAD
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6050733Z HEAD is now at be52ad3c fix(ci): avoid Xcode version broken pipe
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6063285Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6064842Z ##[group]Disabling automatic garbage collection
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6070234Z [command]/usr/bin/git config --local gc.auto 0
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6099015Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6099897Z ##[group]Setting up auth
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6105863Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6134701Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6386174Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6407421Z http.https://github.com/.extraheader
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6416973Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6448704Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6704533Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.6737628Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.7004271Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.7046172Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.7046822Z ##[group]Fetching the repository
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:28.7060239Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1232916Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1233705Z ##[group]Determining the checkout info
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1241675Z [command]/usr/bin/git branch --list --remote origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1264187Z   origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1270757Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1275827Z [command]/usr/bin/git sparse-checkout disable
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1408013Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1433340Z ##[group]Checking out the ref
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1439886Z [command]/usr/bin/git checkout --progress --force -B codex/investigate-ios-build-pipeline-failure refs/remotes/origin/codex/investigate-ios-build-pipeline-failure
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1693127Z Switched to a new branch 'codex/investigate-ios-build-pipeline-failure'
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1695365Z branch 'codex/investigate-ios-build-pipeline-failure' set up to track 'origin/codex/investigate-ios-build-pipeline-failure'.
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1704701Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1705156Z ##[group]Setting up auth for fetching submodules
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1710660Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1746110Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1774107Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1802586Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-132748500@github.com:
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1831870Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1832489Z ##[group]Fetching submodules
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.1835678Z [command]/usr/bin/git submodule sync --recursive
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2077310Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --recursive
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2313800Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2540521Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2540957Z ##[group]Persisting credentials for submodules
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2548178Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.2783530Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.3018700Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.3252579Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-132748500@github.com:'
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.3503498Z ##[endgroup]
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.3540950Z [command]/usr/bin/git log -1 --format=%H
+Resolve iOS Release Metadata	Checkout release ref	2026-06-08T08:49:29.3564199Z be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf
+Resolve iOS Release Metadata	Resolve release commit SHA	﻿2026-06-08T08:49:29.3665591Z ##[group]Run set -euo pipefail
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3665934Z [36;1mset -euo pipefail[0m
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3666216Z [36;1mRELEASE_SHA="$(git rev-parse HEAD)"[0m
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3666586Z [36;1mecho "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"[0m
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3692829Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3693184Z env:
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3693400Z   IOS_APP_SCHEME: AutoByteusMobile
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3693703Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3694100Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3694483Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3694827Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+Resolve iOS Release Metadata	Resolve release commit SHA	2026-06-08T08:49:29.3695134Z ##[endgroup]
+Resolve iOS Release Metadata	Summarize iOS release plan	﻿2026-06-08T08:49:29.3823029Z ##[group]Run {
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3823302Z [36;1m{[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3823526Z [36;1m  echo "### iOS release plan"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3823977Z [36;1m  echo ""[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3824350Z [36;1m  echo "Release ref: \`codex/investigate-ios-build-pipeline-failure\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3824785Z [36;1m  echo "Release tag: \`v1.3.48\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3825191Z [36;1m  echo "Checked-out SHA: \`be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3825619Z [36;1m  echo "iOS marketing version: \`1.3.48\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3825944Z [36;1m  echo "Artifact version: \`1.3.48\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3826239Z [36;1m  echo "Build number: \`7\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3826535Z [36;1m  echo "Prerelease label: \`none\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3826901Z [36;1m  echo "Publish App Store Connect/TestFlight: \`true\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3827272Z [36;1m  echo "Prerelease note: \`false\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3827602Z [36;1m  echo "Bundle ID: \`org.autobyteus.mobile\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3828056Z [36;1m  echo "Share extension bundle ID: \`org.autobyteus.mobile.share\`"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3828460Z [36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3851858Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3852228Z env:
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3852453Z   IOS_APP_SCHEME: AutoByteusMobile
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3852752Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3853117Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3853501Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3853843Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+Resolve iOS Release Metadata	Summarize iOS release plan	2026-06-08T08:49:29.3854149Z ##[endgroup]
+Resolve iOS Release Metadata	Post Checkout release ref	﻿2026-06-08T08:49:29.3990832Z Post job cleanup.
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.4965882Z [command]/usr/bin/git version
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5001975Z git version 2.54.0
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5045946Z Temporarily overriding HOME='/home/runner/work/_temp/f859a26e-0dc6-4e84-ae50-6b3342baf6ef' before making global git config changes
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5047381Z Adding repository directory to the temporary git global config as a safe directory
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5060201Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5094182Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5126712Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5367007Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5388078Z http.https://github.com/.extraheader
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5400874Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5431732Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5668868Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve iOS Release Metadata	Post Checkout release ref	2026-06-08T08:49:29.5702547Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	﻿2026-06-08T08:49:29.6108073Z Post job cleanup.
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7072367Z [command]/usr/bin/git version
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7111562Z git version 2.54.0
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7155178Z Temporarily overriding HOME='/home/runner/work/_temp/7dcd39c6-b68d-4e2d-8964-a7015426668f' before making global git config changes
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7155995Z Adding repository directory to the temporary git global config as a safe directory
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7161251Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7196109Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7230036Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7467450Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7499092Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7735095Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve iOS Release Metadata	Post Checkout workflow helper scripts	2026-06-08T08:49:29.7766299Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve iOS Release Metadata	Complete job	﻿2026-06-08T08:49:29.8105598Z Evaluate and set job outputs
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8112678Z Set output 'release_tag'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8114755Z Set output 'release_ref'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8115389Z Set output 'semantic_version_core'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8115785Z Set output 'ios_marketing_version'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8116149Z Set output 'artifact_version'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8116485Z Set output 'build_number'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8116820Z Set output 'publish_requested'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8117154Z Set output 'prerelease'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8117517Z Set output 'release_sha'
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8118191Z Cleaning up orphan processes
+Resolve iOS Release Metadata	Complete job	2026-06-08T08:49:29.8400922Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4. Actions will be forced to run with Node.js 24 by default starting June 16th, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

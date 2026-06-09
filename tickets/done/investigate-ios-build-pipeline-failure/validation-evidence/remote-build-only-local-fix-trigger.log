@@ -1,0 +1,13 @@
+# Remote build-only workflow trigger after Local Fix
+Timestamp UTC: 2026-06-08T08:21:28Z
+Repo: AutoByteus/autobyteus-workspace
+Ref: codex/investigate-ios-build-pipeline-failure
+Remote commit: be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf
+publish_app_store_connect=false
+
+## Dispatch command
+gh workflow run release-ios.yml --repo AutoByteus/autobyteus-workspace --ref codex/investigate-ios-build-pipeline-failure -f publish_app_store_connect=false -f release_ref=codex/investigate-ios-build-pipeline-failure -f prerelease=true
+
+## Recent runs after dispatch
+in_progress		iOS App Store Connect Release	iOS App Store Connect Release	codex/investigate-ios-build-pipeline-failure	workflow_dispatch	27124999071	6s	2026-06-08T08:21:29Z
+completed	failure	iOS App Store Connect Release	iOS App Store Connect Release	codex/investigate-ios-build-pipeline-failure	workflow_dispatch	27124218560	50s	2026-06-08T08:05:33Z

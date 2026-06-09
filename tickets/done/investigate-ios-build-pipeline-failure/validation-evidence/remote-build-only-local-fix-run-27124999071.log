@@ -1,0 +1,57 @@
+# Remote build-only Local Fix run 27124999071 evidence
+Timestamp UTC: 2026-06-08T08:31:36Z
+
+## gh run view summary JSON
+{"conclusion":"success","createdAt":"2026-06-08T08:21:29Z","databaseId":27124999071,"displayTitle":"iOS App Store Connect Release","event":"workflow_dispatch","headBranch":"codex/investigate-ios-build-pipeline-failure","headSha":"be52ad3c5762543b2ca6c4a45c3f79f0fa83abbf","jobs":[{"completedAt":"2026-06-08T08:21:46Z","conclusion":"success","databaseId":80051171410,"name":"Resolve iOS Release Metadata","startedAt":"2026-06-08T08:21:33Z","status":"completed","steps":[{"completedAt":"2026-06-08T08:21:35Z","conclusion":"success","name":"Set up job","number":1,"startedAt":"2026-06-08T08:21:34Z","status":"completed"},{"completedAt":"2026-06-08T08:21:42Z","conclusion":"success","name":"Checkout workflow helper scripts","number":2,"startedAt":"2026-06-08T08:21:35Z","status":"completed"},{"completedAt":"2026-06-08T08:21:42Z","conclusion":"success","name":"Resolve release metadata","number":3,"startedAt":"2026-06-08T08:21:42Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Checkout release ref","number":4,"startedAt":"2026-06-08T08:21:42Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Resolve release commit SHA","number":5,"startedAt":"2026-06-08T08:21:44Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Summarize iOS release plan","number":6,"startedAt":"2026-06-08T08:21:44Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Post Checkout release ref","number":11,"startedAt":"2026-06-08T08:21:44Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Post Checkout workflow helper scripts","number":12,"startedAt":"2026-06-08T08:21:44Z","status":"completed"},{"completedAt":"2026-06-08T08:21:44Z","conclusion":"success","name":"Complete job","number":13,"startedAt":"2026-06-08T08:21:44Z","status":"completed"}],"url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27124999071/job/80051171410"},{"completedAt":"2026-06-08T08:31:04Z","conclusion":"success","databaseId":80051215575,"name":"Build And Test iOS App","startedAt":"2026-06-08T08:21:50Z","status":"completed","steps":[{"completedAt":"2026-06-08T08:21:52Z","conclusion":"success","name":"Set up job","number":1,"startedAt":"2026-06-08T08:21:51Z","status":"completed"},{"completedAt":"2026-06-08T08:22:00Z","conclusion":"success","name":"Checkout workspace","number":2,"startedAt":"2026-06-08T08:21:52Z","status":"completed"},{"completedAt":"2026-06-08T08:22:04Z","conclusion":"success","name":"Select Xcode 26 or newer","number":3,"startedAt":"2026-06-08T08:22:00Z","status":"completed"},{"completedAt":"2026-06-08T08:22:15Z","conclusion":"success","name":"Install XcodeGen","number":4,"startedAt":"2026-06-08T08:22:04Z","status":"completed"},{"completedAt":"2026-06-08T08:22:15Z","conclusion":"success","name":"Select available iOS simulator","number":5,"startedAt":"2026-06-08T08:22:15Z","status":"completed"},{"completedAt":"2026-06-08T08:30:32Z","conclusion":"success","name":"Generate, build, and run implementation checks","number":6,"startedAt":"2026-06-08T08:22:15Z","status":"completed"},{"completedAt":"2026-06-08T08:30:32Z","conclusion":"success","name":"Write publish secret readiness summary","number":7,"startedAt":"2026-06-08T08:30:32Z","status":"completed"},{"completedAt":"2026-06-08T08:30:36Z","conclusion":"success","name":"Upload iOS build/test artifacts","number":8,"startedAt":"2026-06-08T08:30:32Z","status":"completed"},{"completedAt":"2026-06-08T08:30:37Z","conclusion":"success","name":"Post Checkout workspace","number":16,"startedAt":"2026-06-08T08:30:36Z","status":"completed"},{"completedAt":"2026-06-08T08:31:02Z","conclusion":"success","name":"Complete job","number":17,"startedAt":"2026-06-08T08:30:37Z","status":"completed"}],"url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27124999071/job/80051215575"},{"completedAt":"2026-06-08T08:31:04Z","conclusion":"skipped","databaseId":80052795358,"name":"Validate iOS Publish Secrets","startedAt":"2026-06-08T08:31:04Z","status":"completed","steps":[],"url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27124999071/job/80052795358"},{"completedAt":"2026-06-08T08:31:04Z","conclusion":"skipped","databaseId":80052795683,"name":"Archive And Upload To App Store Connect","startedAt":"2026-06-08T08:31:05Z","status":"completed","steps":[],"url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27124999071/job/80052795683"}],"status":"completed","updatedAt":"2026-06-08T08:31:05Z","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27124999071","workflowName":"iOS App Store Connect Release"}
+
+## Build job full log path
+/Users/normy/autobyteus_org/autobyteus-worktrees/investigate-ios-build-pipeline-failure/tickets/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-local-fix-run-27124999071.build-job.log
+
+## Selected Xcode/SDK evidence excerpts
+482:Build And Test iOS App	Select Xcode 26 or newer	﻿2026-06-08T08:22:00.8921920Z ##[group]Run set -euo pipefail
+483:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8922380Z [36;1mset -euo pipefail[0m
+484:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8922750Z [36;1mselected_xcode="${IOS_XCODE_APP_PATH:-/Applications/Xcode_26.3.app}"[0m
+485:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8923180Z [36;1mdeveloper_dir="${selected_xcode}/Contents/Developer"[0m
+486:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8923520Z [36;1mif [[ ! -d "$developer_dir" ]]; then[0m
+487:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8923980Z [36;1m  echo "::error::Configured Xcode 26+ app path is unavailable: $selected_xcode"[0m
+488:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8934550Z [36;1m  echo "Installed Xcode apps:"[0m
+489:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8934930Z [36;1m  ls -1d /Applications/Xcode*.app 2>/dev/null || true[0m
+490:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8935280Z [36;1m  exit 1[0m
+491:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8935490Z [36;1mfi[0m
+492:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8935700Z [36;1mexport DEVELOPER_DIR="$developer_dir"[0m
+493:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8936090Z [36;1mecho "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"[0m
+494:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8936430Z [36;1mxcode_version_output="$(xcodebuild -version)"[0m
+495:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8936860Z [36;1mxcode_version=""[0m
+496:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8937110Z [36;1mwhile IFS= read -r line; do[0m
+497:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8937760Z [36;1m  if [[ "$line" == Xcode\ * ]]; then[0m
+498:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8938070Z [36;1m    xcode_version="${line#Xcode }"[0m
+499:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8938390Z [36;1m    break[0m
+500:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8938610Z [36;1m  fi[0m
+501:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8938830Z [36;1mdone <<< "$xcode_version_output"[0m
+502:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8939160Z [36;1mxcode_major="${xcode_version%%.*}"[0m
+503:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8939570Z [36;1mif ! [[ "$xcode_major" =~ ^[0-9]+$ ]] || (( xcode_major < 26 )); then[0m
+504:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8940160Z [36;1m  echo "::error::Selected Xcode must be 26 or newer; found '${xcode_version:-unknown}' at $selected_xcode."[0m
+505:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8940690Z [36;1m  printf '%s\n' "$xcode_version_output"[0m
+506:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8940980Z [36;1m  exit 1[0m
+507:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8941220Z [36;1mfi[0m
+508:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8941500Z [36;1mecho "Selected Xcode app: $selected_xcode"[0m
+509:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8941860Z [36;1mprintf '%s\n' "$xcode_version_output"[0m
+510:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8942260Z [36;1mecho "Selected iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"[0m
+511:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8993430Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+512:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8993780Z env:
+513:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8994050Z   IOS_APP_SCHEME: AutoByteusMobile
+514:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8994370Z   IOS_BUNDLE_ID: org.autobyteus.mobile
+515:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8994750Z   IOS_SHARE_EXTENSION_BUNDLE_ID: org.autobyteus.mobile.share
+516:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8995150Z   IOS_ARTIFACT_PREFIX: AutoByteus_personal_ios
+517:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8995490Z   IOS_XCODE_APP_PATH: /Applications/Xcode_26.3.app
+518:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:00.8995780Z ##[endgroup]
+519:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:02.8523960Z Selected Xcode app: /Applications/Xcode_26.3.app
+520:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:02.8524380Z Xcode 26.3
+521:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:02.8524680Z Build version 17C529
+522:Build And Test iOS App	Select Xcode 26 or newer	2026-06-08T08:22:04.3870510Z Selected iPhoneOS SDK: 26.2
+549:Build And Test iOS App	Install XcodeGen	2026-06-08T08:22:08.6861360Z Xcode 26.3
+550:Build And Test iOS App	Install XcodeGen	2026-06-08T08:22:08.6866800Z Build version 17C529
+2983:Build And Test iOS App	Generate, build, and run implementation checks	2026-06-08T08:30:30.4888380Z Xcode version: Xcode 26.3 Build version 17C529
+
+## Outcome checks
+Remote build-only run passed and log confirms Xcode 26+, iPhoneOS SDK 26+, and no broken-pipe crash.
