@@ -1,0 +1,37 @@
+# Delivery user-test macOS Electron artifact verification
+Date UTC: 2026-06-09T08:21:28Z
+Artifacts:
+-rw-r--r--@ 1 normy  staff   360M Jun  9 10:19 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+-rw-r--r--@ 1 normy  staff   383K Jun  9 10:19 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   357M Jun  9 10:20 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+-rw-r--r--@ 1 normy  staff   375K Jun  9 10:20 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+App bundle:
+1.2G	/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+hdiutil verify:
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $23AC6B88
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $C4B0AAC6
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $2ECA6BF4
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $825F8BB4
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $2ECA6BF4
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $7D797FC1
+Die überprüfte CRC32-Prüfsumme ist $9D670E4A
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg" is VALID
+
+zip integrity:
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.
+
+sha256:
+fcf68947fd259724e527bb393298b0e97c735df7e553735e74edec192f1cfdab  /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+77ea521908499e1acadcc90b2ff4a3b66f716d60334a3f07f69f18e47424ecf9  /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+f511e2216e5ad4f148c391e18e57fea782f66fbd53fc76e767905e1b74f9e4b1  /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+1ba1c5c348fcfd7c82e1d95019778695948f3527caa53e37366ffca055a836b8  /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap

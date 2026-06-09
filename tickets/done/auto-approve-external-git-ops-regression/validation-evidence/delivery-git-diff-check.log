@@ -1,0 +1,4 @@
+# Delivery docs/worktree whitespace check
+Date UTC: 2026-06-09T08:23:00Z
+Command: git diff --check
+Result: passed

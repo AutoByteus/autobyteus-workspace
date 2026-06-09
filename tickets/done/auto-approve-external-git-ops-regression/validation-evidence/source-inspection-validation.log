@@ -1,0 +1,17 @@
+$ rg -n "shouldAutoDeclineRuntimeTool|shouldAutoApproveRuntimeTool|isCodexTeamMemberRunConfig|auto-decline|no-grant profile" autobyteus-server-ts/src autobyteus-server-ts/tests
+RESULT: no stale team-member auto-decline symbols or expectations found
+
+$ rg -n "resolveApprovalPolicyForRunConfig|resolveEffectiveCodexSandboxModeForRunConfig|runContext.config.autoExecuteTools|buildCodexPermissionGrantResponse|handleDynamicToolCallRequest" ...
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:129:export const resolveApprovalPolicyForRunConfig = (
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:162:export const resolveEffectiveCodexSandboxModeForRunConfig = (
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:312:      approvalPolicy: resolveApprovalPolicyForRunConfig(input.agentRunConfig),
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:313:      sandbox: resolveEffectiveCodexSandboxModeForRunConfig(input.agentRunConfig),
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:11:  buildCodexPermissionGrantResponse,
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:115:  if (codexThread.runContext.config.autoExecuteTools) {
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:186:  if (codexThread.runContext.config.autoExecuteTools) {
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:263:const handleDynamicToolCallRequest = async ({
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:307:  if (codexThread.runContext.config.autoExecuteTools) {
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:354:  if (codexThread.runContext.config.autoExecuteTools) {
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:357:      buildCodexPermissionGrantResponse(permissions, "session"),
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:416:    await handleDynamicToolCallRequest({ ...input, method: eventMethod });
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts:454:        ? buildCodexPermissionGrantResponse(approval.permissions, "turn")

@@ -1,0 +1,28 @@
+# Delivery integration refresh
+Date UTC: 2026-06-09T08:10:07Z
+Command: git fetch origin codex/mixed-team-manager-simplification-analysis personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              codex/mixed-team-manager-simplification-analysis -> FETCH_HEAD
+ * branch              personal   -> FETCH_HEAD
+
+HEAD:
+a18e850f3ef69cdccf15724f5bab5fb9a11c5eb5
+origin/codex/mixed-team-manager-simplification-analysis:
+a18e850f3ef69cdccf15724f5bab5fb9a11c5eb5
+origin/personal:
+36b2dbd6d5bfba4634db19d7fbb7e60df27487ec
+merge-base HEAD origin/codex/mixed-team-manager-simplification-analysis:
+a18e850f3ef69cdccf15724f5bab5fb9a11c5eb5
+rev-list --left-right --count HEAD...origin/codex/mixed-team-manager-simplification-analysis:
+0	0
+branch:
+## codex/auto-approve-external-git-ops-regression...origin/codex/mixed-team-manager-simplification-analysis
+ M README.md
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-tool-approval-coordinator.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+?? tickets/in-progress/auto-approve-external-git-ops-regression/

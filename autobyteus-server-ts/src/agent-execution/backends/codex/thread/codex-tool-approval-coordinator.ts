@@ -69,15 +69,6 @@ const isSimpleMcpToolApprovalRequest = (params: JsonObject): boolean => {
 
 const toToolArguments = (value: unknown): JsonObject => asObject(value) ?? {};
 
-const isTeamMemberRun = (codexThread: CodexThread): boolean =>
-  Boolean(codexThread.runContext.config.memberTeamContext);
-
-const shouldAutoApproveRuntimeTool = (codexThread: CodexThread): boolean =>
-  codexThread.runContext.config.autoExecuteTools && !isTeamMemberRun(codexThread);
-
-const shouldAutoDeclineRuntimeTool = (codexThread: CodexThread): boolean =>
-  codexThread.runContext.config.autoExecuteTools && isTeamMemberRun(codexThread);
-
 const respondDynamicToolResult = (
   codexThread: CodexThread,
   requestId: string | number,
@@ -121,7 +112,7 @@ const handleTerminalApprovalRequest = ({
     method === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
       ? "edit_file"
       : "run_bash";
-  if (shouldAutoApproveRuntimeTool(codexThread)) {
+  if (codexThread.runContext.config.autoExecuteTools) {
     codexThread.client.respondSuccess(requestId, { decision: "accept" });
     emitLocalToolApproved(
       (event) => emitEvent(codexThread, event),
@@ -133,11 +124,6 @@ const handleTerminalApprovalRequest = ({
       },
       params,
     );
-    return;
-  }
-
-  if (shouldAutoDeclineRuntimeTool(codexThread)) {
-    codexThread.client.respondSuccess(requestId, { decision: "decline" });
     return;
   }
 
@@ -197,7 +183,7 @@ const handleMcpToolApprovalRequest = ({
   }
 
   const resolvedToolName = pendingCall.toolName ?? toolName;
-  if (shouldAutoApproveRuntimeTool(codexThread)) {
+  if (codexThread.runContext.config.autoExecuteTools) {
     codexThread.client.respondSuccess(requestId, { action: "accept" });
     emitEvent(codexThread, {
       method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
@@ -209,11 +195,6 @@ const handleMcpToolApprovalRequest = ({
         ...(resolvedToolName ? { tool_name: resolvedToolName } : {}),
       },
     });
-    return;
-  }
-
-  if (shouldAutoDeclineRuntimeTool(codexThread)) {
-    codexThread.client.respondSuccess(requestId, { action: "decline" });
     return;
   }
 
@@ -370,7 +351,7 @@ const handlePermissionApprovalRequest = ({
     reason,
   });
 
-  if (shouldAutoApproveRuntimeTool(codexThread)) {
+  if (codexThread.runContext.config.autoExecuteTools) {
     codexThread.client.respondSuccess(
       requestId,
       buildCodexPermissionGrantResponse(permissions, "session"),
@@ -387,14 +368,6 @@ const handlePermissionApprovalRequest = ({
         ...params,
         arguments: approvalArguments,
       },
-    );
-    return;
-  }
-
-  if (shouldAutoDeclineRuntimeTool(codexThread)) {
-    codexThread.client.respondSuccess(
-      requestId,
-      buildCodexPermissionNoGrantResponse(),
     );
     return;
   }

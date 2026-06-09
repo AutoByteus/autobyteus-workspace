@@ -249,7 +249,7 @@ describe("CodexThreadBootstrapper", () => {
     expect(runContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
   });
 
-  it("keeps Codex team-member local runtime tools on the approval boundary in auto mode", async () => {
+  it("gives Codex team-member auto mode the high-trust thread config for create and restore", async () => {
     process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
 
@@ -266,11 +266,29 @@ describe("CodexThreadBootstrapper", () => {
       createRestoreRunContext({ autoExecuteTools: true, memberTeamContext }),
     );
 
-    expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
-    expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("workspace-write");
+    expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
+    expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
     expect(restoredRunContext.runtimeContext.threadId).toBe("thread-existing");
-    expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
-    expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("workspace-write");
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
+  });
+
+  it("keeps configured approval and sandbox settings for Codex team-member manual mode", async () => {
+    process.env.CODEX_APP_SERVER_SANDBOX = "read-only";
+    process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+    const memberTeamContext = createMemberTeamContext();
+
+    const createdRunContext = await bootstrapper.bootstrapForCreate(
+      createRunContext({ autoExecuteTools: false, memberTeamContext }),
+    );
+
+    expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
+    expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("read-only");
   });
 
   it("filters out configured skills that Codex already discovers by name", async () => {

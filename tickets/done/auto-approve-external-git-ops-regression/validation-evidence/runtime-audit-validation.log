@@ -1,0 +1,32 @@
+===== Claude audit paths diff vs origin/personal =====
+===== Claude autoExecuteTools evidence =====
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:18:  resolveClaudePermissionMode,
+autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:99:      permissionMode: resolveClaudePermissionMode(runContext.config.autoExecuteTools),
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts:246:    if (input.runContext.runtimeContext.autoExecuteTools) {
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-config.ts:3:export const resolveClaudePermissionMode = (
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-config.ts:4:  autoExecuteTools: boolean | null | undefined,
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-config.ts:5:): ClaudeSdkPermissionMode => (autoExecuteTools ? "bypassPermissions" : "default");
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:446:      ...(this.permissionMode !== "bypassPermissions"
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:461:            autoExecuteTools: true,
+===== AutoByteus audit paths diff vs origin/personal =====
+===== AutoByteus autoExecuteTools evidence =====
+autobyteus-ts/src/agent/context/agent-config.ts:37:  autoExecuteTools: boolean;
+autobyteus-ts/src/agent/context/agent-config.ts:57:    autoExecuteTools = true,
+autobyteus-ts/src/agent/context/agent-config.ts:78:    this.autoExecuteTools = autoExecuteTools;
+autobyteus-ts/src/agent/context/agent-config.ts:122:      this.autoExecuteTools,
+autobyteus-ts/src/agent/loop/tool-phase.ts:70:    if (!context.autoExecuteTools) {
+autobyteus-ts/src/agent/loop/tool-phase.ts:71:      const approvalResult = await this.waitForApproval(toolInvocation, context, turn, notifier);
+autobyteus-ts/src/agent/loop/tool-phase.ts:72:      if (approvalResult) {
+autobyteus-ts/src/agent/loop/tool-phase.ts:73:        return approvalResult;
+autobyteus-ts/src/agent/loop/tool-phase.ts:300:    let approvalEvent: ToolExecutionApprovalEvent;
+autobyteus-ts/src/agent/loop/tool-phase.ts:302:      approvalEvent = await turn.toolInputPort.waitForApproval(
+autobyteus-ts/src/agent/loop/tool-phase.ts:313:    turn.executionScope.throwIfAborted({ kind: 'tool_approval', operationId: toolInvocation.id });
+autobyteus-ts/src/agent/loop/tool-phase.ts:315:    if (approvalEvent.isApproved) {
+autobyteus-ts/src/agent/loop/tool-phase.ts:318:        reason: approvalEvent.reason ?? null
+autobyteus-ts/src/agent/loop/tool-phase.ts:323:    const denialReason = approvalEvent.reason ?? 'Tool execution was denied by user/system.';
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts:33:  "awaiting_tool_approval",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:182:      autoExecuteTools: built.resolvedRunConfig.autoExecuteTools,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:240:          autoExecuteTools: context.config.autoExecuteTools,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:262:      autoExecuteTools,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:455:        autoExecuteTools,
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:472:        autoExecuteTools,
