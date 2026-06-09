@@ -261,10 +261,11 @@ headless runs.
   - UI and server-setting changes apply to new/future Codex sessions, not already-active sessions.
   - `danger-full-access` disables filesystem sandboxing; use only for trusted tasks and environments.
   - Codex run launch `autoExecuteTools=true` is a separate high-trust per-run
-    policy. For that run it automatically approves tool calls and Codex
-    access/permission requests, and the backend starts/resumes Codex with an
-    effective `danger-full-access` sandbox even if the saved full-access setting
-    is off. Leave auto-approve off when you want visible approval prompts.
+    policy. For that standalone or team-member run it automatically approves
+    tool calls and Codex access/permission requests, and the backend
+    starts/resumes Codex with an effective `danger-full-access` sandbox even if
+    the saved full-access setting is off. Leave auto-approve off when you want
+    visible approval prompts.
 - Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
   - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
   - Default: `default`

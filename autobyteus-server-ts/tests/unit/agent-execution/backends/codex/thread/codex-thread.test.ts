@@ -151,6 +151,45 @@ describe("CodexThread MCP tool approval bridge", () => {
     expect(thread.findApprovalRecord("call_speak_auto")).toBeNull();
   });
 
+  it("auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled", () => {
+    const { thread, client } = createThread(true, {
+      memberTeamContext: createMemberTeamContext(),
+    });
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+    thread.trackPendingMcpToolCall({
+      invocationId: "call_speak_team_auto",
+      turnId: "turn-1",
+      serverName: "tts",
+      toolName: "speak",
+      arguments: {
+        text: "codex unit speak probe",
+        play: true,
+      },
+    });
+
+    thread.handleAppServerRequest(
+      102,
+      "mcpServer/elicitation/request",
+      createSpeakApprovalParams(),
+    );
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(102, { action: "accept" });
+    expect(client.respondError).not.toHaveBeenCalled();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "call_speak_team_auto",
+          tool_name: "speak",
+        }),
+      }),
+    );
+    expect(thread.findApprovalRecord("call_speak_team_auto")).toBeNull();
+  });
+
   it("emits approval events for MCP tool calls and answers with the MCP elicitation action", async () => {
     const { thread, client } = createThread(false);
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
@@ -287,7 +326,7 @@ describe("CodexThread Codex approval surfaces", () => {
     );
   });
 
-  it("auto-declines Codex local runtime tools for team members while preserving dynamic-tool auto execution", async () => {
+  it("auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution", async () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("team dynamic ok"));
     const { thread, client } = createThread(true, {
       dynamicToolHandlers: {
@@ -303,12 +342,12 @@ describe("CodexThread Codex approval surfaces", () => {
     thread.handleAppServerRequest(304, CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, {
       itemId: "item-terminal-team-auto",
       approvalId: "approval-team-auto",
-      command: "echo should not be called",
+      command: "echo team-auto",
     });
 
-    expect(client.respondSuccess).toHaveBeenCalledWith(304, { decision: "decline" });
+    expect(client.respondSuccess).toHaveBeenCalledWith(304, { decision: "accept" });
     expect(thread.findApprovalRecord("item-terminal-team-auto")).toBeNull();
-    expect(messages).not.toContainEqual(
+    expect(messages).toContainEqual(
       expect.objectContaining({
         method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
         params: expect.objectContaining({
@@ -591,6 +630,53 @@ describe("CodexThread Codex approval surfaces", () => {
       scope: "session",
     });
     expect(thread.findApprovalRecord("perm-auto-1")).toBeNull();
+  });
+
+  it("grants permission requests automatically for team members in auto mode", () => {
+    const { thread, client } = createThread(true, {
+      memberTeamContext: createMemberTeamContext(),
+    });
+    const requestedWorktreePath =
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression";
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(504, CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      itemId: "perm-team-auto-1",
+      cwd: "/tmp/codex-thread-unit",
+      permissions: {
+        fileSystem: {
+          write: [requestedWorktreePath],
+        },
+        network: null,
+      },
+      reason: "Need external worktree Git metadata access",
+      startedAtMs: 1,
+    });
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(504, {
+      permissions: {
+        fileSystem: {
+          write: [requestedWorktreePath],
+        },
+        network: null,
+      },
+      scope: "session",
+    });
+    expect(thread.findApprovalRecord("perm-team-auto-1")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "perm-team-auto-1",
+          tool_name: "request_permissions",
+        }),
+      }),
+    );
   });
 
   it("queues permission requests in manual mode and grants only after approval", async () => {

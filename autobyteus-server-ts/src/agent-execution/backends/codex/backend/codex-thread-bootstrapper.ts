@@ -110,10 +110,6 @@ const CODEX_APP_SERVER_APPROVAL_POLICY_SETTING_KEY = "CODEX_APP_SERVER_APPROVAL_
 const isCodexApprovalPolicy = (value: string): value is CodexApprovalPolicy =>
   Object.values(CodexApprovalPolicy).includes(value as CodexApprovalPolicy);
 
-const isCodexTeamMemberRunConfig = (
-  config: Pick<AgentRunConfig, "memberTeamContext">,
-): boolean => Boolean(config.memberTeamContext);
-
 export const resolveConfiguredCodexApprovalPolicy = (): CodexApprovalPolicy | null => {
   const rawApprovalPolicy = process.env[CODEX_APP_SERVER_APPROVAL_POLICY_SETTING_KEY];
   const submittedApprovalPolicy =
@@ -131,15 +127,15 @@ export const resolveConfiguredCodexApprovalPolicy = (): CodexApprovalPolicy | nu
 };
 
 export const resolveApprovalPolicyForRunConfig = (
-  config: Pick<AgentRunConfig, "autoExecuteTools" | "memberTeamContext">,
+  config: Pick<AgentRunConfig, "autoExecuteTools">,
 ): CodexApprovalPolicy => {
-  const configuredApprovalPolicy = resolveConfiguredCodexApprovalPolicy();
-  if (isCodexTeamMemberRunConfig(config)) {
-    return configuredApprovalPolicy ?? CodexApprovalPolicy.ON_REQUEST;
+  if (config.autoExecuteTools) {
+    return resolveApprovalPolicyForAutoExecuteTools(true);
   }
-  return config.autoExecuteTools
-    ? CodexApprovalPolicy.NEVER
-    : configuredApprovalPolicy ?? CodexApprovalPolicy.ON_REQUEST;
+  return (
+    resolveConfiguredCodexApprovalPolicy() ??
+    resolveApprovalPolicyForAutoExecuteTools(false)
+  );
 };
 
 export const normalizeSandboxMode = (): CodexSandboxMode => {
@@ -164,11 +160,9 @@ export const resolveEffectiveCodexSandboxMode = (
   autoExecuteTools ? AUTO_APPROVED_CODEX_SANDBOX_MODE : normalizeSandboxMode();
 
 export const resolveEffectiveCodexSandboxModeForRunConfig = (
-  config: Pick<AgentRunConfig, "autoExecuteTools" | "memberTeamContext">,
+  config: Pick<AgentRunConfig, "autoExecuteTools">,
 ): CodexSandboxMode =>
-  isCodexTeamMemberRunConfig(config)
-    ? normalizeSandboxMode()
-    : resolveEffectiveCodexSandboxMode(config.autoExecuteTools);
+  resolveEffectiveCodexSandboxMode(config.autoExecuteTools);
 
 export const resolveDefaultModel = (): string | null => {
   const model = process.env.CODEX_APP_SERVER_MODEL;

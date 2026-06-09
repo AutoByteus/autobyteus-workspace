@@ -144,7 +144,16 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
 - `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
 - The Settings page exposes the common user decision through **Server Settings -> Basics -> Codex full access**: toggle on saves `danger-full-access`, and toggle off saves `workspace-write`. The Advanced Settings raw table also treats `CODEX_APP_SERVER_SANDBOX` as a predefined editable, non-deletable setting and rejects values outside the canonical set.
 - Saved changes flow through the existing server-settings persistence path and are read by future/new Codex thread bootstrap or restore paths. Already-active Codex sessions are not mutated in place.
-- `autoExecuteTools` remains separate: it controls approval behavior, not filesystem sandbox mode.
+- The saved sandbox setting is the default for non-auto-approved Codex runs.
+  Codex run launch `autoExecuteTools=true` is a separate high-trust per-run
+  policy for both standalone and team-member runs: thread create/restore uses
+  effective `danger-full-access` and `approvalPolicy = "never"` even when the
+  saved full-access setting is off, and runtime command/file/MCP/permission
+  requests are auto-accepted or session-granted. Leave auto-approve off when the
+  run should remain on visible manual approval gates.
+- Team-member auto-approval does not own team communication routing. Dynamic
+  team tools such as `send_message_to` remain constrained by configured tool
+  exposure, team-owned handlers, and recipient validation.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings

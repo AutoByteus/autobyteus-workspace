@@ -72,7 +72,10 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
-    // Keep Codex shell/file tools on the approval path; send_message_to is now handled as a dynamic tool call.
+    // Keep a restrictive saved approval policy in this fixture while relying on
+    // autoExecuteTools=true to provide Codex high-trust access. Team routing safety
+    // comes from dynamic tool exposure and send_message_to handlers, not from
+    // downgrading Codex shell/file approvals for team members.
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "codex-team-runtime-e2e-appdata-"));
     await writeFile(
