@@ -140,7 +140,23 @@ Ticket archival step completed locally before the final ticket-branch commit: th
 
 ## Ticket Branch Push Addendum (2026-06-09)
 
-- Ticket branch commit: `8ef4f4f9b61fddfd0c191d5038a7b919bd99b38e` (`fix(codex): restore team auto approve access`)
+- Primary ticket branch implementation commit: `8ef4f4f9b61fddfd0c191d5038a7b919bd99b38e` (`fix(codex): restore team auto approve access`)
+- Final ticket branch head merged: `188a5f0305f3aed4877fcff70942975077455725`
 - Ticket branch push: `Completed`
 - Remote branch: `origin/codex/auto-approve-external-git-ops-regression`
 - Push evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-ticket-branch-push.log`
+
+
+## Target Branch Merge / Push Completion Addendum (2026-06-09)
+
+- Finalization target: `origin/codex/mixed-team-manager-simplification-analysis`
+- Merge into target: `Completed`
+- Merge commit: `092b7b4e36d0cdabe4fcb6c8d0957163fa33677b` (`merge: auto approve external git ops regression`)
+- Target push: `Completed`; `origin/codex/mixed-team-manager-simplification-analysis` updated from `a18e850f` to `092b7b4e`
+- Post-merge check: `git diff --check origin/codex/mixed-team-manager-simplification-analysis..HEAD` passed before push
+- Evidence logs:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-target-merge.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-target-postmerge-check.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-target-push.log`
+- Release/deployment/version bump: not performed.
+- Worktree cleanup: not performed; worktrees and local Electron artifacts were retained.

@@ -1,0 +1,93 @@
+# Merge auto-approve regression ticket into base branch
+Date UTC: 2026-06-09T08:38:12Z
+Base worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+Target branch before:
+## codex/mixed-team-manager-simplification-analysis...origin/codex/mixed-team-manager-simplification-analysis
+
+Fetch latest target and ticket branch:
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              codex/mixed-team-manager-simplification-analysis -> FETCH_HEAD
+ * branch              codex/auto-approve-external-git-ops-regression -> FETCH_HEAD
+
+Fast-forward target from remote if needed:
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              codex/mixed-team-manager-simplification-analysis -> FETCH_HEAD
+Already up to date.
+
+Target HEAD before merge:
+a18e850f3ef69cdccf15724f5bab5fb9a11c5eb5
+Ticket branch head:
+188a5f0305f3aed4877fcff70942975077455725
+
+Merge command: git merge --no-ff origin/codex/auto-approve-external-git-ops-regression -m "merge: auto approve external git ops regression"
+Merge made by the 'ort' strategy.
+ README.md                                          |    9 +-
+ autobyteus-server-ts/README.md                     |    6 +
+ .../docs/modules/codex_integration.md              |   11 +-
+ .../codex/backend/codex-thread-bootstrapper.ts     |   24 +-
+ .../thread/codex-tool-approval-coordinator.ts      |   33 +-
+ .../codex-team-inter-agent-roundtrip.e2e.test.ts   |    5 +-
+ .../backend/codex-thread-bootstrapper.test.ts      |   28 +-
+ .../backends/codex/thread/codex-thread.test.ts     |   94 +-
+ .../api-e2e-validation-report.md                   |  227 ++++
+ .../code-review-report.md                          |  154 +++
+ .../delivery-release-deployment-report.md          |  192 +++
+ .../design-review-report.md                        |  197 +++
+ .../design-spec.md                                 |  378 ++++++
+ .../docs-sync-report.md                            |   67 +
+ .../handoff-summary.md                             |  146 ++
+ .../implementation-handoff.md                      |  125 ++
+ .../investigation-notes.md                         |  197 +++
+ .../requirements.md                                |  156 +++
+ .../build-typecheck-validation.log                 |   10 +
+ .../codex-unit-validation-verbose.log              |  132 ++
+ ...ry-electron-macos-artifact-sha256-user-test.txt |    4 +
+ ...ry-electron-macos-artifact-verify-user-test.log |   37 +
+ ...delivery-electron-macos-artifacts-user-test.txt |   15 +
+ .../delivery-electron-macos-build-user-test.log    | 1394 ++++++++++++++++++++
+ .../delivery-final-precommit-git-diff-check.log    |    4 +
+ .../delivery-finalization-preflight.log            |   32 +
+ .../delivery-git-diff-check.log                    |    4 +
+ .../delivery-integration-refresh.log               |   28 +
+ .../delivery-ticket-branch-push.log                |   16 +
+ .../validation-evidence/git-diff-check.log         |    2 +
+ .../validation-evidence/platform-validation.log    |    9 +
+ .../runtime-audit-validation.log                   |   32 +
+ .../source-inspection-validation.log               |   17 +
+ .../team-recipient-validation.log                  |   88 ++
+ .../team-tool-routing-validation.log               |   92 ++
+ .../temp-harness-validation.log                    |   64 +
+ 36 files changed, 3969 insertions(+), 60 deletions(-)
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/api-e2e-validation-report.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/code-review-report.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/delivery-release-deployment-report.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/design-review-report.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/design-spec.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/docs-sync-report.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/handoff-summary.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/implementation-handoff.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/investigation-notes.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/requirements.md
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/build-typecheck-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/codex-unit-validation-verbose.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-electron-macos-artifact-sha256-user-test.txt
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-electron-macos-artifact-verify-user-test.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-electron-macos-artifacts-user-test.txt
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-electron-macos-build-user-test.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-final-precommit-git-diff-check.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-finalization-preflight.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-git-diff-check.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-integration-refresh.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-ticket-branch-push.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/git-diff-check.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/platform-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/runtime-audit-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/source-inspection-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/team-recipient-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/team-tool-routing-validation.log
+ create mode 100644 tickets/done/auto-approve-external-git-ops-regression/validation-evidence/temp-harness-validation.log
+
+Target HEAD after merge:
+092b7b4e36d0cdabe4fcb6c8d0957163fa33677b
+Status after merge:
+## codex/mixed-team-manager-simplification-analysis...origin/codex/mixed-team-manager-simplification-analysis [ahead 4]
