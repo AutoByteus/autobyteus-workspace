@@ -137,3 +137,10 @@ Finalization target confirmed from requirements and investigation artifacts:
 - Target status at final preflight: unchanged at `a18e850f3ef69cdccf15724f5bab5fb9a11c5eb5`; no re-integration or renewed verification required.
 
 Ticket archival step completed locally before the final ticket-branch commit: this artifact package now lives at `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/`.
+
+## Ticket Branch Push Addendum (2026-06-09)
+
+- Ticket branch commit: `8ef4f4f9b61fddfd0c191d5038a7b919bd99b38e` (`fix(codex): restore team auto approve access`)
+- Ticket branch push: `Completed`
+- Remote branch: `origin/codex/auto-approve-external-git-ops-regression`
+- Push evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-ticket-branch-push.log`

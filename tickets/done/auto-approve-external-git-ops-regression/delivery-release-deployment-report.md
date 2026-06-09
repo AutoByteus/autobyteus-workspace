@@ -66,8 +66,8 @@ No version bump, tag, release commit, publication, or deployment was performed d
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/requirements.md`
 - Ticket branch: `codex/auto-approve-external-git-ops-regression`
-- Ticket branch commit result: `Pending user verification` — source/test/docs/ticket edits remain uncommitted until finalization is authorized.
-- Ticket branch push result: `Pending user verification`
+- Ticket branch commit result: `Completed` — `8ef4f4f9b61fddfd0c191d5038a7b919bd99b38e` (`fix(codex): restore team auto approve access`).
+- Ticket branch push result: `Completed` — pushed `codex/auto-approve-external-git-ops-regression` to `origin`; evidence in `validation-evidence/delivery-ticket-branch-push.log`.
 - Finalization target remote: `origin`
 - Finalization target branch: `codex/mixed-team-manager-simplification-analysis`
 - Target advanced after user verification: `No`
@@ -182,3 +182,11 @@ Repository finalization is in progress after explicit user verification. Ticket 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression`
 - Finalization preflight evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-finalization-preflight.log`
+
+
+## Ticket Branch Push Addendum (2026-06-09)
+
+- Ticket branch commit: `8ef4f4f9b61fddfd0c191d5038a7b919bd99b38e` (`fix(codex): restore team auto approve access`)
+- Ticket branch push: `Completed`
+- Remote branch: `origin/codex/auto-approve-external-git-ops-regression`
+- Push evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression/tickets/done/auto-approve-external-git-ops-regression/validation-evidence/delivery-ticket-branch-push.log`
