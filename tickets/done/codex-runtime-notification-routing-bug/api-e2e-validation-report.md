@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/code-review-report.md`
 - Current Validation Round: 4
 - Trigger: User clarified the frontend hydration requirement: after a team is terminated, every triggered member is down, so `getTeamMemberRunProjection` must remain queryable for each member, not only the coordinator.
 - Prior Round Reviewed: 3
@@ -126,18 +126,18 @@ Repository-resident durable validation updated in API/E2E:
 
 Round 4 all-member terminated projection logs:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/autobyteus-team-every-member-terminated-projection.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/codex-team-every-member-terminated-projection.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/claude-team-every-member-terminated-projection.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/autobyteus-team-every-member-terminated-projection.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/codex-team-every-member-terminated-projection.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection/claude-team-every-member-terminated-projection.log`
 
 Round 3 real-runtime logs:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-agent-active-terminate-restore.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-agent-history-projection.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-team-active-terminate-restore.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-team-history-projection.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/mixed-autobyteus-codex.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/nested-autobyteus-codex-claude.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-agent-active-terminate-restore.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-agent-history-projection.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-team-active-terminate-restore.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/autobyteus-team-history-projection.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/mixed-autobyteus-codex.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round3-real-runtime-matrix/nested-autobyteus-codex-claude.log`
 
 ## Passed
 

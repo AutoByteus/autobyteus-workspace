@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-spec.md`
 - Current Review Round: 3
 - Trigger: Latest authoritative design revision after user/design-principles clarification that empty cohort indirection must be removed, not retained as optional cleanup.
 - Prior Review Round Reviewed: Round 2, no unresolved findings.
@@ -26,7 +26,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-spec.md` as the current authoritative design.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-spec.md` as the current authoritative design.
 
 ## Task Design Health Assessment Verdict
 

@@ -6,7 +6,7 @@
 - Trigger: API/E2E validation passed for the Codex runtime notification routing/client reuse bug; delivery workflow required latest-base integration refresh and docs synchronization on the integrated state.
 - Bootstrap base reference: `codex/mixed-team-manager-simplification-analysis` / `origin/codex/mixed-team-manager-simplification-analysis` at `c88b63b26d87d1f6d973c362ab8ade1d92f8a6b5`
 - Integrated base reference used for docs sync: `origin/codex/mixed-team-manager-simplification-analysis` at `c88b63b26d87d1f6d973c362ab8ade1d92f8a6b5`
-- Post-integration verification reference: local checkpoint `244392836936c44e9a0fe6670a849a8b8e65bbce`; delivery logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/delivery/`
+- Post-integration verification reference: local checkpoint `244392836936c44e9a0fe6670a849a8b8e65bbce`; delivery logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/delivery/`
 
 ## Why Docs Were Updated
 

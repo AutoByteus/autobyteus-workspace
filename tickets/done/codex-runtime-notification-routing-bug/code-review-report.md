@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/requirements.md`
 - Current Review Round: 5
 - Trigger: API/E2E validation round 4 superseded prior validation handoffs after the user clarified that, once a team is terminated, projection hydration must remain queryable for every triggered team member, not only the coordinator. Repository-resident durable E2E validation was updated after prior code review.
 - Prior Review Round Reviewed: 4
 - Latest Authoritative Round: 5
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`; round 4 updated the homogeneous AutoByteus/Qwen, Codex, and Claude team projection E2E tests, and the earlier Codex individual-agent lifecycle E2E addition remains in scope.
 
@@ -30,8 +30,8 @@
 
 This round is a focused post-validation re-review of the superseding round-4 validation package:
 
-- Reviewed updated validation report round 4: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`.
-- Reviewed round-4 validation log evidence under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection`.
+- Reviewed updated validation report round 4: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`.
+- Reviewed round-4 validation log evidence under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection`.
 - Rechecked repository-resident durable validation source changes in:
   - `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
   - `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
@@ -165,8 +165,8 @@ None.
 
 ## Checks Run During Code Review
 
-- Reviewed updated validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`.
-- Reviewed round-4 validation logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection` and confirmed pass summaries for the AutoByteus/Qwen, Codex, and Claude targeted tests.
+- Reviewed updated validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/api-e2e-validation-report.md`.
+- Reviewed round-4 validation logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/tickets/done/codex-runtime-notification-routing-bug/validation-logs/round4-all-members-terminated-projection` and confirmed pass summaries for the AutoByteus/Qwen, Codex, and Claude targeted tests.
 - Re-reviewed changed durable validation diffs in:
   - `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
   - `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
