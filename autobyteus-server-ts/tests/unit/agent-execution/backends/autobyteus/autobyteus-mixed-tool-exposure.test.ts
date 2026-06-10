@@ -18,16 +18,19 @@ describe("autobyteus mixed tool exposure", () => {
           "assign_task_to",
           "update_task_status",
           "delegate_tasks",
+          "submit_task_result",
+          "review_task_result",
           ["mark", "task", "completed"].join("_"),
           ["mark", "task", "failed"].join("_"),
-          "accept_task",
+          ["accept", "task"].join("_"),
           "read_file",
         ],
         memberTeamContext: mixedMemberTeamContext as any,
       }),
     ).toEqual([
       "delegate_tasks",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
       "read_file",
     ]);
   });

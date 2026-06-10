@@ -33,7 +33,9 @@ export type TeamRunTaskDelegationEventPayload = {
   eventType:
     | "TASK_DELEGATION_TERMINAL_STATUS"
     | "TASK_DELEGATION_STATUS_UPDATED"
-    | "TASK_DELEGATION_ACTIVATED";
+    | "TASK_DELEGATION_ACTIVATED"
+    | "TASK_DELEGATION_RESULT_SUBMITTED"
+    | "TASK_DELEGATION_RESULT_REVIEWED";
   payload: unknown;
 };
 

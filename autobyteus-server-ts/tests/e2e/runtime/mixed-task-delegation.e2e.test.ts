@@ -18,7 +18,6 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 
 const codexBinaryReady = process.env.RUN_CODEX_E2E === "1" || spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveMixedTaskDelegationEnabled =
@@ -389,7 +388,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     return { streamApp, socket, messages };
   };
 
-  it("AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run", async () => {
+  it("AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle", async () => {
     const unique = randomUUID();
     const autoByteusModel = await fetchModelIdentifier(RuntimeKind.AUTOBYTEUS, (models) => {
       const exact = process.env.LMSTUDIO_MODEL_ID?.trim();
@@ -404,20 +403,20 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
 
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-"));
     createdWorkspaceRoots.add(workspaceRootPath);
-    const completionToken = `LIVE_MIXED_TASK_DELEGATION_DONE_${unique}`;
+    const initialResultToken = `LIVE_MIXED_TASK_DELEGATION_INITIAL_RESULT_${unique}`;
     const revisionToken = `LIVE_MIXED_TASK_DELEGATION_REVISED_${unique}`;
 
     const coordinatorAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task delegation and revision feedback E2E.",
-      toolNames: ["delegate_tasks", "send_message_to", "accept_task"],
-      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. If the user asks you to call send_message_to with exact JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool. If the user asks you to call accept_task with exact JSON arguments, call accept_task exactly once with those exact arguments and do not call any other tool. Do not automatically accept framework task completion notifications; wait for an explicit user instruction with exact JSON arguments. Do not explore the environment.`,
+      toolNames: ["delegate_tasks", "review_task_result"],
+      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. If the user asks you to call review_task_result with exact JSON arguments, call review_task_result exactly once with those exact arguments and do not call any other tool. Do not automatically review framework task result notifications; wait for an explicit user instruction with exact JSON arguments. Do not explore the environment.`,
     });
     const workerAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-worker-${unique}`,
       description: "Codex worker for live task delegation revision feedback E2E.",
-      toolNames: ["send_message_to"],
-      instructions: `When you receive the initial delegated task work packet, immediately call send_message_to exactly once with recipient_name="coordinator", content="${completionToken}", message_type="task_completion_report", and reference_files=[]. If you later receive a revision request containing "${revisionToken}", call send_message_to exactly once with recipient_name="coordinator", content="${revisionToken}", message_type="task_completion_report", and reference_files=[]. Do not run shell commands or create files.`,
+      toolNames: ["submit_task_result"],
+      instructions: `When you receive the initial delegated task work packet, immediately call submit_task_result exactly once with message="${initialResultToken}" and reference_files=[]. If you later receive a revision request containing "${revisionToken}", call submit_task_result exactly once with message="${revisionToken}" and reference_files=[]. Do not run shell commands or create files.`,
     });
 
     const teamDefinition = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -425,7 +424,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       { input: {
         name: `mixed-task-delegation-team-${unique}`,
         description: "Live mixed AutoByteus+Codex task delegation validation team.",
-        instructions: "The coordinator delegates one task; the worker reports completion through send_message_to.",
+        instructions: "The coordinator delegates one task; the worker submits results through submit_task_result and the coordinator reviews through review_task_result.",
         coordinatorMemberName: "coordinator",
         nodes: [
           { memberName: "coordinator", ref: coordinatorAgentDefinitionId, refType: "AGENT", refScope: "SHARED" },
@@ -472,7 +471,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       tasks: [
         {
           member_name: "worker",
-          description: `Complete this delegated validation task by reporting message ${completionToken}. Done condition: call send_message_to once with recipient_name="coordinator", content="${completionToken}", message_type="task_completion_report", and reference_files=[].`,
+          description: `Handle this delegated validation task by submitting result message ${initialResultToken}. Result condition: call submit_task_result once with message="${initialResultToken}" and reference_files=[].`,
         },
       ],
     };
@@ -503,94 +502,107 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       const taskId = (activation.payload.taskIds as string[])[0];
       const taskAgentRunId = extractTargetAgentRunIdFromActivation(activation);
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "send_message_to",
-        "worker send_message_to completion success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "submit_task_result",
+        "worker submit_task_result initial submit success", 240_000,
       );
-      const completionMessage = await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        isE2eTeamCommunicationMessage(message, {
-          senderMemberName: "worker",
-          recipientMemberName: "coordinator",
-          content: completionToken,
-        }) && message.payload.messageType === "task_completion_report",
-        "worker completion Team Communication", 120_000,
+      const submittedEvent = await waitForMessageAfter(connection.messages, startIndex, (message) =>
+        message.type === "TASK_DELEGATION_EVENT" &&
+          message.payload.event_type === "TASK_DELEGATION_RESULT_SUBMITTED" &&
+          message.payload.taskId === taskId &&
+          message.payload.submissionId === `${taskId}_submission_0001` &&
+          message.payload.pendingSubmissionId === `${taskId}_submission_0001` &&
+          message.payload.status === "awaiting_review",
+        "task result submitted event", 120_000,
       );
-      const completionMessageIndex = connection.messages.indexOf(completionMessage);
+      const submittedEventIndex = connection.messages.indexOf(submittedEvent);
       await settleUnpromptedCoordinatorToolRequest(
         connection.socket,
         connection.messages,
-        completionMessageIndex + 1,
-        "initial task-agent completion report",
+        submittedEventIndex + 1,
+        "initial task-agent result-submitted notification",
       );
 
-      const revisionContent = `Revision requested: send the revised completion report with content "${revisionToken}".`;
       const revisionStartIndex = connection.messages.length;
       sendTeamMessageOverSocket(connection.socket, {
         targetMemberRouteKey: "coordinator",
-        content: `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify({
-          target_agent_run_id: taskAgentRunId,
-          content: revisionContent,
-          message_type: "task_revision_feedback",
+        content: `Call review_task_result exactly once now with these exact JSON arguments: ${JSON.stringify({
+          task_id: taskId,
+          decision: "request_revision",
+          message: `Revision requested: submit the revised result with content "${revisionToken}".`,
         })}. Do not call any other tool.`,
       });
 
       await approveToolAndWait(connection.socket, connection.messages, revisionStartIndex, {
         agentName: "coordinator",
-        toolName: "send_message_to",
+        toolName: "review_task_result",
         targetMemberRouteKey: "coordinator",
         reason: "approved by mixed task delegation e2e",
-        label: "coordinator send_message_to revision feedback",
+        label: "coordinator review_task_result revision request",
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "send_message_to",
-        "coordinator send_message_to revision feedback success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "review_task_result",
+        "coordinator review_task_result revision success", 240_000,
       );
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
-        isE2eTeamCommunicationMessage(message, {
-          senderMemberName: "coordinator",
-          recipientMemberName: "worker",
-          content: revisionContent,
-        }) &&
-          message.payload.messageType === "task_revision_feedback" &&
-          message.payload.receiverRunId === taskAgentRunId,
-        "Team Communication revision feedback to concrete task-agent run", 120_000,
+        message.type === "TASK_DELEGATION_EVENT" &&
+          message.payload.event_type === "TASK_DELEGATION_RESULT_REVIEWED" &&
+          message.payload.taskId === taskId &&
+          message.payload.reviewId === `${taskId}_review_0001` &&
+          message.payload.reviewedSubmissionId === `${taskId}_submission_0001` &&
+          message.payload.decision === "request_revision" &&
+          message.payload.status === "active" &&
+          message.payload.terminal === false,
+        "task result reviewed revision event", 120_000,
       );
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "send_message_to",
-        "worker revised send_message_to success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "submit_task_result",
+        "worker revised submit_task_result success", 240_000,
       );
-      const revisedCompletionMessage = await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
-        isE2eTeamCommunicationMessage(message, {
-          senderMemberName: "worker",
-          recipientMemberName: "coordinator",
-          content: revisionToken,
-        }) && message.payload.messageType === "task_completion_report",
-        "worker revised completion Team Communication", 120_000,
+      const revisedSubmittedEvent = await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
+        message.type === "TASK_DELEGATION_EVENT" &&
+          message.payload.event_type === "TASK_DELEGATION_RESULT_SUBMITTED" &&
+          message.payload.taskId === taskId &&
+          message.payload.submissionId === `${taskId}_submission_0002` &&
+          message.payload.pendingSubmissionId === `${taskId}_submission_0002` &&
+          message.payload.status === "awaiting_review",
+        "worker revised result submitted event", 120_000,
       );
-      const revisedCompletionIndex = connection.messages.indexOf(revisedCompletionMessage);
+      const revisedSubmittedEventIndex = connection.messages.indexOf(revisedSubmittedEvent);
       await settleUnpromptedCoordinatorToolRequest(
         connection.socket,
         connection.messages,
-        revisedCompletionIndex + 1,
-        "revised task-agent completion report",
+        revisedSubmittedEventIndex + 1,
+        "revised task-agent result-submitted notification",
       );
 
       const acceptStartIndex = connection.messages.length;
       sendTeamMessageOverSocket(connection.socket, {
         targetMemberRouteKey: "coordinator",
-        content: `Call accept_task exactly once now with these exact JSON arguments: ${JSON.stringify({ task_id: taskId })}. Do not call any other tool.`,
+        content: `Call review_task_result exactly once now with these exact JSON arguments: ${JSON.stringify({ task_id: taskId, decision: "accept" })}. Do not call any other tool.`,
       });
       await approveToolAndWait(connection.socket, connection.messages, acceptStartIndex, {
         agentName: "coordinator",
-        toolName: "accept_task",
+        toolName: "review_task_result",
         targetMemberRouteKey: "coordinator",
         reason: "approved by mixed task delegation e2e",
-        label: "coordinator accept_task",
+        label: "coordinator review_task_result accept",
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
-        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "accept_task",
-        "coordinator accept_task success", 240_000,
+        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "review_task_result",
+        "coordinator review_task_result accept success", 240_000,
+      );
+      await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
+        message.type === "TASK_DELEGATION_EVENT" &&
+          message.payload.event_type === "TASK_DELEGATION_RESULT_REVIEWED" &&
+          message.payload.taskId === taskId &&
+          message.payload.reviewId === `${taskId}_review_0002` &&
+          message.payload.reviewedSubmissionId === `${taskId}_submission_0002` &&
+          message.payload.decision === "accept" &&
+          message.payload.status === "accepted" &&
+          message.payload.terminal === true,
+        "task result reviewed accept event", 120_000,
       );
       await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
         message.type === "AGENT_STATUS" &&
@@ -604,6 +616,23 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         memberRouteKey: "worker",
         taskAgentRunId,
       });
+      const legacyLifecycleToolNames = new Set([
+        "send_message_to",
+        ["accept", "task"].join("_"),
+        ["mark", "task", "completed"].join("_"),
+        ["mark", "task", "failed"].join("_"),
+      ]);
+      const legacyLifecycleToolMessages = connection.messages.slice(startIndex).filter((message) =>
+        [
+          "TOOL_APPROVAL_REQUESTED",
+          "TOOL_EXECUTION_STARTED",
+          "TOOL_EXECUTION_SUCCEEDED",
+          "TOOL_EXECUTION_FAILED",
+        ].includes(message.type) &&
+          typeof message.payload.tool_name === "string" &&
+          legacyLifecycleToolNames.has(message.payload.tool_name),
+      );
+      expect(legacyLifecycleToolMessages).toEqual([]);
     } finally {
       connection.socket.close();
       await connection.streamApp.close();

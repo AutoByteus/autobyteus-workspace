@@ -5,9 +5,9 @@ const renderList = (items: readonly string[]): string =>
 
 const renderDelegatorReplySelector = (record: TaskDelegationRecord): string => {
   if (record.delegatorReplyTargetAgentRunId) {
-    return `Delegator reply target_agent_run_id: ${record.delegatorReplyTargetAgentRunId}`;
+    return `Original delegator task-agent run: ${record.delegatorReplyTargetAgentRunId}`;
   }
-  return `Delegator reply recipient_name: ${record.delegatorReplyRecipientName ?? record.delegator.memberName}`;
+  return `Original delegator: ${record.delegatorReplyRecipientName ?? record.delegator.memberName}`;
 };
 
 export class TaskDelegationWorkPacketRenderer {
@@ -26,11 +26,11 @@ export class TaskDelegationWorkPacketRenderer {
       "Lifecycle instructions:",
       "1. Work directly from this task packet. Do not call get_my_tasks; that tool is not part of this workflow.",
       "2. The framework marks this task-agent internally active/running when it starts; do not spend a tool call reporting in_progress.",
-      "3. Report progress, blockers, completion reports, and requested revision results with ordinary send_message_to messages to the delegator reply selector shown in the task details.",
-      "4. Choose exactly one send_message_to target selector: recipient_name for a logical roster recipient, or target_agent_run_id for an exact concrete run supplied by a task packet, task event, or prior message.",
-      "5. Use send_message_to content as the durable task report. Mention relevant files in content and attach them in reference_files when needed so Team Communication projection includes them.",
-      "6. Worker-owned result tools are not part of this workflow; ordinary Team Communication messages are the task report surface.",
-      "7. The original delegator accepts the task with accept_task. After acceptance, this target_agent_run_id is no longer a valid active recipient and the framework settles the task-agent once idle.",
+      "3. When your result is ready for delegator review, call submit_task_result with a non-empty message and optional reference_files.",
+      "4. If the system sends revision instructions for this task, continue work and then call submit_task_result again with the revised result.",
+      "5. Do not use send_message_to for task result submission, revision responses, acceptance, or finalization; task lifecycle is handled by submit_task_result and review_task_result.",
+      "6. Use send_message_to only for ordinary non-lifecycle teammate communication when that is genuinely needed.",
+      "7. The original delegator reviews submitted results with review_task_result. After acceptance and safe idle/no-open-work gates, the framework settles this task-agent.",
     ].join("\n");
   }
 

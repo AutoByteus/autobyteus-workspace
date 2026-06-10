@@ -80,11 +80,10 @@ export const composeMemberRunInstructions = (
     runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
     runtimeLines.push("- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.");
     runtimeLines.push("- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
-    runtimeLines.push("- Task-agent progress, blockers, completion reports, feedback, and revision responses use ordinary `send_message_to` messages. Task-agents should send reports to the delegator reply recipient shown in their work packet.");
-    runtimeLines.push("- `delegate_tasks` returns generated `task_id` values and `target_agent_run_id` values for concrete task-agent runs; use `send_message_to` with `target_agent_run_id` when feedback must reach that exact active task-agent.");
-    runtimeLines.push("- Do not pass task-specific raw selector fields to `send_message_to`; the exact-run selector is the general `target_agent_run_id` field.");
-    runtimeLines.push("- Original-delegator acceptance uses `accept_task` with the generated `task_id` after the task-agent's message report is satisfactory.");
-    runtimeLines.push("- After the original delegator accepts the task, the task-agent's `target_agent_run_id` is no longer an active reachable message target and the framework settles or exits the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");
+    runtimeLines.push("- Task-agents submit reviewable results with `submit_task_result`; the tool is bound to the current task-agent context, so do not pass task_id, task_name, member_name, or status.");
+    runtimeLines.push("- The original delegator reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty message and are delivered by the system to the same task-agent.");
+    runtimeLines.push("- `send_message_to` remains ordinary teammate communication only. Do not use it for task result submission, revision requests, acceptance, or finalization.");
+    runtimeLines.push("- After the original delegator accepts the task, the framework settles or exits the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");
   }
 
   return {
