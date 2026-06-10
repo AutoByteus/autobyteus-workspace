@@ -25,7 +25,8 @@ Browser-tool support is runtime-gated:
 The server owns the first-party bounded task-delegation surface for team runs:
 
 - `delegate_tasks`
-- `accept_task`
+- `submit_task_result`
+- `review_task_result`
 
 Canonical contracts, schemas, parsing, result serialization, team-run binding,
 and service lookup live under `src/agent-tools/task-delegation`. The model-facing
@@ -54,14 +55,14 @@ member identity. `delegate_tasks` creates one or more internal delegation ledger
 records from exact `member_name`, ready-to-run rich `description`, and optional
 `reference_files` work-packet inputs, then starts runnable task-agent instances
 with direct work packets. Do not encode dependencies in a task item; dependent
-follow-up work is delegated by the coordinator later after receiving a normal
-`send_message_to` task-agent report. Task-agent progress, blockers, completion,
-feedback, and revised output all use ordinary `send_message_to` with logical
-`recipient_name` values or exact `target_agent_run_id` values supplied by task
-packets/events/messages. For original-delegator acceptance, `accept_task` accepts the exact
-framework-generated `task_id` and optional `message`; acceptance publishes the
-server-owned status update and requests safe task-agent settlement after the
-bound instance becomes idle.
+follow-up work is delegated by the coordinator later through another
+`delegate_tasks` call. Bound task-agents submit reviewable output with
+`submit_task_result`; the tool accepts only `message` and optional
+`reference_files` because the task is inferred from task-agent context. Original
+delegators review the latest pending submission with `review_task_result`, using
+`decision="accept"` to finalize or `decision="request_revision"` plus a message
+to send system revision instructions. `send_message_to` remains available only
+for ordinary teammate communication, not task result/review/acceptance.
 
 ## Server-Owned Media Tools
 

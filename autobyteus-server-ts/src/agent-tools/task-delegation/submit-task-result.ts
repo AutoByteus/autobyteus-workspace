@@ -2,9 +2,9 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { registerToolClass } from "autobyteus-ts/tools/tool-meta.js";
-import { ACCEPT_TASK_TOOL_NAME } from "./task-delegation-tool-contract.js";
+import { SUBMIT_TASK_RESULT_TOOL_NAME } from "./task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "./task-delegation-tool-manifest.js";
-import { buildAcceptTaskParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
+import { buildSubmitTaskResultParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
 import {
   toTaskDelegationJsonString,
   toTaskDelegationToolErrorPayload,
@@ -15,19 +15,19 @@ import {
   type NativeTaskDelegationToolExecutionContext,
 } from "./task-delegation-autobyteus-context.js";
 
-export class ServerOwnedAcceptTaskTool extends BaseTool<NativeTaskDelegationToolExecutionContext, Record<string, unknown>, string> {
+export class SubmitTaskResultTool extends BaseTool<NativeTaskDelegationToolExecutionContext, Record<string, unknown>, string> {
   static CATEGORY = ToolCategory.TASK_MANAGEMENT;
 
   static getName(): string {
-    return ACCEPT_TASK_TOOL_NAME;
+    return SUBMIT_TASK_RESULT_TOOL_NAME;
   }
 
   static getDescription(): string {
-    return getTaskDelegationToolManifestEntry(ACCEPT_TASK_TOOL_NAME).description;
+    return getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME).description;
   }
 
   static getArgumentSchema() {
-    return buildAcceptTaskParameterSchema();
+    return buildSubmitTaskResultParameterSchema();
   }
 
   protected async _execute(
@@ -35,7 +35,7 @@ export class ServerOwnedAcceptTaskTool extends BaseTool<NativeTaskDelegationTool
     kwargs: Record<string, unknown> = {},
   ): Promise<string> {
     try {
-      const entry = getTaskDelegationToolManifestEntry(ACCEPT_TASK_TOOL_NAME);
+      const entry = getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME);
       const toolContext = buildTaskDelegationToolContextFromNativeContext(context);
       const result = await entry.execute(
         getTaskDelegationToolService(),
@@ -49,7 +49,7 @@ export class ServerOwnedAcceptTaskTool extends BaseTool<NativeTaskDelegationTool
   }
 }
 
-export function registerAcceptTaskTool(): BaseTool {
-  registerToolClass(ServerOwnedAcceptTaskTool);
-  return defaultToolRegistry.createTool(ACCEPT_TASK_TOOL_NAME) as BaseTool;
+export function registerSubmitTaskResultTool(): BaseTool {
+  registerToolClass(SubmitTaskResultTool);
+  return defaultToolRegistry.createTool(SUBMIT_TASK_RESULT_TOOL_NAME) as BaseTool;
 }

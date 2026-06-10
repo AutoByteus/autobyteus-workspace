@@ -26,13 +26,15 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { TaskDelegationRunRegistry } from "../../../src/agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import { disposeTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import type {
-  AcceptTaskResult,
   DelegateTasksResult,
+  ReviewTaskResultResult,
+  SubmitTaskResultResult,
   TaskDelegationContext,
 } from "../../../src/agent-team-execution/task-delegation/task-delegation-record.js";
 import {
-  ACCEPT_TASK_TOOL_NAME,
   DELEGATE_TASKS_TOOL_NAME,
+  REVIEW_TASK_RESULT_TOOL_NAME,
+  SUBMIT_TASK_RESULT_TOOL_NAME,
   TASK_DELEGATION_TOOL_NAME_LIST,
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/task-delegation/task-delegation-tool-manifest.js";
@@ -44,7 +46,8 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 
 const teamRunId = "task-delegation-codex-run";
 const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASKS_TOOL_NAME);
-const acceptEntry = getTaskDelegationToolManifestEntry(ACCEPT_TASK_TOOL_NAME);
+const submitEntry = getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME);
+const reviewEntry = getTaskDelegationToolManifestEntry(REVIEW_TASK_RESULT_TOOL_NAME);
 
 class ManagedCodexTeamBackend implements TeamRunBackend {
   readonly runId = teamRunId;
@@ -264,24 +267,34 @@ const executeDelegateTasksAsTaskAgent = async (harness: Harness, contextTaskId: 
     delegateEntry.parseInput(rawInput),
   )) as DelegateTasksResult;
 
-const executeCoordinatorAcceptance = async (
-  harness: Harness,
-  taskId: string,
-) => (await acceptEntry.execute(
-  harness.service,
-  harness.coordinatorContext,
-  acceptEntry.parseInput({ task_id: taskId }),
-)) as AcceptTaskResult;
-
-const executeTaskAgentAcceptance = async (
+const executeSubmitTaskResultAsTaskAgent = async (
   harness: Harness,
   contextTaskId: string,
-  acceptedTaskId: string,
-) => (await acceptEntry.execute(
+  rawInput: Record<string, unknown>,
+) => (await submitEntry.execute(
   harness.service,
   buildToolContext(currentRun(harness), "worker", findTaskAgentIdentity(harness.backend, contextTaskId)),
-  acceptEntry.parseInput({ task_id: acceptedTaskId }),
-)) as AcceptTaskResult;
+  submitEntry.parseInput(rawInput),
+)) as SubmitTaskResultResult;
+
+const executeCoordinatorReview = async (
+  harness: Harness,
+  rawInput: Record<string, unknown>,
+) => (await reviewEntry.execute(
+  harness.service,
+  harness.coordinatorContext,
+  reviewEntry.parseInput(rawInput),
+)) as ReviewTaskResultResult;
+
+const executeTaskAgentReview = async (
+  harness: Harness,
+  contextTaskId: string,
+  rawInput: Record<string, unknown>,
+) => (await reviewEntry.execute(
+  harness.service,
+  buildToolContext(currentRun(harness), "worker", findTaskAgentIdentity(harness.backend, contextTaskId)),
+  reviewEntry.parseInput(rawInput),
+)) as ReviewTaskResultResult;
 
 const findTaskAgentIdentity = (
   backend: ManagedCodexTeamBackend,
@@ -345,7 +358,7 @@ const twoStepDelegationInput = {
 };
 
 describe("task delegation tool lifecycle integration", () => {
-  it("runs the server-managed delegate_tasks -> active exact run target -> accept_task -> idle settlement path", async () => {
+  it("runs the server-managed delegate_tasks -> submit_task_result -> review_task_result -> idle settlement path", async () => {
     const harness = await createHarness();
     const created = await executeDelegateTasks(harness, twoStepDelegationInput);
 
@@ -363,9 +376,11 @@ describe("task delegation tool lifecycle integration", () => {
         metadata: expect.objectContaining({ message_type: "task_delegation_work_packet" }),
       }),
     });
-    expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("send_message_to");
+    expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("submit_task_result");
+    expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("review_task_result");
     expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("task-delegation-codex-run__worker__task_0001");
     expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain(["mark", "task", "completed"].join("_"));
+    expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain(["accept", "task"].join("_"));
 
     const activationSocketMessage = websocketMessageFor(taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")[0]);
     expect(activationSocketMessage.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
@@ -377,8 +392,16 @@ describe("task delegation tool lifecycle integration", () => {
 
     publishIdleEvent(harness.backend, "task_0001");
     expect(harness.backend.taskAgentSettlementAttempts).toEqual([]);
-    await expect(executeCoordinatorAcceptance(harness, "task_0001"))
-      .resolves.toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
+    await expect(executeSubmitTaskResultAsTaskAgent(harness, "task_0001", { message: "first result" }))
+      .resolves.toMatchObject({ status: "awaiting_review", submission_id: "task_0001_submission_0001", notification_delivered: true });
+    expect(harness.backend.messages.at(-1)).toMatchObject({
+      targetRouteKey: "coordinator",
+      targetMemberRunId: null,
+    });
+    expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(1);
+
+    await expect(executeCoordinatorReview(harness, { task_id: "task_0001", decision: "accept" }))
+      .resolves.toMatchObject({ status: "accepted", decision: "accept", reviewed_submission_id: "task_0001_submission_0001", settlement_requested: true });
     await vi.waitFor(() => {
       expect(harness.backend.taskAgentSettlementAttempts).toEqual([
         expect.objectContaining({
@@ -389,8 +412,9 @@ describe("task delegation tool lifecycle integration", () => {
       ]);
     });
 
-    await expect(executeCoordinatorAcceptance(harness, "task_0002"))
-      .resolves.toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
+    await executeSubmitTaskResultAsTaskAgent(harness, "task_0002", { message: "second result" });
+    await expect(executeCoordinatorReview(harness, { task_id: "task_0002", decision: "accept" }))
+      .resolves.toMatchObject({ status: "accepted", decision: "accept", reviewed_submission_id: "task_0002_submission_0001", settlement_requested: true });
     expect(harness.backend.taskAgentSettlementAttempts).toHaveLength(1);
     publishIdleEvent(harness.backend, "task_0002");
     await vi.waitFor(() => {
@@ -407,7 +431,7 @@ describe("task delegation tool lifecycle integration", () => {
     await harness.manager.terminateTeamRun(harness.backend.runId);
   });
 
-  it("lets a task-agent delegate child work and accept the child through tight task-agent identity", async () => {
+  it("lets a task-agent delegate child work and review the child through tight task-agent identity", async () => {
     const harness = await createHarness();
     await executeDelegateTasks(harness, {
       tasks: [{ member_name: "worker", description: "Parent worker task." }],
@@ -420,15 +444,22 @@ describe("task delegation tool lifecycle integration", () => {
     expect(childCreated.createdTasks).toEqual([
       expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002", status: "active" }),
     ]);
-    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Delegator reply target_agent_run_id: task-delegation-codex-run__worker__task_0001");
+    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Original delegator task-agent run: task-delegation-codex-run__worker__task_0001");
     expect(harness.backend.taskAgentStarts[1]?.message.content).toContain(parentTaskAgent.taskAgentRunId);
 
-    await expect(executeTaskAgentAcceptance(harness, "task_0001", "task_0002"))
-      .resolves.toMatchObject({ status: "accepted", terminal: true, settlement_requested: true });
-    const statusPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_STATUS_UPDATED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
-    expect(statusPayload).toMatchObject({
+    await executeSubmitTaskResultAsTaskAgent(harness, "task_0002", { message: "child result" });
+    expect(harness.backend.messages.at(-1)).toMatchObject({
+      targetRouteKey: "worker",
+      targetMemberRunId: parentTaskAgent.taskAgentRunId,
+    });
+
+    await expect(executeTaskAgentReview(harness, "task_0001", { task_id: "task_0002", decision: "accept" }))
+      .resolves.toMatchObject({ status: "accepted", decision: "accept", settlement_requested: true });
+    const reviewPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_REVIEWED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
+    expect(reviewPayload).toMatchObject({
       taskId: "task_0002",
       status: "accepted",
+      reviewedSubmissionId: "task_0002_submission_0001",
       targetAgentRunId: "task-delegation-codex-run__worker__task_0002",
       delegator: expect.objectContaining({
         memberRouteKey: "worker",
@@ -457,18 +488,19 @@ describe("task delegation tool lifecycle integration", () => {
     ]);
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_STATUS_UPDATED")).toHaveLength(0);
-    await expect(executeCoordinatorAcceptance(harness, "task_0002"))
-      .rejects.toMatchObject({ code: "TASK_NOT_ACTIVE" });
+    await expect(executeCoordinatorReview(harness, { task_id: "task_0002", decision: "accept" }))
+      .rejects.toMatchObject({ code: "TASK_NOT_AWAITING_REVIEW" });
     harness.runRegistry.clear();
     await harness.manager.terminateTeamRun(harness.backend.runId);
   });
 
-  it("keeps the model-facing task surface limited to delegation and acceptance tools", () => {
+  it("keeps the model-facing task surface limited to pure task delegation tools", () => {
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual([
       DELEGATE_TASKS_TOOL_NAME,
-      ACCEPT_TASK_TOOL_NAME,
+      SUBMIT_TASK_RESULT_TOOL_NAME,
+      REVIEW_TASK_RESULT_TOOL_NAME,
     ]);
-    for (const oldName of ["create_task", "create_tasks", "get_my_tasks", "get_task_plan_status", "assign_task_to"]) {
+    for (const oldName of ["create_task", "create_tasks", "get_my_tasks", "get_task_plan_status", "assign_task_to", ["accept", "task"].join("_")]) {
       expect(TASK_DELEGATION_TOOL_NAME_LIST).not.toContain(oldName);
     }
   });

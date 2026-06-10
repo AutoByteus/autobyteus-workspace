@@ -20,7 +20,7 @@ team-scoped communication rosters, or team stream rebroadcasting.
 - The public team communication tool name remains `send_message_to`, but the
   implementation is server-owned and delivered through `TeamRun` /
   `MixedTeamManager` rather than through native AutoByteus team classes.
-- Server-managed task delegation (`delegate_tasks` and `accept_task`) remains owned by `autobyteus-server-ts`.
+- Server-managed task delegation (`delegate_tasks`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
   Personal ToDo tools remain local single-agent tools.
 
 ## Removed Native Surface

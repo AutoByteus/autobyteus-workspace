@@ -316,7 +316,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       "delegate_tasks",
       ["mark", "task", "completed"].join("_"),
       ["mark", "task", "failed"].join("_"),
-      "accept_task",
+      ["accept", "task"].join("_"),
+      "submit_task_result",
+      "review_task_result",
       "create_task",
     ]);
 
@@ -331,7 +333,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         taskDelegationToolingEnabled: true,
         enabledTaskDelegationToolNames: [
           "delegate_tasks",
-          "accept_task",
+          "submit_task_result",
+          "review_task_result",
         ],
       }),
     );
@@ -341,8 +344,10 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         allowedTools: [
           "delegate_tasks",
           "mcp__autobyteus_team__delegate_tasks",
-          "accept_task",
-          "mcp__autobyteus_team__accept_task",
+          "submit_task_result",
+          "mcp__autobyteus_team__submit_task_result",
+          "review_task_result",
+          "mcp__autobyteus_team__review_task_result",
         ],
       }),
     );

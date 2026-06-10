@@ -1,17 +1,21 @@
 import type {
   DelegateTasksInput,
   DelegateTasksResult,
-  AcceptTaskInput,
-  AcceptTaskResult,
+  ReviewTaskResultInput,
+  ReviewTaskResultResult,
+  SubmitTaskResultInput,
+  SubmitTaskResultResult,
   TaskDelegationContext,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 
 export const DELEGATE_TASKS_TOOL_NAME = "delegate_tasks";
-export const ACCEPT_TASK_TOOL_NAME = "accept_task";
+export const SUBMIT_TASK_RESULT_TOOL_NAME = "submit_task_result";
+export const REVIEW_TASK_RESULT_TOOL_NAME = "review_task_result";
 
 export const TASK_DELEGATION_TOOL_NAME_LIST = [
   DELEGATE_TASKS_TOOL_NAME,
-  ACCEPT_TASK_TOOL_NAME,
+  SUBMIT_TASK_RESULT_TOOL_NAME,
+  REVIEW_TASK_RESULT_TOOL_NAME,
 ] as const;
 
 export type TaskDelegationToolName =
@@ -28,12 +32,14 @@ export type TaskDelegationToolContext = TaskDelegationContext;
 
 export type TaskDelegationToolInputs = {
   [DELEGATE_TASKS_TOOL_NAME]: DelegateTasksInput;
-  [ACCEPT_TASK_TOOL_NAME]: AcceptTaskInput;
+  [SUBMIT_TASK_RESULT_TOOL_NAME]: SubmitTaskResultInput;
+  [REVIEW_TASK_RESULT_TOOL_NAME]: ReviewTaskResultInput;
 };
 
 export type TaskDelegationToolResults = {
   [DELEGATE_TASKS_TOOL_NAME]: DelegateTasksResult;
-  [ACCEPT_TASK_TOOL_NAME]: AcceptTaskResult;
+  [SUBMIT_TASK_RESULT_TOOL_NAME]: SubmitTaskResultResult;
+  [REVIEW_TASK_RESULT_TOOL_NAME]: ReviewTaskResultResult;
 };
 
 export type TaskDelegationToolErrorPayload = {

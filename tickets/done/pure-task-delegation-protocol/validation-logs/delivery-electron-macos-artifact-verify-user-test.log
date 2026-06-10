@@ -1,0 +1,36 @@
+Verification started: 2026-06-10T05:57:18Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/pure-task-delegation-protocol
+
+Artifact listing:
+-rw-r--r--@ 1 normy  staff   360M Jun 10 07:55 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+-rw-r--r--@ 1 normy  staff   384K Jun 10 07:55 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   357M Jun 10 07:56 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+-rw-r--r--@ 1 normy  staff   375K Jun 10 07:57 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+SHA-256:
+a251b67b496e6e25710610cbe96aee7b9482f9dc7a08beff01b87a7adb0bafca  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+037d7e6c983a3a998fdb09cca9a8a970ee6de33810cea5d2c547205b2259bed0  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+5a0b845416d0203725ce1f5366614d1f4a70cb863b9c74f5a03c4f2547b3cc50  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+84d19a57f85cb95c3699eca211c43a3b9313814df4775626000e3dabfe4a0696  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+DMG verification:
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $4D14881E
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $950F0F2C
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $7931EF1A
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $CADF7FEE
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $7931EF1A
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $5AF2E3CA
+Die überprüfte CRC32-Prüfsumme ist $F70C75B0
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg" is VALID
+
+Verification finished: 2026-06-10T05:57:25Z
