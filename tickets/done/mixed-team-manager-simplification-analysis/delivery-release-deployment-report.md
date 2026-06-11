@@ -1,5 +1,19 @@
 # Delivery / Release / Deployment Report
 
+## Authoritative Finalization / Release Authorization Update — 2026-06-11
+
+This section supersedes the earlier pre-verification hold language in this artifact. The user explicitly tested the Electron build from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis`, confirmed it works, and authorized finalizing the whole simplification branch to its original base branch `origin/personal` plus a new release.
+
+Planned finalization flow from this authorization:
+
+- Archive this ticket from `tickets/in-progress/mixed-team-manager-simplification-analysis/` to `tickets/done/mixed-team-manager-simplification-analysis/` on the ticket branch.
+- Push `codex/mixed-team-manager-simplification-analysis` after the archive/release-note evidence commit.
+- Refresh `origin/personal`, merge the ticket branch into local `personal`, run final checks, and push `personal`.
+- Prepare release `v1.3.50` from `personal` using the project release helper in local/no-push mode so versions, curated release notes, and managed messaging manifest stay synchronized.
+- Recreate the final annotated Git tag explicitly with `git tag -a v1.3.50 -m "Release v1.3.50"` after the final release commit is amended with this delivery record, then push `personal` and push the tag separately.
+
+Tag interpretation: the release helper already creates an annotated Git tag, not merely a GitHub Release object. To satisfy the user's request for an explicit Git tag while avoiding duplicate release workflow triggers, delivery will keep exactly one canonical release tag, `v1.3.50`, and push that tag explicitly rather than creating a second differently named `v*` tag.
+
 ## Release / Publication / Deployment Scope
 
 Delivery-stage integrated-state refresh, long-lived docs sync, release-note preparation, and user-verification handoff for ticket `mixed-team-manager-simplification-analysis`.
