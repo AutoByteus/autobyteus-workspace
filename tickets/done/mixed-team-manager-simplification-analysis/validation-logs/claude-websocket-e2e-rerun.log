@@ -203,4 +203,3 @@ AssertionError: expected { type: 'ERROR', payload: { …(2) } } to match object 
       Tests  3 failed | 1 passed | 1 skipped (5)
    Start at  17:29:18
    Duration  3.86s (transform 2.33s, setup 15ms, import 3.29s, tests 132ms, environment 0ms)
-

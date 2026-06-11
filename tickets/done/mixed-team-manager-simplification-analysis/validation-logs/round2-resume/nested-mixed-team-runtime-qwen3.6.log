@@ -122,7 +122,7 @@ stderr | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Neste
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
 Finished Autobyteus discovery. Total models registered: 37

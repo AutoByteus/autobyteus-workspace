@@ -122,7 +122,7 @@ stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoBy
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
 Finished Autobyteus discovery. Total models registered: 37
@@ -743,4 +743,3 @@ Agent Definition with ID mixed-specialist-14c68bb7-62a9-49dc-a6f9-ddf1c48da6dc d
       Tests  1 passed (1)
    Start at  19:10:04
    Duration  44.21s (transform 2.70s, setup 16ms, import 3.85s, tests 39.93s, environment 0ms)
-

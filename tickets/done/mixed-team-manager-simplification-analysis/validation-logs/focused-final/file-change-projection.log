@@ -126,4 +126,3 @@ App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-
       Tests  17 passed (17)
    Start at  19:06:14
    Duration  4.49s (transform 2.28s, setup 22ms, import 3.75s, tests 229ms, environment 0ms)
-

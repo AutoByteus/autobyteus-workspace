@@ -122,7 +122,7 @@ stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByt
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
 Finished Autobyteus discovery. Total models registered: 37

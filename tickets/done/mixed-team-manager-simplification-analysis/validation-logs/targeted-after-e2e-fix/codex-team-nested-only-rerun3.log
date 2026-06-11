@@ -193,4 +193,3 @@ Agent Definition with ID codex-specialist-2a2a1ac9-015c-4852-9e6a-76744dfb91a8 d
       Tests  1 passed | 4 skipped (5)
    Start at  18:15:58
    Duration  20.82s (transform 3.27s, setup 17ms, import 4.90s, tests 15.44s, environment 0ms)
-

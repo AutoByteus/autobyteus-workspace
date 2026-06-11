@@ -447,4 +447,3 @@ Agent Definition with ID claude-projection-professor-da40212c-ef2a-49fb-8f67-44d
       Tests  5 passed (5)
    Start at  19:08:09
    Duration  42.28s (transform 2.77s, setup 18ms, import 3.93s, tests 37.91s, environment 0ms)
-

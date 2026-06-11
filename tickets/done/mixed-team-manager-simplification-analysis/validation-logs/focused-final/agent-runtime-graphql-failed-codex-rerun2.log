@@ -206,7 +206,7 @@ Error: Timed out waiting for websocket message 'assistant text containing LINKED
     128|   throw new Error(`Timed out waiting for websocket message '${label}'.…
        |         ^
     129| };
-    130| 
+    130|
  ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1855:13
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
@@ -216,4 +216,3 @@ Error: Timed out waiting for websocket message 'assistant text containing LINKED
       Tests  1 failed | 1 passed | 16 skipped (18)
    Start at  19:27:13
    Duration  163.60s (transform 3.01s, setup 16ms, import 5.23s, tests 157.90s, environment 0ms)
-

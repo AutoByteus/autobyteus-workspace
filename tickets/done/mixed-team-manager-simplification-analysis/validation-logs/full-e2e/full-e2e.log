@@ -130,7 +130,7 @@ stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus curren
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
 Finished Autobyteus discovery. Total models registered: 37
@@ -3229,7 +3229,7 @@ stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByt
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
 Finished Autobyteus discovery. Total models registered: 37
@@ -3388,4 +3388,3 @@ AgentExternalEventNotifier (NotifierID: 49e85cab-77ac-4555-b86c-ac8dc74936d2, Ag
 
 stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
 TOOL_APPROVAL rejected for team run team_autobyteus-team-runtime-c417971a-fb1c-4e_f8fc869b: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
-

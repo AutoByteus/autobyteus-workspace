@@ -181,7 +181,7 @@ stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtim
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
 Finished Autobyteus discovery. Total models registered: 37
@@ -522,4 +522,3 @@ Agent Definition with ID mixed-task-worker-7f25a501-2514-4ba6-807b-60242b5532aa 
       Tests  1 passed (1)
    Start at  19:11:42
    Duration  29.65s (transform 2.73s, setup 15ms, import 3.70s, tests 25.53s, environment 0ms)
-

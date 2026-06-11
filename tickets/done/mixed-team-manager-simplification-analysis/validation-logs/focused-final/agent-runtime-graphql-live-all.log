@@ -122,7 +122,7 @@ stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus curren
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
 Finished Autobyteus discovery. Total models registered: 37
@@ -1924,7 +1924,7 @@ Error: Timed out waiting for websocket message 'SEGMENT_START for auto-executed 
     128|   throw new Error(`Timed out waiting for websocket message '${label}'.…
        |         ^
     129| };
-    130| 
+    130|
  ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1621:34
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
@@ -1933,11 +1933,11 @@ Error: Timed out waiting for websocket message 'SEGMENT_START for auto-executed 
 Error: Timed out waiting for path to exist: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-linked-skill-workspace-P8oafP/.codex/skills/codex_symlink_3d6853b1759e
  ❯ waitForPathToExist tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:633:13
     631|       }
-    632| 
+    632|
     633|       throw new Error(`Timed out waiting for path to exist: ${targetPa…
        |             ^
     634|     };
-    635| 
+    635|
  ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1820:13
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
@@ -1947,4 +1947,3 @@ Error: Timed out waiting for path to exist: /var/folders/7w/9r4_s1_s42z3f7c136bp
       Tests  2 failed | 16 passed (18)
    Start at  19:13:41
    Duration  421.20s (transform 3.56s, setup 18ms, import 5.06s, tests 415.66s, environment 0ms)
-

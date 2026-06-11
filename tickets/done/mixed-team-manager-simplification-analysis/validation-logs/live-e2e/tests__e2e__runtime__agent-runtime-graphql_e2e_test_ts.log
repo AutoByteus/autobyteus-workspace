@@ -123,7 +123,7 @@ stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus curren
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
 Finished Autobyteus discovery. Total models registered: 37
@@ -594,4 +594,3 @@ Agent WebSocket connected: session=fa79902e-d130-4272-9cd7-b4cf43ca0e22, run=aut
 
 stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
 SEND_MESSAGE command not accepted for agent run autobyteus_api_e2e_f94f37e1_9c9f_4258_be4e_d46c5271f5bc_assistant_5523: [INVALID_COMMAND_ID] message_id must be a non-empty string no longer than 128 characters.
-

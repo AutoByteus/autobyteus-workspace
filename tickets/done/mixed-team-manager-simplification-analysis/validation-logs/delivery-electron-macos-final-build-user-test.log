@@ -399,7 +399,7 @@ isElectronBuild false
 ℹ .nuxt/dist/client/_nuxt/CfqFk-ld.js                                  936.43 kB │ gzip:   259.57 kB
 ℹ .nuxt/dist/client/_nuxt/BZ3Y6YlH.js                                3,742.90 kB │ gzip: 1,204.74 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
@@ -929,7 +929,7 @@ isElectronBuild true
 ℹ .nuxt/dist/client/_nuxt/entry.D1oBr35o.js                             937.17 kB │ gzip:   259.80 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.DZFkYmP6.js        3,744.43 kB │ gzip: 1,205.70 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
@@ -1393,7 +1393,7 @@ To ensure your native dependencies are always matched electron version, simply a
                       out=/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
       pixelHeight: 380
       pixelWidth: 540
-    
+
   • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
   • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
 Build completed: [

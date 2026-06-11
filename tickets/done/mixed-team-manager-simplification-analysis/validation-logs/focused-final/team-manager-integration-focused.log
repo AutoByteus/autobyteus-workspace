@@ -431,4 +431,3 @@ Failed to terminate team run 'team-failing-terminate': Error: boom
       Tests  35 passed (35)
    Start at  19:06:29
    Duration  7.38s (transform 2.46s, setup 49ms, import 6.10s, tests 413ms, environment 0ms)
-

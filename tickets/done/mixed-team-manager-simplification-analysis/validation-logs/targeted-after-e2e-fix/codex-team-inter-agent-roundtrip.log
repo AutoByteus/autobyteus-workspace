@@ -466,7 +466,7 @@ Error: Timed out waiting for team websocket event 'pong INTER_AGENT_MESSAGE'. pr
     467|         throw new Error(`Timed out waiting for team websocket event '$…
        |               ^
     468|       };
-    469| 
+    469|
  ❯ waitForSendMessageLifecycleAndReceipt tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:614:9
  ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:686:9
 
@@ -480,7 +480,7 @@ Error: Timed out waiting for team websocket event 'specialist INTER_AGENT_MESSAG
     912|         throw new Error(`Timed out waiting for team websocket event '$…
        |               ^
     913|       };
-    914| 
+    914|
  ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:940:9
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
@@ -490,4 +490,3 @@ Error: Timed out waiting for team websocket event 'specialist INTER_AGENT_MESSAG
       Tests  2 failed | 3 passed (5)
    Start at  18:05:28
    Duration  291.48s (transform 3.27s, setup 64ms, import 4.97s, tests 285.98s, environment 0ms)
-

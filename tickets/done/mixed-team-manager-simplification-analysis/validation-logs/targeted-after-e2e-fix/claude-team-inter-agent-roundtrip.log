@@ -453,7 +453,7 @@ Error: Timed out waiting for team websocket event 'pong send_message_to SEGMENT_
     506|         throw new Error(`Timed out waiting for team websocket event '$…
        |               ^
     507|       };
-    508| 
+    508|
  ❯ waitForSendMessageLifecycleAndReceipt tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:636:9
  ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:763:9
 
@@ -467,7 +467,7 @@ Error: Timed out waiting for team websocket event 'worker interrupted TURN_COMPL
     129|   throw new Error(`Timed out waiting for team websocket event '${label…
        |         ^
     130| };
-    131| 
+    131|
  ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:938:9
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
@@ -477,4 +477,3 @@ Error: Timed out waiting for team websocket event 'worker interrupted TURN_COMPL
       Tests  2 failed | 3 passed (5)
    Start at  18:17:42
    Duration  273.04s (transform 2.99s, setup 15ms, import 4.69s, tests 267.88s, environment 0ms)
-

@@ -206,7 +206,7 @@ Error: Timed out waiting for websocket message 'TOOL_APPROVED for auto-executed 
     128|   throw new Error(`Timed out waiting for websocket message '${label}'.…
        |         ^
     129| };
-    130| 
+    130|
  ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1644:11
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
@@ -219,7 +219,7 @@ Error: Timed out waiting for websocket message 'assistant text containing LINKED
     128|   throw new Error(`Timed out waiting for websocket message '${label}'.…
        |         ^
     129| };
-    130| 
+    130|
  ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1863:13
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
@@ -229,4 +229,3 @@ Error: Timed out waiting for websocket message 'assistant text containing LINKED
       Tests  2 failed | 16 skipped (18)
    Start at  19:21:42
    Duration  263.08s (transform 2.75s, setup 16ms, import 4.15s, tests 258.49s, environment 0ms)
-

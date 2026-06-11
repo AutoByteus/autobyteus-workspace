@@ -122,7 +122,7 @@ stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoBy
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
 Finished Autobyteus discovery. Total models registered: 37
@@ -473,7 +473,7 @@ Error: Timed out waiting for team websocket message 'coordinator TEAM_COMMUNICAT
     107|   throw new Error(`Timed out waiting for team websocket message '${lab…
        |         ^
     108| };
-    109| 
+    109|
  ❯ waitForInterAgentDeliveryTurn tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:530:5
  ❯ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:768:9
 
@@ -484,4 +484,3 @@ Error: Timed out waiting for team websocket message 'coordinator TEAM_COMMUNICAT
       Tests  1 failed (1)
    Start at  18:58:26
    Duration  204.02s (transform 2.79s, setup 16ms, import 4.08s, tests 199.51s, environment 0ms)
-
