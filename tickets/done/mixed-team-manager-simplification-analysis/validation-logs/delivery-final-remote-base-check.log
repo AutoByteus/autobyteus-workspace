@@ -1,0 +1,21 @@
+timestamp_utc=2026-06-06T18:01:32Z
+origin_personal_before=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal_after=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+merge_base_head_origin_personal=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+ahead_behind_vs_origin_personal=2	0
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+ M autobyteus-server-ts/docs/modules/agent_artifacts.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/docs-sync-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-obsolete-grep.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-remote-base-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-integration-merge.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-run-history-unit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-tsc-noemit.log

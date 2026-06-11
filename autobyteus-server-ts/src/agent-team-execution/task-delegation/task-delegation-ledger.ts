@@ -4,8 +4,9 @@ import {
   type TaskDelegationDelegatorIdentity,
   type TaskDelegationMemberIdentity,
   type TaskDelegationRecord,
-  type TaskDelegationReportedTerminalStatus,
-  type TaskDelegationStatus,
+  type TaskResultReview,
+  type TaskResultReviewDecision,
+  type TaskResultSubmission,
   type TaskDelegationTaskInput,
 } from "./task-delegation-record.js";
 import {
@@ -18,6 +19,18 @@ export type CreateTaskDelegationRecordInput = {
   task: TaskDelegationTaskInput;
   member: TaskDelegationMemberIdentity;
   delegator: TaskDelegationDelegatorIdentity;
+};
+
+export type TaskResultSubmissionTransition = {
+  previousStatus: TaskDelegationRecord["status"];
+  record: TaskDelegationRecord;
+  submission: TaskResultSubmission;
+};
+
+export type TaskResultReviewTransition = {
+  previousStatus: TaskDelegationRecord["status"];
+  record: TaskDelegationRecord;
+  review: TaskResultReview;
 };
 
 const cloneIdentity = (
@@ -45,10 +58,18 @@ const cloneRecord = (record: TaskDelegationRecord): TaskDelegationRecord => ({
   member: cloneIdentity(record.member),
   delegator: cloneDelegatorIdentity(record.delegator),
   referenceFiles: [...record.referenceFiles],
-  statusReferenceFiles: [...record.statusReferenceFiles],
   taskAgentInstance: record.taskAgentInstance
     ? cloneTaskAgentIdentity(record.taskAgentInstance)
     : null,
+  resultSubmissions: record.resultSubmissions.map((submission) => ({
+    ...submission,
+    referenceFiles: [...submission.referenceFiles],
+  })),
+  resultReviews: record.resultReviews.map((review) => ({
+    ...review,
+    referenceFiles: [...review.referenceFiles],
+    reviewer: cloneDelegatorIdentity(review.reviewer),
+  })),
 });
 
 const deriveTaskLabel = (description: string, fallbackTaskId: string): string => {
@@ -89,13 +110,16 @@ export class TaskDelegationLedger {
         delegator: cloneDelegatorIdentity(item.delegator),
         referenceFiles: [...(item.task.reference_files ?? [])],
         taskAgentInstance: null,
-        statusMessage: null,
-        statusReferenceFiles: [],
+        targetAgentRunId: null,
+        delegatorReplyRecipientName: null,
+        delegatorReplyTargetAgentRunId: null,
+        pendingSubmissionId: null,
+        resultSubmissions: [],
+        resultReviews: [],
         acceptanceMessage: null,
         acceptedAt: null,
         createdAt: now,
         updatedAt: now,
-        queuedAt: null,
         terminalAt: null,
       };
       this.recordsById.set(taskId, record);
@@ -127,26 +151,58 @@ export class TaskDelegationLedger {
     return this.listRecords().filter((record) => record.status === "not_started");
   }
 
-  markQueued(
-    taskIds: string[],
-    taskAgentInstancesByTaskId: ReadonlyMap<string, TaskAgentInstanceIdentity> = new Map(),
-  ): TaskDelegationRecord[] {
-    const now = new Date().toISOString();
-    const queued: TaskDelegationRecord[] = [];
-    for (const taskId of taskIds) {
-      const record = this.recordsById.get(taskId);
-      if (!record || record.status !== "not_started") {
-        continue;
-      }
-      record.status = "queued";
-      record.taskAgentInstance = taskAgentInstancesByTaskId.get(taskId)
-        ? cloneTaskAgentIdentity(taskAgentInstancesByTaskId.get(taskId)!)
-        : record.taskAgentInstance;
-      record.queuedAt = now;
-      record.updatedAt = now;
-      queued.push(cloneRecord(record));
+  bindTaskAgent(input: {
+    taskId: string;
+    taskAgentInstance: TaskAgentInstanceIdentity;
+    delegatorReplyRecipientName?: string | null;
+    delegatorReplyTargetAgentRunId?: string | null;
+  }): TaskDelegationRecord {
+    const record = this.recordsById.get(input.taskId);
+    if (!record) {
+      throw new TaskDelegationError(
+        "TASK_NOT_FOUND",
+        `Delegated task '${input.taskId}' was not found.`,
+      );
     }
-    return queued;
+    if (record.status !== "not_started") {
+      throw new TaskDelegationError(
+        "TASK_ALREADY_ACTIVE",
+        `Delegated task '${input.taskId}' is already ${record.status}.`,
+      );
+    }
+    const now = new Date().toISOString();
+    record.taskAgentInstance = cloneTaskAgentIdentity(input.taskAgentInstance);
+    record.targetAgentRunId = input.taskAgentInstance.taskAgentRunId;
+    record.delegatorReplyRecipientName = input.delegatorReplyRecipientName?.trim() || null;
+    record.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
+    record.updatedAt = now;
+    return cloneRecord(record);
+  }
+
+  markActive(taskId: string): TaskDelegationRecord {
+    const record = this.recordsById.get(taskId);
+    if (!record) {
+      throw new TaskDelegationError(
+        "TASK_NOT_FOUND",
+        `Delegated task '${taskId}' was not found.`,
+      );
+    }
+    if (record.status !== "not_started") {
+      throw new TaskDelegationError(
+        "INVALID_STATUS_TRANSITION",
+        `Delegated task '${taskId}' cannot transition from ${record.status} to active.`,
+      );
+    }
+    if (!record.taskAgentInstance || !record.targetAgentRunId) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_NOT_BOUND",
+        `Delegated task '${taskId}' is not bound to a task-agent instance.`,
+      );
+    }
+    const now = new Date().toISOString();
+    record.status = "active";
+    record.updatedAt = now;
+    return cloneRecord(record);
   }
 
   markNotStarted(taskIds: string[]): TaskDelegationRecord[] {
@@ -154,24 +210,25 @@ export class TaskDelegationLedger {
     const records: TaskDelegationRecord[] = [];
     for (const taskId of taskIds) {
       const record = this.recordsById.get(taskId);
-      if (!record || record.status !== "queued") {
+      if (!record || record.status !== "not_started") {
         continue;
       }
-      record.status = "not_started";
       record.taskAgentInstance = null;
-      record.queuedAt = null;
+      record.targetAgentRunId = null;
+      record.delegatorReplyRecipientName = null;
+      record.delegatorReplyTargetAgentRunId = null;
       record.updatedAt = now;
       records.push(cloneRecord(record));
     }
     return records;
   }
 
-  updateStatus(input: {
+  submitResult(input: {
     taskId: string;
-    status: TaskDelegationReportedTerminalStatus;
-    message?: string | null;
-    referenceFiles?: string[];
-  }): TaskDelegationRecord {
+    taskAgentRunId: string;
+    message: string;
+    referenceFiles: string[];
+  }): TaskResultSubmissionTransition {
     const record = this.recordsById.get(input.taskId);
     if (!record) {
       throw new TaskDelegationError(
@@ -179,33 +236,47 @@ export class TaskDelegationLedger {
         `Delegated task '${input.taskId}' was not found.`,
       );
     }
-    if (isTaskDelegationTerminalStatus(record.status)) {
+    if (record.status !== "active") {
       throw new TaskDelegationError(
-        "TASK_ALREADY_TERMINAL",
-        `Delegated task '${input.taskId}' is already ${record.status}.`,
+        "TASK_NOT_ACTIVE_FOR_RESULT",
+        `Delegated task '${input.taskId}' is ${record.status}, not active for result submission.`,
       );
     }
-    const nextStatus = input.status === "completed" ? "awaiting_acceptance" : input.status;
-    this.assertValidStatusTransition(record, nextStatus);
+    if (record.taskAgentInstance?.taskAgentRunId !== input.taskAgentRunId.trim()) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_NOT_AUTHORIZED",
+        `Task-agent run '${input.taskAgentRunId}' is not assigned to delegated task '${input.taskId}'.`,
+      );
+    }
+    const previousStatus = record.status;
     const now = new Date().toISOString();
-    record.status = nextStatus;
+    const sequence = record.resultSubmissions.length + 1;
+    const submission: TaskResultSubmission = {
+      submissionId: `${record.taskId}_submission_${String(sequence).padStart(4, "0")}`,
+      sequence,
+      message: input.message,
+      referenceFiles: [...input.referenceFiles],
+      submittedAt: now,
+      taskAgentRunId: input.taskAgentRunId.trim(),
+    };
+    record.resultSubmissions.push(submission);
+    record.pendingSubmissionId = submission.submissionId;
+    record.status = "awaiting_review";
     record.updatedAt = now;
-    if (input.referenceFiles?.length) {
-      record.statusReferenceFiles.push(...input.referenceFiles);
-    }
-    if (input.message !== undefined) {
-      record.statusMessage = input.message?.trim() || null;
-    }
-    if (isTaskDelegationTerminalStatus(nextStatus)) {
-      record.terminalAt = now;
-    }
-    return cloneRecord(record);
+    return {
+      previousStatus,
+      record: cloneRecord(record),
+      submission: { ...submission, referenceFiles: [...submission.referenceFiles] },
+    };
   }
 
-  acceptTask(input: {
+  reviewResult(input: {
     taskId: string;
-    message?: string | null;
-  }): TaskDelegationRecord {
+    decision: TaskResultReviewDecision;
+    message: string | null;
+    referenceFiles: string[];
+    reviewer: TaskDelegationDelegatorIdentity;
+  }): TaskResultReviewTransition {
     const record = this.recordsById.get(input.taskId);
     if (!record) {
       throw new TaskDelegationError(
@@ -213,19 +284,57 @@ export class TaskDelegationLedger {
         `Delegated task '${input.taskId}' was not found.`,
       );
     }
-    if (record.status !== "awaiting_acceptance") {
+    if (record.status !== "awaiting_review") {
       throw new TaskDelegationError(
-        "TASK_NOT_AWAITING_ACCEPTANCE",
-        `Delegated task '${input.taskId}' is ${record.status}, not awaiting acceptance.`,
+        "TASK_NOT_AWAITING_REVIEW",
+        `Delegated task '${input.taskId}' is ${record.status}, not awaiting_review.`,
       );
     }
+    const pendingSubmissionId = record.pendingSubmissionId;
+    if (!pendingSubmissionId) {
+      throw new TaskDelegationError(
+        "PENDING_SUBMISSION_REQUIRED",
+        `Delegated task '${input.taskId}' is awaiting review without a pending submission.`,
+      );
+    }
+    if (!record.resultSubmissions.some((submission) => submission.submissionId === pendingSubmissionId)) {
+      throw new TaskDelegationError(
+        "PENDING_SUBMISSION_NOT_FOUND",
+        `Pending submission '${pendingSubmissionId}' for delegated task '${input.taskId}' was not found.`,
+      );
+    }
+    const previousStatus = record.status;
     const now = new Date().toISOString();
-    record.status = "accepted";
-    record.acceptedAt = now;
-    record.terminalAt = now;
+    const sequence = record.resultReviews.length + 1;
+    const review: TaskResultReview = {
+      reviewId: `${record.taskId}_review_${String(sequence).padStart(4, "0")}`,
+      reviewedSubmissionId: pendingSubmissionId,
+      decision: input.decision,
+      message: input.message,
+      referenceFiles: [...input.referenceFiles],
+      reviewer: cloneDelegatorIdentity(input.reviewer),
+      reviewedAt: now,
+    };
+    record.resultReviews.push(review);
+    record.pendingSubmissionId = null;
     record.updatedAt = now;
-    record.acceptanceMessage = input.message?.trim() || null;
-    return cloneRecord(record);
+    if (input.decision === "request_revision") {
+      record.status = "active";
+    } else {
+      record.status = "accepted";
+      record.acceptanceMessage = input.message;
+      record.acceptedAt = now;
+      record.terminalAt = now;
+    }
+    return {
+      previousStatus,
+      record: cloneRecord(record),
+      review: {
+        ...review,
+        referenceFiles: [...review.referenceFiles],
+        reviewer: cloneDelegatorIdentity(review.reviewer),
+      },
+    };
   }
 
   hasCurrentWorkForAssignee(memberRouteKey: string): boolean {
@@ -233,26 +342,28 @@ export class TaskDelegationLedger {
     if (!normalizedRouteKey) {
       return false;
     }
-    const records = [...this.recordsById.values()].filter(
-      (record) => record.member.memberRouteKey === normalizedRouteKey,
+    return [...this.recordsById.values()].some(
+      (record) =>
+        record.member.memberRouteKey === normalizedRouteKey &&
+        !isTaskDelegationTerminalStatus(record.status),
     );
-    if (records.some((record) => record.status === "queued")) {
-      return true;
-    }
-    return records.some((record) => record.status === "not_started");
   }
 
   hasCurrentWorkForTaskAgentInstance(taskAgentRunId: string): boolean {
+    return this.hasOpenWorkBlockingTaskAgentSettlement(taskAgentRunId);
+  }
+
+  hasOpenWorkBlockingTaskAgentSettlement(taskAgentRunId: string): boolean {
     const normalizedRunId = taskAgentRunId.trim();
     if (!normalizedRunId) {
       return false;
     }
     return [...this.recordsById.values()].some(
       (record) =>
-        record.taskAgentInstance?.taskAgentRunId === normalizedRunId &&
+        !isTaskDelegationTerminalStatus(record.status) &&
         (
-          record.status === "queued" ||
-          record.status === "awaiting_acceptance"
+          record.taskAgentInstance?.taskAgentRunId === normalizedRunId ||
+          record.delegator.taskAgentRunId === normalizedRunId
         ),
     );
   }
@@ -260,27 +371,5 @@ export class TaskDelegationLedger {
   private nextTaskId(): string {
     this.idCounter += 1;
     return `task_${String(this.idCounter).padStart(4, "0")}`;
-  }
-
-  private assertValidStatusTransition(
-    record: TaskDelegationRecord,
-    nextStatus: Exclude<TaskDelegationStatus, "not_started" | "queued">,
-  ): void {
-    if (record.status === "not_started") {
-      throw new TaskDelegationError(
-        "INVALID_STATUS_TRANSITION",
-        `Delegated task '${record.taskId}' has not been activated and cannot be updated to ${nextStatus}.`,
-      );
-    }
-    if (
-      record.status === "queued" ||
-      record.status === "awaiting_acceptance"
-    ) {
-      return;
-    }
-    throw new TaskDelegationError(
-      "INVALID_STATUS_TRANSITION",
-      `Delegated task '${record.taskId}' cannot transition from ${record.status} to ${nextStatus}.`,
-    );
   }
 }

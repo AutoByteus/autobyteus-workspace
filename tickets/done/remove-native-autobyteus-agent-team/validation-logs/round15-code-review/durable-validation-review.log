@@ -1,0 +1,153 @@
+# Round 15 post-validation durable-validation code review checks
+# 2026-06-08T12:45:20Z
+
+## git diff --check
+
+## Updated durable validation structure scan
+115:    type: input.approved ? "APPROVE_TOOL" : "DENY_TOOL",
+138:      message.type === "TOOL_APPROVAL_REQUESTED" &&
+180:const settleUnpromptedCoordinatorToolRequest = async (
+198:        message.type === "TOOL_APPROVAL_REQUESTED" &&
+242:const waitForSettledTaskAgentSnapshot = async (input: {
+283:    const value = (task as Record<string, unknown>).targetAgentRunId ?? (task as Record<string, unknown>).target_agent_run_id;
+293:  throw new Error(`Activation payload did not include target_agent_run_id: ${JSON.stringify(message.payload)}`);
+413:      toolNames: ["delegate_tasks", "send_message_to", "accept_task"],
+414:      instructions: `If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. If the user asks you to call send_message_to with exact JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool. If the user asks you to call accept_task with exact JSON arguments, call accept_task exactly once with those exact arguments and do not call any other tool. Do not automatically accept framework task completion notifications; wait for an explicit user instruction with exact JSON arguments. Do not explore the environment.`,
+419:      toolNames: ["send_message_to"],
+420:      instructions: `When you receive the initial delegated task work packet, immediately call send_message_to exactly once with recipient_name="coordinator", content="${completionToken}", message_type="task_completion_report", and reference_files=[]. If you later receive a revision request containing "${revisionToken}", call send_message_to exactly once with recipient_name="coordinator", content="${revisionToken}", message_type="task_completion_report", and reference_files=[]. Do not run shell commands or create files.`,
+428:        instructions: "The coordinator delegates one task; the worker reports completion through send_message_to.",
+446:          autoExecuteTools: false,
+452:            tool_choice: "required",
+475:          description: `Complete this delegated validation task by reporting message ${completionToken}. Done condition: call send_message_to once with recipient_name="coordinator", content="${completionToken}", message_type="task_completion_report", and reference_files=[].`,
+484:        content: `Call delegate_tasks exactly once now with these exact JSON arguments: ${JSON.stringify(delegateArgs)}. Do not call any other tool.`,
+489:        toolName: "delegate_tasks",
+492:        label: "coordinator delegate_tasks",
+496:        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "delegate_tasks",
+497:        "coordinator delegate_tasks success", 240_000,
+506:        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "send_message_to",
+507:        "worker send_message_to completion success", 240_000,
+514:        }) && message.payload.messageType === "task_completion_report",
+518:      await settleUnpromptedCoordinatorToolRequest(
+529:        content: `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify({
+530:          target_agent_run_id: taskAgentRunId,
+532:          message_type: "task_revision_feedback",
+538:        toolName: "send_message_to",
+541:        label: "coordinator send_message_to revision feedback",
+545:        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "send_message_to",
+546:        "coordinator send_message_to revision feedback success", 240_000,
+554:          message.payload.messageType === "task_revision_feedback" &&
+555:          message.payload.receiverRunId === taskAgentRunId,
+559:        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "send_message_to",
+560:        "worker revised send_message_to success", 240_000,
+567:        }) && message.payload.messageType === "task_completion_report",
+571:      await settleUnpromptedCoordinatorToolRequest(
+581:        content: `Call accept_task exactly once now with these exact JSON arguments: ${JSON.stringify({ task_id: taskId })}. Do not call any other tool.`,
+585:        toolName: "accept_task",
+588:        label: "coordinator accept_task",
+592:        message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "accept_task",
+593:        "coordinator accept_task success", 240_000,
+602:      await waitForSettledTaskAgentSnapshot({
+
+## Round 13 runtime-policy forbidden scan in updated durable validation
+No Round 13 runtime-policy symbols found in updated durable validation.
+
+## Removed result-tool/dynamic-alias scan in updated durable validation
+No removed result-tool/dynamic-alias remnants found in updated durable validation.
+
+## Skipped/no-live parse check for updated E2E file
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:44713) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test | 1 skipped)
+
+ Test Files  1 skipped (1)
+      Tests  1 skipped (1)
+   Start at  14:45:20
+   Duration  5.12s (transform 3.01s, setup 18ms, import 4.62s, tests 0ms, environment 0ms)
+
+
+## Server TypeScript check
+
+## Reviewer classification notes
+- Updated durable validation uses WebSocket approval/denial as test harness control for an AutoByteus coordinator with autoExecuteTools=false; this is not provider/runtime tool_choice dampening and does not alter production code.
+- The retained llmConfig tool_choice="required" is validation configuration/prompt setup allowed by Round 14, not task-specific framework policy.
+- The E2E now verifies the intended invariant path: delegate_tasks activation returns target_agent_run_id, task-agent reports via send_message_to, coordinator sends revision to exact task-agent run before accept_task, worker sends revised report, then coordinator accept_task(task_id) settles.
+- Live evidence reviewed: focused mixed task delegation pass and final 6-file/18-test real runtime matrix pass.

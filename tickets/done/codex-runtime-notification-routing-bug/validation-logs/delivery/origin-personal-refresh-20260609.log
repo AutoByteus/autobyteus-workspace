@@ -1,0 +1,133 @@
+# Renewed origin/personal integration for user retest
+Date: 2026-06-09
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+Branch before merge: codex/mixed-team-manager-simplification-analysis
+HEAD before merge: 244392836936c44e9a0fe6670a849a8b8e65bbce
+origin/personal before merge: 36b2dbd6d5bfba4634db19d7fbb7e60df27487ec
+Ahead/behind before merge: 11	5
+
+## Command: git merge --no-edit origin/personal
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |    9 +-
+ .github/workflows/release-ios.yml                  |   65 +
+ README.md                                          |    2 +
+ autobyteus-ios/README.md                           |    3 +
+ .../scripts/ios-release-contract-check.py          |   42 +
+ autobyteus-message-gateway/package.json            |    2 +-
+ .../messaging-gateway/release-manifest.json        |   10 +-
+ autobyteus-web/package.json                        |    2 +-
+ .../api-e2e-validation-report.md                   |  419 +++
+ .../artifact-hygiene-finalization.log              |   20 +
+ .../code-review-report.md                          |  179 ++
+ .../delivery-checks.log                            |    3 +
+ .../design-review-report.md                        |  173 +
+ .../design-spec.md                                 |  274 ++
+ .../docs-sync-report.md                            |   60 +
+ .../finalization-checks.log                        |    8 +
+ .../handoff-summary.md                             |   98 +
+ .../implementation-handoff.md                      |  107 +
+ .../investigation-notes.md                         |  154 +
+ .../local-signing-readiness.run.log                |   70 +
+ .../ios-signing-readiness.json                     |  169 +
+ .../ios-signing-readiness.txt                      |   69 +
+ .../logs/job-79891878582.log                       | 1730 ++++++++++
+ .../logs/job-79899572406.log                       | 1722 ++++++++++
+ .../logs/job-79901949004-validate-secrets.log      |  528 +++
+ .../logs/job-79901963167.log                       | 1728 ++++++++++
+ .../logs/job-80027498663-rerun-attempt2.log        | 1775 ++++++++++
+ .../release-deployment-report.md                   |  135 +
+ .../release-notes.md                               |    5 +
+ .../requirements.md                                |   92 +
+ .../staged-artifact-audit.log                      |   13 +
+ .../validation-evidence/cleanup.log                |   17 +
+ .../local-fix-validation-commands.log              |   28 +
+ .../local-fix-workflow-step-simulation.log         |   42 +
+ .../local-ios-build/xcodebuild-core-tests.log      |  754 +++++
+ .../local-ios-build/xcodebuild-simulator-build.log | 1116 +++++++
+ .../local-ios-smoke/fake-mobile-server.log         |    5 +
+ .../local-ios-smoke/signing-readiness.log          |   70 +
+ .../signing-readiness/ios-signing-readiness.json   |  169 +
+ .../signing-readiness/ios-signing-readiness.txt    |   69 +
+ .../local-ios-smoke/summary.txt                    |   11 +
+ .../local-ios-smoke/xcodebuild-test.log            | 1457 +++++++++
+ .../local-ios-xcode26-build-test.log               | 1897 +++++++++++
+ .../local-ios-xcode26-smoke.log                    | 1600 +++++++++
+ .../local-validation-commands.log                  |   35 +
+ ...ld-only-local-fix-run-27124999071.build-job.log | 3222 +++++++++++++++++++
+ ...remote-build-only-local-fix-run-27124999071.log |   57 +
+ ...ild-only-local-fix-run-27124999071.summary.json |    1 +
+ .../remote-build-only-local-fix-trigger.log        |   13 +
+ .../remote-build-only-run-27124218560.log          |   51 +
+ .../remote-build-only-trigger.log                  |   11 +
+ ...-publish-run-27126365043.archive-upload-job.log | 2060 ++++++++++++
+ .../remote-publish-run-27126365043.assertions.txt  |   10 +
+ .../remote-publish-run-27126365043.build-job.log   | 3388 ++++++++++++++++++++
+ .../remote-publish-run-27126365043.log             |    7 +
+ ...remote-publish-run-27126365043.metadata-job.log |  653 ++++
+ .../remote-publish-run-27126365043.secrets-job.log |  516 +++
+ .../remote-publish-run-27126365043.summary.json    |    1 +
+ .../validation-evidence/remote-publish-trigger.log |   17 +
+ .../remote-readiness-readonly.log                  |   21 +
+ .../workflow-xcode-step-simulation.log             |   41 +
+ 61 files changed, 26993 insertions(+), 12 deletions(-)
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/api-e2e-validation-report.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/artifact-hygiene-finalization.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/code-review-report.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/delivery-checks.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/design-review-report.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/design-spec.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/docs-sync-report.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/finalization-checks.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/handoff-summary.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/implementation-handoff.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/investigation-notes.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/local-signing-readiness.run.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/local-signing-readiness/ios-signing-readiness.json
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/local-signing-readiness/ios-signing-readiness.txt
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/logs/job-79891878582.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/logs/job-79899572406.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/logs/job-79901949004-validate-secrets.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/logs/job-79901963167.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/logs/job-80027498663-rerun-attempt2.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/release-deployment-report.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/release-notes.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/requirements.md
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/staged-artifact-audit.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/cleanup.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-fix-validation-commands.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-fix-workflow-step-simulation.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-build/xcodebuild-core-tests.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-build/xcodebuild-simulator-build.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/fake-mobile-server.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/signing-readiness.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/signing-readiness/ios-signing-readiness.json
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/signing-readiness/ios-signing-readiness.txt
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/summary.txt
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-smoke/xcodebuild-test.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-xcode26-build-test.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-ios-xcode26-smoke.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/local-validation-commands.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-local-fix-run-27124999071.build-job.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-local-fix-run-27124999071.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-local-fix-run-27124999071.summary.json
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-local-fix-trigger.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-run-27124218560.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-build-only-trigger.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.archive-upload-job.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.assertions.txt
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.build-job.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.metadata-job.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.secrets-job.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-run-27126365043.summary.json
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-publish-trigger.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/remote-readiness-readonly.log
+ create mode 100644 tickets/done/investigate-ios-build-pipeline-failure/validation-evidence/workflow-xcode-step-simulation.log
+merge: PASS
+
+HEAD after merge: d8021fef641a1402867ac162d95ac074a83a1c29
+Ahead/behind after merge: 12	0
+
+## Status after merge
+## codex/mixed-team-manager-simplification-analysis...origin/codex/mixed-team-manager-simplification-analysis [ahead 7]
+?? tickets/codex-runtime-notification-routing-bug/

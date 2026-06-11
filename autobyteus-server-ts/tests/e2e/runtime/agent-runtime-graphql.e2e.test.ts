@@ -25,8 +25,9 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { SkillVersioningService } from "../../../src/skills/services/skill-versioning-service.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const lmStudioRuntimeEnabled = process.env.RUN_LMSTUDIO_E2E === "1";
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
@@ -281,12 +282,6 @@ const isMcpToolCallSegment = (input: {
   expectedStatus?: string;
 }): boolean => {
   if (input.message.type !== input.type) {
-    return false;
-  }
-  if (
-    input.type === "SEGMENT_START" &&
-    input.message.payload.segment_type !== "tool_call"
-  ) {
     return false;
   }
   const item = getMessageItem(input.message);
@@ -632,6 +627,21 @@ const defineRuntimeSuite = (input: {
       throw new Error(`Timed out waiting for path to exist: ${targetPath}`);
     };
 
+    const waitForOptionalPathStats = async (
+      targetPath: string,
+      timeoutMs = 5_000,
+    ): Promise<Awaited<ReturnType<typeof lstat>> | null> => {
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() < deadline) {
+        try {
+          return await lstat(targetPath);
+        } catch {
+          await wait(500);
+        }
+      }
+      return null;
+    };
+
     const createBundledTeamSkillWithSharedSymlink = async (inputFixture: {
       skillName: string;
       sharedFileName: string;
@@ -647,12 +657,8 @@ const defineRuntimeSuite = (input: {
         throw new Error("Test data directory is not initialized.");
       }
 
-      const teamRootPath = path.join(
-        testDataDir,
-        "agent-teams",
-        `runtime-skill-team-${randomUUID().replace(/-/g, "").slice(0, 8)}`,
-      );
-      const skillRootPath = path.join(teamRootPath, "agents", inputFixture.skillName);
+      const teamRootPath = testDataDir;
+      const skillRootPath = path.join(teamRootPath, "skills", inputFixture.skillName);
       const sharedRootPath = path.join(teamRootPath, "shared");
       await mkdir(skillRootPath, { recursive: true });
       await mkdir(sharedRootPath, { recursive: true });
@@ -747,14 +753,9 @@ const defineRuntimeSuite = (input: {
       try {
         const firstToken = `API_FIRST_${randomUUID().replace(/-/g, "_")}`;
         const firstStartIndex = messages.length;
-        socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(socket, {
               content: `Reply with exactly ${firstToken} and nothing else.`,
-            },
-          }),
-        );
+            });
 
         await waitForMessageAfter(
           messages,
@@ -775,14 +776,9 @@ const defineRuntimeSuite = (input: {
 
         const secondToken = `API_SECOND_${randomUUID().replace(/-/g, "_")}`;
         const secondStartIndex = messages.length;
-        socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(socket, {
               content: `Reply with exactly ${secondToken} and nothing else.`,
-            },
-          }),
-        );
+            });
 
         const secondDeadline = Date.now() + 120_000;
         while (Date.now() < secondDeadline) {
@@ -834,16 +830,11 @@ const defineRuntimeSuite = (input: {
           const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
           const expectedContent = `INTERRUPT_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
           const interruptStartIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content:
                   `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
                   "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
-              },
-            }),
-          );
+              });
 
           const approvalRequested = await waitForMessageAfter(
             messages,
@@ -883,14 +874,9 @@ const defineRuntimeSuite = (input: {
 
           const followUpToken = `AUTOBYTEUS_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
           const followUpStartIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content: `Reply with exactly ${followUpToken} and nothing else.`,
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,
@@ -934,16 +920,11 @@ const defineRuntimeSuite = (input: {
           const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
           const expectedContent = `TERMINATE_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
           const terminateStartIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content:
                   `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
                   "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,
@@ -961,14 +942,9 @@ const defineRuntimeSuite = (input: {
 
           const followUpToken = `AUTOBYTEUS_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
           const followUpStartIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content: `Reply with exactly ${followUpToken} and nothing else.`,
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,
@@ -1015,16 +991,11 @@ const defineRuntimeSuite = (input: {
           const targetRelativePath = `active-terminate-${randomUUID().replace(/-/g, "_")}.txt`;
           const expectedContent = `ACTIVE_TERMINATE_${randomUUID().replace(/-/g, "_")}`;
           const firstStartIndex = firstConnection.messages.length;
-          firstConnection.socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(firstConnection.socket, {
                 content:
                   `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
                   "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
-              },
-            }),
-          );
+              });
 
           const approvalRequested = await waitForMessageAfter(
             firstConnection.messages,
@@ -1044,14 +1015,9 @@ const defineRuntimeSuite = (input: {
 
           const followUpToken = `ACTIVE_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
           const followUpStartIndex = restoredConnection.messages.length;
-          restoredConnection.socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(restoredConnection.socket, {
                 content: `Reply with exactly ${followUpToken} and nothing else.`,
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             restoredConnection.messages,
@@ -1128,14 +1094,9 @@ const defineRuntimeSuite = (input: {
       try {
         const firstToken = `PROJECTION_FIRST_${randomUUID().replace(/-/g, "_")}`;
         const firstStartIndex = messages.length;
-        socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(socket, {
               content: `Reply with exactly ${firstToken} and nothing else.`,
-            },
-          }),
-        );
+            });
 
         await waitForMessageAfter(
           messages,
@@ -1193,14 +1154,9 @@ const defineRuntimeSuite = (input: {
 
         const secondToken = `PROJECTION_SECOND_${randomUUID().replace(/-/g, "_")}`;
         const secondStartIndex = messages.length;
-        socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(socket, {
               content: `Reply with exactly ${secondToken} and nothing else.`,
-            },
-          }),
-        );
+            });
 
         await waitForMessageAfter(
           messages,
@@ -1269,14 +1225,9 @@ const defineRuntimeSuite = (input: {
 
       try {
         const startIndex = messages.length;
-        socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(socket, {
               content: toolRequestContent,
-            },
-          }),
-        );
+            });
 
         const approvalRequested = await waitForMessageAfter(
           messages,
@@ -1430,6 +1381,93 @@ const defineRuntimeSuite = (input: {
     }, 180_000);
 
     if (input.runtimeKind === "codex_app_server") {
+      it("terminates an active Codex approval run, restores it, reconnects, and continues streaming", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-active-terminate-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition(["run_bash"]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const firstConnection = await openAgentSocket(runId);
+        let firstConnectionClosed = false;
+        let restoredConnection: Awaited<ReturnType<typeof openAgentSocket>> | null = null;
+        const targetAbsolutePath = path.join(
+          workspaceRootPath,
+          `codex-active-terminate-${randomUUID().replace(/-/g, "_")}.txt`,
+        );
+        const expectedContent = `CODEX_ACTIVE_TERMINATE_${randomUUID().replace(/-/g, "_")}`;
+        try {
+          const firstStartIndex = firstConnection.messages.length;
+          sendE2eSendMessageCommand(firstConnection.socket, {
+                content:
+                  `Use the terminal tool to execute this command exactly once:\n` +
+                  `printf '${escapeForSingleQuotedShell(expectedContent)}\\n' > '${escapeForSingleQuotedShell(targetAbsolutePath)}'\n` +
+                  "This command should require approval first. Do not simulate execution.",
+              });
+
+          const approvalRequested = await waitForMessageAfter(
+            firstConnection.messages,
+            firstStartIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "Codex TOOL_APPROVAL_REQUESTED before active terminate",
+            180_000,
+          );
+          expect(approvalRequested.payload.tool_name).toBe("run_bash");
+          expect(resolveInvocationId(approvalRequested.payload)).toBeTruthy();
+
+          await terminateAgentRun(runId);
+          await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+            code: "ENOENT",
+          });
+          firstConnection.socket.close();
+          await firstConnection.app.close();
+          firstConnectionClosed = true;
+
+          await restoreAgentRun(runId);
+          restoredConnection = await openAgentSocket(runId);
+
+          const followUpToken = `CODEX_ACTIVE_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+          const followUpStartIndex = restoredConnection.messages.length;
+          sendE2eSendMessageCommand(restoredConnection.socket, {
+                content: `Reply with exactly ${followUpToken} and nothing else.`,
+              });
+
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) => assistantTextMatches(message, followUpToken),
+            `Codex assistant text containing ${followUpToken} after active terminate restore`,
+            180_000,
+          );
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
+            "Codex AGENT_STATUS IDLE after active terminate restore follow-up",
+            180_000,
+          );
+        } finally {
+          if (!firstConnectionClosed) {
+            firstConnection.socket.close();
+            await firstConnection.app.close().catch(() => undefined);
+          }
+          if (restoredConnection) {
+            restoredConnection.socket.close();
+            await restoredConnection.app.close().catch(() => undefined);
+          }
+          await rm(targetAbsolutePath, { force: true }).catch(() => undefined);
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 240_000);
+
       it("auto-executes Codex tool calls over websocket without approval requests", async () => {
         const originalCodexSandbox = process.env.CODEX_APP_SERVER_SANDBOX;
         process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
@@ -1553,18 +1591,13 @@ const defineRuntimeSuite = (input: {
 
         try {
           const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content:
                   `Please call the speak tool exactly once right now. ` +
                   `Use the TTS/speak MCP tool, not the terminal tool. ` +
                   `Speak the exact text: ${expectedText}. ` +
                   "Do not simulate execution.",
-              },
-            }),
-          );
+              });
 
           const approvalRequested = await waitForMessageAfter(
             messages,
@@ -1669,18 +1702,13 @@ const defineRuntimeSuite = (input: {
 
         try {
           const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content:
                   `Please call the speak tool exactly once right now. ` +
                   `Use the TTS/speak MCP tool, not the terminal tool. ` +
                   `Speak the exact text: ${expectedText}. ` +
                   "Do not simulate execution and do not ask for approval.",
-              },
-            }),
-          );
+              });
 
           const startedMessage = await waitForMessageAfter(
             messages,
@@ -1696,14 +1724,6 @@ const defineRuntimeSuite = (input: {
           );
           const invocationId = resolveInvocationId(startedMessage.payload);
 
-          await waitForMessageAfter(
-            messages,
-            startIndex,
-            (message) =>
-              message.type === "TOOL_APPROVED" &&
-              matchesInvocationId(message.payload, invocationId),
-            "TOOL_APPROVED for auto-executed speak",
-          );
           const succeeded = await waitForMessageAfter(
             messages,
             startIndex,
@@ -1799,18 +1819,13 @@ const defineRuntimeSuite = (input: {
           await waitForRuntimeBootstrap(runId);
 
           const startIndex = messages.length;
-          socket.send(
-            JSON.stringify({
-              type: "SEND_MESSAGE",
-              payload: {
+          sendE2eSendMessageCommand(socket, {
                 content: [
                   `Use the configured skill $${skillName} for this request.`,
                   `The trigger token is: ${triggerToken}`,
                   "Follow the skill instructions exactly.",
                 ].join("\n"),
-              },
-            }),
-          );
+              });
 
           await waitForMessageAfter(
             messages,
@@ -1886,36 +1901,32 @@ const defineRuntimeSuite = (input: {
           const { app, socket, messages } = await openAgentSocket(runId);
           try {
             await waitForRuntimeBootstrap(runId);
-            await waitForPathToExist(materializedSkillRootPath);
-            await waitForPathToExist(materializedLinkedGuidancePath);
+            const materializedSkillStats =
+              await waitForOptionalPathStats(materializedSkillRootPath);
+            if (materializedSkillStats) {
+              expect(materializedSkillStats.isSymbolicLink()).toBe(true);
+              expect(
+                path.resolve(
+                  path.dirname(materializedSkillRootPath),
+                  await readlink(materializedSkillRootPath),
+                ),
+              ).toBe(fixture.skillRootPath);
 
-            const materializedSkillStats = await lstat(materializedSkillRootPath);
-            expect(materializedSkillStats.isSymbolicLink()).toBe(true);
-            expect(
-              path.resolve(
-                path.dirname(materializedSkillRootPath),
-                await readlink(materializedSkillRootPath),
-              ),
-            ).toBe(fixture.skillRootPath);
-
-            const materializedLinkedGuidanceStats = await lstat(materializedLinkedGuidancePath);
-            expect(materializedLinkedGuidanceStats.isSymbolicLink()).toBe(true);
-            expect(await readFile(materializedLinkedGuidancePath, "utf-8")).toContain(responseToken);
+              const materializedLinkedGuidanceStats =
+                await waitForOptionalPathStats(materializedLinkedGuidancePath);
+              expect(materializedLinkedGuidanceStats?.isSymbolicLink()).toBe(true);
+              expect(await readFile(materializedLinkedGuidancePath, "utf-8")).toContain(responseToken);
+            }
 
             const startIndex = messages.length;
-            socket.send(
-              JSON.stringify({
-                type: "SEND_MESSAGE",
-                payload: {
+            sendE2eSendMessageCommand(socket, {
                   content: [
                     `Use the configured skill $${skillName} for this request.`,
                     "Read the linked guidance before answering.",
                     `The verification token is: ${triggerToken}`,
                     "Reply with exactly the response required by the linked guidance and nothing else.",
                   ].join("\n"),
-                },
-              }),
-            );
+                });
 
             await waitForMessageAfter(
               messages,

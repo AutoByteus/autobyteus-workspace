@@ -105,13 +105,14 @@ export class CodexAppServerClientManager {
 
   private getOrCreateEntry(cwd: string): ClientEntry {
     const key = this.normalizeClientKey(cwd);
+    const normalizedCwd = this.normalizeCwd(cwd);
     const existing = this.entries.get(key);
     if (existing) {
       return existing;
     }
     const entry: ClientEntry = {
       key,
-      cwd: key,
+      cwd: normalizedCwd,
       client: null,
       startPromise: null,
       refCount: 0,
@@ -120,9 +121,13 @@ export class CodexAppServerClientManager {
     return entry;
   }
 
-  private normalizeClientKey(cwd: string): string {
+  private normalizeCwd(cwd: string): string {
     const normalized = typeof cwd === "string" && cwd.trim().length > 0 ? cwd.trim() : process.cwd();
     return path.resolve(normalized);
+  }
+
+  private normalizeClientKey(cwd: string): string {
+    return this.normalizeCwd(cwd);
   }
 
   private async ensureStarted(entry: ClientEntry): Promise<CodexAppServerClient> {

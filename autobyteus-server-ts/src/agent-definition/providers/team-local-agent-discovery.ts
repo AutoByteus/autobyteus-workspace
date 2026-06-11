@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { buildTeamLocalAgentDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
 import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
 import {
   getCanonicalTeamDefinitionIdFromSourcePaths,

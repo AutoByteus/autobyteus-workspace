@@ -1,0 +1,95 @@
+# Round 7 Focused API/E2E Failure Summary
+
+## Summary
+
+Started: 2026-06-08T13:54:10+0200
+Runtimes: LM Studio qwen3.6-35b-a3b + Codex live
+Command: RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_MIXED_TASK_DELEGATION_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b AUTOBYTEUS_STREAM_PARSER=api_tool_call CODEX_APP_SERVER_APPROVAL_POLICY=untrusted pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --pool=forks --fileParallelism=false
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test | 1 failed) 179925ms
+     × AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run 179836ms
+ FAIL  tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ ❯ waitForMessageAfter tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:83:9
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:393:7
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  13:54:10
+   Duration  184.44s (transform 2.64s, setup 15ms, import 4.11s, tests 179.92s, environment 0ms)
+Completed: 2026-06-08T13:57:14+0200
+Exit status: 1
+
+## Classification
+
+- Classification: Local Fix Required / framework invariant violation.
+- Round 14 classification guidance says a framework defect includes active task-agent exact-run unreachable before valid `accept_task` or team termination.
+- The test failed before issuing the explicit `accept_task` instruction. The log contains no non-prompt `accept_task` execution evidence; `accept_task` appears only in tool registration/system prompt/protocol text.
+- The initial Codex task-agent completion projection was inserted, proving the task-agent run existed and messaged the coordinator.
+- The next coordinator `send_message_to` to that exact `target_agent_run_id` did not produce a projection; the websocket preview says the target was non-existent/no longer reachable and the task was already accepted/settled, contradicting the test flow and accepted lifecycle invariant.
+
+## Key evidence
+
+### Task-agent run creation
+
+```text
+inition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Successfully created codex_app_server agent run 'team_mixed-task-delegation-team-27079efc-e254_9c42970e__worker__task_0001'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: ff38616e-1d8c-47cc-80db-b4d39d863cb5, AgentID: coordinator_aaf362f263537c46) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: ff38616e-1d8c-47cc-80db-b4d39d863cb5, AgentID: coordinator_aaf362f263537c46) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: ff38616e-1d8c-47cc-80db-b4d39d863cb5, AgentID: coo
+```
+
+### Initial completion projection
+
+```text
+s coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: ff38616e-1d8c-47cc-80db-b4d39d863cb5, AgentID: coordinator_aaf362f263537c46) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+[team-communication] projection inserted teamRunId=team_mixed-task-delegation-team-27079efc-e254_9c42970e messageId=teammsg_UgEHgeENVpGvgBAof2n303o_uVBWH_3T senderRunId=team_mixed-task-delegation-team-27079efc-e254_9c42970e__worker__task_0001 receiverRunId=coordinator_aaf362f263537c46 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-1bnYdd/memory/agent_teams/team_mixed-task-delegation-team-27079efc-e254_9c42970e/team_communication_messages.json
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_aaf362f263537c46',
+  prompt_tokens: 2697,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+AgentExternalEventNotifier (NotifierID: ff38616e-1d8c-47cc-80db-b4d39d863cb5, AgentID: coordinator_aaf362f263537c46) emitted agent_status. Kwarg keys for emit: a
+```
+
+### Failure preview
+
+```text
+on feedback to the concrete Codex task-agent run
+Agent Definition with ID mixed-task-worker-27079efc-e254-439d-b60b-920d6b2ee926 deleted successfully.
+
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test | 1 failed) 179925ms
+     × AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run 179836ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and sends revision feedback to the concrete Codex task-agent run
+Error: Timed out waiting for team websocket message 'Team Communication revision feedback to concrete task-agent run'. preview='SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" no","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" revision","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" feedback","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" could","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator", | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" be","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" sent","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator"," | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" to","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","me | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" a","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","mem | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" non","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","m | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":"-existent","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" target","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator" | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":".","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","memb | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" The","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","m | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" delegation","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordina | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" workflow","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinato | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" for","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator","m | SEGMENT_CONTENT:{"id":"turn_396736c1116f409882f40abc19d42fa7:bc7d63de59334cb882c924ca3a2e3a85","delta":" this","turn_id":"turn_0003","agent_name":"coordinator","agent_id":"coordinator_aaf362f263537c46","member_route_key":"coordinator"," | SEGMENT_CONTENT:
+```

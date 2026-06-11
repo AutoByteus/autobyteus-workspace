@@ -91,10 +91,6 @@ export class TaskDelegationInputResolver {
     return normalized.length > 0 ? normalized : null;
   }
 
-  normalizeRequiredResultMessage(message: string, fieldName = "message"): string {
-    return normalizeRequiredTaskDelegationString(message, fieldName);
-  }
-
   normalizeReferenceFiles(referenceFiles: readonly string[] | undefined): string[] {
     return (referenceFiles ?? []).map((referenceFile) =>
       normalizeRequiredTaskDelegationString(referenceFile, "reference_files item"),
@@ -157,7 +153,6 @@ export class TaskDelegationInputResolver {
 
   private assertTaskAgentCallerShape(caller: TaskDelegationCallerIdentity): void {
     const taskAgentFields = [
-      caller.taskAgentInstanceId?.trim(),
       caller.taskAgentRunId?.trim(),
       caller.taskId?.trim(),
       caller.logicalMemberRouteKey?.trim(),
@@ -165,7 +160,7 @@ export class TaskDelegationInputResolver {
     if (taskAgentFields.some(Boolean) && !taskAgentFields.every(Boolean)) {
       throw new TaskDelegationError(
         "TASK_AGENT_CONTEXT_INCOMPLETE",
-        "Task-agent delegation context requires taskAgentInstanceId, taskAgentRunId, taskId, and logicalMemberRouteKey.",
+        "Task-agent delegation context requires taskAgentRunId, taskId, and logicalMemberRouteKey.",
       );
     }
   }

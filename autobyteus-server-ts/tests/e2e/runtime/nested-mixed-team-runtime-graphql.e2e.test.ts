@@ -17,8 +17,9 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
 const liveNestedMixedTestsEnabled =
@@ -169,18 +170,13 @@ const sendTeamMessageOverSocket = (
     targetMemberPath?: string[] | null;
   },
 ): void => {
-  socket.send(
-    JSON.stringify({
-      type: "SEND_MESSAGE",
-      payload: {
+  sendE2eSendMessageCommand(socket, {
         content: input.content,
         ...(input.targetMemberPath ? { target_member_path: input.targetMemberPath } : {}),
         ...(input.targetMemberRouteKey ? { target_member_route_key: input.targetMemberRouteKey } : {}),
         context_file_paths: [],
         image_urls: [],
-      },
-    }),
-  );
+      });
 };
 
 const findMember = (
@@ -523,7 +519,7 @@ Rules:
             coordinatorMemberName: "program_manager",
             nodes: [
               { memberName: "program_manager", ref: programManagerAgentId, refType: "AGENT", refScope: "SHARED" },
-              { memberName: "BuildSquad", ref: childTeamDefinitionId, refType: "AGENT_TEAM" },
+              { memberName: "BuildSquad", ref: childTeamDefinitionId, refType: "AGENT_TEAM", refScope: "SHARED" },
             ],
           },
         },

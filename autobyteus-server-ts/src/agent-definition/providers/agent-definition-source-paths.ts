@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
-import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { parseTeamLocalDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
 import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
 import { parseCanonicalApplicationOwnedAgentId } from "../../application-bundles/utils/application-bundle-identity.js";
 import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";

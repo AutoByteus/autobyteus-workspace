@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -424,7 +424,7 @@ describe("TeamRunService", () => {
       runId: "team-1",
       config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: "Coordinator",
         memberConfigs: [
           {
@@ -495,7 +495,7 @@ describe("TeamRunService", () => {
       runId: "team-1",
       config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        teamBackendKind: TeamBackendKind.MIXED,
         memberConfigs: [
           {
             memberKind: "agent",

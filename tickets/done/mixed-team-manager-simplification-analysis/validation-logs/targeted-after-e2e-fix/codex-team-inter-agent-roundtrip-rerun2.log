@@ -1,0 +1,476 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:32115) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc/.env
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition created successfully with ID: codex-ping-9bad7b7b-2905-4840-8fe5-7a20a6053c1e
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition created successfully with ID: codex-pong-9bad7b7b-2905-4840-8fe5-7a20a6053c1e
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-06T16:12:08.803Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team Definition created successfully with ID: codex-roundtrip-team-9bad7b7b-2905-4840-8fe5-7a20a6053c1e
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-nGVv7P
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-nGVv7P.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Created and registered workspace ID: agent_ws_ae5b97be1100621534f78132843d8353d8a924d39c3a031847fb790e81aaed49
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-06T16:12:08.809Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-06T16:12:08.833Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created mixed team run 'team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent team websocket attached for team run team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3
+Created agent session 1b1a0232-dafe-477e-9f1a-d496ff40aef9 for run team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3
+Agent Team WebSocket connected: session=1b1a0232-dafe-477e-9f1a-d496ff40aef9, run=team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created codex_app_server agent run 'ping_c9f5a0ca556df561'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[team-communication] projection inserted teamRunId=team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3 messageId=teammsg_a7vPrdfr_CkMLiYjzu17OESm0HTuovZp senderRunId=ping_c9f5a0ca556df561 receiverRunId=pong_7d6a8088b27f9669 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc/memory/agent_teams/team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3/team_communication_messages.json
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created codex_app_server agent run 'pong_7d6a8088b27f9669'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[team-communication] projection inserted teamRunId=team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3 messageId=teammsg_D0EyRQDLlcTXxpNyQyybh8iFZoaypu1r senderRunId=pong_7d6a8088b27f9669 receiverRunId=ping_c9f5a0ca556df561 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc/memory/agent_teams/team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3/team_communication_messages.json
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Closed agent session 1b1a0232-dafe-477e-9f1a-d496ff40aef9
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team WebSocket disconnected: 1b1a0232-dafe-477e-9f1a-d496ff40aef9
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-06T16:12:28.470Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-roundtrip-team-9bad7b7b-2905-4840-8fe5-7a20a6053c1e.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team Definition with ID codex-roundtrip-team-9bad7b7b-2905-4840-8fe5-7a20a6053c1e deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+In-memory cache: Removed agent definition with ID codex-ping-9bad7b7b-2905-4840-8fe5-7a20a6053c1e.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition with ID codex-ping-9bad7b7b-2905-4840-8fe5-7a20a6053c1e deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+In-memory cache: Removed agent definition with ID codex-pong-9bad7b7b-2905-4840-8fe5-7a20a6053c1e.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition with ID codex-pong-9bad7b7b-2905-4840-8fe5-7a20a6053c1e deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+In-memory cache: Added new agent definition with ID codex-parent-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Definition created successfully with ID: codex-parent-88cc7fee-1827-4d82-a625-3d08505110a5
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+In-memory cache: Added new agent definition with ID codex-specialist-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Definition created successfully with ID: codex-specialist-88cc7fee-1827-4d82-a625-3d08505110a5
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[2026-06-06T16:12:28.643Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-subteam-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Team Definition created successfully with ID: codex-subteam-88cc7fee-1827-4d82-a625-3d08505110a5
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[2026-06-06T16:12:28.647Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-nested-root-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Team Definition created successfully with ID: codex-nested-root-88cc7fee-1827-4d82-a625-3d08505110a5
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-nested-e2e-Zrk2ei
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-nested-e2e-Zrk2ei.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Created and registered workspace ID: agent_ws_23189c00580512de75d5b98e2a31ff2e6b5e5ec6b122b00e7d12602c7ffc6ff1
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Successfully created mixed team run 'team_codex-nested-root-88cc7fee-1827-4d82-a62_f372d176'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent team websocket attached for team run team_codex-nested-root-88cc7fee-1827-4d82-a62_f372d176
+Created agent session 86433c68-64f8-439f-803a-2088bdd0c3e9 for run team_codex-nested-root-88cc7fee-1827-4d82-a62_f372d176
+Agent Team WebSocket connected: session=86433c68-64f8-439f-803a-2088bdd0c3e9, run=team_codex-nested-root-88cc7fee-1827-4d82-a62_f372d176
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Successfully created codex_app_server agent run 'parent_60d99390ae4b152e'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[team-communication] projection inserted teamRunId=team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3 messageId=teammsg_NrwYn5e5WUMRBFG9CSBbfL5yNh2FRwOO senderRunId=pong_7d6a8088b27f9669 receiverRunId=ping_c9f5a0ca556df561 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc/memory/agent_teams/team_codex-roundtrip-team-9bad7b7b-2905-4840-_b616bef3/team_communication_messages.json
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Closed agent session 86433c68-64f8-439f-803a-2088bdd0c3e9
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Team WebSocket disconnected: 86433c68-64f8-439f-803a-2088bdd0c3e9
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[2026-06-06T16:14:29.144Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-subteam-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Team Definition with ID codex-subteam-88cc7fee-1827-4d82-a625-3d08505110a5 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[2026-06-06T16:14:29.147Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-nested-root-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Team Definition with ID codex-nested-root-88cc7fee-1827-4d82-a625-3d08505110a5 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+In-memory cache: Removed agent definition with ID codex-parent-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Definition with ID codex-parent-88cc7fee-1827-4d82-a625-3d08505110a5 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+In-memory cache: Removed agent definition with ID codex-specialist-88cc7fee-1827-4d82-a625-3d08505110a5.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Agent Definition with ID codex-specialist-88cc7fee-1827-4d82-a625-3d08505110a5 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+In-memory cache: Added new agent definition with ID codex-professor-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Definition created successfully with ID: codex-professor-44901ae2-6860-4612-b5de-80d014730853
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+In-memory cache: Added new agent definition with ID codex-student-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Definition created successfully with ID: codex-student-44901ae2-6860-4612-b5de-80d014730853
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[2026-06-06T16:14:29.296Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-reasoning-team-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Team Definition created successfully with ID: codex-reasoning-team-44901ae2-6860-4612-b5de-80d014730853
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-reasoning-e2e-MBZqu8
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-reasoning-e2e-MBZqu8.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Created and registered workspace ID: agent_ws_656b5a8822e912f60c5559bce959ec327e9b89b8b93905f59151f3b722d97e02
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Successfully created mixed team run 'team_codex-reasoning-team-44901ae2-6860-4612-_260be25a'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent team websocket attached for team run team_codex-reasoning-team-44901ae2-6860-4612-_260be25a
+Created agent session e85915e6-779b-45d9-8e35-e02c9607d439 for run team_codex-reasoning-team-44901ae2-6860-4612-_260be25a
+Agent Team WebSocket connected: session=e85915e6-779b-45d9-8e35-e02c9607d439, run=team_codex-reasoning-team-44901ae2-6860-4612-_260be25a
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Successfully created codex_app_server agent run 'professor_b44b1a95a1585d28'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[team-communication] projection inserted teamRunId=team_codex-reasoning-team-44901ae2-6860-4612-_260be25a messageId=teammsg_Dzxq_0MvVgLeugZEHo5W_bkKEeDnJolB senderRunId=professor_b44b1a95a1585d28 receiverRunId=student_518ffbc03aec415f referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-1l1jVc/memory/agent_teams/team_codex-reasoning-team-44901ae2-6860-4612-_260be25a/team_communication_messages.json
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Successfully created codex_app_server agent run 'student_518ffbc03aec415f'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Closed agent session e85915e6-779b-45d9-8e35-e02c9607d439
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Team WebSocket disconnected: e85915e6-779b-45d9-8e35-e02c9607d439
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[2026-06-06T16:14:45.883Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-reasoning-team-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Team Definition with ID codex-reasoning-team-44901ae2-6860-4612-b5de-80d014730853 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+In-memory cache: Removed agent definition with ID codex-professor-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Definition with ID codex-professor-44901ae2-6860-4612-b5de-80d014730853 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+In-memory cache: Removed agent definition with ID codex-student-44901ae2-6860-4612-b5de-80d014730853.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+Agent Definition with ID codex-student-44901ae2-6860-4612-b5de-80d014730853 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Created and registered workspace ID: agent_ws_deb480a81ae5d92477cf1feaac603437a481b39ebfee245d6443557a4cec55ab
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+In-memory cache: Added new agent definition with ID codex-professor-a3797328-e85f-4aec-87fb-1ea205af958b.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent Definition created successfully with ID: codex-professor-a3797328-e85f-4aec-87fb-1ea205af958b
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+[2026-06-06T16:14:46.033Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-workspace-team-a3797328-e85f-4aec-87fb-1ea205af958b.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent Team Definition created successfully with ID: codex-workspace-team-a3797328-e85f-4aec-87fb-1ea205af958b
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV.
+Reusing existing workspace ID: agent_ws_deb480a81ae5d92477cf1feaac603437a481b39ebfee245d6443557a4cec55ab
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Successfully created mixed team run 'team_codex-workspace-team-a3797328-e85f-4aec-_1a97c172'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent team websocket attached for team run team_codex-workspace-team-a3797328-e85f-4aec-_1a97c172
+Created agent session 8795623a-ae6f-4c7f-b93c-61b650f13567 for run team_codex-workspace-team-a3797328-e85f-4aec-_1a97c172
+Agent Team WebSocket connected: session=8795623a-ae6f-4c7f-b93c-61b650f13567, run=team_codex-workspace-team-a3797328-e85f-4aec-_1a97c172
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-er5NLV.
+Reusing existing workspace ID: agent_ws_deb480a81ae5d92477cf1feaac603437a481b39ebfee245d6443557a4cec55ab
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Successfully restored mixed team run 'team_codex-workspace-team-a3797328-e85f-4aec-_1a97c172'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Successfully created codex_app_server agent run 'professor_f44e0344a6726b87'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Successfully created codex_app_server agent run 'professor_f44e0344a6726b87'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Closed agent session 8795623a-ae6f-4c7f-b93c-61b650f13567
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent Team WebSocket disconnected: 8795623a-ae6f-4c7f-b93c-61b650f13567
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+[2026-06-06T16:14:54.125Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-workspace-team-a3797328-e85f-4aec-87fb-1ea205af958b.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent Team Definition with ID codex-workspace-team-a3797328-e85f-4aec-87fb-1ea205af958b deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+In-memory cache: Removed agent definition with ID codex-professor-a3797328-e85f-4aec-87fb-1ea205af958b.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+Agent Definition with ID codex-professor-a3797328-e85f-4aec-87fb-1ea205af958b deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+In-memory cache: Added new agent definition with ID codex-projection-professor-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Definition created successfully with ID: codex-projection-professor-e01f30f4-585c-42ee-a3d9-47966f16a0d4
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+In-memory cache: Added new agent definition with ID codex-projection-student-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Definition created successfully with ID: codex-projection-student-e01f30f4-585c-42ee-a3d9-47966f16a0d4
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+[2026-06-06T16:14:54.252Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-projection-team-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Team Definition created successfully with ID: codex-projection-team-e01f30f4-585c-42ee-a3d9-47966f16a0d4
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-x5ToDh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-x5ToDh.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Created and registered workspace ID: agent_ws_bd9ffdc9d7ef205339d5c9e360e1abb09323f74eee87359fe93c1f142f4eb29c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Successfully created mixed team run 'team_codex-projection-team-e01f30f4-585c-42ee_d223551b'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent team websocket attached for team run team_codex-projection-team-e01f30f4-585c-42ee_d223551b
+Created agent session 49d2c3b0-e8fa-4070-9803-2c9207611f84 for run team_codex-projection-team-e01f30f4-585c-42ee_d223551b
+Agent Team WebSocket connected: session=49d2c3b0-e8fa-4070-9803-2c9207611f84, run=team_codex-projection-team-e01f30f4-585c-42ee_d223551b
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Successfully created codex_app_server agent run 'professor_c8d6df3bfb6b2de2'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Closed agent session 49d2c3b0-e8fa-4070-9803-2c9207611f84
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Team WebSocket disconnected: 49d2c3b0-e8fa-4070-9803-2c9207611f84
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+[2026-06-06T16:14:56.284Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-projection-team-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Team Definition with ID codex-projection-team-e01f30f4-585c-42ee-a3d9-47966f16a0d4 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+In-memory cache: Removed agent definition with ID codex-projection-professor-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Definition with ID codex-projection-professor-e01f30f4-585c-42ee-a3d9-47966f16a0d4 deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+In-memory cache: Removed agent definition with ID codex-projection-student-e01f30f4-585c-42ee-a3d9-47966f16a0d4.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+Agent Definition with ID codex-projection-student-e01f30f4-585c-42ee-a3d9-47966f16a0d4 deleted successfully.
+
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 1 failed) 167664ms
+     ✓ routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime  19810ms
+     × creates a nested team definition and routes live Codex inter-agent messaging between leaf members 120673ms
+     ✓ streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime  16738ms
+     ✓ preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId  8238ms
+     ✓ keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime  2161ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+Error: Timed out waiting for team websocket event 'parent send_message_to SEGMENT_START'. preview='AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"parent_60d99390ae4b152e","agent_name":"parent","member_route_key":"parent","member_path":["parent"],"source_path":["parent"],"source_route_ke | TEAM_STATUS:{"status":"initializing","source_path":[]} | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"parent_60d99390ae4b152e","agent_name":"parent","member_route_key":"parent","member_path":["parent"],"source_path":["parent"],"source_route_ke | EXTERNAL_USER_MESSAGE:{"content":"Call send_message_to exactly once now with these exact JSON arguments: {\"recipient_name\":\"specialist\",\"content\":\"Nested relay NESTED-RELAY:88cc7fee-1827-4d82-a625-3d08505110a5\",\"m | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_name":"parent","agent_id":"parent_60d99390ae4b152e","member_route_key":"parent","member_path":["parent"],"source_path":["parent"],"source_route_key":"pa | TEAM_STATUS:{"status":"running","source_path":[]} | TURN_STARTED:{"turnId":"019e9db5-0ebe-7de3-89f0-f0472c3addca","turn_id":"019e9db5-0ebe-7de3-89f0-f0472c3addca","agent_name":"parent","agent_id":"parent_60d99390ae4b152e","member_route_key":"parent","member_path":[ | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_name":"parent","agent_id":"parent_60d99390ae4b152e","member_route_key":"parent","member_path":["parent"],"source_path":["parent"],"source_route_key":"pa'
+ ❯ waitForTeamStreamEvent tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:911:15
+    909|           .map((entry) => `${entry.type}:${JSON.stringify(entry.payloa…
+    910|           .join(" | ");
+    911|         throw new Error(`Timed out waiting for team websocket event '$…
+       |               ^
+    912|       };
+    913| 
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:927:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  18:12:03
+   Duration  172.74s (transform 3.03s, setup 17ms, import 4.60s, tests 167.66s, environment 0ms)
+

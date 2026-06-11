@@ -22,8 +22,9 @@ import { AgentMemoryService } from "../../../src/agent-memory/services/agent-mem
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { ClaudeTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/claude/claude-team-run-backend-factory.js";
-import { ClaudeTeamManager } from "../../../src/agent-team-execution/backends/claude/claude-team-manager.js";
+import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
@@ -789,8 +790,11 @@ describe("cross-runtime memory persistence integration", () => {
     });
   });
 
-  it("persists Claude team member memory under the member memory directory", async () => {
+  it("persists mixed Claude team member memory under the member memory directory", async () => {
     const memoryRoot = await mkTempDir();
+    const teamRunId = "team-run-memory-1";
+    const memberRunId = "team-run-memory-1::coordinator";
+    const memberMemoryDir = path.join(memoryRoot, "agent_teams", teamRunId, memberRunId);
     const recorder = new AgentRunMemoryRecorder();
     const { factory: claudeMemberFactory, createdBackends } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
     const agentRunManager = new AgentRunManager({
@@ -801,65 +805,66 @@ describe("cross-runtime memory persistence integration", () => {
       publishedArtifactRelayService: createNoopSidecar() as never,
       memoryRecorder: recorder,
     });
-    const agentDefinitionService = {
-      getAgentDefinitionById: vi.fn().mockResolvedValue({ toolNames: [] }),
-    };
-    const memberTeamContextBuilder = {
-      build: vi.fn(async (input: {
-        teamRunId: string;
-        teamDefinitionId: string;
-        currentMemberName: string;
-        currentMemberRouteKey: string;
-        currentMemberRunId: string;
-      }) =>
-        new MemberTeamContext({
+    const memberContext = new MixedAgentMemberContext({
+      memberName: "Coordinator",
+      memberPath: ["Coordinator"],
+      memberRouteKey: "coordinator",
+      memberRunId,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      platformAgentRunId: null,
+    });
+    const teamContext = new TeamRunContext({
+      runId: teamRunId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      config: new TeamRunConfig({
+        teamDefinitionId: "team-def-1",
+        teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberRouteKey: "coordinator",
+        memberConfigs: [{
+          memberName: "Coordinator",
+          memberRouteKey: "coordinator",
+          memberRunId,
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "claude-sonnet",
+          autoExecuteTools: true,
+          skillAccessMode: SkillAccessMode.NONE,
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          workspaceId: "workspace-1",
+          memoryDir: memberMemoryDir,
+        }],
+      }),
+      runtimeContext: new MixedTeamRunContext({
+        coordinatorMemberRouteKey: "coordinator",
+        memberContexts: [memberContext],
+      }),
+    });
+    const handle = new MixedAgentMemberHandle({
+      teamContext,
+      context: memberContext,
+      config: teamContext.config!.memberConfigs[0]!,
+      agentRunManager,
+      memberTeamContextBuilder: {
+        build: vi.fn(async (input: {
+          teamRunId: string;
+          teamDefinitionId: string;
+          currentMemberName: string;
+          currentMemberRouteKey: string;
+          currentMemberRunId: string;
+        }) => new MemberTeamContext({
           teamRunId: input.teamRunId,
           teamDefinitionId: input.teamDefinitionId,
-          teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+          teamBackendKind: TeamBackendKind.MIXED,
           memberName: input.currentMemberName,
           memberRouteKey: input.currentMemberRouteKey,
           memberRunId: input.currentMemberRunId,
-        }),
-      ),
-    };
-    const teamFactory = new ClaudeTeamRunBackendFactory({
-      memoryDir: memoryRoot,
-      agentDefinitionService: agentDefinitionService as never,
-      createTeamManager: (context) =>
-        new ClaudeTeamManager(context, {
-          agentRunManager,
-          agentDefinitionService: agentDefinitionService as never,
-          memberTeamContextBuilder: memberTeamContextBuilder as never,
-        }),
+        })),
+      } as never,
+      publish: vi.fn(),
+      notifyStatusChange: vi.fn(),
+      deliverInterAgentMessage: vi.fn(),
     });
 
-    const backend = await teamFactory.createBackend(
-      new TeamRunConfig({
-        teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-        memberConfigs: [
-          {
-            memberName: "Coordinator",
-            memberRouteKey: "coordinator",
-            agentDefinitionId: "agent-def-1",
-            llmModelIdentifier: "claude-sonnet",
-            autoExecuteTools: true,
-            skillAccessMode: SkillAccessMode.NONE,
-            runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-            workspaceId: "workspace-1",
-          },
-        ],
-      }),
-    );
-
-    const runtimeContext = backend.getRuntimeContext();
-    const memberContext = runtimeContext?.memberContexts[0];
-    expect(memberContext).toBeTruthy();
-    expect(memberContext?.agentRunConfig.memoryDir).toBe(
-      path.join(memoryRoot, "agent_teams", backend.runId, memberContext?.memberRunId ?? ""),
-    );
-
-    await backend.postMessage(new AgentInputUserMessage("team hello"), "Coordinator");
+    await handle.postMessage(new AgentInputUserMessage("team hello"));
     const memberBackend = createdBackends[0];
     expect(memberBackend).toBeTruthy();
     memberBackend.emit(AgentRunEventType.SEGMENT_CONTENT, {
@@ -868,14 +873,13 @@ describe("cross-runtime memory persistence integration", () => {
       delta: "team reply",
     });
     memberBackend.emit(AgentRunEventType.SEGMENT_END, { id: "team-text-1" });
-    await recorder.waitForIdle(memberContext?.memberRunId);
+    await recorder.waitForIdle(memberRunId);
 
-    const memberMemoryDir = memberContext?.agentRunConfig.memoryDir ?? "";
     const traces = await readLines(path.join(memberMemoryDir, RAW_TRACES_MEMORY_FILE_NAME));
     expect(traces.map((trace) => trace.trace_type)).toEqual(["user", "assistant"]);
     expect(traces.map((trace) => trace.turn_id)).toEqual([
-      `turn-${memberContext?.memberRunId}`,
-      `turn-${memberContext?.memberRunId}`,
+      `turn-${memberRunId}`,
+      `turn-${memberRunId}`,
     ]);
     const view = readView(memberMemoryDir);
     expect(view.workingContext?.map((message) => [message.role, message.content])).toEqual([

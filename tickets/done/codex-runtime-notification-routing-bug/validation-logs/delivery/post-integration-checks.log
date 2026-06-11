@@ -1,0 +1,14 @@
+# Delivery post-integration/docs checks
+Date: 2026-06-08
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+HEAD: 244392836936c44e9a0fe6670a849a8b8e65bbce
+Upstream: c88b63b26d87d1f6d973c362ab8ade1d92f8a6b5 (origin/codex/mixed-team-manager-simplification-analysis)
+
+## Command: git diff --check @{u}..HEAD
+Result: PASS
+
+## Command: rg -n "ClaudeTeamSessionCohort|getClaudeTeamSessionCohort|team-runtime-cohort-identity|buildTeamRuntimeCohortIdentity|TeamRuntimeCohortIdentity|CodexTeamThreadCohort|codex-team-thread-cohort|clientScopeKey|scopeKey" autobyteus-server-ts/src autobyteus-server-ts/tests || true
+Result: PASS (no matches)
+
+## Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+Result: PASS

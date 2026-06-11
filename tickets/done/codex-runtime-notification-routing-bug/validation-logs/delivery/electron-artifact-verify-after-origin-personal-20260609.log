@@ -1,0 +1,45 @@
+# Electron artifact verification after origin/personal merge
+Date: 2026-06-09
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+Branch: codex/mixed-team-manager-simplification-analysis
+HEAD: d8021fef641a1402867ac162d95ac074a83a1c29
+origin/personal: 36b2dbd6d5bfba4634db19d7fbb7e60df27487ec
+
+## Artifacts
+-rw-r--r--@ 1 normy  staff   360M Jun  9 05:35 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+-rw-r--r--@ 1 normy  staff   385K Jun  9 05:35 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   357M Jun  9 05:36 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+-rw-r--r--@ 1 normy  staff   375K Jun  9 05:36 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+## SHA-256
+fe9c85855eba9b7152a7cc67a3aeda890a3c4e9087278108fe45aa003d1071fa  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+75ccc0c7bb5e10ed058293c6ee1cd63af18c13f85b74da42d4f59dbc15b80e61  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+c86662fc192e793c7df97a714ea4294e37f1ce9707e80e33109150918aa3a1f9  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+461630e3cf566e3d6b153d8c9c54503f266be9ad70c4502ba3c936e15dc0569d  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+## hdiutil verify
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $79BCA464
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $CCC546E5
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $522EF04E
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $A2A41D8A
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $522EF04E
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $0EDF3019
+Die überprüfte CRC32-Prüfsumme ist $385CA1BD
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg" is VALID
+hdiutil verify: PASS
+
+## unzip -tq
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.
+unzip -tq: PASS
+
+app bundle: PASS (/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app)

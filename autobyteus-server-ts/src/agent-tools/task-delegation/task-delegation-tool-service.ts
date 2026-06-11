@@ -5,14 +5,12 @@ import {
   type TaskDelegationRunRegistry,
 } from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import type {
-  AcceptTaskInput,
-  AcceptTaskResult,
   DelegateTasksInput,
   DelegateTasksResult,
-  MarkTaskCompletedInput,
-  MarkTaskCompletedResult,
-  MarkTaskFailedInput,
-  MarkTaskFailedResult,
+  ReviewTaskResultInput,
+  ReviewTaskResultResult,
+  SubmitTaskResultInput,
+  SubmitTaskResultResult,
   TaskDelegationCallerIdentity,
   TaskDelegationMemberIdentity,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
@@ -44,7 +42,6 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
     ...toIdentity(memberTeamContext),
     ...(memberTeamContext.taskAgentInstance
       ? {
-          taskAgentInstanceId: memberTeamContext.taskAgentInstance.taskAgentInstanceId,
           taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
           taskId: memberTeamContext.taskAgentInstance.taskId,
           logicalMemberRouteKey:
@@ -77,28 +74,20 @@ export class TaskDelegationToolService {
     return this.getTaskDelegationService(run).delegateTasks(context, input);
   }
 
-  async markTaskCompleted(
+  async submitTaskResult(
     context: TaskDelegationToolContext,
-    input: MarkTaskCompletedInput,
-  ): Promise<MarkTaskCompletedResult> {
+    input: SubmitTaskResultInput,
+  ): Promise<SubmitTaskResultResult> {
     const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).markTaskCompleted(context, input);
+    return this.getTaskDelegationService(run).submitTaskResult(context, input);
   }
 
-  async markTaskFailed(
+  async reviewTaskResult(
     context: TaskDelegationToolContext,
-    input: MarkTaskFailedInput,
-  ): Promise<MarkTaskFailedResult> {
+    input: ReviewTaskResultInput,
+  ): Promise<ReviewTaskResultResult> {
     const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).markTaskFailed(context, input);
-  }
-
-  async acceptTask(
-    context: TaskDelegationToolContext,
-    input: AcceptTaskInput,
-  ): Promise<AcceptTaskResult> {
-    const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).acceptTask(context, input);
+    return this.getTaskDelegationService(run).reviewTaskResult(context, input);
   }
 
   private async resolveBoundTeamRun(

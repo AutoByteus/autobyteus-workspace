@@ -1,50 +1,52 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
-import type { TeamRunBackendFactory } from "../../../src/agent-team-execution/backends/team-run-backend-factory.js";
+import type { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { AgentTeamCreationError, AgentTeamTerminationError } from "../../../src/agent-team-execution/errors.js";
+import { AgentTeamTerminationError } from "../../../src/agent-team-execution/errors.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-const createConfig = (input: {
-  teamBackendKind: TeamBackendKind;
-  memberRuntimeKinds: RuntimeKind[];
-}): TeamRunConfig =>
-  new TeamRunConfig({
-    teamDefinitionId: `team-def-${input.teamBackendKind}`,
-    teamBackendKind: input.teamBackendKind,
-    coordinatorMemberName: "Coordinator",
-    memberConfigs: input.memberRuntimeKinds.map((runtimeKind, index) => ({
-      memberName: index === 0 ? "Coordinator" : `Member${index}`,
-      memberRouteKey: index === 0 ? "coordinator" : `member-${index}`,
-      agentDefinitionId: `agent-${input.teamBackendKind}-${index}`,
-      llmModelIdentifier: `model-${runtimeKind}`,
-      autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
-      runtimeKind,
-      workspaceId: `workspace-${runtimeKind}-${index}`,
-    })),
-  });
+const createConfig = (memberRuntimeKinds: RuntimeKind[]): TeamRunConfig => new TeamRunConfig({
+  teamDefinitionId: "team-def-mixed-only",
+  teamBackendKind: TeamBackendKind.MIXED,
+  coordinatorMemberName: "Coordinator",
+  memberConfigs: memberRuntimeKinds.map((runtimeKind, index) => ({
+    memberName: index === 0 ? "Coordinator" : `Member${index}`,
+    memberRouteKey: index === 0 ? "coordinator" : `member-${index}`,
+    agentDefinitionId: `agent-${runtimeKind}-${index}`,
+    llmModelIdentifier: `model-${runtimeKind}`,
+    autoExecuteTools: true,
+    skillAccessMode: SkillAccessMode.NONE,
+    runtimeKind,
+    workspaceId: `workspace-${runtimeKind}-${index}`,
+  })),
+});
+
+const createRuntimeContext = () => new MixedTeamRunContext({
+  coordinatorMemberRouteKey: "coordinator",
+  memberContexts: [],
+});
 
 const createBackend = (input: {
   runId: string;
-  teamBackendKind: TeamBackendKind;
   active?: boolean;
   status?: string | null;
-  runtimeContext?: unknown;
+  runtimeContext?: MixedTeamRunContext;
 }) => {
   const state = {
     active: input.active ?? true,
     status: input.status ?? "idle",
   };
+  const runtimeContext = input.runtimeContext ?? createRuntimeContext();
 
   const backend: TeamRunBackend = {
     runId: input.runId,
-    teamBackendKind: input.teamBackendKind,
-    getRuntimeContext: () => (input.runtimeContext ?? null) as never,
+    teamBackendKind: TeamBackendKind.MIXED,
+    getRuntimeContext: () => runtimeContext,
     isActive: () => state.active,
     getStatusSnapshot: () => ({ status: state.status as "idle" | "running" | "error" }),
     getMemberStatusSnapshots: () => [],
@@ -60,15 +62,17 @@ const createBackend = (input: {
     publishEvent: vi.fn(),
   };
 
-  return {
-    backend,
-    state,
-  };
+  return { backend, state };
 };
 
-const createFactory = (backend: TeamRunBackend): TeamRunBackendFactory => ({
+const createFactory = (backend: TeamRunBackend): MixedTeamRunBackendFactory => ({
   createBackend: vi.fn().mockResolvedValue(backend),
   restoreBackend: vi.fn().mockResolvedValue(backend),
+} as unknown as MixedTeamRunBackendFactory);
+
+const createSidecars = () => ({
+  teamCommunicationService: { attachToTeamRun: vi.fn(() => vi.fn()) },
+  runFileChangeService: { attachToTeamRun: vi.fn(() => vi.fn()) },
 });
 
 afterEach(() => {
@@ -77,159 +81,85 @@ afterEach(() => {
 
 describe("AgentTeamRunManager integration", () => {
   it.each([
-    [TeamBackendKind.AUTOBYTEUS, [RuntimeKind.AUTOBYTEUS]],
-    [TeamBackendKind.CODEX_APP_SERVER, [RuntimeKind.CODEX_APP_SERVER]],
-    [TeamBackendKind.CLAUDE_AGENT_SDK, [RuntimeKind.CLAUDE_AGENT_SDK]],
-    [TeamBackendKind.MIXED, [RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
-  ] as const)(
-    "creates and registers a %s team run through the matching backend factory",
-    async (teamBackendKind, memberRuntimeKinds) => {
-      const auto = createFactory(
-        createBackend({ runId: "team-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      );
-      const codex = createFactory(
-        createBackend({ runId: "team-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      );
-      const claude = createFactory(
-        createBackend({ runId: "team-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      );
-      const mixed = createFactory(
-        createBackend({ runId: "team-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      );
-      const manager = new AgentTeamRunManager({
-        autoByteusTeamRunBackendFactory: auto as never,
-        codexTeamRunBackendFactory: codex as never,
-        claudeTeamRunBackendFactory: claude as never,
-        mixedTeamRunBackendFactory: mixed as never,
-      });
-
-      const run = await manager.createTeamRun(
-        createConfig({ teamBackendKind, memberRuntimeKinds: [...memberRuntimeKinds] }),
-      );
-
-      expect(run.teamBackendKind).toBe(teamBackendKind);
-      expect(run.context?.coordinatorMemberName).toBe("Coordinator");
-      expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
-      expect(manager.listActiveRuns()).toContain(run.runId);
-      expect(auto.createBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.AUTOBYTEUS ? 1 : 0);
-      expect(codex.createBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.CODEX_APP_SERVER ? 1 : 0);
-      expect(claude.createBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK ? 1 : 0);
-      expect(mixed.createBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.MIXED ? 1 : 0);
-    },
-  );
-
-  it.each([
-    [TeamBackendKind.AUTOBYTEUS, [RuntimeKind.AUTOBYTEUS]],
-    [TeamBackendKind.CODEX_APP_SERVER, [RuntimeKind.CODEX_APP_SERVER]],
-    [TeamBackendKind.CLAUDE_AGENT_SDK, [RuntimeKind.CLAUDE_AGENT_SDK]],
-    [TeamBackendKind.MIXED, [RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
-  ] as const)(
-    "restores a %s team run through the matching backend factory",
-    async (teamBackendKind, memberRuntimeKinds) => {
-      const context = new TeamRunContext({
-        runId: `team-restored-${teamBackendKind}`,
-        teamBackendKind,
-        coordinatorMemberName: "Coordinator",
-        config: createConfig({ teamBackendKind, memberRuntimeKinds: [...memberRuntimeKinds] }),
-        runtimeContext: { memberContexts: [] },
-      });
-      const backend = createBackend({
-        runId: context.runId,
-        teamBackendKind,
-        runtimeContext: context.runtimeContext,
-      }).backend;
-      const auto = createFactory(backend);
-      const codex = createFactory(backend);
-      const claude = createFactory(backend);
-      const mixed = createFactory(backend);
-      const manager = new AgentTeamRunManager({
-        autoByteusTeamRunBackendFactory: auto as never,
-        codexTeamRunBackendFactory: codex as never,
-        claudeTeamRunBackendFactory: claude as never,
-        mixedTeamRunBackendFactory: mixed as never,
-      });
-
-      const run = await manager.restoreTeamRun(context);
-
-      expect(run.runId).toBe(context.runId);
-      expect(run.context).toBe(context);
-      expect(auto.restoreBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.AUTOBYTEUS ? 1 : 0);
-      expect(codex.restoreBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.CODEX_APP_SERVER ? 1 : 0);
-      expect(claude.restoreBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK ? 1 : 0);
-      expect(mixed.restoreBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.MIXED ? 1 : 0);
-    },
-  );
-
-  it("routes mixed run inter-agent delivery through the mixed backend", async () => {
-    const mixed = createBackend({
-      runId: "team-mixed-delivery",
-      teamBackendKind: TeamBackendKind.MIXED,
-      runtimeContext: { memberContexts: [] },
-    });
+    [RuntimeKind.AUTOBYTEUS],
+    [RuntimeKind.CODEX_APP_SERVER],
+    [RuntimeKind.CLAUDE_AGENT_SDK],
+    [RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK],
+  ] as const)("creates and registers a mixed team for runtime composition %j", async (memberRuntimeKinds) => {
+    const created = createBackend({ runId: "team-mixed" });
+    const mixed = createFactory(created.backend);
+    const sidecars = createSidecars();
     const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(mixed.backend) as never,
+      mixedTeamRunBackendFactory: mixed,
+      teamCommunicationService: sidecars.teamCommunicationService as never,
+      runFileChangeService: sidecars.runFileChangeService as never,
     });
 
-    const run = await manager.createTeamRun(
-      createConfig({
-        teamBackendKind: TeamBackendKind.MIXED,
-        memberRuntimeKinds: [RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK],
-      }),
-    );
+    const run = await manager.createTeamRun(createConfig([...memberRuntimeKinds]));
 
-    await expect(
-      run.deliverInterAgentMessage({
-        senderRunId: "coord-run",
-        senderMemberName: "Coordinator",
-        teamRunId: run.runId,
-        recipientMemberName: "Member1",
-        content: "Please continue.",
-        messageType: "agent_message",
-      }),
-    ).resolves.toEqual({ accepted: true });
-    expect(mixed.backend.deliverInterAgentMessage).toHaveBeenCalledWith({
+    expect(run.teamBackendKind).toBe(TeamBackendKind.MIXED);
+    expect(run.context?.coordinatorMemberName).toBe("Coordinator");
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
+    expect(manager.listActiveRuns()).toContain(run.runId);
+    expect(mixed.createBackend).toHaveBeenCalledTimes(1);
+    expect(mixed.createBackend).toHaveBeenCalledWith(expect.objectContaining({
+      teamBackendKind: TeamBackendKind.MIXED,
+    }));
+    expect(sidecars.teamCommunicationService.attachToTeamRun).toHaveBeenCalledWith(run);
+    expect(sidecars.runFileChangeService.attachToTeamRun).toHaveBeenCalledWith(run);
+  });
+
+  it("restores through the mixed backend and normalizes the restored context", async () => {
+    const runtimeContext = createRuntimeContext();
+    const context = new TeamRunContext({
+      runId: "team-restored-mixed",
+      teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberName: "Coordinator",
+      config: createConfig([RuntimeKind.CODEX_APP_SERVER]),
+      runtimeContext,
+    });
+    const backend = createBackend({ runId: context.runId, runtimeContext }).backend;
+    const mixed = createFactory(backend);
+    const manager = new AgentTeamRunManager({ mixedTeamRunBackendFactory: mixed });
+
+    const run = await manager.restoreTeamRun(context);
+
+    expect(run.runId).toBe(context.runId);
+    expect(run.teamBackendKind).toBe(TeamBackendKind.MIXED);
+    expect(mixed.restoreBackend).toHaveBeenCalledWith(expect.objectContaining({
+      teamBackendKind: TeamBackendKind.MIXED,
+      runtimeContext,
+    }));
+  });
+
+  it("routes inter-agent delivery through the mixed backend", async () => {
+    const mixedBackend = createBackend({ runId: "team-mixed-delivery" });
+    const manager = new AgentTeamRunManager({
+      mixedTeamRunBackendFactory: createFactory(mixedBackend.backend),
+    });
+    const run = await manager.createTeamRun(
+      createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]),
+    );
+    const request = {
       senderRunId: "coord-run",
       senderMemberName: "Coordinator",
       teamRunId: run.runId,
       recipientMemberName: "Member1",
       content: "Please continue.",
       messageType: "agent_message",
-    });
+    };
+
+    await expect(run.deliverInterAgentMessage(request as never)).resolves.toEqual({ accepted: true });
+    expect(mixedBackend.backend.deliverInterAgentMessage).toHaveBeenCalledWith(request);
   });
 
   it("evicts inactive team runs when queried or listed", async () => {
-    const created = createBackend({
-      runId: "team-inactive",
-      teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-    });
+    const created = createBackend({ runId: "team-inactive" });
     const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ) as never,
-      codexTeamRunBackendFactory: createFactory(created.backend) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
+      mixedTeamRunBackendFactory: createFactory(created.backend),
     });
 
-    const run = await manager.createTeamRun(
-      createConfig({
-        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-        memberRuntimeKinds: [RuntimeKind.CODEX_APP_SERVER],
-      }),
-    );
+    const run = await manager.createTeamRun(createConfig([RuntimeKind.CODEX_APP_SERVER]));
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     created.state.active = false;
@@ -237,99 +167,14 @@ describe("AgentTeamRunManager integration", () => {
     expect(manager.listActiveRuns()).toEqual([]);
   });
 
-  it("throws for unsupported backend kinds during create", async () => {
-    const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
-    });
-
-    const unsupportedConfig = new TeamRunConfig({
-      teamDefinitionId: "team-unsupported",
-      teamBackendKind: "unsupported" as TeamBackendKind,
-      coordinatorMemberName: "Coordinator",
-      memberConfigs: [
-        {
-          memberName: "Coordinator",
-          memberRouteKey: "coordinator",
-          agentDefinitionId: "agent-unsupported",
-          llmModelIdentifier: "model-unsupported",
-          autoExecuteTools: true,
-          skillAccessMode: SkillAccessMode.NONE,
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          workspaceId: "workspace-unsupported",
-        },
-      ],
-    });
-
-    await expect(manager.createTeamRun(unsupportedConfig)).rejects.toBeInstanceOf(AgentTeamCreationError);
-  });
-
-  it("throws for unsupported backend kinds during restore", async () => {
-    const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
-    });
-
-    const unsupportedContext = new TeamRunContext({
-      runId: "team-restored-unsupported",
-      teamBackendKind: "unsupported" as TeamBackendKind,
-      coordinatorMemberName: "Coordinator",
-      config: createConfig({
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
-        memberRuntimeKinds: [RuntimeKind.AUTOBYTEUS],
-      }),
-      runtimeContext: null,
-    });
-
-    await expect(manager.restoreTeamRun(unsupportedContext)).rejects.toBeInstanceOf(AgentTeamCreationError);
-  });
-
   it("wraps backend termination failures", async () => {
-    const failing = createBackend({
-      runId: "team-failing-terminate",
-      teamBackendKind: TeamBackendKind.AUTOBYTEUS,
-    });
+    const failing = createBackend({ runId: "team-failing-terminate" });
     failing.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
-    const failingManager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(failing.backend) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex-2", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude-2", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed-2", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
+    const manager = new AgentTeamRunManager({
+      mixedTeamRunBackendFactory: createFactory(failing.backend),
     });
+    const run = await manager.createTeamRun(createConfig([RuntimeKind.AUTOBYTEUS]));
 
-    const run = await failingManager.createTeamRun(
-      createConfig({
-        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
-        memberRuntimeKinds: [RuntimeKind.AUTOBYTEUS],
-      }),
-    );
-
-    await expect(failingManager.terminateTeamRun(run.runId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
+    await expect(manager.terminateTeamRun(run.runId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
   });
 });

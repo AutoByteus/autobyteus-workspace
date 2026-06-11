@@ -1,0 +1,89 @@
+timestamp_utc=2026-06-06T17:56:55Z
+branch=codex/mixed-team-manager-simplification-analysis
+head_before_fetch=74c0fd5905c85a4f52b7fecec16bf4c644a745de
+tracked_before_fetch=origin/personal
+origin_personal_before_fetch=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+origin_personal_after_fetch=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+head_after_fetch=74c0fd5905c85a4f52b7fecec16bf4c644a745de
+merge_base_head_origin_personal=74c0fd5905c85a4f52b7fecec16bf4c644a745de
+ahead_behind_vs_origin_personal=0	21
+status_after_fetch:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [behind 21]
+ M autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+ M autobyteus-server-ts/docs/modules/agent_artifacts.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-agent-config-builder.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-member-status-projector.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-contracts.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-factory.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-context.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/team-processor-registries.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-run-backend-factory.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-run-backend.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-run-context.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-run-backend.ts
+ D autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-run-context.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-backend-kind.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-runtime-context-support.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts
+ M autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend-factory.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend-factory.lmstudio.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/claude-team-run-backend-factory.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/claude-team-run-backend.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/codex-team-run-backend-factory.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent-team-execution/codex-team-run-backend.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+ M autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+ M autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.test.ts
+ D autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-agent-config-builder.test.ts
+ D autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-member-status-projector.test.ts
+ D autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts
+ D autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-command-start-status.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-catalog-service.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts
+?? autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts
+?? autobyteus-server-ts/tests/e2e/helpers/
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/

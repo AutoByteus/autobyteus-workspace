@@ -1,0 +1,35 @@
+timestamp_utc=2026-06-07T03:36:22Z
+repo_root=/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+branch=codex/mixed-team-manager-simplification-analysis
+head_before_fetch=72d688184fc94ea928c0689118b57adc1ade55a5
+tracked=origin/personal
+origin_personal_before_fetch=dfc26eec54cdf685442740691ce5469754ab945f
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal_after_fetch=dfc26eec54cdf685442740691ce5469754ab945f
+merge_base_head_origin_personal=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+ahead_behind_vs_origin_personal=2	12
+status_after_fetch:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 2, behind 12]
+ M autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+ M autobyteus-server-ts/docs/modules/agent_artifacts.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/design-spec.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/investigation-notes.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/delivery-release-deployment-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/docs-sync-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/handoff-summary.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/release-notes.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-fetch-base-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-obsolete-grep.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-artifact-verify-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-handoff-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-remote-base-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-integration-merge.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-run-history-unit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-tsc-noemit.log

@@ -1,55 +1,30 @@
-# Agent Team Design
+# Native Agent Team Package Decommissioned
 
-The `agent-team` package owns native team lifecycle, team/member configuration,
-member routing, scoped team communication, and team/agent/sub-team stream
-rebroadcasting. It does not own team task state.
+The native AutoByteus `agent-team` runtime package is no longer part of
+`autobyteus-ts`. Active team execution is owned by `autobyteus-server-ts` and
+runs through the server team stack:
 
-Server-managed bounded task delegation (`delegate_tasks`,
-`mark_task_completed`, `mark_task_failed`, and `accept_task`) is owned in
-`autobyteus-server-ts`. Personal ToDo tools remain local agent tools under
-`src/task-management`.
+`TeamRun -> MixedTeamManager -> AgentRunManager -> runtime AgentRun backend`
 
-## Runtime Bootstrap
+`autobyteus-ts` continues to provide single-agent runtime primitives, messages,
+tools, and LLM integration. It does not own team lifecycle, team bootstrap,
+team-scoped communication rosters, or team stream rebroadcasting.
 
-Default native team bootstrap steps are:
+## Current Boundaries
 
-1. `AgentConfigurationPreparationStep` — prepares final member agent configs,
-   injects scoped `teamContext`, and attaches team-manifest prompt processing.
-2. `CoordinatorInitializationStep` — starts/ensures the coordinator through
-   `TeamManager`.
+- Team definition discovery, launch, restore, member routing, communication
+  projection, and team streaming live under `autobyteus-server-ts`.
+- AutoByteus members inside server teams are regular `AgentRun`s configured by
+  the server with `MemberTeamContext`-derived instructions and primitive
+  `customData.teamContext` fields.
+- The public team communication tool name remains `send_message_to`, but the
+  implementation is server-owned and delivered through `TeamRun` /
+  `MixedTeamManager` rather than through native AutoByteus team classes.
+- Server-managed task delegation (`delegate_tasks`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
+  Personal ToDo tools remain local single-agent tools.
 
-There is no task-plan bootstrap step, task-notification mode, or task notifier.
+## Removed Native Surface
 
-## Runtime State
-
-`AgentTeamRuntimeState` tracks team status, final agent configs, the team
-manager, queues, status/event helpers, and event stores. It intentionally does
-not contain task-plan or task-notifier fields.
-
-## Streaming
-
-`AgentTeamExternalEventNotifier` publishes only:
-
-- `TEAM` status events;
-- `AGENT` member event rebroadcasts;
-- `SUB_TEAM` nested team event rebroadcasts.
-
-Native `TASK_PLAN` stream events have been removed. Dedicated task events are
-server domain events and are exposed over the server WebSocket protocol as
-`TASK_DELEGATION_EVENT`.
-
-## Communication Boundary
-
-`createScopedNativeTeamContext(...)` supplies native team communication through
-`TeamManager`. `send_message_to` is not a task ledger and must not be used to
-resurrect old task-plan semantics.
-
-## Removed Legacy Task Tool Names
-
-Do not expose or reintroduce the removed legacy team task tool names:
-`assign_task_to`, `create_task`, `create_tasks`, `get_my_tasks`,
-`get_task_plan_status`, or the old local team-task `update_task_status`.
-
-Use server-managed dedicated task delegation for bounded team work and personal
-ToDo tools (`create_todo_list`, `add_todo`, `get_todo_list`,
-`update_todo_status`) for an individual agent's private checklist.
+Do not reintroduce native AutoByteus team lifecycle, bootstrap, manifest
+injection, team communication context, or team stream bridge classes in
+`autobyteus-ts`. Team behavior belongs in the server team execution modules.

@@ -1,26 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
-import { CodexTeamManager } from "../../../src/agent-team-execution/backends/codex/codex-team-manager.js";
-import {
-  CodexTeamMemberContext,
-  CodexTeamRunContext,
-} from "../../../src/agent-team-execution/backends/codex/codex-team-run-context.js";
-import { ClaudeTeamManager } from "../../../src/agent-team-execution/backends/claude/claude-team-manager.js";
-import {
-  ClaudeTeamMemberContext,
-  ClaudeTeamRunContext,
-} from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 import {
   MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const teamRunId = "team-focused-interrupt-1";
@@ -42,32 +35,20 @@ const memberInputs = [
   },
 ];
 
-const createAgentRunConfig = (input: typeof memberInputs[number]) =>
-  new AgentRunConfig({
-    agentDefinitionId: `agent-${input.memberRouteKey}`,
+const createTeamRunConfig = () => new TeamRunConfig({
+  teamDefinitionId: "team-def-focused-interrupt",
+  teamBackendKind: TeamBackendKind.MIXED,
+  coordinatorMemberName: "Solution Designer",
+  memberConfigs: memberInputs.map((member) => ({
+    ...member,
+    agentDefinitionId: `agent-${member.memberRouteKey}`,
     llmModelIdentifier:
-      input.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "claude-sonnet" : "gpt-5.4-mini",
+      member.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "claude-sonnet" : "gpt-5.4-mini",
     autoExecuteTools: false,
-    workspaceId: `workspace-${input.memberRouteKey}`,
+    workspaceId: `workspace-${member.memberRouteKey}`,
     skillAccessMode: SkillAccessMode.NONE,
-    runtimeKind: input.runtimeKind,
-  });
-
-const createTeamRunConfig = (teamBackendKind: TeamBackendKind) =>
-  new TeamRunConfig({
-    teamDefinitionId: "team-def-focused-interrupt",
-    teamBackendKind,
-    coordinatorMemberName: "Solution Designer",
-    memberConfigs: memberInputs.map((member) => ({
-      ...member,
-      agentDefinitionId: `agent-${member.memberRouteKey}`,
-      llmModelIdentifier:
-        member.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "claude-sonnet" : "gpt-5.4-mini",
-      autoExecuteTools: false,
-      workspaceId: `workspace-${member.memberRouteKey}`,
-      skillAccessMode: SkillAccessMode.NONE,
-    })),
-  });
+  })),
+});
 
 const createFakeAgentRun = () => ({
   isActive: vi.fn(() => true),
@@ -79,22 +60,34 @@ const createFakeAgentRun = () => ({
   subscribeToEvents: vi.fn(() => () => undefined),
 });
 
-const attachMemberRuns = (manager: unknown) => {
+const createMixedManager = () => {
+  disposeTaskAgentDirectory(teamRunId);
+  const context = new TeamRunContext({
+    runId: teamRunId,
+    teamBackendKind: TeamBackendKind.MIXED,
+    config: createTeamRunConfig(),
+    runtimeContext: new MixedTeamRunContext({
+      coordinatorMemberRouteKey: "solution_designer",
+      memberContexts: memberInputs.map((member) => new MixedAgentMemberContext({
+        memberName: member.memberName,
+        memberPath: member.memberPath,
+        memberRouteKey: member.memberRouteKey,
+        memberRunId: member.memberRunId,
+        runtimeKind: member.runtimeKind,
+        platformAgentRunId: null,
+      })),
+    }),
+  });
+
+  return new MixedTeamManager(context);
+};
+
+const attachMemberRuns = (manager: MixedTeamManager) => {
   const solutionDesignerRun = createFakeAgentRun();
   const codeReviewerRun = createFakeAgentRun();
-  const memberRuns = (manager as { memberRuns?: Map<string, unknown> }).memberRuns;
-
-  if (memberRuns) {
-    memberRuns.set("solution_designer", solutionDesignerRun);
-    memberRuns.set("code_reviewer", codeReviewerRun);
-    return { solutionDesignerRun, codeReviewerRun };
-  }
-
-  const mixed = manager as {
+  const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: {
-      handles: Map<string, unknown>;
-    };
+    memberRegistry: { handles: Map<string, unknown> };
   };
   const contexts = mixed.teamContext.runtimeContext.memberContexts;
   const makeHandle = (
@@ -131,52 +124,52 @@ const attachMemberRuns = (manager: unknown) => {
   return { solutionDesignerRun, codeReviewerRun };
 };
 
-const attachTaskAgentRun = (manager: unknown) => {
+const attachTaskAgentRun = (manager: MixedTeamManager) => {
   const taskAgentRun = createFakeAgentRun();
   const logicalRouteKey = "code_reviewer";
   const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
-
-  const serverManagedRegistry = (manager as {
-    taskAgentRegistry?: {
-      activeByRunId?: Map<string, unknown>;
-    };
-    teamContext?: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext | MixedTeamRunContext>;
-  }).taskAgentRegistry;
-
-  if (serverManagedRegistry?.activeByRunId) {
-    const logicalMember = (manager as {
-      teamContext: TeamRunContext<CodexTeamRunContext | ClaudeTeamRunContext>;
-    }).teamContext.runtimeContext.memberContexts.find(
-      (context) => context.memberRouteKey === logicalRouteKey,
-    );
-    serverManagedRegistry.activeByRunId.set(taskAgentRunId, {
-      logicalMember,
-      identity: {
-        teamRunId,
-        taskAgentInstanceId: "task-agent-instance-1",
-        taskAgentRunId,
-        taskId: "task-1",
-        logicalMember: {
-          memberName: "Code Reviewer",
-          memberPath: ["code_reviewer"],
-          memberRouteKey: logicalRouteKey,
-        },
-      },
-      run: taskAgentRun,
-      unsubscribe: vi.fn(),
-    });
-    return { taskAgentRun, taskAgentRunId, logicalRouteKey };
-  }
-
-  const mixed = manager as {
+  const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: {
-      taskAgentHandles: Map<string, unknown>;
-    };
+    memberRegistry: { taskAgentHandles: Map<string, unknown> };
   };
   const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
     (context) => context.memberRouteKey === logicalRouteKey,
   ) as MixedAgentMemberContext;
+  const identity = {
+    taskAgentInstanceId: "task-agent-instance-1",
+    taskAgentRunId,
+    teamRunId,
+    taskId: "task_0001",
+    logicalMember: {
+      memberName: logicalContext.memberName,
+      memberPath: logicalContext.memberPath,
+      memberRouteKey: logicalContext.memberRouteKey,
+      templateMemberRunId: logicalContext.memberRunId,
+      runtimeKind: logicalContext.runtimeKind,
+    },
+    createdAt: "2026-01-01T00:00:00.000Z",
+  };
+  const directory = getTaskAgentDirectory(teamRunId);
+  directory.registerStartingTask({
+    taskId: identity.taskId,
+    logicalMember: {
+      memberName: logicalContext.memberName,
+      memberPath: logicalContext.memberPath,
+      memberRouteKey: logicalContext.memberRouteKey,
+      memberRunId: logicalContext.memberRunId,
+      runtimeKind: logicalContext.runtimeKind,
+    },
+    delegator: {
+      memberName: "Solution Designer",
+      memberPath: ["solution_designer"],
+      memberRouteKey: "solution_designer",
+      memberRunId: "team-1::solution_designer",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    },
+    taskAgentInstance: identity,
+    delegatorReplyRecipientName: "solution_designer",
+  });
+  directory.markActive(identity.taskId);
   mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
     context: {
       ...logicalContext,
@@ -190,15 +183,19 @@ const attachTaskAgentRun = (manager: unknown) => {
       memberRunId: taskAgentRunId,
       memberName: logicalContext.memberName,
     })),
-    deliverInterMemberMessage: vi.fn(),
+    deliverInterMemberMessage: vi.fn(async (request: ResolvedInterAgentMessageDeliveryRequest, beforeCommit?: (() => void) | null) => {
+      const result = await taskAgentRun.postUserMessage(expect.objectContaining({
+        content: expect.stringContaining(request.content),
+      }) as never);
+      if (result.accepted) beforeCommit?.();
+      return { ...result, memberRunId: taskAgentRunId, memberName: logicalContext.memberName };
+    }),
     approveToolInvocation: vi.fn(async (
       _target: unknown,
       invocationId: string,
       approved: boolean,
       reason: string | null,
-    ) =>
-      taskAgentRun.approveToolInvocation(invocationId, approved, reason),
-    ),
+    ) => taskAgentRun.approveToolInvocation(invocationId, approved, reason)),
     interrupt: vi.fn(),
     terminate: vi.fn(),
     dispose: vi.fn(),
@@ -206,98 +203,9 @@ const attachTaskAgentRun = (manager: unknown) => {
   return { taskAgentRun, taskAgentRunId, logicalRouteKey };
 };
 
-const createCodexManager = () => {
-  const context = new TeamRunContext({
-    runId: teamRunId,
-    teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-    config: createTeamRunConfig(TeamBackendKind.CODEX_APP_SERVER),
-    runtimeContext: new CodexTeamRunContext({
-      coordinatorMemberRouteKey: "solution_designer",
-      memberContexts: memberInputs.map(
-        (member) =>
-          new CodexTeamMemberContext({
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            agentRunConfig: createAgentRunConfig({
-              ...member,
-              runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            }),
-            threadId: null,
-          }),
-      ),
-    }),
-  });
-
-  return new CodexTeamManager(context, {
-    agentRunManager: {} as never,
-    memberTeamContextBuilder: {} as never,
-  });
-};
-
-const createClaudeManager = () => {
-  const context = new TeamRunContext({
-    runId: teamRunId,
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-    config: createTeamRunConfig(TeamBackendKind.CLAUDE_AGENT_SDK),
-    runtimeContext: new ClaudeTeamRunContext({
-      coordinatorMemberRouteKey: "solution_designer",
-      memberContexts: memberInputs.map(
-        (member) =>
-          new ClaudeTeamMemberContext({
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            agentRunConfig: createAgentRunConfig({
-              ...member,
-              runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-            }),
-            sessionId: null,
-          }),
-      ),
-    }),
-  });
-
-  return new ClaudeTeamManager(context, {
-    agentRunManager: {} as never,
-    agentDefinitionService: {} as never,
-    memberTeamContextBuilder: {} as never,
-  });
-};
-
-const createMixedManager = () => {
-  const context = new TeamRunContext({
-    runId: teamRunId,
-    teamBackendKind: TeamBackendKind.MIXED,
-    config: createTeamRunConfig(TeamBackendKind.MIXED),
-    runtimeContext: new MixedTeamRunContext({
-      coordinatorMemberRouteKey: "solution_designer",
-      memberContexts: memberInputs.map(
-        (member) =>
-          new MixedAgentMemberContext({
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            runtimeKind: member.runtimeKind,
-            platformAgentRunId: null,
-          }),
-      ),
-    }),
-  });
-
-  return new MixedTeamManager(context);
-};
-
-describe.each([
-  ["CodexTeamManager", createCodexManager],
-  ["ClaudeTeamManager", createClaudeManager],
-  ["MixedTeamManager", createMixedManager],
-])("%s focused member interrupt routing", (_managerName, createManager) => {
+describe("MixedTeamManager focused member routing", () => {
   it("interrupts only the requested member route key", async () => {
-    const manager = createManager();
+    const manager = createMixedManager();
     const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
 
     await expect(
@@ -308,8 +216,8 @@ describe.each([
     expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
   });
 
-  it("rejects run-id guard mismatches without retargeting by run id", async () => {
-    const manager = createManager();
+  it("rejects interrupt run-id guard mismatches without retargeting by run id", async () => {
+    const manager = createMixedManager();
     const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
 
     await expect(
@@ -322,15 +230,9 @@ describe.each([
     expect(codeReviewerRun.interrupt).not.toHaveBeenCalled();
     expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
   });
-});
 
-describe.each([
-  ["CodexTeamManager", createCodexManager],
-  ["ClaudeTeamManager", createClaudeManager],
-  ["MixedTeamManager", createMixedManager],
-])("%s focused member settlement routing", (_managerName, createManager) => {
   it("settles only the requested member route key", async () => {
-    const manager = createManager();
+    const manager = createMixedManager();
     const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
 
     await expect(
@@ -345,29 +247,8 @@ describe.each([
     expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
   });
 
-  it("rejects settlement run-id guard mismatches without retargeting by run id", async () => {
-    const manager = createManager();
-    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
-
-    await expect(
-      manager.settleMember("code_reviewer", "team-1::solution_designer"),
-    ).resolves.toMatchObject({
-      accepted: false,
-      code: "TARGET_MEMBER_RUN_MISMATCH",
-    });
-
-    expect(codeReviewerRun.terminate).not.toHaveBeenCalled();
-    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
-  });
-});
-
-describe.each([
-  ["CodexTeamManager", createCodexManager],
-  ["ClaudeTeamManager", createClaudeManager],
-  ["MixedTeamManager", createMixedManager],
-])("%s task-agent approval routing", (_managerName, createManager) => {
   it("routes approval to the concrete task-agent run instead of the logical member run", async () => {
-    const manager = createManager();
+    const manager = createMixedManager();
     const { codeReviewerRun } = attachMemberRuns(manager);
     const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
 
@@ -388,16 +269,9 @@ describe.each([
     );
     expect(codeReviewerRun.approveToolInvocation).not.toHaveBeenCalled();
   });
-});
 
-
-describe.each([
-  ["CodexTeamManager", createCodexManager],
-  ["ClaudeTeamManager", createClaudeManager],
-  ["MixedTeamManager", createMixedManager],
-])("%s task-agent post-message routing", (_managerName, createManager) => {
   it("routes messages to the concrete task-agent run instead of the logical member run", async () => {
-    const manager = createManager();
+    const manager = createMixedManager();
     const { codeReviewerRun } = attachMemberRuns(manager);
     const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
     const message = new AgentInputUserMessage("Delegated child task completed.");
@@ -415,10 +289,10 @@ describe.each([
   });
 
   it("routes inter-agent revision messages to the concrete task-agent run", async () => {
-    const manager = createManager();
+    const manager = createMixedManager();
     const { codeReviewerRun } = attachMemberRuns(manager);
     const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-    const request: InterAgentMessageDeliveryRequest = {
+    const request: InterAgentMessageDeliveryIntent = {
       teamRunId,
       sender: {
         participant: {
@@ -431,20 +305,7 @@ describe.each([
         },
         selector: { kind: "route_key", memberRouteKey: "solution_designer" },
       },
-      recipient: {
-        participant: {
-          memberKind: "agent",
-          memberName: "Code Reviewer",
-          memberPath: ["code_reviewer"],
-          memberRouteKey: logicalRouteKey,
-          memberRunId: taskAgentRunId,
-          taskAgentRunId,
-          taskAgentInstanceId: "task-agent-instance-1",
-          logicalMemberRouteKey: logicalRouteKey,
-          address: { teamRunId, memberPath: ["code_reviewer"], memberRouteKey: logicalRouteKey },
-        },
-        selector: { kind: "route_key", memberRouteKey: logicalRouteKey },
-      },
+      target: { kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId },
       content: "Please revise the completed task.",
       messageType: "task_revision",
     };

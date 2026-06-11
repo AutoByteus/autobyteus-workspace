@@ -14,8 +14,11 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
 }).status === 0;
@@ -120,30 +123,50 @@ const waitForMessageAfter = async (
 };
 
 const assistantTextMatches = (message: WsMessage, memberName: string, token: string): boolean => {
-  if (message.payload.agent_name !== memberName) {
+  const agentName = typeof message.payload.agent_name === "string" ? message.payload.agent_name : null;
+  const memberRouteKey = typeof message.payload.member_route_key === "string" ? message.payload.member_route_key : null;
+  if ((agentName && agentName !== memberName) || (memberRouteKey && memberRouteKey !== memberName)) {
     return false;
   }
 
   if (message.type === "SEGMENT_CONTENT") {
     return (
-      message.payload.segment_type === "text" &&
       typeof message.payload.delta === "string" &&
       message.payload.delta.includes(token)
     );
   }
 
   if (message.type === "SEGMENT_END") {
+    const item =
+      message.payload.item &&
+      typeof message.payload.item === "object" &&
+      !Array.isArray(message.payload.item)
+        ? (message.payload.item as Record<string, unknown>)
+        : null;
+    const text =
+      typeof message.payload.text === "string"
+        ? message.payload.text
+        : typeof item?.text === "string"
+          ? item.text
+          : null;
     return (
-      message.payload.segment_type === "text" &&
-      typeof message.payload.text === "string" &&
-      message.payload.text.includes(token)
+      text !== null &&
+      text.includes(token)
     );
   }
 
   if (message.type === "ASSISTANT_COMPLETE") {
+    const item =
+      message.payload.item &&
+      typeof message.payload.item === "object" &&
+      !Array.isArray(message.payload.item)
+        ? (message.payload.item as Record<string, unknown>)
+        : null;
     const text =
       typeof message.payload.text === "string"
         ? message.payload.text
+        : typeof item?.text === "string"
+          ? item.text
         : typeof message.payload.content === "string"
           ? message.payload.content
           : typeof message.payload.result === "string"
@@ -164,17 +187,12 @@ const sendTeamMessageOverSocket = (
     imageUrls?: string[];
   },
 ): void => {
-  socket.send(
-    JSON.stringify({
-      type: "SEND_MESSAGE",
-      payload: {
+  sendE2eSendMessageCommand(socket, {
         content: input.content,
         target_member_route_key: input.targetMemberRouteKey ?? null,
         context_file_paths: input.contextFilePaths ?? [],
         image_urls: input.imageUrls ?? [],
-      },
-    }),
-  );
+      });
 };
 
 const findMemberBinding = (
@@ -513,14 +531,17 @@ Rules:
       input.messages,
       input.startIndex,
       (message) =>
-        message.type === "INTER_AGENT_MESSAGE" &&
-        message.payload.agent_name === input.recipientMemberName &&
-        typeof message.payload.sender_agent_id === "string" &&
-        (message.payload.sender_agent_id as string).trim().length > 0 &&
-        message.payload.sender_agent_name === input.senderMemberName &&
-        message.payload.recipient_role_name === input.recipientMemberName &&
-        message.payload.content === input.content,
-      `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
+        isE2eTeamCommunicationMessage(message, {
+          senderMemberName: input.senderMemberName,
+          recipientMemberName: input.recipientMemberName,
+          content: input.content,
+        }) ||
+        (
+          message.type === "EXTERNAL_USER_MESSAGE" &&
+          message.payload.agent_name === input.recipientMemberName &&
+          message.payload.content === input.content
+        ),
+      `${input.recipientMemberName} delivery message`,
     );
   };
 
@@ -539,14 +560,14 @@ Rules:
       getTeamRunResumeConfig: {
         teamRunId: string;
         isActive: boolean;
-        metadata: {
-          memberMetadata: TeamMemberMetadata[];
-        };
+        metadata: Record<string, unknown>;
       };
     }>(teamResumeQuery, { teamRunId });
 
     expect(result.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
-    return result.getTeamRunResumeConfig.metadata.memberMetadata;
+    return flattenE2eTeamMemberMetadata(
+      result.getTeamRunResumeConfig.metadata,
+    ) as TeamMemberMetadata[];
   };
 
   const waitForProjectionTokens = async (input: {
@@ -737,6 +758,12 @@ Rules:
           recipientMemberName: "specialist",
           content: `Reply with exactly ${preRestoreAutoToCodexReplyToken} and nothing else.`,
         });
+        await waitForMessageAfter(
+          firstConnection.messages,
+          autoToCodexStartIndex,
+          (message) => assistantTextMatches(message, "specialist", preRestoreAutoToCodexReplyToken),
+          "specialist reply before restore",
+        );
 
         const codexToAutoStartIndex = firstConnection.messages.length;
         sendTeamMessageOverSocket(firstConnection.socket, {
@@ -750,6 +777,12 @@ Rules:
           recipientMemberName: "coordinator",
           content: `Reply with exactly ${preRestoreCodexToAutoReplyToken} and nothing else.`,
         });
+        await waitForMessageAfter(
+          firstConnection.messages,
+          codexToAutoStartIndex,
+          (message) => assistantTextMatches(message, "coordinator", preRestoreCodexToAutoReplyToken),
+          "coordinator reply before restore",
+        );
       } finally {
         firstConnection.socket.close();
         await firstConnection.streamApp.close();
@@ -831,6 +864,12 @@ Rules:
           recipientMemberName: "specialist",
           content: `Reply with exactly ${postRestoreAutoToCodexReplyToken} and nothing else.`,
         });
+        await waitForMessageAfter(
+          secondConnection.messages,
+          autoToCodexAfterRestoreStartIndex,
+          (message) => assistantTextMatches(message, "specialist", postRestoreAutoToCodexReplyToken),
+          "specialist reply after restore",
+        );
 
         const codexToAutoAfterRestoreStartIndex = secondConnection.messages.length;
         sendTeamMessageOverSocket(secondConnection.socket, {
@@ -844,6 +883,12 @@ Rules:
           recipientMemberName: "coordinator",
           content: `Reply with exactly ${postRestoreCodexToAutoReplyToken} and nothing else.`,
         });
+        await waitForMessageAfter(
+          secondConnection.messages,
+          codexToAutoAfterRestoreStartIndex,
+          (message) => assistantTextMatches(message, "coordinator", postRestoreCodexToAutoReplyToken),
+          "coordinator reply after restore",
+        );
       } finally {
         secondConnection.socket.close();
         await secondConnection.streamApp.close();

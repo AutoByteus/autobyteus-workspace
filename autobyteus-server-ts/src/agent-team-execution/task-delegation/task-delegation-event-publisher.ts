@@ -7,8 +7,12 @@ import {
   isTaskDelegationTerminalStatus,
   type TaskDelegationActivationPayload,
   type TaskDelegationRecord,
+  type TaskDelegationResultReviewedPayload,
+  type TaskDelegationResultSubmittedPayload,
   type TaskDelegationStatus,
   type TaskDelegationStatusUpdatePayload,
+  type TaskResultReview,
+  type TaskResultSubmission,
 } from "./task-delegation-record.js";
 
 export class TaskDelegationEventPublisher {
@@ -29,6 +33,7 @@ export class TaskDelegationEventPublisher {
         taskId: record.taskId,
         taskLabel: record.taskLabel,
         status: record.status,
+        targetAgentRunId: record.targetAgentRunId,
       })),
       activatedAt: new Date().toISOString(),
     };
@@ -54,12 +59,13 @@ export class TaskDelegationEventPublisher {
       member: input.record.member,
       delegator: input.record.delegator,
       taskAgentInstance: input.record.taskAgentInstance,
+      targetAgentRunId: input.record.targetAgentRunId,
       previousStatus: input.previousStatus,
       status: input.record.status,
-      message: input.record.status === "accepted"
-        ? input.record.acceptanceMessage
-        : input.record.statusMessage,
-      referenceFiles: input.record.statusReferenceFiles,
+      pendingSubmissionId: input.record.pendingSubmissionId,
+      latestSubmissionId: input.record.resultSubmissions.at(-1)?.submissionId ?? null,
+      latestReviewId: input.record.resultReviews.at(-1)?.reviewId ?? null,
+      reviewedSubmissionId: input.record.resultReviews.at(-1)?.reviewedSubmissionId ?? null,
       acceptanceMessage: input.record.acceptanceMessage,
       acceptedAt: input.record.acceptedAt,
       updatedAt: input.record.updatedAt,
@@ -70,6 +76,70 @@ export class TaskDelegationEventPublisher {
       teamRunId: input.teamRunId,
       sourcePath: input.record.member.memberPath,
       eventType: "TASK_DELEGATION_STATUS_UPDATED",
+      payload,
+    });
+  }
+
+  publishResultSubmitted(input: {
+    teamRun: TeamRun;
+    teamRunId: string;
+    previousStatus: TaskDelegationStatus;
+    record: TaskDelegationRecord;
+    submission: TaskResultSubmission;
+  }): void {
+    const payload: TaskDelegationResultSubmittedPayload = {
+      teamRunId: input.teamRunId,
+      taskId: input.record.taskId,
+      taskLabel: input.record.taskLabel,
+      member: input.record.member,
+      delegator: input.record.delegator,
+      taskAgentInstance: input.record.taskAgentInstance,
+      targetAgentRunId: input.record.targetAgentRunId,
+      previousStatus: input.previousStatus,
+      status: input.record.status,
+      submissionId: input.submission.submissionId,
+      pendingSubmissionId: input.record.pendingSubmissionId,
+      submittedAt: input.submission.submittedAt,
+      updatedAt: input.record.updatedAt,
+    };
+    this.publish({
+      teamRun: input.teamRun,
+      teamRunId: input.teamRunId,
+      sourcePath: input.record.member.memberPath,
+      eventType: "TASK_DELEGATION_RESULT_SUBMITTED",
+      payload,
+    });
+  }
+
+  publishResultReviewed(input: {
+    teamRun: TeamRun;
+    teamRunId: string;
+    previousStatus: TaskDelegationStatus;
+    record: TaskDelegationRecord;
+    review: TaskResultReview;
+  }): void {
+    const payload: TaskDelegationResultReviewedPayload = {
+      teamRunId: input.teamRunId,
+      taskId: input.record.taskId,
+      taskLabel: input.record.taskLabel,
+      member: input.record.member,
+      delegator: input.record.delegator,
+      taskAgentInstance: input.record.taskAgentInstance,
+      targetAgentRunId: input.record.targetAgentRunId,
+      previousStatus: input.previousStatus,
+      status: input.record.status,
+      reviewId: input.review.reviewId,
+      reviewedSubmissionId: input.review.reviewedSubmissionId,
+      decision: input.review.decision,
+      reviewedAt: input.review.reviewedAt,
+      updatedAt: input.record.updatedAt,
+      terminal: isTaskDelegationTerminalStatus(input.record.status),
+    };
+    this.publish({
+      teamRun: input.teamRun,
+      teamRunId: input.teamRunId,
+      sourcePath: input.record.member.memberPath,
+      eventType: "TASK_DELEGATION_RESULT_REVIEWED",
       payload,
     });
   }

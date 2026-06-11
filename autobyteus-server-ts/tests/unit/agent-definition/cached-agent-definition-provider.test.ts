@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { CachedAgentDefinitionProvider } from "../../../src/agent-definition/providers/cached-agent-definition-provider.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 

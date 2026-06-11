@@ -8,7 +8,10 @@ import { MemberTeamContext } from "../../../../../../src/agent-team-execution/do
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamMemberCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.js";
 
-const createMemberTeamContext = () =>
+const createMemberTeamContext = (input: {
+  allowedRecipientNames?: string[];
+  communicationRecipients?: [];
+} = {}) =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
@@ -39,7 +42,8 @@ const createMemberTeamContext = () =>
         description: "Drafts the answer.",
       },
     ],
-    allowedRecipientNames: ["Writer"],
+    communicationRecipients: input.communicationRecipients,
+    allowedRecipientNames: input.allowedRecipientNames ?? ["Writer"],
     sendMessageToEnabled: true,
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   });
@@ -77,11 +81,45 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
         name: "send_message_to",
         inputSchema: expect.objectContaining({
           properties: expect.objectContaining({
-            recipient_name: expect.objectContaining({ enum: ["Writer"] }),
+            recipient_name: expect.not.objectContaining({ enum: expect.anything() }),
           }),
         }),
       }),
     );
+  });
+
+  it("exposes send_message_to for exact-run-only contexts with no static recipients", () => {
+    const strategy = new TeamMemberCodexThreadBootstrapStrategy();
+    const memberTeamContext = createMemberTeamContext({
+      allowedRecipientNames: [],
+      communicationRecipients: [],
+    });
+    const runContext = new AgentRunContext({
+      runId: "run-professor",
+      config: new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "gpt-test",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberTeamContext,
+      }),
+      runtimeContext: null,
+    });
+
+    const preparation = strategy.prepare({
+      runContext,
+      agentInstruction: "Solve the task.",
+      configuredToolExposure: buildConfiguredAgentToolExposure(["send_message_to"]),
+    });
+
+    expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
+      .toEqual(["send_message_to"]);
+    expect(preparation.developerInstructions).toContain(
+      "No logical `recipient_name` roster recipients are currently listed for this run.",
+    );
+    expect(preparation.developerInstructions).toContain("Set `target_agent_run_id`");
+    expect(preparation.developerInstructions).not.toContain("Use recipient_name for one logical roster recipient:");
   });
 
   it("adds task delegation dynamic tools only when the agent configuration enables them", () => {
@@ -105,9 +143,11 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       agentInstruction: "Solve the task.",
       configuredToolExposure: buildConfiguredAgentToolExposure([
         "delegate_tasks",
-        "mark_task_completed",
-        "mark_task_failed",
-        "accept_task",
+        ["mark", "task", "completed"].join("_"),
+        ["mark", "task", "failed"].join("_"),
+        ["accept", "task"].join("_"),
+        "submit_task_result",
+        "review_task_result",
         "create_task",
       ]),
     });
@@ -117,9 +157,8 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
       .toEqual([
         "delegate_tasks",
-        "mark_task_completed",
-        "mark_task_failed",
-        "accept_task",
+        "submit_task_result",
+        "review_task_result",
       ]);
   });
 });

@@ -1,0 +1,22 @@
+# Finalization refresh before ticket archive
+UTC 2026-06-11T04:31:43Z
+## fetch
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+ * branch              codex/mixed-team-manager-simplification-analysis -> FETCH_HEAD
+## status
+## codex/mixed-team-manager-simplification-analysis...origin/codex/mixed-team-manager-simplification-analysis
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/delivery-release-deployment-report.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/release-notes.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-final-artifact-verify-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-final-build-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/finalization-refresh-before-archive.log
+## refs
+fb5231a49772df61c9da395a1e4e86309c593634
+fb5231a49772df61c9da395a1e4e86309c593634
+36b2dbd6d5bfba4634db19d7fbb7e60df27487ec
+## ahead/behind current vs upstream
+0	0
+## personal vs ticket ancestry
+origin/personal is ancestor of ticket HEAD
+ticket HEAD is NOT yet in origin/personal

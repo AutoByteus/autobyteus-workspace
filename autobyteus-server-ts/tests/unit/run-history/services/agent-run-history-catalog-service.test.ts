@@ -167,6 +167,22 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")).resolves.toBe(before);
   });
 
+  it("updates first summary only and does not rewrite on ordinary later activity", async () => {
+    const { service, indexStore, getPersistedIndex } = await buildServiceWithIndexStore([
+      buildIndexRow({ summary: "" }),
+    ]);
+    await expect(service.listCatalogRows()).resolves.toMatchObject([{ runId: "run-1" }]);
+
+    await service.recordRunSummary({ runId: "run-1", summary: "first" });
+    await service.recordRunSummary({ runId: "run-1", summary: "second" });
+
+    expect(indexStore.writeIndex).toHaveBeenCalledTimes(1);
+    await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({
+      summary: "first",
+    });
+    expect(getPersistedIndex()).toMatchObject([{ summary: "first" }]);
+  });
+
   it("serializes concurrent prepared-run catalog mutations", async () => {
     const service = await buildService();
     await Promise.all([
@@ -235,8 +251,8 @@ describe("AgentRunHistoryCatalogService", () => {
     expect(getPersistedIndex()).toEqual([row]);
   });
 
-  it("rolls back summary and termination state in memory when index flushes fail", async () => {
-    const row = buildIndexRow();
+  it("rolls back first summary and termination state in memory when index flushes fail", async () => {
+    const row = buildIndexRow({ summary: "" });
     const { service, failNextWrite, getPersistedIndex } = await buildServiceWithIndexStore([row]);
     await expect(service.listCatalogRows()).resolves.toMatchObject([{ runId: "run-1" }]);
 
@@ -245,7 +261,7 @@ describe("AgentRunHistoryCatalogService", () => {
       service.recordRunSummary({ runId: "run-1", summary: "new summary" }),
     ).rejects.toThrow("summary flush failed");
     await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({
-      summary: "original summary",
+      summary: "",
       terminatedAt: null,
     });
 
@@ -257,7 +273,7 @@ describe("AgentRunHistoryCatalogService", () => {
       }),
     ).rejects.toThrow("termination flush failed");
     await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({
-      summary: "original summary",
+      summary: "",
       terminatedAt: null,
     });
     expect(getPersistedIndex()).toEqual([row]);

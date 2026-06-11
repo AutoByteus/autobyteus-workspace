@@ -285,6 +285,18 @@ export class CodexThread {
     });
   }
 
+
+  emitRuntimeError(code: string, message: string): void {
+    this.setCurrentStatus("ERROR");
+    this.emitThreadAppServerMessage({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        code,
+        message,
+      },
+    });
+  }
+
   handleClientClosed(error: unknown): void {
     const errorMessage =
       error && typeof error === "object" && "message" in error

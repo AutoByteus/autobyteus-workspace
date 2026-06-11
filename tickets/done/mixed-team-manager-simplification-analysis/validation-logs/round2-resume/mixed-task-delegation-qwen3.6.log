@@ -1,0 +1,526 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:5201) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-MNq4zf
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-MNq4zf/.env
+Loading agent tool definitions...
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=29
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Finished Autobyteus image model discovery. Total models registered: 6
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_tasks'
+Successfully registered tool definition: 'mark_task_completed'
+Successfully registered tool definition: 'mark_task_failed'
+Successfully registered tool definition: 'accept_task'
+Loaded tool group: Task Delegation Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Finished LM Studio discovery. Total models registered: 29
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Finished Autobyteus discovery. Total models registered: 37
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Successfully fetched 87 models from LLMFactory.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+LLM models cache populated with 87 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Definition created successfully with ID: mixed-task-coordinator-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Definition created successfully with ID: mixed-task-worker-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+[2026-06-06T17:52:40.917Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Team Definition created successfully with ID: mixed-task-delegation-team-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-2ZBahm
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-2ZBahm.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Created and registered workspace ID: agent_ws_ab2ea514fe55649ea627efd1ad75f713a880cb6ba77c4fefe096b0cbbe4082d7
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+[2026-06-06T17:52:40.925Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+[2026-06-06T17:52:40.942Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Successfully created mixed team run 'team_mixed-task-delegation-team-a305f1d9-c29e_98adfd8d'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent team websocket attached for team run team_mixed-task-delegation-team-a305f1d9-c29e_98adfd8d
+Created agent session 464f42d6-5ad6-41a3-8660-cc32e7e7fb61 for run team_mixed-task-delegation-team-a305f1d9-c29e_98adfd8d
+Agent Team WebSocket connected: session=464f42d6-5ad6-41a3-8660-cc32e7e7fb61, run=team_mixed-task-delegation-team-a305f1d9-c29e_98adfd8d
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Resolved system prompt from fresh definition instructions for AgentDefinition mixed-task-coordinator-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentRuntimeState initialized for agent_id 'coordinator_f87bf824517564e1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'coordinator_f87bf824517564e1': LLM instance 'LMStudioLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_f87bf824517564e1'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'coordinator_f87bf824517564e1' with config: 'mixed-task-coordinator-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee'.
+AgentWorker initialized for agent_id 'coordinator_f87bf824517564e1'.
+Registered AgentContext for agent_id 'coordinator_f87bf824517564e1'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_f87bf824517564e1'. Context registered.
+Agent facade initialized for agent_id 'coordinator_f87bf824517564e1'.
+Agent 'coordinator_f87bf824517564e1' created and stored successfully.
+Agent 'coordinator_f87bf824517564e1' requesting runtime to start.
+AgentRuntime for 'coordinator_f87bf824517564e1': Starting worker.
+AgentWorker 'coordinator_f87bf824517564e1': Starting...
+AgentWorker 'coordinator_f87bf824517564e1' asyncRun(): Starting.
+Agent 'coordinator_f87bf824517564e1': Runtime init completed (event store initialized).
+Agent 'coordinator_f87bf824517564e1': Runtime init completed (status deriver initialized).
+Agent 'coordinator_f87bf824517564e1': Runtime init completed (AgentEventInbox initialized).
+Agent 'coordinator_f87bf824517564e1': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'coordinator_f87bf824517564e1' to become idle (timeout: 30s)...
+AgentEventStream (ID: e1b825b1-dbe9-4fd7-8fe4-de689be23c86) initialized for agent_id 'coordinator_f87bf824517564e1'. Subscribed to notifier.
+Agent 'coordinator_f87bf824517564e1': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent 'coordinator_f87bf824517564e1': Bootstrapper starting direct lifecycle execution.
+Agent 'coordinator_f87bf824517564e1': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'coordinator_f87bf824517564e1': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent 'coordinator_f87bf824517564e1': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'coordinator_f87bf824517564e1': Executing SystemPromptProcessingStep.
+Agent 'coordinator_f87bf824517564e1': Final processed system prompt configured on LLM instance. Final length: 2091.
+Agent 'coordinator_f87bf824517564e1': Final processed system prompt:
+---
+## Team Instruction
+The coordinator delegates one task; the worker reports terminal status.
+
+## Agent Instruction
+If the user asks you to call delegate_tasks with exact JSON arguments, call delegate_tasks exactly once with those exact arguments and do not call any other tool. When you later receive a framework task completion notification with a Task ID, call accept_task exactly once with that task_id and no other arguments. Do not explore the environment.
+
+## Runtime Instruction
+Current team member: coordinator
+Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.
+
+Task delegation protocol
+- Use `delegate_tasks` to assign bounded work to exact logical team members; use a one-item `tasks` list for a single task. The framework derives you as the delegator from tool context; do not pass delegator.
+- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.
+- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.
+- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.
+- Task-agent execution uses `mark_task_completed` or `mark_task_failed`; include required `message` and optional `reference_files`, and do not pass status, task_id, task_name, title, or other selectors.
+- Original-delegator acceptance uses `accept_task` with the generated `task_id` from the completion notification.
+- A completed report remains awaiting acceptance; if changes are needed, use `send_message_to` with the notification's target member plus `task_agent_id` and `task_agent_run_id` so revision feedback reaches the same task-agent instance.
+- After the original delegator accepts the task, the framework must settle or exit the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.
+---
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent 'coordinator_f87bf824517564e1': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentWorker 'coordinator_f87bf824517564e1' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent 'coordinator_f87bf824517564e1' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentEventStream (ID: e1b825b1-dbe9-4fd7-8fe4-de689be23c86) for 'coordinator_f87bf824517564e1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentEventStream (ID: 887e20f2-50b8-491d-9f7b-da892972cab9) initialized for agent_id 'coordinator_f87bf824517564e1'. Subscribed to notifier.
+Successfully created autobyteus agent run 'coordinator_f87bf824517564e1'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_f87bf824517564e1',
+  prompt_tokens: 1309,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Successfully created codex_app_server agent run 'team_mixed-task-delegation-team-a305f1d9-c29e_98adfd8d__worker__task_0001'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+compaction_budget_evaluated {
+  agent_id: 'coordinator_f87bf824517564e1',
+  prompt_tokens: 1552,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_system_task_notification_received. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'coordinator_f87bf824517564e1',
+  prompt_tokens: 1941,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13094,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentEventStream (ID: 887e20f2-50b8-491d-9f7b-da892972cab9) for 'coordinator_f87bf824517564e1': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'coordinator_f87bf824517564e1'. Attempting graceful shutdown.
+Agent 'coordinator_f87bf824517564e1' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentWorker 'coordinator_f87bf824517564e1': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Closed agent session 464f42d6-5ad6-41a3-8660-cc32e7e7fb61
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Team WebSocket disconnected: 464f42d6-5ad6-41a3-8660-cc32e7e7fb61
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentWorker 'coordinator_f87bf824517564e1' asyncRun() loop has finished.
+AgentWorker 'coordinator_f87bf824517564e1': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentWorker 'coordinator_f87bf824517564e1': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_f87bf824517564e1': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentExternalEventNotifier (NotifierID: 1ff8a7af-d34c-44a7-8cf0-dea2052d16ff, AgentID: coordinator_f87bf824517564e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Unregistered AgentContext for agent_id 'coordinator_f87bf824517564e1'.
+AgentRuntime for 'coordinator_f87bf824517564e1': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+AgentRuntime for 'coordinator_f87bf824517564e1' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+[2026-06-06T17:53:13.088Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID mixed-task-delegation-team-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Team Definition with ID mixed-task-delegation-team-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+In-memory cache: Removed agent definition with ID mixed-task-coordinator-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Definition with ID mixed-task-coordinator-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+In-memory cache: Removed agent definition with ID mixed-task-worker-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status
+Agent Definition with ID mixed-task-worker-a305f1d9-c29e-4ab4-b033-c69d1b6a0bee deleted successfully.
+
+ ✓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (1 test) 34286ms
+     ✓ AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status  34197ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  19:52:34
+   Duration  38.37s (transform 2.70s, setup 15ms, import 3.67s, tests 34.29s, environment 0ms)
+
+EXIT_STATUS=0

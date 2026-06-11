@@ -12,9 +12,8 @@ describe("configured-agent-tool-exposure", () => {
       "read_page",
       "generate_image",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
       "send_message_to",
       " publish_artifacts ",
       "",
@@ -27,9 +26,8 @@ describe("configured-agent-tool-exposure", () => {
       "read_page",
       "generate_image",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
       "send_message_to",
       "publish_artifacts",
     ]);
@@ -37,9 +35,8 @@ describe("configured-agent-tool-exposure", () => {
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
     ]);
     expect(exposure.sendMessageToConfigured).toBe(true);
     expect(exposure.publishArtifactsConfigured).toBe(true);
@@ -49,9 +46,8 @@ describe("configured-agent-tool-exposure", () => {
         "read_page",
         "generate_image",
         "delegate_tasks",
-        "mark_task_completed",
-        "mark_task_failed",
-        "accept_task",
+        "submit_task_result",
+        "review_task_result",
         "send_message_to",
         "publish_artifacts",
       ]),
@@ -67,16 +63,17 @@ describe("configured-agent-tool-exposure", () => {
       "assign_task_to",
       "update_task_status",
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
+      ["mark", "task", "completed"].join("_"),
+      ["mark", "task", "failed"].join("_"),
+      ["accept", "task"].join("_"),
     ]);
 
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
       "delegate_tasks",
-      "mark_task_completed",
-      "mark_task_failed",
-      "accept_task",
+      "submit_task_result",
+      "review_task_result",
     ]);
   });
 

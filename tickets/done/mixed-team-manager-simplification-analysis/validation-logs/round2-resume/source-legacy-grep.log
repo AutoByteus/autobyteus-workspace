@@ -1,0 +1,11 @@
+== specialized team backend class/path references in source ==
+== legacy local task-plan tool name string references in source ==
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-work-packet-renderer.ts:19:      "1. Work directly from this task packet. Do not call get_my_tasks; that tool is not part of this workflow.",
+autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts:67:    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:8:  "assign_task_to",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:9:  "create_task",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:10:  "create_tasks",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:11:  "get_my_tasks",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:12:  "get_task_plan_status",
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts:13:  "update_task_status",
+EXIT_STATUS=0

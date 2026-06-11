@@ -1,0 +1,15 @@
+# live runtime availability
+timestamp: 2026-06-06T17:30:25+02:00
+cwd: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+branch: codex/mixed-team-manager-simplification-analysis
+node: v22.21.1
+pnpm: 10.28.2
+codex: codex-cli 0.137.0
+claude: 2.1.131 (Claude Code)
+RUN_LMSTUDIO_E2E=<unset>
+RUN_CODEX_E2E=<unset>
+RUN_CLAUDE_E2E=<unset>
+RUN_MIXED_TASK_DELEGATION_E2E=<unset>
+LMSTUDIO_MODEL_ID=<unset>
+LMSTUDIO_TARGET_TEXT_MODEL=<unset>
+CODEX_E2E_TASK_DELEGATION_MODEL=<unset>

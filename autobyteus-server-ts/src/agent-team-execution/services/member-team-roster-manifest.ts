@@ -142,7 +142,7 @@ export const buildTeamMembershipRosterManifest = (
 export const renderTeamMembershipRosterManifest = (
   manifest: TeamMembershipRosterManifest,
 ): string | null => {
-  if (manifest.teams.length === 0 || manifest.allowedRecipientNames.length === 0) {
+  if (manifest.teams.length === 0) {
     return null;
   }
 
@@ -171,8 +171,12 @@ export const renderTeamMembershipRosterManifest = (
   });
 
   lines.push("");
-  lines.push("When using send_message_to, recipient_name must exactly match one of:");
-  lines.push(...manifest.allowedRecipientNames.map((recipientName) => `- ${recipientName}`));
+  lines.push("When using send_message_to, choose exactly one target selector.");
+  if (manifest.allowedRecipientNames.length > 0) {
+    lines.push("Use recipient_name for one logical roster recipient:");
+    lines.push(...manifest.allowedRecipientNames.map((recipientName) => `- ${recipientName}`));
+  }
+  lines.push("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete active AgentRun id and the message must reach that exact run. Do not provide both selectors.");
 
   return lines.join("\n");
 };

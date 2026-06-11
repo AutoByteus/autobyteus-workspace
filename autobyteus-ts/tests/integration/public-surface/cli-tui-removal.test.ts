@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import * as rootExports from '../../../src/index.js';
 import { ExternalChannelProvider } from '../../../src/external-channel/provider.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
-import { buildTeamLocalTeamDefinitionId } from '../../../src/agent-team/utils/team-local-definition-id.js';
 import { getDefaultSessionFactory } from '../../../src/tools/terminal/session-factory.js';
 import { ParameterSchema } from '../../../src/utils/parameter-schema.js';
 
@@ -43,7 +42,6 @@ describe('autobyteus-ts public surface after native CLI/TUI removal', () => {
 
     expect(ExternalChannelProvider.WECOM).toBe('WECOM');
     expect(LLMProvider.OPENAI).toBe('OPENAI');
-    expect(buildTeamLocalTeamDefinitionId('owner-team', 'research')).toBe('team-local-team:owner-team:research');
     expect(typeof getDefaultSessionFactory()).toBe('function');
   });
 

@@ -1,0 +1,202 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:11413) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport)
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-1QsupE
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-1QsupE/.env
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Created and registered workspace ID: agent_ws_3244d520badabd55b75ee945e9a51424a5772c41a385e5730d66d304149e56dc
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition created successfully with ID: claude-projection-professor-23975be4-6aea-4eff-af03-420f34a9a818
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition created successfully with ID: claude-projection-student-23975be4-6aea-4eff-af03-420f34a9a818
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-09T04:59:06.780Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition created successfully with ID: claude-projection-team-23975be4-6aea-4eff-af03-420f34a9a818
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I.
+Reusing existing workspace ID: agent_ws_3244d520badabd55b75ee945e9a51424a5772c41a385e5730d66d304149e56dc
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-09T04:59:06.786Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-09T04:59:06.805Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 24 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created mixed team run 'team_claude-projection-team-23975be4-6aea-4ef_3e9fdf75'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent team websocket attached for team run team_claude-projection-team-23975be4-6aea-4ef_3e9fdf75
+Created agent session dc6659f3-eb7f-4374-adbe-29a1e2a1ac9e for run team_claude-projection-team-23975be4-6aea-4ef_3e9fdf75
+Agent Team WebSocket connected: session=dc6659f3-eb7f-4374-adbe-29a1e2a1ac9e, run=team_claude-projection-team-23975be4-6aea-4ef_3e9fdf75
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created claude_agent_sdk agent run 'professor_9846fa06b92f1073'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created claude_agent_sdk agent run 'student_a75f7af032c81120'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I.
+Reusing existing workspace ID: agent_ws_3244d520badabd55b75ee945e9a51424a5772c41a385e5730d66d304149e56dc
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-lTqT7I.
+Reusing existing workspace ID: agent_ws_3244d520badabd55b75ee945e9a51424a5772c41a385e5730d66d304149e56dc
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored mixed team run 'team_claude-projection-team-23975be4-6aea-4ef_3e9fdf75'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored claude_agent_sdk agent run 'professor_9846fa06b92f1073'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored claude_agent_sdk agent run 'student_a75f7af032c81120'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Closed agent session dc6659f3-eb7f-4374-adbe-29a1e2a1ac9e
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team WebSocket disconnected: dc6659f3-eb7f-4374-adbe-29a1e2a1ac9e
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-09T04:59:17.953Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-projection-team-23975be4-6aea-4eff-af03-420f34a9a818.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition with ID claude-projection-team-23975be4-6aea-4eff-af03-420f34a9a818 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Removed agent definition with ID claude-projection-professor-23975be4-6aea-4eff-af03-420f34a9a818.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition with ID claude-projection-professor-23975be4-6aea-4eff-af03-420f34a9a818 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Removed agent definition with ID claude-projection-student-23975be4-6aea-4eff-af03-420f34a9a818.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition with ID claude-projection-student-23975be4-6aea-4eff-af03-420f34a9a818 deleted successfully.
+
+ ✓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 4 skipped) 12018ms
+     ✓ serves every team member projection after terminate, restore, and continue in claude team runtime  11976ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  06:59:00
+   Duration  17.66s (transform 3.55s, setup 19ms, import 5.16s, tests 12.02s, environment 0ms)

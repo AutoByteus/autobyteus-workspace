@@ -13,7 +13,7 @@ import {
 import { TeamRunConfig, type TeamSubTeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 
 const buildChildAgent = (memberName: string, routeKey: string) => ({
   memberKind: "agent" as const,
@@ -100,6 +100,7 @@ describe("MixedSubTeamMemberHandle", () => {
     expect(childPostMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "route_key", memberRouteKey: "Reviewer" },
+      null,
     );
   });
 
@@ -167,8 +168,9 @@ describe("MixedSubTeamMemberHandle", () => {
       notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
     });
-    const request: InterAgentMessageDeliveryRequest = {
+    const request: ResolvedInterAgentMessageDeliveryRequest = {
       teamRunId: "parent-1",
+      target: { kind: "recipient_name", recipientName: "Reviewer" },
       sender: {
         participant: {
           memberKind: "agent",
@@ -212,6 +214,8 @@ describe("MixedSubTeamMemberHandle", () => {
         },
         selector: { kind: "path", memberPath: ["ReviewTeam", "Reviewer"] },
       },
+      resolvedTargetKind: "logical_member",
+      targetAgentRunId: "run-reviewer",
       content: "Please review.",
       messageType: "representative_message",
     };
@@ -222,6 +226,7 @@ describe("MixedSubTeamMemberHandle", () => {
     expect(childPostMessage).toHaveBeenCalledWith(
       expect.any(AgentInputUserMessage),
       { kind: "path", memberPath: ["Reviewer"] },
+      null,
     );
   });
 });

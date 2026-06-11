@@ -1,0 +1,203 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:10990) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-yw1TNG
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-yw1TNG/.env
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition created successfully with ID: codex-ping-be6104b6-401a-43ae-bb64-12a7dd340a0a
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition created successfully with ID: codex-pong-be6104b6-401a-43ae-bb64-12a7dd340a0a
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-07T06:35:14.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team Definition created successfully with ID: codex-roundtrip-team-be6104b6-401a-43ae-bb64-12a7dd340a0a
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-TUC77O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-TUC77O.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Created and registered workspace ID: agent_ws_cbe4406db7f6b435d323af66817abcbabb505d0aa843f6af16ad694e0f4366bd
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-07T06:35:14.784Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-07T06:35:14.798Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created mixed team run 'team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent team websocket attached for team run team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad
+Created agent session 4d8240b9-271c-469e-b04a-9529710d3773 for run team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad
+Agent Team WebSocket connected: session=4d8240b9-271c-469e-b04a-9529710d3773, run=team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created codex_app_server agent run 'ping_64b39e77295c061b'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[team-communication] projection inserted teamRunId=team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad messageId=teammsg_TA8PYl_NEJYZNv1TO2zxV2z6v59GQI4L senderRunId=ping_64b39e77295c061b receiverRunId=pong_01fc3ea3dbab57d5 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-yw1TNG/memory/agent_teams/team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad/team_communication_messages.json
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Closed agent session 4d8240b9-271c-469e-b04a-9529710d3773
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team WebSocket disconnected: 4d8240b9-271c-469e-b04a-9529710d3773
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Successfully created codex_app_server agent run 'pong_01fc3ea3dbab57d5'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+[2026-06-07T06:37:15.144Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-roundtrip-team-be6104b6-401a-43ae-bb64-12a7dd340a0a.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Team Definition with ID codex-roundtrip-team-be6104b6-401a-43ae-bb64-12a7dd340a0a deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+In-memory cache: Removed agent definition with ID codex-ping-be6104b6-401a-43ae-bb64-12a7dd340a0a.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition with ID codex-ping-be6104b6-401a-43ae-bb64-12a7dd340a0a deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+In-memory cache: Removed agent definition with ID codex-pong-be6104b6-401a-43ae-bb64-12a7dd340a0a.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Agent Definition with ID codex-pong-be6104b6-401a-43ae-bb64-12a7dd340a0a deleted successfully.
+
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 1 failed | 4 skipped) 120563ms
+     × routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime 120516ms
+     ↓ creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+     ↓ streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+     ↓ preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+     ↓ keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime
+Error: Timed out waiting for team websocket event 'ping send_message_to SEGMENT_START'. preview='TURN_STARTED:{"turnId":"019ea0ca-f14f-7bb3-9adc-63344f031fd0","turn_id":"019ea0ca-f14f-7bb3-9adc-63344f031fd0","agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping" | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | AGENT_STATUS:{"status":"error","can_interrupt":false,"agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | TEAM_STATUS:{"status":"error","source_path":[]} | ERROR:{"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key | AGENT_STATUS:{"status":"error","can_interrupt":false,"agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | ERROR:{"code":"RUNTIME_ERROR","message":"Reconnecting... 3/5","agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key | AGENT_STATUS:{"status":"error","can_interrupt":false,"agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | ERROR:{"code":"RUNTIME_ERROR","message":"Reconnecting... 4/5","agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key | AGENT_STATUS:{"status":"error","can_interrupt":false,"agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | ERROR:{"code":"RUNTIME_ERROR","message":"Reconnecting... 5/5","agent_name":"ping","agent_id":"ping_64b39e77295c061b","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key | TOOL_EXECUTION_STARTED:{"item":{"type":"commandExecution","id":"call_HpilkcPI0Vl3aGwMCaVZIA7a","command":"/bin/bash -lc 'echo should not be called'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtr | AGENT_STATUS:{"status":"running","can_interrupt":false,"agent_id":"ping_64b39e77295c061b","agent_name":"ping","member_route_key":"ping","member_path":["ping"],"source_path":["ping"],"source_route_key":"ping"} | TEAM_STATUS:{"status":"running","source_path":[]} | TOOL_EXECUTION_SUCCEEDED:{"item":{"type":"commandExecution","id":"call_HpilkcPI0Vl3aGwMCaVZIA7a","command":"/bin/bash -lc 'echo should not be called'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtr | TOOL_LOG:{"threadId":"019ea0ca-f099-7670-a15d-02510b726c4d","turnId":"019ea0ca-f14f-7bb3-9adc-63344f031fd0","item":{"type":"function_call_output","call_id":"call_HpilkcPI0Vl3aGwMCaVZIA7a","output":"Chunk ID: b | SEGMENT_START:{"item":{"type":"dynamicToolCall","id":"call_CO1vI4Gky17kDdnh6XVSQGvf","namespace":null,"tool":"send_message_to","arguments":{"recipient_name":"pong","content":"PING-TO-PONG ROUNDTRIP_PING:be6104b6-40 | TOOL_EXECUTION_STARTED:{"item":{"type":"dynamicToolCall","id":"call_CO1vI4Gky17kDdnh6XVSQGvf","namespace":null,"tool":"send_message_to","arguments":{"recipient_name":"pong","content":"PING-TO-PONG ROUNDTRIP_PING:be6104b6-40 | TEAM_COMMUNICATION_MESSAGE:{"messageId":"teammsg_TA8PYl_NEJYZNv1TO2zxV2z6v59GQI4L","teamRunId":"team_codex-roundtrip-team-be6104b6-401a-43ae-_6ecc86ad","senderRunId":"ping_64b39e77295c061b","senderMemberKind":"agent","senderMem | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"pong_01fc3ea3dbab57d5","agent_name":"pong","member_route_key":"pong","member_path":["pong"],"source_path":["pong"],"source_route_key":"pong"}'
+ ❯ waitForTeamStreamEvent tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:468:15
+    466|           .map((entry) => `${entry.type}:${JSON.stringify(entry.payloa…
+    467|           .join(" | ");
+    468|         throw new Error(`Timed out waiting for team websocket event '$…
+       |               ^
+    469|       };
+    470|
+ ❯ waitForSendMessageLifecycleAndReceipt tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:594:9
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:685:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  08:35:09
+   Duration  125.19s (transform 2.96s, setup 16ms, import 4.15s, tests 120.56s, environment 0ms)

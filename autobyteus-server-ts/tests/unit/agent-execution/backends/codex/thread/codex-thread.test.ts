@@ -12,6 +12,8 @@ import { CodexThreadEventName } from "../../../../../../src/agent-execution/back
 import { createCodexThreadStartupGate } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-startup-gate.js";
 import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -19,6 +21,7 @@ const createRunContext = (input: {
   autoExecuteTools: boolean;
   serviceTier?: string | null;
   dynamicToolHandlers?: Record<string, any>;
+  memberTeamContext?: MemberTeamContext | null;
 }) =>
   new AgentRunContext({
     runId: input.runId,
@@ -30,6 +33,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
       skillAccessMode: SkillAccessMode.NONE,
+      memberTeamContext: input.memberTeamContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {
@@ -54,6 +58,7 @@ const createThread = (
   input: {
     serviceTier?: string | null;
     dynamicToolHandlers?: Record<string, any>;
+    memberTeamContext?: MemberTeamContext | null;
   } = {},
 ) => {
   const client = {
@@ -73,6 +78,7 @@ const createThread = (
       autoExecuteTools,
       serviceTier: input.serviceTier ?? null,
       dynamicToolHandlers: input.dynamicToolHandlers,
+      memberTeamContext: input.memberTeamContext ?? null,
     }),
     client: client as never,
     startup: createCodexThreadStartupGate(),
@@ -80,6 +86,17 @@ const createThread = (
 
   return { thread, client };
 };
+
+const createMemberTeamContext = () =>
+  new MemberTeamContext({
+    teamRunId: "team-1",
+    teamDefinitionId: "team-def-1",
+    teamName: "Codex team",
+    teamBackendKind: TeamBackendKind.MIXED,
+    memberName: "ping",
+    memberRouteKey: "ping",
+    memberRunId: "ping-run-1",
+  });
 
 const createSpeakApprovalParams = () => ({
   threadId: "thread-1",
@@ -132,6 +149,45 @@ describe("CodexThread MCP tool approval bridge", () => {
       }),
     );
     expect(thread.findApprovalRecord("call_speak_auto")).toBeNull();
+  });
+
+  it("auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled", () => {
+    const { thread, client } = createThread(true, {
+      memberTeamContext: createMemberTeamContext(),
+    });
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+    thread.trackPendingMcpToolCall({
+      invocationId: "call_speak_team_auto",
+      turnId: "turn-1",
+      serverName: "tts",
+      toolName: "speak",
+      arguments: {
+        text: "codex unit speak probe",
+        play: true,
+      },
+    });
+
+    thread.handleAppServerRequest(
+      102,
+      "mcpServer/elicitation/request",
+      createSpeakApprovalParams(),
+    );
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(102, { action: "accept" });
+    expect(client.respondError).not.toHaveBeenCalled();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "call_speak_team_auto",
+          tool_name: "speak",
+        }),
+      }),
+    );
+    expect(thread.findApprovalRecord("call_speak_team_auto")).toBeNull();
   });
 
   it("emits approval events for MCP tool calls and answers with the MCP elicitation action", async () => {
@@ -268,6 +324,58 @@ describe("CodexThread Codex approval surfaces", () => {
         }),
       }),
     );
+  });
+
+  it("auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution", async () => {
+    const handler = vi.fn(async () => createCodexDynamicToolTextResult("team dynamic ok"));
+    const { thread, client } = createThread(true, {
+      dynamicToolHandlers: {
+        send_message_to: handler,
+      },
+      memberTeamContext: createMemberTeamContext(),
+    });
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(304, CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, {
+      itemId: "item-terminal-team-auto",
+      approvalId: "approval-team-auto",
+      command: "echo team-auto",
+    });
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(304, { decision: "accept" });
+    expect(thread.findApprovalRecord("item-terminal-team-auto")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "item-terminal-team-auto",
+          tool_name: "run_bash",
+        }),
+      }),
+    );
+
+    thread.handleAppServerRequest(405, CodexThreadEventName.ITEM_TOOL_CALL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      callId: "call-team-dynamic-1",
+      tool: "send_message_to",
+      arguments: {
+        recipient_name: "pong",
+        content: "ready",
+      },
+    });
+
+    await vi.waitFor(() => {
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(client.respondSuccess).toHaveBeenCalledWith(405, {
+        success: true,
+        contentItems: [{ type: "inputText", text: "team dynamic ok" }],
+      });
+    });
+    expect(thread.findApprovalRecord("call-team-dynamic-1")).toBeNull();
   });
 
   it("gates file-change approvals in manual mode and returns decline on denial", async () => {
@@ -522,6 +630,53 @@ describe("CodexThread Codex approval surfaces", () => {
       scope: "session",
     });
     expect(thread.findApprovalRecord("perm-auto-1")).toBeNull();
+  });
+
+  it("grants permission requests automatically for team members in auto mode", () => {
+    const { thread, client } = createThread(true, {
+      memberTeamContext: createMemberTeamContext(),
+    });
+    const requestedWorktreePath =
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-external-git-ops-regression";
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(504, CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, {
+      threadId: "thread-1",
+      turnId: "turn-1",
+      itemId: "perm-team-auto-1",
+      cwd: "/tmp/codex-thread-unit",
+      permissions: {
+        fileSystem: {
+          write: [requestedWorktreePath],
+        },
+        network: null,
+      },
+      reason: "Need external worktree Git metadata access",
+      startedAtMs: 1,
+    });
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(504, {
+      permissions: {
+        fileSystem: {
+          write: [requestedWorktreePath],
+        },
+        network: null,
+      },
+      scope: "session",
+    });
+    expect(thread.findApprovalRecord("perm-team-auto-1")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "perm-team-auto-1",
+          tool_name: "request_permissions",
+        }),
+      }),
+    );
   });
 
   it("queues permission requests in manual mode and grants only after approval", async () => {

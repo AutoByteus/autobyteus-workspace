@@ -19,7 +19,6 @@ import {
 } from "autobyteus-ts";
 import type { Agent } from "autobyteus-ts/agent/agent.js";
 import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
-import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
@@ -30,7 +29,6 @@ import {
 } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { TeamManifestInjectorProcessor } from "autobyteus-ts/agent-team/system-prompt-processor/team-manifest-injector-processor.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentCreationError } from "../../errors.js";
@@ -42,8 +40,9 @@ import {
   type AutoByteusAgentLike,
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
-import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
-import { buildAutoByteusStandaloneTeamContext } from "./autobyteus-team-communication-context-builder.js";
+import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
+import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
+import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -290,7 +289,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
 
     const systemPrompt = asTrimmedString(agentDef.instructions);
-    const resolvedPrompt = systemPrompt ?? agentDef.description;
+    const basePrompt = systemPrompt ?? agentDef.description;
     if (!systemPrompt) {
       logger.warn(
         `No non-blank definition instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
@@ -301,26 +300,16 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       );
     }
 
-    const resolvedToolNames = resolveAutoByteusStandaloneToolNames({
-      toolNames: agentDef.toolNames,
+    const { tools, actualToolNames } = resolveAutoByteusAgentTools({
+      agentDefinition: agentDef,
       memberTeamContext: options.memberTeamContext,
+      logger,
     });
-    const tools = [];
-    for (const name of resolvedToolNames) {
-      if (!defaultToolRegistry.getToolDefinition(name)) {
-        logger.warn(
-          `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-        continue;
-      }
-      try {
-        tools.push(defaultToolRegistry.createTool(name));
-      } catch (error) {
-        logger.error(
-          `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
-        );
-      }
-    }
+    const resolvedPrompt = composeAutoByteusMemberSystemPrompt({
+      baseAgentInstruction: basePrompt,
+      memberTeamContext: options.memberTeamContext ?? null,
+      resolvedToolNames: actualToolNames,
+    });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
     for (const name of mergeMandatoryAndOptional(agentDef.inputProcessorNames, this.registries.input)) {
@@ -363,15 +352,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         );
       }
     }
-    if (
-      options.memberTeamContext &&
-      !systemPromptProcessors.some(
-        (processor) => processor instanceof TeamManifestInjectorProcessor,
-      )
-    ) {
-      systemPromptProcessors.push(new TeamManifestInjectorProcessor());
-    }
-
     const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
     for (const name of mergeMandatoryAndOptional(
       agentDef.toolExecutionResultProcessorNames,
@@ -454,7 +434,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspace_is_temp:
         workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
       ...(options.memberTeamContext
-        ? { teamContext: buildAutoByteusStandaloneTeamContext(options.memberTeamContext) }
+        ? { teamContext: buildAutoByteusManagedTeamContext(options.memberTeamContext) }
         : {}),
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }

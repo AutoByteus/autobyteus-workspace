@@ -54,6 +54,39 @@ describe("MemberTeamContextBuilder", () => {
     expect(result.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
   });
 
+  it("enables send_message_to when delivery exists even without static roster recipients", async () => {
+    const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
+    const builder = new MemberTeamContextBuilder({
+      getDefinitionById: vi.fn().mockResolvedValue({
+        instructions: "Coordinate exact task-agent replies.",
+      }),
+    } as any);
+
+    const result = await builder.build({
+      teamRunId: "team-solo",
+      teamDefinitionId: "team-def-solo",
+      teamBackendKind: TeamBackendKind.MIXED,
+      currentMemberName: "Solo",
+      currentMemberRouteKey: "solo",
+      currentMemberRunId: "run-solo",
+      members: [
+        {
+          memberName: "Solo",
+          memberPath: ["solo"],
+          memberRouteKey: "solo",
+          memberRunId: "run-solo",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        },
+      ],
+      deliverInterAgentMessage,
+    });
+
+    expect(result.communicationRecipients).toEqual([]);
+    expect(result.allowedRecipientNames).toEqual([]);
+    expect(result.sendMessageToEnabled).toBe(true);
+    expect(result.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
+  });
+
   it("exposes subteam representatives by visible leaf name while preserving represented-subteam identity", async () => {
     const builder = new MemberTeamContextBuilder({
       getDefinitionById: vi.fn().mockResolvedValue({ instructions: "" }),

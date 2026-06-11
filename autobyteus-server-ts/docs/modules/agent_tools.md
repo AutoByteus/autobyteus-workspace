@@ -25,46 +25,44 @@ Browser-tool support is runtime-gated:
 The server owns the first-party bounded task-delegation surface for team runs:
 
 - `delegate_tasks`
-- `mark_task_completed`
-- `mark_task_failed`
-- `accept_task`
+- `submit_task_result`
+- `review_task_result`
 
 Canonical contracts, schemas, parsing, result serialization, team-run binding,
 and service lookup live under `src/agent-tools/task-delegation`. The model-facing
 surface is intentionally smaller than the legacy native task-plan tools:
 `create_task`, `create_tasks`, `assign_task_to`, `get_my_tasks`,
 `get_task_plan_status`, and the old local task-plan `update_task_status` are not
-part of the new delegation workflow.
+part of the delegation workflow.
 
 Runtime projection is explicit and uses the same manifest/service boundary:
 
 - Mixed AutoByteus standalone member/task-agent runs may receive thin
-  server-owned local wrappers for the canonical explicit-intent tools when configured, and
-  they strip the legacy task-management tool names from mixed team contexts.
-  Native AutoByteus pure-team agent configs deliberately skip
-  task-delegation tools until native task-agent/per-member
-  settlement exists.
+  server-owned local wrappers for the canonical delegation and acceptance tools
+  when configured, and they strip the legacy task-management tool names from
+  mixed team contexts.
 - Codex receives dynamic tool registrations built from the task-delegation
   manifest.
 - Claude receives first-party MCP tools on the team MCP server, built from the
   same manifest and service.
+- Tool availability is configuration-driven. Runtime adapters must not expose
+  these tools when the member is not configured for them, and this layer must
+  not add provider `tool_choice` policy, forced-tool dampening, or
+  framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
 member identity. `delegate_tasks` creates one or more internal delegation ledger
 records from exact `member_name`, ready-to-run rich `description`, and optional
 `reference_files` work-packet inputs, then starts runnable task-agent instances
 with direct work packets. Do not encode dependencies in a task item; dependent
-follow-up work is delegated by the coordinator later after the framework
-terminal/completion notification. Task-agent result tools are explicit and
-selector-free: `mark_task_completed` and `mark_task_failed` are bound to the
-calling task-agent instance, require a result `message`, and may include
-`reference_files`; task agents must not pass status values or task selectors.
-For original-delegator acceptance after a completion notification,
-`accept_task` accepts the exact framework-generated `task_id` and optional
-`message`. Terminal completion records result context and notifies the
-delegator/coordinator while keeping the task-agent addressable until acceptance;
-accepted or failed terminal paths publish framework task-delegation events and
-request safe task-agent settlement after the bound instance becomes idle.
+follow-up work is delegated by the coordinator later through another
+`delegate_tasks` call. Bound task-agents submit reviewable output with
+`submit_task_result`; the tool accepts only `message` and optional
+`reference_files` because the task is inferred from task-agent context. Original
+delegators review the latest pending submission with `review_task_result`, using
+`decision="accept"` to finalize or `decision="request_revision"` plus a message
+to send system revision instructions. `send_message_to` remains available only
+for ordinary teammate communication, not task result/review/acceptance.
 
 ## Server-Owned Media Tools
 

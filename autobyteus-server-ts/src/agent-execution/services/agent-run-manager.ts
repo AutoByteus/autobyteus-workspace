@@ -11,6 +11,15 @@ import {
   getCodexAgentRunBackendFactory,
 } from "../backends/codex/index.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
+import {
+  buildClaudeSessionConfig,
+  resolveClaudePermissionMode,
+} from "../backends/claude/session/claude-session-config.js";
+import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
+import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
+import { resolveApprovalPolicyForRunConfig } from "../backends/codex/backend/codex-thread-bootstrapper.js";
+import { buildConfiguredAgentToolExposure } from "../shared/configured-agent-tool-exposure.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
 import {
   RunFileChangeService,
@@ -118,6 +127,21 @@ export class AgentRunManager {
     return activeRun;
   }
 
+  async restoreAgentRunFromPlatformState(input: {
+    runId: string;
+    config: AgentRunConfig;
+    platformAgentRunId: string | null;
+  }): Promise<AgentRun> {
+    return this.restoreAgentRun(new AgentRunContext({
+      runId: input.runId,
+      config: input.config,
+      runtimeContext: this.buildRestoreRuntimeContext(
+        input.config,
+        input.platformAgentRunId,
+      ),
+    }));
+  }
+
   hasActiveRun(runId: string): boolean {
     return this.getActiveRun(runId) !== null;
   }
@@ -177,8 +201,40 @@ export class AgentRunManager {
     return null;
   }
 
-  private registerActiveRun(activeRun: AgentRun): void {
-    this.unregisterRunFileChanges(activeRun.runId);
+  private buildRestoreRuntimeContext(
+    config: AgentRunConfig,
+    platformAgentRunId: string | null,
+  ): RuntimeAgentRunContext {
+    if (config.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
+      return new CodexAgentRunContext({
+        codexThreadConfig: buildCodexThreadConfig({
+          model: config.llmModelIdentifier,
+          workingDirectory: ".",
+          reasoningEffort: null,
+          serviceTier: null,
+          approvalPolicy: resolveApprovalPolicyForRunConfig(config),
+          sandbox: "workspace-write",
+          dynamicTools: null,
+        }),
+        threadId: platformAgentRunId,
+      });
+    }
+    if (config.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+      return new ClaudeAgentRunContext({
+        sessionConfig: buildClaudeSessionConfig({
+          model: config.llmModelIdentifier,
+          workingDirectory: ".",
+          permissionMode: resolveClaudePermissionMode(config.autoExecuteTools),
+        }),
+        configuredToolExposure: buildConfiguredAgentToolExposure([]),
+        memberTeamContext: config.memberTeamContext,
+        sessionId: platformAgentRunId,
+      });
+    }
+    return null;
+  }
+
+  private registerActiveRun(activeRun: AgentRun): void {    this.unregisterRunFileChanges(activeRun.runId);
     this.unregisterPublishedArtifactRelay(activeRun.runId);
     this.unregisterMemoryRecorder(activeRun.runId);
     this.activeRuns.set(activeRun.runId, activeRun);

@@ -1,0 +1,17 @@
+# Delivery post-integration checks
+Date: 2026-06-08T14:52:07+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-native-autobyteus-agent-team
+Branch: codex/remove-native-autobyteus-agent-team
+HEAD: 244e1060185522b0ed4fb389b786ce33747a9469
+Tracked remote base: origin/codex/mixed-team-manager-simplification-analysis bbd34030eb35fae528658745f1f7c9a7343f54f5
+Base status: already current; no new base commits integrated. These checks are a delivery smoke rerun for the checkpointed integrated source/docs state.
+
+## git diff --check origin/codex/mixed-team-manager-simplification-analysis...HEAD
+PASS: git diff --check
+
+## pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+PASS: server TypeScript build no-emit
+
+## Working tree status after checks
+## codex/remove-native-autobyteus-agent-team
+?? tickets/in-progress/remove-native-autobyteus-agent-team/

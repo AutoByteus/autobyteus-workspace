@@ -9,7 +9,7 @@ import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import {
   buildTeamMemberAddress,
   type InterAgentMessageDeliveryHandler,
-  type InterAgentMessageDeliveryRequest,
+  type ResolvedInterAgentMessageDeliveryRequest,
 } from "../../../domain/inter-agent-message-delivery.js";
 import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import {
@@ -101,13 +101,18 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     }
   }
 
-  async deliverInterMemberMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
+  async deliverInterMemberMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null = null,
+  ): Promise<AgentOperationResult> {
     this.publishCommandStatus("initializing");
     try {
       const childRun = await this.ensureReady();
       const childSelector = stripSelectorTopLevel(request.recipient.selector);
       const result = await childRun.postMessage(buildInterAgentDeliveryInputMessage(request), childSelector);
-      if (!result.accepted) {
+      if (result.accepted) {
+        beforePublishMemberInput?.();
+      } else {
         this.publishCommandStatus("error", result.message ?? null);
       }
       this.options.notifyStatusChange();

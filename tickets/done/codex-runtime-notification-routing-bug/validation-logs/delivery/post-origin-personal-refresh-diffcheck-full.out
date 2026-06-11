@@ -1,0 +1,153 @@
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/claude-websocket-e2e-rerun.log:206: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:4: trailing whitespace.
++remote:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:5: trailing whitespace.
++remote: Create a pull request for 'codex/mixed-team-manager-simplification-analysis' on GitHub by visiting:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:6: trailing whitespace.
++remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/mixed-team-manager-simplification-analysis
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:7: trailing whitespace.
++remote:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:8: trailing whitespace.
++remote: GitHub found 456 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (10 critical, 189 high, 226 moderate, 31 low). To find out more, visit:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:9: trailing whitespace.
++remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-initial-push.log:10: trailing whitespace.
++remote:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log:395: trailing whitespace.
++ WARN
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log:931: trailing whitespace.
++ WARN
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log:1396: trailing whitespace.
++
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-api-e2e-command.txt:1: trailing whitespace.
++pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-team-execution/team-definition-topology-planner.test.ts tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts tests/unit/agent-team-execution/team-command-start-status.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/api/runtime-selection-top-level.integration.test.ts tests/integration/run-history/memory-layout-and-projection.integration.test.ts tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts tests/integration/public-surface/cli-tui-removal.test.ts tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-api-e2e-vitest.log:1087: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun.log:209: trailing whitespace.
++    130|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun.log:222: trailing whitespace.
++    130|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun.log:232: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun2.log:209: trailing whitespace.
++    130|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun2.log:219: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-failed-codex-rerun3.log:186: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-live-all.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-live-all.log:1927: trailing whitespace.
++    130|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-live-all.log:1936: trailing whitespace.
++    632|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-live-all.log:1940: trailing whitespace.
++    635|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/agent-runtime-graphql-live-all.log:1950: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/autobyteus-mixed-tool-exposure.log:59: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/autobyteus-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/autobyteus-team-runtime-qwen3.6.log:1364: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/claude-team-inter-agent-roundtrip.log:450: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/codex-single-history-and-token-usage.log:210: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/codex-team-inter-agent-roundtrip.log:463: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/external-channel-team-open-delivery.log:98: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/file-change-projection.log:129: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/mixed-task-delegation-qwen3.6.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/mixed-task-delegation-qwen3.6.log:525: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/mixed-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/mixed-team-runtime-qwen3.6.log:746: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/nested-mixed-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/nested-mixed-team-runtime-qwen3.6.log:481: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/runtime-capability-and-remote-browser.log:251: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/focused-final/team-manager-integration-focused.log:434: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/full-e2e/full-e2e.log:133: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/full-e2e/full-e2e.log:3232: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/full-e2e/full-e2e.log:3391: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/live-e2e/tests__e2e__runtime__agent-runtime-graphql_e2e_test_ts.log:126: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/live-e2e/tests__e2e__runtime__agent-runtime-graphql_e2e_test_ts.log:597: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/autobyteus-team-runtime.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/autobyteus-team-runtime.log:1364: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-current-segments.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-current-segments.log:476: trailing whitespace.
++    109|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-current-segments.log:487: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-delivery-fallback.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-delivery-fallback.log:746: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-wait-recipient.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-wait-recipient.log:435: trailing whitespace.
++    109|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime-rerun-wait-recipient.log:445: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime.log:667: trailing whitespace.
++    597|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/mixed-team-runtime.log:681: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/nested-mixed-team-runtime.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/qwen3.6-explicit/nested-mixed-team-runtime.log:481: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/round2-resume/autobyteus-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/round2-resume/mixed-task-delegation-qwen3.6.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/round2-resume/mixed-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/round2-resume/nested-mixed-team-runtime-qwen3.6.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/autobyteus-team-runtime-rerun2.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/autobyteus-team-runtime-rerun2.log:1364: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/autobyteus-team-runtime.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/autobyteus-team-runtime.log:1243: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/claude-team-inter-agent-roundtrip-rerun2.log:450: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/claude-team-inter-agent-roundtrip.log:456: trailing whitespace.
++    508|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/claude-team-inter-agent-roundtrip.log:470: trailing whitespace.
++    131|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/claude-team-inter-agent-roundtrip.log:480: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip-rerun2.log:466: trailing whitespace.
++    913|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip-rerun2.log:476: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip-rerun4.log:466: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip.log:469: trailing whitespace.
++    469|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip.log:483: trailing whitespace.
++    914|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-inter-agent-roundtrip.log:493: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/codex-team-nested-only-rerun3.log:196: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3-next-80b.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3-next-80b.log:405: trailing whitespace.
++     84|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3-next-80b.log:415: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3.6-35b-a3b-required.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3.6-35b-a3b-required.log:525: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3.6-35b-a3b.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3.6-35b-a3b.log:405: trailing whitespace.
++     84|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-qwen3.6-35b-a3b.log:415: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-rerun-toolcall.log:184: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-rerun-toolcall.log:413: trailing whitespace.
++     83|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation-rerun-toolcall.log:423: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation.log:186: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation.log:407: trailing whitespace.
++     83|
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-task-delegation.log:417: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-team-runtime-graphql.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/mixed-team-runtime-graphql.log:702: new blank line at EOF.
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/nested-mixed-team-runtime-graphql.log:125: trailing whitespace.
++Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/targeted-after-e2e-fix/nested-mixed-team-runtime-graphql.log:481: new blank line at EOF.

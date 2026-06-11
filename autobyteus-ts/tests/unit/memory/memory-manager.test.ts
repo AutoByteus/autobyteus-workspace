@@ -333,10 +333,16 @@ describe('MemoryManager', () => {
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.content === 'stable system prompt')).toBe(true);
       expect(messages.some((message) => message.content === 'interrupted user input')).toBe(true);
+      expect(messages.find((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${turnId}' was interrupted`)
+      )?.role).toBe(MessageRole.SYSTEM);
       expect(messages.some((message) =>
         typeof message.content === 'string' &&
         message.content.includes(`turn '${turnId}' was interrupted`) &&
-        message.content.includes('user_interrupt')
+        message.content.includes('user_interrupt') &&
+        message.content.includes('interrupted request as cancelled') &&
+        message.content.includes('Treat the next user message as the active instruction')
       )).toBe(true);
       expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(false);
       expect(messages.some((message) => message.tool_payload instanceof ToolResultPayload)).toBe(false);
@@ -413,7 +419,8 @@ describe('MemoryManager', () => {
       expect(messages.some((message) => message.tool_payload)).toBe(false);
       expect(messages.some((message) =>
         typeof message.content === 'string' &&
-        message.content.includes('Interrupted tool request was fenced') &&
+        message.content.includes('Interrupted tool request was cancelled and fenced') &&
+        message.content.includes('historical only') &&
         message.content.includes('safe_tool') &&
         message.content.includes('slow_tool')
       )).toBe(true);
@@ -424,6 +431,7 @@ describe('MemoryManager', () => {
         message.content.includes('SAFE_FACT')
       )).toBe(true);
       expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
+      expect(messages.at(-1)?.role).toBe(MessageRole.SYSTEM);
       expect(manager.listRawTracesOrdered().some((item) =>
         item.traceType === 'tool_result' &&
         item.toolCallId === 'call_A' &&

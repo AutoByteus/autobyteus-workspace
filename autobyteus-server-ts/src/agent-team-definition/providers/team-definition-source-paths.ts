@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 import { parseCanonicalApplicationOwnedTeamId } from "../../application-bundles/utils/application-bundle-identity.js";
-import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { parseTeamLocalDefinitionId } from "../utils/team-local-definition-id.js";
 import type { ApplicationOwnedTeamSourcePaths } from "./application-owned-team-source.js";
 import { parseTeamMd } from "../utils/team-md-parser.js";
 

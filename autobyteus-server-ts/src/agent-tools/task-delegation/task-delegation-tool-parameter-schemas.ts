@@ -4,10 +4,9 @@ import {
   ParameterType,
 } from "autobyteus-ts/utils/parameter-schema.js";
 import {
-  ACCEPT_TASK_TOOL_NAME,
   DELEGATE_TASKS_TOOL_NAME,
-  MARK_TASK_COMPLETED_TOOL_NAME,
-  MARK_TASK_FAILED_TOOL_NAME,
+  REVIEW_TASK_RESULT_TOOL_NAME,
+  SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 
@@ -21,7 +20,7 @@ const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Required rich ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put task instructions here, but do not encode dependencies; dependent follow-up work should be delegated later after the framework terminal/completion notification.",
+    description: "Required rich ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put task instructions here, but do not encode dependencies or lifecycle result/review fields.",
     required: true,
   }),
   new ParameterDefinition({
@@ -38,48 +37,56 @@ export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "tasks",
       type: ParameterType.ARRAY,
-      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not pass delegator; the framework derives the delegator from tool context. Do not encode dependencies; delegate dependent follow-up work later after the framework terminal/completion notification.",
+      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not pass delegator, task_name, dependencies, completion_criteria, expected_deliverables, or status; the framework derives the delegator from tool context. Task-agent results are submitted later with submit_task_result.",
       required: true,
       arrayItemSchema: buildTaskItemSchema(),
     }),
   ]);
 
-const buildTaskAgentResultParameterSchema = (toolName: "mark_task_completed" | "mark_task_failed"): ParameterSchema =>
+export const buildSubmitTaskResultParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
       name: "message",
       type: ParameterType.STRING,
-      description: `${toolName} requires a concise result message for the delegated task bound to this task-agent instance. Do not pass status, task_id, task_name, title, or any other task selector; the framework resolves the task from this task-agent context.`,
+      description: "Required reviewable result message for the task bound to the current task-agent context. Do not pass task_id, task_name, member_name, status, or other selectors.",
       required: true,
     }),
     new ParameterDefinition({
       name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file or artifact paths produced by or relevant to this task result.",
+      description: "Optional file/artifact paths or references that support this submitted result.",
       required: false,
       arrayItemSchema: { type: "string" },
     }),
   ]);
 
-export const buildMarkTaskCompletedParameterSchema = (): ParameterSchema =>
-  buildTaskAgentResultParameterSchema(MARK_TASK_COMPLETED_TOOL_NAME);
-
-export const buildMarkTaskFailedParameterSchema = (): ParameterSchema =>
-  buildTaskAgentResultParameterSchema(MARK_TASK_FAILED_TOOL_NAME);
-
-export const buildAcceptTaskParameterSchema = (): ParameterSchema =>
+export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
       name: "task_id",
       type: ParameterType.STRING,
-      description: "Required generated Task ID from the framework completion notification. Only the original delegator for that task may call accept_task.",
+      description: "Required generated Task ID whose latest pending submission is being reviewed. Only the original delegator may review.",
+      required: true,
+    }),
+    new ParameterDefinition({
+      name: "decision",
+      type: ParameterType.ENUM,
+      enumValues: ["accept", "request_revision"],
+      description: "Review decision for the latest pending submission. Use accept to finalize the task, or request_revision to return it to active work with system-delivered revision instructions.",
       required: true,
     }),
     new ParameterDefinition({
       name: "message",
       type: ParameterType.STRING,
-      description: "Optional acceptance note from the original delegator. Do not pass worker result fields or reference_files here.",
+      description: "Required when decision is request_revision; optional acceptance note when decision is accept.",
       required: false,
+    }),
+    new ParameterDefinition({
+      name: "reference_files",
+      type: ParameterType.ARRAY,
+      description: "Optional file/artifact paths or references for revision instructions or acceptance context.",
+      required: false,
+      arrayItemSchema: { type: "string" },
     }),
   ]);
 
@@ -89,14 +96,11 @@ export const buildTaskDelegationToolParameterSchema = (
   if (toolName === DELEGATE_TASKS_TOOL_NAME) {
     return buildDelegateTasksParameterSchema();
   }
-  if (toolName === MARK_TASK_COMPLETED_TOOL_NAME) {
-    return buildMarkTaskCompletedParameterSchema();
+  if (toolName === SUBMIT_TASK_RESULT_TOOL_NAME) {
+    return buildSubmitTaskResultParameterSchema();
   }
-  if (toolName === MARK_TASK_FAILED_TOOL_NAME) {
-    return buildMarkTaskFailedParameterSchema();
-  }
-  if (toolName === ACCEPT_TASK_TOOL_NAME) {
-    return buildAcceptTaskParameterSchema();
+  if (toolName === REVIEW_TASK_RESULT_TOOL_NAME) {
+    return buildReviewTaskResultParameterSchema();
   }
   throw new Error(`Unknown task delegation tool '${toolName}'.`);
 };

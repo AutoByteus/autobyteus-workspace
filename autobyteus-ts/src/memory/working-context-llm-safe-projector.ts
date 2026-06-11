@@ -69,7 +69,7 @@ export function projectLlmSafeWorkingContext(
   }
 
   if (markerContent && !projected.some((message) => message.content === markerContent)) {
-    projected.push(new Message(MessageRole.USER, { content: markerContent }));
+    projected.push(new Message(MessageRole.SYSTEM, { content: markerContent }));
   }
   return projected;
 }
@@ -132,7 +132,11 @@ function buildInterruptedToolCallSummary(
         }))
         .join('\n')}`
     : '';
-  return `Interrupted tool request was fenced from native tool-call history.${suffix}${completedSummary}`;
+  return [
+    `Interrupted tool request was cancelled and fenced from native tool-call history.${suffix}`,
+    'Listed tool requests are historical only; do not execute them unless a later user message asks again.',
+    completedSummary
+  ].join(' ');
 }
 
 function buildCompletedToolResultEventsSummary(events: ToolResultEvent[]): string {

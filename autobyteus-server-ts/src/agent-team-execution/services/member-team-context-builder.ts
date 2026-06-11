@@ -107,8 +107,7 @@ export class MemberTeamContextBuilder {
       parentBoundary,
       communicationRecipients,
       allowedRecipientNames,
-      sendMessageToEnabled:
-        Boolean(deliverInterAgentMessage) && allowedRecipientNames.length > 0,
+      sendMessageToEnabled: Boolean(deliverInterAgentMessage),
       deliverInterAgentMessage,
       taskAgentInstance: input.taskAgentInstance ?? null,
     });

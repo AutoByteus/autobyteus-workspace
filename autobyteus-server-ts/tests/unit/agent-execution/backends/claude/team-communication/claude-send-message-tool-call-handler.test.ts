@@ -11,7 +11,7 @@ const buildMemberTeamContext = (teamRunId: string): MemberTeamContext =>
   new MemberTeamContext({
     teamRunId,
     teamDefinitionId: "team-classroom",
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+    teamBackendKind: TeamBackendKind.MIXED,
     memberName: "professor",
     memberPath: ["professor"],
     memberRouteKey: "professor",
@@ -26,6 +26,7 @@ const buildMemberTeamContext = (teamRunId: string): MemberTeamContext =>
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
         role: null,
         description: null,
+        address: { teamRunId, memberPath: ["professor"], memberRouteKey: "professor" },
       },
       {
         memberKind: "agent",
@@ -34,6 +35,30 @@ const buildMemberTeamContext = (teamRunId: string): MemberTeamContext =>
         memberRouteKey: "student",
         memberRunId: "run-student",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+        address: { teamRunId, memberPath: ["student"], memberRouteKey: "student" },
+      },
+    ],
+    communicationRecipients: [
+      {
+        recipientName: "student",
+        scope: "local_agent",
+        participant: {
+          memberKind: "agent",
+          memberName: "student",
+          memberPath: ["student"],
+          memberRouteKey: "student",
+          memberRunId: "run-student",
+          address: { teamRunId, memberPath: ["student"], memberRouteKey: "student" },
+          platformRunId: null,
+          teamDefinitionId: null,
+          representedSubTeam: null,
+        },
+        delivery: {
+          teamRunId,
+          selector: { kind: "path", memberPath: ["student"] },
+        },
         role: null,
         description: null,
       },
@@ -114,16 +139,20 @@ describe("ClaudeSendMessageToolCallHandler", () => {
       message: "Delivered message to student.",
     });
     expect(deliverInterAgentMessage).toHaveBeenCalledWith({
-      senderRunId: "run-professor",
-      senderSelector: { kind: "path", memberPath: ["professor"] },
-      senderMemberName: "professor",
-      senderPath: ["professor"],
-      senderRouteKey: "professor",
       teamRunId: "team-classroom-1",
-      recipientSelector: { kind: "path", memberPath: ["student"] },
-      recipientMemberName: "student",
-      recipientPath: ["student"],
-      recipientRouteKey: "student",
+      sender: {
+        participant: expect.objectContaining({
+          memberName: "professor",
+          memberPath: ["professor"],
+          memberRouteKey: "professor",
+          memberRunId: "run-professor",
+        }),
+        selector: { kind: "path", memberPath: ["professor"] },
+      },
+      target: {
+        kind: "recipient_name",
+        recipientName: "student",
+      },
       content: "hello class",
       messageType: "classroom_update",
       referenceFiles: [],
@@ -199,7 +228,10 @@ describe("ClaudeSendMessageToolCallHandler", () => {
 
     expect(result.accepted).toBe(true);
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      recipientMemberName: "student",
+      target: expect.objectContaining({
+        kind: "recipient_name",
+        recipientName: "student",
+      }),
       content: "Please inspect the listed file.",
       referenceFiles: ["/tmp/report.md", "/tmp/evidence.log"],
     }));

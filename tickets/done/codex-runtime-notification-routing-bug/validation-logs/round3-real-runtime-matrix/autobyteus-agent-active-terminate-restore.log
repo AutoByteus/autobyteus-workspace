@@ -1,0 +1,449 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:47750) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-api-e2e-xYK6GW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-api-e2e-xYK6GW/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Finished LM Studio discovery. Total models registered: 29
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Successfully fetched 124 models from LLMFactory.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+LLM models cache populated with 124 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent Definition created successfully with ID: autobyteus-api-e2e-7874e4d9-639c-447e-bc93-7e6cd345fc88
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Created and registered workspace ID: agent_ws_206fe77c83d521b125807720f5267ce7f56eea7fe25a8719b6a70b6245f9bdb3
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent definition cache populated with 47 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R.
+Reusing existing workspace ID: agent_ws_206fe77c83d521b125807720f5267ce7f56eea7fe25a8719b6a70b6245f9bdb3
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-api-e2e-7874e4d9-639c-447e-bc93-7e6cd345fc88.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentRuntimeState initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' with config: 'autobyteus-api-e2e-7874e4d9-639c-447e-bc93-7e6cd345fc88'.
+AgentWorker initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+Registered AgentContext for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' created and stored successfully.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' requesting runtime to start.
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting worker.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting...
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' asyncRun(): Starting.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (event store initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' to become idle (timeout: 30s)...
+AgentEventStream (ID: d1fb7c6b-595d-4b58-ab28-c667973e8e65) initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Subscribed to notifier.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Final processed system prompt configured on LLM instance. Final length: 232.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Final processed system prompt:
+---
+Follow the user's request exactly. When the user asks you to create or edit a file, use the appropriate tool exactly once and do not simulate execution. When the user asks you to reply with an exact token, output that token exactly.
+---
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' has become idle.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: d1fb7c6b-595d-4b58-ab28-c667973e8e65) for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: 7c6baa57-de8b-44c2-8e17-209de3c6d10b) initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Subscribed to notifier.
+Successfully created autobyteus agent run 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent websocket attached for run autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947
+Created agent session d321fb25-53a4-48e6-81c4-be91d519b04d for run autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947
+Agent WebSocket connected: session=d321fb25-53a4-48e6-81c4-be91d519b04d, run=autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947',
+  prompt_tokens: 569,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Stored pending tool invocation '419967721' (write_file).
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: 7c6baa57-de8b-44c2-8e17-209de3c6d10b) for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Attempting graceful shutdown.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Stop requested.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_tool_execution_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' asyncRun() loop has finished.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: c3d88c0f-9c87-4769-b5e4-8a4e3c595562, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Unregistered AgentContext for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Context unregistered.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' stop() method completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-active-terminate-workspace-LVeD9R.
+Reusing existing workspace ID: agent_ws_206fe77c83d521b125807720f5267ce7f56eea7fe25a8719b6a70b6245f9bdb3
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-api-e2e-7874e4d9-639c-447e-bc93-7e6cd345fc88.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentRuntimeState initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' with config: 'autobyteus-api-e2e-7874e4d9-639c-447e-bc93-7e6cd345fc88'.
+AgentWorker initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+Registered AgentContext for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' restored and stored successfully.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' requesting runtime to start.
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting worker.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting...
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' asyncRun(): Starting.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (event store initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' to become idle (timeout: 30s)...
+AgentEventStream (ID: cfde9332-5e72-42a9-b00f-3d834bc73ee1) initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Subscribed to notifier.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Final processed system prompt configured on LLM instance. Final length: 232.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Final processed system prompt:
+---
+Follow the user's request exactly. When the user asks you to create or edit a file, use the appropriate tool exactly once and do not simulate execution. When the user asks you to reply with an exact token, output that token exactly.
+---
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' has become idle.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: cfde9332-5e72-42a9-b00f-3d834bc73ee1) for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: 1b6ec2e8-e8a3-4c1c-9341-24f787d1e3d4) initialized for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Subscribed to notifier.
+Successfully restored autobyteus agent run 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+compaction_budget_evaluated {
+  agent_id: 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947',
+  prompt_tokens: 750,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 209510,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentEventStream (ID: 1b6ec2e8-e8a3-4c1c-9341-24f787d1e3d4) for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'. Attempting graceful shutdown.
+Agent 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Stop requested.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentExternalEventNotifier (NotifierID: 14caf20b-768c-40f7-9f61-aa17c964ba83, AgentID: autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Closed agent session d321fb25-53a4-48e6-81c4-be91d519b04d
+Agent WebSocket disconnected: d321fb25-53a4-48e6-81c4-be91d519b04d
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' asyncRun() loop has finished.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+Unregistered AgentContext for agent_id 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947'.
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947': Context unregistered.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+AgentRuntime for 'autobyteus_api_e2e_7874e4d9_639c_447e_bc93_7e6cd345fc88_assistant_1947' stop() method completed.
+
+ ✓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (19 tests | 18 skipped) 23273ms
+     ✓ terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket  23224ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 18 skipped (19)
+   Start at  05:49:23
+   Duration  27.68s (transform 2.74s, setup 20ms, import 3.95s, tests 23.27s, environment 0ms)

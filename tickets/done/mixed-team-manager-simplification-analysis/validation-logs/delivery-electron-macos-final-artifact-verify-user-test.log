@@ -1,0 +1,41 @@
+# Final user-test Electron artifact verification
+UTC 2026-06-11T04:30:33Z
+
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+fb5231a4 (HEAD -> codex/mixed-team-manager-simplification-analysis, origin/codex/mixed-team-manager-simplification-analysis) merge: pure task delegation into mixed team manager
+
+Artifacts:
+-rw-r--r--@ 1 normy  staff   360M Jun 11 05:49 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+-rw-r--r--@ 1 normy  staff   383K Jun 11 05:49 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   357M Jun 11 05:50 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+-rw-r--r--@ 1 normy  staff   375K Jun 11 05:51 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap
+
+hdiutil verify:
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $7A2C8EC3
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F658402C
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $05C1DC36
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $0B92D7D4
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $05C1DC36
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F23EC617
+Die überprüfte CRC32-Prüfsumme ist $DCDCE0AF
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg" is VALID
+
+unzip -tq:
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.
+ZIP verification passed
+
+SHA-256:
+724982314a4cdea3870484daa14365f8a50efa09f585ed5179edf470403c2d73  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg
+e153723afeb15a065277e222931026d03c2199c80c4e7a15ccb0d784156575a8  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip
+d82172a9d3e2da654cb3ee6bf80c7b9bb3d7d4e3c0bc3026fc8fe776fa260ad6  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.dmg.blockmap
+9d1cc7ca00e220092557d1ed68e83dbafd816ef315b16e8f541873d65860fcd6  /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.49.zip.blockmap

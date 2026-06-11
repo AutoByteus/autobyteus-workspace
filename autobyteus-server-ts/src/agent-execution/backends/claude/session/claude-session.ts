@@ -266,7 +266,6 @@ export class ClaudeSession {
     );
     await this.flushPendingToolApprovalResponses();
     activeTurn.abortController.abort();
-    this.closeActiveTurnQuery(activeTurn);
     await activeTurn.settledTask;
     this.currentStatus = "IDLE";
     this.isInterruptingActiveTurn = false;
@@ -346,6 +345,16 @@ export class ClaudeSession {
       this.currentStatus = "IDLE";
       this.isInterruptingActiveTurn = false;
       this.clearActiveTurn();
+    }
+  }
+
+
+  private forgetActiveTurnQuery(activeTurn: ClaudeActiveTurnExecution): void {
+    const query = activeTurn.query;
+    activeTurn.queryClosed = true;
+    activeTurn.query = null;
+    if (query && this.dependencies.activeQueriesByRunId.get(this.runId) === query) {
+      this.dependencies.activeQueriesByRunId.delete(this.runId);
     }
   }
 
@@ -505,7 +514,11 @@ export class ClaudeSession {
       }
     } finally {
       if (activeTurn) {
-        this.closeActiveTurnQuery(activeTurn);
+        if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
+          this.forgetActiveTurnQuery(activeTurn);
+        } else {
+          this.closeActiveTurnQuery(activeTurn);
+        }
       } else {
         this.dependencies.activeQueriesByRunId.delete(this.runId);
         this.dependencies.sdkClient.closeQuery(query);

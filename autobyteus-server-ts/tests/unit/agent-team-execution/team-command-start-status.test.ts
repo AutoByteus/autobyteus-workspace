@@ -4,10 +4,6 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { ClaudeTeamManager } from "../../../src/agent-team-execution/backends/claude/claude-team-manager.js";
-import { ClaudeTeamMemberContext, ClaudeTeamRunContext } from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
-import { CodexTeamManager } from "../../../src/agent-team-execution/backends/codex/codex-team-manager.js";
-import { CodexTeamMemberContext, CodexTeamRunContext } from "../../../src/agent-team-execution/backends/codex/codex-team-run-context.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedSubTeamMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.js";
 import { MixedAgentMemberContext, MixedSubTeamMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
@@ -376,127 +372,7 @@ const createFakeAgentRun = (runtimeKind: RuntimeKind, sendDeferred = createDefer
   };
 };
 
-const createCodexManager = (createAgentRun: ReturnType<typeof vi.fn>) => {
-  const memberContext = new CodexTeamMemberContext({
-    memberName: "Worker",
-    memberPath: ["Worker"],
-    memberRouteKey: "Worker",
-    memberRunId: "member-run-1",
-    threadId: null,
-    agentRunConfig: createAgentConfig(RuntimeKind.CODEX_APP_SERVER),
-  });
-  const teamConfig = new TeamRunConfig({
-    teamDefinitionId: "team-def-1",
-    teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-    coordinatorMemberRouteKey: "Worker",
-    memberConfigs: [createAgentMemberRunConfig(RuntimeKind.CODEX_APP_SERVER)],
-  });
-  const context = new TeamRunContext({
-    runId: "team-run-1",
-    teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-    coordinatorMemberRouteKey: "Worker",
-    config: teamConfig,
-    runtimeContext: new CodexTeamRunContext({ coordinatorMemberRouteKey: "Worker", memberContexts: [memberContext] }),
-  });
-  return new CodexTeamManager(context, {
-    agentRunManager: { createAgentRun, restoreAgentRun: vi.fn() } as never,
-    memberTeamContextBuilder: { build: vi.fn().mockResolvedValue(null) } as never,
-  });
-};
-
-const createClaudeManager = (createAgentRun: ReturnType<typeof vi.fn>) => {
-  const memberContext = new ClaudeTeamMemberContext({
-    memberName: "Worker",
-    memberPath: ["Worker"],
-    memberRouteKey: "Worker",
-    memberRunId: "member-run-1",
-    sessionId: null,
-    agentRunConfig: createAgentConfig(RuntimeKind.CLAUDE_AGENT_SDK),
-  });
-  const teamConfig = new TeamRunConfig({
-    teamDefinitionId: "team-def-1",
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-    coordinatorMemberRouteKey: "Worker",
-    memberConfigs: [createAgentMemberRunConfig(RuntimeKind.CLAUDE_AGENT_SDK)],
-  });
-  const context = new TeamRunContext({
-    runId: "team-run-1",
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-    coordinatorMemberRouteKey: "Worker",
-    config: teamConfig,
-    runtimeContext: new ClaudeTeamRunContext({ coordinatorMemberRouteKey: "Worker", memberContexts: [memberContext] }),
-  });
-  return new ClaudeTeamManager(context, {
-    agentRunManager: { createAgentRun, restoreAgentRun: vi.fn() } as never,
-    memberTeamContextBuilder: { build: vi.fn().mockResolvedValue(null) } as never,
-  });
-};
-
-const assertManagedMemberCommandStart = async (
-  manager: CodexTeamManager | ClaudeTeamManager,
-  createDeferredRun: ReturnType<typeof createDeferred<any>>,
-  runtimeKind: RuntimeKind,
-) => {
-  const { memberRun, sendDeferred, emitStatus, hasListener } = createFakeAgentRun(runtimeKind);
-  const publishedEvents: TeamRunEvent[] = [];
-  manager.subscribeToEvents((event) => publishedEvents.push(event));
-
-  const postPromise = manager.postMessage(new AgentInputUserMessage("start"), { kind: "route_key", memberRouteKey: "Worker" });
-
-  expect(publishedEvents[0]).toMatchObject({
-    eventSourceType: TeamRunEventSourceType.AGENT,
-    sourcePath: ["Worker"],
-    data: { agentEvent: { eventType: AgentRunEventType.AGENT_STATUS, payload: { status: "initializing" } } },
-  });
-  expect(manager.getMemberStatusSnapshots()).toEqual([
-    expect.objectContaining({ agent_id: "member-run-1", status: "initializing", member_route_key: "Worker" }),
-  ]);
-  expect(manager.getStatusSnapshot()).toEqual({ status: "initializing" });
-
-  createDeferredRun.resolve(memberRun);
-  await vi.waitFor(() => expect(memberRun.postUserMessage).toHaveBeenCalledTimes(1));
-  expect(hasListener()).toBe(true);
-  emitStatus("running");
-  expect(manager.getStatusSnapshot()).toEqual({ status: "running" });
-  sendDeferred.resolve({ accepted: true });
-  await expect(postPromise).resolves.toMatchObject({ accepted: true, memberRunId: "member-run-1" });
-};
-
 describe("team command-start status overlays", () => {
-  it("publishes Codex managed member initializing before delayed member run creation resolves", async () => {
-    const createDeferredRun = createDeferred<any>();
-    const manager = createCodexManager(vi.fn(() => createDeferredRun.promise));
-    const { memberRun, sendDeferred, emitStatus, hasListener } = createFakeAgentRun(RuntimeKind.CODEX_APP_SERVER);
-    const publishedEvents: TeamRunEvent[] = [];
-    manager.subscribeToEvents((event) => publishedEvents.push(event));
-
-    const postPromise = manager.postMessage(new AgentInputUserMessage("start"), { kind: "route_key", memberRouteKey: "Worker" });
-
-    expect(publishedEvents[0]).toMatchObject({
-      eventSourceType: TeamRunEventSourceType.AGENT,
-      sourcePath: ["Worker"],
-      data: { agentEvent: { eventType: AgentRunEventType.AGENT_STATUS, payload: { status: "initializing" } } },
-    });
-    expect(manager.getMemberStatusSnapshots()).toEqual([
-      expect.objectContaining({ agent_id: "member-run-1", status: "initializing", member_route_key: "Worker" }),
-    ]);
-    expect(manager.getStatusSnapshot()).toEqual({ status: "initializing" });
-
-    createDeferredRun.resolve(memberRun);
-    await vi.waitFor(() => expect(memberRun.postUserMessage).toHaveBeenCalledTimes(1));
-    expect(hasListener()).toBe(true);
-    emitStatus("running");
-    expect(manager.getStatusSnapshot()).toEqual({ status: "running" });
-    sendDeferred.resolve({ accepted: true });
-    await expect(postPromise).resolves.toMatchObject({ accepted: true, memberRunId: "member-run-1" });
-  });
-
-  it("publishes Claude managed member initializing before delayed member run creation resolves", async () => {
-    const createDeferredRun = createDeferred<any>();
-    const manager = createClaudeManager(vi.fn(() => createDeferredRun.promise));
-    await assertManagedMemberCommandStart(manager, createDeferredRun, RuntimeKind.CLAUDE_AGENT_SDK);
-  });
-
   it("keeps mixed leaf member initializing while delayed agent run creation is pending", async () => {
     const createDeferredRun = createDeferred<any>();
     const { memberRun, sendDeferred, emitStatus, hasListener } = createFakeAgentRun(RuntimeKind.CODEX_APP_SERVER);

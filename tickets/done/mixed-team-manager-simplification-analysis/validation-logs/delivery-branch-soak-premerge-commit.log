@@ -1,0 +1,63 @@
+timestamp_utc=2026-06-07T03:36:41Z
+head_before_commit=72d688184fc94ea928c0689118b57adc1ade55a5
+status_before_commit:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 2, behind 12]
+ M autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+ M autobyteus-server-ts/docs/modules/agent_artifacts.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/design-spec.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/investigation-notes.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/delivery-release-deployment-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/docs-sync-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/handoff-summary.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/release-notes.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-fetch-base-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-premerge-commit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-obsolete-grep.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-artifact-verify-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-handoff-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-remote-base-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-integration-merge.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-run-history-unit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-tsc-noemit.log
+[codex/mixed-team-manager-simplification-analysis 09003155] docs(delivery): record mixed team branch soak handoff
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 23 files changed, 4076 insertions(+), 33 deletions(-)
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/delivery-release-deployment-report.md
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/docs-sync-report.md
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/handoff-summary.md
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/release-notes.md
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-fetch-base-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-premerge-commit.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-git-diff-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-docs-obsolete-grep.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-artifact-verify-user-test.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-electron-macos-build-user-test.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-handoff-git-diff-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-final-remote-base-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-integration-merge.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-git-diff-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-run-history-unit.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-post-integration-tsc-noemit.log
+commit_exit=0
+head_after_commit=090031559417a142809743cf86c3a368c3e7d047
+status_after_commit:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 3, behind 12]
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-premerge-commit.log

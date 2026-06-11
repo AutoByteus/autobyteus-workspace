@@ -155,6 +155,30 @@ const buildReviewLeadContext = (): MemberTeamContext => {
   });
 };
 
+const buildExactRunOnlyContext = (): MemberTeamContext =>
+  new MemberTeamContext({
+    teamRunId: "team-solo",
+    teamDefinitionId: "team-def-solo",
+    teamName: "Exact Run Team",
+    teamBackendKind: TeamBackendKind.MIXED,
+    memberName: "coordinator",
+    memberPath: ["coordinator"],
+    memberRouteKey: "coordinator",
+    memberRunId: "run-coordinator",
+    members: [
+      agentDescriptor({
+        teamRunId: "team-solo",
+        memberName: "coordinator",
+        memberRouteKey: "coordinator",
+        memberRunId: "run-coordinator",
+      }),
+    ],
+    communicationRecipients: [],
+    allowedRecipientNames: [],
+    sendMessageToEnabled: true,
+    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+  });
+
 describe("member-run-instruction-composer", () => {
   it("composes definition instructions separately from runtime constraints", () => {
     const memberTeamContext = buildReviewLeadContext();
@@ -169,7 +193,7 @@ describe("member-run-instruction-composer", () => {
     expect(composition.agentInstruction).toBe("You focus on implementation details.");
     expect(composition.runtimeInstruction).toContain("Current team member: review_lead");
     expect(composition.runtimeInstruction).toContain(
-      "If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.",
+      "If you use `send_message_to`, choose exactly one target selector",
     );
     expect(composition.runtimeInstruction).toContain(
       "Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.",
@@ -201,15 +225,36 @@ describe("member-run-instruction-composer", () => {
     expect(composition.runtimeInstruction).toContain("- program_manager");
     expect(composition.runtimeInstruction).toContain("- review_lead (you, representing BuildSquad)");
     expect(composition.runtimeInstruction).toContain(
-      "When using send_message_to, recipient_name must exactly match one of:",
+      "When using send_message_to, choose exactly one target selector.",
     );
     expect(composition.runtimeInstruction).toContain("- qa_specialist");
     expect(composition.runtimeInstruction).toContain("- program_manager");
+    expect(composition.runtimeInstruction).toContain("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete active AgentRun id");
     expect(composition.runtimeInstruction).not.toContain("Teammates:");
     expect(composition.runtimeInstruction).not.toContain("local_agent");
     expect(composition.runtimeInstruction).not.toContain("parent_boundary_agent");
     expect(composition.runtimeInstruction).not.toContain("local child-team recipients");
     expect(composition.runtimeInstruction).not.toContain("parent-boundary recipients");
+  });
+
+  it("shows exact-run send_message_to guidance when static roster recipients are empty", () => {
+    const composition = composeMemberRunInstructions({
+      teamInstruction: null,
+      agentInstruction: null,
+      memberTeamContext: buildExactRunOnlyContext(),
+      sendMessageToEnabled: true,
+    });
+
+    expect(composition.runtimeInstruction).toContain("Current team member: coordinator");
+    expect(composition.runtimeInstruction).toContain("If you use `send_message_to`, choose exactly one target selector.");
+    expect(composition.runtimeInstruction).toContain(
+      "No logical `recipient_name` roster recipients are currently listed for this run.",
+    );
+    expect(composition.runtimeInstruction).toContain(
+      "Set `target_agent_run_id` to an exact active/recoverable AgentRun id",
+    );
+    expect(composition.runtimeInstruction).not.toContain("Use recipient_name for one logical roster recipient:");
+    expect(composition.runtimeInstruction).not.toContain("Team membership roster");
   });
 
   it("degrades cleanly when only one instruction source exists", () => {
@@ -268,13 +313,13 @@ describe("member-run-instruction-composer", () => {
     expect(enabled.runtimeInstruction).toContain(
       "Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`",
     );
-    expect(enabled.runtimeInstruction).toContain("`mark_task_completed` or `mark_task_failed`");
-    expect(enabled.runtimeInstruction).toContain("do not pass status, task_id, task_name");
-    expect(enabled.runtimeInstruction).toContain("include required `message` and optional `reference_files`");
-    expect(enabled.runtimeInstruction).toContain("Original-delegator acceptance uses `accept_task`");
-    expect(enabled.runtimeInstruction).toContain("task_agent_run_id");
+    expect(enabled.runtimeInstruction).toContain("Task-agents submit reviewable results with `submit_task_result`");
+    expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
+    expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary teammate communication only");
+    expect(enabled.runtimeInstruction).not.toContain(["accept", "task"].join("_"));
+    expect(enabled.runtimeInstruction).not.toContain(["mark", "task", "completed"].join("_"));
     expect(enabled.runtimeInstruction).toContain(
-      "must settle or exit the final task-agent instance",
+      "the framework settles or exits the final task-agent instance",
     );
     expect(disabled.runtimeInstruction).not.toContain("Task delegation protocol");
   });

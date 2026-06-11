@@ -1,0 +1,45 @@
+timestamp_utc=2026-06-07T03:41:39Z
+head_before_commit=b3ed4252c7f4841e18666af503fbdbc2edc9d3c3
+status_before_commit:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 4]
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/delivery-release-deployment-report.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/docs-sync-report.md
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/handoff-summary.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/branch-soak-publication-report.md
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-merge-latest-personal.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-notes-commit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-notes-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-git-diff-check.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-run-history-unit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-tsc-noemit.log
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-resume-fetch-base-check.log
+[codex/mixed-team-manager-simplification-analysis 0b8e6d0b] docs(delivery): record branch soak publication state
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 12 files changed, 1762 insertions(+)
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/branch-soak-publication-report.md
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-merge-latest-personal.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-notes-commit.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-notes-git-diff-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-docs-obsolete-grep.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-git-diff-check.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-run-history-unit.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-postmerge-tsc-noemit.log
+ create mode 100644 tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-resume-fetch-base-check.log
+commit_exit=0
+head_after_commit=0b8e6d0b752c42760af26128d51affd1a84c1246
+status_after_commit:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 5]
+ M tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-notes-commit.log

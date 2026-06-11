@@ -1,5 +1,5 @@
 import { promises as fs } from "node:fs";
-import { buildTeamLocalTeamDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
+import { buildTeamLocalTeamDefinitionId } from "../../agent-team-definition/utils/team-local-definition-id.js";
 import {
   defaultAgentConfig,
   normalizeAgentConfigRecord,

@@ -227,7 +227,7 @@ export class AgentRunHistoryCatalogService {
     }
     await this.mutate(async (rows) => {
       const row = rows.get(input.runId);
-      if (!row || row.summary === summary) {
+      if (!row || row.summary) {
         return { value: undefined, shouldFlush: false };
       }
       rows.set(input.runId, normalizeRow({ ...row, summary }));

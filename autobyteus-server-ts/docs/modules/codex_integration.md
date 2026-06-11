@@ -23,11 +23,24 @@ Standalone runs:
 
 Team runs:
 
-1. Team services create a team run with deterministic `memberRunId` values and resolve the governing `TeamBackendKind`.
-2. Single-runtime Codex teams use `codex-team-run-backend-factory.ts` + `codex-team-manager.ts` to create/restore one standalone Codex `AgentRun` per team member.
-3. Mixed-runtime teams still run Codex members as standalone Codex `AgentRun`s, but the governing team owner is `MixedTeamManager`, not `codex-team-manager.ts`.
-4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
-5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
+1. Team services create a team run with deterministic `memberRunId` values and `TeamBackendKind.MIXED`.
+2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
+3. Codex member bootstrap consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
+4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
+
+Codex App Server client reuse is scoped by canonical workspace `cwd`.
+Standalone runs and same-workspace Codex team members can therefore share one
+`CodexAppServerClient` process; team identity, member identity, and active-turn
+routing stay above that client boundary in the thread/router layer rather than
+in a separate client scope key. The `CodexClientThreadRouter` owns app-server
+message classification for the shared client. Routeable thread/turn messages
+must carry enough thread or turn identity to reach one active thread. Known
+client-global notifications, such as account rate-limit and MCP startup-status
+updates, are not team-thread events and are skipped by default instead of being
+emitted as chat-visible runtime errors. Other no-identity messages that cannot
+be routed among multiple active threads remain server-side diagnostics; server
+requests receive a transport-level error response, but the router must not
+broadcast them or call per-thread runtime-error projection.
 
 Codex team communication uses the same dynamic-tool lifecycle normalization as
 other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool, but a
@@ -38,19 +51,20 @@ the dynamic tool invocation id.
 
 Codex team task delegation is projected as dynamic tools generated from the
 server-owned task-delegation manifest. When an agent definition enables
-`delegate_tasks`, `mark_task_completed`, `mark_task_failed`, and/or
-`accept_task`, Codex receives those tools with
-JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
+`delegate_tasks`, `submit_task_result`, and/or `review_task_result`, Codex receives those tools with JSON
+schemas derived from `src/agent-tools/task-delegation`; handlers call
 `TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
 runtime does not mutate task state directly and must not expose the removed
 legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
 ready-to-run/no-dependencies task guidance from the shared manifest/schema:
-dependent follow-up work should be delegated after the framework
-terminal/completion notification. Activation details are pushed to task-agent
-instances as work packets, and completion/failure is observed through framework
-task-delegation events and coordinator notifications rather than a model polling
-tool.
+dependent follow-up work should be delegated after reviewing a submitted task
+result. Activation details are pushed to task-agent instances as work packets,
+results use `submit_task_result`, and acceptance or revision uses
+`review_task_result` with system-mediated notifications. This remains a
+configured-tool boundary: Codex runtime code must not add
+ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
+framework auto-review behavior for task results.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -130,7 +144,16 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
 - `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
 - The Settings page exposes the common user decision through **Server Settings -> Basics -> Codex full access**: toggle on saves `danger-full-access`, and toggle off saves `workspace-write`. The Advanced Settings raw table also treats `CODEX_APP_SERVER_SANDBOX` as a predefined editable, non-deletable setting and rejects values outside the canonical set.
 - Saved changes flow through the existing server-settings persistence path and are read by future/new Codex thread bootstrap or restore paths. Already-active Codex sessions are not mutated in place.
-- `autoExecuteTools` remains separate: it controls approval behavior, not filesystem sandbox mode.
+- The saved sandbox setting is the default for non-auto-approved Codex runs.
+  Codex run launch `autoExecuteTools=true` is a separate high-trust per-run
+  policy for both standalone and team-member runs: thread create/restore uses
+  effective `danger-full-access` and `approvalPolicy = "never"` even when the
+  saved full-access setting is off, and runtime command/file/MCP/permission
+  requests are auto-accepted or session-granted. Leave auto-approve off when the
+  run should remain on visible manual approval gates.
+- Team-member auto-approval does not own team communication routing. Dynamic
+  team tools such as `send_message_to` remain constrained by configured tool
+  exposure, team-owned handlers, and recipient validation.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings
@@ -164,13 +187,12 @@ Event normalization:
 
 Team runtime:
 
-- `src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`
-- `src/agent-team-execution/backends/codex/codex-team-run-backend.ts`
-- `src/agent-team-execution/backends/codex/codex-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
+- `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
 - `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
-- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 
 ## Skills
 
@@ -277,8 +299,7 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`, `delegate_tasks`, `mark_task_completed`,
-  `mark_task_failed`, and `accept_task`.
+  `send_message_to`, `delegate_tasks`, `submit_task_result`, and `review_task_result`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.
@@ -330,7 +351,7 @@ conversation is being applied.
   `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
   should skip when live flags are absent. To exercise the live path, run with a
   working LMStudio Qwen model and Codex `gpt-5.5`, for example:
-  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" --no-file-parallelism`.
+  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle" --no-file-parallelism`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

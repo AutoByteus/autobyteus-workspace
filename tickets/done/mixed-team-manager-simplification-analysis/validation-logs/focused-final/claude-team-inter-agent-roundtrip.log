@@ -1,0 +1,450 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport)
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-V7oaws
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-V7oaws/.env
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition created successfully with ID: claude-ping-58e89e24-6985-4fd1-8ea2-45930a8e6b5e
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition created successfully with ID: claude-pong-58e89e24-6985-4fd1-8ea2-45930a8e6b5e
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-06-06T17:08:14.351Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team Definition created successfully with ID: claude-roundtrip-team-58e89e24-6985-4fd1-8ea2-45930a8e6b5e
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-roundtrip-e2e-1CryWq
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-roundtrip-e2e-1CryWq.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Created and registered workspace ID: agent_ws_5659c5fdca00d79d0ddfc12551388c7d656d39d0bb109945e524c982e0148179
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-06-06T17:08:14.357Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-06-06T17:08:14.369Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 23 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created mixed team run 'team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent team websocket attached for team run team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1
+Created agent session 538bee9c-09f9-446b-80f5-90714ba6ce57 for run team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1
+Agent Team WebSocket connected: session=538bee9c-09f9-446b-80f5-90714ba6ce57, run=team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created claude_agent_sdk agent run 'ping_21d187f4c3814a93'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created claude_agent_sdk agent run 'pong_73f4cbca0a1dd529'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[team-communication] projection inserted teamRunId=team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1 messageId=teammsg_H0P-9S8ORJ7g-Z_5T_0568sD_kPBbygg senderRunId=ping_21d187f4c3814a93 receiverRunId=pong_73f4cbca0a1dd529 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-V7oaws/memory/agent_teams/team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1/team_communication_messages.json
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[team-communication] projection inserted teamRunId=team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1 messageId=teammsg_40q9M2pdBxsqezgZ8gs0tj0-g3BtuZTj senderRunId=pong_73f4cbca0a1dd529 receiverRunId=ping_21d187f4c3814a93 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-V7oaws/memory/agent_teams/team_claude-roundtrip-team-58e89e24-6985-4fd1_613b39c1/team_communication_messages.json
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Closed agent session 538bee9c-09f9-446b-80f5-90714ba6ce57
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team WebSocket disconnected: 538bee9c-09f9-446b-80f5-90714ba6ce57
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-06-06T17:08:25.983Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-roundtrip-team-58e89e24-6985-4fd1-8ea2-45930a8e6b5e.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team Definition with ID claude-roundtrip-team-58e89e24-6985-4fd1-8ea2-45930a8e6b5e deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+In-memory cache: Removed agent definition with ID claude-ping-58e89e24-6985-4fd1-8ea2-45930a8e6b5e.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition with ID claude-ping-58e89e24-6985-4fd1-8ea2-45930a8e6b5e deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+In-memory cache: Removed agent definition with ID claude-pong-58e89e24-6985-4fd1-8ea2-45930a8e6b5e.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition with ID claude-pong-58e89e24-6985-4fd1-8ea2-45930a8e6b5e deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+In-memory cache: Added new agent definition with ID claude-interrupt-worker-c0309bc1-1009-4de4-8390-f67f5aa943c7.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent Definition created successfully with ID: claude-interrupt-worker-c0309bc1-1009-4de4-8390-f67f5aa943c7
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[2026-06-06T17:08:26.632Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-interrupt-team-c0309bc1-1009-4de4-8390-f67f5aa943c7.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent Team Definition created successfully with ID: claude-interrupt-team-c0309bc1-1009-4de4-8390-f67f5aa943c7
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-interrupt-e2e-NHAVfT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-interrupt-e2e-NHAVfT.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Created and registered workspace ID: agent_ws_0c753c95f7cc03d497bc3729847d74070d016dde38a5435d5503b5d2a9bb736b
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Successfully created mixed team run 'team_claude-interrupt-team-c0309bc1-1009-4de4_d4d2dc04'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent team websocket attached for team run team_claude-interrupt-team-c0309bc1-1009-4de4_d4d2dc04
+Created agent session d5b71475-3a80-4b24-8349-11283f57380f for run team_claude-interrupt-team-c0309bc1-1009-4de4_d4d2dc04
+Agent Team WebSocket connected: session=d5b71475-3a80-4b24-8349-11283f57380f, run=team_claude-interrupt-team-c0309bc1-1009-4de4_d4d2dc04
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Successfully created claude_agent_sdk agent run 'worker_c84e5b72a02f1b45'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Closed agent session d5b71475-3a80-4b24-8349-11283f57380f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent Team WebSocket disconnected: d5b71475-3a80-4b24-8349-11283f57380f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[2026-06-06T17:08:33.710Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-interrupt-team-c0309bc1-1009-4de4-8390-f67f5aa943c7.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent Team Definition with ID claude-interrupt-team-c0309bc1-1009-4de4-8390-f67f5aa943c7 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+In-memory cache: Removed agent definition with ID claude-interrupt-worker-c0309bc1-1009-4de4-8390-f67f5aa943c7.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Agent Definition with ID claude-interrupt-worker-c0309bc1-1009-4de4-8390-f67f5aa943c7 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+In-memory cache: Added new agent definition with ID claude-parent-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Definition created successfully with ID: claude-parent-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+In-memory cache: Added new agent definition with ID claude-specialist-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Definition created successfully with ID: claude-specialist-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[2026-06-06T17:08:34.363Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-subteam-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Team Definition created successfully with ID: claude-subteam-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[2026-06-06T17:08:34.366Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-nested-root-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Team Definition created successfully with ID: claude-nested-root-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-nested-e2e-hQDr4n
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-nested-e2e-hQDr4n.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Created and registered workspace ID: agent_ws_94ce1c1fb0fffccefb6de081e51510439bdb983f63a1758e07ec8738b4ee96c5
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Successfully created mixed team run 'team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent team websocket attached for team run team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1
+Created agent session 319ce3a2-7ea5-4375-add4-0b375714826c for run team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1
+Agent Team WebSocket connected: session=319ce3a2-7ea5-4375-add4-0b375714826c, run=team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Successfully created claude_agent_sdk agent run 'parent_daffd850f79977e0'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Successfully created claude_agent_sdk agent run 'research_subteam_specialist_3b646aecf830ac0c'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[team-communication] projection inserted teamRunId=team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1 messageId=teammsg_sa-ik8FAQyASMB6PBpxPXhVYcJpKPpFT senderRunId=parent_daffd850f79977e0 receiverRunId=research_subteam_specialist_3b646aecf830ac0c referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-V7oaws/memory/agent_teams/team_claude-nested-root-72cb0c96-1a64-477e-81_a46835f1/team_communication_messages.json
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Closed agent session 319ce3a2-7ea5-4375-add4-0b375714826c
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Team WebSocket disconnected: 319ce3a2-7ea5-4375-add4-0b375714826c
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[2026-06-06T17:08:40.936Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-subteam-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Team Definition with ID claude-subteam-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[2026-06-06T17:08:40.939Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-nested-root-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Team Definition with ID claude-nested-root-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+In-memory cache: Removed agent definition with ID claude-parent-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Definition with ID claude-parent-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+In-memory cache: Removed agent definition with ID claude-specialist-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Agent Definition with ID claude-specialist-72cb0c96-1a64-477e-8187-ff9bc9c8e1d0 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Created and registered workspace ID: agent_ws_81f7777c72bb0a126132b2548ea9854a7c06d5c8866a021d19e43db5a61c2ba1
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+In-memory cache: Added new agent definition with ID claude-professor-44022b98-2147-4820-a4b9-d3f486d62500.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent Definition created successfully with ID: claude-professor-44022b98-2147-4820-a4b9-d3f486d62500
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[2026-06-06T17:08:41.631Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-workspace-team-44022b98-2147-4820-a4b9-d3f486d62500.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent Team Definition created successfully with ID: claude-workspace-team-44022b98-2147-4820-a4b9-d3f486d62500
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv.
+Reusing existing workspace ID: agent_ws_81f7777c72bb0a126132b2548ea9854a7c06d5c8866a021d19e43db5a61c2ba1
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Successfully created mixed team run 'team_claude-workspace-team-44022b98-2147-4820_2e66df13'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent team websocket attached for team run team_claude-workspace-team-44022b98-2147-4820_2e66df13
+Created agent session 7cf392fb-cabf-4232-b3f1-78c7bc4b950f for run team_claude-workspace-team-44022b98-2147-4820_2e66df13
+Agent Team WebSocket connected: session=7cf392fb-cabf-4232-b3f1-78c7bc4b950f, run=team_claude-workspace-team-44022b98-2147-4820_2e66df13
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Successfully created claude_agent_sdk agent run 'professor_8bac74f752289941'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-GPEXJv.
+Reusing existing workspace ID: agent_ws_81f7777c72bb0a126132b2548ea9854a7c06d5c8866a021d19e43db5a61c2ba1
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Successfully restored mixed team run 'team_claude-workspace-team-44022b98-2147-4820_2e66df13'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Successfully created claude_agent_sdk agent run 'professor_8bac74f752289941'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Closed agent session 7cf392fb-cabf-4232-b3f1-78c7bc4b950f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent Team WebSocket disconnected: 7cf392fb-cabf-4232-b3f1-78c7bc4b950f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[2026-06-06T17:08:44.718Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-workspace-team-44022b98-2147-4820-a4b9-d3f486d62500.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent Team Definition with ID claude-workspace-team-44022b98-2147-4820-a4b9-d3f486d62500 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+In-memory cache: Removed agent definition with ID claude-professor-44022b98-2147-4820-a4b9-d3f486d62500.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Agent Definition with ID claude-professor-44022b98-2147-4820-a4b9-d3f486d62500 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Created and registered workspace ID: agent_ws_8449d47e541145c97f34dec34a43975a70068582b5ce6366134409fdb7165472
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Added new agent definition with ID claude-projection-professor-da40212c-ef2a-49fb-8f67-44dd2a4fd57c.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition created successfully with ID: claude-projection-professor-da40212c-ef2a-49fb-8f67-44dd2a4fd57c
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-06T17:08:45.351Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-projection-team-da40212c-ef2a-49fb-8f67-44dd2a4fd57c.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition created successfully with ID: claude-projection-team-da40212c-ef2a-49fb-8f67-44dd2a4fd57c
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t.
+Reusing existing workspace ID: agent_ws_8449d47e541145c97f34dec34a43975a70068582b5ce6366134409fdb7165472
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Successfully created mixed team run 'team_claude-projection-team-da40212c-ef2a-49f_00e7ee44'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent team websocket attached for team run team_claude-projection-team-da40212c-ef2a-49f_00e7ee44
+Created agent session bcaed04c-b9ad-4c72-b2fe-538042264e79 for run team_claude-projection-team-da40212c-ef2a-49f_00e7ee44
+Agent Team WebSocket connected: session=bcaed04c-b9ad-4c72-b2fe-538042264e79, run=team_claude-projection-team-da40212c-ef2a-49f_00e7ee44
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Successfully created claude_agent_sdk agent run 'professor_da3f390b44397301'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-0kNF1t.
+Reusing existing workspace ID: agent_ws_8449d47e541145c97f34dec34a43975a70068582b5ce6366134409fdb7165472
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored mixed team run 'team_claude-projection-team-da40212c-ef2a-49f_00e7ee44'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored claude_agent_sdk agent run 'professor_da3f390b44397301'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Closed agent session bcaed04c-b9ad-4c72-b2fe-538042264e79
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent Team WebSocket disconnected: bcaed04c-b9ad-4c72-b2fe-538042264e79
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+[2026-06-06T17:08:51.452Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-projection-team-da40212c-ef2a-49fb-8f67-44dd2a4fd57c.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition with ID claude-projection-team-da40212c-ef2a-49fb-8f67-44dd2a4fd57c deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Removed agent definition with ID claude-projection-professor-da40212c-ef2a-49fb-8f67-44dd2a4fd57c.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition with ID claude-projection-professor-da40212c-ef2a-49fb-8f67-44dd2a4fd57c deleted successfully.
+
+ ✓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests) 37907ms
+     ✓ routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime  12400ms
+     ✓ interrupts a pending Claude team turn and accepts a follow-up on the same websocket  7728ms
+     ✓ creates a nested team definition and routes live Claude inter-agent messaging between leaf members  7226ms
+     ✓ preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId  3779ms
+     ✓ serves team member projection after terminate, restore, and continue in claude team runtime  6733ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  19:08:09
+   Duration  42.28s (transform 2.77s, setup 18ms, import 3.93s, tests 37.91s, environment 0ms)
+

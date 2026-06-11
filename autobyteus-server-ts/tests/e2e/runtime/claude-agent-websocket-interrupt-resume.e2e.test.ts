@@ -12,16 +12,15 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+import type { AgentRunStatusProjection } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { ClaudeAgentRunBackend } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-backend.js";
 import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
-import { ClaudeTeamRunBackend } from "../../../src/agent-team-execution/backends/claude/claude-team-run-backend.js";
-import {
-  ClaudeTeamMemberContext,
-  ClaudeTeamRunContext,
-} from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
+import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -38,6 +37,7 @@ import {
   type ClaudeSdkQueryLike,
 } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -395,9 +395,33 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
     resolveAgentRun: async (runId: string) => (runId === input.runId ? agentRun : null),
     recordRunActivity: async () => {},
   };
+  const statusProjectionService = {
+    getRunStatusProjection: async (runId: string): Promise<AgentRunStatusProjection> => {
+      const snapshot = agentRun.getStatusSnapshot();
+      return {
+        runId,
+        status: snapshot.status,
+        canInterrupt: snapshot.can_interrupt === true,
+        isActive: runId === input.runId,
+        shouldConnectStream: runId === input.runId,
+        lastKnownStatus: snapshot.status === "error" ? "ERROR" : "ACTIVE",
+        statusSource: runId === input.runId ? "ACTIVE_RUNTIME" : "MISSING",
+        statusPayload: snapshot,
+        command: null,
+      };
+    },
+  };
+  const commandCoordinator = new AgentRunCommandCoordinator({
+    agentRunService: agentRunService as never,
+    projectionService: statusProjectionService as never,
+  });
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as never,
+    undefined,
+    undefined,
+    commandCoordinator,
+    statusProjectionService as never,
   );
   const dummyTeamHandler = {
     connect: async () => null,
@@ -474,21 +498,21 @@ const createClaudeTeamWebSocketHarness = async (input: {
     skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   });
-  const memberContext = new ClaudeTeamMemberContext({
+  const memberContext = new MixedAgentMemberContext({
     memberName: input.memberName,
+    memberPath: [input.memberName],
     memberRouteKey: input.memberName,
     memberRunId: input.memberRunId,
-    agentRunConfig: memberConfig,
-    sessionId: null,
-    configuredToolExposure: buildConfiguredAgentToolExposure([]),
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    platformAgentRunId: null,
   });
   const teamContext = new TeamRunContext({
     runId: input.teamRunId,
-    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+    teamBackendKind: TeamBackendKind.MIXED,
     coordinatorMemberName: input.memberName,
     config: new TeamRunConfig({
       teamDefinitionId: "team-claude-ws",
-      teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+      teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: input.memberName,
       memberConfigs: [
         {
@@ -503,7 +527,7 @@ const createClaudeTeamWebSocketHarness = async (input: {
         },
       ],
     }),
-    runtimeContext: new ClaudeTeamRunContext({
+    runtimeContext: new MixedTeamRunContext({
       coordinatorMemberRouteKey: input.memberName,
       memberContexts: [memberContext],
     }),
@@ -523,7 +547,7 @@ const createClaudeTeamWebSocketHarness = async (input: {
     postMessage: async (message, targetMemberSelector) => {
       expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
-      memberContext.sessionId = agentRun.getPlatformAgentRunId() ?? memberContext.sessionId;
+      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
       return {
         ...result,
         memberRunId: input.memberRunId,
@@ -537,15 +561,16 @@ const createClaudeTeamWebSocketHarness = async (input: {
       expect(targetMemberRunId).toBe(input.memberRunId);
       return agentRun.interrupt();
     },
+    settleMember: async () => agentRun.terminate(),
+    startTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
+    settleTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
     terminate: async () => agentRun.terminate(),
+    publishEvent: () => {},
     subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
   };
   const teamRun = new TeamRun({
     context: teamContext,
-    backend: new ClaudeTeamRunBackend(teamContext, {
-      claudeTeamManager: fakeTeamManager,
-      coordinatorMemberName: input.memberName,
-    }),
+    backend: new MixedTeamRunBackend(teamContext, fakeTeamManager),
   });
   const teamRunService = {
     getTeamRun: (teamRunId: string) => (teamRunId === input.teamRunId ? teamRun : null),
@@ -623,14 +648,9 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(harness.socket, {
             content: `Remember this exact marker before I interrupt you: ${marker}`,
-          },
-        }),
-      );
+          });
 
       await waitForCondition(
         () =>
@@ -656,12 +676,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           message.payload.delta.includes(`remembered provider context marker: ${marker}`),
         "provider-memory follow-up SEGMENT_CONTENT",
       );
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: { content: "What exact marker did I ask you to remember?" },
-        }),
-      );
+      sendE2eSendMessageCommand(harness.socket, { content: "What exact marker did I ask you to remember?" });
 
       const rememberedMessage = await rememberedMessagePromise;
       const rememberedDelta = rememberedMessage.payload?.delta;
@@ -685,12 +700,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: { content: "start long Claude work" },
-        }),
-      );
+      sendE2eSendMessageCommand(harness.socket, { content: "start long Claude work" });
 
       await waitForCondition(
         () =>
@@ -709,12 +719,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "INTERRUPT_GENERATION interrupt settlement",
       );
 
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: { content: "continue with prior context" },
-        }),
-      );
+      sendE2eSendMessageCommand(harness.socket, { content: "continue with prior context" });
 
       await waitForCondition(
         () => harness.sdkCalls.length === 2,
@@ -748,15 +753,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(harness.socket, {
             content: "start team member work",
             target_member_route_key: memberName,
-          },
-        }),
-      );
+          });
 
       await waitForCondition(
         () =>
@@ -782,15 +782,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "team INTERRUPT_GENERATION interrupt settlement",
       );
 
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
+      sendE2eSendMessageCommand(harness.socket, {
             content: "continue team member work",
             target_member_route_key: memberName,
-          },
-        }),
-      );
+          });
 
       await waitForCondition(
         () => harness.sdkCalls.length === 2,
@@ -816,12 +811,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: { content: "start before Claude emits a provider session id" },
-        }),
-      );
+      sendE2eSendMessageCommand(harness.socket, { content: "start before Claude emits a provider session id" });
 
       await waitForCondition(
         () => harness.sdkCalls.length === 1,
@@ -839,12 +829,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "placeholder INTERRUPT_GENERATION interrupt settlement",
       );
 
-      harness.socket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: { content: "follow up without provider session id" },
-        }),
-      );
+      sendE2eSendMessageCommand(harness.socket, { content: "follow up without provider session id" });
 
       await waitForCondition(
         () => harness.sdkCalls.length === 2,
@@ -886,10 +871,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
           "live Claude tool approval request before interrupt",
           LIVE_CLAUDE_STEP_TIMEOUT_MS,
         );
-        harness.socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(harness.socket, {
               content: [
                 `Remember this exact marker for the next user message: ${marker}`,
                 "Before answering, call the Write tool exactly once.",
@@ -899,9 +881,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
                 "Do not ask follow-up questions.",
                 "Do not provide the final answer until after the tool call is approved.",
               ].join("\n"),
-            },
-          }),
-        );
+            });
 
         await approvalRequestPromise;
         await waitForCondition(
@@ -930,17 +910,12 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
           "live Claude resumed follow-up response containing remembered marker",
           LIVE_CLAUDE_STEP_TIMEOUT_MS,
         );
-        harness.socket.send(
-          JSON.stringify({
-            type: "SEND_MESSAGE",
-            payload: {
+        sendE2eSendMessageCommand(harness.socket, {
               content: [
                 "What exact marker did I ask you to remember before I interrupted you?",
                 "Reply with only that marker and no other words.",
               ].join("\n"),
-            },
-          }),
-        );
+            });
 
         const resumedResponseText = await rememberedMarkerPromise;
         expect(resumedResponseText).toContain(marker);

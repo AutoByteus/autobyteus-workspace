@@ -1,0 +1,14 @@
+timestamp_utc=2026-06-07T03:39:30Z
+repo_root=/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis
+branch=codex/mixed-team-manager-simplification-analysis
+head_before_fetch=f717d60fa8ddd208312309858f97dae6b690a1e0
+tracked=origin/personal
+origin_personal_before_fetch=dfc26eec54cdf685442740691ce5469754ab945f
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal_after_fetch=dfc26eec54cdf685442740691ce5469754ab945f
+merge_base_head_origin_personal=15fcceedb67d6edac3d9942b9eb2098f7e5769a8
+ahead_behind_vs_origin_personal=3	12
+status_after_fetch:
+## codex/mixed-team-manager-simplification-analysis...origin/personal [ahead 3, behind 12]
+?? tickets/in-progress/mixed-team-manager-simplification-analysis/validation-logs/delivery-branch-soak-resume-fetch-base-check.log

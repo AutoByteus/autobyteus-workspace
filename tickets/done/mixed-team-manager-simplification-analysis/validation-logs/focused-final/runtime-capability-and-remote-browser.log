@@ -1,0 +1,251 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:52317) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+stderr | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > registers browser tools through the runtime GraphQL mutation without requiring restart and removes them on clear
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > registers browser tools through the runtime GraphQL mutation without requiring restart and removes them on clear
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > registers browser tools through the runtime GraphQL mutation without requiring restart and removes them on clear
+Successfully unregistered tool definition: 'open_tab'
+Successfully unregistered tool definition: 'navigate_to'
+Successfully unregistered tool definition: 'close_tab'
+Successfully unregistered tool definition: 'list_tabs'
+Successfully unregistered tool definition: 'read_page'
+Successfully unregistered tool definition: 'screenshot'
+Successfully unregistered tool definition: 'dom_snapshot'
+Successfully unregistered tool definition: 'run_script'
+Successfully unregistered tool definition: 'set_device_emulation'
+
+stderr | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > registers browser tools through the runtime GraphQL mutation without requiring restart and removes them on clear
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+
+stderr | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > uses the runtime GraphQL registration for browser execution and fails safely again after revocation
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > uses the runtime GraphQL registration for browser execution and fails safely again after revocation
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > uses the runtime GraphQL registration for browser execution and fails safely again after revocation
+Successfully unregistered tool definition: 'open_tab'
+Successfully unregistered tool definition: 'navigate_to'
+Successfully unregistered tool definition: 'close_tab'
+Successfully unregistered tool definition: 'list_tabs'
+Successfully unregistered tool definition: 'read_page'
+Successfully unregistered tool definition: 'screenshot'
+Successfully unregistered tool definition: 'dom_snapshot'
+Successfully unregistered tool definition: 'run_script'
+Successfully unregistered tool definition: 'set_device_emulation'
+
+stderr | tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts > Remote browser bridge runtime GraphQL e2e > uses the runtime GraphQL registration for browser execution and fails safely again after revocation
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+Attempted to unregister tool 'open_tab', but it was not found in the registry.
+Attempted to unregister tool 'navigate_to', but it was not found in the registry.
+Attempted to unregister tool 'close_tab', but it was not found in the registry.
+Attempted to unregister tool 'list_tabs', but it was not found in the registry.
+Attempted to unregister tool 'read_page', but it was not found in the registry.
+Attempted to unregister tool 'screenshot', but it was not found in the registry.
+Attempted to unregister tool 'dom_snapshot', but it was not found in the registry.
+Attempted to unregister tool 'run_script', but it was not found in the registry.
+Attempted to unregister tool 'set_device_emulation', but it was not found in the registry.
+
+ ✓ tests/e2e/runtime/remote-browser-bridge-runtime.e2e.test.ts (2 tests) 67ms
+stdout | tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:52378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-manager-simplification-analysis/autobyteus-server-ts
+
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (1 test) 487ms
+     ✓ returns backend-owned runtime capability metadata  451ms
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  19:31:04
+   Duration  7.32s (transform 3.50s, setup 27ms, import 6.17s, tests 554ms, environment 0ms)
+

@@ -1,76 +1,10 @@
-import { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import {
-  AutoByteusTeamMemberContext,
-  AutoByteusTeamRunContext,
-} from "../backends/autobyteus/autobyteus-team-run-context.js";
-import {
-  ClaudeTeamMemberContext,
-  ClaudeTeamRunContext,
-} from "../backends/claude/claude-team-run-context.js";
-import {
-  CodexTeamMemberContext,
-  CodexTeamRunContext,
-} from "../backends/codex/codex-team-run-context.js";
 import {
   MixedAgentMemberContext,
   MixedSubTeamMemberContext,
   MixedTeamRunContext,
 } from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamMemberRuntimeContext } from "../domain/team-run-context.js";
-import type { TeamRunMetadata, TeamRunAgentMemberMetadata, TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
-import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import {
-  TeamBackendKind,
-  resolveSingleRuntimeTeamBackendKind,
-} from "../domain/team-backend-kind.js";
-
-export const resolveTeamBackendKindFromMemberRuntimeKinds = (
-  runtimeKinds: Iterable<RuntimeKind | null | undefined>,
-): TeamBackendKind => {
-  const normalizedRuntimeKinds = new Set<RuntimeKind>();
-  for (const runtimeKind of runtimeKinds) {
-    normalizedRuntimeKinds.add(runtimeKind ?? RuntimeKind.AUTOBYTEUS);
-  }
-  if (normalizedRuntimeKinds.size <= 1) {
-    return resolveSingleRuntimeTeamBackendKind(
-      normalizedRuntimeKinds.values().next().value ?? RuntimeKind.AUTOBYTEUS,
-    );
-  }
-  return TeamBackendKind.MIXED;
-};
-
-export const resolveTeamBackendKindFromMetadata = (metadata: TeamRunMetadata): TeamBackendKind => {
-  const hasSubTeam = (members: readonly TeamRunMemberMetadata[]): boolean =>
-    members.some((member) => member.memberKind === "agent_team");
-  if (hasSubTeam(metadata.memberTree)) {
-    return TeamBackendKind.MIXED;
-  }
-  return resolveTeamBackendKindFromMemberRuntimeKinds(
-    getTeamRunLeafAgentMetadata(metadata).map((member) => member.runtimeKind),
-  );
-};
-
-const teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
-
-const buildAgentRunConfig = (
-  metadata: TeamRunMetadata,
-  member: TeamRunAgentMemberMetadata,
-): AgentRunConfig =>
-  new AgentRunConfig({
-    runtimeKind: member.runtimeKind,
-    agentDefinitionId: member.agentDefinitionId,
-    llmModelIdentifier: member.llmModelIdentifier,
-    autoExecuteTools: member.autoExecuteTools,
-    workspaceId: null,
-    memoryDir: teamMemberMemoryLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
-    llmConfig: member.llmConfig ?? null,
-    skillAccessMode: member.skillAccessMode,
-    applicationExecutionContext: member.applicationExecutionContext ?? null,
-    selfEvolution: member.selfEvolutionEffective ?? null,
-  });
+import type { TeamRunMetadata, TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
 
 const buildMixedRuntimeContextFromMetadata = (input: {
   coordinatorMemberRouteKey: string | null;
@@ -106,64 +40,10 @@ const buildMixedRuntimeContextFromMetadata = (input: {
 
 export const buildRestoreTeamRunRuntimeContext = (
   metadata: TeamRunMetadata,
-  teamBackendKind: TeamBackendKind,
-) => {
-  const leafMembers = getTeamRunLeafAgentMetadata(metadata);
-  if (teamBackendKind === TeamBackendKind.CODEX_APP_SERVER) {
-    return new CodexTeamRunContext({
-      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-      memberContexts: leafMembers.map(
-        (member) =>
-          new CodexTeamMemberContext({
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            agentRunConfig: buildAgentRunConfig(metadata, member),
-            threadId: member.platformAgentRunId,
-          }),
-      ),
-    });
-  }
-
-  if (teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK) {
-    return new ClaudeTeamRunContext({
-      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-      memberContexts: leafMembers.map(
-        (member) =>
-          new ClaudeTeamMemberContext({
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            agentRunConfig: buildAgentRunConfig(metadata, member),
-            sessionId: member.platformAgentRunId,
-          }),
-      ),
-    });
-  }
-
-  if (teamBackendKind === TeamBackendKind.MIXED) {
-    return buildMixedRuntimeContextFromMetadata({
-      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-      memberTree: metadata.memberTree,
-    });
-  }
-
-  return new AutoByteusTeamRunContext({
-    coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-    memberContexts: leafMembers.map(
-      (member) =>
-        new AutoByteusTeamMemberContext({
-          memberName: member.memberName,
-          memberPath: member.memberPath,
-          memberRouteKey: member.memberRouteKey,
-          memberRunId: member.memberRunId,
-          nativeAgentId: member.platformAgentRunId,
-        }),
-    ),
-  });
-};
+): MixedTeamRunContext => buildMixedRuntimeContextFromMetadata({
+  coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
+  memberTree: metadata.memberTree,
+});
 
 export const getRuntimeMemberContexts = (
   runtimeContext: unknown,

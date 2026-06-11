@@ -105,6 +105,39 @@ export const resolveApprovalPolicyForAutoExecuteTools = (
 ): CodexApprovalPolicy =>
   autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST;
 
+const CODEX_APP_SERVER_APPROVAL_POLICY_SETTING_KEY = "CODEX_APP_SERVER_APPROVAL_POLICY";
+
+const isCodexApprovalPolicy = (value: string): value is CodexApprovalPolicy =>
+  Object.values(CodexApprovalPolicy).includes(value as CodexApprovalPolicy);
+
+export const resolveConfiguredCodexApprovalPolicy = (): CodexApprovalPolicy | null => {
+  const rawApprovalPolicy = process.env[CODEX_APP_SERVER_APPROVAL_POLICY_SETTING_KEY];
+  const submittedApprovalPolicy =
+    typeof rawApprovalPolicy === "string" ? rawApprovalPolicy.trim() : "";
+  if (!submittedApprovalPolicy) {
+    return null;
+  }
+  if (isCodexApprovalPolicy(submittedApprovalPolicy)) {
+    return submittedApprovalPolicy;
+  }
+  logger.warn(
+    `Invalid ${CODEX_APP_SERVER_APPROVAL_POLICY_SETTING_KEY} '${submittedApprovalPolicy}', falling back to Codex default approval policy.`,
+  );
+  return null;
+};
+
+export const resolveApprovalPolicyForRunConfig = (
+  config: Pick<AgentRunConfig, "autoExecuteTools">,
+): CodexApprovalPolicy => {
+  if (config.autoExecuteTools) {
+    return resolveApprovalPolicyForAutoExecuteTools(true);
+  }
+  return (
+    resolveConfiguredCodexApprovalPolicy() ??
+    resolveApprovalPolicyForAutoExecuteTools(false)
+  );
+};
+
 export const normalizeSandboxMode = (): CodexSandboxMode => {
   const rawSandbox = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
   const sandbox = normalizeCodexSandboxMode(rawSandbox);
@@ -125,6 +158,11 @@ export const resolveEffectiveCodexSandboxMode = (
   autoExecuteTools: boolean,
 ): CodexSandboxMode =>
   autoExecuteTools ? AUTO_APPROVED_CODEX_SANDBOX_MODE : normalizeSandboxMode();
+
+export const resolveEffectiveCodexSandboxModeForRunConfig = (
+  config: Pick<AgentRunConfig, "autoExecuteTools">,
+): CodexSandboxMode =>
+  resolveEffectiveCodexSandboxMode(config.autoExecuteTools);
 
 export const resolveDefaultModel = (): string | null => {
   const model = process.env.CODEX_APP_SERVER_MODEL;
@@ -271,10 +309,8 @@ export class CodexThreadBootstrapper {
       serviceTier: resolveCodexSessionServiceTier(
         input.agentRunConfig.llmConfig ?? null,
       ),
-      approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(
-        input.agentRunConfig.autoExecuteTools,
-      ),
-      sandbox: resolveEffectiveCodexSandboxMode(input.agentRunConfig.autoExecuteTools),
+      approvalPolicy: resolveApprovalPolicyForRunConfig(input.agentRunConfig),
+      sandbox: resolveEffectiveCodexSandboxModeForRunConfig(input.agentRunConfig),
       baseInstructions: input.baseInstructions,
       developerInstructions: input.developerInstructions,
       dynamicTools: buildCodexDynamicToolSpecs(input.dynamicToolRegistrations),

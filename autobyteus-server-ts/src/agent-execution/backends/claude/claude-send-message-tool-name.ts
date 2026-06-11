@@ -1,4 +1,6 @@
-export const CLAUDE_SEND_MESSAGE_TOOL_NAME = "send_message_to";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../agent-team-execution/services/send-message-to-tool-contract.js";
+
+export const CLAUDE_SEND_MESSAGE_TOOL_NAME = SEND_MESSAGE_TO_TOOL_NAME;
 export const CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME = "mcp__autobyteus_team__send_message_to";
 
 const normalizeToolName = (value: string | null): string | null => {
