@@ -2,11 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
-import { buildTeamMemberRunId } from "../../run-history/utils/team-member-run-id.js";
 import type {
   ContextFileDraftOwnerDescriptor,
-  ContextFileFinalOwnerDescriptor,
+  ContextFileResolvedFinalOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
 import { assertStoredFilename } from "../domain/context-file-owner-types.js";
 
@@ -22,14 +20,12 @@ const resolveSafeChildPath = (rootDir: string, ...segments: string[]): string =>
 export class ContextFileLayout {
   private readonly draftRootDir: string;
   private readonly agentRunMemoryLayout: AgentRunMemoryLayout;
-  private readonly teamMemberMemoryLayout: TeamMemberMemoryLayout;
 
   constructor() {
     const appConfig = appConfigProvider.config;
     this.draftRootDir = path.join(appConfig.getAppDataDir(), "draft_context_files");
     const memoryDir = appConfig.getMemoryDir();
     this.agentRunMemoryLayout = new AgentRunMemoryLayout(memoryDir);
-    this.teamMemberMemoryLayout = new TeamMemberMemoryLayout(memoryDir);
   }
 
   getDraftRootDirPath(): string {
@@ -51,7 +47,7 @@ export class ContextFileLayout {
     );
   }
 
-  getFinalOwnerDirPath(owner: ContextFileFinalOwnerDescriptor): string {
+  getFinalOwnerDirPath(owner: ContextFileResolvedFinalOwnerDescriptor): string {
     if (owner.kind === "agent_final") {
       return resolveSafeChildPath(
         this.agentRunMemoryLayout.getRunDirPath(owner.runId),
@@ -59,9 +55,8 @@ export class ContextFileLayout {
       );
     }
 
-    const memberRunId = buildTeamMemberRunId(owner.teamRunId, owner.memberRouteKey);
     return resolveSafeChildPath(
-      this.teamMemberMemoryLayout.getMemberDirPath(owner.teamRunId, memberRunId),
+      owner.memoryDir,
       "context_files",
     );
   }
@@ -70,7 +65,7 @@ export class ContextFileLayout {
     return resolveSafeChildPath(this.getDraftOwnerDirPath(owner), assertStoredFilename(storedFilename));
   }
 
-  getFinalFilePath(owner: ContextFileFinalOwnerDescriptor, storedFilename: string): string {
+  getFinalFilePath(owner: ContextFileResolvedFinalOwnerDescriptor, storedFilename: string): string {
     return resolveSafeChildPath(this.getFinalOwnerDirPath(owner), assertStoredFilename(storedFilename));
   }
 
@@ -78,7 +73,7 @@ export class ContextFileLayout {
     await fs.mkdir(this.getDraftOwnerDirPath(owner), { recursive: true });
   }
 
-  async ensureFinalOwnerDir(owner: ContextFileFinalOwnerDescriptor): Promise<void> {
+  async ensureFinalOwnerDir(owner: ContextFileResolvedFinalOwnerDescriptor): Promise<void> {
     await fs.mkdir(this.getFinalOwnerDirPath(owner), { recursive: true });
   }
 }

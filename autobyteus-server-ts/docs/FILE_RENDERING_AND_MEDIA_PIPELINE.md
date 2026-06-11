@@ -51,7 +51,7 @@ Browser-uploaded composer attachments use the dedicated context-file layout inst
 
 - draft uploads live under `<app-data-dir>/draft_context_files/.../context_files/<storedFilename>`
 - finalized standalone uploads live under `<memory-dir>/agents/<runId>/context_files/<storedFilename>`
-- finalized team-member uploads live under `<memory-dir>/agent_teams/<teamRunId>/members/<memberRunId>/context_files/<storedFilename>`
+- finalized team-member uploads live under the resolved member memory directory, for example `<memory-dir>/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/context_files/<storedFilename>`
 
 Run-file-change metadata is stored separately under `<run-memory-dir>/file_changes.json`.
 The actual artifact/output files remain where the runtime wrote them.
@@ -60,7 +60,7 @@ The actual artifact/output files remain where the runtime wrote them.
 
 - Managed media URLs are based on `AppConfig.getBaseUrl()` and are typically served from `/rest/files/...`.
 - Draft uploaded context files are served from `/rest/drafts/.../context-files/:storedFilename` until send-time finalization.
-- Finalized uploaded context files are served from `/rest/runs/:runId/context-files/:storedFilename` or `/rest/team-runs/:teamRunId/members/:memberRouteKey/context-files/:storedFilename`.
+- Finalized uploaded context files are served from `/rest/runs/:runId/context-files/:storedFilename` or `/rest/team-runs/:teamRunId/members/:memberRouteKey/context-files/:storedFilename`; the team-member route resolves the stored member id and root-hierarchical memory directory from active runtime context or persisted recursive team metadata. Exact member route keys win, unique suffixes may resolve, and ambiguous suffixes fail instead of selecting a first matching nested member.
 - The finalize request accepts `attachments[{ storedFilename, displayName }]` so the user-visible filename survives any storage-safe `storedFilename` normalization.
 - Artifacts-tab previews do not require copied media URLs; they stream current bytes from `/runs/:runId/file-change-content?path=...` using run-scoped indexed path resolution.
 

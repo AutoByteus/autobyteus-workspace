@@ -90,4 +90,47 @@ describe("TeamMemoryExplorerService", () => {
     expect(page.entries[0]?.memberTargets).toHaveLength(1);
     expect(page.entries[0]?.memberTargets[0]?.memberRunId).toBe("alpha-member-1");
   });
+
+  it("lists nested member memory from the hierarchical root team directory", async () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-memory-explorer-"));
+    await new TeamRunMetadataStore(tempDir).writeMetadata("root-team-run", {
+      teamRunId: "root-team-run",
+      teamDefinitionId: "nested-team",
+      teamDefinitionName: "Nested Team",
+      coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+      createdAt: "2026-03-07T00:00:00Z",
+      memberTree: [
+        {
+          memberKind: "agent_team" as const,
+          memberRouteKey: "ReviewSquad",
+          memberPath: ["ReviewSquad"],
+          memberName: "ReviewSquad",
+          memberRunId: "review-squad-wrapper",
+          role: null,
+          description: null,
+          teamDefinitionId: "review-team",
+          teamRunId: "child-review-team-run",
+          coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+          memberTree: [
+            member("nested-reviewer-run", "reviewer"),
+          ],
+        },
+      ],
+    });
+    touch(
+      path.join(tempDir, "agent_teams", "root-team-run", "child-review-team-run", "nested-reviewer-run", "raw_traces.jsonl"),
+      3000,
+    );
+
+    const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamRunsWithMemory("nested-team");
+
+    expect(page.entries).toHaveLength(1);
+    expect(page.entries[0]?.memberTargets).toEqual([
+      expect.objectContaining({
+        memberRunId: "nested-reviewer-run",
+        memberRouteKey: "reviewer",
+      }),
+    ]);
+    expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
+  });
 });

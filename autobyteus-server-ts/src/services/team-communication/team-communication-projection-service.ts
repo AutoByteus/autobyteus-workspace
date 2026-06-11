@@ -1,4 +1,4 @@
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
@@ -33,7 +33,7 @@ export class TeamCommunicationProjectionService {
   private readonly metadataService: TeamRunMetadataService;
   private readonly projectionStore: TeamCommunicationProjectionStore;
   private readonly activeCommunicationService: TeamCommunicationService;
-  private readonly teamLayout: TeamMemberMemoryLayout;
+  private readonly teamLayout: AgentMemoryLayout;
 
   constructor(options: {
     teamRunManager?: AgentTeamRunManager;
@@ -46,7 +46,7 @@ export class TeamCommunicationProjectionService {
     this.metadataService = options.metadataService ?? getTeamRunMetadataService();
     this.projectionStore = options.projectionStore ?? getTeamCommunicationProjectionStore();
     this.activeCommunicationService = options.activeCommunicationService ?? getTeamCommunicationService();
-    this.teamLayout = new TeamMemberMemoryLayout(
+    this.teamLayout = new AgentMemoryLayout(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     );
   }
@@ -87,7 +87,7 @@ export class TeamCommunicationProjectionService {
 
     return normalizeTeamCommunicationProjection(
       await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath(normalizedTeamRunId),
+        this.teamLayout.getTeamDirPath({ rootTeamRunId: normalizedTeamRunId, teamRunPath: [] }),
       ),
       { teamRunId: normalizedTeamRunId },
     );

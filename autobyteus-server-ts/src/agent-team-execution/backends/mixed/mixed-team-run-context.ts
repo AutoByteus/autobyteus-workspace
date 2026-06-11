@@ -1,4 +1,5 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
 import type { AgentMemberTeamDescriptor } from "../../domain/member-team-context.js";
 import type {
   InterAgentMessageDeliveryHandler,
@@ -84,6 +85,7 @@ export type MixedParentBoundaryContext = {
   parentTeamRunId: string;
   parentTeamDefinitionId?: string | null;
   parentTeamName?: string | null;
+  memoryScope?: AgentMemoryScope | null;
   representedSubTeam: TeamRepresentedSubTeam;
   parentMembers: AgentMemberTeamDescriptor[];
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;

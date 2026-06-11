@@ -4,9 +4,8 @@ import type {
   TeamRunMemberMetadata,
   TeamRunAgentMemberMetadata,
 } from "../../run-history/store/team-run-metadata-types.js";
-import { buildTeamMemberRunId } from "../../run-history/utils/team-member-run-id.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import {
   TeamRunConfig,
   type TeamMemberRunConfig,
@@ -29,6 +28,14 @@ import type {
 const normalizeOptionalString = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
+const normalizeRequiredString = (value: string | null | undefined, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
+};
+
 type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
 type TeamRunMetadataWorkspaceManager = Pick<
   WorkspaceManager,
@@ -39,7 +46,7 @@ export class TeamRunMetadataMapper {
   constructor(private readonly dependencies: {
     teamDefinitionService: TeamDefinitionLookup;
     workspaceManager: TeamRunMetadataWorkspaceManager;
-    memberLayout: TeamMemberMemoryLayout;
+    memoryLocationService: Pick<AgentMemoryLocationService, "getTeamAgentRunLocation">;
   }) {}
 
   async buildRestoreContext(metadata: TeamRunMetadata): Promise<TeamRunContext> {
@@ -112,10 +119,12 @@ export class TeamRunMetadataMapper {
   }
 
   private async memberMetadataToRunConfig(
-    teamRunId: string,
+    rootTeamRunId: string,
     member: TeamRunMemberMetadata,
+    teamRunPath: string[] = [],
   ): Promise<TeamRunMemberConfig> {
     if (member.memberKind === "agent_team") {
+      const childTeamRunId = normalizeOptionalString(member.teamRunId) ?? member.memberRunId;
       return {
         memberKind: "agent_team",
         memberName: member.memberName,
@@ -123,12 +132,17 @@ export class TeamRunMetadataMapper {
         memberRouteKey: member.memberRouteKey,
         memberRunId: member.memberRunId,
         teamDefinitionId: member.teamDefinitionId,
-        childTeamRunId: member.teamRunId,
+        childTeamRunId,
         coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
         role: member.role ?? null,
         description: member.description ?? null,
         memberConfigs: await Promise.all(
-          member.memberTree.map((child) => this.memberMetadataToRunConfig(teamRunId, child)),
+          member.memberTree.map((child) =>
+            this.memberMetadataToRunConfig(rootTeamRunId, child, [
+              ...teamRunPath,
+              childTeamRunId,
+            ]),
+          ),
         ),
       };
     }
@@ -155,10 +169,11 @@ export class TeamRunMetadataMapper {
       runtimeKind: member.runtimeKind,
       workspaceId,
       skillAccessMode: member.skillAccessMode,
-      memoryDir: this.dependencies.memberLayout.getMemberDirPath(
-        teamRunId,
-        member.memberRunId,
-      ),
+      memoryDir: this.dependencies.memoryLocationService.getTeamAgentRunLocation({
+        rootTeamRunId,
+        teamRunPath,
+        agentRunId: member.memberRunId,
+      }).memoryDir,
       llmConfig: member.llmConfig ?? null,
       workspaceRootPath: member.workspaceRootPath,
       applicationExecutionContext: member.applicationExecutionContext ?? null,
@@ -171,11 +186,14 @@ export class TeamRunMetadataMapper {
     memberConfig: TeamRunMemberConfig,
     runtimeMemberContextByRunId: Map<string, RuntimeMemberMetadataSnapshot>,
   ): Promise<TeamRunMemberMetadata> {
-    const memberRunId =
-      normalizeOptionalString(memberConfig.memberRunId) ?? buildTeamMemberRunId(teamRunId, memberConfig.memberRouteKey);
+    const memberRunId = normalizeRequiredString(
+      memberConfig.memberRunId,
+      `memberRunId for member '${memberConfig.memberRouteKey}'`,
+    );
     const runtimeMemberContext = runtimeMemberContextByRunId.get(memberRunId) ?? null;
 
     if (memberConfig.memberKind === "agent_team") {
+      const childTeamRunId = runtimeMemberContext?.childTeamRunId ?? memberConfig.childTeamRunId ?? memberRunId;
       return {
         memberKind: "agent_team",
         memberRouteKey: memberConfig.memberRouteKey,
@@ -185,11 +203,11 @@ export class TeamRunMetadataMapper {
         role: memberConfig.role ?? null,
         description: memberConfig.description ?? null,
         teamDefinitionId: memberConfig.teamDefinitionId,
-        teamRunId: runtimeMemberContext?.childTeamRunId ?? memberConfig.childTeamRunId ?? null,
+        teamRunId: childTeamRunId,
         coordinatorMemberRouteKey: memberConfig.coordinatorMemberRouteKey ?? null,
         memberTree: await Promise.all(
           memberConfig.memberConfigs.map((child) =>
-            this.buildMemberMetadata(teamRunId, child, runtimeMemberContextByRunId),
+            this.buildMemberMetadata(childTeamRunId, child, runtimeMemberContextByRunId),
           ),
         ),
       };

@@ -1,3 +1,4 @@
+import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import type { TeamRun } from "../domain/team-run.js";
 import { getTaskAgentDirectory, type TaskAgentDirectory } from "./task-agent-directory.js";
 import { TaskDelegationActivationCoordinator } from "./task-delegation-activation-coordinator.js";
@@ -19,6 +20,10 @@ import {
 } from "./task-delegation-record.js";
 import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
 
+type TaskDelegationServiceOptions = {
+  agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+};
+
 export class TaskDelegationService {
   private readonly ledger: TaskDelegationLedger;
   private readonly taskAgentDirectory: TaskAgentDirectory;
@@ -28,12 +33,18 @@ export class TaskDelegationService {
   private readonly inputResolver: TaskDelegationInputResolver;
   private readonly settlementCoordinator: TaskDelegationSettlementCoordinator;
 
-  constructor(private readonly teamRun: TeamRun) {
+  constructor(
+    private readonly teamRun: TeamRun,
+    options: TaskDelegationServiceOptions = {},
+  ) {
     this.ledger = new TaskDelegationLedger(teamRun.runId);
     this.taskAgentDirectory = getTaskAgentDirectory(teamRun.runId);
     this.activationCoordinator = new TaskDelegationActivationCoordinator(
       this.ledger,
       this.taskAgentDirectory,
+      undefined,
+      undefined,
+      options.agentRunIdentityAllocator,
     );
     this.eventPublisher = new TaskDelegationEventPublisher();
     this.notificationDispatcher = new TaskDelegationNotificationDispatcher();

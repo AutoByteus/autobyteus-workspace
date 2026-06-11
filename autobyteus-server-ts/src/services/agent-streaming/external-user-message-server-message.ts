@@ -4,7 +4,7 @@ import {
   buildMemberRouteKeyFromPath,
   normalizeMemberPath,
 } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
 
 export const createExternalUserMessageServerMessage = (input: {

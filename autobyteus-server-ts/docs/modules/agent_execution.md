@@ -52,6 +52,31 @@ reference files.
 
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
 
+
+## Runtime Identity Allocation
+
+New concrete `AgentRun` identities are allocated by the server before any
+runtime backend is created. `AgentRunIdentityAllocator` resolves the supplied
+`agentDefinitionId` to the current agent definition name and produces a
+folder-safe `<agent_definition_name_slug>_<uuid-without-dashes>` value. The slug
+is readability metadata only; routing, task ownership, restore, and storage
+logic must treat the whole `agentRunId` as opaque and must not parse the slug or
+assume a runtime-specific prefix.
+
+The same allocation boundary is used for standalone prepared/created runs, team
+agent members, and delegated task-agent instances. It guards active runs,
+standalone metadata/directories, team-member metadata/directories, nested child
+team metadata, and in-flight reservations before approving a new id.
+`AgentRunManager` rejects duplicate active registrations instead of replacing an
+existing run. Runtime backend factories receive the canonical id from the
+manager/config and fail fast when production code omits it; provider/native
+identities such as Codex thread ids, Claude session ids, and AutoByteus native
+agent ids remain separate metadata.
+
+Historical restore paths continue to use stored run ids as data. Old readable,
+deterministic, or otherwise legacy ids are not rewritten and are not validated
+against the new generated shape.
+
 ## Standalone Command Lifecycle
 
 Standalone user-message dispatch is owned by the backend command boundary, not

@@ -3,7 +3,7 @@ import path from "node:path";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,

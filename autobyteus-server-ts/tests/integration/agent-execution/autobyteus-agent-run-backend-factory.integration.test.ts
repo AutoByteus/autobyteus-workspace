@@ -13,7 +13,6 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
-import { generateStandaloneAgentRunId } from "../../../src/run-history/utils/agent-run-id-utils.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -116,7 +115,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   });
 
   it("creates a live backend that can process a turn and terminate cleanly", async () => {
-    const runId = generateStandaloneAgentRunId("AutoByteusBackendAgent", "Tester");
+    const runId = "autobyteus_backend_agent_11111111111111111111111111111111";
     const backend = await backendFactory.createBackend(
       createPreparedConfig(runId),
       runId,
@@ -171,7 +170,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   });
 
   it("restores a terminated run with the same run id", async () => {
-    const runId = generateStandaloneAgentRunId("AutoByteusBackendAgent", "Tester");
+    const runId = "autobyteus_backend_agent_22222222222222222222222222222222";
     const created = await backendFactory.createBackend(
       createPreparedConfig(runId),
       runId,
@@ -217,7 +216,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
           llmModelIdentifier: "dummy-model",
           autoExecuteTools: false,
         }),
+        "",
       ),
-    ).rejects.toThrow("requires a prepared preferredRunId");
+    ).rejects.toThrow("requires agentRunId");
   });
 });

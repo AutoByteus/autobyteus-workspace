@@ -1,7 +1,8 @@
-import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
-import { buildTeamMemberRunId } from "../../../run-history/utils/team-member-run-id.js";
-import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
+import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
+import {
+  AgentMemoryLocationService,
+  getAgentMemoryLocationService,
+} from "../../../agent-memory/services/agent-memory-location-service.js";
 import {
   TeamRunConfig,
   type TeamRunMemberConfig,
@@ -21,22 +22,28 @@ import {
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 
+const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
+};
+
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<MixedTeamRunContext>, subTeamRunFactory: MixedSubTeamRunFactory) => MixedTeamManager;
-  memberLayout?: TeamMemberMemoryLayout;
+  memoryLocationService?: Pick<AgentMemoryLocationService, "getTeamAgentRunLocation">;
 };
 
 export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly createTeamManager: (context: TeamRunContext<MixedTeamRunContext>, subTeamRunFactory: MixedSubTeamRunFactory) => MixedTeamManager;
-  private readonly memberLayout: TeamMemberMemoryLayout;
+  private readonly memoryLocationService: Pick<AgentMemoryLocationService, "getTeamAgentRunLocation">;
   private readonly subTeamRunFactory: MixedSubTeamRunFactory;
 
   constructor(options: MixedTeamRunBackendFactoryOptions = {}) {
     this.createTeamManager =
       options.createTeamManager ?? ((context, subTeamRunFactory) => new MixedTeamManager(context, { subTeamRunFactory }));
-    this.memberLayout =
-      options.memberLayout ??
-      new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
+    this.memoryLocationService = options.memoryLocationService ?? getAgentMemoryLocationService();
     this.subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary) =>
         this.buildTeamRunContext(config, teamRunId, restoreRuntimeContext, parentBoundary),
@@ -44,9 +51,8 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
     });
   }
 
-  async createBackend(config: TeamRunConfig): Promise<MixedTeamRunBackend> {
-    const teamRunId = generateTeamRunId(config.teamDefinitionId);
-    const context = this.buildTeamRunContext(config, teamRunId);
+  async createBackend(config: TeamRunConfig, teamRunId: string): Promise<MixedTeamRunBackend> {
+    const context = this.buildTeamRunContext(config, normalizeRequiredRunId(teamRunId, "teamRunId"));
     const teamManager = this.createTeamManager(context, this.subTeamRunFactory);
     return this.createBackendFromContext(context, teamManager);
   }
@@ -64,7 +70,8 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
     restoreRuntimeContext: MixedTeamRunContext | null = null,
     parentBoundary: MixedParentBoundaryContext | null = null,
   ): TeamRunContext<MixedTeamRunContext> {
-    const memberTree = this.attachRuntimeIdentity(config.memberTree, teamRunId);
+    const memoryScope = this.getContextMemoryScope(teamRunId, parentBoundary);
+    const memberTree = this.attachRuntimeIdentity(config.memberTree, memoryScope);
     const runtimeContext = new MixedTeamRunContext({
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberContexts: memberTree.map((memberConfig) =>
@@ -84,6 +91,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         coordinatorMemberName: config.coordinatorMemberName,
         coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
         memberTree,
+        selfEvolution: config.selfEvolution,
       }),
       runtimeContext,
     });
@@ -98,28 +106,59 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
 
   private attachRuntimeIdentity(
     memberTree: readonly TeamRunMemberConfig[],
-    teamRunId: string,
+    memoryScope: AgentMemoryScope,
   ): TeamRunMemberConfig[] {
     return memberTree.map((memberConfig) => {
-      const memberRunId =
-        memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberConfig.memberRouteKey);
+      const memberRunId = normalizeRequiredRunId(
+        memberConfig.memberRunId,
+        `memberRunId for member '${memberConfig.memberRouteKey}'`,
+      );
       if (memberConfig.memberKind === "agent_team") {
+        const childTeamRunId = normalizeRequiredRunId(
+          memberConfig.childTeamRunId,
+          `childTeamRunId for member '${memberConfig.memberRouteKey}'`,
+        );
+        if (memberRunId !== childTeamRunId) {
+          throw new Error(
+            `agent_team wrapper memberRunId for '${memberConfig.memberRouteKey}' must equal childTeamRunId.`,
+          );
+        }
         return {
           ...memberConfig,
           memberRunId,
-          memberConfigs: this.attachRuntimeIdentity(memberConfig.memberConfigs, teamRunId),
+          childTeamRunId,
+          memberConfigs: this.attachRuntimeIdentity(memberConfig.memberConfigs, {
+            rootTeamRunId: memoryScope.rootTeamRunId,
+            teamRunPath: [...memoryScope.teamRunPath, childTeamRunId],
+          }),
         };
       }
       const memoryDir =
         typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
           ? memberConfig.memoryDir.trim()
-          : this.memberLayout.getMemberDirPath(teamRunId, memberRunId);
+          : this.memoryLocationService.getTeamAgentRunLocation({
+              rootTeamRunId: memoryScope.rootTeamRunId,
+              teamRunPath: memoryScope.teamRunPath,
+              agentRunId: memberRunId,
+            }).memoryDir;
       return {
         ...memberConfig,
         memberRunId,
         memoryDir,
       };
     });
+  }
+
+  private getContextMemoryScope(
+    teamRunId: string,
+    parentBoundary: MixedParentBoundaryContext | null,
+  ): AgentMemoryScope {
+    return parentBoundary?.memoryScope
+      ? {
+          rootTeamRunId: parentBoundary.memoryScope.rootTeamRunId,
+          teamRunPath: [...parentBoundary.memoryScope.teamRunPath],
+        }
+      : { rootTeamRunId: teamRunId, teamRunPath: [] };
   }
 
   private buildRuntimeMemberContext(

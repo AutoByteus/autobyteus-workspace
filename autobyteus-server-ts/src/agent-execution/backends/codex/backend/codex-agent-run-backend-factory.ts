@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
 import {
@@ -16,31 +15,29 @@ import {
 import { CodexAgentRunBackend } from "./codex-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 
-type RunIdGenerator = () => string;
 
 export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly threadManager: CodexThreadManager;
   private readonly threadBootstrapper: CodexThreadBootstrapper;
   private readonly threadCleanup: CodexThreadCleanup;
-  private readonly generateRunId: RunIdGenerator;
-
   constructor(
     threadManager: CodexThreadManager = getCodexThreadManager(),
     threadBootstrapper: CodexThreadBootstrapper = getCodexThreadBootstrapper(),
     threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
-    generateRunId: RunIdGenerator = () => randomUUID(),
   ) {
     this.threadManager = threadManager;
     this.threadBootstrapper = threadBootstrapper;
     this.threadCleanup = threadCleanup;
-    this.generateRunId = generateRunId;
   }
 
   async createBackend(
     input: AgentRunConfig,
-    preferredRunId: string | null = null,
+    agentRunId: string,
   ): Promise<CodexAgentRunBackend> {
-    const runId = preferredRunId?.trim() || this.generateRunId();
+    const runId = agentRunId.trim();
+    if (!runId) {
+      throw new Error("Codex backend creation requires agentRunId.");
+    }
     const runContext = await this.threadBootstrapper.bootstrapForCreate(
       new AgentRunContext({
         runId,

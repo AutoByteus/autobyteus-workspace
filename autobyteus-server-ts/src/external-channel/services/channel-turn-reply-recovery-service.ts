@@ -1,8 +1,13 @@
+import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryService } from "../../agent-memory/services/agent-memory-service.js";
+import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
+import {
+  TeamRunMetadataService,
+} from "../../run-history/services/team-run-metadata-service.js";
+import type { TeamMemberAgentMemoryLocation } from "../../agent-memory/domain/agent-memory-location.js";
 
 export type ResolveChannelTurnReplyInput = {
   agentRunId: string;
@@ -12,11 +17,13 @@ export type ResolveChannelTurnReplyInput = {
 
 export class ChannelTurnReplyRecoveryService {
   private readonly memoryDir: string;
-  private readonly teamMemberLayout: TeamMemberMemoryLayout;
+  private readonly teamMetadataService: TeamRunMetadataService;
+  private readonly memoryLocationService: AgentMemoryLocationService;
 
   constructor(memoryDir: string = appConfigProvider.config.getMemoryDir()) {
     this.memoryDir = memoryDir;
-    this.teamMemberLayout = new TeamMemberMemoryLayout(memoryDir);
+    this.teamMetadataService = new TeamRunMetadataService(memoryDir);
+    this.memoryLocationService = new AgentMemoryLocationService({ memoryDir });
   }
 
   async resolveReplyText(
@@ -25,7 +32,7 @@ export class ChannelTurnReplyRecoveryService {
     const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
     const turnId = normalizeRequiredString(input.turnId, "turnId");
     const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
-    const traces = this.readRawTraces(agentRunId, teamRunId);
+    const traces = await this.readRawTraces(agentRunId, teamRunId);
     return mergeAssistantTraceText(
       traces.filter(
         (trace) =>
@@ -37,21 +44,28 @@ export class ChannelTurnReplyRecoveryService {
     );
   }
 
-  private readRawTraces(
+  private async readRawTraces(
     agentRunId: string,
     teamRunId: string | null,
-  ): MemoryTraceEvent[] {
-    const store = teamRunId
-      ? new MemoryFileStore(this.teamMemberLayout.getTeamDirPath(teamRunId), {
+  ): Promise<MemoryTraceEvent[]> {
+    const teamTarget = teamRunId
+      ? await this.resolveTeamMemberMemoryTarget(teamRunId, agentRunId)
+      : null;
+    if (teamRunId && !teamTarget) {
+      return [];
+    }
+    const store = teamTarget
+      ? new MemoryFileStore(path.dirname(teamTarget.memoryDir), {
           runRootSubdir: "",
           warnOnMissingFiles: false,
         })
       : new MemoryFileStore(this.memoryDir, {
           warnOnMissingFiles: false,
         });
+    const runId = teamTarget ? path.basename(teamTarget.memoryDir) : agentRunId;
     const memoryService = new AgentMemoryService(store);
     return (
-      memoryService.getRunMemoryView(agentRunId, {
+      memoryService.getRunMemoryView(runId, {
         includeWorkingContext: false,
         includeEpisodic: false,
         includeSemantic: false,
@@ -59,6 +73,41 @@ export class ChannelTurnReplyRecoveryService {
         includeArchive: true,
       }).rawTraces ?? []
     );
+  }
+
+  private async resolveTeamMemberMemoryTarget(
+    teamRunId: string,
+    agentRunId: string,
+  ): Promise<TeamMemberAgentMemoryLocation | null> {
+    const directMetadata = await this.teamMetadataService.readMetadata(teamRunId);
+    const directTarget = directMetadata
+      ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
+          directMetadata,
+          { memberRunId: agentRunId },
+          teamRunId,
+        )
+      : null;
+    if (directTarget) {
+      return directTarget;
+    }
+
+    for (const storedTeamRunId of await this.teamMetadataService.listTeamRunIds()) {
+      if (storedTeamRunId === teamRunId) {
+        continue;
+      }
+      const metadata = await this.teamMetadataService.readMetadata(storedTeamRunId);
+      const target = metadata
+        ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
+            metadata,
+            { memberRunId: agentRunId },
+            teamRunId,
+          )
+        : null;
+      if (target) {
+        return target;
+      }
+    }
+    return null;
   }
 }
 

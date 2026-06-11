@@ -41,6 +41,13 @@ describe("TeamRunService", () => {
         ],
       }),
     } as any;
+    let allocationCounter = 0;
+    const agentRunIdentityAllocator = {
+      allocateForAgentDefinition: vi.fn(async (agentDefinitionId: string) => {
+        allocationCounter += 1;
+        return `${agentDefinitionId.replace(/[^a-z0-9]+/gi, "_").toLowerCase()}_${String(allocationCounter).padStart(32, "0")}`;
+      }),
+    };
     const service = new TeamRunService({
       agentTeamRunManager,
       teamDefinitionService,
@@ -48,6 +55,7 @@ describe("TeamRunService", () => {
       teamRunHistoryCatalogService,
       workspaceManager,
       memoryDir: "/tmp/team-run-service-test",
+      agentRunIdentityAllocator,
     });
 
     return {
@@ -57,6 +65,8 @@ describe("TeamRunService", () => {
         teamRunMetadataService,
         teamRunHistoryCatalogService,
         workspaceManager,
+        teamDefinitionService,
+        agentRunIdentityAllocator,
       },
     };
   };
@@ -129,7 +139,44 @@ describe("TeamRunService", () => {
       expect.objectContaining({
         teamBackendKind: TeamBackendKind.MIXED,
       }),
+      expect.stringMatching(/^support_team_[a-f0-9]{32}$/),
     );
+  });
+
+  it("rejects public memberRunId before top-level or member run allocation", async () => {
+    const { service, mocks } = createSubject();
+
+    await expect(
+      service.createTeamRun({
+        teamDefinitionId: "team-def-1",
+        memberConfigs: [
+          {
+            memberName: "Coordinator",
+            memberRouteKey: "coordinator",
+            agentDefinitionId: "agent-def-1",
+            llmModelIdentifier: "gpt-test",
+            autoExecuteTools: false,
+            skillAccessMode: "PRELOADED_ONLY" as any,
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          },
+          {
+            memberName: "Reviewer",
+            memberRouteKey: "reviewer",
+            memberRunId: "manual-reviewer-run-id",
+            agentDefinitionId: "agent-def-2",
+            llmModelIdentifier: "gpt-test",
+            autoExecuteTools: false,
+            skillAccessMode: "PRELOADED_ONLY" as any,
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          } as any,
+        ],
+      }),
+    ).rejects.toThrow("Public team launch cannot supply memberRunId");
+
+    expect(mocks.agentRunIdentityAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+    expect(mocks.teamDefinitionService.getDefinitionById).not.toHaveBeenCalled();
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
   });
 
   it("activates filesystem workspace metadata roots even when workspaceId is already present", async () => {
@@ -193,6 +240,7 @@ describe("TeamRunService", () => {
           }),
         ]),
       }),
+      expect.stringMatching(/^support_team_[a-f0-9]{32}$/),
     );
     expect(mocks.workspaceManager.getWorkspaceById).not.toHaveBeenCalled();
   });
@@ -272,6 +320,7 @@ describe("TeamRunService", () => {
           }),
         ]),
       }),
+      expect.stringMatching(/^support_team_[a-f0-9]{32}$/),
     );
   });
 
@@ -341,7 +390,7 @@ describe("TeamRunService", () => {
             memberName: "Reviewer",
             memberPath: ["Reviewer"],
             memberRouteKey: "reviewer",
-            memberRunId: "team-1/reviewer",
+            memberRunId: "reviewer-opaque-run",
             agentDefinitionId: "agent-def-2",
             llmModelIdentifier: "gpt-test",
             autoExecuteTools: false,
@@ -432,7 +481,7 @@ describe("TeamRunService", () => {
             memberName: "Coordinator",
             memberPath: ["Coordinator"],
             memberRouteKey: "coordinator",
-            memberRunId: "team-1/coordinator",
+            memberRunId: "coordinator-opaque-run",
             agentDefinitionId: "agent-def-1",
             llmModelIdentifier: "gpt-test",
             autoExecuteTools: false,
@@ -480,6 +529,7 @@ describe("TeamRunService", () => {
       expect.objectContaining({
         coordinatorMemberName: "Coordinator",
       }),
+      expect.stringMatching(/^support_team_[a-f0-9]{32}$/),
     );
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -502,7 +552,7 @@ describe("TeamRunService", () => {
             memberName: "Coordinator",
             memberPath: ["Coordinator"],
             memberRouteKey: "coordinator",
-            memberRunId: "team-1/coordinator",
+            memberRunId: "coordinator-opaque-run",
             agentDefinitionId: "agent-def-1",
             llmModelIdentifier: "gpt-test",
             autoExecuteTools: false,

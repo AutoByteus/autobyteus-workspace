@@ -47,7 +47,8 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
 - Persist Agent Artifact metadata-only projection state to
   `<run-memory-dir>/file_changes.json`.
 - For team-member runs of any runtime, persist produced Agent Artifact metadata
-  to `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`.
+  to the resolved member memory directory, for example
+  `agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/file_changes.json`.
 - Hydrate active and historical Agent Artifact rows through
   `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
 - Serve Agent Artifact bytes by `runId + canonical path` through

@@ -28,15 +28,18 @@ describe("team-member-run-view-projection-service import timing", () => {
     vi.doMock("../../../src/agent-team-execution/domain/team-run-context.js", () => ({
       getRuntimeMemberContexts: () => [],
     }));
-    vi.doMock("../../../src/run-history/utils/team-member-run-id.js", () => ({
+    vi.doMock("../../../src/agent-team-execution/domain/team-run-member-identity.js", () => ({
       normalizeMemberRouteKey: (value: string) => value,
     }));
-    vi.doMock("../../../src/agent-memory/store/team-member-memory-layout.js", () => ({
-      TeamMemberMemoryLayout: class {
-        getMemberDirPath(): string {
-          return "/tmp/member-memory";
-        }
-      },
+    vi.doMock("../../../src/agent-memory/services/agent-memory-location-service.js", () => ({
+      AgentMemoryLocationService: class {},
+      getAgentMemoryLocationService: vi.fn(() => ({
+        resolveTeamMemberLocationFromMetadata: () => ({
+          member: {},
+          memberRunId: "member-run",
+          memoryDir: "/tmp/member-memory",
+        }),
+      })),
     }));
     vi.doMock("../../../src/config/app-config-provider.js", () => ({
       appConfigProvider: {

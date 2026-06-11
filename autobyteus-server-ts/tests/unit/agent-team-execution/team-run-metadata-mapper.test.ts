@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -18,7 +18,7 @@ import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-me
 
 describe("TeamRunMetadataMapper", () => {
   it("captures child subteam run IDs and nested leaf platform IDs in recursive metadata", async () => {
-    const nestedMemberRunId = "team-1/ReviewTeam/Reviewer";
+    const nestedMemberRunId = "reviewer-opaque-run";
     const config = new TeamRunConfig({
       teamDefinitionId: "root-team",
       teamBackendKind: TeamBackendKind.MIXED,
@@ -30,7 +30,7 @@ describe("TeamRunMetadataMapper", () => {
           memberName: "ReviewTeam",
           memberPath: ["ReviewTeam"],
           memberRouteKey: "ReviewTeam",
-          memberRunId: "team-1/ReviewTeam",
+          memberRunId: "child-review-team-1",
           teamDefinitionId: "review-team",
           coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
           memberConfigs: [
@@ -56,7 +56,7 @@ describe("TeamRunMetadataMapper", () => {
       memberName: "ReviewTeam",
       memberPath: ["ReviewTeam"],
       memberRouteKey: "ReviewTeam",
-      memberRunId: "team-1/ReviewTeam",
+      memberRunId: "child-review-team-1",
       teamDefinitionId: "review-team",
       childTeamRunId: "child-review-team-1",
     });
@@ -107,7 +107,7 @@ describe("TeamRunMetadataMapper", () => {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
       } as any,
-      memberLayout: new TeamMemberMemoryLayout("/tmp/team-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/team-memory" }),
     });
 
     const metadata = await mapper.buildMetadata(run);
@@ -141,7 +141,7 @@ describe("TeamRunMetadataMapper", () => {
           memberName: "ReviewTeam",
           memberPath: ["ReviewTeam"],
           memberRouteKey: "ReviewTeam",
-          memberRunId: "parent-1/ReviewTeam",
+          memberRunId: "child-review-1",
           teamDefinitionId: "review-team",
           teamRunId: "child-review-1",
           coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
@@ -153,7 +153,7 @@ describe("TeamRunMetadataMapper", () => {
               memberName: "Reviewer",
               memberPath: ["ReviewTeam", "Reviewer"],
               memberRouteKey: "ReviewTeam/Reviewer",
-              memberRunId: "parent-1/ReviewTeam/Reviewer",
+              memberRunId: "reviewer-opaque-run",
               role: null,
               description: null,
               runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -171,7 +171,7 @@ describe("TeamRunMetadataMapper", () => {
               memberName: "Observer",
               memberPath: ["ReviewTeam", "Observer"],
               memberRouteKey: "ReviewTeam/Observer",
-              memberRunId: "parent-1/ReviewTeam/Observer",
+              memberRunId: "observer-opaque-run",
               role: null,
               description: null,
               runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -196,7 +196,7 @@ describe("TeamRunMetadataMapper", () => {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
       } as any,
-      memberLayout: new TeamMemberMemoryLayout("/tmp/team-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/team-memory" }),
     });
 
     const restoreContext = await mapper.buildRestoreContext(metadata);
@@ -241,7 +241,7 @@ describe("TeamRunMetadataMapper", () => {
     });
 
     const contextBuilder = new MixedTeamRunBackendFactory({
-      memberLayout: new TeamMemberMemoryLayout("/tmp/mixed-restore-test-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-restore-test-memory" }),
     });
     const subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (config, teamRunId, restoreRuntimeContext) =>

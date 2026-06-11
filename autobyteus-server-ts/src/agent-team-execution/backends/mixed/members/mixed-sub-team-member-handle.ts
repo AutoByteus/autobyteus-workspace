@@ -1,5 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentMemoryScope } from "../../../../agent-memory/domain/agent-memory-location.js";
 import {
   buildAgentStatusPayload,
   type AgentStatusPayload,
@@ -26,6 +27,25 @@ import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-age
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+
+
+const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
+};
+
+const getTeamContextMemoryScope = (
+  context: TeamRunContext<MixedTeamRunContext>,
+): AgentMemoryScope =>
+  context.runtimeContext.parentBoundary?.memoryScope
+    ? {
+        rootTeamRunId: context.runtimeContext.parentBoundary.memoryScope.rootTeamRunId,
+        teamRunPath: [...context.runtimeContext.parentBoundary.memoryScope.teamRunPath],
+      }
+    : { rootTeamRunId: context.runId, teamRunPath: [] };
 
 const unsupportedSubteamApproval = (memberName: string): AgentOperationResult => ({
   accepted: false,
@@ -189,14 +209,24 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe = null;
     this.childRun = null;
     this.context.childRuntimeContext = null;
+    const childTeamRunId = normalizeRequiredRunId(
+      this.context.childTeamRunId ?? this.options.config.childTeamRunId,
+      `childTeamRunId for subteam '${this.context.memberRouteKey}'`,
+    );
+    const parentMemoryScope = getTeamContextMemoryScope(this.options.parentContext);
+    const childMemoryScope: AgentMemoryScope = {
+      rootTeamRunId: parentMemoryScope.rootTeamRunId,
+      teamRunPath: [...parentMemoryScope.teamRunPath, childTeamRunId],
+    };
     this.childRun = await this.options.subTeamRunFactory.createOrRestore({
       parentTeamRunId: this.options.parentContext.runId,
       subTeamConfig: this.options.config,
-      childTeamRunId: this.context.childTeamRunId ?? this.options.config.childTeamRunId ?? null,
+      childTeamRunId,
       restoreRuntimeContext,
       parentBoundary: {
         parentTeamRunId: this.options.parentContext.runId,
         parentTeamDefinitionId: this.options.parentContext.config?.teamDefinitionId ?? null,
+        memoryScope: childMemoryScope,
         representedSubTeam: {
           memberKind: "agent_team",
           memberName: this.context.memberName,
@@ -204,7 +234,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
           memberRouteKey: this.context.memberRouteKey,
           memberRunId: this.context.memberRunId,
           teamDefinitionId: this.context.teamDefinitionId,
-          childTeamRunId: this.context.childTeamRunId ?? this.options.config.childTeamRunId ?? null,
+          childTeamRunId,
           address: buildTeamMemberAddress({
             teamRunId: this.options.parentContext.runId,
             memberPath: this.context.memberPath,

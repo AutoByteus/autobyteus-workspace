@@ -11,7 +11,14 @@ This module is intentionally separate from run-history projection: agent-memory 
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
-- Team member runs: `memory/agent_teams/<teamRunId>/<memberRunId>/...`
+- Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
+- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each child team run id to that root-relative `teamRunPath` before the member id
+- Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...` using the logical member's team memory scope
+
+The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `teamRunPath`
+segments are opaque stored identifiers. Readers must not parse generated id
+shapes or derive nested member storage from a flattened member list; they should
+use the resolved `memoryDir` or `AgentMemoryLocationService`.
 
 Canonical active memory file names are imported from `autobyteus-ts/memory/store/memory-file-names` and low-level direct-directory IO is delegated through `RunMemoryFileStore`.
 
@@ -57,7 +64,7 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 
 `TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
 
-Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. A team member target is inspected by `teamRunId + memberRunId`.
+Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from recursive metadata and `AgentMemoryLocationService`, so nested member availability is resolved from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` memory directory rather than from a flattened root-team/member assumption.
 
 ### Explorer GraphQL Queries
 
@@ -135,6 +142,9 @@ When runtime-native Codex or Claude history cannot be read, the local-memory pro
 
 - Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
+- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
+- Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
 - Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`

@@ -52,6 +52,7 @@ describe("AgentRunProvisioningService", () => {
   };
 
   beforeEach(async () => {
+    allocatedRunCounter = 0;
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-provisioning-"));
     metadataByRunId = new Map();
     metadataService = {
@@ -104,12 +105,18 @@ describe("AgentRunProvisioningService", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
+  let allocatedRunCounter = 0;
   const buildService = () => new AgentRunProvisioningService(memoryDir, {
     agentRunManager: agentRunManager as never,
     metadataService: metadataService as never,
     historyCatalogService: historyCatalogService as never,
     workspaceManager: workspaceManager as never,
-    agentDefinitionService: { getFreshAgentDefinitionById: vi.fn() } as never,
+    agentRunIdentityAllocator: {
+      allocateForAgentDefinition: vi.fn(async () => {
+        allocatedRunCounter += 1;
+        return `support_agent_${String(allocatedRunCounter).padStart(32, "0")}`;
+      }),
+    },
   });
 
   it("prepares a standalone run identity through the catalog without persisted live status", async () => {

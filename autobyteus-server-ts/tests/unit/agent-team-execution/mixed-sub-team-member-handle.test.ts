@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedSubTeamRunFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.js";
@@ -20,7 +20,7 @@ const buildChildAgent = (memberName: string, routeKey: string) => ({
   memberName,
   memberPath: ["ReviewTeam", memberName],
   memberRouteKey: routeKey,
-  memberRunId: `parent-1/${routeKey}`,
+  memberRunId: `${memberName.toLowerCase()}-opaque-run`,
   agentDefinitionId: `agent-${memberName.toLowerCase()}`,
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
@@ -32,7 +32,7 @@ describe("MixedSubTeamMemberHandle", () => {
   it("routes parent-to-subteam messages to the configured child coordinator in multi-member child teams", async () => {
     const childPostMessage = vi.fn(async () => ({ accepted: true }));
     const contextBuilder = new MixedTeamRunBackendFactory({
-      memberLayout: new TeamMemberMemoryLayout("/tmp/mixed-subteam-handle-test-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-subteam-handle-test-memory" }),
     });
     const subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (config, teamRunId, restoreRuntimeContext) =>
@@ -66,7 +66,7 @@ describe("MixedSubTeamMemberHandle", () => {
       memberName: "ReviewTeam",
       memberPath: ["ReviewTeam"],
       memberRouteKey: "ReviewTeam",
-      memberRunId: "parent-1/ReviewTeam",
+      memberRunId: "child-review-1",
       teamDefinitionId: "review-team",
       childTeamRunId: "child-review-1",
     });
@@ -75,7 +75,7 @@ describe("MixedSubTeamMemberHandle", () => {
       memberName: "ReviewTeam",
       memberPath: ["ReviewTeam"],
       memberRouteKey: "ReviewTeam",
-      memberRunId: "parent-1/ReviewTeam",
+      memberRunId: "child-review-1",
       teamDefinitionId: "review-team",
       childTeamRunId: "child-review-1",
       coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
@@ -107,7 +107,7 @@ describe("MixedSubTeamMemberHandle", () => {
   it("strips the parent subteam prefix when delivering to an explicit represented child target", async () => {
     const childPostMessage = vi.fn(async () => ({ accepted: true }));
     const contextBuilder = new MixedTeamRunBackendFactory({
-      memberLayout: new TeamMemberMemoryLayout("/tmp/mixed-subteam-handle-delivery-test-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-subteam-handle-delivery-test-memory" }),
     });
     const subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary) =>
@@ -141,7 +141,7 @@ describe("MixedSubTeamMemberHandle", () => {
       memberName: "ReviewTeam",
       memberPath: ["ReviewTeam"],
       memberRouteKey: "ReviewTeam",
-      memberRunId: "parent-1/ReviewTeam",
+      memberRunId: "child-review-1",
       teamDefinitionId: "review-team",
       childTeamRunId: "child-review-1",
     });
@@ -150,7 +150,7 @@ describe("MixedSubTeamMemberHandle", () => {
       memberName: "ReviewTeam",
       memberPath: ["ReviewTeam"],
       memberRouteKey: "ReviewTeam",
-      memberRunId: "parent-1/ReviewTeam",
+      memberRunId: "child-review-1",
       teamDefinitionId: "review-team",
       childTeamRunId: "child-review-1",
       coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
@@ -203,7 +203,7 @@ describe("MixedSubTeamMemberHandle", () => {
             memberName: "ReviewTeam",
             memberPath: ["ReviewTeam"],
             memberRouteKey: "ReviewTeam",
-            memberRunId: "parent-1/ReviewTeam",
+            memberRunId: "child-review-1",
             teamDefinitionId: "review-team",
             address: {
               teamRunId: "parent-1",

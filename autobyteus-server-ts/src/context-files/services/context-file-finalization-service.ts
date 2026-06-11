@@ -10,6 +10,7 @@ import {
 } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
 import { ContextFileDraftCleanupService } from "./context-file-draft-cleanup-service.js";
+import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
 
 const normalizeDisplayName = (displayName: string): string => {
   if (!displayName.trim()) {
@@ -48,6 +49,7 @@ export class ContextFileFinalizationService {
   constructor(
     private readonly layout: ContextFileLayout,
     private readonly cleanupService: ContextFileDraftCleanupService,
+    private readonly ownerResolver: ContextFileOwnerResolver = new ContextFileOwnerResolver(),
   ) {}
 
   async finalizeDraftAttachments(input: {
@@ -56,7 +58,8 @@ export class ContextFileFinalizationService {
     attachments: FinalizeContextFileDescriptor[];
   }): Promise<FinalizedContextFile[]> {
     await this.cleanupService.cleanupExpiredDrafts();
-    await this.layout.ensureFinalOwnerDir(input.finalOwner);
+    const resolvedFinalOwner = await this.ownerResolver.resolveFinalOwner(input.finalOwner);
+    await this.layout.ensureFinalOwnerDir(resolvedFinalOwner);
 
     const finalizedFiles: FinalizedContextFile[] = [];
     const uniqueAttachments = Array.from(
@@ -77,7 +80,7 @@ export class ContextFileFinalizationService {
     for (const attachment of uniqueAttachments) {
       const { storedFilename, displayName } = attachment;
       const draftFilePath = this.layout.getDraftFilePath(input.draftOwner, storedFilename);
-      const finalFilePath = this.layout.getFinalFilePath(input.finalOwner, storedFilename);
+      const finalFilePath = this.layout.getFinalFilePath(resolvedFinalOwner, storedFilename);
 
       const draftExists = await this.fileExists(draftFilePath);
       const finalExists = await this.fileExists(finalFilePath);

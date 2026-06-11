@@ -5,7 +5,7 @@ import type {
 } from "./team-run-metadata-types.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import {
   RuntimeKind,
   runtimeKindFromString,

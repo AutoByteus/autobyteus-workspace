@@ -18,7 +18,6 @@ import {
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
-import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const createMemberConfig = (input: {
@@ -49,7 +48,9 @@ const attachMemberRunIds = (
   members: readonly TeamRunMemberConfig[],
   teamRunId: string,
 ): TeamRunMemberConfig[] => members.map((member) => {
-  const memberRunId = member.memberRunId ?? buildTeamMemberRunId(teamRunId, member.memberRouteKey);
+  const memberRunId =
+    member.memberRunId ??
+    `${teamRunId}__${member.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, "_")}__historical`;
   if (member.memberKind === "agent_team") {
     return {
       ...member,
@@ -166,7 +167,7 @@ const createSingleRuntimeMetadata = (input: {
   platformAgentRunId: string;
 }): TeamRunMetadata => {
   const memberRouteKey = "Coordinator";
-  const memberRunId = buildTeamMemberRunId(input.teamRunId, memberRouteKey);
+  const memberRunId = `${input.teamRunId}__coordinator__historical_member`;
   return {
     teamRunId: input.teamRunId,
     teamDefinitionId: "team-def-1",
@@ -269,13 +270,16 @@ describe("TeamRunService integration", () => {
         workspaceId: "workspace-1",
       })],
     });
-    const run = createTeamRunFromConfig({
-      runId: "team-run-1",
-      config,
-      coordinatorMemberName: "Coordinator",
-    });
+    const allocatedMemberRunId = "coordinator_agent_11111111111111111111111111111111";
     const agentTeamRunManager = {
-      createTeamRun: vi.fn().mockResolvedValue(run),
+      createTeamRun: vi.fn().mockImplementation(
+        async (assignedConfig: TeamRunConfig, assignedTeamRunId: string) =>
+          createTeamRunFromConfig({
+            runId: assignedTeamRunId,
+            config: assignedConfig,
+            coordinatorMemberName: "Coordinator",
+          }),
+      ),
       restoreTeamRun: vi.fn(),
       getTeamRun: vi.fn(),
       terminateTeamRun: vi.fn(),
@@ -288,6 +292,9 @@ describe("TeamRunService integration", () => {
       teamRunHistoryCatalogService: historyCatalogService as never,
       workspaceManager: createWorkspaceManager() as never,
       memoryDir: "/tmp/memory",
+      agentRunIdentityAllocator: {
+        allocateForAgentDefinition: vi.fn().mockResolvedValue(allocatedMemberRunId),
+      },
     });
 
     const result = await service.createTeamRun({
@@ -295,16 +302,25 @@ describe("TeamRunService integration", () => {
       memberConfigs: config.memberConfigs,
     });
 
-    expect(result.runId).toBe("team-run-1");
+    expect(result.runId).toMatch(/^team_one_[a-f0-9]{32}$/);
     expect(result.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
-      expect.objectContaining({ teamBackendKind: TeamBackendKind.MIXED }),
+      expect.objectContaining({
+        teamBackendKind: TeamBackendKind.MIXED,
+        memberConfigs: [
+          expect.objectContaining({
+            memberRunId: allocatedMemberRunId,
+          }),
+        ],
+      }),
+      result.runId,
     );
     expect(historyCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
       expect.objectContaining({
-        teamRunId: "team-run-1",
+        teamRunId: result.runId,
         metadata: expect.objectContaining({
           memberTree: [expect.objectContaining({
+            memberRunId: allocatedMemberRunId,
             runtimeKind,
             platformAgentRunId: platformRunIdFor(result.config!.memberConfigs[0]!),
             workspaceRootPath: "/tmp/team-workspace",

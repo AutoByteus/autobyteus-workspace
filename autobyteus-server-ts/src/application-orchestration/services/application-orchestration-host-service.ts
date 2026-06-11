@@ -13,8 +13,6 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import {
   ApplicationOrchestrationStartupGate,
@@ -35,7 +33,10 @@ import {
   TeamRunMetadataService,
   getTeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
-import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
+import {
+  AgentMemoryLocationService,
+  getAgentMemoryLocationService,
+} from "../../agent-memory/services/agent-memory-location-service.js";
 import {
   selectorFromMemberPath,
   selectorFromMemberRouteKey,
@@ -68,7 +69,6 @@ const buildRuntimeInputMessage = (input: ApplicationRuntimeInput): AgentInputUse
 
 export class ApplicationOrchestrationHostService {
   private static instance: ApplicationOrchestrationHostService | null = null;
-  private readonly teamMemberMemoryLayout: TeamMemberMemoryLayout;
 
   static getInstance(
     dependencies: ConstructorParameters<typeof ApplicationOrchestrationHostService>[0] = {},
@@ -99,10 +99,9 @@ export class ApplicationOrchestrationHostService {
       teamRunMetadataService?: TeamRunMetadataService;
       ingressService?: ApplicationExecutionEventIngressService;
       publishedArtifactProjectionService?: PublishedArtifactProjectionService;
+      memoryLocationService?: AgentMemoryLocationService;
     } = {},
-  ) {
-    this.teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
-  }
+  ) {}
 
   private get startupGate(): ApplicationOrchestrationStartupGate {
     return this.dependencies.startupGate ?? getApplicationOrchestrationStartupGate();
@@ -162,6 +161,10 @@ export class ApplicationOrchestrationHostService {
 
   private get publishedArtifactProjectionService(): PublishedArtifactProjectionService {
     return this.dependencies.publishedArtifactProjectionService ?? getPublishedArtifactProjectionService();
+  }
+
+  private get memoryLocationService(): AgentMemoryLocationService {
+    return this.dependencies.memoryLocationService ?? getAgentMemoryLocationService();
   }
 
   private async requireApplicationActive(applicationId: string): Promise<void> {
@@ -358,16 +361,18 @@ export class ApplicationOrchestrationHostService {
     }
 
     const metadata = await this.teamRunMetadataService.readMetadata(binding.runtime.runId);
-    const memberMetadata =
-      metadata ? getTeamRunLeafAgentMetadata(metadata).find((member) => member.memberRunId === runId) ?? null : null;
-    if (!memberMetadata) {
+    const target = metadata
+      ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
+          metadata,
+          { memberRunId: runId },
+          binding.runtime.runId,
+        )
+      : null;
+    if (!target) {
       return null;
     }
 
-    return this.teamMemberMemoryLayout.getMemberDirPath(
-      binding.runtime.runId,
-      memberMetadata.memberRunId,
-    );
+    return target.memoryDir;
   }
 
   private async postRunInputInternal(

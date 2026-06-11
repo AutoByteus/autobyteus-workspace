@@ -1,5 +1,3 @@
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
-
 export type TeamMemberSelector =
   | { kind: "path"; memberPath: string[] }
   | { kind: "route_key"; memberRouteKey: string };
@@ -14,6 +12,17 @@ const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
   if (!normalized) {
     throw new Error(`${fieldName} cannot be empty.`);
+  }
+  return normalized;
+};
+
+export const normalizeMemberRouteKey = (memberRouteKey: string): string => {
+  const normalized = normalizeRequiredString(memberRouteKey, "memberRouteKey")
+    .replace(/\\/g, "/")
+    .replace(/\/{2,}/g, "/")
+    .replace(/^\/+|\/+$/g, "");
+  if (!normalized) {
+    throw new Error("memberRouteKey cannot be empty.");
   }
   return normalized;
 };

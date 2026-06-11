@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import {
   SkillAccessMode,
   resolveSkillAccessMode,
@@ -24,8 +23,7 @@ import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
+import { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { SelfEvolutionConfigOverride, SelfEvolutionEffectiveConfig } from "../../self-evolution/domain/models.js";
 import { normalizeSelfEvolutionConfigOverride } from "../../self-evolution/domain/config.js";
@@ -57,7 +55,7 @@ export class AgentRunProvisioningService {
   private readonly metadataService: AgentRunMetadataService;
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
-  private readonly agentDefinitionService: AgentDefinitionService;
+  private readonly agentRunIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
   private readonly activationLocks = new Map<string, Promise<AgentRun>>();
 
   constructor(
@@ -67,7 +65,7 @@ export class AgentRunProvisioningService {
       metadataService?: AgentRunMetadataService;
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
-      agentDefinitionService?: AgentDefinitionService;
+      agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     } = {},
   ) {
     this.memoryLayout = new AgentRunMemoryLayout(memoryDir);
@@ -77,8 +75,12 @@ export class AgentRunProvisioningService {
     this.historyCatalogService =
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.agentDefinitionService =
-      deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    this.agentRunIdentityAllocator =
+      deps.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+        agentRunManager: this.agentRunManager,
+        agentRunMetadataService: this.metadataService,
+        memoryDir,
+      });
   }
 
   async prepareAgentRun(
@@ -305,7 +307,7 @@ export class AgentRunProvisioningService {
     applicationExecutionContext: ApplicationExecutionContext | null;
     selfEvolution: SelfEvolutionConfigOverride | null;
   }): Promise<{ runId: string; config: AgentRunConfig }> {
-    const runId = await this.generateFreshRunId(input.runtimeKind, input.agentDefinitionId);
+    const runId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getRunDirPath(runId);
     return {
       runId,
@@ -322,57 +324,6 @@ export class AgentRunProvisioningService {
         selfEvolution: input.selfEvolution,
       }),
     };
-  }
-
-  private async generateFreshRunId(
-    runtimeKind: RuntimeKind,
-    agentDefinitionId: string,
-  ): Promise<string> {
-    if (runtimeKind !== RuntimeKind.AUTOBYTEUS) {
-      return this.generateUniqueRunId(() => randomUUID());
-    }
-
-    const definition = await this.agentDefinitionService.getFreshAgentDefinitionById(
-      agentDefinitionId,
-    );
-    if (!definition) {
-      throw new Error(
-        `AgentDefinition '${agentDefinitionId}' cannot be loaded for standalone AutoByteus run provisioning.`,
-      );
-    }
-
-    return this.generateUniqueRunId(() =>
-      generateStandaloneAgentRunId(definition.name, definition.role),
-    );
-  }
-
-  private async generateUniqueRunId(generator: () => string): Promise<string> {
-    for (let attempt = 0; attempt < 64; attempt += 1) {
-      const candidate = generator().trim();
-      if (!candidate) {
-        continue;
-      }
-      if (await this.runIdExists(candidate)) {
-        continue;
-      }
-      return candidate;
-    }
-    throw new Error("Unable to provision a unique run id.");
-  }
-
-  private async runIdExists(runId: string): Promise<boolean> {
-    if (this.agentRunManager.hasActiveRun(runId)) {
-      return true;
-    }
-    if (await this.metadataService.readMetadata(runId)) {
-      return true;
-    }
-    try {
-      await fs.access(this.memoryLayout.getRunDirPath(runId));
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   private resolveWorkspaceRootPath(options: {

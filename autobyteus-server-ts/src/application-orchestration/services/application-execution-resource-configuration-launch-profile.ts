@@ -15,7 +15,7 @@ import type {
   ApplicationSupportedTeamMemberOverrideDeclaration,
 } from "@autobyteus/application-sdk-contracts";
 import type { TeamLeafAgentMember } from "../../agent-team-execution/services/team-definition-traversal-service.js";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type { LegacyApplicationConfiguredLaunchDefaults } from "../stores/application-execution-resource-configuration-store.js";
 
 const AGENT_LAUNCH_PROFILE_KEYS = new Set(["kind", "llmModelIdentifier", "runtimeKind", "workspaceRootPath"]);

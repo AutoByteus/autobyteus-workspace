@@ -14,6 +14,7 @@ import {
   TeamMemoryMemberTargetBuilder,
   type TeamMemoryMemberTargetRecord,
 } from "./team-memory-member-target-builder.js";
+import { AgentMemoryLocationService } from "./agent-memory-location-service.js";
 import {
   includesMemoryExplorerQuery,
   normalizeMemoryExplorerSearch,
@@ -48,7 +49,10 @@ export class TeamMemoryExplorerService {
   ) {
     this.metadataStore = dependencies.metadataStore ?? new TeamRunMetadataStore(memoryDir);
     this.catalogService = dependencies.catalogService ?? new TeamRunHistoryCatalogService(memoryDir);
-    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(this.metadataStore);
+    this.memberTargetBuilder = new TeamMemoryMemberTargetBuilder(
+      this.metadataStore,
+      new AgentMemoryLocationService({ memoryDir }),
+    );
   }
 
   async listAgentTeamsWithMemory(

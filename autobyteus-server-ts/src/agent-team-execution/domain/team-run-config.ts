@@ -8,7 +8,7 @@ import {
   buildMemberRouteKeyFromPath,
   normalizeMemberPath,
 } from "./team-run-member-identity.js";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "./team-run-member-identity.js";
 
 export type TeamRunMemberKind = "agent" | "agent_team";
 

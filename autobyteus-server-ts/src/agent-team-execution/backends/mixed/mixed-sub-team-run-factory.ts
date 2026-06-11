@@ -5,8 +5,14 @@ import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import { MixedTeamRunContext, type MixedParentBoundaryContext } from "./mixed-team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
-import { buildTeamMemberRunId } from "../../../run-history/utils/team-member-run-id.js";
-import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
+
+const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
+};
 
 export type MixedSubTeamRunFactoryOptions = {
   buildContext: (
@@ -24,11 +30,11 @@ export class MixedSubTeamRunFactory {
   async createOrRestore(input: {
     parentTeamRunId: string;
     subTeamConfig: TeamSubTeamMemberRunConfig;
-    childTeamRunId?: string | null;
+    childTeamRunId: string;
     restoreRuntimeContext?: MixedTeamRunContext | null;
     parentBoundary?: MixedParentBoundaryContext | null;
   }): Promise<TeamRun> {
-    const childTeamRunId = input.childTeamRunId?.trim() || generateTeamRunId(input.subTeamConfig.teamDefinitionId);
+    const childTeamRunId = normalizeRequiredRunId(input.childTeamRunId, "childTeamRunId");
     const childTree = stripMemberPathPrefix(
       input.subTeamConfig.memberConfigs,
       input.subTeamConfig.memberPath,
@@ -41,7 +47,10 @@ export class MixedSubTeamRunFactory {
         : null,
       memberTree: childTree.map((member) => ({
         ...member,
-        memberRunId: member.memberRunId ?? buildTeamMemberRunId(childTeamRunId, member.memberRouteKey),
+        memberRunId: normalizeRequiredRunId(
+          member.memberRunId,
+          `memberRunId for child member '${member.memberRouteKey}'`,
+        ),
       })),
     });
     const context = this.options.buildContext(

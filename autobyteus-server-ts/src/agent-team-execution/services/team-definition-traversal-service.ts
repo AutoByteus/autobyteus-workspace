@@ -4,7 +4,7 @@ import {
   resolveScopedTeamMemberRef,
 } from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../domain/team-run-member-identity.js";
 import type { TeamMemberRunConfig } from "../domain/team-run-config.js";
 
 export type TeamLeafAgentMember = {

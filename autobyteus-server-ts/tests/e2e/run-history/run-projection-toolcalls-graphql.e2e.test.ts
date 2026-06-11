@@ -13,7 +13,7 @@ import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
-import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
 import {
@@ -593,8 +593,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
       ],
     } satisfies TeamRunMetadata);
 
-    const memberDir = new TeamMemberMemoryLayout(memoryDir).getMemberDirPath(
-      TEAM_RUN_ID,
+    const memberDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
+      { rootTeamRunId: TEAM_RUN_ID, teamRunPath: [] },
       MEMBER_RUN_ID,
     );
     await writeLocalReplayToolTrace(memberDir, {

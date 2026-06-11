@@ -9,6 +9,7 @@ import {
   type ContextFileFinalOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
+import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
 
 const AGENT_FINAL_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const TEAM_MEMBER_FINAL_ROUTE =
@@ -29,7 +30,10 @@ const decodePathSegment = (value: string): string => {
 };
 
 export class ContextFileLocalPathResolver {
-  constructor(private readonly layout: ContextFileLayout = new ContextFileLayout()) {}
+  constructor(
+    private readonly layout: ContextFileLayout = new ContextFileLayout(),
+    private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync"> = new ContextFileOwnerResolver(),
+  ) {}
 
   resolve(locator: string): string | null {
     const normalizedLocator = locator.trim();
@@ -118,7 +122,8 @@ export class ContextFileLocalPathResolver {
     storedFilename: string,
   ): string | null {
     try {
-      const filePath = this.layout.getFinalFilePath(owner, storedFilename);
+      const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(owner);
+      const filePath = this.layout.getFinalFilePath(resolvedOwner, storedFilename);
       const resolvedPath = path.resolve(filePath);
       return fs.existsSync(resolvedPath) ? resolvedPath : null;
     } catch {

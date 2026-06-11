@@ -16,6 +16,13 @@ class StubLayout {
   }
 }
 
+const stubOwnerResolver = {
+  resolveFinalOwnerSync: (owner: any) =>
+    owner.kind === 'team_member_final'
+      ? { ...owner, memberRunId: 'worker_00000000000000000000000000000001' }
+      : owner,
+};
+
 describe('ContextFileLocalPathResolver', () => {
   const tempDirs: string[] = [];
 
@@ -30,7 +37,7 @@ describe('ContextFileLocalPathResolver', () => {
     const filePath = path.join(tempDir, 'ctx_token__notes.txt');
     await fs.writeFile(filePath, 'hello');
 
-    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any);
+    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any, stubOwnerResolver);
 
     expect(resolver.resolve('/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(
@@ -44,7 +51,7 @@ describe('ContextFileLocalPathResolver', () => {
     const filePath = path.join(tempDir, 'ctx_token__notes.txt');
     await fs.writeFile(filePath, 'hello');
 
-    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any);
+    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any, stubOwnerResolver);
 
     expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(

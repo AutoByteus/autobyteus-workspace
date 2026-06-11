@@ -2,12 +2,11 @@ import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
-import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
 import { TeamRunMetadataService, getTeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { TeamRunAgentMemberMetadata, TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { SelfEvolutionEffectiveConfig, SelfEvolutionTargetRef } from "../domain/models.js";
 
@@ -30,17 +29,17 @@ export type SelfEvolutionTargetContext = {
 };
 
 export class SelfEvolutionTargetContextResolver {
-  private readonly teamMemberLayout: TeamMemberMemoryLayout;
+  private readonly memoryLocationService: AgentMemoryLocationService;
 
   constructor(private readonly deps: {
     agentRunMetadataService?: AgentRunMetadataService;
     teamRunMetadataService?: TeamRunMetadataService;
     agentDefinitionService?: Pick<AgentDefinitionService, "getFreshAgentDefinitionById">;
+    memoryLocationService?: AgentMemoryLocationService;
     memoryDir?: string;
   } = {}) {
-    this.teamMemberLayout = new TeamMemberMemoryLayout(
-      deps.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    );
+    this.memoryLocationService =
+      deps.memoryLocationService ?? new AgentMemoryLocationService({ memoryDir: deps.memoryDir });
   }
 
   async resolve(target: SelfEvolutionTargetRef): Promise<SelfEvolutionTargetContext> {
@@ -81,13 +80,16 @@ export class SelfEvolutionTargetContextResolver {
     if (!metadata) {
       throw new Error(`Team run '${teamRunId}' metadata was not found.`);
     }
-    const member = getTeamRunLeafAgentMetadata(metadata)
-      .find((candidate) => candidate.memberRunId === memberRunId);
-    if (!member) {
+    const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
+      metadata,
+      { memberRunId },
+      teamRunId,
+    );
+    if (!target) {
       throw new Error(`Agent member run '${memberRunId}' was not found in team run '${teamRunId}'.`);
     }
+    const member = target.member;
     const definition = await this.loadAgentDefinition(member.agentDefinitionId);
-    const memoryDir = this.teamMemberLayout.getMemberDirPath(teamRunId, member.memberRunId);
     return {
       target: { kind: "team_member_run", teamRunId, memberRunId },
       sourceRunIds: [memberRunId],
@@ -95,7 +97,7 @@ export class SelfEvolutionTargetContextResolver {
       agentDefinitionId: member.agentDefinitionId,
       agentName: definition.name,
       workspaceRootPath: member.workspaceRootPath || appConfigProvider.config.getTempWorkspaceDir(),
-      memoryDir,
+      memoryDir: target.memoryDir,
       runMetadataPath: null,
       runtimeKind: member.runtimeKind,
       llmModelIdentifier: member.llmModelIdentifier,

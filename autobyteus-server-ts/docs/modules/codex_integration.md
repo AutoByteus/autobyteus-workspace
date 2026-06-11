@@ -23,7 +23,7 @@ Standalone runs:
 
 Team runs:
 
-1. Team services create a team run with deterministic `memberRunId` values and `TeamBackendKind.MIXED`.
+1. Team services create a team run with a generated `<team_definition_name_slug>_<uuid-without-dashes>` `teamRunId`, allocator-backed opaque `memberRunId` values for concrete agent members, and `TeamBackendKind.MIXED`.
 2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
 3. Codex member bootstrap consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
 4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
@@ -122,7 +122,7 @@ unsupported model.
 Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.
 
 - Standalone Codex runs write under `memory/agents/<runId>/...`.
-- Codex team members write under `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
+- Codex team members write under their resolved team-member `memoryDir`: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`, nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...` with deeper child team ids appended, and task-agent runs use `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`.
 - `AgentRunManager` attaches the storage-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - The recorder writes shared `RawTraceItem` rows and `working_context_snapshot.json` through the `autobyteus-ts` `RunMemoryFileStore` primitives.
 
@@ -269,8 +269,8 @@ Diagnostic/runtime-native Codex components:
 The normal display projection path uses:
 
 - domain run ids for AutoByteus-owned identity;
-- explicit `memoryDir` basenames for standalone and team-member local replay
-  reads;
+- explicit `memoryDir` basenames for standalone and resolved root-hierarchical
+  team-member local replay reads;
 - Codex thread ids only as runtime-native metadata, not as display-source
   selectors.
 
@@ -337,7 +337,7 @@ conversation is being applied.
 - Approval requests, tool calls, file changes, and final-answer deltas are all normalized into the standard runtime event spine.
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
-- Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
+- Team member runtime identity is server-allocated and opaque; route keys/member paths remain the team routing identity, and Codex thread ids are stored separately as runtime-native references.
 - Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as tool-call and terminal tool-result traces; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical rows that were already persisted with empty tool arguments are not backfilled by this path. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 

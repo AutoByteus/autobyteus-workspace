@@ -14,7 +14,7 @@ import type {
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
 } from "@autobyteus/application-sdk-contracts";
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";

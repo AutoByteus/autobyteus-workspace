@@ -244,5 +244,6 @@ export const useMyFeatureStore = defineStore('myFeature', {
 
 ## Notes
 
-- Agent run IDs are internal runtime IDs; use the agent **definition ID**, not the display name, when creating a new run.
-- If you want to use agent names, add a lookup layer that resolves name -> id first.
+- Agent run IDs are internal, backend-allocated runtime IDs. New runs use an opaque `<agent_definition_name_slug>_<uuid-without-dashes>` shape; the slug is for human readability only and frontend code must not parse it for routing, task identity, or storage ownership.
+- Use the agent **definition ID**, not the display name, when creating a new run. If you want to use agent names, add a lookup layer that resolves name -> id first.
+- Team run IDs are likewise backend-owned runtime IDs; team member routing uses emitted member paths/route keys, not parsed `memberRunId` values.

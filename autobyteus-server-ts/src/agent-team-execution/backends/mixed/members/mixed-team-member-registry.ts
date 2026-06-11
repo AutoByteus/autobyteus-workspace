@@ -2,17 +2,13 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
 import type { AgentRun } from "../../../../agent-execution/domain/agent-run.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentMemoryScope } from "../../../../agent-memory/domain/agent-memory-location.js";
+import { getAgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
 import type { StartTaskAgentInstanceRequest, TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import { cloneTaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
-import {
-  getSelectorTopLevelName,
-  resolveTeamMemberSelector,
-  selectorFromMemberPath,
-  selectorFromMemberRouteKey,
-  type TeamMemberSelector,
-} from "../../../domain/team-run-member-identity.js";
+import type { TeamMemberRunConfig, TeamRunMemberConfig } from "../../../domain/team-run-config.js";
+import { getSelectorTopLevelName, resolveTeamMemberSelector, selectorFromMemberPath, selectorFromMemberRouteKey, type TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import { MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
@@ -20,15 +16,13 @@ import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { getMixedTaskAgentHandleRecoveryCache } from "./mixed-task-agent-handle-recovery-cache.js";
 import { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
-import type {
-  InterAgentMessageDeliveryIntent,
-  ResolvedInterAgentMessageDeliveryRequest,
-} from "../../../domain/inter-agent-message-delivery.js";
+import type { InterAgentMessageDeliveryIntent, ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 
 export class MixedTeamMemberRegistry {
   private readonly handles = new Map<string, MixedTeamMemberHandle>();
   private readonly recoverableTaskAgentHandles = getMixedTaskAgentHandleRecoveryCache();
   private readonly taskAgentHandles = new Map<string, MixedAgentMemberHandle>();
+  private readonly memoryLocationService = getAgentMemoryLocationService();
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -141,7 +135,7 @@ export class MixedTeamMemberRegistry {
     }
     existing?.dispose();
     this.taskAgentHandles.delete(request.identity.taskAgentRunId);
-    const config = this.resolveConfig(logicalContext);
+    const config = this.buildTaskAgentRunConfig(logicalContext, request.identity.taskAgentRunId);
     const taskAgentContext = new MixedAgentMemberContext({
       memberName: logicalContext.memberName,
       memberPath: logicalContext.memberPath,
@@ -153,7 +147,7 @@ export class MixedTeamMemberRegistry {
     const handle = new MixedAgentMemberHandle({
       teamContext: this.options.teamContext,
       context: taskAgentContext,
-      config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
+      config,
       agentRunManager: this.options.agentRunManager,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
@@ -236,8 +230,8 @@ export class MixedTeamMemberRegistry {
         handle.context.memberRunId === runId ||
         handle.context.getPlatformAgentRunId() === runId
       ) {
-        return this.options.teamContext.runtimeContext.memberContexts.find(
-          (member) => member.memberRouteKey === handle.context.memberRouteKey,
+        return this.options.teamContext.runtimeContext.memberContexts.find((member) =>
+          member.memberRouteKey === handle.context.memberRouteKey,
         ) ?? null;
       }
     }
@@ -453,10 +447,7 @@ export class MixedTeamMemberRegistry {
     return new MixedAgentMemberHandle({
       teamContext: this.options.teamContext,
       context: taskAgentContext,
-      config: this.resolveConfig(logicalContext) as Extract<
-        TeamRunMemberConfig,
-        { memberKind: "agent" }
-      >,
+      config: this.buildTaskAgentRunConfig(logicalContext, taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
@@ -501,6 +492,36 @@ export class MixedTeamMemberRegistry {
       identity.logicalMember.templateMemberRunId === logicalContext.memberRunId &&
       this.sameMemberPath(identity.logicalMember.memberPath, logicalContext.memberPath)
     );
+  }
+
+  private buildTaskAgentRunConfig(
+    logicalContext: Extract<MixedTeamMemberContext, { memberKind: "agent" }>,
+    taskAgentRunId: string,
+  ): TeamMemberRunConfig {
+    const config = this.resolveConfig(logicalContext) as TeamMemberRunConfig;
+    const scope = this.getCurrentMemoryScope();
+    const logicalLocation = this.memoryLocationService.getTeamAgentRunLocation({
+      rootTeamRunId: scope.rootTeamRunId,
+      teamRunPath: scope.teamRunPath,
+      agentRunId: logicalContext.memberRunId,
+    });
+    const taskLocation = this.memoryLocationService.getTaskAgentLocation({
+      logicalMemberLocation: logicalLocation,
+      taskAgentRunId,
+      logicalMemberRunId: logicalContext.memberRunId,
+      logicalMemberRouteKey: logicalContext.memberRouteKey,
+    });
+    return {
+      ...config,
+      memoryDir: taskLocation.memoryDir,
+    };
+  }
+
+  private getCurrentMemoryScope(): AgentMemoryScope {
+    const scope = this.options.teamContext.runtimeContext.parentBoundary?.memoryScope;
+    return scope
+      ? { rootTeamRunId: scope.rootTeamRunId, teamRunPath: [...scope.teamRunPath] }
+      : { rootTeamRunId: this.options.teamContext.runId, teamRunPath: [] };
   }
 
   private sameMemberPath(left: readonly string[], right: readonly string[]): boolean {

@@ -3,6 +3,6 @@ import type { RuntimeTeamRunContext, TeamRunContext } from "../domain/team-run-c
 import type { TeamRunBackend } from "./team-run-backend.js";
 
 export interface TeamRunBackendFactory {
-  createBackend(config: TeamRunConfig): Promise<TeamRunBackend>;
+  createBackend(config: TeamRunConfig, teamRunId: string): Promise<TeamRunBackend>;
   restoreBackend(context: TeamRunContext<RuntimeTeamRunContext>): Promise<TeamRunBackend>;
 }

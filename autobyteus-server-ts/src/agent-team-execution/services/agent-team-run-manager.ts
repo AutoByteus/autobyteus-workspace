@@ -11,7 +11,7 @@ import {
   getMixedTeamRunBackendFactory,
   type MixedTeamRunBackendFactory,
 } from "../backends/mixed/mixed-team-run-backend-factory.js";
-import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../domain/team-run-member-identity.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
   TeamCommunicationService,
@@ -27,6 +27,14 @@ const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
+};
+
+const normalizeRequiredRunId = (value: string, fieldName: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
 };
 
 type AgentTeamRunManagerOptions = {
@@ -61,15 +69,17 @@ export class AgentTeamRunManager {
     logger.info("AgentTeamRunManager initialized with MixedTeamManager-only team execution.");
   }
 
-  async createTeamRun(input: TeamRunConfig): Promise<TeamRun> {
+  async createTeamRun(input: TeamRunConfig, teamRunId: string): Promise<TeamRun> {
+    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
     const config = this.withMixedBackendKind(input);
-    const backend = await this.mixedTeamRunBackendFactory.createBackend(config);
+    const backend = await this.mixedTeamRunBackendFactory.createBackend(config, normalizedTeamRunId);
     const normalizedConfig = new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      memberTree: this.attachRuntimeMemberIds(config.memberTree, backend.runId),
+      memberTree: this.attachRuntimeMemberIds(config.memberTree),
+      selfEvolution: config.selfEvolution,
     });
     const activeRun = new TeamRun({
       context: new TeamRunContext({
@@ -210,18 +220,29 @@ export class AgentTeamRunManager {
 
   private attachRuntimeMemberIds(
     members: readonly TeamRunMemberConfig[],
-    teamRunId: string,
   ): TeamRunMemberConfig[] {
     return members.map((memberConfig) => {
       const memberRouteKey = normalizeMemberRouteKey(memberConfig.memberRouteKey);
-      const memberRunId =
-        memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberRouteKey);
+      const memberRunId = normalizeRequiredRunId(
+        memberConfig.memberRunId ?? "",
+        `memberRunId for member '${memberRouteKey}'`,
+      );
       if (memberConfig.memberKind === "agent_team") {
+        const childTeamRunId = normalizeRequiredRunId(
+          memberConfig.childTeamRunId ?? "",
+          `childTeamRunId for member '${memberRouteKey}'`,
+        );
+        if (memberRunId !== childTeamRunId) {
+          throw new Error(
+            `agent_team wrapper memberRunId for '${memberRouteKey}' must equal childTeamRunId.`,
+          );
+        }
         return {
           ...memberConfig,
           memberRouteKey,
           memberRunId,
-          memberConfigs: this.attachRuntimeMemberIds(memberConfig.memberConfigs, teamRunId),
+          childTeamRunId,
+          memberConfigs: this.attachRuntimeMemberIds(memberConfig.memberConfigs),
         };
       }
       return {

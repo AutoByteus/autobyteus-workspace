@@ -66,6 +66,7 @@ describe("AgentRunManager", () => {
         llmConfig: { reasoning_effort: "high" },
         skillAccessMode: null,
       }),
+      "run-codex",
     );
 
     expect(run.runId).toBe("run-codex");
@@ -76,7 +77,7 @@ describe("AgentRunManager", () => {
         agentDefinitionId: "agent-def-1",
         workspaceId: "workspace-1",
       }),
-      null,
+      "run-codex",
     );
   });
 
@@ -137,6 +138,7 @@ describe("AgentRunManager", () => {
         llmConfig: { temperature: 0.2 },
         skillAccessMode: null,
       }),
+      "run-claude",
     );
 
     expect(run.runId).toBe("run-claude");
@@ -146,7 +148,7 @@ describe("AgentRunManager", () => {
         runtimeKind: "claude_agent_sdk",
         agentDefinitionId: "agent-def-1",
       }),
-      null,
+      "run-claude",
     );
   });
 
@@ -207,6 +209,7 @@ describe("AgentRunManager", () => {
         llmConfig: null,
         skillAccessMode: null,
       }),
+      "run-native",
     );
 
     expect(run.runId).toBe("run-native");
@@ -222,6 +225,54 @@ describe("AgentRunManager", () => {
     expect(
       (autoByteusBackendFactory.createBackend.mock.results[0]?.value as Promise<any>),
     ).toBeTruthy();
+  });
+
+  it("rejects duplicate active creation without replacing the original run or sidecars", async () => {
+    const unsubscribeRunFileChanges = vi.fn();
+    const unsubscribePublishedArtifacts = vi.fn();
+    const unsubscribeMemory = vi.fn();
+    const codexBackendFactory = {
+      createBackend: vi.fn().mockResolvedValue(
+        createBackend({
+          runId: "run-duplicate",
+          runtimeKind: "codex_app_server",
+        }),
+      ),
+      restoreBackend: vi.fn(),
+    };
+    const manager = new AgentRunManager({
+      codexBackendFactory: codexBackendFactory as any,
+      runFileChangeService: {
+        attachToRun: vi.fn().mockReturnValue(unsubscribeRunFileChanges),
+      } as any,
+      publishedArtifactRelayService: {
+        attachToRun: vi.fn().mockReturnValue(unsubscribePublishedArtifacts),
+      } as any,
+      memoryRecorder: {
+        attachToRun: vi.fn().mockReturnValue(unsubscribeMemory),
+        onUserMessageAccepted: vi.fn(),
+      } as any,
+    });
+    const config = new AgentRunConfig({
+      runtimeKind: "codex_app_server",
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "gpt-5.3-codex",
+      autoExecuteTools: false,
+      workspaceId: "workspace-1",
+      llmConfig: null,
+      skillAccessMode: null,
+    });
+
+    const firstRun = await manager.createAgentRun(config, "run-duplicate");
+    await expect(manager.createAgentRun(config, "run-duplicate")).rejects.toThrow(
+      "Agent run 'run-duplicate' is already active.",
+    );
+
+    expect(codexBackendFactory.createBackend).toHaveBeenCalledTimes(1);
+    expect(manager.getActiveRun("run-duplicate")).toBe(firstRun);
+    expect(unsubscribeRunFileChanges).not.toHaveBeenCalled();
+    expect(unsubscribePublishedArtifacts).not.toHaveBeenCalled();
+    expect(unsubscribeMemory).not.toHaveBeenCalled();
   });
 
   it("attaches and detaches always-on sidecars with the active run lifecycle", async () => {
@@ -259,6 +310,7 @@ describe("AgentRunManager", () => {
         llmConfig: null,
         skillAccessMode: null,
       }),
+      "run-codex",
     );
 
     expect(runFileChangeService.attachToRun).toHaveBeenCalledWith(

@@ -354,6 +354,81 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     expect(publishedArtifactProjectionService.getPublishedArtifactRevisionText).not.toHaveBeenCalled();
   });
 
+  it("reads published artifacts for nested bound members from the hierarchical root team memory path", async () => {
+    const binding = {
+      ...buildTeamBinding(),
+      runtime: {
+        ...buildTeamBinding().runtime,
+        members: [{
+          memberName: "Reviewer",
+          memberRouteKey: "ReviewSquad/reviewer",
+          displayName: "Reviewer",
+          teamPath: ["ReviewSquad"],
+          runId: "reviewer-member-run-1",
+          runtimeKind: "AGENT_TEAM_MEMBER",
+        }],
+      },
+    };
+    const publishedArtifactProjectionService = {
+      getPublishedArtifactsFromMemoryDir: vi.fn(async () => []),
+      getPublishedArtifactRevisionTextFromMemoryDir: vi.fn(),
+      getRunPublishedArtifacts: vi.fn(),
+      getPublishedArtifactRevisionText: vi.fn(),
+    };
+    const hostService = new ApplicationOrchestrationHostService({
+      startupGate: {
+        awaitReady: vi.fn(async () => undefined),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      bindingStore: {
+        listBindings: vi.fn(async () => [cloneBinding(binding)]),
+      } as never,
+      teamRunMetadataService: {
+        readMetadata: vi.fn(async () => ({
+          teamRunId: "team-run-1",
+          teamDefinitionId: "team-def-1",
+          teamDefinitionName: "Brief Team",
+          coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+          createdAt: "2026-04-19T09:10:00.000Z",
+          memberTree: [{
+            memberKind: "agent_team",
+            memberRouteKey: "ReviewSquad",
+            memberPath: ["ReviewSquad"],
+            memberName: "ReviewSquad",
+            memberRunId: "review-squad-wrapper",
+            teamDefinitionId: "review-team",
+            teamRunId: "child-review-team-run",
+            coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+            memberTree: [{
+              memberKind: "agent",
+              memberRouteKey: "ReviewSquad/reviewer",
+              memberPath: ["ReviewSquad", "Reviewer"],
+              memberName: "Reviewer",
+              memberRunId: "reviewer-member-run-1",
+              runtimeKind: "AUTOBYTEUS",
+              platformAgentRunId: null,
+              agentDefinitionId: "agent-def-reviewer",
+              llmModelIdentifier: "gpt-test",
+              autoExecuteTools: true,
+              skillAccessMode: "GLOBAL_DISCOVERY",
+              llmConfig: null,
+              workspaceRootPath: "/tmp/workspace",
+            }],
+          }],
+        })),
+      } as never,
+      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+    });
+
+    await hostService.getRunPublishedArtifacts(applicationId, "reviewer-member-run-1");
+
+    expect(publishedArtifactProjectionService.getPublishedArtifactsFromMemoryDir).toHaveBeenCalledWith(
+      expect.stringContaining("agent_teams/team-run-1/child-review-team-run/reviewer-member-run-1"),
+    );
+  });
+
   it("posts application team input with structured route-key target identity", async () => {
     const binding = buildTeamBinding();
     const postMessage = vi.fn(async (_message, target) => ({

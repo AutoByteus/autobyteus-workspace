@@ -15,6 +15,41 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `AgentTeamRunManager` delegates create/restore work only to `MixedTeamRunBackendFactory`.
 - Per-member runtime selection remains below the team boundary: `MixedTeamManager` builds member `AgentRunConfig`s, and `AgentRunManager` selects the AutoByteus, Codex, or Claude AgentRun backend from each member's `runtimeKind`.
 
+
+## Launch-Time Identity Assignment
+
+`TeamRunService` owns new team-run identity assignment before runtime creation.
+New public launches allocate a `<team_definition_name_slug>_<uuid-without-dashes>`
+`teamRunId`, then assign identities through `TeamRunLaunchIdentityAssignment`
+before calling `AgentTeamRunManager.createTeamRun(config, teamRunId)`. Public
+launch input must not provide `memberRunId` or `childTeamRunId`; explicit ids are
+stored data only on restore/historical paths.
+
+Concrete agent members receive allocator-backed opaque `memberRunId` values with
+the same `<agent_definition_name_slug>_<uuid-without-dashes>` shape as
+standalone runs. `agent_team` wrapper members receive their generated child
+`teamRunId` as both the wrapper `memberRunId` and `childTeamRunId`. Member route
+keys and member paths remain the command/routing identity; `memberRunId` is a
+runtime/storage id and must not encode or replace route semantics.
+
+Member memory ownership is root-hierarchical. Direct members write under
+`memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`; nested subteam leaf
+members append their child team run id path before the leaf run id, for example
+`memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper
+subteams append each nested child team run id. Task-agent runs write under the
+logical member's same team memory scope, for example
+`memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`.
+`AgentMemoryLocationService` is the shared read/write/projection owner for this
+shape, carrying `rootTeamRunId`, `teamRunPath`, member/task run identity,
+route/path metadata, and the resolved `memoryDir`.
+
+Route-key suffix selection is intentionally unambiguous. Exact route-key matches
+win; otherwise a suffix such as `worker` resolves only when exactly one candidate
+exists in the requested team scope. Ambiguous suffixes fail instead of choosing a
+first match. Fully-qualified route keys such as `ReviewSquad/worker`, or a child
+team run scoped request for `worker`, must be used when duplicate nested leaf
+names exist.
+
 ## Current Execution Paths
 
 | Path | Authoritative owner | Member execution primitive | Notes |
@@ -250,7 +285,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   history should not list them as independent top-level team rows.
 - Historical flat team metadata is not compatibility-read for nested topology;
   unsupported legacy metadata fails instead of guessing a lost tree.
-- Every member `AgentRun` receives a member `memoryDir` on create and restore through the mixed member-run path. The storage path is `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
+- Every member `AgentRun` receives a resolved `memoryDir` on create and restore through the mixed member-run path. Direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`; nested members use the root-hierarchical `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/...` shape.
 - Member memory recording is attached at the `AgentRunManager` layer for mixed team members; runtime-specific AgentRun backends keep their own provider-local runtime details below that boundary.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.

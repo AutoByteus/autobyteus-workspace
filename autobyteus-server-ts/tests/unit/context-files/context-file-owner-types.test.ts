@@ -32,8 +32,10 @@ describe('context-file-owner-types', () => {
       kind: 'team_member_final',
       teamRunId: 'team-1',
       memberRouteKey: 'Solution Designer',
+      memberRunId: 'caller-supplied-run-id',
     });
 
+    expect(owner).not.toHaveProperty('memberRunId');
     const locator = buildFinalContextFileLocator(owner, 'ctx_abc123__diagram-final.png');
     expect(locator).toBe('/rest/team-runs/team-1/members/Solution%20Designer/context-files/ctx_abc123__diagram-final.png');
     expect(getStoredFilenameFromLocator(locator)).toBe('ctx_abc123__diagram-final.png');

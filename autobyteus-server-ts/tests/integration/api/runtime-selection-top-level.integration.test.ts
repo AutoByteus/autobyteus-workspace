@@ -16,12 +16,11 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../src/run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
 import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
-import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
@@ -364,13 +363,20 @@ const createAutoByteusTeamBackendFactory = () => {
   const messages: CapturedTeamMessage[] = [];
   let runCounter = 0;
 
-  const createBackend = (config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null }> }, runId: string, source: "create" | "restore") => {
+  const createBackend = (
+    config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> },
+    runId: string,
+    source: "create" | "restore",
+  ) => {
     let active = true;
     let turnCounter = 0;
     const listeners = new Set<(event: unknown) => void>();
     const memberContexts = config.memberConfigs.map((memberConfig) => {
       const memberRouteKey = normalizeMemberRouteKey(memberConfig.memberRouteKey ?? memberConfig.memberName);
-      const memberRunId = buildTeamMemberRunId(runId, memberRouteKey);
+      const memberRunId = memberConfig.memberRunId?.trim();
+      if (!memberRunId) {
+        throw new Error(`memberRunId for member '${memberRouteKey}' is required.`);
+      }
       return {
         memberName: memberConfig.memberName,
         memberRouteKey,
@@ -407,7 +413,7 @@ const createAutoByteusTeamBackendFactory = () => {
         });
         return {
           accepted: true,
-          memberRunId: buildTeamMemberRunId(runId, targetRouteKey),
+          memberRunId: memberContexts.find((member) => member.memberRouteKey === targetRouteKey)?.memberRunId ?? null,
           memberName: targetName,
           turnId: `turn-${runId}-${turnCounter}`,
         };
@@ -427,12 +433,17 @@ const createAutoByteusTeamBackendFactory = () => {
     restoreCalls,
     messages,
     getTeam: vi.fn(() => null),
-    createBackend: vi.fn(async (config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null }> }) => {
+    createBackend: vi.fn(async (
+      config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> },
+      teamRunId: string,
+    ) => {
       createCalls.push(config);
       runCounter += 1;
-      return createBackend(config, `team-autobyteus-${runCounter}`, "create") as never;
+      return createBackend(config, teamRunId || `team-autobyteus-${runCounter}`, "create") as never;
     }),
-    restoreBackend: vi.fn(async (context: { runId: string; config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null }> } }) => {
+    restoreBackend: vi.fn(async (
+      context: { runId: string; config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> } },
+    ) => {
       restoreCalls.push(context);
       return createBackend(context.config, context.runId, "restore") as never;
     }),
@@ -497,6 +508,17 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
   const mixedMemberRunManager = new FakeAgentRunManager();
   const autoByteusTeamFactory = createAutoByteusTeamBackendFactory();
   const unexpectedTeamFactory = createUnexpectedTeamFactory();
+  let allocatedRunCounter = 0;
+  const agentRunIdentityAllocator = {
+    allocateForAgentDefinition: vi.fn(async (agentDefinitionId: string) => {
+      allocatedRunCounter += 1;
+      const slug = agentDefinitionId
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "") || "agent";
+      return `${slug}_${allocatedRunCounter.toString(16).padStart(32, "0")}`;
+    }),
+  };
   const delegatedMixedFactory = new MixedTeamRunBackendFactory({
     createTeamManager: (context) =>
       new MixedTeamManager(context, {
@@ -504,8 +526,11 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
       }),
   });
   const mixedFactory = {
-    createBackend: vi.fn((config: Parameters<typeof delegatedMixedFactory.createBackend>[0]) =>
-      delegatedMixedFactory.createBackend(config),
+    createBackend: vi.fn((
+      config: Parameters<typeof delegatedMixedFactory.createBackend>[0],
+      teamRunId: string,
+    ) =>
+      delegatedMixedFactory.createBackend(config, teamRunId),
     ),
     restoreBackend: vi.fn((context: Parameters<typeof delegatedMixedFactory.restoreBackend>[0]) =>
       delegatedMixedFactory.restoreBackend(context),
@@ -520,19 +545,41 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
   const agentRunService = new AgentRunService(memoryDir, {
     agentRunManager: standaloneAgentRunManager as never,
     metadataService: agentMetadataService,
-    historyIndexService: {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
+    historyCatalogService: {
+      recordPreparedRun: vi.fn(async ({ runId, metadata }: { runId: string; metadata: any }) => {
+        await agentMetadataService.writeMetadata(runId, metadata);
+        return metadata;
+      }),
+      recordRunStarted: vi.fn(async ({
+        runId,
+        platformAgentRunId,
+        startedAt,
+      }: {
+        runId: string;
+        platformAgentRunId: string | null;
+        startedAt: string;
+      }) => {
+        const metadata = await agentMetadataService.readMetadata(runId);
+        if (!metadata) {
+          return null;
+        }
+        const updated = {
+          ...metadata,
+          platformAgentRunId,
+          startedAt,
+          preparedAt: null,
+          preparedExpiresAt: null,
+        };
+        await agentMetadataService.writeMetadata(runId, updated);
+        return updated;
+      }),
       recordRunActivity: vi.fn().mockResolvedValue(undefined),
+      recordRunSummary: vi.fn().mockResolvedValue(undefined),
       recordRunRestored: vi.fn().mockResolvedValue(undefined),
       recordRunTerminated: vi.fn().mockResolvedValue(undefined),
     } as never,
     workspaceManager: workspaceManager as never,
-    agentDefinitionService: {
-      getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
-        name: "Validation Agent",
-        role: "assistant",
-      }),
-    } as never,
+    agentRunIdentityAllocator,
   });
 
   const teamDefinitions = new Map<string, AgentTeamDefinition>([
@@ -571,9 +618,37 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
     teamCommunicationService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
     runFileChangeService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
   });
-  const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
-    teamRunManager: teamRunManager as never,
-  });
+  const teamRunHistoryCatalogService = {
+    recordTeamRunCreated: vi.fn(async ({
+      teamRunId,
+      metadata,
+    }: {
+      teamRunId: string;
+      metadata: any;
+    }) => {
+      await teamRunMetadataService.writeMetadata(teamRunId, metadata);
+    }),
+    recordTeamRunRestored: vi.fn(async ({
+      teamRunId,
+      metadata,
+    }: {
+      teamRunId: string;
+      metadata: any;
+    }) => {
+      await teamRunMetadataService.writeMetadata(teamRunId, metadata);
+    }),
+    refreshTeamRunMetadata: vi.fn(async ({
+      teamRunId,
+      metadata,
+    }: {
+      teamRunId: string;
+      metadata: any;
+    }) => {
+      await teamRunMetadataService.writeMetadata(teamRunId, metadata);
+    }),
+    recordTeamRunSummary: vi.fn().mockResolvedValue(undefined),
+    recordTeamRunTerminated: vi.fn().mockResolvedValue(undefined),
+  };
 
   const teamRunService = new TeamRunService({
     agentTeamRunManager: teamRunManager,
@@ -586,6 +661,7 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
     teamRunHistoryCatalogService,
     workspaceManager: workspaceManager as never,
     memoryDir,
+    agentRunIdentityAllocator,
   });
 
   currentAgentRunService = agentRunService;

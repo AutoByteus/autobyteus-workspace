@@ -1,11 +1,19 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import type {
+  TeamMemberRunConfig,
+  TeamRunMemberConfig,
+} from "../../agent-team-execution/domain/team-run-config.js";
 import {
   TeamRunEventSourceType,
   type TeamRunAgentEventPayload,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
+import type { TaskAgentInstanceIdentity } from "../../agent-team-execution/domain/task-agent-instance.js";
+import type { AgentMemoryScope } from "../../agent-memory/domain/agent-memory-location.js";
+import {
+  AgentMemoryLocationService,
+  getAgentMemoryLocationService,
+} from "../../agent-memory/services/agent-memory-location-service.js";
 import {
   AgentRunEventType,
   isAgentRunEvent,
@@ -89,10 +97,15 @@ type RunFileChangeProjectionContext = {
   workspaceRootPath: string | null;
 };
 
+type TeamMemberConfigResolution = {
+  config: TeamMemberRunConfig;
+  memoryScope: AgentMemoryScope;
+};
+
 export class RunFileChangeService {
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly workspaceManager: WorkspaceManager;
-  private readonly teamLayout: TeamMemberMemoryLayout;
+  private readonly memoryLocationService: AgentMemoryLocationService;
   private readonly projectionByRunId = new Map<string, RunFileChangeProjection>();
   private readonly operationQueueByRunId = new Map<string, Promise<void>>();
 
@@ -100,12 +113,15 @@ export class RunFileChangeService {
     projectionStore?: RunFileChangeProjectionStore;
     workspaceManager?: WorkspaceManager;
     memoryDir?: string;
+    memoryLocationService?: AgentMemoryLocationService;
   } = {}) {
     this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
-    this.teamLayout = new TeamMemberMemoryLayout(
-      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    );
+    this.memoryLocationService =
+      options.memoryLocationService ??
+      (options.memoryDir
+        ? new AgentMemoryLocationService({ memoryDir: options.memoryDir })
+        : getAgentMemoryLocationService());
   }
 
   attachToRun(run: AgentRun): () => void {
@@ -289,36 +305,108 @@ export class RunFileChangeService {
   ): RunFileChangeProjectionContext {
     return this.buildProjectionContextFromTeamMemberRun(teamRun, payload.memberRunId, {
       memberName: payload.memberName,
+      taskAgentInstance: payload.taskAgentInstance ?? null,
     });
   }
 
   private buildProjectionContextFromTeamMemberRun(
     teamRun: TeamRun,
     memberRunId: string,
-    input: { memberName?: string | null } = {},
+    input: {
+      memberName?: string | null;
+      taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    } = {},
   ): RunFileChangeProjectionContext {
     const normalizedMemberRunId =
       normalizeOptionalString(memberRunId)
       ?? normalizeOptionalString(input.memberName)
       ?? teamRun.runId;
-    const memberConfig = teamRun.config?.memberConfigs.find(
-      (candidate) =>
-        candidate.memberRunId === normalizedMemberRunId ||
-        candidate.memberName === input.memberName ||
-        candidate.memberRouteKey === input.memberName,
+    const logicalMemberRunId = normalizeOptionalString(
+      input.taskAgentInstance?.logicalMember.templateMemberRunId ?? null,
     );
+    const memberResolution = this.resolveTeamMemberConfig(
+      teamRun,
+      logicalMemberRunId ?? normalizedMemberRunId,
+      input.taskAgentInstance?.logicalMember.memberRouteKey ?? input.memberName,
+    );
+    const memberConfig = memberResolution?.config ?? null;
     const workspaceRootPath =
       normalizeOptionalString(memberConfig?.workspaceRootPath)
       ?? this.resolveWorkspaceRootPath(memberConfig?.workspaceId);
-    const memoryDir =
-      normalizeOptionalString(memberConfig?.memoryDir)
-      ?? this.teamLayout.getMemberDirPath(teamRun.runId, normalizedMemberRunId);
+    const memoryScope = memberResolution?.memoryScope ?? this.getTeamRunMemoryScope(teamRun);
+    const memoryDir = input.taskAgentInstance && logicalMemberRunId
+      ? this.memoryLocationService.getTaskAgentLocation({
+          logicalMemberLocation: this.memoryLocationService.getTeamAgentRunLocation({
+            rootTeamRunId: memoryScope.rootTeamRunId,
+            teamRunPath: memoryScope.teamRunPath,
+            agentRunId: logicalMemberRunId,
+          }),
+          taskAgentRunId: normalizedMemberRunId,
+          logicalMemberRunId,
+          logicalMemberRouteKey: input.taskAgentInstance.logicalMember.memberRouteKey,
+        }).memoryDir
+      : normalizeOptionalString(memberConfig?.memoryDir)
+        ?? this.memoryLocationService.getTeamAgentRunLocation({
+          rootTeamRunId: memoryScope.rootTeamRunId,
+          teamRunPath: memoryScope.teamRunPath,
+          agentRunId: normalizedMemberRunId,
+        }).memoryDir;
 
     return {
       runId: normalizedMemberRunId,
       memoryDir,
       workspaceRootPath,
     };
+  }
+
+  private resolveTeamMemberConfig(
+    teamRun: TeamRun,
+    memberRunId: string,
+    memberName?: string | null,
+  ): TeamMemberConfigResolution | null {
+    const visit = (
+      members: readonly TeamRunMemberConfig[],
+      memoryScope: AgentMemoryScope,
+    ): TeamMemberConfigResolution | null => {
+      for (const member of members) {
+        if (member.memberKind === "agent") {
+          if (
+            member.memberRunId === memberRunId ||
+            member.memberName === memberName ||
+            member.memberRouteKey === memberName
+          ) {
+            return { config: member, memoryScope };
+          }
+          continue;
+        }
+        const childTeamRunId =
+          normalizeOptionalString(member.childTeamRunId) ??
+          normalizeOptionalString(member.memberRunId);
+        if (!childTeamRunId) {
+          continue;
+        }
+        const nested = visit(member.memberConfigs, {
+          rootTeamRunId: memoryScope.rootTeamRunId,
+          teamRunPath: [...memoryScope.teamRunPath, childTeamRunId],
+        });
+        if (nested) {
+          return nested;
+        }
+      }
+      return null;
+    };
+    return teamRun.config ? visit(teamRun.config.memberTree, this.getTeamRunMemoryScope(teamRun)) : null;
+  }
+
+  private getTeamRunMemoryScope(teamRun: TeamRun): AgentMemoryScope {
+    const runtimeContext = teamRun.getRuntimeContext();
+    const memoryScope = runtimeContext?.parentBoundary?.memoryScope;
+    return memoryScope
+      ? {
+          rootTeamRunId: memoryScope.rootTeamRunId,
+          teamRunPath: [...memoryScope.teamRunPath],
+        }
+      : { rootTeamRunId: teamRun.runId, teamRunPath: [] };
   }
 
   private resolveWorkspaceRootPath(workspaceId: string | null | undefined): string | null {

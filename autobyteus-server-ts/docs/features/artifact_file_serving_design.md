@@ -22,7 +22,8 @@ Artifacts tab.
    and updates the run projection. Team-member projections remain scoped to the
    member run id.
 5. Metadata-only state persists to `<run-memory-dir>/file_changes.json`;
-   team-member runs use `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`.
+   team-member runs use the resolved root-hierarchical member directory, for example
+   `agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/file_changes.json`.
 6. The frontend hydrates rows through `getRunFileChanges(runId)` and applies live
    `FILE_CHANGE` updates through `runFileChangesStore`.
 7. The viewer fetches `/runs/:runId/file-change-content?path=...`.

@@ -8,7 +8,6 @@ import {
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const createTeamManagerStub = () => ({
@@ -40,6 +39,7 @@ const createConfig = () =>
       } satisfies TeamMemberRunConfig,
       {
         memberName: "Reviewer",
+        memberRunId: "reviewer-run",
         agentDefinitionId: "agent-reviewer",
         llmModelIdentifier: "haiku",
         autoExecuteTools: true,
@@ -68,13 +68,13 @@ describe("MixedTeamRunBackendFactory integration", () => {
       }) as any,
     });
 
-    const backend = await factory.createBackend(createConfig());
+    const backend = await factory.createBackend(createConfig(), "team-mixed-run-1");
 
     expect(createdContexts).toHaveLength(1);
     expect(createdManagers).toHaveLength(1);
 
     const context = createdContexts[0];
-    expect(context.runId).toBeTruthy();
+    expect(context.runId).toBe("team-mixed-run-1");
     expect(context.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(context.config?.teamDefinitionId).toBe("team-def-mixed-1");
     expect(context.runtimeContext.coordinatorMemberRouteKey).toBeNull();
@@ -91,9 +91,7 @@ describe("MixedTeamRunBackendFactory integration", () => {
     const reviewerContext = context.runtimeContext.memberContexts[1];
     expect(reviewerContext.memberName).toBe("Reviewer");
     expect(reviewerContext.memberRouteKey).toBe("Reviewer");
-    expect(reviewerContext.memberRunId).toBe(
-      buildTeamMemberRunId(context.runId, reviewerContext.memberRouteKey),
-    );
+    expect(reviewerContext.memberRunId).toBe("reviewer-run");
     expect(reviewerContext.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
     expect(reviewerContext.platformAgentRunId).toBeNull();
 
@@ -101,6 +99,27 @@ describe("MixedTeamRunBackendFactory integration", () => {
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
     expect(backend.isActive()).toBe(true);
+  });
+
+  it("rejects create when launch identity assignment did not preassign member IDs", async () => {
+    const factory = new MixedTeamRunBackendFactory({
+      createTeamManager: (() => createTeamManagerStub() as any) as any,
+    });
+    const config = createConfig();
+    const staleConfig = new TeamRunConfig({
+      teamDefinitionId: config.teamDefinitionId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
+      memberConfigs: config.memberConfigs.map((member) => ({
+        ...member,
+        memberRunId: member.memberName === "Reviewer" ? null : member.memberRunId,
+      })),
+    });
+
+    await expect(
+      factory.createBackend(staleConfig, "team-mixed-run-missing-member-id"),
+    ).rejects.toThrow("memberRunId for member 'Reviewer' is required");
   });
 
   it("restores a backend from the provided mixed runtime context", async () => {

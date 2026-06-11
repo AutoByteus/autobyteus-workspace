@@ -3,6 +3,6 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-ru
 import type { AgentRunBackend } from "./agent-run-backend.js";
 
 export interface AgentRunBackendFactory {
-  createBackend(config: AgentRunConfig, preferredRunId?: string | null): Promise<AgentRunBackend>;
+  createBackend(config: AgentRunConfig, agentRunId: string): Promise<AgentRunBackend>;
   restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>): Promise<AgentRunBackend>;
 }

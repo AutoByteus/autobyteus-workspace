@@ -15,7 +15,10 @@ import {
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-id-mapping-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import {
+  AgentMemoryLocationService,
+  getAgentMemoryLocationService,
+} from "../../agent-memory/services/agent-memory-location-service.js";
 import {
   TeamRunMetadataService,
   getTeamRunMetadataService,
@@ -36,6 +39,9 @@ import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/mo
 import { normalizeSelfEvolutionConfigOverride } from "../../self-evolution/domain/config.js";
 import { SelfEvolutionEffectiveConfigResolver } from "../../self-evolution/services/self-evolution-effective-config-resolver.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
+import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
+import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+import { TeamRunLaunchIdentityAssignment } from "./team-run-launch-identity-assignment.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -70,13 +76,37 @@ export interface CreateTeamRunInput {
   selfEvolution?: SelfEvolutionConfigOverride | null;
 }
 
+const hasNonBlankString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+const assertPublicLaunchInputHasNoManualRunIds = (
+  memberConfigs: readonly unknown[],
+): void => {
+  for (const rawMemberConfig of memberConfigs) {
+    const memberConfig = rawMemberConfig as Record<string, unknown>;
+    const memberLabel = String(
+      memberConfig.memberRouteKey ?? memberConfig.memberName ?? "unknown",
+    );
+    if (hasNonBlankString(memberConfig.memberRunId)) {
+      throw new Error(`Public team launch cannot supply memberRunId for member '${memberLabel}'.`);
+    }
+    if (hasNonBlankString(memberConfig.childTeamRunId)) {
+      throw new Error(`Public team launch cannot supply childTeamRunId for member '${memberLabel}'.`);
+    }
+    if (Array.isArray(memberConfig.memberConfigs)) {
+      assertPublicLaunchInputHasNoManualRunIds(memberConfig.memberConfigs);
+    }
+  }
+};
+
 export class TeamRunService {
   private readonly teamDefinitionService: AgentTeamDefinitionService;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly teamRunMetadataService: TeamRunMetadataService;
   private readonly teamRunHistoryCatalogService: TeamRunHistoryCatalogService;
   private readonly workspaceManager: WorkspaceManager;
-  private readonly memberLayout: TeamMemberMemoryLayout;
+  private readonly memoryLocationService: AgentMemoryLocationService;
+  private readonly agentRunIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
 
   constructor(options: {
     agentTeamRunManager?: AgentTeamRunManager;
@@ -85,6 +115,8 @@ export class TeamRunService {
     teamRunHistoryCatalogService?: TeamRunHistoryCatalogService;
     workspaceManager?: WorkspaceManager;
     memoryDir?: string;
+    memoryLocationService?: AgentMemoryLocationService;
+    agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
   } = {}) {
     this.agentTeamRunManager =
       options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
@@ -95,9 +127,15 @@ export class TeamRunService {
     this.teamRunHistoryCatalogService =
       options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
-    this.memberLayout = new TeamMemberMemoryLayout(
-      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    );
+    this.memoryLocationService =
+      options.memoryLocationService ??
+      (options.memoryDir
+        ? new AgentMemoryLocationService({ memoryDir: options.memoryDir })
+        : getAgentMemoryLocationService());
+    this.agentRunIdentityAllocator =
+      options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+        memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+      });
   }
 
   async buildMemberConfigsFromLaunchPreset(input: {
@@ -204,6 +242,7 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
+    assertPublicLaunchInputHasNoManualRunIds(input.memberConfigs);
     const workspaceActivationsByCanonicalRoot = new Map<
       string,
       Promise<{ workspaceId: string; workspaceRootPath: string }>
@@ -257,7 +296,11 @@ export class TeamRunService {
       plan.config,
       normalizeSelfEvolutionConfigOverride(input.selfEvolution),
     );
-    const run = await this.agentTeamRunManager.createTeamRun(config);
+    const identityAssignment = this.teamRunLaunchIdentityAssignment;
+    identityAssignment.assertNoManualRunIdsForLaunch(config);
+    const teamRunId = await this.allocateTeamRunId(config.teamDefinitionId);
+    const assignedConfig = await identityAssignment.assignRunIdsForLaunch(config, teamRunId);
+    const run = await this.agentTeamRunManager.createTeamRun(assignedConfig, teamRunId);
     const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
 
     await this.teamRunHistoryCatalogService.recordTeamRunCreated({
@@ -267,6 +310,24 @@ export class TeamRunService {
     });
 
     return run;
+  }
+
+
+  private async allocateTeamRunId(teamDefinitionId: string): Promise<string> {
+    const definition = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
+    if (!definition) {
+      throw new Error(
+        `AgentTeamDefinition '${teamDefinitionId}' cannot be loaded for team run identity allocation.`,
+      );
+    }
+    return generateTeamRunIdForDefinitionName(definition.name);
+  }
+
+  private get teamRunLaunchIdentityAssignment(): TeamRunLaunchIdentityAssignment {
+    return new TeamRunLaunchIdentityAssignment({
+      teamDefinitionService: this.teamDefinitionService,
+      agentRunIdentityAllocator: this.agentRunIdentityAllocator,
+    });
   }
 
   private async attachSelfEvolutionSnapshots(
@@ -424,7 +485,7 @@ export class TeamRunService {
     return new TeamRunMetadataMapper({
       teamDefinitionService: this.teamDefinitionService,
       workspaceManager: this.workspaceManager,
-      memberLayout: this.memberLayout,
+      memoryLocationService: this.memoryLocationService,
     });
   }
 }

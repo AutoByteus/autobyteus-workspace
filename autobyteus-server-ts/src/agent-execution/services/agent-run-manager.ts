@@ -40,6 +40,14 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+const normalizeRequiredRunId = (runId: string): string => {
+  const normalized = runId.trim();
+  if (!normalized) {
+    throw new AgentCreationError("agentRunId is required for agent run creation.");
+  }
+  return normalized;
+};
+
 type AgentRunManagerOptions = {
   autoByteusBackendFactory?: AgentRunBackendFactory;
   codexBackendFactory?: AgentRunBackendFactory;
@@ -84,7 +92,11 @@ export class AgentRunManager {
     logger.info("AgentRunManager initialized.");
   }
 
-  async createAgentRun(config: AgentRunConfig, preferredRunId: string | null = null): Promise<AgentRun> {
+  async createAgentRun(config: AgentRunConfig, agentRunId: string): Promise<AgentRun> {
+    const normalizedRunId = normalizeRequiredRunId(agentRunId);
+    if (this.hasActiveRun(normalizedRunId)) {
+      throw new AgentCreationError(`Agent run '${normalizedRunId}' is already active.`);
+    }
     const { runtimeKind } = config;
     const backendFactory = this.resolveBackendFactory(runtimeKind);
     if (!backendFactory) {
@@ -92,12 +104,17 @@ export class AgentRunManager {
         `Runtime kind '${runtimeKind}' is not yet supported by AgentRunManager.createAgentRun().`,
       );
     }
-    const backend = await backendFactory.createBackend(config, preferredRunId);
+    const backend = await backendFactory.createBackend(config, normalizedRunId);
     const activeRun = new AgentRun({
       context: backend.getContext(),
       backend,
       commandObservers: [this.memoryRecorder],
     });
+    if (activeRun.runId !== normalizedRunId) {
+      throw new AgentCreationError(
+        `Runtime backend returned run id '${activeRun.runId}' but '${normalizedRunId}' was requested.`,
+      );
+    }
     this.registerActiveRun(activeRun);
     logger.info(`Successfully created ${runtimeKind} agent run '${activeRun.runId}'.`);
     return activeRun;
@@ -234,9 +251,14 @@ export class AgentRunManager {
     return null;
   }
 
-  private registerActiveRun(activeRun: AgentRun): void {    this.unregisterRunFileChanges(activeRun.runId);
-    this.unregisterPublishedArtifactRelay(activeRun.runId);
-    this.unregisterMemoryRecorder(activeRun.runId);
+  private registerActiveRun(activeRun: AgentRun): void {
+    const existing = this.activeRuns.get(activeRun.runId) ?? null;
+    if (existing?.isActive()) {
+      throw new AgentCreationError(`Agent run '${activeRun.runId}' is already active.`);
+    }
+    if (existing) {
+      this.unregisterActiveRun(activeRun.runId);
+    }
     this.activeRuns.set(activeRun.runId, activeRun);
     this.runFileChangeUnsubscribers.set(
       activeRun.runId,

@@ -1,4 +1,4 @@
-import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -42,6 +42,13 @@ export type TeamMemberFinalContextFileOwner = {
   memberRouteKey: string;
 };
 
+export type ResolvedTeamMemberFinalContextFileOwner = TeamMemberFinalContextFileOwner & {
+  rootTeamRunId: string;
+  teamRunPath: string[];
+  memberRunId: string;
+  memoryDir: string;
+};
+
 export type ContextFileDraftOwnerDescriptor =
   | StandaloneDraftContextFileOwner
   | TeamMemberDraftContextFileOwner;
@@ -49,6 +56,10 @@ export type ContextFileDraftOwnerDescriptor =
 export type ContextFileFinalOwnerDescriptor =
   | StandaloneFinalContextFileOwner
   | TeamMemberFinalContextFileOwner;
+
+export type ContextFileResolvedFinalOwnerDescriptor =
+  | StandaloneFinalContextFileOwner
+  | ResolvedTeamMemberFinalContextFileOwner;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;

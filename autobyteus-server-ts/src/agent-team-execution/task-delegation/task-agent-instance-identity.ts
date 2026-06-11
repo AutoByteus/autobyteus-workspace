@@ -4,22 +4,25 @@ import {
 } from "../domain/task-agent-instance.js";
 import type { TaskDelegationMemberIdentity } from "./task-delegation-record.js";
 
-const sanitizeRunIdPart = (value: string): string => {
-  const sanitized = value.trim().replace(/[^A-Za-z0-9_-]+/g, "_").replace(/^_+|_+$/g, "");
-  return sanitized.length > 0 ? sanitized : "member";
+const normalizeRequiredString = (value: string, fieldName: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
 };
 
 export const buildTaskAgentInstanceIdentity = (input: {
   teamRunId: string;
   taskId: string;
+  taskAgentRunId: string;
   logicalMember: TaskDelegationMemberIdentity;
 }): TaskAgentInstanceIdentity => {
-  const taskId = input.taskId.trim();
-  const memberRoutePart = sanitizeRunIdPart(input.logicalMember.memberRouteKey);
+  const taskId = normalizeRequiredString(input.taskId, "taskId");
   return {
     taskAgentInstanceId: `task_agent_${taskId}`,
-    taskAgentRunId: `${input.teamRunId}__${memberRoutePart}__${taskId}`,
-    teamRunId: input.teamRunId,
+    taskAgentRunId: normalizeRequiredString(input.taskAgentRunId, "taskAgentRunId"),
+    teamRunId: normalizeRequiredString(input.teamRunId, "teamRunId"),
     taskId,
     logicalMember: {
       memberName: input.logicalMember.memberName,

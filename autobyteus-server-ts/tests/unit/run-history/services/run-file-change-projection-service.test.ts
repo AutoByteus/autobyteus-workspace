@@ -8,6 +8,7 @@ import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/tea
 import { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../../src/agent-team-execution/domain/team-run-context.js";
+import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { RunFileChangeProjectionService } from "../../../../src/run-history/services/run-file-change-projection-service.js";
 import { RunFileChangeService } from "../../../../src/services/run-file-changes/run-file-change-service.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -440,5 +441,211 @@ describe("RunFileChangeProjectionService", () => {
       absolutePath: path.join(workspaceRoot, "src", "history.txt"),
       isActiveRun: false,
     });
+  });
+
+  it("reads historical nested team-member projections from the hierarchical root team memory directory", async () => {
+    const memoryDir = await createTempDir();
+    const workspaceRoot = await createTempDir();
+    const projectionStore = {
+      readProjection: vi.fn().mockResolvedValue({
+        version: 2,
+        entries: [{
+          id: "reviewer-run:src/nested.txt",
+          runId: "reviewer-run",
+          path: "src/nested.txt",
+          type: "file",
+          status: "available",
+          sourceTool: "write_file",
+          sourceInvocationId: "write-nested",
+          createdAt: "2026-04-10T00:00:00.000Z",
+          updatedAt: "2026-04-10T00:00:01.000Z",
+        }],
+      }),
+    };
+    const service = new RunFileChangeProjectionService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      teamRunManager: {
+        listActiveRuns: vi.fn().mockReturnValue([]),
+        getTeamRun: vi.fn(),
+      } as any,
+      metadataService: {
+        readMetadata: vi.fn().mockResolvedValue(null),
+      } as any,
+      teamMetadataService: {
+        listTeamRunIds: vi.fn().mockResolvedValue(["root-team-history"]),
+        readMetadata: vi.fn().mockResolvedValue({
+          teamRunId: "root-team-history",
+          memberTree: [{
+            memberKind: "agent_team",
+            memberRunId: "review-squad-wrapper",
+            memberName: "ReviewSquad",
+            memberRouteKey: "ReviewSquad",
+            memberPath: ["ReviewSquad"],
+            teamRunId: "child-team-history",
+            memberTree: [{
+              memberKind: "agent",
+              memberRunId: "reviewer-run",
+              memberName: "Reviewer",
+              memberRouteKey: "ReviewSquad/reviewer",
+              memberPath: ["ReviewSquad", "Reviewer"],
+              workspaceRootPath: workspaceRoot,
+            }],
+          }],
+        }),
+      } as any,
+      projectionStore: projectionStore as any,
+      runFileChangeService: {
+        getProjectionForRun: vi.fn(),
+        getProjectionForTeamMemberRun: vi.fn(),
+      } as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn(),
+      } as any,
+      memoryDir,
+    });
+
+    await service.getProjection("reviewer-run");
+
+    expect(projectionStore.readProjection).toHaveBeenCalledWith(
+      path.join(memoryDir, "agent_teams", "root-team-history", "child-team-history", "reviewer-run"),
+    );
+  });
+
+  it("writes task-agent projections to the task-agent memory directory, not the template member directory", async () => {
+    const memoryDir = await createTempDir();
+    const workspaceRoot = await createTempDir();
+    const templateMemoryDir = path.join(memoryDir, "agent_teams", "root-team-active", "child-team-active", "template-run");
+    const taskAgentMemoryDir = path.join(memoryDir, "agent_teams", "root-team-active", "child-team-active", "task-agent-run");
+    const listeners = new Set<(event: any) => void>();
+    const projectionStore = {
+      readProjection: vi.fn().mockResolvedValue({
+        version: 2,
+        entries: [],
+      }),
+      writeProjection: vi.fn().mockResolvedValue(undefined),
+    };
+
+    const teamRun = new TeamRun({
+      context: new TeamRunContext({
+        runId: "root-team-active",
+        teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberName: "Coordinator",
+        config: new TeamRunConfig({
+          teamDefinitionId: "root-team-def",
+          teamBackendKind: TeamBackendKind.MIXED,
+          coordinatorMemberName: "Coordinator",
+          memberConfigs: [{
+            memberKind: "agent_team",
+            memberName: "ReviewSquad",
+            memberRouteKey: "ReviewSquad",
+            memberRunId: "child-team-active",
+            childTeamRunId: "child-team-active",
+            teamDefinitionId: "review-team-def",
+            coordinatorMemberRouteKey: "ReviewSquad/reviewer",
+            memberConfigs: [{
+              memberName: "Reviewer",
+              memberRouteKey: "ReviewSquad/reviewer",
+              memberRunId: "template-run",
+              agentDefinitionId: "reviewer-def",
+              llmModelIdentifier: "model",
+              autoExecuteTools: false,
+              skillAccessMode: SkillAccessMode.NONE,
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              memoryDir: templateMemoryDir,
+              workspaceRootPath: workspaceRoot,
+            }],
+          }],
+        }),
+        runtimeContext: null,
+      }),
+      backend: {
+        runId: "root-team-active",
+        teamBackendKind: TeamBackendKind.MIXED,
+        isActive: () => true,
+        getRuntimeContext: () => null,
+        subscribeToEvents: (listener: (event: any) => void) => {
+          listeners.add(listener);
+          return () => listeners.delete(listener);
+        },
+        getStatusSnapshot: () => ({ status: "idle" }),
+        getMemberStatusSnapshots: () => [],
+        postMessage: vi.fn(),
+        deliverInterAgentMessage: vi.fn(),
+        approveToolInvocation: vi.fn(),
+        interrupt: vi.fn(),
+        terminate: vi.fn(),
+      } as any,
+    });
+
+    const runFileChangeService = new RunFileChangeService({
+      projectionStore: projectionStore as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn(),
+      } as any,
+      memoryDir,
+    });
+    runFileChangeService.attachToTeamRun(teamRun);
+
+    for (const listener of listeners) {
+      listener({
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        teamRunId: "root-team-active",
+        sourcePath: ["ReviewSquad", "Reviewer"],
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName: "Reviewer",
+          memberRunId: "task-agent-run",
+          memberPath: ["ReviewSquad", "Reviewer"],
+          memberRouteKey: "ReviewSquad/reviewer",
+          agentEvent: {
+            eventType: AgentRunEventType.FILE_CHANGE,
+            runId: "task-agent-run",
+            statusHint: null,
+            payload: {
+              runId: "task-agent-run",
+              path: "src/task-agent.txt",
+              status: "available",
+              sourceTool: "write_file",
+              sourceInvocationId: "write-task-agent",
+            },
+          },
+          taskAgentInstance: {
+            taskAgentInstanceId: "task_agent_task-1",
+            taskAgentRunId: "task-agent-run",
+            teamRunId: "child-team-active",
+            taskId: "task-1",
+            logicalMember: {
+              memberName: "Reviewer",
+              memberPath: ["ReviewSquad", "Reviewer"],
+              memberRouteKey: "ReviewSquad/reviewer",
+              templateMemberRunId: "template-run",
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+            },
+            createdAt: "2026-06-11T00:00:00.000Z",
+          },
+        },
+      });
+    }
+
+    for (let attempt = 0; attempt < 10 && projectionStore.writeProjection.mock.calls.length === 0; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+
+    expect(projectionStore.readProjection).toHaveBeenCalledWith(taskAgentMemoryDir);
+    expect(projectionStore.writeProjection).toHaveBeenCalledWith(
+      taskAgentMemoryDir,
+      expect.objectContaining({
+        entries: [expect.objectContaining({
+          runId: "task-agent-run",
+          path: "src/task-agent.txt",
+        })],
+      }),
+    );
+    expect(projectionStore.writeProjection).not.toHaveBeenCalledWith(
+      templateMemoryDir,
+      expect.anything(),
+    );
   });
 });

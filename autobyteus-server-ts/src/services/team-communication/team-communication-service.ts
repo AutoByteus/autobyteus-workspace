@@ -1,4 +1,4 @@
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import {
   TeamRunEventSourceType,
@@ -35,7 +35,7 @@ const LOG_PREFIX = "[team-communication]";
 
 export class TeamCommunicationService {
   private readonly projectionStore: TeamCommunicationProjectionStore;
-  private readonly teamLayout: TeamMemberMemoryLayout;
+  private readonly teamLayout: AgentMemoryLayout;
   private readonly projectionByTeamRunId = new Map<string, TeamCommunicationProjection>();
   private readonly operationQueueByTeamRunId = new Map<string, Promise<void>>();
 
@@ -44,7 +44,7 @@ export class TeamCommunicationService {
     memoryDir?: string;
   } = {}) {
     this.projectionStore = options.projectionStore ?? getTeamCommunicationProjectionStore();
-    this.teamLayout = new TeamMemberMemoryLayout(
+    this.teamLayout = new AgentMemoryLayout(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     );
   }
@@ -190,7 +190,7 @@ export class TeamCommunicationService {
     }
 
     this.projectionByTeamRunId.set(teamRunId, projection);
-    const teamMemoryDir = this.teamLayout.getTeamDirPath(teamRunId);
+    const teamMemoryDir = this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] });
     const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
     await this.projectionStore.writeProjection(teamMemoryDir, projection);
     logger.info(
@@ -206,7 +206,7 @@ export class TeamCommunicationService {
 
     const loaded = normalizeTeamCommunicationProjection(
       await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath(teamRunId),
+        this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] }),
       ),
       { teamRunId },
     );

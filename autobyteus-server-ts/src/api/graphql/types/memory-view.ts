@@ -1,9 +1,10 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
+import path from "node:path";
 import { GraphQLJSON } from "graphql-scalars";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
 import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
-import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../agent-memory/services/agent-memory-location-service.js";
 import { MemoryViewConverter } from "../converters/memory-view-converter.js";
 
 @ObjectType()
@@ -124,8 +125,12 @@ export class MemoryViewResolver {
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
   ): Promise<AgentMemoryView> {
     const baseDir = appConfigProvider.config.getMemoryDir();
-    const layout = new TeamMemberMemoryLayout(baseDir);
-    const teamDir = layout.getTeamDirPath(teamRunId);
+    const location = await new AgentMemoryLocationService({ memoryDir: baseDir })
+      .resolveTeamMemberLocation({ teamRunId, memberRunId });
+    const teamDir = location ? path.dirname(location.memoryDir) : null;
+    if (!teamDir) {
+      return MemoryViewConverter.toGraphql({ runId: memberRunId });
+    }
     const store = new MemoryFileStore(teamDir, { runRootSubdir: "" });
     const service = new AgentMemoryService(store);
     const view = service.getRunMemoryView(memberRunId, {

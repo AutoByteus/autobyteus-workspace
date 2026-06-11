@@ -56,11 +56,15 @@ const createSubject = () => {
     getWorkspaceById: vi.fn(),
   } as never;
 
+  const agentRunIdentityAllocator = {
+    allocateForAgentDefinition: vi.fn(async () => "support_agent_00000000000000000000000000000001"),
+  };
   const service = new AgentRunService("/tmp/agent-run-service-test", {
     agentRunManager,
     metadataService: metadataService as never,
     historyCatalogService: historyCatalogService as never,
     workspaceManager,
+    agentRunIdentityAllocator,
   });
 
   return {

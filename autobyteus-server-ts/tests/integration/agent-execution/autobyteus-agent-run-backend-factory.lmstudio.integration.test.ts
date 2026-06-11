@@ -17,7 +17,6 @@ import {
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
-import { generateStandaloneAgentRunId } from "../../../src/run-history/utils/agent-run-id-utils.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
@@ -32,6 +31,8 @@ const runLiveIntegration = process.env.RUN_LMSTUDIO_E2E === "1" ? describe : des
 let cachedLmstudioModelIdentifier: string | null = null;
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const createLiveRunId = (slug: string): string => `${slug}_${randomUUID().replace(/-/g, "")}`;
 
 const waitFor = async (
   predicate: () => Promise<boolean> | boolean,
@@ -249,7 +250,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
-      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
+      const runId = createLiveRunId("live_autobyteus_backend_agent");
 
       const backend = await backendFactory.createBackend(
         createPreparedConfig(runId, modelIdentifier as string, false),
@@ -337,7 +338,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
-      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
+      const runId = createLiveRunId("live_autobyteus_backend_agent");
 
       const backend = await backendFactory.createBackend(
         createPreparedConfig(runId, modelIdentifier as string, false),
@@ -399,7 +400,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
-      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
+      const runId = createLiveRunId("live_autobyteus_backend_agent");
 
       const backend = await backendFactory.createBackend(
         createPreparedConfig(runId, modelIdentifier as string, true),
@@ -462,7 +463,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       expect(modelIdentifier).toBeTruthy();
 
       const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceDir);
-      const runId = generateStandaloneAgentRunId("LiveAutoByteusPublishArtifactsAgent", "Tool User");
+      const runId = createLiveRunId("live_autobyteus_publish_artifacts_agent");
       const artifactRelativePath = path.posix.join("reports", "live-artifact.md");
       const artifactDescription = "Live AutoByteus publish artifact integration";
       const artifactBody = `# Live artifact\n\nToken: ${randomUUID()}`;

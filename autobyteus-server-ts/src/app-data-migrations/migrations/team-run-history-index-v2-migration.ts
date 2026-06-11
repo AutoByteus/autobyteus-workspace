@@ -8,16 +8,16 @@ import type {
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import type { TeamRunIndexRowRecord } from "../../run-history/store/team-run-history-index-record-types.js";
-import type {
-  TeamRunAgentMemberMetadata,
-  TeamRunMetadata,
-} from "../../run-history/store/team-run-metadata-types.js";
+import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
 import { parseCurrentTeamRunMetadata } from "../../run-history/store/team-run-metadata-schema.js";
 import { TeamRunHistoryIndexStore } from "../../run-history/store/team-run-history-index-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../run-history/utils/workspace-path-normalizer.js";
-import { getTeamRunLeafAgentMetadata, resolveTeamRunLeafAgentByRouteKey } from "../../run-history/services/team-run-metadata-flattener.js";
+import {
+  getTeamRunLeafAgentMetadata,
+  resolveTeamRunLeafAgentByRouteKey,
+} from "../../run-history/services/team-run-metadata-flattener.js";
+import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { compactSummary, extractSummaryFromRawTraces } from "../../run-history/services/run-history-service-helpers.js";
 import { resetTeamRunHistoryCatalogState } from "../../run-history/services/team-run-history-catalog-service.js";
 
@@ -229,12 +229,13 @@ const resolveWorkspaceRootPath = (
 };
 
 const memberPreparedTimestamps = async (
-  teamDir: string,
-  leaves: TeamRunAgentMemberMetadata[],
+  memoryDir: string,
+  metadata: TeamRunMetadata,
 ): Promise<string | null> => {
   const values: string[] = [];
-  for (const leaf of leaves) {
-    const metadataPath = path.join(teamDir, leaf.memberRunId, "run_metadata.json");
+  const locationService = new AgentMemoryLocationService({ memoryDir });
+  for (const target of locationService.listTeamMemberLocationsFromMetadata(metadata)) {
+    const metadataPath = path.join(target.memoryDir, "run_metadata.json");
     const payload = asRecord(await readJson(metadataPath).catch(() => null));
     const value = timestamp(payload?.createdAt) ?? timestamp(payload?.preparedAt) ?? timestamp(payload?.startedAt);
     if (value) {
@@ -250,14 +251,14 @@ const deriveCreatedAt = async (input: {
   rawMetadata: Record<string, unknown>;
   metadataPath: string;
   teamDir: string;
+  memoryDir: string;
   metadata: TeamRunMetadata;
   migrationTime: string;
 }): Promise<{ value: string; source: string; warning: boolean }> => {
-  const leaves = getTeamRunLeafAgentMetadata(input.metadata);
   const candidates: Array<[string, string | null, boolean]> = [
     ["existing V2 index createdAt", timestamp(input.existingRow?.createdAt), false],
     ["team directory birthtime", await statTimestamp(input.teamDir, "birthtime"), false],
-    ["earliest leaf member metadata timestamp", await memberPreparedTimestamps(input.teamDir, leaves), false],
+    ["earliest leaf member metadata timestamp", await memberPreparedTimestamps(input.memoryDir, input.metadata), false],
     ["metadata file birthtime", await statTimestamp(input.metadataPath, "birthtime"), false],
     ["legacy metadata createdAt", timestamp(input.rawMetadata.createdAt), true],
     ["legacy metadata updatedAt", timestamp(input.rawMetadata.updatedAt), true],
@@ -278,20 +279,23 @@ const extractSummaryFromCoordinator = (
   memoryDir: string,
   metadata: TeamRunMetadata,
 ): string => {
-  const coordinator = resolveTeamRunLeafAgentByRouteKey(metadata, metadata.coordinatorMemberRouteKey) ??
-    getTeamRunLeafAgentMetadata(metadata)[0];
-  if (!coordinator) {
+  const locationService = new AgentMemoryLocationService({ memoryDir });
+  const locations = locationService.listTeamMemberLocationsFromMetadata(metadata);
+  const coordinatorTarget = locationService.resolveTeamMemberLocationFromMetadata(
+    metadata,
+    { memberRouteKey: metadata.coordinatorMemberRouteKey },
+    metadata.teamRunId,
+  ) ?? locations[0];
+  if (!coordinatorTarget) {
     return "";
   }
-  const memberLayout = new TeamMemberMemoryLayout(memoryDir);
-  const teamDir = memberLayout.getTeamDirPath(metadata.teamRunId);
-  const memberStore = new MemoryFileStore(teamDir, {
+  const memberStore = new MemoryFileStore(path.dirname(coordinatorTarget.memoryDir), {
     runRootSubdir: "",
     warnOnMissingFiles: false,
   });
   return extractSummaryFromRawTraces(
-    memberStore.readRawTracesActive(coordinator.memberRunId, 300),
-    memberStore.readRawTracesArchive(coordinator.memberRunId, 300),
+    memberStore.readRawTracesActive(path.basename(coordinatorTarget.memoryDir), 300),
+    memberStore.readRawTracesArchive(path.basename(coordinatorTarget.memoryDir), 300),
   );
 };
 
@@ -389,6 +393,7 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
         rawMetadata: record.raw,
         metadataPath: record.metadataPath,
         teamDir: record.teamDir,
+        memoryDir: this.memoryDir,
         metadata: record.metadata,
         migrationTime,
       });

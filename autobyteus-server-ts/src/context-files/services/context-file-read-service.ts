@@ -6,11 +6,13 @@ import type {
 import { assertStoredFilename } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
 import { ContextFileDraftCleanupService } from "./context-file-draft-cleanup-service.js";
+import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
 
 export class ContextFileReadService {
   constructor(
     private readonly layout: ContextFileLayout,
     private readonly cleanupService: ContextFileDraftCleanupService,
+    private readonly ownerResolver: ContextFileOwnerResolver = new ContextFileOwnerResolver(),
   ) {}
 
   async getDraftFilePath(
@@ -26,7 +28,8 @@ export class ContextFileReadService {
     storedFilename: string,
   ): Promise<string | null> {
     await this.cleanupService.cleanupExpiredDrafts();
-    return this.resolveExistingFilePath(this.layout.getFinalFilePath(owner, storedFilename));
+    const resolvedOwner = await this.ownerResolver.resolveFinalOwner(owner);
+    return this.resolveExistingFilePath(this.layout.getFinalFilePath(resolvedOwner, storedFilename));
   }
 
   async deleteDraftFile(

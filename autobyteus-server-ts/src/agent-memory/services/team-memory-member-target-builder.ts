@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { MemoryAvailabilityBuildResult } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
 import type {
@@ -5,7 +6,7 @@ import type {
   TeamRunMetadata,
 } from "../../run-history/store/team-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
-import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
+import { AgentMemoryLocationService } from "./agent-memory-location-service.js";
 import {
   MemoryRunSummaryBuilder,
   hasMemoryAvailability,
@@ -17,17 +18,24 @@ export type TeamMemoryMemberTargetRecord = {
 };
 
 export class TeamMemoryMemberTargetBuilder {
-  constructor(private readonly metadataStore: TeamRunMetadataStore) {}
+  private readonly memoryLocationService: AgentMemoryLocationService;
 
-  build(teamRunId: string, metadata: TeamRunMetadata): TeamMemoryMemberTargetRecord[] {
-    const teamDir = this.metadataStore.getTeamDirPath(teamRunId);
-    const memoryStore = new MemoryFileStore(teamDir, { runRootSubdir: "" });
-    const summaryBuilder = new MemoryRunSummaryBuilder(memoryStore);
+  constructor(
+    _metadataStore: TeamRunMetadataStore,
+    memoryLocationService?: AgentMemoryLocationService,
+  ) {
+    this.memoryLocationService = memoryLocationService ?? new AgentMemoryLocationService();
+  }
+
+  build(_teamRunId: string, metadata: TeamRunMetadata): TeamMemoryMemberTargetRecord[] {
     const targets: TeamMemoryMemberTargetRecord[] = [];
-    for (const member of getTeamRunLeafAgentMetadata(metadata)) {
-      const memory = summaryBuilder.build(member.memberRunId);
+    for (const target of this.memoryLocationService.listTeamMemberLocationsFromMetadata(metadata)) {
+      const memoryStore = new MemoryFileStore(path.dirname(target.memoryDir), {
+        runRootSubdir: "",
+      });
+      const memory = new MemoryRunSummaryBuilder(memoryStore).build(path.basename(target.memoryDir));
       if (hasMemoryAvailability(memory.availability)) {
-        targets.push({ member, memory });
+        targets.push({ member: target.member, memory });
       }
     }
     return targets.sort((a, b) => a.member.memberName.localeCompare(b.member.memberName));

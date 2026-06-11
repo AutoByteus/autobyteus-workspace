@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -8,10 +8,10 @@ import type { TeamRunContext } from "../../../src/agent-team-execution/domain/te
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("MixedTeamRunBackendFactory", () => {
-  it("attaches memberRunId and memoryDir for created mixed-runtime members", async () => {
+  it("uses preassigned memberRunId and attaches memoryDir for created mixed-runtime members", async () => {
     const capturedContexts: Array<TeamRunContext> = [];
     const factory = new MixedTeamRunBackendFactory({
-      memberLayout: new TeamMemberMemoryLayout("/tmp/mixed-team-factory-test-memory"),
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-team-factory-test-memory" }),
       createTeamManager: (context) => {
         capturedContexts.push(context);
         return {
@@ -33,6 +33,7 @@ describe("MixedTeamRunBackendFactory", () => {
         memberConfigs: [
           {
             memberName: "Coordinator",
+            memberRunId: "coordinator_00000000000000000000000000000001",
             agentDefinitionId: "agent-coordinator",
             llmModelIdentifier: "local-qwen",
             autoExecuteTools: true,
@@ -41,6 +42,7 @@ describe("MixedTeamRunBackendFactory", () => {
           },
           {
             memberName: "Specialist",
+            memberRunId: "specialist_00000000000000000000000000000002",
             agentDefinitionId: "agent-specialist",
             llmModelIdentifier: "gpt-5.4-mini",
             autoExecuteTools: true,
@@ -49,6 +51,7 @@ describe("MixedTeamRunBackendFactory", () => {
           },
         ],
       }),
+      "team_support_00000000000000000000000000000001",
     );
 
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
@@ -63,13 +66,13 @@ describe("MixedTeamRunBackendFactory", () => {
     expect(coordinator).toMatchObject({
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       memberRouteKey: "Coordinator",
-      memberRunId: expect.any(String),
+      memberRunId: "coordinator_00000000000000000000000000000001",
       memoryDir: expect.stringContaining(`/agent_teams/${backend.runId}/`),
     });
     expect(specialist).toMatchObject({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberRouteKey: "Specialist",
-      memberRunId: expect.any(String),
+      memberRunId: "specialist_00000000000000000000000000000002",
       memoryDir: expect.stringContaining(`/agent_teams/${backend.runId}/`),
     });
 

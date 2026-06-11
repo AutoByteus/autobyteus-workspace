@@ -15,12 +15,12 @@ import {
 import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/models.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { AgentRunEventType, isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
+import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -83,7 +83,7 @@ export class AgentRunService {
       metadataService?: AgentRunMetadataService;
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
-      agentDefinitionService?: AgentDefinitionService;
+      agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     } = {},
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
@@ -97,7 +97,7 @@ export class AgentRunService {
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,
       workspaceManager: this.workspaceManager,
-      agentDefinitionService: deps.agentDefinitionService,
+      agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
   }
 

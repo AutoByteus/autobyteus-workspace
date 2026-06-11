@@ -30,7 +30,7 @@ Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A tea
 
 Agent detail pages list runs only for the selected agent group, sorted by latest memory update. The list exposes run labels, run IDs, workspace paths when available, updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
 
-Team detail pages list team runs only for the selected team definition, sorted by latest member-memory update. Each team run exposes only member targets that have inspectable memory; selecting a member target opens the Memory Inspector for `teamRunId + memberRunId`.
+Team detail pages list team runs only for the selected team definition, sorted by latest member-memory update. Each team run exposes only member targets that have inspectable memory. Backend summaries are resolved from recursive team metadata and the server memory-location service, so nested member availability comes from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` directory rather than from a flattened root-team/member assumption.
 
 Search on detail pages filters only within the selected agent's runs or selected team's team runs/member targets.
 
@@ -71,14 +71,16 @@ When raw traces are requested with archive inclusion enabled, the backend can me
 
 ## Storage Source
 
-Storage remains unchanged:
+Storage is server-owned and identity-opaque:
 
 - Standalone runs: `memory/agents/<runId>/...`
-- Team member runs: `memory/agent_teams/<teamRunId>/<memberRunId>/...`
+- Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
+- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`, with deeper child team ids appended before the member id
+- Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`
 
 Native AutoByteus runs are written by the native memory manager. Codex and Claude runs are written as storage-only server memory: active raw traces, optional segmented archive records, and working-context snapshots for inspection and fallback replay.
 
-The frontend does not infer memory ownership from runtime-specific thread/session IDs or archive internals. It selects agent definition groups, unattributed groups, agent run IDs, or team/member run IDs and lets the backend resolve memory directories, complete archive segments, ordering, and de-duplication.
+The frontend does not infer memory ownership from runtime-specific thread/session IDs, generated run-id strings, route-key slugs, or archive internals. It selects agent definition groups, unattributed groups, agent run IDs, or exposed team/member targets and lets the backend resolve memory directories, complete archive segments, ordering, and de-duplication.
 
 ## Archive / Boundary Notes
 

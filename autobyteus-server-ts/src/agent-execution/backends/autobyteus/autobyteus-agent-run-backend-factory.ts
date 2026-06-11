@@ -159,13 +159,13 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
   async createBackend(
     config: AgentRunConfig,
-    preferredRunId: string | null = null,
+    agentRunId: string,
   ): Promise<AutoByteusAgentRunBackend> {
     const built = await this.buildAgentConfig(config);
-    const runId = preferredRunId?.trim() || null;
+    const runId = agentRunId.trim();
     if (!runId) {
       throw new AgentCreationError(
-        "AutoByteus standalone backend creation requires a prepared preferredRunId.",
+        "AutoByteus standalone backend creation requires agentRunId.",
       );
     }
     const memoryDir = built.resolvedRunConfig.memoryDir;
@@ -200,6 +200,11 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       );
     }
     const agent = createAgentWithId.call(this.agentFactory, runId, built.agentConfig) as AgentLike;
+    if (agent.agentId !== runId) {
+      throw new AgentCreationError(
+        `AutoByteus AgentFactory returned agent id '${agent.agentId}' but '${runId}' was requested.`,
+      );
+    }
     agent.start?.();
     await this.waitForIdle(agent as Agent);
     return this.createBackendFromAgent(
