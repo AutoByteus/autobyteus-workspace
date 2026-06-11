@@ -452,6 +452,72 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]').attributes('aria-expanded')).toBe('false');
   });
 
+  it('keeps the individual team run disclosure chevron visually consistent with the parent team chevron', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberRouteKey: 'super_agent',
+            memberName: 'Super Agent',
+            memberRunId: 'member-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Member summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    expect(wrapper.find('[data-test="workspace-team-definition-disclosure"]').exists()).toBe(false);
+
+    const teamRow = wrapper.get('[data-test="workspace-team-row-team-1"]');
+    expect(teamRow.attributes('aria-expanded')).toBe('false');
+
+    const teamRunDisclosure = wrapper.get('[data-test="workspace-team-run-disclosure"]');
+    expect(teamRunDisclosure.classes()).toEqual(expect.arrayContaining([
+      'h-3.5',
+      'w-3.5',
+      'text-gray-400',
+      '-rotate-90',
+    ]));
+    expect(teamRunDisclosure.classes()).not.toContain('h-5');
+    expect(teamRunDisclosure.classes()).not.toContain('w-5');
+    expect(teamRunDisclosure.classes()).not.toContain('text-indigo-500');
+    expect(teamRunDisclosure.classes()).not.toContain('text-indigo-600');
+    expect(teamRunDisclosure.classes()).not.toContain('rounded-md');
+    expect(teamRunDisclosure.classes()).not.toContain('border');
+    expect(teamRunDisclosure.classes()).not.toContain('shadow-sm');
+
+    await teamRow.trigger('click');
+    await flushPromises();
+
+    expect(teamRow.attributes('aria-expanded')).toBe('true');
+    expect(wrapper.get('[data-test="workspace-team-run-disclosure"]').classes()).toEqual(expect.arrayContaining([
+      'rotate-0',
+      'text-gray-400',
+    ]));
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-super_agent"]').exists()).toBe(true);
+  });
+
   it('refreshes run history quietly on the background interval while mounted', async () => {
     vi.useFakeTimers();
     try {

@@ -198,12 +198,14 @@
                   type="button"
                   class="flex min-w-0 flex-1 items-center text-left"
                   :data-test="`workspace-team-row-${team.teamRunId}`"
+                  :aria-expanded="state.isTeamExpanded(team.teamRunId)"
                   @click="actions.onSelectTeam(team)"
                 >
                   <Icon
                     icon="heroicons:chevron-down-20-solid"
-                    class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
+                    class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform"
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
+                    data-test="workspace-team-run-disclosure"
                   />
                   <span
                     class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
