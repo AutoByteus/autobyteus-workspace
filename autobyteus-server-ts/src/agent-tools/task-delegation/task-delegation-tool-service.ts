@@ -5,10 +5,12 @@ import {
   type TaskDelegationRunRegistry,
 } from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import type {
-  AcceptTaskInput,
-  AcceptTaskResult,
   DelegateTasksInput,
   DelegateTasksResult,
+  ReviewTaskResultInput,
+  ReviewTaskResultResult,
+  SubmitTaskResultInput,
+  SubmitTaskResultResult,
   TaskDelegationCallerIdentity,
   TaskDelegationMemberIdentity,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
@@ -72,12 +74,20 @@ export class TaskDelegationToolService {
     return this.getTaskDelegationService(run).delegateTasks(context, input);
   }
 
-  async acceptTask(
+  async submitTaskResult(
     context: TaskDelegationToolContext,
-    input: AcceptTaskInput,
-  ): Promise<AcceptTaskResult> {
+    input: SubmitTaskResultInput,
+  ): Promise<SubmitTaskResultResult> {
     const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).acceptTask(context, input);
+    return this.getTaskDelegationService(run).submitTaskResult(context, input);
+  }
+
+  async reviewTaskResult(
+    context: TaskDelegationToolContext,
+    input: ReviewTaskResultInput,
+  ): Promise<ReviewTaskResultResult> {
+    const run = await this.resolveBoundTeamRun(context);
+    return this.getTaskDelegationService(run).reviewTaskResult(context, input);
   }
 
   private async resolveBoundTeamRun(

@@ -16,6 +16,7 @@ const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
 const REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES = new Set<string>([
   ["mark", "task", "completed"].join("_"),
   ["mark", "task", "failed"].join("_"),
+  ["accept", "task"].join("_"),
 ]);
 
 export const isMixedAutoByteusStandaloneMember = (

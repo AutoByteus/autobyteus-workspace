@@ -51,20 +51,20 @@ the dynamic tool invocation id.
 
 Codex team task delegation is projected as dynamic tools generated from the
 server-owned task-delegation manifest. When an agent definition enables
-`delegate_tasks` and/or `accept_task`, Codex receives those tools with JSON
+`delegate_tasks`, `submit_task_result`, and/or `review_task_result`, Codex receives those tools with JSON
 schemas derived from `src/agent-tools/task-delegation`; handlers call
 `TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
 runtime does not mutate task state directly and must not expose the removed
 legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
 ready-to-run/no-dependencies task guidance from the shared manifest/schema:
-dependent follow-up work should be delegated after ordinary `send_message_to`
-task-agent reports. Activation details are pushed to task-agent instances as
-work packets, and completion/revision reporting uses the shared team
-communication tool plus task-delegation events rather than a model polling
-tool. This remains a configured-tool boundary: Codex runtime code must not add
+dependent follow-up work should be delegated after reviewing a submitted task
+result. Activation details are pushed to task-agent instances as work packets,
+results use `submit_task_result`, and acceptance or revision uses
+`review_task_result` with system-mediated notifications. This remains a
+configured-tool boundary: Codex runtime code must not add
 ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
-framework auto-accept behavior for `accept_task`.
+framework auto-review behavior for task results.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -299,7 +299,7 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`, `delegate_tasks`, and `accept_task`.
+  `send_message_to`, `delegate_tasks`, `submit_task_result`, and `review_task_result`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.
@@ -351,7 +351,7 @@ conversation is being applied.
   `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
   should skip when live flags are absent. To exercise the live path, run with a
   working LMStudio Qwen model and Codex `gpt-5.5`, for example:
-  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" --no-file-parallelism`.
+  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle" --no-file-parallelism`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

@@ -11,9 +11,9 @@ the server stack:
 messages, memory, and LLM integration. It must not reintroduce a native team
 lifecycle or native team task ledger.
 
-Server-managed bounded task delegation (`delegate_tasks` and `accept_task`) is
-implemented in `autobyteus-server-ts` and is the authoritative workflow for team
-tasks.
+Server-managed bounded task delegation (`delegate_tasks`, `submit_task_result`, and
+`review_task_result`) is implemented in `autobyteus-server-ts` and is the
+authoritative workflow for team tasks.
 Personal ToDo tools remain local agent tools in `src/task-management` and keep
 emitting normal `TODO_LIST_UPDATE` agent stream events.
 
@@ -79,61 +79,68 @@ A coordinator/delegator creates one or more bounded ready-to-run tasks with a
   inspect.
 
 The service creates internal ledger records, assigns stable ids such as
-`task_0001`, exposes exact `target_agent_run_id` values for active task-agent
-runs, and starts one concrete task-agent instance per accepted task. A one-item
-`tasks` array is the single-task form; do not use `create_task` or
+`task_0001`, and starts one concrete task-agent instance per accepted task. A
+one-item `tasks` array is the single-task form; do not use `create_task` or
 `assign_task_to`. Do not encode dependencies in task items; if task B depends on
-task A, the coordinator waits for ordinary `send_message_to` reporting from task
-A and then calls `delegate_tasks` again for task B.
+task A, the coordinator reviews task A's submitted result and then calls
+`delegate_tasks` again for task B.
 
-### Work packets and communication
+### Result submission and review
 
 Activated task-agent instances receive a system work packet that contains the
-task label, logical member identity, rich description, reference files, the
-`target_agent_run_id` for exact feedback, and lifecycle instructions. The packet explicitly
-tells the task-agent not to poll for tasks; all necessary task details are
-pushed with the activation.
+task label, logical member identity, rich description, reference files, concrete
+runtime identity, and lifecycle instructions. The packet explicitly tells the
+task-agent not to poll for tasks; all necessary task details are pushed with the
+activation.
 
-Task-agent progress, blockers, completion reports, revision feedback, and
-revised completion reports use ordinary `send_message_to`. Delegators send
-feedback to the task-agent's `target_agent_run_id` while it is active. The original delegator accepts
-satisfactory work with `accept_task({ task_id, message? })`; this is the only
-model-facing task-state transition after delegation.
+Task-agents submit reviewable output with `submit_task_result({ message,
+reference_files? })`. The task is inferred from the bound task-agent context, so
+the model must not pass task selectors such as `task_id`, `task_name`,
+`member_name`, or status fields. Successful submission records a stable
+submission id, moves the task to `awaiting_review`, and system-notifies the
+original delegator.
 
-Server team streams preserve explicit internal task-agent metadata on
-status/activity payloads for UI projection and approval routing. Those concrete
-runtime identities are transport metadata. Model-facing exact feedback uses the
-general `send_message_to(target_agent_run_id=...)` selector supplied by
-delegation packets/events/messages.
+Original delegators review the latest pending submission with
+`review_task_result({ task_id, decision, message?, reference_files? })`.
+`decision="request_revision"` requires a non-empty message and system-notifies
+that same task-agent. `decision="accept"` marks the task accepted and requests
+safe task-agent settlement. Every review records the reviewed submission id so
+multi-cycle result/revision history is explicit.
+
+`send_message_to` remains available for ordinary teammate communication and
+handoffs. It is not the task result, revision, acceptance, or finalization
+protocol.
 
 ## Event And Settlement Semantics
 
 Server-owned task delegation is event-driven rather than model-polled:
 
 - accepted work-packet activations emit `TASK_DELEGATION_ACTIVATED`;
-- delegator acceptance emits `TASK_DELEGATION_STATUS_UPDATED` with accepted-work
-  metadata before settlement is requested;
-- ordinary task-agent reporting is visible through Team Communication events,
-  which are committed only after recipient input acceptance.
+- task-agent result submissions emit `TASK_DELEGATION_RESULT_SUBMITTED` and a
+  status projection containing the pending submission id;
+- delegator reviews emit `TASK_DELEGATION_RESULT_REVIEWED` and a status
+  projection containing `reviewId` and `reviewedSubmissionId`;
+- system notification delivery failure does not roll back valid lifecycle state;
+  tool results return `notification_delivered` and deterministic `warnings[]`.
 
 After acceptance, the framework requests settlement for the concrete task-agent
 instance only after the current tool call can finish. The settlement coordinator
 waits for the bound task-agent run to become idle/offline, rechecks that no
-active delegated child work remains for that task-agent instance, protects the
-coordinator by default, and calls the team-run settlement boundary. The internal
-task-agent run identity is the stale-route guard, so a later replacement
-instance is not accidentally settled.
+non-terminal work is assigned to that task-agent run and no non-terminal child
+delegation is owned by that task-agent run, protects the coordinator by default,
+and calls the team-run settlement boundary. The internal task-agent run identity
+is the stale-route guard, so a later replacement instance is not accidentally
+settled.
 
 ## Developer Guidance
 
-- Use `send_message_to` for free-form conversation, handoff messages, task-agent
-  progress, blockers, completion reports, revision feedback, and revised output.
-- Use `recipient_name` for logical teammates and `target_agent_run_id` only for
-  active concrete task-agent runs when the server supplied that exact-run
-  selector.
-- Use `delegate_tasks` and `accept_task` for bounded server-managed work with
-  ledger state, activation/acceptance events, and safe task-agent settlement on
-  supported server team backends.
+- Use `send_message_to` for free-form conversation and handoff messages only; do
+  not use it for task result submission, revision requests, acceptance, or
+  finalization.
+- Use `delegate_tasks`, `submit_task_result`, and `review_task_result` for
+  bounded server-managed work with ledger state, result/review events, system
+  notifications, and safe task-agent settlement on supported server team
+  backends.
 - Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
   `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
 - If a future MCP transport is added, it should call the existing server-owned

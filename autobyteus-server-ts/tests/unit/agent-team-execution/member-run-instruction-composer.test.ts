@@ -313,10 +313,10 @@ describe("member-run-instruction-composer", () => {
     expect(enabled.runtimeInstruction).toContain(
       "Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`",
     );
-    expect(enabled.runtimeInstruction).toContain("progress, blockers, completion reports, feedback, and revision responses use ordinary `send_message_to` messages");
-    expect(enabled.runtimeInstruction).toContain("target_agent_run_id");
-    expect(enabled.runtimeInstruction).toContain("Do not pass task-specific raw selector fields to `send_message_to`");
-    expect(enabled.runtimeInstruction).toContain("Original-delegator acceptance uses `accept_task`");
+    expect(enabled.runtimeInstruction).toContain("Task-agents submit reviewable results with `submit_task_result`");
+    expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
+    expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary teammate communication only");
+    expect(enabled.runtimeInstruction).not.toContain(["accept", "task"].join("_"));
     expect(enabled.runtimeInstruction).not.toContain(["mark", "task", "completed"].join("_"));
     expect(enabled.runtimeInstruction).toContain(
       "the framework settles or exits the final task-agent instance",

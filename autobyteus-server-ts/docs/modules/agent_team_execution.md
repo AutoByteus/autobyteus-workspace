@@ -67,26 +67,28 @@ Pending command-start overlays are reflected in member/represented-team status s
 
 Team task delegation is owned by `TaskDelegationService`, not by runtime-specific
 handlers, legacy model-facing task-plan tools, or future MCP transport code. The
-only model-facing task-delegation tools are:
+model-facing task-delegation protocol is:
 
 - `delegate_tasks`: a coordinator/delegator submits one or more bounded
   ready-to-run tasks in a `tasks` array. Each item contains `member_name`, rich
   `description`, and optional `reference_files`; dependency encoding is not part
   of the task item shape.
-- `accept_task`: the original delegator accepts active delegated work with the
-  exact framework-generated `task_id` and optional `message` after reviewing the
-  task-agent's ordinary `send_message_to` reports.
+- `submit_task_result`: the bound task-agent submits one reviewable result for
+  its current task. The tool is selector-free; task identity comes from the
+  task-agent context.
+- `review_task_result`: the original delegator reviews the latest pending
+  submission using `decision="accept"` or `decision="request_revision"`.
+  Revision decisions require a non-empty message and are delivered by the system
+  to the same task-agent.
 
-Task-agent progress, blocker reports, completion reports, revision feedback, and
-revised completion reports all use ordinary `send_message_to`. Logical teammates
-are addressed with `recipient_name`; concrete active task-agent runs are
-addressed with the general exact-run selector `target_agent_run_id`.
+`send_message_to` remains ordinary teammate communication only. It is not the
+task result, revision, acceptance, or finalization protocol.
 
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
 `update_task_status`) must not be exposed as a parallel model workflow. Task
-state is still held internally in a team-run-scoped delegation ledger for
-correlation, activation, acceptance, stream projection, and settlement safety.
+state is held internally in a team-run-scoped delegation ledger for correlation,
+activation, result/review history, stream projection, and settlement safety.
 
 The happy path is push-based:
 
@@ -100,53 +102,42 @@ The happy path is push-based:
    task-agent runtime identity, and starts one task-agent instance per task
    through `TeamRun.startTaskAgentInstance(...)`. The work packet includes the
    derived task label, rich `description`, optional reference files, the
-   task-agent `target_agent_run_id`, the delegator reply selector, and
-   instructions to report progress/completion with `send_message_to`.
+   task-agent `target_agent_run_id`, original delegator identity, and
+   instructions to use `submit_task_result` for reviewable output.
 4. Accepted activations mark records `active`, mark the exact run reachable, and
    emit `TASK_DELEGATION_ACTIVATED`; rejected activations unregister the
    starting run, roll records back to `not_started`, and are returned to the
    tool caller in `activationResults`.
-5. The task-agent reports progress, blockers, completion, and revised output to
-   the delegator reply selector with `send_message_to`. If the delegator needs
-   rework, it sends feedback to the active task-agent `target_agent_run_id`.
-   Unknown, external, settled, or rejected exact-run targets fail before Team
-   Communication projection, so successful communication rows are committed only
-   after recipient input acceptance.
-6. The original delegator accepts satisfactory work by calling `accept_task` with
-   the exact framework-generated `task_id`. Acceptance emits
-   `TASK_DELEGATION_STATUS_UPDATED`, records acceptance message/time metadata,
-   invalidates the exact run as an active message target, and requests
-   task-agent settlement.
-7. `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
-   the bound task-agent run, verifies the task-agent instance has no active
-   delegated child work, protects the coordinator by default, and calls
+5. The task-agent calls `submit_task_result`. The ledger records a distinct
+   submission id, moves the task to `awaiting_review`, sets `pendingSubmissionId`,
+   emits `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the
+   notification dispatcher attempts a system notification to the original
+   delegator.
+6. The original delegator calls `review_task_result`. `request_revision` records
+   a review linked to the pending submission id, returns the task to `active`,
+   emits review/status events, and attempts a system revision notification to the
+   same task-agent. `accept` records a review linked to the pending submission,
+   marks the task `accepted`, emits review/status events, and requests safe
+   settlement.
+7. Notification delivery is non-transactional after valid lifecycle mutation:
+   committed state and events remain authoritative even if the system input is
+   rejected. Tool results expose `notification_delivered` and deterministic
+   `warnings[]` with `TASK_NOTIFICATION_DELIVERY_FAILED` when delivery fails.
+8. `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
+   the bound task-agent run, verifies `TaskDelegationLedger` has no non-terminal
+   assigned work and no non-terminal child delegations where that task-agent run
+   is the original delegator, protects the coordinator by default, and calls
    `TeamRun.settleTaskAgentInstance(routeKey, internal task-agent run id,
    reason)`. The internal run identity is a stale-route guard so a later
    replacement instance is not accidentally settled.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
-domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages with
-`event_type` set to `TASK_DELEGATION_ACTIVATED` or
-`TASK_DELEGATION_STATUS_UPDATED`. Event payloads carry `teamRunId`, internal task
-identity, member/delegator identity, task-agent instance identity, exact-run
-target metadata, status, accepted-work metadata such as acceptance message/time
-when present, plus canonical `source_path` / `source_route_key` metadata from
-the logical member. Member-scoped stream/status/tool-approval payloads for
-task-agent activity also carry concrete task-agent identity, logical
-`member_path` / `member_route_key`, and canonical `source_path` /
-`source_route_key`. Clients use that explicit transport identity to project
-transient task-agent UI entities, distinguish parallel task-agent executions for
-the same logical member, and route approvals to the task-scoped runtime instead
-of inferring task-agent identity from generated run id formats.
-
-Current settlement support is owned by `MixedTeamManager` for every server team
-run. `MixedTeamMemberRegistry` starts one task-agent `MixedAgentMemberHandle`
-for each concrete delegated task, keyed by the generated internal task-agent run
-identity, and settles it only when the logical member route key and internal run
-identity still match. Runtime-specific AgentRun backends execute the task-agent
-turn below that boundary, but they do not own the team-level task-agent registry.
-AutoByteus task-agent runs receive primitive task-delegation context through
-server-provided custom data for runtime correlation only.
+domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages.
+Current event types include `TASK_DELEGATION_ACTIVATED`,
+`TASK_DELEGATION_RESULT_SUBMITTED`, `TASK_DELEGATION_RESULT_REVIEWED`, and
+`TASK_DELEGATION_STATUS_UPDATED`. Result/review payloads include `submissionId`,
+`reviewId`, and `reviewedSubmissionId` so consumers do not infer relationships
+from history array order.
 
 ### Task Delegation Validation Notes
 
@@ -162,11 +153,11 @@ test while live validation can opt in with:
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   AUTOBYTEUS_STREAM_PARSER=api_tool_call \
-  LMSTUDIO_MODEL_ID=qwen3.6-35b-a3b \
+  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \
     tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
-    -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" \
+    -t "AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle" \
     --no-file-parallelism
 ```
 
@@ -216,13 +207,13 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
   suppressed before they create extra Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
-- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks` and `accept_task`).
+- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
   runtime-level provider policy. Runtime adapters must expose `send_message_to`,
-  `delegate_tasks`, and `accept_task` only when the current member/tool
+  `delegate_tasks`, `submit_task_result`, and `review_task_result` only when the current member/tool
   configuration includes them, and must not add provider `tool_choice` special
-  cases, forced-tool dampening, or framework auto-accept behavior for
-  `accept_task`. If a model does not call an available tool despite clear
+  cases, forced-tool dampening, or framework auto-review behavior for
+  task results. If a model does not call an available tool despite clear
   instructions, treat that as prompt/model/test configuration until a framework
   invariant above is violated.
 

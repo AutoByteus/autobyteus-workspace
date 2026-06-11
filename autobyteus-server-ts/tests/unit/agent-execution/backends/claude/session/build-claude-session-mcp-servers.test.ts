@@ -93,7 +93,8 @@ describe("buildClaudeSessionMcpServers", () => {
       taskDelegationToolingEnabled: true,
       enabledTaskDelegationToolNames: [
         "delegate_tasks",
-        "accept_task",
+        "submit_task_result",
+        "review_task_result",
       ],
       publishArtifactsToolingEnabled: false,
       runContext: { runId: "run-1" } as any,
@@ -107,7 +108,8 @@ describe("buildClaudeSessionMcpServers", () => {
         sendMessageToToolingEnabled: false,
         enabledTaskDelegationToolNames: [
           "delegate_tasks",
-          "accept_task",
+          "submit_task_result",
+          "review_task_result",
         ],
       }),
     );

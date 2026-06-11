@@ -145,7 +145,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
         "delegate_tasks",
         ["mark", "task", "completed"].join("_"),
         ["mark", "task", "failed"].join("_"),
-        "accept_task",
+        ["accept", "task"].join("_"),
+        "submit_task_result",
+        "review_task_result",
         "create_task",
       ]),
     });
@@ -155,7 +157,8 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
       .toEqual([
         "delegate_tasks",
-        "accept_task",
+        "submit_task_result",
+        "review_task_result",
       ]);
   });
 });
