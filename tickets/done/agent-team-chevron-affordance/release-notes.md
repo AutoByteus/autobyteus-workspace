@@ -4,3 +4,8 @@
 
 ## Fixes
 - Improved team-run row accessibility by exposing the expanded state to assistive technologies.
+
+
+## Publication note
+
+Not published in a new release/version per user instruction on 2026-06-11.
