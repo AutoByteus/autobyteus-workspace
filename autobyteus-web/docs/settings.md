@@ -260,6 +260,10 @@ current expansion state.
   team-definition groups for that workspace.
 - Standalone run rows and team-run rows stay collapsed until the user expands
   the specific agent group or team-definition group.
+- Team-definition group rows and individual team-run rows use the same compact
+  standalone chevron size, shape, and gray color. The row button remains the
+  single interaction boundary, and team-run rows expose `aria-expanded` so
+  visual, keyboard, and assistive-technology state stay in sync.
 - Manual workspace, agent-group, team-definition-group, and team-run expansion
   choices are kept in component-local tree state and are not reset by quiet
   history refreshes while the history panel remains mounted.
