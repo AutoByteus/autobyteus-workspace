@@ -1,5 +1,6 @@
-import type { Conversation, AIMessage, UserMessage } from '~/types/conversation';
+import type { ContextAttachment, Conversation, AIMessage, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 export interface RunProjectionConversationEntry {
   kind: string;
@@ -91,6 +92,15 @@ const mergeProjectionEntry = (
   media: incoming.media ?? current.media ?? null,
 });
 
+const readMediaLocators = (
+  media: Record<string, string[]> | null | undefined,
+  key: 'images' | 'audio' | 'video',
+): string[] => (
+  media && Array.isArray(media[key])
+    ? media[key].filter((locator) => typeof locator === 'string' && locator.trim().length > 0)
+    : []
+);
+
 const dedupeProjectionEntries = (
   entries: RunProjectionConversationEntry[],
 ): RunProjectionConversationEntry[] => {
@@ -112,9 +122,9 @@ const buildMediaSegments = (entry: RunProjectionConversationEntry): AIResponseSe
   }
 
   const segments: AIResponseSegment[] = [];
-  const images = Array.isArray(entry.media.image) ? entry.media.image : [];
-  const audios = Array.isArray(entry.media.audio) ? entry.media.audio : [];
-  const videos = Array.isArray(entry.media.video) ? entry.media.video : [];
+  const images = readMediaLocators(entry.media, 'images');
+  const audios = readMediaLocators(entry.media, 'audio');
+  const videos = readMediaLocators(entry.media, 'video');
 
   if (images.length) {
     segments.push({ type: 'media', mediaType: 'image', urls: images });
@@ -128,6 +138,18 @@ const buildMediaSegments = (entry: RunProjectionConversationEntry): AIResponseSe
 
   return segments;
 };
+
+const buildUserContextFilePaths = (entry: RunProjectionConversationEntry): ContextAttachment[] => [
+  ...readMediaLocators(entry.media, 'images').map((locator) =>
+    hydrateContextAttachment({ locator, type: 'Image' }),
+  ),
+  ...readMediaLocators(entry.media, 'audio').map((locator) =>
+    hydrateContextAttachment({ locator, type: 'Audio' }),
+  ),
+  ...readMediaLocators(entry.media, 'video').map((locator) =>
+    hydrateContextAttachment({ locator, type: 'Video' }),
+  ),
+];
 
 const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationStatus => {
   if (entry.toolError) {
@@ -281,7 +303,7 @@ export const buildConversationFromProjection = (
         type: 'user',
         text: entry.content || '',
         timestamp,
-        contextFilePaths: [],
+        contextFilePaths: buildUserContextFilePaths(entry),
       });
       return;
     }

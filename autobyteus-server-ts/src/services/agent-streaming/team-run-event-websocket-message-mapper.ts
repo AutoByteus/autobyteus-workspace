@@ -124,7 +124,7 @@ export const convertTeamRunEventToServerMessage = (
   }
 
   if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) {
-    return new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
+    return new ServerMessage(ServerMessageType.MEMBER_INPUT_MESSAGE, {
       ...buildTeamMemberInputMessagePayload({
         eventPayload: event.data as TeamRunMemberInputEventPayload,
         sourceRouteKey,

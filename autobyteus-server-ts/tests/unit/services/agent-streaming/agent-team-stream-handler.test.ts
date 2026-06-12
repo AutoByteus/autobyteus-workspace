@@ -196,7 +196,7 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.receiver).toBeUndefined();
   });
 
-  it("maps member input events to external user messages with canonical nested source identity", () => {
+  it("maps member input events to member input messages with canonical nested source identity", () => {
     const handler = new AgentTeamStreamHandler(
       undefined,
       createTeamRunService(null) as any,
@@ -226,7 +226,7 @@ describe("AgentTeamStreamHandler", () => {
       },
     });
 
-    expect(message.type).toBe(ServerMessageType.EXTERNAL_USER_MESSAGE);
+    expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
     expect(message.payload).toMatchObject({
       content: "You received a message from sender name: program_manager",
       message_id: "member-input-1",
@@ -282,7 +282,7 @@ describe("AgentTeamStreamHandler", () => {
       },
     });
 
-    expect(message.type).toBe(ServerMessageType.EXTERNAL_USER_MESSAGE);
+    expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
     expect(message.payload).toMatchObject({
       content: "Delegated task work packet",
       message_id: "task-agent-input-1",

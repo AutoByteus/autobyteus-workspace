@@ -1,0 +1,19 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-context-files-ui-disappear/autobyteus-web
+
+stderr | services/.api-e2e-temp/member-input-ui-preservation.probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/.api-e2e-temp/member-input-ui-preservation.probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/.api-e2e-temp/member-input-ui-preservation.probe.spec.ts (1 test) 9ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:47:41
+   Duration  3.75s (transform 2.10s, setup 3.29s, collect 15ms, tests 9ms, environment 125ms, prepare 112ms)
+
