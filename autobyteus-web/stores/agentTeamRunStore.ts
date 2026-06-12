@@ -29,6 +29,7 @@ import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
+import { resolveTeamUserMessageTargetResult } from '~/utils/teamUserMessageTarget';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
@@ -267,17 +268,26 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const runHistoryStore = useRunHistoryStore();
       const contextFileUploadStore = useContextFileUploadStore();
       const activeTeam = teamContextsStore.activeTeamContext;
-      const focusedMember = teamContextsStore.activeExecutionFocusedMemberContext;
-      const focusedNode = teamContextsStore.activeExecutionFocusedMemberNode;
+      if (!activeTeam) {
+        throw new Error('No active team context.');
+      }
 
-      if (!activeTeam || !focusedNode) throw new Error('No active team context.');
+      const targetResolution = resolveTeamUserMessageTargetResult(activeTeam, {
+        allowSubteam: true,
+        allowActiveExecutionSafetyFallback: true,
+      });
+      const messageTarget = targetResolution.target;
+      if (!messageTarget) {
+        const focusedRouteKey = targetResolution.focusedMemberRouteKey || '<empty>';
+        const reason = targetResolution.reason || 'unknown';
+        throw new Error(`No valid focused team message target '${focusedRouteKey}' (${reason}).`);
+      }
 
+      const focusedMember = messageTarget.context;
+      const focusedNode = messageTarget.node;
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const targetMemberRouteKey = teamContextsStore.activeExecutionFocusedMemberRouteKey;
-      if (!targetMemberRouteKey) {
-        throw new Error('No active team execution target.');
-      }
+      const targetMemberRouteKey = messageTarget.memberRouteKey;
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;

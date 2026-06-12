@@ -260,7 +260,7 @@ describe('TeamWorkspaceView', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('passes roster focus to roster views and labels the shared composer with active execution focus', () => {
+  it('passes roster focus to roster views and labels the shared composer with the user-message target', () => {
     state.currentMode = 'grid';
     state.activeTeamContext = buildTeamContext({
       coordinatorMemberRouteKey: 'professor',
@@ -273,7 +273,7 @@ describe('TeamWorkspaceView', () => {
     expect(wrapper.find('h4').text()).toBe('Student');
     expect(wrapper.get('[data-test="team-grid"]').attributes('data-focused-route-key')).toBe('student');
     expect(wrapper.text()).toContain('Replying to');
-    expect(wrapper.text()).toContain('Professor');
+    expect(wrapper.text()).toContain('Student');
   });
 
   it('opens selected team config from header action', async () => {

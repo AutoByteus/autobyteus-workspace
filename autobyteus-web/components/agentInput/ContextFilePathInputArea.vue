@@ -173,6 +173,7 @@ import {
   buildAgentDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
+import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
 const activeContextStore = useActiveContextStore();
@@ -216,15 +217,14 @@ const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
     return null;
   }
 
-  const activeExecutionRouteKey = agentTeamContextsStore.activeExecutionFocusedMemberRouteKey?.trim() || '';
-  const activeMember = activeExecutionRouteKey
-    ? activeTeam.leafAgentContextsByRouteKey.get(activeExecutionRouteKey) ?? null
-    : null;
-  if (activeMember !== targetContext) {
+  const messageTarget = resolveTeamUserMessageTarget(activeTeam, {
+    allowActiveExecutionSafetyFallback: true,
+  });
+  if (!messageTarget?.context || messageTarget.context !== targetContext) {
     return null;
   }
 
-  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeExecutionRouteKey);
+  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, messageTarget.memberRouteKey);
 };
 
 const getTargetForContext = (targetContext: AgentContext | null) => {
