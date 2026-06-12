@@ -216,9 +216,12 @@ pre-snapshot runs. Run-history rows do not own self-evolution actions. The
 backend launches a visible helper run with anonymized work-history evidence and
 records minimal provenance; it does not compute changed paths or
 policy-violation metrics in the MVP. After launch, the workspace may show only a
-short transient start status. When the helper has a meaningful outcome, it
+short transient start status. Only after meaningful durable skill package file changes, the helper
 reports through one direct `send_message_to` call with
-`message_type: "self_evolution_outcome"` to the still-active target run; the
+`message_type: "skill_update"` to the still-active target run. Its content should
+explain what changed, why it matters, and how the target should use or reload the
+updated guidance, while dynamic references are absolute paths to changed or
+directly relevant surviving files inside editable roots; the
 backend record distinguishes sent, rejected, target-inactive, and not-attempted
 outcomes. That helper-authored message is not a runtime/model skill-refresh
 instruction; next-run correctness is the MVP baseline. Users should still
