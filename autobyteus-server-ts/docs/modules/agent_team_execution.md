@@ -204,7 +204,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   - teammate list and allowed recipients, including subteam members when they
     are addressable at the current team boundary
   - optional team instruction
-  - `send_message_to` delivery handler with optional explicit `reference_files` path references
+  - `send_message_to` team-route delivery handler with optional explicit `reference_files` path references
   - task-delegation identity inputs used by task-delegation tool projections
 - `InterAgentMessageRouter` / mixed delivery normalize sender and recipient
   selectors, then deliver through the receiving member handle. Agent recipients
@@ -234,12 +234,17 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   "received a message from ..." prompt before the child reply.
 - Recipient-visible content still includes generated **Reference files:**
   blocks only from explicit structured `reference_files`.
-- Runtime adapters must expose `send_message_to` as one logical team-delivery
-  tool invocation with both transcript and lifecycle events. Claude Agent SDK
-  members route first-party MCP `send_message_to` through the dedicated team
-  communication handler, which emits canonical `send_message_to` start and
-  terminal lifecycle events; raw MCP transport chunks such as
-  `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
+- Runtime adapters expose `send_message_to` as one logical tool invocation with
+  selector-based dispatch. `recipient_name` stays inside this team communication
+  contract and creates Team Communication projection after accepted recipient
+  input. `target_agent_run_id` is not a team roster selector; it is the global
+  live-only exact `AgentRun.runId` route owned by `src/agent-communication`,
+  resolves only through `AgentRunManager.getActiveRun(...)`, rejects inactive or
+  non-live ids, and emits direct target-run events without `team_run_id` or Team
+  Communication projection. Claude Agent SDK members route first-party MCP
+  `send_message_to` through the dedicated handler, which emits canonical
+  `send_message_to` start and terminal lifecycle events; raw MCP transport chunks
+  such as `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
   suppressed before they create extra Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).

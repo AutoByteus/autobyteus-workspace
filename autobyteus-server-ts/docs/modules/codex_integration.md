@@ -42,10 +42,13 @@ be routed among multiple active threads remain server-side diagnostics; server
 requests receive a transport-level error response, but the router must not
 broadcast them or call per-thread runtime-error projection.
 
-Codex team communication uses the same dynamic-tool lifecycle normalization as
-other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool, but a
-successful delivery is no longer represented only by `SEGMENT_START` /
-`SEGMENT_END`; the sender stream must also contain matching
+Codex agent communication uses the same dynamic-tool lifecycle normalization as
+other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool backed
+by the shared `src/agent-communication` dispatcher: `recipient_name` requires a
+team member context, while `target_agent_run_id` can be used by configured
+standalone or team-member Codex runs to reach an exact currently active
+`AgentRun.runId`. A successful delivery is no longer represented only by
+`SEGMENT_START` / `SEGMENT_END`; the sender stream must also contain matching
 `TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
 the dynamic tool invocation id.
 

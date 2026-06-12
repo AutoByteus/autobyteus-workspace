@@ -1,5 +1,6 @@
 import { composeMemberRunInstructions } from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
-import { buildSendMessageToDynamicToolRegistrations } from "./codex-send-message-dynamic-tool-registration.js";
+import { buildSendMessageToDynamicToolRegistrations } from "../agent-communication/codex-send-message-dynamic-tool-registration.js";
+import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { buildTaskDelegationDynamicToolRegistrations } from "../task-delegation/build-task-delegation-dynamic-tool-registrations.js";
 import type {
   CodexThreadBootstrapPreparation,
@@ -46,8 +47,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       };
     }
 
-    const sendMessageToEnabled =
-      input.configuredToolExposure.sendMessageToConfigured &&
+    const sendMessageToEnabled = input.configuredToolExposure.sendMessageToConfigured;
+    const recipientNameDeliveryEnabled =
       memberTeamContext.sendMessageToEnabled &&
       Boolean(memberTeamContext.deliverInterAgentMessage);
     const taskDelegationToolNames =
@@ -58,6 +59,7 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       agentInstruction: input.agentInstruction,
       memberTeamContext,
       sendMessageToEnabled,
+      recipientNameDeliveryEnabled,
       taskDelegationEnabled,
     });
 
@@ -74,10 +76,14 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       ]),
       developerInstructions: instructionComposition.runtimeInstruction,
       dynamicToolRegistrations: mergeDynamicToolRegistrations(
-        sendMessageToEnabled && memberTeamContext.deliverInterAgentMessage
+        sendMessageToEnabled
           ? buildSendMessageToDynamicToolRegistrations({
-              deliverInterAgentMessage: memberTeamContext.deliverInterAgentMessage,
-              memberTeamContext,
+              sender: buildAgentRunMessageSenderContext({
+                senderRunId: input.runContext.runId,
+                senderName: memberTeamContext.memberName,
+                runtimeKind: input.runContext.config.runtimeKind,
+                memberTeamContext,
+              }),
             })
           : null,
         buildTaskDelegationDynamicToolRegistrations({

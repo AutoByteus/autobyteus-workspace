@@ -70,9 +70,11 @@ Normalized result:
 
 ## Dynamic Tool Lifecycle Spine
 
-For Codex dynamic tools, including team `send_message_to`, `delegate_tasks`,
+For Codex dynamic tools, including `send_message_to`, `delegate_tasks`,
 `submit_task_result`, and `review_task_result`, the raw `dynamicToolCall` item lifecycle is the
-authoritative execution lifecycle.
+authoritative execution lifecycle. `send_message_to` selector semantics are owned
+by the shared agent-communication dispatcher: `recipient_name` requires team
+context, while `target_agent_run_id` is the live-only exact active-run route.
 Display/conversation segments and tool execution lifecycle remain separate
 normalized surfaces.
 

@@ -91,9 +91,20 @@ export type SelfEvolutionRunStatus =
   | "timed_out";
 
 export type SelfEvolutionNotificationSummary = {
-  status: "sent_active_idle" | "skipped_busy" | "next_run_only" | "not_applicable" | "failed";
+  status:
+    | "sent_active_idle"
+    | "skipped_busy"
+    | "next_run_only"
+    | "not_applicable"
+    | "failed"
+    | "send_message_sent"
+    | "send_message_rejected"
+    | "send_message_target_inactive"
+    | "send_message_not_attempted";
   message?: string | null;
   error?: string | null;
+  targetAgentRunId?: string | null;
+  evolverRunId?: string | null;
 };
 
 export type SelfEvolutionRunRecord = {

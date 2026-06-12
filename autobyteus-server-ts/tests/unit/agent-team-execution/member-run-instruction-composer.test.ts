@@ -196,10 +196,10 @@ describe("member-run-instruction-composer", () => {
       "If you use `send_message_to`, choose exactly one target selector",
     );
     expect(composition.runtimeInstruction).toContain(
-      "Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.",
+      "Use `send_message_to` only for actual delivery; plain text does not deliver a teammate or exact-run message.",
     );
     expect(composition.runtimeInstruction).toContain(
-      "When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Team Communication messages.",
+      "When sending files the recipient may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files`.",
     );
     expect(composition.runtimeInstruction).toContain(
       "Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].",
@@ -229,7 +229,7 @@ describe("member-run-instruction-composer", () => {
     );
     expect(composition.runtimeInstruction).toContain("- qa_specialist");
     expect(composition.runtimeInstruction).toContain("- program_manager");
-    expect(composition.runtimeInstruction).toContain("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete active AgentRun id");
+    expect(composition.runtimeInstruction).toContain("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete currently active AgentRun id");
     expect(composition.runtimeInstruction).not.toContain("Teammates:");
     expect(composition.runtimeInstruction).not.toContain("local_agent");
     expect(composition.runtimeInstruction).not.toContain("parent_boundary_agent");
@@ -251,7 +251,7 @@ describe("member-run-instruction-composer", () => {
       "No logical `recipient_name` roster recipients are currently listed for this run.",
     );
     expect(composition.runtimeInstruction).toContain(
-      "Set `target_agent_run_id` to an exact active/recoverable AgentRun id",
+      "Set `target_agent_run_id` to an exact currently active AgentRun id",
     );
     expect(composition.runtimeInstruction).not.toContain("Use recipient_name for one logical roster recipient:");
     expect(composition.runtimeInstruction).not.toContain("Team membership roster");
@@ -315,7 +315,7 @@ describe("member-run-instruction-composer", () => {
     );
     expect(enabled.runtimeInstruction).toContain("Task-agents submit reviewable results with `submit_task_result`");
     expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
-    expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary teammate communication only");
+    expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary agent message delivery only");
     expect(enabled.runtimeInstruction).not.toContain(["accept", "task"].join("_"));
     expect(enabled.runtimeInstruction).not.toContain(["mark", "task", "completed"].join("_"));
     expect(enabled.runtimeInstruction).toContain(

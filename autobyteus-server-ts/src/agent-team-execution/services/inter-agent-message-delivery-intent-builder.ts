@@ -5,7 +5,7 @@ import {
   type InterAgentMessageDeliveryIntent,
   type InterAgentMessageParticipant,
 } from "../domain/inter-agent-message-delivery.js";
-import type { TeamMessageTargetSelector } from "../domain/team-message-target-selector.js";
+import type { SendMessageTargetSelector } from "../../agent-communication/domain/send-message-target-selector.js";
 import { selectorFromMemberPath } from "../domain/team-run-member-identity.js";
 
 export type InterAgentMessageDeliveryIntentBuildResult =
@@ -38,7 +38,7 @@ const buildSenderParticipant = (
 
 export const buildInterAgentMessageDeliveryIntent = (input: {
   memberTeamContext: MemberTeamContext;
-  target: TeamMessageTargetSelector;
+  target: SendMessageTargetSelector;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;

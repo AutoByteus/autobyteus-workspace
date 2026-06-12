@@ -12,7 +12,9 @@ Self-evolution is disabled by default for every server node.
 - If the setting is missing, the capability initializes disabled and records the source as `INITIALIZED_DISABLED`.
 - Every manual start mutation checks the capability gate before target resolution.
 - `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` selects the helper agent definition. Server startup syncs the product-managed built-in `autobyteus-skill-evolver` through the built-in-agent bootstrap path and selects it only when the setting is blank.
-- The selected evolver definition must include `run_bash`. Blank runtime/model defaults fall back to the target run's runtime/model/config.
+- The selected evolver definition must include `run_bash` and
+  `send_message_to`. Blank runtime/model defaults fall back to the target run's
+  runtime/model/config.
 
 Executable MVP strategies are intentionally narrow: `manual_only` trigger and `single_agent` evolver are implemented; `scheduled`, `signal_based`, and `agent_team` are catalog-visible `not_implemented` placeholders only.
 
@@ -45,12 +47,13 @@ The schema exposes `selfEvolution` only on run-launch inputs. Agent/team definit
 
 1. Eligibility queries confirm the global capability, run/member metadata snapshot, implemented strategies, and configured writable skill targets.
 2. `ManualTriggerStrategy` converts the explicit user/API request into a canonical self-evolution request.
-3. `SelfEvolutionTargetContextResolver` loads target run/member metadata and target identity.
+3. `SelfEvolutionTargetContextResolver` loads target run/member metadata and target identity, and the service requires that target `AgentRun` to be active before helper launch.
 4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured skills to exact skill roots and primary `SKILL.md` files.
 5. `SelfEvolutionEvidenceBuilder` and `SelfEvolutionWorkHistoryProjector` build anonymized, human-readable work-history evidence without retaining raw trace file paths in the evidence package or record.
 6. `SingleAgentEvolverStrategy` launches a separate visible helper `AgentRun` in the target workspace with `autoExecuteTools: true` and a task prompt listing exact editable skill root directories plus primary `SKILL.md` paths.
-7. `SelfEvolutionRunStore` persists minimal provenance: source run IDs, target identity, visible evolver run ID/status, target skill roots, evidence hash, timestamps, errors, and notification outcome.
-8. `SelfEvolutionTargetNotificationService` notifies an active idle standalone target when possible. Team-member targets and inactive/busy targets are recorded as next-run-only or skipped.
+7. The strategy registers a narrow direct-message grant for the helper: one accepted `self_evolution_outcome` message, only to the original active target run id, with `reference_files` limited to editable skill roots.
+8. At the end of meaningful work, the helper should call `send_message_to({ target_agent_run_id, message_type: "self_evolution_outcome", ... })` exactly once. The shared agent-communication router re-checks that the target run is still active before delivery.
+9. `SelfEvolutionRunStore` persists minimal provenance: source run IDs, target identity, visible evolver run ID/status, target skill roots, evidence hash, timestamps, errors, and the helper-authored outcome delivery summary.
 
 The evolver is never inserted into the target's ordinary business team roster.
 Team-member manual starts are member-scoped: the request/record target is
@@ -87,12 +90,13 @@ run-history row controls. Ineligible, old, or pre-snapshot runs hide that CTA by
 default. After start, the UI may show only a short transient toast/status. It
 must not render a persistent composer card, evolution record id, or helper-run
 open button, and it must not state that helper completion proves file changes,
-quality improvement, or downstream benefit. Active idle standalone target notifications are emitted as local runtime-neutral
-`AgentRunEventType.SYSTEM_TASK_NOTIFICATION` events and render through the
-system-task notification segment with concise copy that omits raw skill paths,
-evolution record ids, and implementation details. The MVP does not post a
-`SenderType.SYSTEM` runtime message merely to render the UI notification; active
-runtime/model skill refresh is a separate future/gated concern. Future
+quality improvement, or downstream benefit. Completion communication is
+helper-authored when meaningful: the evolver may send one direct
+`self_evolution_outcome` message to the still-active target run through
+`send_message_to(target_agent_run_id=...)`. Records distinguish sent, rejected,
+target-inactive, and not-attempted outcomes. The MVP does not post a
+`SenderType.SYSTEM` runtime message merely to render a completion notification;
+active runtime/model skill refresh is a separate future/gated concern. Future
 measurement should be added as a separate design after the manual loop proves
 useful.
 
@@ -102,4 +106,7 @@ useful.
 - No scheduled, signal-based, or evolver-team execution is implemented.
 - Exact historical skill binding/path snapshots are deferred; current configured skill roots are resolved at evolution time and recorded as an MVP limitation.
 - Direct editing remains instruction-constrained and manually reviewable, not service-audited.
-- Team-member live reload/notification is next-run-only in the MVP.
+- Team-member live reload remains next-run-only in the MVP; helper-authored
+  `self_evolution_outcome` messages may still be delivered to an active selected
+  member run by exact `memberRunId`, but they do not create Team Communication
+  projection.

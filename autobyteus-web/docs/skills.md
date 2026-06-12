@@ -215,13 +215,15 @@ selected active run or team member and stays hidden for ineligible, old, or
 pre-snapshot runs. Run-history rows do not own self-evolution actions. The
 backend launches a visible helper run with anonymized work-history evidence and
 records minimal provenance; it does not compute changed paths or
-policy-violation metrics in the MVP. After launch, the workspace may show only
-a short transient start status, while active idle standalone completion
-notifications render as system-task notification segments from a local
-runtime-neutral server event. That UI notification is not a runtime/model
-skill-refresh instruction; next-run correctness is the MVP baseline. Users
-should still inspect any Git-backed skill changes directly before treating them
-as accepted improvements.
+policy-violation metrics in the MVP. After launch, the workspace may show only a
+short transient start status. When the helper has a meaningful outcome, it
+reports through one direct `send_message_to` call with
+`message_type: "self_evolution_outcome"` to the still-active target run; the
+backend record distinguishes sent, rejected, target-inactive, and not-attempted
+outcomes. That helper-authored message is not a runtime/model skill-refresh
+instruction; next-run correctness is the MVP baseline. Users should still
+inspect any Git-backed skill changes directly before treating them as accepted
+improvements.
 
 Git-backed skill packages remain the recommended testing and rollback mode for
 this MVP. The feature is globally disabled by default and direct editing is

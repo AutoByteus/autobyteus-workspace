@@ -3,8 +3,10 @@
 ## Scope
 
 The Artifacts tab serves produced/touched files only. Message references declared
-through `send_message_to.reference_files` are part of Team Communication, not the
-Artifacts tab.
+through accepted team-route `send_message_to.reference_files` are part of Team
+Communication, not the Artifacts tab. Direct exact-run
+`send_message_to(target_agent_run_id=...)` references remain runtime input/event
+metadata and do not create Team Communication reference rows.
 
 ## Agent Artifact Flow
 
@@ -30,11 +32,11 @@ Artifacts tab.
 
 ## Team Communication Reference Flow
 
-1. `send_message_to` accepts natural `content` plus optional explicit
-   `reference_files` absolute local paths.
-2. Accepted delivery emits one `INTER_AGENT_MESSAGE` payload with message id,
-   sender/receiver identity, content, message type, and structured reference
-   metadata. Nested teams use path-aware and representative-aware
+1. `send_message_to(recipient_name=...)` accepts natural `content` plus optional
+   explicit `reference_files` absolute local paths.
+2. Accepted team-route delivery emits one `INTER_AGENT_MESSAGE` payload with
+   message id, sender/receiver identity, content, message type, team projection
+   fields, and structured reference metadata. Nested teams use path-aware and representative-aware
    participant identity: `memberKind`, `memberPath`, `memberRouteKey`, and
    optional `representedSubTeam`.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
@@ -47,9 +49,10 @@ Artifacts tab.
 6. Reference bytes are served by message-owned identity:
    `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 
-There is no text-scanning fallback, no standalone message-reference sidecar
-runtime event, no receiver-scoped reference route, and no raw-path-only content
-route.
+There is no text-scanning fallback, no standalone Team Communication
+message-reference sidecar runtime event, no receiver-scoped reference route, and
+no raw-path-only content route. Direct exact-run `INTER_AGENT_MESSAGE` events
+intentionally omit the team projection fields consumed by this flow.
 
 ## Current Source Owners
 

@@ -2,13 +2,13 @@ import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
-import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/team-communication/send-message-to.js";
+import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/agent-communication/send-message-to.js";
+import { buildAgentRunMessageSenderContext } from "../../../agent-communication/domain/agent-run-message-sender.js";
 import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
 import {
-  canCreateBoundAutoByteusSendMessageToTool,
-  createAutoByteusSendMessageToToolForMember,
+  createAutoByteusSendMessageToToolForSender,
   isSendMessageToToolName,
-} from "./team-communication/autobyteus-send-message-tool-factory.js";
+} from "./agent-communication/autobyteus-send-message-tool-factory.js";
 
 type ToolResolutionLogger = {
   warn: (...args: unknown[]) => void;
@@ -27,6 +27,9 @@ const defaultLogger: ToolResolutionLogger = {
 
 export const resolveAutoByteusAgentTools = (input: {
   agentDefinition: AgentDefinition;
+  senderRunId?: string | null;
+  senderName?: string | null;
+  runtimeKind?: string | null;
   memberTeamContext?: MemberTeamContext | null;
   logger?: ToolResolutionLogger | null;
 }): AutoByteusAgentToolResolution => {
@@ -41,21 +44,29 @@ export const resolveAutoByteusAgentTools = (input: {
 
   for (const name of resolvedToolNames) {
     if (isSendMessageToToolName(name)) {
-      if (memberTeamContext) {
-        if (!canCreateBoundAutoByteusSendMessageToTool(memberTeamContext)) {
-          continue;
-        }
-        try {
-          tools.push(createAutoByteusSendMessageToToolForMember(memberTeamContext));
-          actualToolNames.push(name);
-        } catch (error) {
-          logger.error(
-            `Failed to create tool instance for '${name}' from agent definition '${agentDefinition.name}': ${String(error)}`,
-          );
-        }
+      ensureAutoByteusSendMessageToToolRegistered();
+      if (!input.senderRunId?.trim()) {
+        logger.warn(
+          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires senderRunId. Skipping.`,
+        );
         continue;
       }
-      ensureAutoByteusSendMessageToToolRegistered();
+      try {
+        tools.push(createAutoByteusSendMessageToToolForSender(
+          buildAgentRunMessageSenderContext({
+            senderRunId: input.senderRunId,
+            senderName: input.senderName ?? agentDefinition.name,
+            runtimeKind: input.runtimeKind ?? null,
+            memberTeamContext,
+          }),
+        ));
+        actualToolNames.push(name);
+      } catch (error) {
+        logger.error(
+          `Failed to create tool instance for '${name}' from agent definition '${agentDefinition.name}': ${String(error)}`,
+        );
+      }
+      continue;
     }
 
     if (!defaultToolRegistry.getToolDefinition(name)) {

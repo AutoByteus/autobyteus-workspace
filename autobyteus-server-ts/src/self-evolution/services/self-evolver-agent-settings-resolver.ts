@@ -2,6 +2,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID } from "../domain/settings.js";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import type { SelfEvolutionEffectiveConfig } from "../domain/models.js";
 import { SelfEvolutionSettingsService } from "./self-evolution-settings-service.js";
 
@@ -58,6 +59,9 @@ export class SelfEvolverAgentSettingsResolver {
     }
     if (!definition.toolNames.includes("run_bash")) {
       throw new Error(`Configured self-evolver agent '${selectedAgentId}' must include run_bash in toolNames.`);
+    }
+    if (!definition.toolNames.includes(SEND_MESSAGE_TO_TOOL_NAME)) {
+      throw new Error(`Configured self-evolver agent '${selectedAgentId}' must include ${SEND_MESSAGE_TO_TOOL_NAME} in toolNames.`);
     }
 
     const launchConfig = definition.defaultLaunchConfig;

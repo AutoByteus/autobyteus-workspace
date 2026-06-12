@@ -161,13 +161,13 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     config: AgentRunConfig,
     agentRunId: string,
   ): Promise<AutoByteusAgentRunBackend> {
-    const built = await this.buildAgentConfig(config);
     const runId = agentRunId.trim();
     if (!runId) {
       throw new AgentCreationError(
         "AutoByteus standalone backend creation requires agentRunId.",
       );
     }
+    const built = await this.buildAgentConfig(config, runId);
     const memoryDir = built.resolvedRunConfig.memoryDir;
     if (!memoryDir) {
       throw new AgentCreationError(
@@ -220,7 +220,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   async restoreBackend(
     context: AgentRunContext<RuntimeAgentRunContext>,
   ): Promise<AutoByteusAgentRunBackend> {
-    const built = await this.buildAgentConfig(context.config);
+    const built = await this.buildAgentConfig(context.config, context.runId);
     const memoryDir = context.config.memoryDir;
     if (!memoryDir) {
       throw new AgentCreationError(
@@ -260,6 +260,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
   private async buildAgentConfig(
     options: AgentRunConfig,
+    runId: string,
   ): Promise<{ agentConfig: AgentConfig; resolvedRunConfig: AgentRunConfig }> {
     const {
       agentDefinitionId,
@@ -307,6 +308,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
     const { tools, actualToolNames } = resolveAutoByteusAgentTools({
       agentDefinition: agentDef,
+      senderRunId: runId,
+      senderName: agentDef.name,
+      runtimeKind: options.runtimeKind,
       memberTeamContext: options.memberTeamContext,
       logger,
     });

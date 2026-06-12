@@ -17,9 +17,11 @@ team-scoped communication rosters, or team stream rebroadcasting.
 - AutoByteus members inside server teams are regular `AgentRun`s configured by
   the server with `MemberTeamContext`-derived instructions and primitive
   `customData.teamContext` fields.
-- The public team communication tool name remains `send_message_to`, but the
-  implementation is server-owned and delivered through `TeamRun` /
-  `MixedTeamManager` rather than through native AutoByteus team classes.
+- The public agent communication tool name remains `send_message_to`, but the
+  implementation is server-owned. `recipient_name` delivery runs through
+  `TeamRun` / `MixedTeamManager`; exact active-run `target_agent_run_id`
+  delivery runs through the server `agent-communication` direct route. Neither
+  path is implemented by native AutoByteus team classes.
 - Server-managed task delegation (`delegate_tasks`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
   Personal ToDo tools remain local single-agent tools.
 

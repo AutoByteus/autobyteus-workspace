@@ -8,18 +8,13 @@ import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.
 import {
   SEND_MESSAGE_TO_FIELD_DESCRIPTIONS,
   SEND_MESSAGE_TO_TOOL_DESCRIPTION,
-} from "../../../../agent-team-execution/services/send-message-to-tool-contract.js";
+} from "../../../../agent-communication/services/send-message-to-tool-contract.js";
 
 export const buildClaudeSendMessageToolDefinition = async (options: {
   runContext: ClaudeRunContext;
   sdkClient: ClaudeSdkClient;
   handler: ClaudeSendMessageToolCallHandler;
 }): Promise<Record<string, unknown> | null> => {
-  const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
-  if (!memberTeamContext?.teamRunId || !memberTeamContext.sendMessageToEnabled) {
-    return null;
-  }
-
   const inputSchema = {
     recipient_name: z
       .string()

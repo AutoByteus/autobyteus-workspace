@@ -20,6 +20,31 @@ Browser-tool support is runtime-gated:
 - remote nodes can resolve the same Browser bridge through an in-memory runtime registration when a desktop client explicitly pairs that node with its local browser
 - browser tool exposure still stays subject to the active runtime/tool projection and the configured agent tool names
 
+## Server-Owned Agent Communication Tool
+
+`send_message_to` is the shared first-party agent communication tool. Its
+canonical contract, selector parsing, runtime-neutral dispatcher, direct
+exact-run routing, and optional direct-message grants live under
+`src/agent-communication`; AutoByteus, Codex, and Claude adapters project that
+same contract through their own tool surfaces when the current configuration
+includes `send_message_to`.
+
+The tool accepts exactly one target selector:
+
+- `recipient_name` for a team-local roster recipient. This selector requires a
+  current `MemberTeamContext`, routes through team delivery, and is the path that
+  creates Team Communication projection and message-owned `reference_files`.
+- `target_agent_run_id` for an exact currently active `AgentRun.runId`. This
+  selector routes through `AgentRunManager.getActiveRun(...)`, rejects inactive,
+  unknown, preallocated-only, recoverable-only, or lazy-startable-only ids, posts
+  direct input to the active target run, and emits a direct `INTER_AGENT_MESSAGE`
+  without Team Communication projection fields.
+
+Standalone configured runs can use `target_agent_run_id` without team context.
+They cannot use `recipient_name` unless the run is actually executing as a team
+member. See [Agent Communication](./agent_communication.md) for the full selector
+and projection contract.
+
 ## Server-Owned Task Delegation Tools
 
 The server owns the first-party bounded task-delegation surface for team runs:
@@ -61,8 +86,8 @@ follow-up work is delegated by the coordinator later through another
 `reference_files` because the task is inferred from task-agent context. Original
 delegators review the latest pending submission with `review_task_result`, using
 `decision="accept"` to finalize or `decision="request_revision"` plus a message
-to send system revision instructions. `send_message_to` remains available only
-for ordinary teammate communication, not task result/review/acceptance.
+to send system revision instructions. `send_message_to` remains available for
+ordinary communication/handoffs only; it is not task result/review/acceptance.
 
 ## Server-Owned Media Tools
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   SEND_MESSAGE_TO_TOOL_NAME,
   buildSendMessageToToolSpec,
-} from "../../../../../../src/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.js";
+} from "../../../../../../src/agent-execution/backends/codex/agent-communication/codex-send-message-tool-spec-builder.js";
 
 describe("codex-send-message-tool-spec-builder", () => {
   it("builds a Codex dynamic tool spec with inputSchema", () => {

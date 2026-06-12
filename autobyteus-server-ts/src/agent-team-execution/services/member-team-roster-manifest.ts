@@ -176,7 +176,7 @@ export const renderTeamMembershipRosterManifest = (
     lines.push("Use recipient_name for one logical roster recipient:");
     lines.push(...manifest.allowedRecipientNames.map((recipientName) => `- ${recipientName}`));
   }
-  lines.push("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete active AgentRun id and the message must reach that exact run. Do not provide both selectors.");
+  lines.push("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete currently active AgentRun id and the message must reach that exact live run. Do not provide both selectors.");
 
   return lines.join("\n");
 };

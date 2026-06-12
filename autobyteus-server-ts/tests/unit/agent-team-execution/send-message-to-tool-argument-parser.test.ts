@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
-} from "../../../src/agent-team-execution/services/send-message-to-tool-argument-parser.js";
+} from "../../../src/agent-communication/services/send-message-to-tool-argument-parser.js";
 
 const reportPath = "/Users/normy/project/report.md";
 

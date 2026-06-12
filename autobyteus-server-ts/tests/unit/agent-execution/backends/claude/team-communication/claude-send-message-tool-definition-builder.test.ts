@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildClaudeSendMessageToolDefinition } from "../../../../../../src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.js";
+import { buildClaudeSendMessageToolDefinition } from "../../../../../../src/agent-execution/backends/claude/agent-communication/claude-send-message-tool-definition-builder.js";
 import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../../../../../../src/agent-execution/backends/claude/claude-send-message-tool-name.js";
 
 const getDescription = (schema: unknown): string => {

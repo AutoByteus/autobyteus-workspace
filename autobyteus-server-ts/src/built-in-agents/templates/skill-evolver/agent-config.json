@@ -1,5 +1,8 @@
 {
-  "toolNames": ["run_bash"],
+  "toolNames": [
+    "run_bash",
+    "send_message_to"
+  ],
   "skillNames": [],
   "inputProcessorNames": [],
   "llmResponseProcessorNames": [],

@@ -133,14 +133,16 @@ describe("SingleAgentEvolverStrategy", () => {
     expect(postedMessage?.content).toContain("Do not stop at process guidance");
     expect(postedMessage?.content).toContain("Do not claim the improvement is complete unless");
     expect(postedMessage?.content).not.toContain("raw_traces.jsonl");
-    expect(postedMessage?.content).not.toContain("target-run-1");
+    expect(postedMessage?.content).toContain('target_agent_run_id "target-run-1"');
     expect(postedMessage?.content).not.toContain("source-run-2");
     expect(postedMessage?.metadata).toMatchObject({
       self_evolution_editable_skill_roots: [editableTarget.skillRootPath],
       self_evolution_primary_skill_paths: [editableTarget.skillMdPath],
+      self_evolution_target_agent_run_id: "target-run-1",
+      self_evolution_outcome_message_type: "self_evolution_outcome",
     });
     expect(postedMessage?.metadata).not.toHaveProperty("self_evolution_source_run_ids");
-    expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain("target-run-1");
+    expect(JSON.stringify(postedMessage?.metadata ?? {})).toContain("target-run-1");
     expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain("source-run-2");
     expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(run, {
       summary: "Self-evolution skill update for Target Agent",
@@ -151,6 +153,11 @@ describe("SingleAgentEvolverStrategy", () => {
       evolverRunId: "evolver-run-1",
       evolverAgentDefinitionId: "autobyteus-skill-evolver",
       outputText: "Applied one concise skill update.",
+      notificationSummary: expect.objectContaining({
+        status: "send_message_not_attempted",
+        targetAgentRunId: "target-run-1",
+        evolverRunId: "evolver-run-1",
+      }),
     });
   });
 });

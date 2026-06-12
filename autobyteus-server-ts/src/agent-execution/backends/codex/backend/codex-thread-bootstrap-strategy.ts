@@ -2,6 +2,8 @@ import type { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexAgentRunContext } from "./codex-agent-run-context.js";
 import type { CodexDynamicToolRegistration } from "../codex-dynamic-tool.js";
 import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
+import { buildSendMessageToDynamicToolRegistrations } from "../agent-communication/codex-send-message-dynamic-tool-registration.js";
+import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 
 const renderMarkdownInstructionSection = (
   title: string,
@@ -46,6 +48,7 @@ export class DefaultCodexThreadBootstrapStrategy implements CodexThreadBootstrap
   }
 
   prepare(input: {
+    runContext: AgentRunContext<CodexAgentRunContext | null>;
     agentInstruction: string | null;
     configuredToolExposure: ConfiguredAgentToolExposure;
   }): CodexThreadBootstrapPreparation {
@@ -57,7 +60,16 @@ export class DefaultCodexThreadBootstrapStrategy implements CodexThreadBootstrap
         },
       ]),
       developerInstructions: null,
-      dynamicToolRegistrations: null,
+      dynamicToolRegistrations: input.configuredToolExposure.sendMessageToConfigured
+        ? buildSendMessageToDynamicToolRegistrations({
+            sender: buildAgentRunMessageSenderContext({
+              senderRunId: input.runContext.runId,
+              senderName: input.runContext.config.agentDefinitionId,
+              runtimeKind: input.runContext.config.runtimeKind,
+              memberTeamContext: null,
+            }),
+          })
+        : null,
     };
   }
 }

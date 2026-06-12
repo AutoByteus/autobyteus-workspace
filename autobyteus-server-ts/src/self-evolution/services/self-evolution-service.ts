@@ -19,6 +19,7 @@ import { SelfEvolutionRecordLifecycle } from "./self-evolution-record-lifecycle.
 import { SingleAgentEvolverStrategy } from "./strategies/single-agent-evolver-strategy.js";
 import { SelfEvolutionStrategyCatalogService } from "./strategies/self-evolution-strategy-catalog.js";
 import { ManualTriggerStrategy } from "./triggers/manual-trigger-strategy.js";
+import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 
 export type StartSelfEvolutionForAgentRunInput = { runId: string; requestedByUserId?: string | null; requestedFrom?: "run_detail" | "api"; };
 
@@ -34,6 +35,7 @@ type SelfEvolutionServiceDeps = {
   evolverStrategy?: SingleAgentEvolverStrategy;
   eligibilityEvaluator?: SelfEvolutionEligibilityEvaluator;
   recordLifecycle?: SelfEvolutionRecordLifecycle;
+  agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
 };
 
 export class SelfEvolutionService {
@@ -100,6 +102,7 @@ export class SelfEvolutionService {
     try {
       record = await this.recordLifecycle.patchRecord(record, { status: "resolving_target" });
       const context = await this.resolveRequestContext(request);
+      this.requireLiveTarget(context.target);
       const skillTargets = await this.skillTargetResolver.resolveForAgentDefinition(context.targetAgentDefinition);
       const editableTargets = skillTargets.filter((target) => target.isWritable);
       if (editableTargets.length === 0) {
@@ -132,7 +135,7 @@ export class SelfEvolutionService {
         llmModelIdentifier: result.llmModelIdentifier,
       });
 
-      record = await this.recordLifecycle.finalizeRecord(record, result.status);
+      record = await this.recordLifecycle.finalizeRecord(record, result.status, result.notificationSummary ?? null);
       return {
         evolutionRunId: record.evolutionRunId,
         evolverRunId: record.evolverRunId ?? null,
@@ -155,6 +158,7 @@ export class SelfEvolutionService {
   ): Promise<SelfEvolutionStartResult> {
     await this.capabilityService.requireEnabled();
     const context = await this.targetContextResolver.resolve(target);
+    this.requireLiveTarget(context.target);
     const snapshot = this.requireRunnableSnapshot(context.effectiveConfig);
     const request = this.manualTriggerStrategy.createRequest(
       { target, requestedByUserId, requestedFrom },
@@ -181,6 +185,13 @@ export class SelfEvolutionService {
       throw new Error(reasons.join(" ") || "Self-evolution run snapshot is unavailable.");
     }
     return snapshot;
+  }
+
+  private requireLiveTarget(target: SelfEvolutionTargetRef): void {
+    const runId = target.kind === "agent_run" ? target.runId : target.memberRunId;
+    if (!this.agentRunManager.getActiveRun(runId)) {
+      throw new Error(`Self-evolution target run '${runId}' is not active.`);
+    }
   }
 
   private normalizeRequired(value: string, fieldName: string): string {
@@ -230,5 +241,9 @@ export class SelfEvolutionService {
 
   private get recordLifecycle(): SelfEvolutionRecordLifecycle {
     return this.deps.recordLifecycle ?? new SelfEvolutionRecordLifecycle();
+  }
+
+  private get agentRunManager(): Pick<AgentRunManager, "getActiveRun"> {
+    return this.deps.agentRunManager ?? AgentRunManager.getInstance();
   }
 }

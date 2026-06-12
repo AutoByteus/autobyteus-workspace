@@ -7,6 +7,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Module | TS Documentation |
 | --- | --- |
 | Agent Artifacts | [agent_artifacts.md](./agent_artifacts.md) |
+| Agent Communication | [agent_communication.md](./agent_communication.md) |
 | Agent Customization | [agent_customization.md](./agent_customization.md) |
 | Agent Definition | [agent_definition.md](./agent_definition.md) |
 | Agent Execution | [agent_execution.md](./agent_execution.md) |

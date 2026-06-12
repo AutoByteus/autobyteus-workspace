@@ -4,16 +4,14 @@ import {
 } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
-import type {
-  InterAgentMessageDeliveryHandler,
-} from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
-} from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
-import { buildInterAgentMessageDeliveryIntent } from "../../../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+} from "../../../../agent-communication/services/send-message-to-tool-argument-parser.js";
+import { getSendMessageToDispatcher } from "../../../../agent-communication/services/send-message-to-dispatcher.js";
 
 export type ClaudeSendMessageToolApprovalDecision = {
   approved: boolean;
@@ -27,7 +25,6 @@ export type ClaudeSendMessageToolApprovalHandler = (input: {
 }) => Promise<ClaudeSendMessageToolApprovalDecision>;
 
 type ClaudeSendMessageToolCallHandlerOptions = {
-  deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
   requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
   emitEvent: (runContext: ClaudeRunContext, event: ClaudeSessionEvent) => void;
 };
@@ -87,7 +84,7 @@ const emitSendMessageToolCompleted = (options: {
             },
           }
         : {
-            error: options.result.message ?? "Failed delivering message to teammate.",
+            error: options.result.message ?? "send_message_to failed.",
           }),
     },
   });
@@ -112,7 +109,6 @@ const emitSendMessageToolCompleted = (options: {
 };
 
 export class ClaudeSendMessageToolCallHandler {
-  private readonly deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
   private readonly requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
   private readonly emitEvent: (
     runContext: ClaudeRunContext,
@@ -120,7 +116,6 @@ export class ClaudeSendMessageToolCallHandler {
   ) => void;
 
   constructor(options: ClaudeSendMessageToolCallHandlerOptions) {
-    this.deliverInterAgentMessage = options.deliverInterAgentMessage;
     this.requestToolApproval = options.requestToolApproval;
     this.emitEvent = options.emitEvent;
   }
@@ -165,17 +160,6 @@ export class ClaudeSendMessageToolCallHandler {
       });
     }
 
-    const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
-    if (!this.deliverInterAgentMessage || !memberTeamContext?.teamRunId) {
-      return this.buildRejectedResult({
-        runContext: options.runContext,
-        invocationId,
-        toolArguments: normalizedArguments,
-        code: "INTER_AGENT_RELAY_UNSUPPORTED",
-        message: "send_message_to delivery handler is unavailable for this runtime session.",
-      });
-    }
-
     if (!options.runContext.runtimeContext.autoExecuteTools) {
       if (!this.requestToolApproval) {
         return this.buildRejectedResult({
@@ -203,34 +187,18 @@ export class ClaudeSendMessageToolCallHandler {
       }
     }
 
-    if (!parsed.target || !parsed.content) {
-      return this.buildRejectedResult({
-        runContext: options.runContext,
-        invocationId,
-        toolArguments: normalizedArguments,
-        code: "INVALID_TOOL_ARGUMENTS",
-        message: "send_message_to requires exactly one target selector and non-empty content.",
-      });
-    }
-
-    const content = parsed.content.trim();
-    const intentResult = buildInterAgentMessageDeliveryIntent({
-      memberTeamContext,
-      target: parsed.target,
-      content,
-      messageType: parsed.messageType,
-      referenceFiles: parsed.referenceFiles,
+    const sendMessageToResult = await getSendMessageToDispatcher().dispatch({
+      toolName: CLAUDE_SEND_MESSAGE_TOOL_NAME,
+      rawArguments: args,
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: options.runContext.runId,
+        senderName:
+          options.runContext.runtimeContext.memberTeamContext?.memberName ??
+          options.runContext.config.agentDefinitionId,
+        runtimeKind: options.runContext.config.runtimeKind,
+        memberTeamContext: options.runContext.runtimeContext.memberTeamContext,
+      }),
     });
-    if (!intentResult.ok) {
-      return this.buildRejectedResult({
-        runContext: options.runContext,
-        invocationId,
-        toolArguments: normalizedArguments,
-        code: intentResult.code,
-        message: intentResult.message,
-      });
-    }
-    const sendMessageToResult = await this.deliverInterAgentMessage(intentResult.intent);
 
     emitSendMessageToolCompleted({
       runContext: options.runContext,
@@ -240,16 +208,8 @@ export class ClaudeSendMessageToolCallHandler {
       result: sendMessageToResult,
     });
 
-    if (!sendMessageToResult.accepted) {
-      return {
-        accepted: false,
-        code: sendMessageToResult.code ?? null,
-        message: sendMessageToResult.message ?? "Failed delivering message to teammate.",
-      };
-    }
-
     return {
-      accepted: true,
+      accepted: sendMessageToResult.accepted,
       code: sendMessageToResult.code ?? null,
       message: sendMessageToResult.message ?? null,
     };

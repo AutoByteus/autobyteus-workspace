@@ -32,9 +32,9 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerTaskDelegationTools",
   },
   {
-    name: "Team Communication Tools",
-    modulePath: "../agent-tools/team-communication/register-team-communication-tools.js",
-    exportName: "registerTeamCommunicationTools",
+    name: "Agent Communication Tools",
+    modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js",
+    exportName: "registerAgentCommunicationTools",
   },
   {
     name: "Published Artifact Tools",

@@ -15,6 +15,8 @@ export const buildClaudeTurnInput = (options: {
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
     memberTeamContext: memberTeamContext ?? null,
     sendMessageToEnabled: options.sendMessageToEnabled,
+    recipientNameDeliveryEnabled:
+      Boolean(memberTeamContext?.sendMessageToEnabled && memberTeamContext.deliverInterAgentMessage),
     taskDelegationEnabled: options.taskDelegationEnabled,
   });
   if (

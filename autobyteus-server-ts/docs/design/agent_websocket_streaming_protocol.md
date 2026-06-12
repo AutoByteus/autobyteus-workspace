@@ -132,11 +132,13 @@ derived events to every server subscriber. Multiple websocket/API subscribers
 must therefore observe the same `FILE_CHANGE` sequence without causing duplicate
 processing.
 
-Accepted `INTER_AGENT_MESSAGE` events are processor input for Team
-Communication. When an accepted inter-agent message carries explicit
+Accepted team-route `INTER_AGENT_MESSAGE` events are processor input for Team
+Communication. When an accepted `recipient_name` message carries explicit
 `payload.reference_files`, the payload also carries message-owned reference
 metadata. `TeamCommunicationMessageProcessor` emits one normalized
-`TEAM_COMMUNICATION_MESSAGE` event for that accepted message. Clients consume
+`TEAM_COMMUNICATION_MESSAGE` event for that accepted message. Direct exact-run
+`send_message_to(target_agent_run_id=...)` events intentionally omit the team
+projection fields consumed by this processor. Clients consume
 `TEAM_COMMUNICATION_MESSAGE` into the Team Communication store; they must not
 derive references by parsing rendered chat text, linkifying raw paths, or adding
 those rows to the run-file-changes projection.

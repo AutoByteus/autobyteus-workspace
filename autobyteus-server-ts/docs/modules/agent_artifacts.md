@@ -6,9 +6,13 @@ Server-side ownership for the Artifacts tab's produced/touched-file experience.
 The Artifacts tab is backed by derived `FILE_CHANGE` events plus the
 run-file-changes projection.
 
-Inter-agent `send_message_to.reference_files` are owned by Team Communication.
-They are stored as child references of accepted `INTER_AGENT_MESSAGE` records and
-are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
+Team-route `send_message_to.reference_files` are owned by Team Communication.
+They are stored as child references of accepted team `INTER_AGENT_MESSAGE`
+records and are rendered in the Team tab, not as Sent/Received rows in the
+Artifacts tab. Direct exact-run `send_message_to(target_agent_run_id=...)`
+messages carry `reference_files` in the target runtime input/event metadata, but
+they intentionally omit Team Communication projection fields and do not create
+Team tab reference rows.
 
 ## TS Source
 
@@ -24,7 +28,7 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
   - `src/run-history/services/run-file-change-projection-service.ts`
   - `src/api/graphql/types/run-file-changes.ts`
   - `src/api/rest/run-file-changes.ts`
-- Team Communication references:
+- Team Communication references for accepted `recipient_name` deliveries:
   - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
   - `src/services/team-communication/team-communication-service.ts`
   - `src/services/team-communication/team-communication-projection-store.ts`
@@ -53,8 +57,8 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
   `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
 - Serve Agent Artifact bytes by `runId + canonical path` through
   `/runs/:runId/file-change-content`.
-- Keep Team Communication message/reference storage separate at
-  `agent_teams/<teamRunId>/team_communication_messages.json`.
+- Keep Team Communication message/reference storage for accepted team-route
+  deliveries separate at `agent_teams/<teamRunId>/team_communication_messages.json`.
 - Treat source invocation ids as opaque tool-call identities when correlating
   `FILE_CHANGE` context. The context store is keyed by exact source invocation
   id only: numeric/provider ordinals such as `run_bash:0`, semantic-looking
@@ -67,5 +71,7 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
 
 Paths mentioned only in inter-agent message prose are ordinary text. Explicit
 reference files may be visible to recipient runtimes through a generated
-`Reference files:` block, but the durable metadata source is the structured
-`reference_files` list on the accepted message payload.
+`Reference files:` block, but the durable Team Communication metadata source is
+the structured `reference_files` list on accepted `recipient_name` team-route
+message payloads. Direct exact-run message references remain direct runtime
+input/event metadata unless a separate future projection is designed.

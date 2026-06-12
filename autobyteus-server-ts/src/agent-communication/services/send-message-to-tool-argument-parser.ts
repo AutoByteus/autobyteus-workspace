@@ -1,11 +1,11 @@
 import {
-  normalizeExplicitTeamCommunicationReferenceFiles,
-  type ExplicitTeamCommunicationReferenceFileValidationError,
-} from "../../services/team-communication/team-communication-reference-files.js";
+  normalizeExplicitAgentCommunicationReferenceFiles,
+  type ExplicitAgentCommunicationReferenceFileValidationError,
+} from "./agent-communication-reference-files.js";
 import {
-  buildTeamMessageTargetSelector,
-  type TeamMessageTargetSelector,
-} from "../domain/team-message-target-selector.js";
+  buildSendMessageTargetSelector,
+  type SendMessageTargetSelector,
+} from "../domain/send-message-target-selector.js";
 
 type SendMessageToValidationError = {
   code: "TARGET_SELECTOR_INVALID" | "UNSUPPORTED_TARGET_SELECTOR_ALIAS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES";
@@ -15,15 +15,15 @@ type SendMessageToValidationError = {
 export type SendMessageToToolArguments = {
   recipientName: string | null;
   targetAgentRunId: string | null;
-  target: TeamMessageTargetSelector | null;
+  target: SendMessageTargetSelector | null;
   unsupportedTargetSelectorFields: string[];
   content: string | null;
   messageType: string;
   referenceFiles: string[];
-  referenceFilesError: ExplicitTeamCommunicationReferenceFileValidationError | null;
+  referenceFilesError: ExplicitAgentCommunicationReferenceFileValidationError | null;
 };
 
-const LOG_PREFIX = "[team-communication]";
+const LOG_PREFIX = "[agent-communication]";
 
 const readString = (value: unknown): string | null =>
   typeof value === "string" ? value : null;
@@ -41,14 +41,14 @@ const unsupportedTargetSelectorAliases = (toolArguments: Record<string, unknown>
 export const parseSendMessageToToolArguments = (
   toolArguments: Record<string, unknown>,
 ): SendMessageToToolArguments => {
-  const referenceFilesResult = normalizeExplicitTeamCommunicationReferenceFiles(
+  const referenceFilesResult = normalizeExplicitAgentCommunicationReferenceFiles(
     readReferenceFiles(toolArguments),
   );
   const recipientName =
     readString(toolArguments.recipient_name);
   const targetAgentRunId =
     readString(toolArguments.target_agent_run_id);
-  const targetResult = buildTeamMessageTargetSelector({
+  const targetResult = buildSendMessageTargetSelector({
     recipientName,
     targetAgentRunId,
   });
@@ -78,7 +78,7 @@ export const validateParsedSendMessageToToolArguments = (
       message: `${toolName} target selector fields must use recipient_name or target_agent_run_id only. Unsupported field(s): ${input.unsupportedTargetSelectorFields.join(", ")}.`,
     };
   }
-  const targetResult = buildTeamMessageTargetSelector({
+  const targetResult = buildSendMessageTargetSelector({
     recipientName: input.recipientName,
     targetAgentRunId: input.targetAgentRunId,
     toolName,

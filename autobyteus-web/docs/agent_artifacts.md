@@ -6,11 +6,14 @@ The desktop and mobile Artifacts surfaces are intentionally run-file-change only
 They list files that the focused agent run produced or touched through explicit
 mutation/generated-output runtime events.
 
-Inter-agent `send_message_to.reference_files` are no longer owned by the
+Team-route `send_message_to.reference_files` are no longer owned by the
 Artifacts tab. They are child rows of Team Communication messages in the Team
 tab. The message body stays natural and self-contained; `reference_files` is the
 structured attachment/reference list used to register previewable files under the
-message that carried them.
+accepted `recipient_name` message that carried them. Direct exact-run
+`send_message_to(target_agent_run_id=...)` messages carry their references in
+the target runtime input/event metadata but intentionally do not create Team
+Communication reference rows.
 
 ## Agent Artifacts
 
@@ -52,7 +55,8 @@ Rules:
 
 ## Team Communication References
 
-Team Communication owns message references:
+Team Communication owns message references for accepted `recipient_name`
+deliveries:
 
 ```ts
 interface TeamCommunicationMessage {
@@ -80,8 +84,10 @@ interface TeamCommunicationReferenceFile {
 
 Rules:
 
-- Accepted `INTER_AGENT_MESSAGE` payloads are processor input for Team Communication
-  messages. The live/store authority is the derived `TEAM_COMMUNICATION_MESSAGE`.
+- Accepted team-route `INTER_AGENT_MESSAGE` payloads are processor input for Team
+  Communication messages. The live/store authority is the derived
+  `TEAM_COMMUNICATION_MESSAGE`; direct exact-run messages without team projection
+  fields are ignored by this store.
 - Reference rows come only from explicit `payload.reference_files` /
   `payload.reference_file_entries`; message prose is not scanned and raw paths
   are not linkified.
@@ -118,7 +124,7 @@ flowchart LR
   G --> H[Desktop ArtifactsTab: Agent Artifacts]
   G --> U[MobileArtifacts: focused run/member Agent Artifacts]
 
-  I[Accepted INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
+  I[Accepted team-route INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
   K --> L[TeamCommunicationService]
   L --> N[agent_teams/<teamRunId>/team_communication_messages.json]

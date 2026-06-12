@@ -401,13 +401,10 @@ describe("CodexThreadBootstrapper", () => {
     expect(noBridgeRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
 
-  it("exposes only the configured browser dynamic tools when bridge env is available", async () => {
-    process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
-    process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
-
+  it("exposes standalone send_message_to when the agent config allows it", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      toolNames: ["open_tab", "read_page", "send_message_to"],
+      toolNames: ["send_message_to"],
       requestImplementation: async () => ({ data: [] }),
     });
 
@@ -415,7 +412,24 @@ describe("CodexThreadBootstrapper", () => {
     const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
     expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["send_message_to"]);
+  });
+
+  it("exposes configured browser dynamic tools and standalone send_message_to when allowed", async () => {
+    process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
+    process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["send_message_to", "open_tab", "read_page"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs).not.toBeNull();
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["send_message_to", "open_tab", "read_page"]);
   });
 
   it("exposes publish_artifacts as a Codex dynamic tool only when the agent config allows it", async () => {

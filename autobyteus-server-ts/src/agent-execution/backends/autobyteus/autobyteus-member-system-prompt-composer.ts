@@ -34,8 +34,10 @@ export const composeAutoByteusMemberSystemPrompt = (
     teamInstruction: normalizeInstruction(input.memberTeamContext.teamInstruction),
     agentInstruction: baseAgentInstruction,
     memberTeamContext: input.memberTeamContext,
-    sendMessageToEnabled:
-      input.memberTeamContext.sendMessageToEnabled && exposure.sendMessageToConfigured,
+    sendMessageToEnabled: exposure.sendMessageToConfigured,
+    recipientNameDeliveryEnabled:
+      input.memberTeamContext.sendMessageToEnabled &&
+      Boolean(input.memberTeamContext.deliverInterAgentMessage),
     taskDelegationEnabled: exposure.enabledTaskDelegationToolNames.length > 0,
   });
 

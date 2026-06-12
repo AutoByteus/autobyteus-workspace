@@ -107,6 +107,9 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "target-model",
           outputText: evolverStatus === "completed" ? "done" : null,
+          notificationSummary: evolverStatus === "completed"
+            ? { status: "send_message_sent", message: "outcome sent", targetAgentRunId: "target-run-1", evolverRunId: "evolver-run-1" }
+            : null,
         })),
       } as any,
       recordLifecycle: new SelfEvolutionRecordLifecycle({
@@ -115,6 +118,7 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
           notify: vi.fn(async () => ({ status: "next_run_only" })),
         } as any,
       }),
+      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
     });
   };
 
@@ -133,7 +137,7 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
       workspaceRootPath: tempRoot,
       skillTargets: [skillTarget],
       evidenceSummaryHash: "hash-123",
-      notificationSummary: { status: "next_run_only" },
+      notificationSummary: { status: "send_message_sent", message: "outcome sent", targetAgentRunId: "target-run-1", evolverRunId: "evolver-run-1" },
       errors: [],
     });
     expect(result.record).not.toHaveProperty("changeSummary");
@@ -141,6 +145,26 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     expect(result.record).not.toHaveProperty("benefitMetrics");
     await expect(new SelfEvolutionRunStore(memoryDir).readRecord("evo-minimal-record"))
       .resolves.toMatchObject({ status: "completed" });
+  });
+
+  it("rejects a stale target before launching the helper", async () => {
+    const runStore = new SelfEvolutionRunStore(memoryDir);
+    const evolverStrategy = { run: vi.fn() };
+    const service = new SelfEvolutionService({
+      capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
+      targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
+      skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
+      evidenceBuilder: { build: vi.fn() } as any,
+      evolverStrategy: evolverStrategy as any,
+      recordLifecycle: new SelfEvolutionRecordLifecycle({ runStore }),
+      agentRunManager: { getActiveRun: vi.fn(() => null) } as any,
+    });
+
+    await expect(service.startFromEvolutionRequest(request("evo-stale-target")))
+      .rejects.toThrow("Self-evolution target run 'target-run-1' is not active.");
+    expect(evolverStrategy.run).not.toHaveBeenCalled();
+    await expect(runStore.readRecord("evo-stale-target"))
+      .resolves.toMatchObject({ status: "failed" });
   });
 
   it("finalizes a non-completed helper run without notification or metric side effects", async () => {

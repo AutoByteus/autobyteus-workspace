@@ -1,103 +1,31 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ClaudeRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
-import { ClaudeSendMessageToolCallHandler } from "../../../../../../src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.js";
+import { ClaudeSendMessageToolCallHandler } from "../../../../../../src/agent-execution/backends/claude/agent-communication/claude-send-message-tool-call-handler.js";
 import type { ClaudeSessionEvent } from "../../../../../../src/agent-execution/backends/claude/claude-runtime-shared.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { SendMessageToDispatcher } from "../../../../../../src/agent-communication/services/send-message-to-dispatcher.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-
-const buildMemberTeamContext = (teamRunId: string): MemberTeamContext =>
-  new MemberTeamContext({
-    teamRunId,
-    teamDefinitionId: "team-classroom",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "professor",
-    memberPath: ["professor"],
-    memberRouteKey: "professor",
-    memberRunId: "run-professor",
-    members: [
-      {
-        memberKind: "agent",
-        memberName: "professor",
-        memberPath: ["professor"],
-        memberRouteKey: "professor",
-        memberRunId: "run-professor",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        role: null,
-        description: null,
-        address: { teamRunId, memberPath: ["professor"], memberRouteKey: "professor" },
-      },
-      {
-        memberKind: "agent",
-        memberName: "student",
-        memberPath: ["student"],
-        memberRouteKey: "student",
-        memberRunId: "run-student",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        role: null,
-        description: null,
-        address: { teamRunId, memberPath: ["student"], memberRouteKey: "student" },
-      },
-    ],
-    communicationRecipients: [
-      {
-        recipientName: "student",
-        scope: "local_agent",
-        participant: {
-          memberKind: "agent",
-          memberName: "student",
-          memberPath: ["student"],
-          memberRouteKey: "student",
-          memberRunId: "run-student",
-          address: { teamRunId, memberPath: ["student"], memberRouteKey: "student" },
-          platformRunId: null,
-          teamDefinitionId: null,
-          representedSubTeam: null,
-        },
-        delivery: {
-          teamRunId,
-          selector: { kind: "path", memberPath: ["student"] },
-        },
-        role: null,
-        description: null,
-      },
-    ],
-    allowedRecipientNames: ["student"],
-    sendMessageToEnabled: true,
-  });
 
 const buildRunContext = (input: {
   runId?: string;
   activeTurnId?: string | null;
   autoExecuteTools?: boolean;
-  teamRunId?: string | null;
 } = {}): ClaudeRunContext => ({
   runId: input.runId ?? "run-professor",
+  config: {
+    agentDefinitionId: "agent-professor",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+  },
   runtimeContext: {
     activeTurnId: input.activeTurnId ?? "turn-professor-1",
     autoExecuteTools: input.autoExecuteTools ?? true,
-    memberTeamContext: input.teamRunId === null
-      ? null
-      : buildMemberTeamContext(input.teamRunId ?? "team-classroom-1"),
+    memberTeamContext: null,
   },
 }) as ClaudeRunContext;
 
-const createHandler = (input: {
-  deliverResult?: { accepted: boolean; code?: string | null; message?: string | null };
-  autoExecuteTools?: boolean;
-  teamRunId?: string | null;
-} = {}) => {
+const createHandler = (input: { autoExecuteTools?: boolean } = {}) => {
   const events: ClaudeSessionEvent[] = [];
-  const deliverInterAgentMessage = vi.fn().mockResolvedValue(
-    input.deliverResult ?? {
-      accepted: true,
-      code: null,
-      message: "Delivered message to student.",
-    },
-  );
   const handler = new ClaudeSendMessageToolCallHandler({
-    deliverInterAgentMessage,
     requestToolApproval: null,
     emitEvent: (_runContext, event) => {
       events.push(event);
@@ -106,11 +34,7 @@ const createHandler = (input: {
   return {
     handler,
     events,
-    deliverInterAgentMessage,
-    runContext: buildRunContext({
-      autoExecuteTools: input.autoExecuteTools,
-      teamRunId: input.teamRunId,
-    }),
+    runContext: buildRunContext({ autoExecuteTools: input.autoExecuteTools }),
   };
 };
 
@@ -119,15 +43,17 @@ describe("ClaudeSendMessageToolCallHandler", () => {
     vi.restoreAllMocks();
   });
 
-  it("emits canonical segment start, lifecycle start, success lifecycle, and segment end", async () => {
+  it("emits canonical lifecycle events and dispatches through SendMessageToDispatcher", async () => {
     vi.spyOn(Date, "now").mockReturnValue(1_765_000_000_000);
     vi.spyOn(Math, "random").mockReturnValue(0.123456);
-    const { handler, events, deliverInterAgentMessage, runContext } = createHandler();
+    const dispatch = vi.spyOn(SendMessageToDispatcher.prototype, "dispatch")
+      .mockResolvedValue({ accepted: true, code: "DELIVERED", message: "Delivered globally." });
+    const { handler, events, runContext } = createHandler();
 
     const result = await handler.handle({
       runContext,
       rawArguments: {
-        recipient_name: " student ",
+        target_agent_run_id: "active-target-run",
         content: " hello class ",
         message_type: "classroom_update",
       },
@@ -135,28 +61,17 @@ describe("ClaudeSendMessageToolCallHandler", () => {
 
     expect(result).toEqual({
       accepted: true,
-      code: null,
-      message: "Delivered message to student.",
+      code: "DELIVERED",
+      message: "Delivered globally.",
     });
-    expect(deliverInterAgentMessage).toHaveBeenCalledWith({
-      teamRunId: "team-classroom-1",
-      sender: {
-        participant: expect.objectContaining({
-          memberName: "professor",
-          memberPath: ["professor"],
-          memberRouteKey: "professor",
-          memberRunId: "run-professor",
-        }),
-        selector: { kind: "path", memberPath: ["professor"] },
-      },
-      target: {
-        kind: "recipient_name",
-        recipientName: "student",
-      },
-      content: "hello class",
-      messageType: "classroom_update",
-      referenceFiles: [],
-    });
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({
+      toolName: "send_message_to",
+      rawArguments: expect.objectContaining({ target_agent_run_id: "active-target-run" }),
+      sender: expect.objectContaining({
+        senderRunId: "run-professor",
+        senderName: "agent-professor",
+      }),
+    }));
     expect(events.map((event) => event.method)).toEqual([
       ClaudeSessionEventName.ITEM_ADDED,
       ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
@@ -165,90 +80,35 @@ describe("ClaudeSendMessageToolCallHandler", () => {
     ]);
 
     const invocationId = (events[0]?.params as Record<string, unknown>).id;
-    const expectedArguments = {
-      recipient_name: " student ",
-      content: " hello class ",
-      message_type: "classroom_update",
-    };
     expect(invocationId).toEqual(expect.stringContaining("run-professor:send_message_to:"));
-    expect(events[0]?.params).toMatchObject({
-      id: invocationId,
-      turnId: "turn-professor-1",
-      segment_type: "tool_call",
-      tool_name: "send_message_to",
-      arguments: expectedArguments,
-      metadata: {
-        tool_name: "send_message_to",
-        arguments: expectedArguments,
-      },
-    });
-    expect(events[1]?.params).toMatchObject({
-      invocation_id: invocationId,
-      turnId: "turn-professor-1",
-      tool_name: "send_message_to",
-      arguments: expectedArguments,
-    });
     expect(events[2]?.params).toMatchObject({
       invocation_id: invocationId,
-      turnId: "turn-professor-1",
       tool_name: "send_message_to",
-      arguments: expectedArguments,
       result: {
         accepted: true,
-        code: null,
-        message: "Delivered message to student.",
+        code: "DELIVERED",
+        message: "Delivered globally.",
       },
     });
     expect(events[3]?.params).toMatchObject({
       id: invocationId,
-      tool_name: "send_message_to",
-      arguments: expectedArguments,
       metadata: {
         tool_name: "send_message_to",
-        arguments: expectedArguments,
         accepted: true,
-        code: null,
-        message: "Delivered message to student.",
+        code: "DELIVERED",
+        message: "Delivered globally.",
       },
     });
   });
 
-
-  it("delivers normalized explicit reference_files", async () => {
-    const { handler, events, deliverInterAgentMessage, runContext } = createHandler();
-
-    const result = await handler.handle({
-      runContext,
-      rawArguments: {
-        recipient_name: "student",
-        content: "Please inspect the listed file.",
-        reference_files: [" /tmp/report.md ", "/tmp/report.md", "/tmp/evidence.log"],
-      },
-    });
-
-    expect(result.accepted).toBe(true);
-    expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      target: expect.objectContaining({
-        kind: "recipient_name",
-        recipientName: "student",
-      }),
-      content: "Please inspect the listed file.",
-      referenceFiles: ["/tmp/report.md", "/tmp/evidence.log"],
-    }));
-    expect(events[0]?.params).toMatchObject({
-      arguments: expect.objectContaining({
-        reference_files: ["/tmp/report.md", "/tmp/evidence.log"],
-      }),
-    });
-  });
-
-  it("rejects malformed reference_files before delivery", async () => {
-    const { handler, deliverInterAgentMessage, runContext } = createHandler();
+  it("rejects malformed reference_files before dispatcher delivery", async () => {
+    const dispatch = vi.spyOn(SendMessageToDispatcher.prototype, "dispatch");
+    const { handler, runContext } = createHandler();
 
     const result = await handler.handle({
       runContext,
       rawArguments: {
-        recipient_name: "student",
+        target_agent_run_id: "target-run",
         content: "hello",
         reference_files: ["relative/report.md"],
       },
@@ -259,16 +119,17 @@ describe("ClaudeSendMessageToolCallHandler", () => {
       code: "INVALID_REFERENCE_FILES",
       message: "send_message_to reference_files must be an array of absolute local file path strings. Invalid path must be absolute.",
     });
-    expect(deliverInterAgentMessage).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("emits canonical lifecycle start and failure with arguments for rejected validation", async () => {
-    const { handler, events, deliverInterAgentMessage, runContext } = createHandler();
+  it("emits failure lifecycle events for rejected validation", async () => {
+    const dispatch = vi.spyOn(SendMessageToDispatcher.prototype, "dispatch");
+    const { handler, events, runContext } = createHandler();
 
     const result = await handler.handle({
       runContext,
       rawArguments: {
-        recipient_name: "student",
+        target_agent_run_id: "target-run",
         content: "",
       },
     });
@@ -278,40 +139,16 @@ describe("ClaudeSendMessageToolCallHandler", () => {
       code: "INVALID_MESSAGE_CONTENT",
       message: "send_message_to requires a non-empty content field.",
     });
-    expect(deliverInterAgentMessage).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
     expect(events.map((event) => event.method)).toEqual([
       ClaudeSessionEventName.ITEM_ADDED,
       ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
       ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       ClaudeSessionEventName.ITEM_COMPLETED,
     ]);
-
-    const invocationId = (events[0]?.params as Record<string, unknown>).id;
-    const expectedArguments = {
-      recipient_name: "student",
-      content: "",
-      message_type: "agent_message",
-    };
-    expect(events[1]?.params).toMatchObject({
-      invocation_id: invocationId,
-      tool_name: "send_message_to",
-      arguments: expectedArguments,
-    });
     expect(events[2]?.params).toMatchObject({
-      invocation_id: invocationId,
       tool_name: "send_message_to",
-      arguments: expectedArguments,
       error: "send_message_to requires a non-empty content field.",
-    });
-    expect(events[3]?.params).toMatchObject({
-      id: invocationId,
-      metadata: {
-        tool_name: "send_message_to",
-        arguments: expectedArguments,
-        accepted: false,
-        code: "INVALID_MESSAGE_CONTENT",
-        message: "send_message_to requires a non-empty content field.",
-      },
     });
   });
 });

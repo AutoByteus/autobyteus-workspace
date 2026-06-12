@@ -3,7 +3,7 @@ import {
   ParameterSchema,
   ParameterType,
 } from "autobyteus-ts/utils/parameter-schema.js";
-import { SEND_MESSAGE_TO_FIELD_DESCRIPTIONS } from "../../agent-team-execution/services/send-message-to-tool-contract.js";
+import { SEND_MESSAGE_TO_FIELD_DESCRIPTIONS } from "../../agent-communication/services/send-message-to-tool-contract.js";
 
 export const buildSendMessageToParameterSchema = (): ParameterSchema =>
   new ParameterSchema([

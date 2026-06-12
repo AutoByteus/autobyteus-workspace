@@ -20,7 +20,7 @@ import { MemberTeamContext } from "../../../../../src/agent-team-execution/domai
 import type { TaskAgentInstanceIdentity } from "../../../../../src/agent-team-execution/domain/task-agent-instance.js";
 import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
-import { registerTeamCommunicationTools } from "../../../../../src/agent-tools/team-communication/register-team-communication-tools.js";
+import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 
 class DummyLLM extends BaseLLM {
@@ -142,7 +142,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
   beforeEach(() => {
     defaultToolRegistry.clear();
-    registerTeamCommunicationTools();
+    registerAgentCommunicationTools();
     defaultToolRegistry.registerTool(createToolDefinition(AssignTaskTool, ToolCategory.TASK_MANAGEMENT));
   });
 
@@ -197,6 +197,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext: createMemberTeamContext(TeamBackendKind.MIXED),
       }),
+      "run-professor",
     );
 
     expect(built.agentConfig).toBeInstanceOf(AgentConfig);
@@ -272,6 +273,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           { communicationRecipients: [], allowedRecipientNames: [] },
         ),
       }),
+      "run-professor",
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
@@ -329,6 +331,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
+      "run-professor",
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
@@ -392,6 +395,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           deliverInterAgentMessage,
         ),
       }),
+      "run-professor",
     );
 
     const sendMessageTool = built.agentConfig.tools[0] as BaseTool<unknown, Record<string, unknown>, string>;
@@ -423,7 +427,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("does not advertise send_message_to for mixed AutoByteus members when server delivery is disabled", async () => {
+  it("advertises exact-run send_message_to while warning that recipient_name delivery is disabled", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -475,12 +479,16 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           false,
         ),
       }),
+      "run-professor",
     );
 
-    expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([]);
+    expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "send_message_to",
+    ]);
     expect(built.agentConfig.systemPrompt).toContain(
-      "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
+      "Do not set `recipient_name` from this run; it requires an active team member context with Team Communication enabled.",
     );
+    expect(built.agentConfig.systemPrompt).toContain("Set `target_agent_run_id`");
   });
 
   it("propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context", async () => {
@@ -549,6 +557,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
       }),
+      "run-professor",
     );
 
     const managedTeamContext = built.agentConfig.initialCustomData?.teamContext as Record<string, unknown>;
@@ -627,6 +636,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
+      "run-professor",
     );
 
     expect(compactionAgentRunnerFactory).toHaveBeenCalledWith({

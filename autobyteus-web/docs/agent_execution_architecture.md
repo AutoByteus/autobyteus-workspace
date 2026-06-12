@@ -414,15 +414,14 @@ evolver `AgentRun`, and records the `evolutionRunId` / optional `evolverRunId`.
 The current UI stores the returned record summary only internally and shows at
 most a short transient toast/status after start. It must not render a persistent
 composer card, evolution record id, or helper-run navigation button.
-Active idle standalone target notifications originate as local runtime-neutral
-`AgentRunEventType.SYSTEM_TASK_NOTIFICATION` events emitted by the server-side
-target-notification service, then render through `SystemTaskNotificationSegment`
-via the standalone stream handler. Team/member stream notifications use the same
-frontend segment handler, while self-evolution team-member active notification
-remains next-run-only in the MVP. The UI notification is separate from any
-runtime/model skill-refresh instruction. The MVP does not expose a
-metrics/reporting query and the UI must not imply helper completion proves
-downstream improvement.
+Meaningful completion communication is helper-authored: the visible evolver may
+call `send_message_to` once with `message_type: "self_evolution_outcome"` and the
+exact active target run id supplied by the backend. The backend records whether
+that direct outcome was sent, rejected, target-inactive, or not attempted. The
+outcome message is separate from any runtime/model skill-refresh instruction,
+and team-member live reload remains next-run-only in the MVP. The MVP does not
+expose a metrics/reporting query and the UI must not imply helper completion
+proves downstream improvement.
 
 ### New Run From Existing Run
 
@@ -537,8 +536,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Team Communication (`TeamCommunicationStore`)**:
-    - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
-    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files`.
+    - Listens to accepted team-route `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_name` deliveries.
     - Exposes focused-member sent/received message perspectives grouped by counterpart member.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.

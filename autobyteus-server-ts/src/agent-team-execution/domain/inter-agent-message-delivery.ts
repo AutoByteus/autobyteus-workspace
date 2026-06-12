@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { TeamMessageTargetSelector } from "./team-message-target-selector.js";
+import type { SendMessageTargetSelector } from "../../agent-communication/domain/send-message-target-selector.js";
 import {
   buildMemberRouteKeyFromPath,
   selectorFromMemberPath,
@@ -47,7 +47,7 @@ export type InterAgentMessageDeliveryEndpoint = {
 export interface InterAgentMessageDeliveryIntent {
   teamRunId: string;
   sender: InterAgentMessageDeliveryEndpoint;
-  target: TeamMessageTargetSelector;
+  target: SendMessageTargetSelector;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;

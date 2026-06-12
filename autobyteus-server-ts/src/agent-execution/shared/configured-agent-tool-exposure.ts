@@ -2,8 +2,7 @@ import { BROWSER_TOOL_NAMES } from "../../agent-tools/browser/browser-tool-contr
 import { MEDIA_TOOL_NAMES } from "../../agent-tools/media/media-tool-contract.js";
 import { TASK_DELEGATION_TOOL_NAMES } from "../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
-
-const SEND_MESSAGE_TO_TOOL_NAME = "send_message_to";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
 
 const asTrimmedToolName = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;

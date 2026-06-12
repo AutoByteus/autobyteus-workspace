@@ -213,11 +213,13 @@ content-block/content-envelope results are parsed into the standard browser
 result object before terminal lifecycle events are emitted. Non-AutoByteus MCP
 tools and unknown browser-like suffixes stay unchanged.
 
-Claude team `send_message_to` is also a first-party MCP tool with a canonical
-event contract. The dedicated team communication handler owns the logical
-delivery invocation and emits canonical segment plus lifecycle events:
-`SEGMENT_START`, `TOOL_EXECUTION_STARTED`, one terminal
-`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`, then `SEGMENT_END`.
+Claude `send_message_to` is also a first-party MCP tool with a canonical event
+contract. The dedicated handler owns the logical delivery invocation and emits
+canonical segment plus lifecycle events: `SEGMENT_START`,
+`TOOL_EXECUTION_STARTED`, one terminal `TOOL_EXECUTION_SUCCEEDED` or
+`TOOL_EXECUTION_FAILED`, then `SEGMENT_END`. The handler calls the shared
+`src/agent-communication` dispatcher, so `recipient_name` stays a team-context
+route while `target_agent_run_id` is the global live-only exact active-run route.
 Raw SDK transport events named `mcp__autobyteus_team__send_message_to` are
 suppressed as duplicate MCP noise; they must not replace the handler-owned
 canonical lifecycle or create extra Activity rows.

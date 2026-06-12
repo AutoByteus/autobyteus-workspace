@@ -1,9 +1,9 @@
-export type TeamMessageTargetSelector =
+export type SendMessageTargetSelector =
   | { kind: "recipient_name"; recipientName: string }
   | { kind: "target_agent_run_id"; targetAgentRunId: string };
 
-export type TeamMessageTargetSelectorValidationResult =
-  | { ok: true; target: TeamMessageTargetSelector }
+export type SendMessageTargetSelectorValidationResult =
+  | { ok: true; target: SendMessageTargetSelector }
   | { ok: false; message: string };
 
 const normalizeOptional = (value: string | null | undefined): string | null => {
@@ -14,11 +14,11 @@ const normalizeOptional = (value: string | null | undefined): string | null => {
   return normalized.length > 0 ? normalized : null;
 };
 
-export const buildTeamMessageTargetSelector = (input: {
+export const buildSendMessageTargetSelector = (input: {
   recipientName?: string | null;
   targetAgentRunId?: string | null;
   toolName?: string | null;
-}): TeamMessageTargetSelectorValidationResult => {
+}): SendMessageTargetSelectorValidationResult => {
   const recipientName = normalizeOptional(input.recipientName);
   const targetAgentRunId = normalizeOptional(input.targetAgentRunId);
   const toolName = input.toolName?.trim() || "send_message_to";
@@ -41,8 +41,10 @@ export const buildTeamMessageTargetSelector = (input: {
   };
 };
 
-export const describeTeamMessageTargetSelector = (
-  target: TeamMessageTargetSelector,
+export const describeSendMessageTargetSelector = (
+  target: SendMessageTargetSelector,
 ): string => target.kind === "recipient_name"
   ? target.recipientName
   : target.targetAgentRunId;
+
+export type TeamMessageTargetSelector = SendMessageTargetSelector;

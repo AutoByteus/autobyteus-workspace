@@ -1,5 +1,6 @@
 import type {
   SelfEvolutionRequest,
+  SelfEvolutionNotificationSummary,
   SelfEvolutionRunRecord,
   SelfEvolutionRunStatus,
 } from "../domain/models.js";
@@ -51,17 +52,20 @@ export class SelfEvolutionRecordLifecycle {
   async finalizeRecord(
     record: SelfEvolutionRunRecord,
     terminalStatus: SelfEvolutionRunStatus,
+    notificationSummaryOverride?: SelfEvolutionNotificationSummary | null,
   ): Promise<SelfEvolutionRunRecord> {
     const notifyingRecord = terminalStatus === "completed"
       ? await this.patchRecord(record, { status: "notifying_target" })
       : await this.patchRecord(record, { status: terminalStatus });
-    const notificationSummary = terminalStatus === "completed"
-      ? await this.notificationService.notify({
-          evolutionRunId: record.evolutionRunId,
-          target: record.target,
-          skillTargets: record.skillTargets,
-        })
-      : null;
+    const notificationSummary = notificationSummaryOverride !== undefined
+      ? notificationSummaryOverride
+      : terminalStatus === "completed"
+        ? await this.notificationService.notify({
+            evolutionRunId: record.evolutionRunId,
+            target: record.target,
+            skillTargets: record.skillTargets,
+          })
+        : null;
     const finalRecord: SelfEvolutionRunRecord = {
       ...notifyingRecord,
       status: terminalStatus,

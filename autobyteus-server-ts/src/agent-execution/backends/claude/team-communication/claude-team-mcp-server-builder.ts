@@ -3,8 +3,8 @@ import type { ClaudeSdkClient } from "../../../../runtime-management/claude/clie
 import {
   ClaudeSendMessageToolCallHandler,
   type ClaudeSendMessageToolApprovalHandler,
-} from "./claude-send-message-tool-call-handler.js";
-import { buildClaudeSendMessageToolDefinition } from "./claude-send-message-tool-definition-builder.js";
+} from "../agent-communication/claude-send-message-tool-call-handler.js";
+import { buildClaudeSendMessageToolDefinition } from "../agent-communication/claude-send-message-tool-definition-builder.js";
 import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { buildClaudeTaskDelegationToolDefinitions } from "../task-delegation/build-claude-task-delegation-tool-definitions.js";
 
@@ -17,10 +17,7 @@ export const buildClaudeTeamMcpServers = async (options: {
   enabledTaskDelegationToolNames?: Iterable<string> | null;
 }): Promise<Record<string, unknown> | null> => {
   const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
-  const sendMessageToEnabled =
-    options.sendMessageToToolingEnabled === true &&
-    Boolean(memberTeamContext?.deliverInterAgentMessage) &&
-    Boolean(memberTeamContext?.teamRunId);
+  const sendMessageToEnabled = options.sendMessageToToolingEnabled === true;
   const taskDelegationToolDefinitions = await buildClaudeTaskDelegationToolDefinitions({
     sdkClient: options.sdkClient,
     memberTeamContext,
@@ -33,16 +30,7 @@ export const buildClaudeTeamMcpServers = async (options: {
 
   const tools: Record<string, unknown>[] = [];
   if (sendMessageToEnabled) {
-    if (
-      !memberTeamContext ||
-      !memberTeamContext.deliverInterAgentMessage ||
-      !memberTeamContext.teamRunId
-    ) {
-      return null;
-    }
-
     const handler = new ClaudeSendMessageToolCallHandler({
-      deliverInterAgentMessage: memberTeamContext.deliverInterAgentMessage,
       requestToolApproval: options.requestToolApproval,
       emitEvent: options.emitEvent,
     });
