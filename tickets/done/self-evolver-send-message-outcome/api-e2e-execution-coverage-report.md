@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: API/E2E validation after code review Round 2 passed the reviewed implementation.
 - Prior Round Reviewed: N/A
@@ -28,7 +28,7 @@ No repository-resident durable API/E2E coverage was added, updated, or removed d
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -136,8 +136,8 @@ None by API/E2E in this round. Existing implementation-authored durable tests we
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -211,7 +211,7 @@ Rationale: API/E2E passed and no repository-resident durable coverage was added,
 
 ## Evidence / Notes
 
-- The coverage investigation was completed before final execution at `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`.
+- The coverage investigation was completed before final execution at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/api-e2e-coverage-investigation.md`.
 - No compatibility wrapper, dual accepted old/new target-facing message type, schema-upgrade shim, retained legacy branch, or fallback behavior for the old target-facing contract was observed.
 - The optional live Codex exact-run E2E remains available to run with `RUN_CODEX_E2E=1`, but the default guarded skip is not blocking for this prompt/grant/message-type cleanup.
 

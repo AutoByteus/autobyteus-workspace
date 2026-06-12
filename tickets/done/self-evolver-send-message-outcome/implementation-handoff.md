@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-review-report.md`
-- Code review report (round 1 Local Fix CR-001): `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/code-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-review-report.md`
+- Code review report (round 1 Local Fix CR-001): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/code-review-report.md`
 
 ## What Changed
 

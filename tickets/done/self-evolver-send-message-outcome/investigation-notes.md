@@ -22,7 +22,7 @@ The user confirmed that the current architecture is now much simpler because the
 
 - Project Type (`Git`/`Non-Git`): Git superrepo/workspace.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome`
 - Current Branch: `codex/self-evolver-send-message-outcome`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome`
 - Bootstrap Base Branch: `origin/personal`

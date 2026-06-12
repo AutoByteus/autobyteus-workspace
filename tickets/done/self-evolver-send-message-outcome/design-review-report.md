@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/requirements-doc.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review for the narrow self-evolver target-facing message contract cleanup: replace `self_evolution_outcome` with `skill_update`, send target direct messages only after meaningful durable skill package changes, and make `reference_files` dynamic within editable skill roots.
 - Prior Review Round Reviewed: N/A
@@ -33,7 +33,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolver-send-message-outcome/tickets/done/self-evolver-send-message-outcome/design-spec.md` as the authoritative design.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolver-send-message-outcome/design-spec.md` as the authoritative design.
 
 Accepted design direction:
 
