@@ -85,8 +85,11 @@ still decided only by `AgentRunManager.getActiveRun(...)`, and rejected grant
 checks return typed delivery failures before the target receives input.
 
 The Skill Self-Evolver uses this seam to let its visible helper run send at most
-one `self_evolution_outcome` message to the active target run with references
-limited to editable skill roots.
+one `skill_update` message to the active target run after meaningful durable
+skill package file changes. That message should explain what changed, why it
+matters, and how the target should use or reload the updated guidance, while its
+dynamic `reference_files` are absolute paths limited to changed or directly
+relevant surviving files inside editable skill roots.
 
 ## Runtime Projection
 

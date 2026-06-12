@@ -51,9 +51,9 @@ The schema exposes `selfEvolution` only on run-launch inputs. Agent/team definit
 4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured skills to exact skill roots and primary `SKILL.md` files.
 5. `SelfEvolutionEvidenceBuilder` and `SelfEvolutionWorkHistoryProjector` build anonymized, human-readable work-history evidence without retaining raw trace file paths in the evidence package or record.
 6. `SingleAgentEvolverStrategy` launches a separate visible helper `AgentRun` in the target workspace with `autoExecuteTools: true` and a task prompt listing exact editable skill root directories plus primary `SKILL.md` paths.
-7. The strategy registers a narrow direct-message grant for the helper: one accepted `self_evolution_outcome` message, only to the original active target run id, with `reference_files` limited to editable skill roots.
-8. At the end of meaningful work, the helper should call `send_message_to({ target_agent_run_id, message_type: "self_evolution_outcome", ... })` exactly once. The shared agent-communication router re-checks that the target run is still active before delivery.
-9. `SelfEvolutionRunStore` persists minimal provenance: source run IDs, target identity, visible evolver run ID/status, target skill roots, evidence hash, timestamps, errors, and the helper-authored outcome delivery summary.
+7. The strategy registers a narrow direct-message grant for the helper: one accepted `skill_update` message, only to the original active target run id, with `reference_files` limited to editable skill roots.
+8. Only after meaningful durable skill package file changes, the helper should call `send_message_to({ target_agent_run_id, message_type: "skill_update", ... })` exactly once. The target-facing content should concisely explain what durable skill guidance changed, why it matters for future work, and how the target should use or reload the updated guidance, while avoiding raw traces, secrets, private data, one-off paths, and transient task details. `reference_files` should be absolute paths for changed or directly relevant surviving files inside editable roots; deleted files are mentioned in content rather than referenced. If no durable skill package file changed, the helper sends no target direct message. The shared agent-communication router re-checks that the target run is still active before delivery.
+9. `SelfEvolutionRunStore` persists minimal provenance: source run IDs, target identity, visible evolver run ID/status, target skill roots, evidence hash, timestamps, errors, and the helper-authored skill-update delivery summary.
 
 The evolver is never inserted into the target's ordinary business team roster.
 Team-member manual starts are member-scoped: the request/record target is
@@ -91,9 +91,10 @@ default. After start, the UI may show only a short transient toast/status. It
 must not render a persistent composer card, evolution record id, or helper-run
 open button, and it must not state that helper completion proves file changes,
 quality improvement, or downstream benefit. Completion communication is
-helper-authored when meaningful: the evolver may send one direct
-`self_evolution_outcome` message to the still-active target run through
-`send_message_to(target_agent_run_id=...)`. Records distinguish sent, rejected,
+helper-authored only after meaningful durable skill package file changes: the
+evolver may send one direct `skill_update` message to the still-active target
+run through `send_message_to(target_agent_run_id=...)` with dynamic references
+to changed or directly relevant surviving files inside editable roots. Records distinguish sent, rejected,
 target-inactive, and not-attempted outcomes. The MVP does not post a
 `SenderType.SYSTEM` runtime message merely to render a completion notification;
 active runtime/model skill refresh is a separate future/gated concern. Future
@@ -107,6 +108,6 @@ useful.
 - Exact historical skill binding/path snapshots are deferred; current configured skill roots are resolved at evolution time and recorded as an MVP limitation.
 - Direct editing remains instruction-constrained and manually reviewable, not service-audited.
 - Team-member live reload remains next-run-only in the MVP; helper-authored
-  `self_evolution_outcome` messages may still be delivered to an active selected
+  `skill_update` messages may still be delivered to an active selected
   member run by exact `memberRunId`, but they do not create Team Communication
   projection.

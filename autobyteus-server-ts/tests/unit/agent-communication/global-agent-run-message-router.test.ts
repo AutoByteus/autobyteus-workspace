@@ -138,9 +138,9 @@ describe("GlobalAgentRunMessageRouter", () => {
     const grantRegistry = new DirectAgentRunMessageGrantRegistry();
     const grant = grantRegistry.register({
       senderRunId: "helper-run",
-      purpose: "self_evolution_outcome",
+      purpose: "self_evolution_skill_update",
       allowedTargetAgentRunIds: ["target-run"],
-      allowedMessageTypes: ["self_evolution_outcome"],
+      allowedMessageTypes: ["skill_update"],
       allowedReferenceFileRoots: ["/tmp/skill-root"],
       maxAcceptedDeliveries: 1,
     });
@@ -151,7 +151,7 @@ describe("GlobalAgentRunMessageRouter", () => {
       sender: helperSender,
       targetAgentRunId: "wrong-target",
       content: "wrong target",
-      messageType: "self_evolution_outcome",
+      messageType: "skill_update",
     })).resolves.toEqual(expect.objectContaining({
       accepted: false,
       code: "DIRECT_MESSAGE_GRANT_TARGET_DENIED",
@@ -160,8 +160,18 @@ describe("GlobalAgentRunMessageRouter", () => {
     await expect(router.deliver({
       sender: helperSender,
       targetAgentRunId: "target-run",
+      content: "old contract",
+      messageType: "self" + "_evolution_outcome",
+    })).resolves.toEqual(expect.objectContaining({
+      accepted: false,
+      code: "DIRECT_MESSAGE_GRANT_MESSAGE_TYPE_DENIED",
+    }));
+
+    await expect(router.deliver({
+      sender: helperSender,
+      targetAgentRunId: "target-run",
       content: "bad path",
-      messageType: "self_evolution_outcome",
+      messageType: "skill_update",
       referenceFiles: ["/tmp/outside.md"],
     })).resolves.toEqual(expect.objectContaining({
       accepted: false,
@@ -172,7 +182,7 @@ describe("GlobalAgentRunMessageRouter", () => {
       sender: helperSender,
       targetAgentRunId: "target-run",
       content: "sent",
-      messageType: "self_evolution_outcome",
+      messageType: "skill_update",
       referenceFiles: ["/tmp/skill-root/SKILL.md"],
     })).resolves.toEqual(expect.objectContaining({ accepted: true }));
 
@@ -180,7 +190,7 @@ describe("GlobalAgentRunMessageRouter", () => {
       sender: helperSender,
       targetAgentRunId: "target-run",
       content: "second",
-      messageType: "self_evolution_outcome",
+      messageType: "skill_update",
     })).resolves.toEqual(expect.objectContaining({
       accepted: false,
       code: "DIRECT_MESSAGE_GRANT_EXHAUSTED",
@@ -195,9 +205,9 @@ describe("GlobalAgentRunMessageRouter", () => {
     const grantRegistry = new DirectAgentRunMessageGrantRegistry();
     const grant = grantRegistry.register({
       senderRunId: "helper-run",
-      purpose: "self_evolution_outcome",
+      purpose: "self_evolution_skill_update",
       allowedTargetAgentRunIds: ["target-run"],
-      allowedMessageTypes: ["self_evolution_outcome"],
+      allowedMessageTypes: ["skill_update"],
       maxAcceptedDeliveries: 1,
     });
     const { router } = createRouter(null, grantRegistry);
@@ -206,7 +216,7 @@ describe("GlobalAgentRunMessageRouter", () => {
       sender: buildAgentRunMessageSenderContext({ senderRunId: "helper-run" }),
       targetAgentRunId: "target-run",
       content: "target died",
-      messageType: "self_evolution_outcome",
+      messageType: "skill_update",
     });
 
     expect(result.code).toBe("TARGET_AGENT_RUN_NOT_ACTIVE");

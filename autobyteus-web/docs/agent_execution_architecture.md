@@ -414,11 +414,15 @@ evolver `AgentRun`, and records the `evolutionRunId` / optional `evolverRunId`.
 The current UI stores the returned record summary only internally and shows at
 most a short transient toast/status after start. It must not render a persistent
 composer card, evolution record id, or helper-run navigation button.
-Meaningful completion communication is helper-authored: the visible evolver may
-call `send_message_to` once with `message_type: "self_evolution_outcome"` and the
-exact active target run id supplied by the backend. The backend records whether
+Meaningful completion communication is helper-authored only after durable skill
+package file changes: the visible evolver may call `send_message_to` once with
+`message_type: "skill_update"`, the exact active target run id supplied by the
+backend, concise content explaining what changed, why it matters, and how the
+target should use or reload the updated guidance, plus dynamic references as
+absolute paths to changed or directly relevant surviving files inside editable
+roots. The backend records whether
 that direct outcome was sent, rejected, target-inactive, or not attempted. The
-outcome message is separate from any runtime/model skill-refresh instruction,
+skill update message is separate from any runtime/model skill-refresh instruction,
 and team-member live reload remains next-run-only in the MVP. The MVP does not
 expose a metrics/reporting query and the UI must not imply helper completion
 proves downstream improvement.
