@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review pass handed to API/E2E on 2026-06-12 for new-team focused-member message routing.
 - Prior Investigation Reviewed: N/A

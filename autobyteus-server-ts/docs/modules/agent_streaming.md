@@ -26,6 +26,10 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   Scalar target aliases such as `target_member_name`, `target_agent_name`,
   command-side `agent_name`, command-side `agent_id`, and camelCase equivalents
   are rejected with invalid-target errors.
+- When a valid explicit team `SEND_MESSAGE` target is supplied, the backend
+  preserves that selector and lets the team backend lazily start/post to that
+  member. Coordinator fallback applies only when the client omits a member
+  target, not when it supplies a focused non-coordinator route key.
 - Non-send control commands (`INTERRUPT_GENERATION`, `APPROVE_TOOL`, and `DENY_TOOL`) stay active-only. They use the current in-memory runtime lookup and do not restore stopped runs as a side effect, so stale control commands cannot accidentally resurrect a stopped run.
 - Team tool approvals must target the emitted `source_path` /
   `source_route_key` or `member_path` / `member_route_key` for the requesting

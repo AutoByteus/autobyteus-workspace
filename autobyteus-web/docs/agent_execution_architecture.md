@@ -55,7 +55,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., server task-delegation lifecycle events, status changes, member events) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to the active-execution focused member, which can intentionally differ from the roster/history member selected for visual Focus display. After validation, it immediately begins a local submission for that command member by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
+  - `sendMessageToFocusedMember()`: Routes user input through `resolveTeamUserMessageTarget(...)`, which first preserves the valid roster-focused leaf or subteam target for the shared composer. A new/all-offline team can therefore send its first message to a focused non-coordinator member rather than the active-execution display fallback. Missing or stale focused targets fail validation instead of silently retargeting; the active-execution safety fallback is reserved for task-agent-only logical-member conversations. After validation, the store immediately begins a local submission for the selected message target by appending the user message, clearing that target's composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
   - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member selected by the same active-execution command focus as the shared composer, without locally clearing that member's `isSending` flag. The member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
@@ -133,12 +133,15 @@ Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
 and active `uninitialized` project as active non-interruptible
 `initializing`; they keep send readiness blocked without granting the red
 interrupt affordance. Active processing/tool/LLM tokens project as `running`.
-When the selected context is a team, stop/interrupt dispatch must resolve the
-same active-execution command member as the composer send path at click time.
-That command member can intentionally differ from roster/history visual focus:
-for example, an all-offline historical team row can show `api_e2e_engineer` in
-Focus/Grid/Spotlight while the composer remains safely targeted at the
-coordinator. The frontend sends team `INTERRUPT_GENERATION` with
+When the selected context is a team, text send and stop/interrupt dispatch use
+separate target resolvers. Text send uses the user-message target resolver so a
+valid roster-focused offline member can receive the first message in a new team;
+stop/interrupt dispatch resolves the active-execution command member at click
+time. That interrupt command member can intentionally differ from
+roster/history visual focus: for example, an all-offline historical team row can
+show `api_e2e_engineer` in Focus/Grid/Spotlight while interrupt safety remains
+on the active-execution command target. The frontend sends team
+`INTERRUPT_GENERATION` with
 `target_member_route_key` set to the active-execution command member route key
 and `target_member_run_id` set only as an optional member run-id guard. If there
 is no command-eligible focused leaf member, the focused context is stale, or no

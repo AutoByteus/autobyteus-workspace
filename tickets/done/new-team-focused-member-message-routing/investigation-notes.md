@@ -21,7 +21,7 @@ User reports that when starting a new agent team run, focusing `code_reviewer` a
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing`
 - Current Branch: `codex/new-team-focused-member-message-routing`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing`
 - Bootstrap Base Branch: `origin/personal`
@@ -147,4 +147,4 @@ User reports that when starting a new agent team run, focusing `code_reviewer` a
 
 ## Notes For Architect Reviewer
 
-Requirements are approved. Formal design spec is available at `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/in-progress/new-team-focused-member-message-routing/design-spec.md`. Expected architecture direction: create a frontend-owned team user-message target resolver so user sends target the valid visible focused member instead of active-execution coordinator fallback. Backend changes likely unnecessary except for tests if coverage investigation finds a gap.
+Requirements are approved. Formal design spec is available at `/Users/normy/autobyteus_org/autobyteus-worktrees/new-team-focused-member-message-routing/tickets/done/new-team-focused-member-message-routing/design-spec.md`. Expected architecture direction: create a frontend-owned team user-message target resolver so user sends target the valid visible focused member instead of active-execution coordinator fallback. Backend changes likely unnecessary except for tests if coverage investigation finds a gap.
