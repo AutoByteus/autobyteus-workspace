@@ -1,0 +1,14 @@
+Electron artifacts after origin refresh
+Date: 2026-06-12 05:03:53 CEST
+Branch: codex/analyse-memory-layout-duplication
+HEAD: bb8d0197c7964d31066343a667c76975054bcc7f
+origin/personal: f6b1241c06daa1def1be32d6dd2fa1f1016aad8f
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.52.dmg
+  bytes: 377337326
+/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.52.dmg.blockmap
+  bytes: 393117
+/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.52.zip
+  bytes: 373992496
+/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.52.zip.blockmap
+  bytes: 384698

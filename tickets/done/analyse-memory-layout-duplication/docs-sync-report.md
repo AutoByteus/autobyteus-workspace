@@ -1,3 +1,23 @@
+# Final Archive Docs Check — 2026-06-12
+
+- Ticket archived to `tickets/done/analyse-memory-layout-duplication/` after user verification.
+- Finalization target `origin/personal` still pointed at `f6b1241c06daa1def1be32d6dd2fa1f1016aad8f`, which was already merged into the user-tested ticket branch.
+- Archival and release-note preparation did not change product behavior, API contracts, or the long-lived memory/run-history documentation updated for this ticket.
+- Existing docs-sync result remains valid for the integrated branch state.
+
+---
+
+# Latest Docs Sync Check — 2026-06-12 Origin Refresh
+
+- User requested rebasing/integrating the ticket branch on the newest `origin/personal` before local Electron testing.
+- Latest tracked base after fetch: `origin/personal` at `f6b1241c06daa1def1be32d6dd2fa1f1016aad8f` (`v1.3.52`).
+- Delivery created local safety checkpoint commit `d9d17154ed6f2d76dcf732df76b0c3f89a3a37f1`, then merged `origin/personal` into `codex/analyse-memory-layout-duplication` with no conflicts. Integrated ticket HEAD: `bb8d0197c7964d31066343a667c76975054bcc7f`.
+- Incoming base changes were for the already-finalized `team-context-files-ui-disappear` work plus release version `1.3.52`; they did not modify the memory-layout docs updated for this ticket.
+- Existing long-lived docs updates remain valid for the integrated branch state. No additional long-lived docs edits were required after this refresh.
+- Post-refresh checks/build: `git diff --check` passed, obsolete-symbol scan still returned no matches, and the README-guided macOS Electron build passed.
+
+---
+
 # Docs Sync Report
 
 ## Scope

@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-review-report.md`
 
 ## What Changed
 

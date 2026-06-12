@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-spec.md`
 - Current Review Round: 2
 - Trigger: Duplicate/reconfirmed architecture review request from `solution_designer` for refactoring ticket `analyse-memory-layout-duplication`.
 - Prior Review Round Reviewed: 1
@@ -20,7 +20,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-spec.md` against the shared design principles and current code evidence.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-spec.md` against the shared design principles and current code evidence.
 
 ## Task Design Health Assessment Verdict
 

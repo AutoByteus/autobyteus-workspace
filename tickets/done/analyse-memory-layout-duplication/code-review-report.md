@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/requirements.md`
 - Current Review Round: 2
 - Trigger: API/E2E handoff reported repository-resident durable coverage updates in two integration test files after execution for ticket `analyse-memory-layout-duplication`.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -32,8 +32,8 @@ Round rules:
 
 This Round 2 review is intentionally narrow because it entered from `api_e2e_engineer` after repository-resident durable coverage was updated. The review scope centered on:
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/api-e2e-coverage-investigation.md`.
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication/api-e2e-execution-coverage-report.md`.
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/api-e2e-coverage-investigation.md`.
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication/api-e2e-execution-coverage-report.md`.
 - API/E2E-owned durable coverage edits in:
   - `autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts`
   - `autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts`

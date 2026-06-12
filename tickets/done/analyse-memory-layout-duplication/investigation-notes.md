@@ -29,7 +29,7 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/softwa
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/in-progress/analyse-memory-layout-duplication`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication/tickets/done/analyse-memory-layout-duplication`
 - Current Branch: `codex/analyse-memory-layout-duplication`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/analyse-memory-layout-duplication`
 - Bootstrap Base Branch: `origin/personal`
