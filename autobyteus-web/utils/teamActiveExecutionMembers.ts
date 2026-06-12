@@ -1,30 +1,12 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { hasConversationMessages, isTaskAgentOnlyConversation } from '~/utils/teamTaskAgentConversation';
 
 export interface TeamActiveExecutionMemberEntry {
   node: TeamMemberNode;
   depth: number;
 }
-
-const getConversationMessages = (context: AgentContext | null): Array<{ type?: string; text?: string }> => {
-  const conversation = context?.state?.conversation ?? context?.conversation;
-  return Array.isArray(conversation?.messages) ? conversation.messages : [];
-};
-
-const isTaskAgentWorkPacketText = (text: string | null | undefined): boolean => {
-  const normalized = text?.trim() || '';
-  return normalized.includes('You have been activated as task agent') ||
-    normalized.includes('Task-agent run:') ||
-    normalized.includes('current task-agent instance');
-};
-
-const isTaskAgentOnlyConversation = (context: AgentContext | null): boolean => {
-  const userMessages = getConversationMessages(context)
-    .filter((message) => message.type === 'user');
-  return userMessages.length > 0 &&
-    userMessages.every((message) => isTaskAgentWorkPacketText(message.text));
-};
 
 export const shouldShowMemberConversation = (
   node: TeamMemberNode | null | undefined,
@@ -37,7 +19,7 @@ export const shouldShowMemberConversation = (
 export const shouldShowMemberConversationPreview = (
   node: TeamMemberNode | null | undefined,
   context: AgentContext | null,
-): boolean => shouldShowMemberConversation(node, context) && getConversationMessages(context).length > 0;
+): boolean => shouldShowMemberConversation(node, context) && hasConversationMessages(context);
 
 const getTaskAgentParentRouteKey = (node: TeamMemberNode): string => (
   node.logicalMemberRouteKey?.trim() ||

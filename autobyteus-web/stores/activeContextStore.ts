@@ -10,6 +10,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
 import type { ToolApprovalTarget } from '~/types/segments';
+import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
 
 /**
  * @store useActiveContextStore
@@ -29,7 +30,15 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       return agentContextsStore.activeRun || null;
     }
     if (selectionStore.selectedType === 'team') {
-      return agentTeamContextsStore.activeExecutionFocusedMemberContext || null;
+      const activeTeam = agentTeamContextsStore.activeTeamContext;
+      if (!activeTeam) {
+        return null;
+      }
+
+      const messageTarget = resolveTeamUserMessageTarget(activeTeam, {
+        allowActiveExecutionSafetyFallback: true,
+      });
+      return messageTarget?.context || agentTeamContextsStore.activeExecutionFocusedMemberContext || null;
     }
     return null;
   });

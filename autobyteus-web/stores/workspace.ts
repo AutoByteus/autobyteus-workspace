@@ -42,6 +42,7 @@ import {
 } from '~/stores/workspaceFileExplorerLiveActions'
 import type { FetchFolderChildrenOptions } from '~/stores/fileExplorerTreeActions'
 import type { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
+import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget'
 
 export interface WorkspaceInfo {
   workspaceId: string;
@@ -392,7 +393,12 @@ export const useWorkspaceStore = defineStore('workspace', {
         workspaceId = config?.workspaceId || null;
       } else if (selectionStore.selectedType === 'team') {
         const teamContext = teamContextsStore.activeTeamContext;
-        const focusedConfig = teamContextsStore.activeExecutionFocusedMemberContext?.config || null;
+        const messageTarget = teamContext
+          ? resolveTeamUserMessageTarget(teamContext, { allowActiveExecutionSafetyFallback: true })
+          : null;
+        const focusedConfig = messageTarget?.context?.config
+          || teamContextsStore.activeExecutionFocusedMemberContext?.config
+          || null;
         metadata = focusedConfig?.workspaceMetadata || teamContext?.config.workspaceMetadata || null;
         workspaceId = focusedConfig?.workspaceId || teamContext?.config.workspaceId || null;
       } else {

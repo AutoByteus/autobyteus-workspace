@@ -471,6 +471,146 @@ describe('agentTeamRunStore', () => {
     expect(teamContext.isSubscribed).toBe(true);
   });
 
+  it('launches a temporary team send to the focused offline non-coordinator instead of active-execution fallback', async () => {
+    const solutionDesigner = {
+      state: {
+        runId: 'temp-team-focused::solution_designer',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-06-12T00:00:00.000Z',
+        },
+      },
+      isSending: false,
+    };
+    const codeReviewer = {
+      state: {
+        runId: 'temp-team-focused::code_reviewer',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-06-12T00:00:00.000Z',
+        },
+      },
+      isSending: false,
+    };
+    const attachment = { type: 'File', locator: '/tmp/spec.md' } as any;
+    const teamContext = buildTeamContext({
+      teamRunId: 'temp-team-focused',
+      focusedMemberRouteKey: 'code_reviewer',
+      currentStatus: AgentTeamStatus.Offline,
+      config: {
+        teamDefinitionId: 'software-engineering-team',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'gpt-5.3-codex',
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberContexts: {
+        solution_designer: solutionDesigner,
+        code_reviewer: codeReviewer,
+      },
+    });
+    teamContext.coordinatorMemberRouteKey = 'solution_designer';
+
+    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
+      id: 'software-engineering-team',
+      nodes: [
+        { memberName: 'solution_designer', refType: 'AGENT', ref: 'solution-designer-agent' },
+        { memberName: 'code_reviewer', refType: 'AGENT', ref: 'code-reviewer-agent' },
+      ],
+    });
+    setActiveTeamContext(teamContext);
+    setActiveExecutionFocus(teamContext, 'solution_designer');
+    teamContextsStoreMock.promoteTemporaryTeamRunId.mockImplementation((temporaryRunId: string, permanentRunId: string) => {
+      expect(temporaryRunId).toBe('temp-team-focused');
+      teamContext.teamRunId = permanentRunId;
+    });
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === teamContext.teamRunId ? teamContext : null,
+    );
+    mockMutate.mockResolvedValue({
+      data: {
+        createAgentTeamRun: {
+          success: true,
+          teamRunId: 'team-focused-real',
+          message: 'ok',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('please review this implementation', [attachment]);
+
+    expect(codeReviewer.state.conversation.messages).toHaveLength(1);
+    expect(solutionDesigner.state.conversation.messages).toHaveLength(0);
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
+      draftOwner: {
+        kind: 'team_member_draft',
+        draftTeamRunId: 'temp-team-focused',
+        memberRouteKey: 'code_reviewer',
+      },
+      finalOwner: {
+        kind: 'team_member_final',
+        teamRunId: 'team-focused-real',
+        memberRouteKey: 'code_reviewer',
+      },
+      attachments: [attachment],
+    });
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'please review this implementation',
+      'code_reviewer',
+      ['/tmp/spec.md'],
+      [],
+      expect.objectContaining({
+        messageId: expect.stringMatching(/^client_/),
+        dedupeKey: expect.stringContaining('member_input:team-focused-real:code_reviewer:'),
+      }),
+    );
+  });
+
+  it('rejects stale focused routes instead of sending to an active-execution fallback', async () => {
+    const coordinator = {
+      state: {
+        runId: 'coordinator-run',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-06-12T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-stale-focus-send-1',
+      focusedMemberRouteKey: 'coordinator',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberContexts: {
+        coordinator,
+      },
+    });
+    teamContext.focusedMemberRouteKey = 'missing_member';
+    teamContext.coordinatorMemberRouteKey = 'coordinator';
+    setActiveTeamContext(teamContext);
+    setActiveExecutionFocus(teamContext, 'coordinator');
+
+    const store = useAgentTeamRunStore();
+    await expect(store.sendMessageToFocusedMember('do not reroute stale focus', [])).rejects.toThrow(
+      "No valid focused team message target 'missing_member' (missing_node).",
+    );
+
+    expect(coordinator.state.conversation.messages).toHaveLength(0);
+    expect(mockSendMessage).not.toHaveBeenCalled();
+  });
+
   it('sends to active-execution focus instead of stale task-only logical focus', async () => {
     const coordinator = {
       state: {
@@ -486,7 +626,11 @@ describe('agentTeamRunStore', () => {
         runId: 'worker-run',
         currentStatus: AgentStatus.Offline,
         conversation: {
-          messages: [] as any[],
+          messages: [{
+            type: 'user',
+            text: 'Task-agent run: worker-task-agent-run',
+            timestamp: new Date('2026-02-21T00:00:00.000Z'),
+          }] as any[],
           updatedAt: '2026-02-21T00:00:00.000Z',
         },
       },
@@ -516,7 +660,11 @@ describe('agentTeamRunStore', () => {
     await store.sendMessageToFocusedMember('send to active execution', []);
 
     expect(coordinator.state.conversation.messages).toHaveLength(1);
-    expect(worker.state.conversation.messages).toHaveLength(0);
+    expect(worker.state.conversation.messages).toHaveLength(1);
+    expect(worker.state.conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'Task-agent run: worker-task-agent-run',
+    });
     expect(mockSendMessage).toHaveBeenCalledWith(
       'send to active execution',
       'coordinator',

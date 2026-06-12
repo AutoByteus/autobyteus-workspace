@@ -257,6 +257,24 @@ describe('ContextFilePathInputArea', () => {
       teamRunId: 'team-1',
       focusedMemberRouteKey: 'solution_designer',
       focusedMemberName: 'solution_designer',
+      memberNodesByRouteKey: new Map([
+        ['solution_designer', {
+          memberKind: 'agent',
+          memberName: 'solution_designer',
+          displayName: 'solution_designer',
+          memberPath: ['solution_designer'],
+          memberRouteKey: 'solution_designer',
+          agentDefinitionId: 'solution-designer-agent',
+        }],
+        ['implementation_engineer', {
+          memberKind: 'agent',
+          memberName: 'implementation_engineer',
+          displayName: 'implementation_engineer',
+          memberPath: ['implementation_engineer'],
+          memberRouteKey: 'implementation_engineer',
+          agentDefinitionId: 'implementation-engineer-agent',
+        }],
+      ]),
       leafAgentContextsByRouteKey: new Map([
         ['solution_designer', solutionContext],
         ['implementation_engineer', implementationContext],

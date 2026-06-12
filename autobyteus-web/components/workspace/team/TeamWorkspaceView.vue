@@ -115,6 +115,7 @@ import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentA
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -135,12 +136,17 @@ const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.ac
 const rosterFocusedMemberRouteKey = computed(() =>
   resolveDisplayFocusedMemberRouteKey(activeTeamContext.value?.focusedMemberRouteKey),
 );
-const focusedMemberContext = computed(() => {
-  return teamContextsStore.activeExecutionFocusedMemberContext;
+const userMessageTarget = computed(() => {
+  const team = activeTeamContext.value;
+  return team
+    ? resolveTeamUserMessageTarget(team, {
+      allowSubteam: true,
+      allowActiveExecutionSafetyFallback: true,
+    })
+    : null;
 });
-const focusedMemberNode = computed(() => {
-  return teamContextsStore.activeExecutionFocusedMemberNode;
-});
+const focusedMemberContext = computed(() => userMessageTarget.value?.context ?? null);
+const focusedMemberNode = computed(() => userMessageTarget.value?.node ?? null);
 const rosterFocusedMemberContext = computed(() => {
   const team = activeTeamContext.value;
   const routeKey = rosterFocusedMemberRouteKey.value;
@@ -157,7 +163,7 @@ const currentMode = computed<TeamWorkspaceViewMode>(() => {
 });
 
 const showSharedComposer = computed(() => {
-  if (!activeExecutionFocusedMemberRouteKey.value) {
+  if (!userMessageTarget.value) {
     return false;
   }
   if (focusedMemberNode.value?.isTaskAgentInstance) {
@@ -194,13 +200,13 @@ const headerTitle = computed(() => {
 
 const composerTargetTitle = computed(() => {
   const team = activeTeamContext.value;
-  const focusedMemberRouteKey = activeExecutionFocusedMemberRouteKey.value;
-  if (!team || !focusedMemberRouteKey) {
+  const target = userMessageTarget.value;
+  if (!team || !target) {
     return headerTitle.value;
   }
 
-  return focusedMemberNode.value?.displayName
-    || getMemberDisplayName(focusedMemberRouteKey, focusedMemberContext.value)
+  return target.node.displayName
+    || getMemberDisplayName(target.memberRouteKey, target.context)
     || team.config.teamDefinitionName
     || 'Team';
 });

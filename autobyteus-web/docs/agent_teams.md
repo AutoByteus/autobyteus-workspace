@@ -105,8 +105,8 @@ For manual self-evolution, the composer-adjacent CTA targets the selected active
 leaf member, not the whole team row. The frontend sends the member-scoped target
 identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSelfEvolution`, and
 the backend records source run ids for the selected member only. This preserves
-the same active-execution/member-focus boundary used by the shared composer and
-prevents stale history rows or whole-team containers from becoming evolution
+the same valid focused leaf-member boundary used by the shared composer target
+and prevents stale history rows or whole-team containers from becoming evolution
 targets.
 
 That surface owns:
@@ -205,23 +205,32 @@ representatives such as `review_lead`, which routes to `BuildSquad/review_lead`,
 while that represented coordinator can report upward to exposed immediate
 parent-boundary recipients such as `program_manager`.
 
-Team member focus has two related, intentionally separate meanings. Roster or
+Team member focus has three related, intentionally separate meanings. Roster or
 history visual focus is the route key currently selected for display in the
 history tree, Focus pane, Grid, and Spotlight surfaces; it is resolved from the
 recursive `memberTree` and can point at inactive or all-offline logical members
-so users can inspect their saved member history. Active-execution command focus
-is the safe route key used by the shared composer, send path, and stop control;
-it is normalized through the active runtime/member context so stale task-agent
-or inactive logical rows are not accidentally used as command targets.
+so users can inspect their saved member history. User-message target focus is
+the route key selected by `resolveTeamUserMessageTarget(...)` for the shared
+composer and text send path. It first preserves the valid roster-focused leaf or
+subteam target, so the first message in a new/all-offline team can go directly
+to a focused non-coordinator member instead of falling back to the coordinator.
+Draft context files, finalized attachment ownership, optimistic local user
+messages, and outbound `SEND_MESSAGE.target_member_route_key` all use that same
+target. Missing or stale focused members fail validation instead of silently
+retargeting; the active-execution safety fallback is only used for task-agent
+only logical-member conversations that should not receive ordinary user chat.
+Active-execution command focus remains the safe runtime-control route key; it is
+normalized through the active runtime/member context so stale task-agent or
+inactive logical rows are not accidentally used as stop/interrupt targets.
 
 The active-execution routing contract also applies to the shared composer stop
-control. Text send and team interrupt resolve the active-execution-focused
-member at action time. Team interrupt dispatch sends `target_member_route_key`
-as that command member route key, includes `target_member_run_id` only as a
-stale-target guard, and does not use a team-run-only fallback when the command
-member target is missing or stale. As a result, a selected inactive roster
-member can be visible in the Focus header while the composer still labels a safe
-active-execution target such as the coordinator.
+control. Team interrupt dispatch resolves the active-execution-focused member at
+action time, sends `target_member_route_key` as that command member route key,
+includes `target_member_run_id` only as a stale-target guard, and does not use a
+team-run-only fallback when the command member target is missing or stale. As a
+result, a selected inactive roster member can be visible in the Focus header
+while stop/interrupt remains pinned to a safe active-execution target; ordinary
+text sends use the user-message target resolver described above.
 
 For focused-member sends to an offline or idle member, the backend status stream
 is the visible-status authority: once the command is accepted and the member
