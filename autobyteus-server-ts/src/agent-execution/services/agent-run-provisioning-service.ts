@@ -22,7 +22,7 @@ import {
 import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { SelfEvolutionConfigOverride, SelfEvolutionEffectiveConfig } from "../../self-evolution/domain/models.js";
@@ -50,7 +50,7 @@ const normalizeRequiredRunId = (runId: string): string => {
 const PREPARED_RUN_TTL_MS = 24 * 60 * 60 * 1000;
 
 export class AgentRunProvisioningService {
-  private readonly memoryLayout: AgentRunMemoryLayout;
+  private readonly memoryLayout: AgentMemoryLayout;
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataService: AgentRunMetadataService;
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
@@ -68,7 +68,7 @@ export class AgentRunProvisioningService {
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     } = {},
   ) {
-    this.memoryLayout = new AgentRunMemoryLayout(memoryDir);
+    this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
@@ -204,7 +204,7 @@ export class AgentRunProvisioningService {
     let removed = 0;
     let entries: string[] = [];
     try {
-      entries = await fs.readdir(this.memoryLayout.getRunsRootDirPath());
+      entries = await fs.readdir(this.memoryLayout.getStandaloneRootDirPath());
     } catch {
       return 0;
     }
@@ -308,7 +308,7 @@ export class AgentRunProvisioningService {
     selfEvolution: SelfEvolutionConfigOverride | null;
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(input.agentDefinitionId);
-    const memoryDir = this.memoryLayout.getRunDirPath(runId);
+    const memoryDir = this.memoryLayout.getStandaloneRunDirPath(runId);
     return {
       runId,
       config: new AgentRunConfig({

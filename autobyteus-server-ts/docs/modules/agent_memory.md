@@ -20,6 +20,15 @@ segments are opaque stored identifiers. Readers must not parse generated id
 shapes or derive nested member storage from a flattened member list; they should
 use the resolved `memoryDir` or `AgentMemoryLocationService`.
 
+`AgentMemoryLayout` is the single code owner for composing both standalone and
+team memory directories. Do not reintroduce a separate standalone
+`AgentRunMemoryLayout`, a versioned layout field, a compatibility alias, or
+ad-hoc string/path assembly for `memory/agents/<runId>`. Callers that need a
+concrete storage path should use `AgentMemoryLayout`, the resolved `memoryDir`,
+or `AgentMemoryLocationService`, depending on whether they are composing a
+standalone path, consuming already-persisted run metadata, or resolving
+team/member/task-agent topology.
+
 Canonical active memory file names are imported from `autobyteus-ts/memory/store/memory-file-names` and low-level direct-directory IO is delegated through `RunMemoryFileStore`.
 
 Common files/directories:

@@ -161,6 +161,7 @@ describe("cross-runtime memory persistence integration", () => {
         memoryDir,
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      "codex-reasoning-memory-run",
     );
     const backend = createdBackends[0];
     expect(backend?.listenerCount()).toBe(1);
@@ -409,6 +410,7 @@ describe("cross-runtime memory persistence integration", () => {
           memoryDir,
           skillAccessMode: SkillAccessMode.NONE,
         }),
+        `memory-persistence-${runtimeKind}`,
       );
 
       expect(createdBackends[0]?.listenerCount()).toBe(1);
@@ -498,6 +500,7 @@ describe("cross-runtime memory persistence integration", () => {
         memoryDir,
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      "native-memory-owned-run",
     );
 
     await run.postUserMessage(new AgentInputUserMessage("native should remain native-owned"));
@@ -535,6 +538,7 @@ describe("cross-runtime memory persistence integration", () => {
         memoryDir,
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      "codex-compaction-memory-run",
     );
     const converter = new CodexThreadEventConverter(run.runId);
     const turnId = `turn-${run.runId}`;
@@ -629,6 +633,7 @@ describe("cross-runtime memory persistence integration", () => {
         memoryDir,
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      "claude-compaction-memory-run",
     );
     const converter = new ClaudeSessionEventConverter(run.runId);
     const turnId = `turn-${run.runId}`;
@@ -752,6 +757,7 @@ describe("cross-runtime memory persistence integration", () => {
         memoryDir,
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      "codex-denied-tool-memory-run",
     );
 
     await run.postUserMessage(new AgentInputUserMessage("attempt denied tool"));

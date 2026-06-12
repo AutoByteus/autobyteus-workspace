@@ -199,6 +199,11 @@ Important identity/storage rules:
 - `AgentRunHistoryCatalogService` is the normal semantic owner for standalone
   catalog mutations: prepare/create, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush
+- Run-history owns standalone metadata/catalog semantics, but it must not own
+  duplicate memory-directory composition. Standalone storage paths resolve
+  through `src/agent-memory/store/agent-memory-layout.ts` and already-persisted
+  `memoryDir` values; team/member storage paths resolve through the shared
+  `AgentMemoryLocationService`.
 - `TeamRunHistoryCatalogService` is the normal semantic owner for team catalog
   mutations: create/restore, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush

@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import { TeamRunMetadataService, getTeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
@@ -46,8 +45,7 @@ export class AgentRunIdentityAllocator {
   private readonly agentRunManager: Pick<AgentRunManager, "hasActiveRun">;
   private readonly agentRunMetadataService: Pick<AgentRunMetadataService, "readMetadata">;
   private readonly teamRunMetadataService: Pick<TeamRunMetadataService, "listTeamRunIds" | "readMetadata">;
-  private readonly agentMemoryLayout: AgentRunMemoryLayout;
-  private readonly agentMemoryLayoutV2: AgentMemoryLayout;
+  private readonly memoryLayout: AgentMemoryLayout;
   private readonly createToken: () => string;
   private readonly reservations = new Set<string>();
 
@@ -58,8 +56,7 @@ export class AgentRunIdentityAllocator {
     this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRunMetadataService = options.agentRunMetadataService ?? getAgentRunMetadataService();
     this.teamRunMetadataService = options.teamRunMetadataService ?? getTeamRunMetadataService();
-    this.agentMemoryLayout = new AgentRunMemoryLayout(memoryDir);
-    this.agentMemoryLayoutV2 = new AgentMemoryLayout(memoryDir);
+    this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.createToken = options.createToken ?? createUuidIdentityToken;
   }
 
@@ -104,7 +101,7 @@ export class AgentRunIdentityAllocator {
     if (await this.agentRunMetadataService.readMetadata(runId)) {
       return true;
     }
-    if (await this.pathExists(this.agentMemoryLayout.getRunDirPath(runId))) {
+    if (await this.pathExists(this.memoryLayout.getStandaloneRunDirPath(runId))) {
       return true;
     }
     return this.hasTeamRunCollision(runId);
@@ -116,7 +113,7 @@ export class AgentRunIdentityAllocator {
       if (teamRunId === runId) {
         return true;
       }
-      if (await this.pathExists(this.agentMemoryLayoutV2.getTeamAgentRunDirPath({
+      if (await this.pathExists(this.memoryLayout.getTeamAgentRunDirPath({
         rootTeamRunId: teamRunId,
         teamRunPath: [],
       }, runId))) {

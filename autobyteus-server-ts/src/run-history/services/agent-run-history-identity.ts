@@ -1,5 +1,5 @@
 import path from "node:path";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 
 export type AgentRunHistoryIdentity = {
   runId: string;
@@ -30,10 +30,10 @@ const isInsideRoot = (candidatePath: string, rootPath: string): boolean => {
 };
 
 export class AgentRunHistoryIdentityResolver {
-  private readonly layout: AgentRunMemoryLayout;
+  private readonly layout: AgentMemoryLayout;
 
   constructor(memoryDir: string) {
-    this.layout = new AgentRunMemoryLayout(memoryDir);
+    this.layout = new AgentMemoryLayout(memoryDir);
   }
 
   resolve(rawRunId: string, options: { rejectDraftIds?: boolean } = {}): AgentRunHistoryIdentity | null {
@@ -45,7 +45,7 @@ export class AgentRunHistoryIdentityResolver {
       return null;
     }
 
-    const agentsRoot = path.resolve(this.layout.getRunsRootDirPath());
+    const agentsRoot = path.resolve(this.layout.getStandaloneRootDirPath());
     const runDirPath = path.resolve(agentsRoot, runId);
     const metadataPath = path.resolve(runDirPath, "run_metadata.json");
     if (!isInsideRoot(runDirPath, agentsRoot) || !isInsideRoot(metadataPath, agentsRoot)) {

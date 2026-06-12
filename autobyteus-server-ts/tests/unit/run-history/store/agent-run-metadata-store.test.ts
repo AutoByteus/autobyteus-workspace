@@ -24,6 +24,7 @@ const buildMetadata = (
   preparedExpiresAt: "2026-05-02T09:00:00.000Z",
   startedAt: "2026-05-01T09:05:00.000Z",
   applicationExecutionContext: null,
+  selfEvolutionEffective: null,
   ...overrides,
 });
 

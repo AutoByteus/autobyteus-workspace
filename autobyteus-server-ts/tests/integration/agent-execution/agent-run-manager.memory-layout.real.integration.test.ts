@@ -119,15 +119,10 @@ describe("AgentRunService real memory layout integration", () => {
               }
             : null,
       } as any,
-      agentDefinitionService: {
-        getFreshAgentDefinitionById: async () =>
-          new AgentDefinition({
-            id: "def-real-memory-layout",
-            name: "RealMemoryLayoutAgent",
-            role: "Tester",
-            description: "real integration for memory layout",
-          }),
-      } as any,
+      agentRunIdentityAllocator: {
+        allocateForAgentDefinition: async () =>
+          "real_memory_layout_agent_00000000000000000000000000000001",
+      },
     });
   });
 

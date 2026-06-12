@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
 import { normalizeSelfEvolutionEffectiveConfig } from "../../self-evolution/domain/config.js";
 
@@ -58,14 +58,14 @@ const normalizeMetadata = (
 });
 
 export class AgentRunMetadataStore {
-  private readonly layout: AgentRunMemoryLayout;
+  private readonly layout: AgentMemoryLayout;
 
   constructor(memoryDir: string) {
-    this.layout = new AgentRunMemoryLayout(memoryDir);
+    this.layout = new AgentMemoryLayout(memoryDir);
   }
 
   getMetadataPath(runId: string): string {
-    return path.join(this.layout.getRunDirPath(runId), "run_metadata.json");
+    return path.join(this.layout.getStandaloneRunDirPath(runId), "run_metadata.json");
   }
 
   async readMetadata(runId: string): Promise<AgentRunMetadata | null> {
@@ -77,7 +77,7 @@ export class AgentRunMetadataStore {
         logger.warn(`Invalid run metadata format: ${metadataPath}`);
         return null;
       }
-      return normalizeMetadata(parsed as AgentRunMetadata, this.layout.getRunDirPath(runId));
+      return normalizeMetadata(parsed as AgentRunMetadata, this.layout.getStandaloneRunDirPath(runId));
     } catch (error) {
       const message = String(error);
       if (!message.includes("ENOENT")) {
@@ -91,7 +91,7 @@ export class AgentRunMetadataStore {
     const normalized = normalizeMetadata({
       ...metadata,
       runId,
-    }, this.layout.getRunDirPath(runId));
+    }, this.layout.getStandaloneRunDirPath(runId));
     const metadataPath = this.getMetadataPath(runId);
     await atomicWriteJsonFile(metadataPath, normalized);
   }

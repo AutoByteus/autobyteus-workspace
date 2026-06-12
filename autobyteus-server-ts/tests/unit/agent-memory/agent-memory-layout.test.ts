@@ -17,6 +17,16 @@ describe("AgentMemoryLayout", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
+  it("composes standalone and team memory paths under the canonical roots", () => {
+    expect(layout.getStandaloneRootDirPath()).toBe(path.join(memoryDir, "agents"));
+    expect(layout.getStandaloneRunDirPath("agent-a")).toBe(path.join(memoryDir, "agents", "agent-a"));
+    expect(layout.getTeamRootDirPath()).toBe(path.join(memoryDir, "agent_teams"));
+    expect(layout.getTeamAgentRunDirPath(
+      { rootTeamRunId: "team-1", teamRunPath: ["child-team-1"] },
+      "member-a",
+    )).toBe(path.join(memoryDir, "agent_teams", "team-1", "child-team-1", "member-a"));
+  });
+
   it("creates standalone and hierarchical team-agent subtrees under canonical directories", async () => {
     await layout.ensureStandaloneRunSubtree("agent-a");
     await layout.ensureTeamAgentRunSubtree(
@@ -39,5 +49,10 @@ describe("AgentMemoryLayout", () => {
       { rootTeamRunId: "team-1", teamRunPath: ["../escape"] },
       "member-a",
     )).toThrow("teamRunPath[0] is invalid");
+  });
+
+  it("guards against path traversal in standalone run segments", () => {
+    expect(() => layout.getStandaloneRunDirPath("../escape")).toThrow("agentRunId is invalid");
+    expect(() => layout.getStandaloneRunDirPath("nested/agent")).toThrow("agentRunId is invalid");
   });
 });

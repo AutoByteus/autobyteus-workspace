@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type {
   ContextFileDraftOwnerDescriptor,
   ContextFileResolvedFinalOwnerDescriptor,
@@ -19,13 +19,13 @@ const resolveSafeChildPath = (rootDir: string, ...segments: string[]): string =>
 
 export class ContextFileLayout {
   private readonly draftRootDir: string;
-  private readonly agentRunMemoryLayout: AgentRunMemoryLayout;
+  private readonly agentMemoryLayout: AgentMemoryLayout;
 
   constructor() {
     const appConfig = appConfigProvider.config;
     this.draftRootDir = path.join(appConfig.getAppDataDir(), "draft_context_files");
     const memoryDir = appConfig.getMemoryDir();
-    this.agentRunMemoryLayout = new AgentRunMemoryLayout(memoryDir);
+    this.agentMemoryLayout = new AgentMemoryLayout(memoryDir);
   }
 
   getDraftRootDirPath(): string {
@@ -50,7 +50,7 @@ export class ContextFileLayout {
   getFinalOwnerDirPath(owner: ContextFileResolvedFinalOwnerDescriptor): string {
     if (owner.kind === "agent_final") {
       return resolveSafeChildPath(
-        this.agentRunMemoryLayout.getRunDirPath(owner.runId),
+        this.agentMemoryLayout.getStandaloneRunDirPath(owner.runId),
         "context_files",
       );
     }
