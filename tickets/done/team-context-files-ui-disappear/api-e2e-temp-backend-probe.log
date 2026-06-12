@@ -1,0 +1,9 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-context-files-ui-disappear/autobyteus-server-ts
+
+No test files found, exiting with code 1
+
+filter: .api-e2e-temp/member-input-websocket-context.probe.test.ts
+include: tests/**/*.test.ts
+exclude:  tests/unit/prompt-engineering/**/*.test.ts, tests/unit/agent-tools/prompt-engineering/**/*.test.ts, tests/integration/prompt-engineering/**/*.test.ts
+

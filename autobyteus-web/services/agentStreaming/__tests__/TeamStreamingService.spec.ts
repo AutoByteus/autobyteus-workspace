@@ -1193,8 +1193,8 @@ describe('TeamStreamingService', () => {
     };
 
     service.connect('team-1', teamContext);
-    callbacks.get('onMessage')?.(JSON.stringify({ type: 'EXTERNAL_USER_MESSAGE', payload }));
-    callbacks.get('onMessage')?.(JSON.stringify({ type: 'EXTERNAL_USER_MESSAGE', payload }));
+    callbacks.get('onMessage')?.(JSON.stringify({ type: 'MEMBER_INPUT_MESSAGE', payload }));
+    callbacks.get('onMessage')?.(JSON.stringify({ type: 'MEMBER_INPUT_MESSAGE', payload }));
 
     expect(programManagerConversation.messages).toHaveLength(0);
     expect(reviewLeadConversation.messages).toHaveLength(1);
@@ -1250,7 +1250,7 @@ describe('TeamStreamingService', () => {
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
-        type: 'EXTERNAL_USER_MESSAGE',
+        type: 'MEMBER_INPUT_MESSAGE',
         payload: {
           content: 'Task-agent work packet',
           received_at: '2026-05-30T08:00:00.000Z',
@@ -1366,7 +1366,7 @@ describe('TeamStreamingService', () => {
     service.connect('team-1', teamContext);
     callbacks.get('onMessage')?.(
       JSON.stringify({
-        type: 'EXTERNAL_USER_MESSAGE',
+        type: 'MEMBER_INPUT_MESSAGE',
         payload: {
           content: 'Delegated task work packet',
           received_at: '2026-05-30T08:00:00.000Z',
