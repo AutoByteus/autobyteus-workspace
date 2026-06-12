@@ -3,6 +3,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
+import { SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE, SELF_EVOLUTION_TARGET_MESSAGE_TYPE } from "../../src/self-evolution/domain/messages.js";
 import { SingleAgentEvolverStrategy } from "../../src/self-evolution/services/strategies/single-agent-evolver-strategy.js";
 import type { SelfEvolutionEvidencePackage, SelfEvolutionSkillTarget } from "../../src/self-evolution/domain/models.js";
 import type { SelfEvolutionTargetContext } from "../../src/self-evolution/services/self-evolution-target-context-resolver.js";
@@ -48,6 +49,8 @@ const evidencePackage = (): SelfEvolutionEvidencePackage => ({
 });
 
 describe("SingleAgentEvolverStrategy", () => {
+  const staleOutcomeMessageType = "self" + "_evolution_outcome";
+
   it("launches a visible helper agent run with auto-executed tools and exact editable skill roots", async () => {
     let eventListener: ((event: AgentRunEvent) => void) | null = null;
     let postedMessage: AgentInputUserMessage | null = null;
@@ -91,10 +94,18 @@ describe("SingleAgentEvolverStrategy", () => {
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       })),
     };
+    const grantRegistry = {
+      register: vi.fn((input: any) => ({
+        grantId: "grant-1",
+        ...input,
+      })),
+      summarizeGrant: vi.fn(() => null),
+    };
 
     const strategy = new SingleAgentEvolverStrategy({
       agentRunService: agentRunService as any,
       settingsResolver: settingsResolver as any,
+      grantRegistry: grantRegistry as any,
       timeoutMs: 1_000,
     });
 
@@ -121,6 +132,14 @@ describe("SingleAgentEvolverStrategy", () => {
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     }));
     expect(run.subscribeToEvents).toHaveBeenCalledTimes(1);
+    expect(grantRegistry.register).toHaveBeenCalledWith(expect.objectContaining({
+      senderRunId: "evolver-run-1",
+      purpose: SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE,
+      allowedTargetAgentRunIds: ["target-run-1"],
+      allowedMessageTypes: [SELF_EVOLUTION_TARGET_MESSAGE_TYPE],
+      allowedReferenceFileRoots: [editableTarget.skillRootPath],
+      maxAcceptedDeliveries: 1,
+    }));
     expect(run.postUserMessage).toHaveBeenCalledTimes(1);
     expect(postedMessage?.content).toContain("Editable skill packages:");
     expect(postedMessage?.content).toContain(editableTarget.skillRootPath);
@@ -134,14 +153,28 @@ describe("SingleAgentEvolverStrategy", () => {
     expect(postedMessage?.content).toContain("Do not claim the improvement is complete unless");
     expect(postedMessage?.content).not.toContain("raw_traces.jsonl");
     expect(postedMessage?.content).toContain('target_agent_run_id "target-run-1"');
+    expect(postedMessage?.content).toContain(`message_type "${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}"`);
+    expect(postedMessage?.content).toContain("if and only if you made meaningful durable skill package file changes");
+    expect(postedMessage?.content).toContain("what durable skill guidance changed");
+    expect(postedMessage?.content).toContain("why it matters for future work");
+    expect(postedMessage?.content).toContain("how the target should use or reload the updated guidance going forward");
+    expect(postedMessage?.content).toContain("Preserve privacy in that target-facing content");
+    expect(postedMessage?.content).toContain("avoid raw traces, secrets, private data, one-off paths, and transient task details");
+    expect(postedMessage?.content).toContain("Choose reference_files dynamically as absolute paths");
+    expect(postedMessage?.content).toContain("absolute paths from changed or directly relevant surviving files inside the editable skill roots");
+    expect(postedMessage?.content).toContain("Do not include deleted files in reference_files");
+    expect(postedMessage?.content).toContain("If no durable skill package file changed, do not call send_message_to");
+    expect(postedMessage?.content).not.toContain(staleOutcomeMessageType);
     expect(postedMessage?.content).not.toContain("source-run-2");
     expect(postedMessage?.metadata).toMatchObject({
       self_evolution_editable_skill_roots: [editableTarget.skillRootPath],
       self_evolution_primary_skill_paths: [editableTarget.skillMdPath],
       self_evolution_target_agent_run_id: "target-run-1",
-      self_evolution_outcome_message_type: "self_evolution_outcome",
+      self_evolution_target_message_type: SELF_EVOLUTION_TARGET_MESSAGE_TYPE,
     });
+    expect(postedMessage?.metadata).not.toHaveProperty(`${staleOutcomeMessageType}_message_type`);
     expect(postedMessage?.metadata).not.toHaveProperty("self_evolution_source_run_ids");
+    expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain(staleOutcomeMessageType);
     expect(JSON.stringify(postedMessage?.metadata ?? {})).toContain("target-run-1");
     expect(JSON.stringify(postedMessage?.metadata ?? {})).not.toContain("source-run-2");
     expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(run, {

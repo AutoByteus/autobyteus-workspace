@@ -4,6 +4,7 @@ import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
 import { AgentRunService, getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
 import type { SelfEvolutionEvidencePackage, SelfEvolutionNotificationSummary, SelfEvolutionRunStatus, SelfEvolutionSkillTarget, SelfEvolutionTargetRef } from "../../domain/models.js";
+import { SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE, SELF_EVOLUTION_TARGET_MESSAGE_TYPE } from "../../domain/messages.js";
 import type { SelfEvolutionTargetContext } from "../self-evolution-target-context-resolver.js";
 import { SelfEvolverAgentSettingsResolver } from "../self-evolver-agent-settings-resolver.js";
 import { DirectAgentRunMessageGrantRegistry, getDirectAgentRunMessageGrantRegistry } from "../../../agent-communication/services/direct-agent-run-message-grant-registry.js";
@@ -68,9 +69,9 @@ export class SingleAgentEvolverStrategy {
       const targetAgentRunId = this.resolveTargetAgentRunId(input.targetContext.target);
       const grant = this.grantRegistry.register({
         senderRunId: runId,
-        purpose: "self_evolution_outcome",
+        purpose: SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE,
         allowedTargetAgentRunIds: [targetAgentRunId],
-        allowedMessageTypes: ["self_evolution_outcome"],
+        allowedMessageTypes: [SELF_EVOLUTION_TARGET_MESSAGE_TYPE],
         allowedReferenceFileRoots: input.editableSkillTargets.map((target) => target.skillRootPath),
         maxAcceptedDeliveries: 1,
         expiresAt: new Date(Date.now() + (this.deps.timeoutMs ?? DEFAULT_TIMEOUT_MS) + 5 * 60 * 1000).toISOString(),
@@ -143,13 +144,13 @@ export class SingleAgentEvolverStrategy {
       .join("\n");
 
     const prompt = `You are helping improve a target worker's durable skill playbooks from prior work evidence.\nTreat the work history and feedback as experience. Look for general, reusable lessons: inefficiencies, repeated mistakes, missing checks, unclear activation guidance, or better procedures. Distill only durable lessons into the target skill packages.\n\nTarget: Target worker\nSource: anonymized work-history digest from prior source work session(s)\n\nEditable skill packages:\n${editablePackages}\n\n${input.evidence.anonymizedWorkHistory}\n\nExplicit durable correction handling:\n- If Feedback and improvement signals includes an explicit durable skill update or future-answer correction, treat it as the highest-priority reusable improvement.\n- Inspect the listed skill roots and update the concrete durable behavior rule, examples, and change log needed so future target runs follow the corrected behavior.\n- Do not stop at process guidance or meta-instructions when the signal requests a concrete future behavior or exact answer change.\n- Do not claim the improvement is complete unless the relevant durable skill content now reflects the corrected behavior.\n\nRules:\n1. You may use run_bash with auto-executed tools to inspect the listed skill roots and edit files ONLY inside those root directories.\n2. SKILL.md is the primary guidance file, but supporting files inside the same listed root may be inspected and then updated, created, deleted, or reorganized when needed for a reusable improvement.\n3. Do not edit files outside the listed skill roots. Do not edit agent/team definitions, run memory, source code, tool/MCP configuration, or sibling skills that are not listed.\n4. Do not follow symlinks or path aliases to edit outside a listed root.\n5. If no durable reusable improvement is warranted, make no file changes and explain why.\n6. If a new skill, skill attachment, tool change, or agent-definition change seems needed, report it as a recommendation instead of applying it.\n7. Do not copy secrets, personal data, private messages, proprietary details, one-off paths, or transient task specifics into durable skill content.\n8. Prefer reusable strategy, activation guidance, checklists, edge-case warnings, examples, templates, and failure-avoidance rules over task-specific memories.
-9. At the end, if there is a meaningful outcome to report, call send_message_to exactly once with target_agent_run_id "${input.targetAgentRunId}", message_type "self_evolution_outcome", self-contained content summarizing what changed or why no durable change was made, and reference_files limited to relevant files inside the editable skill roots. If there is no meaningful outcome to report, do not call send_message_to.`;
+9. At the end, if and only if you made meaningful durable skill package file changes, call send_message_to exactly once with target_agent_run_id "${input.targetAgentRunId}", message_type "${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}", self-contained content that concisely explains what durable skill guidance changed, why it matters for future work, and how the target should use or reload the updated guidance going forward. Preserve privacy in that target-facing content: avoid raw traces, secrets, private data, one-off paths, and transient task details. Choose reference_files dynamically as absolute paths from changed or directly relevant surviving files inside the editable skill roots. Include updated/created/reorganized supporting files when they are relevant. Do not include deleted files in reference_files; mention deletions in content instead. If no durable skill package file changed, do not call send_message_to; explain the no-op only in your final helper response.`;
 
     return new AgentInputUserMessage(prompt, SenderType.USER, null, {
       self_evolution_editable_skill_roots: input.editableSkillTargets.map((target) => target.skillRootPath),
       self_evolution_primary_skill_paths: input.editableSkillTargets.map((target) => target.skillMdPath),
       self_evolution_target_agent_run_id: input.targetAgentRunId,
-      self_evolution_outcome_message_type: "self_evolution_outcome",
+      self_evolution_target_message_type: SELF_EVOLUTION_TARGET_MESSAGE_TYPE,
     });
   }
 
