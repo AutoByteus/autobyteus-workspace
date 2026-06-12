@@ -1,17 +1,18 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { ExternalUserMessagePayload } from '../protocol/messageTypes';
+import type { MemberInputMessagePayload } from '../protocol/messageTypes';
 import {
   buildUserMessageFromProjectionPayload,
   upsertUserMessageByIdentity,
 } from './userMessageProjection';
 
-export const handleExternalUserMessage = (
-  payload: ExternalUserMessagePayload,
+export const handleMemberInputMessage = (
+  payload: MemberInputMessagePayload,
   context: AgentContext,
 ): void => {
   upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),
+    preserveExistingContextFilesWhenIncomingEmpty: true,
   });
   context.isSending = true;
 };

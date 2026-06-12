@@ -537,7 +537,7 @@ Rules:
           content: input.content,
         }) ||
         (
-          message.type === "EXTERNAL_USER_MESSAGE" &&
+          message.type === "MEMBER_INPUT_MESSAGE" &&
           message.payload.agent_name === input.recipientMemberName &&
           message.payload.content === input.content
         ),

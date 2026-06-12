@@ -14,6 +14,32 @@ const UPLOADED_FINAL_TEAM_ROUTE =
 
 const hasScheme = (value: string): boolean => /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
 
+const CONTEXT_ATTACHMENT_TYPE_BY_VALUE: Record<string, ContextAttachmentType> = {
+  audio: 'Audio',
+  csv: 'Csv',
+  docx: 'Docx',
+  html: 'Html',
+  image: 'Image',
+  javascript: 'Javascript',
+  json: 'Json',
+  markdown: 'Markdown',
+  pdf: 'Pdf',
+  pptx: 'Pptx',
+  python: 'Python',
+  text: 'Text',
+  video: 'Video',
+  xlsx: 'Xlsx',
+  xml: 'Xml',
+};
+
+const normalizeExplicitContextAttachmentType = (value?: string | null): ContextAttachmentType | null => {
+  const normalized = value?.trim().toLowerCase();
+  if (!normalized || normalized === 'unknown') {
+    return null;
+  }
+  return CONTEXT_ATTACHMENT_TYPE_BY_VALUE[normalized] ?? null;
+};
+
 const toPathname = (locator: string): string => {
   try {
     return new URL(locator).pathname;
@@ -108,6 +134,11 @@ export const inferContextAttachmentType = (
   input: File | string,
   mimeTypeOverride?: string | null,
 ): ContextAttachmentType => {
+  const explicitType = normalizeExplicitContextAttachmentType(mimeTypeOverride);
+  if (explicitType) {
+    return explicitType;
+  }
+
   const mimeType = typeof input === 'string' ? mimeTypeOverride?.trim().toLowerCase() ?? '' : input.type.trim().toLowerCase();
   if (mimeType.startsWith('image/')) return 'Image';
   if (mimeType.startsWith('audio/')) return 'Audio';

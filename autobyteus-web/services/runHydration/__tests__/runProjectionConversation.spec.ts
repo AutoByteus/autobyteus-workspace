@@ -319,4 +319,79 @@ describe('runProjectionConversation', () => {
     expect(conversation.messages[1].text).toContain('Here is the final answer.');
     expect(conversation.messages[1].text).not.toContain('Memory compacted');
   });
+
+  it('hydrates user projection media into context file attachments from canonical media keys', () => {
+    const imageLocator = '/rest/team-runs/team-1/members/solution_designer/context-files/ctx_abc__image.png';
+    const audioLocator = 'local-file://opaque-audio-context';
+    const videoLocator = 'local-file://opaque-video-context';
+
+    const conversation = buildConversationFromProjection(
+      'run-7',
+      [
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'inspect attached context',
+          media: {
+            images: [imageLocator],
+            audio: [audioLocator],
+            video: [videoLocator],
+          },
+          ts: 300,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-7',
+        agentName: 'Agent',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(1);
+    if (conversation.messages[0]?.type !== 'user') {
+      throw new Error('expected user message');
+    }
+    expect(conversation.messages[0].contextFilePaths?.map((attachment) => ({
+      locator: attachment.locator,
+      type: attachment.type,
+    }))).toEqual([
+      { locator: imageLocator, type: 'Image' },
+      { locator: audioLocator, type: 'Audio' },
+      { locator: videoLocator, type: 'Video' },
+    ]);
+  });
+
+  it('hydrates assistant media segments from canonical plural image media keys', () => {
+    const imageLocator = '/rest/runs/run-8/context-files/ctx_abc__image.png';
+
+    const conversation = buildConversationFromProjection(
+      'run-8',
+      [
+        {
+          kind: 'message',
+          role: 'assistant',
+          content: 'generated an image',
+          media: {
+            images: [imageLocator],
+          },
+          ts: 400,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-8',
+        agentName: 'Agent',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(1);
+    if (conversation.messages[0]?.type !== 'ai') {
+      throw new Error('expected AI message');
+    }
+    expect(conversation.messages[0].segments).toContainEqual({
+      type: 'media',
+      mediaType: 'image',
+      urls: [imageLocator],
+    });
+  });
 });

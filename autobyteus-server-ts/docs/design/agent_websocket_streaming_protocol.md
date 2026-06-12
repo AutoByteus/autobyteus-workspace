@@ -171,12 +171,15 @@ Team events expose path-aware member identity:
 Team member input is also emitted explicitly. When a user or inter-agent
 delivery is accepted for a concrete leaf member, the backend emits a
 `MEMBER_INPUT` team event and the WebSocket adapter forwards it as
-`EXTERNAL_USER_MESSAGE` for that member. The payload includes `message_id`,
+`MEMBER_INPUT_MESSAGE` for that member. The payload includes `message_id`,
 `dedupe_key`, `input_origin`, recipient member path/route identity, optional
-sender path/route identity, and context-file locators. This keeps child team
-transcripts truthful: an inbound parent-to-subteam prompt is rendered in the
-child coordinator transcript before the child assistant reply instead of being
-reconstructed from Team Communication rows after the fact.
+sender path/route identity, and context-file locators derived from canonical
+context-file references. This keeps local team sends and child team transcripts
+truthful: accepted member input is rendered in the target transcript before the
+assistant reply instead of being reconstructed from Team Communication rows
+after the fact. Backend-supported external-channel ingress remains on
+`EXTERNAL_USER_MESSAGE`; normal team/member accepted-input echoes do not use the
+external-channel message boundary.
 
 ## Connection And Command Recovery Contract
 

@@ -21,6 +21,33 @@ const normalizeStringArray = (value: unknown): string[] | null => {
   return normalized.length > 0 ? normalized : null;
 };
 
+const CONTEXT_FILE_TYPE_BY_VALUE: Record<string, string> = {
+  audio: "Audio",
+  csv: "Csv",
+  docx: "Docx",
+  html: "Html",
+  image: "Image",
+  javascript: "Javascript",
+  json: "Json",
+  markdown: "Markdown",
+  pdf: "Pdf",
+  pptx: "Pptx",
+  python: "Python",
+  text: "Text",
+  unknown: "Unknown",
+  video: "Video",
+  xlsx: "Xlsx",
+  xml: "Xml",
+};
+
+const normalizeContextFileType = (value: unknown): string | null => {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return null;
+  }
+  return CONTEXT_FILE_TYPE_BY_VALUE[normalized.toLowerCase()] ?? normalized;
+};
+
 const hashIdentity = (parts: readonly unknown[]): string =>
   createHash("sha256")
     .update(parts.map((part) => String(part ?? "")).join("\0"))
@@ -69,6 +96,7 @@ const readContextFilePath = (value: unknown): TeamRunMemberInputContextFile | nu
 
   const record = value as Record<string, unknown>;
   const path =
+    normalizeString(record.uri) ??
     normalizeString(record.path) ??
     normalizeString(record.locator) ??
     normalizeString(record.file_path);
@@ -77,7 +105,11 @@ const readContextFilePath = (value: unknown): TeamRunMemberInputContextFile | nu
   }
   return {
     path,
-    type: normalizeString(record.type),
+    type: normalizeContextFileType(
+      record.file_type ??
+      record.fileType ??
+      record.type,
+    ),
   };
 };
 

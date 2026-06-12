@@ -31,6 +31,10 @@ export {
 } from './externalUserMessageHandler';
 
 export {
+  handleMemberInputMessage,
+} from './memberInputMessageHandler';
+
+export {
   handleTodoListUpdate,
 } from './todoHandler';
 

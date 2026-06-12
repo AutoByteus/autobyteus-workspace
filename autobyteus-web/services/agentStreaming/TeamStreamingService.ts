@@ -34,6 +34,7 @@ import {
   handleTurnCompleted,
   handleTurnInterrupted,
   handleExternalUserMessage,
+  handleMemberInputMessage,
   handleTodoListUpdate,
   handleError,
   handleInterAgentMessage,
@@ -461,6 +462,10 @@ export class TeamStreamingService {
 
       case 'EXTERNAL_USER_MESSAGE':
         handleExternalUserMessage(message.payload, memberContext);
+        break;
+
+      case 'MEMBER_INPUT_MESSAGE':
+        handleMemberInputMessage(message.payload, memberContext);
         break;
 
       case 'TODO_LIST_UPDATE':

@@ -33,11 +33,14 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   `agent_id`, are rejected instead of being mapped back to member paths.
 - Team `INTERRUPT_GENERATION` is member-targeted. The team payload must include `target_member_path` / `targetMemberPath` or `target_member_route_key` / `targetMemberRouteKey` and may include `target_member_run_id` / `targetMemberRunId` as an optional stale-target guard. Missing targets and route-key/run-id mismatches are rejected; team interrupt must not fall back to an aggregate/team-wide stop. Single-agent interrupt remains the separate no-payload `INTERRUPT_GENERATION` command on `/ws/agent/:runId`.
 - Tool approval commands route through the active runtime's public approval boundary. Single-agent AutoByteus approval uses `Agent.postToolExecutionApproval(...)`; team approval resolves the member and calls that member agent's public approval API through the async team event path. Delegated task-agent approval commands must preserve the emitted logical member route/path plus concrete `task_agent_run_id` so approval is routed to the active task-scoped runtime, not to the logical member template. Approval status/projection events remain stream output only: stale/no-active/no-pending/interrupted approvals must not be queued as runtime input, start a new turn, restore a stopped run, or bypass member runtime state. Native approval requires an actual pending-approval marker; active auto-executing tool-batch membership alone is not enough authority for `APPROVE_TOOL` / `DENY_TOOL`.
-- Team member input is emitted as `EXTERNAL_USER_MESSAGE` from backend
+- Team member input is emitted as `MEMBER_INPUT_MESSAGE` from backend
   `MEMBER_INPUT` events. Those payloads carry stable message/dedupe identity,
   input origin, recipient member path/route key, optional sender identity, and
-  context-file locators so nested child transcripts show inbound prompts before
-  the responding assistant output.
+  context-file locators so local sends and nested child transcripts preserve
+  accepted user/input rows before the responding assistant output. True
+  external-channel ingress remains on `EXTERNAL_USER_MESSAGE`; internal
+  team/member accepted-input echoes must not be projected through the
+  external-channel message boundary.
 - `INTERRUPT_GENERATION` is a control request, not a send-readiness signal. Clients should leave the affected run/member in a sending or interrupted-in-flight state until the backend stream emits the terminal lifecycle/status projection (`TURN_COMPLETED`, `AGENT_STATUS { status: "idle", can_interrupt: false }`, or an error path) for that turn. Claude Agent SDK sessions in particular emit that projection only after their active query has been aborted/closed and the per-turn cleanup task has settled, so same-run follow-up chat does not reuse stale SDK process resources.
 - Segment order and segment identity are backend-owned. WebSocket handlers forward `SEGMENT_*` events in runtime emission order for both single-agent and team streams; clients should append/coalesce only when the backend-provided `segment_type` and `id` identify the same provider text or tool segment, not by turn-level heuristics or provider-specific UI repair logic.
 - `turn_id` is the canonical turn field for all outbound `SEGMENT_*` payloads. Native AutoByteus conversion strips segment-level `turnId` aliases; the WebSocket mapper normalizes any tolerated legacy alias back to `turn_id` before clients see it.
