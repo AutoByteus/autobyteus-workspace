@@ -1,5 +1,5 @@
-# Release Notes
+## Improvements
+- Consolidated server memory path ownership so standalone runs, team members, task agents, context files, and run-history metadata all use the same canonical memory layout boundary.
 
-- Fixed team chat messages so sent context files stay visible after a message is sent to an agent-team member.
-- Preserved image previews and file chips for team-member context attachments after backend confirmation and after conversation reloads.
-- Kept external-channel messages separate from normal team-member input echoes so future team messaging updates use the correct streaming path.
+## Fixes
+- Removed the obsolete standalone memory-layout path and versioned layout wiring that could let future run-memory changes drift across duplicate owners.
