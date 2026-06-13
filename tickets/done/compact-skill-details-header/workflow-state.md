@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: compact-skill-details-header
 - Current Stage: `10`
-- Next Stage: `Handoff / Ticket State`
+- Next Stage: `Complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-016`
+- Last Transition ID: `T-017`
 - Last Updated: 2026-06-13
 
 ## Stage 0 Bootstrap Record
@@ -42,7 +42,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/in-progress/compact-skill-details-header/api-e2e-testing.md` round 2 pass |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/in-progress/compact-skill-details-header/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/in-progress/compact-skill-details-header/docs-sync.md`; `autobyteus-web/docs/skills.md` updated |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | User verification received; release/publication/deployment not required per user |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/compact-skill-details-header/handoff-summary.md`; no release/version required per user; worktree and local branch cleaned up |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -68,6 +68,7 @@ See workflow skill `shared/workflow-state-template.md` for full contract.
 | T-014 | 2026-06-13 | 7 | 8 | Stage 7 round 2 passed with inline disclosure browser/unit/static evidence; move to code review and lock code edits. | N/A | Locked | `api-e2e-testing.md`, browser screenshot/DOM evidence |
 | T-015 | 2026-06-13 | 8 | 9 | Code review passed with all scorecard categories >= 9.0 and no findings. | N/A | Locked | `code-review.md` |
 | T-016 | 2026-06-13 | 9 | 10 | Docs sync completed; Skills frontend docs updated for compact header and inline disclosure. | N/A | Locked | `docs-sync.md`, `autobyteus-web/docs/skills.md` |
+| T-017 | 2026-06-13 | 10 | Complete | User verified; ticket archived, committed, branch pushed, merged to personal, no release/version required, worktree and local branch cleaned up. | N/A | Locked | `handoff-summary.md`, merge commit e6ba746f |
 
 ## Audible Notification Log (Optional Tracking)
 

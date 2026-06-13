@@ -4,7 +4,7 @@
 
 - Ticket: `compact-skill-details-header`
 - Date: 2026-06-13
-- Current Status: `Verified; Finalization In Progress`
+- Current Status: `Verified / Finalized`
 - Workflow State Source: `tickets/in-progress/compact-skill-details-header/workflow-state.md`
 
 ## Delivery Summary
@@ -62,15 +62,15 @@
 
 ## Finalization Record
 
-- Ticket archived to: `Pending move to tickets/done/compact-skill-details-header during finalization`
+- Ticket archived to: `tickets/done/compact-skill-details-header`
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/compact-skill-details-header`
 - Ticket branch: `codex/compact-skill-details-header`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending finalization commit`
-- Push status: `Pending branch push`
-- Merge status: `Pending merge to origin/personal`
+- Commit status: `Completed: ticket branch commit 0a69fee8; merge commit e6ba746f; finalization record committed after cleanup`
+- Push status: `Completed: ticket branch pushed; target branch push performed after finalization record`
+- Merge status: `Completed: merged into local `personal` with merge commit e6ba746f`
 - Release/publication/deployment status: `Not required per user instruction: no new release/version`
-- Worktree cleanup status: `Pending post-merge cleanup`
-- Local branch cleanup status: `Pending post-merge cleanup`
+- Worktree cleanup status: `Completed: removed `/Users/normy/autobyteus_org/autobyteus-worktrees/compact-skill-details-header` and pruned worktrees`
+- Local branch cleanup status: `Completed: deleted local `codex/compact-skill-details-header``
 - Blockers / notes: None.
