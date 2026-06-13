@@ -16,6 +16,7 @@ import {
   type TeamRunMemberInputEventPayload,
 } from "../../../domain/team-run-event.js";
 import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
+import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
@@ -191,6 +192,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForMemberRun(this.context.memberRunId);
     this.agentRun = null;
     this.commandStatusOverlayStore.clear();
   }

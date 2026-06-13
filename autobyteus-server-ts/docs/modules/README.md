@@ -17,6 +17,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
+| Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |
 | Application Backend Gateway | [application_backend_gateway.md](./application_backend_gateway.md) |
 | Application Communication Model | [application_communication_model.md](./application_communication_model.md) |
 | Application Capability | [application_capability.md](./application_capability.md) |

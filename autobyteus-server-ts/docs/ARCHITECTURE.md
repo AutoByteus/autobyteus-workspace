@@ -16,6 +16,7 @@ The TypeScript server follows a layered domain architecture:
 - Entry point: `src/app.ts`
 - Bootstrap-complete runtime graph: `src/server-runtime.ts`
 - REST routes: `src/api/rest`
+- Agent Tools MCP Streamable HTTP route: `src/agent-tools/mcp`
 - GraphQL schema/types: `src/api/graphql`
 - WebSocket routes: `src/api/websocket`
 - Startup orchestration: `src/startup`

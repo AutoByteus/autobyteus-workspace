@@ -1,0 +1,133 @@
+# Agent Tools MCP Server
+
+## Scope
+
+The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools
+to external runtimes through a session-scoped Streamable HTTP MCP endpoint. It
+is a server-hosted tool surface for process runtimes such as Antigravity CLI,
+Claude Code, or Codex-like clients that cannot call in-process AutoByteus tool
+wrappers directly.
+
+This module is distinct from [MCP Server Management](./mcp_server_management.md):
+MCP Server Management consumes and registers external MCP servers as AutoByteus
+tools, while the Agent Tools MCP Server exposes AutoByteus-owned tools outward
+to an MCP client.
+
+## TS Source
+
+- `src/agent-tools/mcp`
+- `src/agent-tools/mcp/providers`
+- route registration in `src/server-runtime.ts`
+- run/member lifecycle revocation hooks in:
+  - `src/agent-execution/services/agent-run-manager.ts`
+  - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
+
+## Public Endpoint
+
+Generated runtime descriptors use the reserved MCP server name
+`autobyteus_agent_tools` and the Streamable HTTP transport:
+
+```text
+/mcp/agent-tools/:sessionId
+```
+
+The same endpoint handles the MCP Streamable HTTP methods:
+
+- `POST` for JSON-RPC requests, notifications, and client responses.
+- `GET` for SSE compatibility with Streamable HTTP clients.
+- `OPTIONS` for local preflight handling.
+- `DELETE` currently returns `405 Method Not Allowed`; AutoByteus run/member
+  lifecycle remains the owner of session revocation.
+
+The route validates loopback-only `Origin` values when an origin header is
+present, requires a bearer capability token for authenticated methods, redacts
+unavailable or token-mismatched sessions as `404`, and supports the negotiated
+MCP protocol versions recognized by the route dispatcher.
+
+## Session And Descriptor Ownership
+
+`AgentToolMcpSessionService` creates session descriptors for runtime
+materializers. The descriptor includes:
+
+- `name: "autobyteus_agent_tools"`
+- `transport: "streamable_http"`
+- `serverUrl`
+- bearer `Authorization` header
+- `enabledTools`
+
+The secret descriptor is only for the runtime session that will consume it.
+Logs, diagnostics, and handoffs should use the redacted descriptor shape, which
+redacts both the bearer token and the session id in the URL.
+
+`AgentToolMcpSessionRegistry` stores only the token hash, owner identity, sender
+context, runtime kind, configured exposure snapshot, enabled tool list, creation
+time, expiry time, and optional execution observer. The default session TTL is
+12 hours. Sessions are revoked when their owning `AgentRun` is unregistered and
+when a mixed-team member handle is disposed.
+
+## Configured Tool Boundary
+
+The server-side session is the security boundary. `AgentToolMcpCatalog` derives
+the enabled MCP tool list from the agent's configured AutoByteus tool exposure
+and the server-supported MCP providers. A client-side `enabled_tools` field in a
+runtime config is only a narrowing/materialization convenience; editing it
+cannot grant access to tools that the session did not enable.
+
+`tools/list` returns only tools enabled for the resolved session, and
+`tools/call` rejects unknown or unconfigured tools before reaching any executor.
+
+## JSON-RPC Methods
+
+The v1 endpoint handles:
+
+- `initialize`
+- notifications such as `notifications/initialized` with `202 Accepted`
+- `tools/list`
+- `tools/call`
+- `resources/list` with an empty resource list
+- `resources/templates/list` with an empty template list
+- `ping`
+
+Malformed JSON, invalid JSON-RPC envelopes, unsupported protocol versions, bad
+content negotiation, bad origins, missing bearer tokens, and unavailable
+sessions fail before tool execution.
+
+## Supported Tools In V1
+
+The first supported MCP tool is `send_message_to`.
+
+`SendMessageToMcpDefinitionProvider` reuses the shared
+`src/agent-communication` public contract and parameter schema. Tool execution
+delegates through `AgentToolMcpToolExecutor` to the shared
+`SendMessageToDispatcher`, so selector semantics remain identical to the native
+AutoByteus, Codex dynamic-tool, and Claude first-party MCP projections:
+
+- `recipient_name` requires an active `MemberTeamContext` and routes through
+  team-local delivery.
+- `target_agent_run_id` is a live-only exact active-run selector.
+
+The MCP result mapper returns standard MCP text content and sets `isError` when
+the shared `AgentOperationResult` is not accepted.
+
+## Future Tool Adapters
+
+Future server-owned tools should be added by pairing:
+
+1. a definition provider that maps the canonical tool contract/schema into MCP
+   tool metadata, and
+2. an executor path that delegates to the existing server-owned service or
+   dispatcher.
+
+Do not reimplement business behavior inside the transport route. Browser,
+media, task-delegation, publish-artifacts, or other future tools must remain
+configuration-gated and should add durable route/session/executor coverage when
+they become supported on this MCP surface.
+
+## Out Of Scope For V1
+
+- production runtime MCP config materializers for Codex, Claude Code, or
+  Antigravity CLI;
+- persisted MCP sessions or restored-run rematerialization;
+- stale bearer-token config cleanup;
+- complex long-lived or resumable SSE server push; and
+- non-`send_message_to` server-owned MCP adapters.

@@ -100,11 +100,17 @@ native tool surfaces when the current agent/tool configuration includes it:
 - Codex receives dynamic tool registration/specs built from the shared contract.
 - Claude receives the first-party MCP tool/handler built from the shared
   contract.
+- External process runtimes can receive a session-scoped
+  `autobyteus_agent_tools` Streamable HTTP MCP descriptor from the Agent Tools
+  MCP Server. That surface also reuses this shared contract and dispatcher, and
+  its server-side session still gates exposure by the configured AutoByteus tool
+  set.
 
 Standalone configured runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_name` unless they are running with an active
 `MemberTeamContext`. Team members use the same shared dispatcher so selector
-semantics stay identical across AutoByteus, Codex, and Claude.
+semantics stay identical across AutoByteus, Codex, Claude, and the
+server-hosted Agent Tools MCP surface.
 
 ## Out Of Scope
 

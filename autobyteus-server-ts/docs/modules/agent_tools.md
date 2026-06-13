@@ -45,6 +45,27 @@ They cannot use `recipient_name` unless the run is actually executing as a team
 member. See [Agent Communication](./agent_communication.md) for the full selector
 and projection contract.
 
+## Server-Hosted Agent Tools MCP Server
+
+`src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
+session-scoped Streamable HTTP MCP surface for external runtimes that need to
+call server-owned agent tools. Runtime materializers receive descriptors for the
+reserved MCP server name `autobyteus_agent_tools` and endpoint
+`/mcp/agent-tools/:sessionId`.
+
+This server-hosted MCP surface is not the MCP Server Management subsystem.
+MCP Server Management imports external MCP servers into AutoByteus; the Agent
+Tools MCP Server exposes configured AutoByteus tools outward to an MCP client.
+
+The session service snapshots configured tool exposure, stores only a bearer
+token hash, derives `enabledTools` from server-supported definitions, and
+redacts secret descriptors for diagnostics. `tools/list` returns only tools
+enabled for that session, and `tools/call` rejects unknown or unconfigured tools
+before executor dispatch. V1 supports `send_message_to` by reusing the shared
+agent-communication contract and dispatcher. See
+[Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
+security, and future-adapter contract.
+
 ## Server-Owned Task Delegation Tools
 
 The server owns the first-party bounded task-delegation surface for team runs:

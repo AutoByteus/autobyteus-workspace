@@ -33,6 +33,7 @@ import {
   AgentRunMemoryRecorder,
   getAgentRunMemoryRecorder,
 } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentToolMcpSessionService } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -276,6 +277,7 @@ export class AgentRunManager {
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId);
     this.unregisterRunFileChanges(runId);
     this.unregisterPublishedArtifactRelay(runId);
     this.unregisterMemoryRecorder(runId);
