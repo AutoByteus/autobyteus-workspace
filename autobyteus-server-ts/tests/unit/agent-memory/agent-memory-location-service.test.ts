@@ -1,13 +1,28 @@
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import fs from "node:fs/promises";
+import os from "node:os";
+import { afterEach, describe, expect, it } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import type { TeamRunAgentMemberMetadata, TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
+import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
 
 const memoryDir = "/tmp/agent-memory-location-service-test";
 const layout = new AgentMemoryLayout(memoryDir);
+const tempDirs = new Set<string>();
+
+const mkTempDir = async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-service-"));
+  tempDirs.add(dir);
+  return dir;
+};
+
+afterEach(async () => {
+  await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  tempDirs.clear();
+});
 
 const agent = (
   memberRouteKey: string,
@@ -160,6 +175,28 @@ describe("AgentMemoryLocationService", () => {
       "review-child-team-run",
       "reviewer_opaque_id",
     ));
+  });
+
+  it("uses the explicit memoryDir for metadata-backed readback lookups", async () => {
+    const explicitMemoryDir = await mkTempDir();
+    await new TeamRunMetadataStore(explicitMemoryDir).writeMetadata(metadata.teamRunId, metadata);
+    const service = new AgentMemoryLocationService({ memoryDir: explicitMemoryDir });
+
+    const location = await service.resolveTeamMemberLocation({
+      teamRunId: metadata.teamRunId,
+      memberRunId: "writer_historical_opaque_id",
+    });
+
+    expect(location).toMatchObject({
+      rootTeamRunId: metadata.teamRunId,
+      memberRunId: "writer_historical_opaque_id",
+      memoryDir: path.join(
+        explicitMemoryDir,
+        "agent_teams",
+        metadata.teamRunId,
+        "writer_historical_opaque_id",
+      ),
+    });
   });
 
   it("derives task-agent memory under the logical member team path with the task-agent run id as the leaf", () => {

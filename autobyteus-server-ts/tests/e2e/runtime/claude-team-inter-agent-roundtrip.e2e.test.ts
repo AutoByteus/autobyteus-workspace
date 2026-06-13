@@ -5,13 +5,18 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -137,8 +142,10 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
   const createdWorkspaceRoots = new Set<string>();
+  let originalInternalServerBaseUrl: string | undefined;
 
   beforeAll(async () => {
+    originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "claude-team-runtime-e2e-appdata-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -162,6 +169,11 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
     if (testDataDir) {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
+    }
+    if (originalInternalServerBaseUrl) {
+      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
+    } else {
+      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     }
   });
 
@@ -227,6 +239,25 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
       throw result.errors[0];
     }
     return result.data as T;
+  };
+
+  const startClaudeRuntimeTestServer = async (): Promise<{
+    streamApp: FastifyInstance;
+    streamUrl: URL;
+  }> => {
+    const streamApp = fastify();
+    await registerAgentToolsMcpRoutes(streamApp);
+    await streamApp.register(websocket);
+    await registerAgentWebsocket(streamApp);
+    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+    seedInternalServerBaseUrlFromListenAddress({
+      requestedHost: "127.0.0.1",
+      listenAddress: streamApp.server.address(),
+    });
+    return {
+      streamApp,
+      streamUrl: new URL(streamAddress),
+    };
   };
 
   const fetchPreferredClaudeToolModelIdentifier = async (): Promise<string> => {
@@ -437,11 +468,7 @@ Rules:
 
       const pingToken = `ROUNDTRIP_PING:${unique}`;
       const pongToken = `ROUNDTRIP_PONG:${unique}`;
-      const streamApp = fastify();
-      await streamApp.register(websocket);
-      await registerAgentWebsocket(streamApp);
-      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-      const streamUrl = new URL(streamAddress);
+      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -556,13 +583,15 @@ Rules:
             expect(matchingToolCalls[0]?.toolArgs).toMatchObject({
               recipient_name: input.recipientMemberName,
               content: input.content,
-              message_type: expect.any(String),
             });
             expect(matchingToolResults[0]?.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
             expect(matchingToolResults[0]?.toolError).toBeNull();
-            expect(matchingToolResults[0]?.toolResult).toMatchObject({
-              accepted: true,
-            });
+            expect(matchingToolResults[0]?.toolResult).toMatchObject([
+              {
+                type: "text",
+                text: expect.stringContaining(`Delivered message to ${input.recipientMemberName}`),
+              },
+            ]);
             return;
           }
           await wait(1_000);
@@ -721,33 +750,36 @@ Rules:
         expect(sendMessageStartedEvents[0]?.payload.arguments).toMatchObject({
           recipient_name: input.recipientMemberName,
           content: input.content,
-          message_type: expect.any(String),
         });
         expect(sendMessageSucceededEvents[0]?.payload.arguments).toMatchObject({
           recipient_name: input.recipientMemberName,
           content: input.content,
-          message_type: expect.any(String),
         });
-        expect(sendMessageSucceededEvents[0]?.payload.result).toMatchObject({
-          accepted: true,
-        });
+        expect(sendMessageSucceededEvents[0]?.payload.result).toMatchObject([
+          {
+            type: "text",
+            text: expect.stringContaining(`Delivered message to ${input.recipientMemberName}`),
+          },
+        ]);
 
-        const rawMcpSendMessageEvents = streamMessages.filter((message) => {
+        const rawProviderSendMessageEvents = streamMessages.filter((message) => {
           const metadata =
             message.payload.metadata &&
             typeof message.payload.metadata === "object" &&
             !Array.isArray(message.payload.metadata)
               ? (message.payload.metadata as Record<string, unknown>)
               : {};
-          const toolName =
-            typeof message.payload.tool_name === "string"
-              ? message.payload.tool_name
-              : typeof metadata.tool_name === "string"
-                ? metadata.tool_name
-                : "";
-          return toolName.toLowerCase() === "mcp__autobyteus_team__send_message_to";
+          const payloadToolName =
+            typeof message.payload.tool_name === "string" ? message.payload.tool_name : null;
+          const metadataToolName =
+            typeof metadata.tool_name === "string" ? metadata.tool_name : null;
+          const toolName = payloadToolName ?? metadataToolName ?? "";
+          return [
+            "mcp__autobyteus_agent_tools__send_message_to",
+            "mcp__autobyteus_team__send_message_to",
+          ].includes(toolName.toLowerCase());
         });
-        expect(rawMcpSendMessageEvents).toHaveLength(0);
+        expect(rawProviderSendMessageEvents).toHaveLength(0);
 
         await waitForSendMessageMemoryTrace({
           ...input,
@@ -887,11 +919,7 @@ Rules:
       const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
-      const streamApp = fastify();
-      await streamApp.register(websocket);
-      await registerAgentWebsocket(streamApp);
-      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-      const streamUrl = new URL(streamAddress);
+      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1173,11 +1201,7 @@ Rules:
       createdTeamRunIds.add(teamRunId);
 
       const relayToken = `NESTED-RELAY:${unique}`;
-      const streamApp = fastify();
-      await streamApp.register(websocket);
-      await registerAgentWebsocket(streamApp);
-      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-      const streamUrl = new URL(streamAddress);
+      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1425,11 +1449,7 @@ Rules:
         }
       `;
 
-      const streamApp = fastify();
-      await streamApp.register(websocket);
-      await registerAgentWebsocket(streamApp);
-      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-      const streamUrl = new URL(streamAddress);
+      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1729,11 +1749,7 @@ Rules:
         }
       `;
 
-      const streamApp = fastify();
-      await streamApp.register(websocket);
-      await registerAgentWebsocket(streamApp);
-      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-      const streamUrl = new URL(streamAddress);
+      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );

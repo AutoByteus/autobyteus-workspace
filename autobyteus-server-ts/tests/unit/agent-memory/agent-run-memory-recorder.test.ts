@@ -128,4 +128,63 @@ describe("AgentRunMemoryRecorder", () => {
     unsubscribe();
     expect(listenerCount()).toBe(0);
   });
+
+  it("records canonical route-backed send_message_to tool traces with MCP content result shape", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { run } = createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir, recorder });
+    recorder.attachToRun(run);
+
+    run.emitLocalEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "call-send-message-1",
+      turn_id: "turn-send-message",
+      tool_name: "send_message_to",
+      arguments: {
+        recipient_name: "pong",
+        content: "hello pong",
+        message_type: "roundtrip_ping",
+      },
+    }));
+    run.emitLocalEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "call-send-message-1",
+      turn_id: "turn-send-message",
+      tool_name: "send_message_to",
+      arguments: {
+        recipient_name: "pong",
+        content: "hello pong",
+        message_type: "roundtrip_ping",
+      },
+      result: [
+        {
+          type: "text",
+          text: "Delivered message to pong.",
+        },
+      ],
+    }));
+    await recorder.waitForIdle("run-1");
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.toolName, trace.toolCallId])).toEqual([
+      ["tool_call", "send_message_to", "call-send-message-1"],
+      ["tool_result", "send_message_to", "call-send-message-1"],
+    ]);
+    expect(traces[0]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      toolArgs: {
+        recipient_name: "pong",
+        content: "hello pong",
+        message_type: "roundtrip_ping",
+      },
+    });
+    expect(traces[1]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      toolResult: [
+        {
+          type: "text",
+          text: "Delivered message to pong.",
+        },
+      ],
+      toolError: null,
+    });
+  });
 });

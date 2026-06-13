@@ -202,6 +202,22 @@ describe("TeamRunMetadataMapper", () => {
     const restoreContext = await mapper.buildRestoreContext(metadata);
     const rootRuntime = restoreContext.runtimeContext as MixedTeamRunContext;
     const subTeamContext = rootRuntime.memberContexts[0];
+    const restoredSubTeamConfig = restoreContext.config?.memberTree[0];
+    if (restoredSubTeamConfig?.memberKind !== "agent_team") {
+      throw new Error("Expected restored subteam config.");
+    }
+    const restoredReviewerConfig = restoredSubTeamConfig.memberConfigs.find(
+      (member) => member.memberKind === "agent" && member.memberRunId === "reviewer-opaque-run",
+    );
+    expect(restoredReviewerConfig).toMatchObject({
+      memberKind: "agent",
+      memoryDir: new AgentMemoryLocationService({ memoryDir: "/tmp/team-memory" })
+        .getTeamAgentRunLocation({
+          rootTeamRunId: "parent-1",
+          teamRunPath: ["child-review-1"],
+          agentRunId: "reviewer-opaque-run",
+        }).memoryDir,
+    });
 
     expect(subTeamContext).toMatchObject({
       memberKind: "agent_team",
@@ -256,10 +272,7 @@ describe("TeamRunMetadataMapper", () => {
         subscribeToEvents: vi.fn(() => () => undefined),
       }),
     });
-    const subTeamConfig = restoreContext.config?.memberTree[0];
-    if (subTeamConfig?.memberKind !== "agent_team") {
-      throw new Error("Expected restored subteam config.");
-    }
+    const subTeamConfig = restoredSubTeamConfig;
 
     const childRun = await subTeamRunFactory.createOrRestore({
       parentTeamRunId: metadata.teamRunId,

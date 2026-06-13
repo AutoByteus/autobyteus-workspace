@@ -32,7 +32,7 @@ describe("ClaudeSdkClient", () => {
       allowedTools: [
         "Skill",
         "send_message_to",
-        "mcp__autobyteus_team__send_message_to",
+        "mcp__autobyteus_agent_tools__send_message_to",
         "open_tab",
         "read_page",
         "mcp__autobyteus_browser__open_tab",
@@ -57,7 +57,7 @@ describe("ClaudeSdkClient", () => {
         allowedTools: expect.arrayContaining([
           "Skill",
           "send_message_to",
-          "mcp__autobyteus_team__send_message_to",
+          "mcp__autobyteus_agent_tools__send_message_to",
           "open_tab",
           "read_page",
           "mcp__autobyteus_browser__open_tab",

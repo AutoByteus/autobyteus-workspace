@@ -3,7 +3,7 @@ import { MemberTeamContext } from "../../../../../../src/agent-team-execution/do
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildClaudeTeamMcpServers } from "../../../../../../src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.js";
 
-const createExactRunOnlyMemberTeamContext = () =>
+const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
@@ -18,7 +18,7 @@ const createExactRunOnlyMemberTeamContext = () =>
   });
 
 describe("claude-team-mcp-server-builder", () => {
-  it("builds send_message_to MCP tooling for exact-run-only contexts without static recipients", async () => {
+  it("returns null when only send_message_to would have required team MCP tooling", async () => {
     const createToolDefinition = vi.fn((definition: Record<string, unknown>) => definition);
     const createMcpServer = vi.fn(async (definition: Record<string, unknown>) => ({
       ...definition,
@@ -29,27 +29,54 @@ describe("claude-team-mcp-server-builder", () => {
       runContext: {
         runId: "run-professor",
         runtimeContext: {
-          memberTeamContext: createExactRunOnlyMemberTeamContext(),
-          activeTurnId: "turn-1",
-          autoExecuteTools: true,
+          memberTeamContext: createMemberTeamContext(),
         },
       } as any,
       sdkClient: {
         createToolDefinition,
         createMcpServer,
       } as any,
-      requestToolApproval: null,
-      emitEvent: vi.fn(),
-      sendMessageToToolingEnabled: true,
+      enabledTaskDelegationToolNames: [],
+    });
+
+    expect(result).toBeNull();
+    expect(createToolDefinition).not.toHaveBeenCalled();
+    expect(createMcpServer).not.toHaveBeenCalled();
+  });
+
+  it("builds task-delegation MCP tooling only under autobyteus_team", async () => {
+    const createToolDefinition = vi.fn((definition: Record<string, unknown>) => definition);
+    const createMcpServer = vi.fn(async (definition: Record<string, unknown>) => ({
+      ...definition,
+      normalized: true,
+    }));
+
+    const result = await buildClaudeTeamMcpServers({
+      runContext: {
+        runId: "run-professor",
+        runtimeContext: {
+          memberTeamContext: createMemberTeamContext(),
+        },
+      } as any,
+      sdkClient: {
+        createToolDefinition,
+        createMcpServer,
+      } as any,
+      enabledTaskDelegationToolNames: ["delegate_tasks"],
     });
 
     expect(createToolDefinition).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "send_message_to" }),
+      expect.objectContaining({ name: "delegate_tasks" }),
     );
     expect(createMcpServer).toHaveBeenCalledWith(
       expect.objectContaining({
         name: "autobyteus_team",
-        tools: [expect.objectContaining({ name: "send_message_to" })],
+        tools: [expect.objectContaining({ name: "delegate_tasks" })],
+      }),
+    );
+    expect(createMcpServer).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        tools: expect.arrayContaining([expect.objectContaining({ name: "send_message_to" })]),
       }),
     );
     expect(result).toEqual({

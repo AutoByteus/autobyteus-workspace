@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 
 const {
   buildClaudeTeamMcpServersMock,
@@ -33,6 +34,16 @@ vi.mock(
 
 import { buildClaudeSessionMcpServers } from "../../../../../../src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.js";
 
+const fakeAgentToolsDescriptor: AgentToolMcpDescriptor = {
+  name: "autobyteus_agent_tools",
+  transport: "streamable_http",
+  serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
+  headers: {
+    Authorization: "Bearer fake-token",
+  },
+  enabledTools: ["send_message_to"],
+};
+
 describe("buildClaudeSessionMcpServers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -46,10 +57,9 @@ describe("buildClaudeSessionMcpServers", () => {
 
     const result = await buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: false,
+      publishArtifactsToolingEnabled: false,
       runContext: {} as any,
       sdkClient: {} as any,
-      requestToolApproval: null,
-      emitEvent: vi.fn(),
     });
 
     expect(buildClaudeTeamMcpServersMock).not.toHaveBeenCalled();
@@ -58,26 +68,29 @@ describe("buildClaudeSessionMcpServers", () => {
     });
   });
 
-  it("merges team and browser MCP servers when send-message tooling is enabled", async () => {
-    buildClaudeTeamMcpServersMock.mockResolvedValue({
-      autobyteus_team: { name: "team" },
-    });
+  it("merges Agent Tools and browser MCP servers when send-message tooling is enabled", async () => {
     buildClaudeBrowserMcpServersMock.mockResolvedValue({
       autobyteus_browser: { name: "browser" },
     });
 
     const result = await buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: true,
+      agentToolsMcpDescriptor: fakeAgentToolsDescriptor,
+      publishArtifactsToolingEnabled: false,
       runContext: { runId: "run-1" } as any,
       sdkClient: { sdk: true } as any,
-      requestToolApproval: vi.fn(),
-      emitEvent: vi.fn(),
     });
 
-    expect(buildClaudeTeamMcpServersMock).toHaveBeenCalledTimes(1);
+    expect(buildClaudeTeamMcpServersMock).not.toHaveBeenCalled();
     expect(buildClaudeBrowserMcpServersMock).toHaveBeenCalledTimes(1);
     expect(result).toEqual({
-      autobyteus_team: { name: "team" },
+      autobyteus_agent_tools: {
+        type: "http",
+        url: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
+        headers: {
+          Authorization: "Bearer fake-token",
+        },
+      },
       autobyteus_browser: { name: "browser" },
     });
   });
@@ -99,13 +112,10 @@ describe("buildClaudeSessionMcpServers", () => {
       publishArtifactsToolingEnabled: false,
       runContext: { runId: "run-1" } as any,
       sdkClient: { sdk: true } as any,
-      requestToolApproval: null,
-      emitEvent: vi.fn(),
     });
 
     expect(buildClaudeTeamMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        sendMessageToToolingEnabled: false,
         enabledTaskDelegationToolNames: [
           "delegate_tasks",
           "submit_task_result",
@@ -118,7 +128,21 @@ describe("buildClaudeSessionMcpServers", () => {
     });
   });
 
-  it("throws when team MCP configuration is required but unavailable", async () => {
+  it("throws when send_message_to tooling is enabled without an Agent Tools descriptor", async () => {
+    buildClaudeBrowserMcpServersMock.mockResolvedValue(null);
+
+    await expect(
+      buildClaudeSessionMcpServers({
+        sendMessageToToolingEnabled: true,
+        publishArtifactsToolingEnabled: false,
+        runContext: {} as any,
+        sdkClient: {} as any,
+      }),
+    ).rejects.toThrow(/CLAUDE_AGENT_TOOLS_MCP_DESCRIPTOR_MISSING/);
+    expect(buildClaudeTeamMcpServersMock).not.toHaveBeenCalled();
+  });
+
+  it("throws when task delegation MCP configuration is required but unavailable", async () => {
     buildClaudeTeamMcpServersMock.mockResolvedValue(null);
     buildClaudeBrowserMcpServersMock.mockResolvedValue({
       autobyteus_browser: { name: "browser" },
@@ -126,11 +150,11 @@ describe("buildClaudeSessionMcpServers", () => {
 
     await expect(
       buildClaudeSessionMcpServers({
-        sendMessageToToolingEnabled: true,
+        sendMessageToToolingEnabled: false,
+        taskDelegationToolingEnabled: true,
+        publishArtifactsToolingEnabled: false,
         runContext: {} as any,
         sdkClient: {} as any,
-        requestToolApproval: vi.fn(),
-        emitEvent: vi.fn(),
       }),
     ).rejects.toThrow(/CLAUDE_QUERY_MCP_UNAVAILABLE/);
   });
@@ -156,8 +180,6 @@ describe("buildClaudeSessionMcpServers", () => {
           },
         } as any,
         sdkClient: {} as any,
-        requestToolApproval: null,
-        emitEvent: vi.fn(),
       }),
     ).rejects.toThrow(
       /CLAUDE_MCP_SERVER_NAME_CONFLICT: MCP server 'autobyteus_image_audio' is already configured/,

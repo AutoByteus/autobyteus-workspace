@@ -1,6 +1,5 @@
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 
 type ClaudeCanUseToolOptions = {
@@ -206,10 +205,6 @@ export class ClaudeSessionToolUseCoordinator {
     if (!toolName) {
       return;
     }
-    if (isClaudeSendMessageMcpToolName(toolName)) {
-      this.consumeObservedToolInvocation(runContext.runId, invocationId);
-      return;
-    }
     this.upsertObservedToolInvocation(runContext.runId, invocationId, {
       toolName,
       toolInput: tracked?.toolInput ?? {},
@@ -411,9 +406,6 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.segmentStartedEmitted = true;
-    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
-      return;
-    }
     this.emitEvent(runContext, {
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
@@ -439,9 +431,6 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.lifecycleStartedEmitted = true;
-    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
-      return;
-    }
     this.emitEvent(runContext, {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
       params: {
@@ -463,9 +452,6 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.segmentEndedEmitted = true;
-    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
-      return;
-    }
     const metadata = {
       tool_name: observed.toolName,
       arguments: observed.toolInput,
@@ -494,9 +480,6 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.terminalLifecycleEmitted = true;
-    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
-      return;
-    }
     this.emitEvent(runContext, {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
