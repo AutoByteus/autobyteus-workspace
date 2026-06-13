@@ -5,13 +5,18 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
@@ -20,22 +25,30 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
-const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
-const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
+const codexBinaryReady =
+  spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
+const claudeBinaryReady =
+  spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
 const liveNestedMixedTestsEnabled =
   process.env.RUN_LMSTUDIO_E2E === "1" &&
   process.env.RUN_CODEX_E2E === "1" &&
   process.env.RUN_CLAUDE_E2E === "1";
 const describeNestedMixedRuntime =
-  codexBinaryReady && claudeBinaryReady && liveNestedMixedTestsEnabled ? describe : describe.skip;
-const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+  codexBinaryReady && claudeBinaryReady && liveNestedMixedTestsEnabled
+    ? describe
+    : describe.skip;
+const originalCodexApprovalPolicy =
+  process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 
-const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void> =>
+const waitForSocketOpen = (
+  socket: WebSocket,
+  timeoutMs = 10_000,
+): Promise<void> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(
       () => reject(new Error("Timed out waiting for websocket open")),
@@ -50,6 +63,20 @@ const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void>
       reject(error);
     });
   });
+
+const closeSocket = async (socket: WebSocket): Promise<void> => {
+  if (socket.readyState === WebSocket.CLOSED) {
+    return;
+  }
+  await new Promise<void>((resolve) => {
+    const timer = setTimeout(resolve, 2_000);
+    socket.once("close", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.close();
+  });
+};
 
 type WsMessage = {
   type: string;
@@ -75,12 +102,17 @@ type TeamRunMetadataPayload = {
 
 const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
   try {
-    const parsed = JSON.parse(raw.toString()) as { type?: unknown; payload?: unknown };
+    const parsed = JSON.parse(raw.toString()) as {
+      type?: unknown;
+      payload?: unknown;
+    };
     if (typeof parsed.type !== "string") {
       return null;
     }
     const payload =
-      parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+      parsed.payload &&
+      typeof parsed.payload === "object" &&
+      !Array.isArray(parsed.payload)
         ? (parsed.payload as Record<string, unknown>)
         : {};
     return { type: parsed.type, payload };
@@ -112,9 +144,14 @@ const waitForMessageAfter = async (
 
   const preview = messages
     .slice(Math.max(0, messages.length - 35))
-    .map((message) => `${message.type}:${JSON.stringify(message.payload).slice(0, 260)}`)
+    .map(
+      (message) =>
+        `${message.type}:${JSON.stringify(message.payload).slice(0, 260)}`,
+    )
     .join(" | ");
-  throw new Error(`Timed out waiting for team websocket message '${label}'. preview='${preview}'`);
+  throw new Error(
+    `Timed out waiting for team websocket message '${label}'. preview='${preview}'`,
+  );
 };
 
 const messageTextContains = (message: WsMessage, token: string): boolean => {
@@ -171,19 +208,24 @@ const sendTeamMessageOverSocket = (
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
-        content: input.content,
-        ...(input.targetMemberPath ? { target_member_path: input.targetMemberPath } : {}),
-        ...(input.targetMemberRouteKey ? { target_member_route_key: input.targetMemberRouteKey } : {}),
-        context_file_paths: [],
-        image_urls: [],
-      });
+    content: input.content,
+    ...(input.targetMemberPath
+      ? { target_member_path: input.targetMemberPath }
+      : {}),
+    ...(input.targetMemberRouteKey
+      ? { target_member_route_key: input.targetMemberRouteKey }
+      : {}),
+    context_file_paths: [],
+    image_urls: [],
+  });
 };
 
 const findMember = (
   members: MetadataMember[],
   memberName: string,
 ): MetadataMember => {
-  const member = members.find((candidate) => candidate.memberName === memberName) ?? null;
+  const member =
+    members.find((candidate) => candidate.memberName === memberName) ?? null;
   expect(member).toBeTruthy();
   return member as MetadataMember;
 };
@@ -200,215 +242,291 @@ const collectLeafMembers = (members: MetadataMember[]): MetadataMember[] => {
   return leafMembers;
 };
 
-describeNestedMixedRuntime("Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)", () => {
-  let schema: GraphQLSchema;
-  let graphql: typeof graphqlFn;
-  let testDataDir: string | null = null;
-  const createdAgentDefinitionIds = new Set<string>();
-  const createdTeamDefinitionIds = new Set<string>();
-  const createdTeamRunIds = new Set<string>();
-  const createdWorkspaceRoots = new Set<string>();
+describeNestedMixedRuntime(
+  "Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)",
+  () => {
+    let schema: GraphQLSchema;
+    let graphql: typeof graphqlFn;
+    let testDataDir: string | null = null;
+    let runtimeServerApp: FastifyInstance | null = null;
+    let runtimeServerUrl: URL;
+    let originalInternalServerBaseUrl: string | undefined;
+    const createdAgentDefinitionIds = new Set<string>();
+    const createdTeamDefinitionIds = new Set<string>();
+    const createdTeamRunIds = new Set<string>();
+    const createdWorkspaceRoots = new Set<string>();
 
-  beforeAll(async () => {
-    process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
-    testDataDir = await mkdtemp(path.join(os.tmpdir(), "nested-mixed-team-e2e-appdata-"));
-    await writeFile(
-      path.join(testDataDir, ".env"),
-      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
-      "utf-8",
-    );
-    appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    schema = await buildGraphqlSchema();
-    const require = createRequire(import.meta.url);
-    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
-    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
-    const graphqlModule = await import(graphqlPath);
-    graphql = graphqlModule.graphql as typeof graphqlFn;
-  });
+    beforeAll(async () => {
+      originalInternalServerBaseUrl =
+        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
+      testDataDir = await mkdtemp(
+        path.join(os.tmpdir(), "nested-mixed-team-e2e-appdata-"),
+      );
+      await writeFile(
+        path.join(testDataDir, ".env"),
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
+        "utf-8",
+      );
+      appConfigProvider.config.setCustomAppDataDir(testDataDir);
+      schema = await buildGraphqlSchema();
+      const require = createRequire(import.meta.url);
+      const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+      const graphqlPath = require.resolve("graphql", {
+        paths: [typeGraphqlRoot],
+      });
+      const graphqlModule = await import(graphqlPath);
+      graphql = graphqlModule.graphql as typeof graphqlFn;
 
-  afterAll(async () => {
-    if (typeof originalCodexApprovalPolicy === "string") {
-      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
-    } else {
-      delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-    }
-    for (const root of createdWorkspaceRoots) {
-      await rm(root, { recursive: true, force: true });
-    }
-    createdWorkspaceRoots.clear();
-    if (testDataDir) {
-      await rm(testDataDir, { recursive: true, force: true });
-      testDataDir = null;
-    }
-  });
+      runtimeServerApp = fastify();
+      await registerAgentToolsMcpRoutes(runtimeServerApp);
+      await runtimeServerApp.register(websocket);
+      await registerAgentWebsocket(runtimeServerApp);
+      const streamAddress = await runtimeServerApp.listen({
+        port: 0,
+        host: "127.0.0.1",
+      });
+      seedInternalServerBaseUrlFromListenAddress({
+        requestedHost: "127.0.0.1",
+        listenAddress: runtimeServerApp.server.address(),
+      });
+      runtimeServerUrl = new URL(streamAddress);
+    });
 
-  afterEach(async () => {
-    const exec = async <T>(query: string, variables?: Record<string, unknown>): Promise<T | null> => {
-      const result = await graphql({ schema, source: query, variableValues: variables });
-      return result.errors?.length ? null : (result.data as T);
-    };
+    afterAll(async () => {
+      if (typeof originalCodexApprovalPolicy === "string") {
+        process.env.CODEX_APP_SERVER_APPROVAL_POLICY =
+          originalCodexApprovalPolicy;
+      } else {
+        delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+      }
+      if (originalInternalServerBaseUrl) {
+        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
+          originalInternalServerBaseUrl;
+      } else {
+        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+      }
+      if (runtimeServerApp) {
+        await runtimeServerApp.close();
+        runtimeServerApp = null;
+      }
+      for (const root of createdWorkspaceRoots) {
+        await rm(root, { recursive: true, force: true });
+      }
+      createdWorkspaceRoots.clear();
+      if (testDataDir) {
+        await rm(testDataDir, { recursive: true, force: true });
+        testDataDir = null;
+      }
+    });
 
-    const terminateTeamRunMutation = `
+    afterEach(async () => {
+      const exec = async <T>(
+        query: string,
+        variables?: Record<string, unknown>,
+      ): Promise<T | null> => {
+        const result = await graphql({
+          schema,
+          source: query,
+          variableValues: variables,
+        });
+        return result.errors?.length ? null : (result.data as T);
+      };
+
+      const terminateTeamRunMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) {
           success
         }
       }
     `;
-    for (const teamRunId of createdTeamRunIds) {
-      await exec(terminateTeamRunMutation, { teamRunId });
-    }
-    createdTeamRunIds.clear();
+      for (const teamRunId of createdTeamRunIds) {
+        await exec(terminateTeamRunMutation, { teamRunId });
+      }
+      createdTeamRunIds.clear();
 
-    const deleteTeamDefinitionMutation = `
+      const deleteTeamDefinitionMutation = `
       mutation DeleteAgentTeamDefinition($id: String!) {
         deleteAgentTeamDefinition(id: $id) {
           success
         }
       }
     `;
-    for (const id of Array.from(createdTeamDefinitionIds).reverse()) {
-      await exec(deleteTeamDefinitionMutation, { id });
-    }
-    createdTeamDefinitionIds.clear();
+      for (const id of Array.from(createdTeamDefinitionIds).reverse()) {
+        await exec(deleteTeamDefinitionMutation, { id });
+      }
+      createdTeamDefinitionIds.clear();
 
-    const deleteAgentDefinitionMutation = `
+      const deleteAgentDefinitionMutation = `
       mutation DeleteAgentDefinition($id: String!) {
         deleteAgentDefinition(id: $id) {
           success
         }
       }
     `;
-    for (const id of createdAgentDefinitionIds) {
-      await exec(deleteAgentDefinitionMutation, { id });
-    }
-    createdAgentDefinitionIds.clear();
+      for (const id of createdAgentDefinitionIds) {
+        await exec(deleteAgentDefinitionMutation, { id });
+      }
+      createdAgentDefinitionIds.clear();
 
-    for (const root of createdWorkspaceRoots) {
-      await rm(root, { recursive: true, force: true });
-    }
-    createdWorkspaceRoots.clear();
-  });
+      for (const root of createdWorkspaceRoots) {
+        await rm(root, { recursive: true, force: true });
+      }
+      createdWorkspaceRoots.clear();
+    });
 
-  const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
-    const result = await graphql({ schema, source: query, variableValues: variables });
-    if (result.errors?.length) {
-      throw result.errors[0];
-    }
-    return result.data as T;
-  };
+    const execGraphql = async <T>(
+      query: string,
+      variables?: Record<string, unknown>,
+    ): Promise<T> => {
+      const result = await graphql({
+        schema,
+        source: query,
+        variableValues: variables,
+      });
+      if (result.errors?.length) {
+        throw result.errors[0];
+      }
+      return result.data as T;
+    };
 
-  const fetchAutoByteusModelIdentifier = async (): Promise<string> => {
-    const query = `
+    const fetchAutoByteusModelIdentifier = async (): Promise<string> => {
+      const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
           models { modelIdentifier }
         }
       }
     `;
-    const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
-    }>(query, { runtimeKind: RuntimeKind.AUTOBYTEUS });
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models.map((model) => model.modelIdentifier).filter(Boolean),
-    );
-    if (modelIdentifiers.length === 0) {
-      throw new Error("No AutoByteus/LMStudio model identifier was returned.");
-    }
-    const exactOverride = process.env.LMSTUDIO_MODEL_ID?.trim();
-    if (exactOverride && modelIdentifiers.includes(exactOverride)) {
-      return exactOverride;
-    }
-    const preferredFragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
-    return (
-      modelIdentifiers.find((modelIdentifier) => modelIdentifier.includes(preferredFragment)) ??
-      modelIdentifiers.find((modelIdentifier) => modelIdentifier.toLowerCase().includes("qwen")) ??
-      modelIdentifiers[0]!
-    );
-  };
+      const result = await execGraphql<{
+        availableLlmProvidersWithModels: Array<{
+          models: Array<{ modelIdentifier: string }>;
+        }>;
+      }>(query, { runtimeKind: RuntimeKind.AUTOBYTEUS });
+      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+        (provider) =>
+          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+      );
+      if (modelIdentifiers.length === 0) {
+        throw new Error(
+          "No AutoByteus/LMStudio model identifier was returned.",
+        );
+      }
+      const exactOverride = process.env.LMSTUDIO_MODEL_ID?.trim();
+      if (exactOverride && modelIdentifiers.includes(exactOverride)) {
+        return exactOverride;
+      }
+      const preferredFragment =
+        process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
+      return (
+        modelIdentifiers.find((modelIdentifier) =>
+          modelIdentifier.includes(preferredFragment),
+        ) ??
+        modelIdentifiers.find((modelIdentifier) =>
+          modelIdentifier.toLowerCase().includes("qwen"),
+        ) ??
+        modelIdentifiers[0]!
+      );
+    };
 
-  const fetchPreferredCodexModelIdentifier = async (): Promise<string> => {
-    const query = `
+    const fetchPreferredCodexModelIdentifier = async (): Promise<string> => {
+      const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
           models { modelIdentifier }
         }
       }
     `;
-    const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
-    }>(query, { runtimeKind: RuntimeKind.CODEX_APP_SERVER });
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models.map((model) => model.modelIdentifier).filter(Boolean),
-    );
-    if (modelIdentifiers.length === 0) {
-      throw new Error("No Codex runtime model identifier was returned.");
-    }
-    const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
-    if (override && modelIdentifiers.includes(override)) {
-      return override;
-    }
-    for (const preferred of [
-      "gpt-5.4-mini",
-      "gpt-5.3-codex",
-      "gpt-5.3-codex-spark",
-      "gpt-5.2-codex",
-      "gpt-5.1-codex-max",
-      "gpt-5.1-codex-mini",
-    ]) {
-      if (modelIdentifiers.includes(preferred)) {
-        return preferred;
+      const result = await execGraphql<{
+        availableLlmProvidersWithModels: Array<{
+          models: Array<{ modelIdentifier: string }>;
+        }>;
+      }>(query, { runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+        (provider) =>
+          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+      );
+      if (modelIdentifiers.length === 0) {
+        throw new Error("No Codex runtime model identifier was returned.");
       }
-    }
-    return modelIdentifiers.find((modelIdentifier) => modelIdentifier.includes("codex")) ?? modelIdentifiers[0]!;
-  };
+      const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
+      if (override && modelIdentifiers.includes(override)) {
+        return override;
+      }
+      for (const preferred of [
+        "gpt-5.4-mini",
+        "gpt-5.3-codex",
+        "gpt-5.3-codex-spark",
+        "gpt-5.2-codex",
+        "gpt-5.1-codex-max",
+        "gpt-5.1-codex-mini",
+      ]) {
+        if (modelIdentifiers.includes(preferred)) {
+          return preferred;
+        }
+      }
+      return (
+        modelIdentifiers.find((modelIdentifier) =>
+          modelIdentifier.includes("codex"),
+        ) ?? modelIdentifiers[0]!
+      );
+    };
 
-  const fetchPreferredClaudeModelIdentifier = async (): Promise<string> => {
-    const query = `
+    const fetchPreferredClaudeModelIdentifier = async (): Promise<string> => {
+      const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
           models { modelIdentifier }
         }
       }
     `;
-    const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
-    }>(query, { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK });
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models.map((model) => model.modelIdentifier).filter(Boolean),
-    );
-    if (modelIdentifiers.length === 0) {
-      throw new Error("No Claude runtime model identifier was returned.");
-    }
-    return modelIdentifiers.includes("haiku") ? "haiku" : modelIdentifiers[0]!;
-  };
+      const result = await execGraphql<{
+        availableLlmProvidersWithModels: Array<{
+          models: Array<{ modelIdentifier: string }>;
+        }>;
+      }>(query, { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK });
+      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+        (provider) =>
+          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+      );
+      if (modelIdentifiers.length === 0) {
+        throw new Error("No Claude runtime model identifier was returned.");
+      }
+      return modelIdentifiers.includes("haiku")
+        ? "haiku"
+        : modelIdentifiers[0]!;
+    };
 
-  const createAgentDefinition = async (input: {
-    name: string;
-    description: string;
-    instructions: string;
-  }): Promise<string> => {
-    const mutation = `
+    const createAgentDefinition = async (input: {
+      name: string;
+      description: string;
+      instructions: string;
+    }): Promise<string> => {
+      const mutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
         createAgentDefinition(input: $input) { id }
       }
     `;
-    const result = await execGraphql<{ createAgentDefinition: { id: string } }>(mutation, {
-      input: {
-        name: input.name,
-        role: "assistant",
-        description: input.description,
-        instructions: input.instructions,
-        category: "runtime-e2e",
-        toolNames: ["send_message_to"],
-      },
-    });
-    createdAgentDefinitionIds.add(result.createAgentDefinition.id);
-    return result.createAgentDefinition.id;
-  };
+      const result = await execGraphql<{
+        createAgentDefinition: { id: string };
+      }>(mutation, {
+        input: {
+          name: input.name,
+          role: "assistant",
+          description: input.description,
+          instructions: input.instructions,
+          category: "runtime-e2e",
+          toolNames: ["send_message_to"],
+        },
+      });
+      createdAgentDefinitionIds.add(result.createAgentDefinition.id);
+      return result.createAgentDefinition.id;
+    };
 
-  const fetchMetadata = async (teamRunId: string): Promise<TeamRunMetadataPayload> => {
-    const query = `
+    const fetchMetadata = async (
+      teamRunId: string,
+    ): Promise<TeamRunMetadataPayload> => {
+      const query = `
       query TeamResume($teamRunId: String!) {
         getTeamRunResumeConfig(teamRunId: $teamRunId) {
           teamRunId
@@ -417,44 +535,53 @@ describeNestedMixedRuntime("Nested mixed team runtime GraphQL e2e (live Codex + 
         }
       }
     `;
-    const result = await execGraphql<{
-      getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; metadata: TeamRunMetadataPayload };
-    }>(query, { teamRunId });
-    expect(result.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
-    return result.getTeamRunResumeConfig.metadata;
-  };
+      const result = await execGraphql<{
+        getTeamRunResumeConfig: {
+          teamRunId: string;
+          isActive: boolean;
+          metadata: TeamRunMetadataPayload;
+        };
+      }>(query, { teamRunId });
+      expect(result.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
+      return result.getTeamRunResumeConfig.metadata;
+    };
 
-  const openTeamSocket = async (teamRunId: string): Promise<{
-    streamApp: ReturnType<typeof fastify>;
-    socket: WebSocket;
-    messages: WsMessage[];
-  }> => {
-    const streamApp = fastify();
-    await streamApp.register(websocket);
-    await registerAgentWebsocket(streamApp);
-    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-    const streamUrl = new URL(streamAddress);
-    const socket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
-    const messages: WsMessage[] = [];
-    socket.on("message", (raw) => {
-      const parsed = parseWsMessage(raw);
-      if (parsed) {
-        messages.push(parsed);
-      }
-    });
-    await waitForSocketOpen(socket);
-    await waitForMessageAfter(messages, 0, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
-    return { streamApp, socket, messages };
-  };
+    const openTeamSocket = async (
+      teamRunId: string,
+    ): Promise<{
+      socket: WebSocket;
+      messages: WsMessage[];
+    }> => {
+      const streamUrl = runtimeServerUrl;
+      const socket = new WebSocket(
+        `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      );
+      const messages: WsMessage[] = [];
+      socket.on("message", (raw) => {
+        const parsed = parseWsMessage(raw);
+        if (parsed) {
+          messages.push(parsed);
+        }
+      });
+      await waitForSocketOpen(socket);
+      await waitForMessageAfter(
+        messages,
+        0,
+        (message) => message.type === "CONNECTED",
+        "CONNECTED",
+        15_000,
+      );
+      return { socket, messages };
+    };
 
-  it(
-    "launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores",
-    async () => {
+    it("launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores", async () => {
       const unique = randomUUID().replace(/-/g, "_");
       const autoByteusModelIdentifier = await fetchAutoByteusModelIdentifier();
       const codexModelIdentifier = await fetchPreferredCodexModelIdentifier();
       const claudeModelIdentifier = await fetchPreferredClaudeModelIdentifier();
-      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "nested-mixed-team-workspace-"));
+      const workspaceRootPath = await mkdtemp(
+        path.join(os.tmpdir(), "nested-mixed-team-workspace-"),
+      );
       createdWorkspaceRoots.add(workspaceRootPath);
 
       const commonInstructions = `
@@ -472,17 +599,20 @@ Rules:
 
       const programManagerAgentId = await createAgentDefinition({
         name: `nested-program-manager-${unique}`,
-        description: "AutoByteus parent coordinator for live nested mixed-team validation.",
+        description:
+          "AutoByteus parent coordinator for live nested mixed-team validation.",
         instructions: commonInstructions,
       });
       const reviewLeadAgentId = await createAgentDefinition({
         name: `nested-review-lead-${unique}`,
-        description: "Codex child coordinator for live nested mixed-team validation.",
+        description:
+          "Codex child coordinator for live nested mixed-team validation.",
         instructions: commonInstructions,
       });
       const qaSpecialistAgentId = await createAgentDefinition({
         name: `nested-qa-specialist-${unique}`,
-        description: "Claude child teammate for live nested mixed-team validation.",
+        description:
+          "Claude child teammate for live nested mixed-team validation.",
         instructions: commonInstructions,
       });
 
@@ -491,40 +621,64 @@ Rules:
           createAgentTeamDefinition(input: $input) { id }
         }
       `;
-      const childTeamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
-        createTeamDefinitionMutation,
-        {
-          input: {
-            name: `nested-build-squad-${unique}`,
-            description: "Nested child squad with Codex coordinator and Claude QA specialist.",
-            instructions: "Review lead coordinates with QA specialist for nested team validation only.",
-            coordinatorMemberName: "review_lead",
-            nodes: [
-              { memberName: "review_lead", ref: reviewLeadAgentId, refType: "AGENT", refScope: "SHARED" },
-              { memberName: "qa_specialist", ref: qaSpecialistAgentId, refType: "AGENT", refScope: "SHARED" },
-            ],
-          },
+      const childTeamDefinitionResult = await execGraphql<{
+        createAgentTeamDefinition: { id: string };
+      }>(createTeamDefinitionMutation, {
+        input: {
+          name: `nested-build-squad-${unique}`,
+          description:
+            "Nested child squad with Codex coordinator and Claude QA specialist.",
+          instructions:
+            "Review lead coordinates with QA specialist for nested team validation only.",
+          coordinatorMemberName: "review_lead",
+          nodes: [
+            {
+              memberName: "review_lead",
+              ref: reviewLeadAgentId,
+              refType: "AGENT",
+              refScope: "SHARED",
+            },
+            {
+              memberName: "qa_specialist",
+              ref: qaSpecialistAgentId,
+              refType: "AGENT",
+              refScope: "SHARED",
+            },
+          ],
         },
-      );
-      const childTeamDefinitionId = childTeamDefinitionResult.createAgentTeamDefinition.id;
+      });
+      const childTeamDefinitionId =
+        childTeamDefinitionResult.createAgentTeamDefinition.id;
       createdTeamDefinitionIds.add(childTeamDefinitionId);
 
-      const parentTeamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
-        createTeamDefinitionMutation,
-        {
-          input: {
-            name: `nested-parent-delivery-team-${unique}`,
-            description: "Parent team with AutoByteus coordinator and nested build squad.",
-            instructions: "Program manager delegates work to the nested build squad.",
-            coordinatorMemberName: "program_manager",
-            nodes: [
-              { memberName: "program_manager", ref: programManagerAgentId, refType: "AGENT", refScope: "SHARED" },
-              { memberName: "BuildSquad", ref: childTeamDefinitionId, refType: "AGENT_TEAM", refScope: "SHARED" },
-            ],
-          },
+      const parentTeamDefinitionResult = await execGraphql<{
+        createAgentTeamDefinition: { id: string };
+      }>(createTeamDefinitionMutation, {
+        input: {
+          name: `nested-parent-delivery-team-${unique}`,
+          description:
+            "Parent team with AutoByteus coordinator and nested build squad.",
+          instructions:
+            "Program manager delegates work to the nested build squad.",
+          coordinatorMemberName: "program_manager",
+          nodes: [
+            {
+              memberName: "program_manager",
+              ref: programManagerAgentId,
+              refType: "AGENT",
+              refScope: "SHARED",
+            },
+            {
+              memberName: "BuildSquad",
+              ref: childTeamDefinitionId,
+              refType: "AGENT_TEAM",
+              refScope: "SHARED",
+            },
+          ],
         },
-      );
-      const parentTeamDefinitionId = parentTeamDefinitionResult.createAgentTeamDefinition.id;
+      });
+      const parentTeamDefinitionId =
+        parentTeamDefinitionResult.createAgentTeamDefinition.id;
       createdTeamDefinitionIds.add(parentTeamDefinitionId);
 
       const createTeamRunMutation = `
@@ -533,7 +687,11 @@ Rules:
         }
       `;
       const createTeamRunResult = await execGraphql<{
-        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+        createAgentTeamRun: {
+          success: boolean;
+          message: string;
+          teamRunId: string | null;
+        };
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId: parentTeamDefinitionId,
@@ -573,15 +731,16 @@ Rules:
       });
       expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
       expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
-      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      const teamRunId = createTeamRunResult.createAgentTeamRun
+        .teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
-      const activeParentRun = AgentTeamRunManager.getInstance().getTeamRun(teamRunId);
+      const activeParentRun =
+        AgentTeamRunManager.getInstance().getTeamRun(teamRunId);
       expect(activeParentRun?.teamBackendKind).toBe(TeamBackendKind.MIXED);
-      expect(activeParentRun?.config?.memberTree.map((member) => member.memberName)).toEqual([
-        "program_manager",
-        "BuildSquad",
-      ]);
+      expect(
+        activeParentRun?.config?.memberTree.map((member) => member.memberName),
+      ).toEqual(["program_manager", "BuildSquad"]);
 
       const parentToSubteamToken = `NESTED_PARENT_TO_SUBTEAM_${unique}`;
       const childToClaudeToken = `NESTED_CODEX_TO_CLAUDE_${unique}`;
@@ -612,14 +771,29 @@ Rules:
             message.payload.senderMemberRouteKey === "program_manager" &&
             message.payload.receiverMemberKind === "agent" &&
             message.payload.receiverMemberName === "review_lead" &&
-            samePath(message.payload.receiverMemberPath, ["BuildSquad", "review_lead"]) &&
-            message.payload.receiverMemberRouteKey === "BuildSquad/review_lead" &&
+            samePath(message.payload.receiverMemberPath, [
+              "BuildSquad",
+              "review_lead",
+            ]) &&
+            message.payload.receiverMemberRouteKey ===
+              "BuildSquad/review_lead" &&
             typeof message.payload.receiverRepresentedSubTeam === "object" &&
             !Array.isArray(message.payload.receiverRepresentedSubTeam) &&
-            (message.payload.receiverRepresentedSubTeam as Record<string, unknown>).memberName === "BuildSquad" &&
-            (message.payload.receiverRepresentedSubTeam as Record<string, unknown>).memberRouteKey === "BuildSquad" &&
+            (
+              message.payload.receiverRepresentedSubTeam as Record<
+                string,
+                unknown
+              >
+            ).memberName === "BuildSquad" &&
+            (
+              message.payload.receiverRepresentedSubTeam as Record<
+                string,
+                unknown
+              >
+            ).memberRouteKey === "BuildSquad" &&
             message.payload.receiver === undefined &&
-            message.payload.content === `Reply with exactly ${parentToSubteamToken} and nothing else.`,
+            message.payload.content ===
+              `Reply with exactly ${parentToSubteamToken} and nothing else.`,
           "parent communication event to represented child receiver",
         );
 
@@ -652,7 +826,10 @@ Rules:
           (message) =>
             message.type === "TOOL_EXECUTION_SUCCEEDED" &&
             message.payload.agent_name === "review_lead" &&
-            samePath(message.payload.source_path, ["BuildSquad", "review_lead"]) &&
+            samePath(message.payload.source_path, [
+              "BuildSquad",
+              "review_lead",
+            ]) &&
             message.payload.tool_name === "send_message_to",
           "child coordinator send_message_to tool execution",
         );
@@ -669,22 +846,33 @@ Rules:
           "Claude child teammate response bridged to parent stream",
         );
       } finally {
-        firstConnection.socket.close();
-        await firstConnection.streamApp.close();
+        await closeSocket(firstConnection.socket);
       }
 
       await wait(2_500);
       const metadataBeforeTerminate = await fetchMetadata(teamRunId);
-      const parentMember = findMember(metadataBeforeTerminate.memberTree, "program_manager");
-      const subTeamMember = findMember(metadataBeforeTerminate.memberTree, "BuildSquad");
+      const parentMember = findMember(
+        metadataBeforeTerminate.memberTree,
+        "program_manager",
+      );
+      const subTeamMember = findMember(
+        metadataBeforeTerminate.memberTree,
+        "BuildSquad",
+      );
       expect(parentMember.memberKind).toBe("agent");
       expect(parentMember.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
       expect(parentMember.platformAgentRunId).toBeTruthy();
       expect(subTeamMember.memberKind).toBe("agent_team");
       expect(subTeamMember.teamRunId).toBeTruthy();
       const childTeamRunId = subTeamMember.teamRunId as string;
-      const reviewLeadBefore = findMember(subTeamMember.memberTree ?? [], "review_lead");
-      const qaSpecialistBefore = findMember(subTeamMember.memberTree ?? [], "qa_specialist");
+      const reviewLeadBefore = findMember(
+        subTeamMember.memberTree ?? [],
+        "review_lead",
+      );
+      const qaSpecialistBefore = findMember(
+        subTeamMember.memberTree ?? [],
+        "qa_specialist",
+      );
       expect(reviewLeadBefore.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
       expect(qaSpecialistBefore.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
       expect(reviewLeadBefore.platformAgentRunId).toBeTruthy();
@@ -708,17 +896,18 @@ Rules:
         `,
         { limitPerAgent: 20 },
       );
-      const listedTeamRunIds = workspaceHistory.listWorkspaceRunHistory.flatMap((workspace) =>
-        workspace.teamDefinitions.flatMap((teamDefinition) =>
-          teamDefinition.runs.map((run) => run.teamRunId),
-        ),
+      const listedTeamRunIds = workspaceHistory.listWorkspaceRunHistory.flatMap(
+        (workspace) =>
+          workspace.teamDefinitions.flatMap((teamDefinition) =>
+            teamDefinition.runs.map((run) => run.teamRunId),
+          ),
       );
       expect(listedTeamRunIds).toContain(teamRunId);
       expect(listedTeamRunIds).not.toContain(childTeamRunId);
 
-      const leafRunIdsBeforeTerminate = collectLeafMembers(metadataBeforeTerminate.memberTree).map(
-        (member) => member.memberRunId,
-      );
+      const leafRunIdsBeforeTerminate = collectLeafMembers(
+        metadataBeforeTerminate.memberTree,
+      ).map((member) => member.memberRunId);
       const terminateMutation = `
         mutation TerminateAgentTeamRun($teamRunId: String!) {
           terminateAgentTeamRun(teamRunId: $teamRunId) { success message }
@@ -728,9 +917,14 @@ Rules:
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId });
       expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
-      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(teamRunId);
-      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(childTeamRunId);
-      const activeAgentRunIdsAfterTerminate = AgentRunManager.getInstance().listActiveRuns();
+      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(
+        teamRunId,
+      );
+      expect(AgentTeamRunManager.getInstance().listActiveRuns()).not.toContain(
+        childTeamRunId,
+      );
+      const activeAgentRunIdsAfterTerminate =
+        AgentRunManager.getInstance().listActiveRuns();
       for (const leafRunId of leafRunIdsBeforeTerminate) {
         expect(activeAgentRunIdsAfterTerminate).not.toContain(leafRunId);
       }
@@ -741,11 +935,16 @@ Rules:
         }
       `;
       const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+        restoreAgentTeamRun: {
+          success: boolean;
+          message: string;
+          teamRunId: string | null;
+        };
       }>(restoreMutation, { teamRunId });
       expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
       expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
-      const activeTeamRunsAfterRestore = AgentTeamRunManager.getInstance().listActiveRuns();
+      const activeTeamRunsAfterRestore =
+        AgentTeamRunManager.getInstance().listActiveRuns();
       expect(activeTeamRunsAfterRestore).toContain(teamRunId);
       expect(activeTeamRunsAfterRestore).not.toContain(childTeamRunId);
 
@@ -768,24 +967,35 @@ Rules:
           "restored child coordinator response bridged to parent stream",
         );
       } finally {
-        restoredConnection.socket.close();
-        await restoredConnection.streamApp.close();
+        await closeSocket(restoredConnection.socket);
       }
 
       await wait(2_500);
       const metadataAfterRestore = await fetchMetadata(teamRunId);
-      const restoredSubTeam = findMember(metadataAfterRestore.memberTree, "BuildSquad");
+      const restoredSubTeam = findMember(
+        metadataAfterRestore.memberTree,
+        "BuildSquad",
+      );
       expect(restoredSubTeam.teamRunId).toBe(childTeamRunId);
-      const restoredReviewLead = findMember(restoredSubTeam.memberTree ?? [], "review_lead");
-      const restoredQaSpecialist = findMember(restoredSubTeam.memberTree ?? [], "qa_specialist");
-      expect(restoredReviewLead.platformAgentRunId).toBe(reviewLeadBefore.platformAgentRunId);
-      expect(restoredQaSpecialist.platformAgentRunId).toBe(qaSpecialistBefore.platformAgentRunId);
+      const restoredReviewLead = findMember(
+        restoredSubTeam.memberTree ?? [],
+        "review_lead",
+      );
+      const restoredQaSpecialist = findMember(
+        restoredSubTeam.memberTree ?? [],
+        "qa_specialist",
+      );
+      expect(restoredReviewLead.platformAgentRunId).toBe(
+        reviewLeadBefore.platformAgentRunId,
+      );
+      expect(restoredQaSpecialist.platformAgentRunId).toBe(
+        qaSpecialistBefore.platformAgentRunId,
+      );
 
       const finalTerminateResult = await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId });
       expect(finalTerminateResult.terminateAgentTeamRun.success).toBe(true);
-    },
-    720_000,
-  );
-});
+    }, 720_000);
+  },
+);

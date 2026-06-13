@@ -1,6 +1,4 @@
 import { composeMemberRunInstructions } from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
-import { buildSendMessageToDynamicToolRegistrations } from "../agent-communication/codex-send-message-dynamic-tool-registration.js";
-import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { buildTaskDelegationDynamicToolRegistrations } from "../task-delegation/build-task-delegation-dynamic-tool-registrations.js";
 import type {
   CodexThreadBootstrapPreparation,
@@ -76,16 +74,6 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       ]),
       developerInstructions: instructionComposition.runtimeInstruction,
       dynamicToolRegistrations: mergeDynamicToolRegistrations(
-        sendMessageToEnabled
-          ? buildSendMessageToDynamicToolRegistrations({
-              sender: buildAgentRunMessageSenderContext({
-                senderRunId: input.runContext.runId,
-                senderName: memberTeamContext.memberName,
-                runtimeKind: input.runContext.config.runtimeKind,
-                memberTeamContext,
-              }),
-            })
-          : null,
         buildTaskDelegationDynamicToolRegistrations({
           memberTeamContext,
           enabledToolNames: taskDelegationToolNames,

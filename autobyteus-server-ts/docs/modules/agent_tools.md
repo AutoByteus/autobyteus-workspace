@@ -25,9 +25,11 @@ Browser-tool support is runtime-gated:
 `send_message_to` is the shared first-party agent communication tool. Its
 canonical contract, selector parsing, runtime-neutral dispatcher, direct
 exact-run routing, and optional direct-message grants live under
-`src/agent-communication`; AutoByteus, Codex, and Claude adapters project that
-same contract through their own tool surfaces when the current configuration
-includes `send_message_to`.
+`src/agent-communication`; AutoByteus, Codex, and Claude adapters project the
+same contract through their configured runtime surfaces. Claude Agent SDK now
+projects `send_message_to` through the server-hosted
+`autobyteus_agent_tools` MCP descriptor instead of a Claude-specific
+`autobyteus_team` send-message handler.
 
 The tool accepts exactly one target selector:
 
@@ -62,7 +64,11 @@ token hash, derives `enabledTools` from server-supported definitions, and
 redacts secret descriptors for diagnostics. `tools/list` returns only tools
 enabled for that session, and `tools/call` rejects unknown or unconfigured tools
 before executor dispatch. V1 supports `send_message_to` by reusing the shared
-agent-communication contract and dispatcher. See
+agent-communication contract and dispatcher. Claude Agent SDK materializes this
+surface only when `send_message_to` is configured, using
+`mcp__autobyteus_agent_tools__send_message_to` as the provider wire name while
+application events, run history, and memory expose canonical `send_message_to`.
+See
 [Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
 security, and future-adapter contract.
 
@@ -90,7 +96,9 @@ Runtime projection is explicit and uses the same manifest/service boundary:
 - Codex receives dynamic tool registrations built from the task-delegation
   manifest.
 - Claude receives first-party MCP tools on the team MCP server, built from the
-  same manifest and service.
+  same manifest and service. That Claude `autobyteus_team` MCP server is
+  task-delegation-only for these tools; `send_message_to` is not registered
+  there after the Agent Tools MCP cutover.
 - Tool availability is configuration-driven. Runtime adapters must not expose
   these tools when the member is not configured for them, and this layer must
   not add provider `tool_choice` policy, forced-tool dampening, or

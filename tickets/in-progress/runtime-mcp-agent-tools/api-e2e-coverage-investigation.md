@@ -8,122 +8,154 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/code-review-report.md`
-- Current Investigation Round: 2
-- Trigger: Refreshed code-review round 2 pass after the design-impact memory/run-history fix and coverage-code re-review; updated during round 2 after the first live recheck exposed a stale optional `message_type` assertion in the durable E2E.
-- Prior Investigation Reviewed: Round 1 in this file plus `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-execution-coverage-report.md`; upstream done-ticket artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/done/streamable-mcp-runtime-tools/` remain lineage.
-- Latest Authoritative Investigation: Round 2 in this file, updated before the new durable E2E assertion edit.
+- Current Investigation Round: 4
+- Trigger: Code review round 6 pass after implementation local fix for mixed AutoByteus+Codex restore metadata-root failure; resume final API/E2E sign-off for all active runtime communication.
+- Prior Investigation Reviewed: Round 2 in this file plus `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-execution-coverage-report.md`; requirement-gap and design-correction artifacts `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-runtime-communication-scope-gap.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/requirement-gap-runtime-communication-matrix-response.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/codex-mcp-materializer-design-correction.md`.
+- Latest Authoritative Investigation: Round 4 in this file, updated after the local-fix recheck before final handoff.
 
 ## Current Requirement And Design Basis
 
-The current reviewed behavior remains a clean-cut Claude Agent SDK materializer for the server-hosted `autobyteus_agent_tools` MCP server. When and only when `send_message_to` is configured for a Claude runtime session, `ClaudeSession` must create or reuse a live in-memory `AgentToolMcpDescriptor`, pass the descriptor as a Claude SDK HTTP MCP server config, and allow `mcp__autobyteus_agent_tools__send_message_to`. Claude must no longer expose `send_message_to` through the in-process `autobyteus_team` MCP server; `autobyteus_team` remains task-delegation-only.
+The current accepted scope is not Claude-only. Active runtime kinds in this branch are `autobyteus`, `codex_app_server`, and `claude_agent_sdk`, and delivery requires E2E evidence for the all-active-runtime `send_message_to` teammate communication matrix.
 
-Round 2 adds the design-impact memory/run-history basis: route-backed Claude `send_message_to` must persist `tool_call` and `tool_result` raw traces only through canonical AgentRun lifecycle events and `AgentRunMemoryRecorder` / `RuntimeMemoryEventAccumulator`. Executable non-AutoByteus mixed-team members must receive concrete `memoryDir` values from upstream owners before AgentRun creation; `MixedAgentMemberHandle` may fail fast but must not derive a fallback. Memory readback through `getTeamMemberRunMemoryView(... includeRawTraces: true ...)` must read the same configured app memory root used by the writer.
+Current runtime entry adapters are:
 
-The implementation handoff's Legacy / Compatibility Removal Check and code-review round 2 are clean: no backward-compatibility mechanism was introduced, no old behavior is intentionally retained in production, obsolete Claude handler/definition/unit-test paths were removed, the rejected member-handle memoryDir fallback is not present, and the durable E2E result expectation now requires the MCP text-content result shape rather than old `{ accepted: true }` handler semantics.
+- AutoByteus native: local `AutoByteusSendMessageToTool` into `SendMessageToDispatcher`.
+- Codex App Server: thread-scoped `config.mcp_servers.autobyteus_agent_tools` generated from a private `AgentToolMcpDescriptor`, then Codex app-server calls `/mcp/agent-tools/:sessionId`; Codex dynamic `send_message_to` is removed and must not be used as fallback.
+- Claude Agent SDK: programmatic SDK HTTP MCP server config `autobyteus_agent_tools` and allowed tool `mcp__autobyteus_agent_tools__send_message_to`; the old `autobyteus_team` `send_message_to` path remains deleted.
+
+All runtime entries must converge on the shared `SendMessageToDispatcher` / team delivery spine. Matrix rows must prove sender tool execution through the sender runtime adapter, canonical application-facing `send_message_to` lifecycle where emitted, team communication projection, recipient runtime input acceptance, no old Claude provider wire-name, no Codex dynamic fallback marker, and no Agent Tools MCP bearer/header/descriptor leak. Memory/raw traces are required where recordable and contractual, especially for route-backed external sender rows.
+
+The implementation handoff Legacy / Compatibility Removal Check is clean: no old Claude send-message path, no Codex dynamic `send_message_to` fallback, no process-level or file-backed Codex bearer config, no persisted descriptors, and no route-side raw-trace writer. Code review round 5 passed with no blocking findings after fixing Codex event-payload provider/secret leakage.
 
 ## Changed Behavior Summary
 
 | Behavior / Boundary | Change Type (`Added`/`Changed`/`Removed`/`Preserved`/`Unclear`) | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| Claude Agent SDK receives `autobyteus_agent_tools` HTTP MCP config from `AgentToolMcpDescriptor` when `send_message_to` is configured | Added | REQ-RMCP-001/003/012, AC-RMCP-001/004/005, DS-RMCP-001/003, implementation handoff | Retain and execute materializer/session/SDK-option coverage and real Claude E2E; no raw descriptor should appear outside private runtime config. |
-| Claude allowed tool name for server-hosted send-message | Changed | REQ-RMCP-004, AC-RMCP-002, DS-RMCP-004 | Durable assertions must use `mcp__autobyteus_agent_tools__send_message_to`; no current coverage should expect production use of `mcp__autobyteus_team__send_message_to`. |
-| Claude `autobyteus_team` in-process MCP server | Changed / Removed old responsibility | REQ-RMCP-005/006/011, AC-RMCP-003/007/009, design Legacy Removal Policy | Existing unit coverage for task delegation remains valid; old handler/definition/unit-test coverage stays deleted. |
-| Claude event/history/memory canonicalization | Changed | REQ-RMCP-007/008/009/018, AC-RMCP-006/014, DS-RMCP-004/007 | Tests must prove raw provider MCP names normalize to canonical `send_message_to`, are not suppressed, persist as memory traces, and preserve MCP content result shape. |
-| Agent Tools MCP route/session/content negotiation/bearer/session-denial behavior | Preserved from upstream base branch | Upstream `streamable-mcp-runtime-tools` coverage; AC-RMCP-008 | Existing route integration coverage is still valid and should be rerun as the route-backed transport proof. |
-| Mixed-team member runtime-memory invariant | Added / tightened | REQ-RMCP-013..019, AC-RMCP-011..016, DS-RMCP-007/008, design review round 2 | Execute memory/mixed-team invariant suites plus live E2E memory readback. |
-| Live Claude E2E harness and route-backed result expectation | Updated before this round and re-reviewed by code review round 2; optional `message_type` assertion needs a round-2 coverage update | Prior API/E2E round, implementation handoff, code-review round 2, round-2 live failure evidence | Keep route/result/provider leak assertions, but do not require the optional `message_type` field in live model tool arguments or raw traces. |
-| Browser/media/publish-artifacts/task-delegation Claude MCP surfaces | Preserved except `send_message_to` removal from `autobyteus_team` | UC-RMCP-003/006, REQ-RMCP-011, AC-RMCP-009 | Keep existing focused unit coverage; no durable Agent Tools MCP coverage for these deferred tool families. |
-| Codex App Server, Claude Code CLI, Antigravity materializers | Preserved out of scope / deferred | Requirements Out of Scope and DS-RMCP-006 | Do not add coverage for these runtime materializers in this ticket. |
+| Claude Agent SDK `send_message_to` via Agent Tools MCP | Changed | REQ/DS Claude materializer sections, AC-RMCP-001..015 | Existing Claude live E2E remains valid and should be rerun or recorded from prior pass; no old `mcp__autobyteus_team__send_message_to` expectation. |
+| Codex App Server `send_message_to` via thread-scoped Agent Tools MCP config | Changed | Codex MCP materializer correction, DS-RMCP-006/007, AC-RMCP-024..029 | Existing Codex send-message E2Es need route-backed runtime server setup before Codex bootstrap; dynamic-tool wording/assertions are stale. |
+| Codex dynamic `send_message_to` registration/spec builder | Removed | Requirements recommendations, implementation handoff, code review static scans | Any durable E2E that depends on Codex dynamic send-message must be updated. Non-send-message dynamic tools remain valid. |
+| AutoByteus native `send_message_to` local wrapper | Preserved | Requirement matrix response and DS-RMCP-011 | Existing AutoByteus same-runtime E2E remains valid, gated by `RUN_LMSTUDIO_E2E=1`. |
+| All-active-runtime matrix | Added acceptance coverage | REQ API/E2E refinement, DS-RMCP-011, AC-RMCP-017..023 | Add focused durable E2E for missing mixed rows; map existing same-runtime and AutoByteus/Codex rows. |
+| Agent Tools MCP descriptor/bearer/no-leak requirement | Preserved and extended to Codex | Requirements, code-review round 5 | Durable and executable checks must reject `autobyteus_agent_tools`, `mcp__autobyteus_agent_tools__send_message_to`, `Authorization`, `Bearer`, and `http_headers` from app-facing event payloads where relevant. |
 
 ## Existing Durable Coverage Inventory
 
-| Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Evidence | Action |
+| Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts` | Descriptor maps to `{ autobyteus_agent_tools: { type: "http", url, headers } }`; enabled tools are not copied into SDK config; allowed tool helper is `mcp__autobyteus_agent_tools__send_message_to` | REQ-RMCP-003/004/009/012, AC-RMCP-001/002 | Still Valid | Static inspection and code review round 2 match current design. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts` | Configured/unconfigured gates, standalone/member sender context, descriptor expiry refresh, new allowed tool | REQ-RMCP-001/002/004/005/009/010/012, AC-RMCP-002/004/005 | Still Valid | Covers the core Claude-session materializer and descriptor refresh requirements. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts` | Merges Agent Tools MCP separately; throws if send-message enabled without descriptor; `autobyteus_team` remains task-only; duplicate server names reject | REQ-RMCP-003/005/011/012, AC-RMCP-003/009 | Still Valid | Matches DS-RMCP-003 and no-compatibility cutover. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.test.ts` | Builds task-delegation tools only under `autobyteus_team` and omits send-message | REQ-RMCP-005/006/011, AC-RMCP-003/007/009 | Still Valid | Confirms old in-process send-message path is not retained. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts` | Remote MCP `tool_use`/`tool_result` lifecycle for `mcp__autobyteus_agent_tools__send_message_to` emits generic lifecycle and is later canonicalized | REQ-RMCP-007/008/018, AC-RMCP-006/014 | Still Valid | Old duplicate suppression is removed; unit fixtures use the new provider wire name. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` | Converts Agent Tools MCP send-message provider name to canonical `send_message_to` for segment and lifecycle events | REQ-RMCP-007/008/009/018, AC-RMCP-006/014 | Still Valid | Directly covers application-facing event normalization. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts` | Claude SDK client passes `mcpServers`, `allowedTools`, permission settings, and environment options through query options | REQ-RMCP-003/004, AC-RMCP-001/002 | Still Valid | Validates the SDK wrapper does not strip programmatic HTTP MCP config. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts` and `claude-session-manager.test.ts` | Session construction receives Agent Tools MCP session service and preserves runtime dependencies | REQ-RMCP-001/002/010, AC-RMCP-004/005 | Still Valid | Relevant to live descriptor ownership and code-review round 2 passed it. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts` | Descriptor/redaction/token hash, configured supported tools, expiry/revoke/owner-revoke, executor delegates `send_message_to` to shared dispatcher | REQ-RMCP-001/002/009/010, AC-RMCP-008 | Still Valid | Base Agent Tools MCP session/executor coverage remains the server-side transport contract for Claude materializer. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` | Fastify route and official MCP SDK loopback cover initialize, tools/list, tools/call, content negotiation, bearer/session denial, malformed JSON and invalid params | AC-RMCP-008 plus upstream `streamable-mcp-runtime-tools` requirements | Still Valid | Route is the concrete HTTP MCP endpoint Claude SDK consumes. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts` | Recordable non-AutoByteus executable members missing `memoryDir` fail fast; supplied `memoryDir` passes through without fallback derivation | REQ-RMCP-014/016/017/019, AC-RMCP-011/012/016, DS-RMCP-008 | Still Valid | Added by implementation after design-impact rework and re-reviewed by code review round 2. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts` | Fresh mixed-team runtime identity materialization provides standard member `memoryDir` before handle creation | REQ-RMCP-014, AC-RMCP-011, DS-RMCP-008 | Still Valid | Named upstream owner for fresh member memoryDir. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts` | Restore-time member config reconstruction derives member `memoryDir` from metadata and current memory root | REQ-RMCP-014, AC-RMCP-011, DS-RMCP-008 | Still Valid | Named restore owner for member memoryDir. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts` | Task-agent activation/recovery config derives task-agent memoryDir using `AgentMemoryLocationService.getTaskAgentLocation(...)` | REQ-RMCP-015, AC-RMCP-012/013, DS-RMCP-008 | Still Valid | Named task-agent owner for memoryDir. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts` | Explicit-memory-root readback uses the same root-backed topology reader and derives team/task memory locations correctly | REQ-RMCP-019, AC-RMCP-015, DS-RMCP-007/008 | Still Valid | Addresses the stale app-memory-root alternative from LIVE-CLAUDE-001 without broad singleton rebinding. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts` and `runtime-memory-event-accumulator.test.ts` | Canonical `send_message_to` AgentRun lifecycle events write `tool_call` and `tool_result` raw traces, preserving MCP content result shape | REQ-RMCP-013/017/018, AC-RMCP-013/014, DS-RMCP-007 | Still Valid | Proves persistence remains canonical-event-only and not route-side. | Run in focused final test set. |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` default-gated compile path | Live Claude scenarios remain gated by default but compile and skip cleanly | AC-RMCP-014 and repo live-test policy | Still Valid | Prior stale coverage was updated and code-review round 2 re-reviewed the file. | Run default-gated compile/skipped validation. |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` targeted live send-message roundtrip | Real Claude SDK remote MCP send-message, canonical stream events, no provider-name leaks, and sender memory raw traces with MCP text-content result shape | UC-RMCP-001/002/004/007, REQ-RMCP-001/002/004/007/008/009/010/013/018, AC-RMCP-004/006/014 | Needs Update for optional `message_type` assertion; otherwise Still Valid | Round 1 exposed LIVE-CLAUDE-001. The first round-2 live recheck delivered both route-backed messages and passed through the first memory readback, but failed because the second Claude tool call omitted optional `message_type` even though recipient/content delivery succeeded. `message_type` is optional in `send_message_to` schema and parser defaults it. | Update assertions to require recipient/content and result shape, not optional `message_type`; rerun default-gated and targeted live E2E. |
-| Codex, AutoByteus, mixed runtime send-message E2E suites | Existing non-Claude runtime `send_message_to` flows | UC-RMCP-006 | Out Of Scope / Still Valid | Current ticket intentionally only changes Claude Agent SDK materialization. | Do not run in focused set. |
-| Browser/media/publish-artifact durable tests | Current Claude non-send-message MCP surfaces | REQ-RMCP-011, AC-RMCP-009 | Out Of Scope / Still Valid | Behavior is preserved and covered by focused unit tests for unchanged server map entries. | Do not update. |
+| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` / `routes send_message_to between real AutoByteus team members and projects reference files` | AutoByteus -> AutoByteus live team delivery and communication projection | AC-RMCP-018; DS-RMCP-011 | Still Valid | AutoByteus remains local wrapper; test is gated by `RUN_LMSTUDIO_E2E=1` and does not require HTTP MCP route. | Execute when LM Studio environment is available; default compile/skip always. |
+| `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` / roundtrip scenario | Codex -> Codex live send-message, canonical lifecycle, memory traces | AC-RMCP-019/022/024..028 | Needs Update | Codex now creates `config.mcp_servers.autobyteus_agent_tools` during bootstrap; current E2E starts only websocket routes and still contains dynamic-tool wording. | Update to start `registerAgentToolsMcpRoutes(...)`, seed `AUTOBYTEUS_INTERNAL_SERVER_BASE_URL` before Codex run bootstrap, and preserve canonical/no-leak assertions. |
+| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` / roundtrip scenario | Claude -> Claude live route-backed send-message, canonical lifecycle, MCP content result, memory traces, provider-name leak guard | AC-RMCP-020/022 | Still Valid | Prior API/E2E round passed live after updating optional `message_type`; route-backed test server exists. | Execute targeted live row if Claude env available; include default compile/skip. |
+| `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts` | AutoByteus -> Codex and Codex -> AutoByteus before/after restore | AC-RMCP-021/022/029 | Needs Update | Scenario is still required but Codex sender/recipient run bootstrap now needs Agent Tools MCP route and internal base URL before create/restore; current file only registers websocket route after run creation. | Update route-backed runtime server setup before create/restore; execute when LM Studio + Codex env available. |
+| `autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts` | Nested AutoByteus -> Codex and Codex -> Claude partial evidence | AC-RMCP-021/022 | Needs Update / Partial | Topology is useful but not sufficient for direct matrix; Codex/Claude route-backed MCP needs server setup. | Update route setup for current runtime contract; do not rely on it as sole matrix proof. |
+| `autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts` | Codex exact `target_agent_run_id` delivery and inactive target failure | AC-RMCP-023 and Codex sender contract | Needs Update | Codex sender now needs thread-scoped Agent Tools MCP route at run bootstrap; current file starts only websocket routes. | Update route setup before standalone Codex run creation; execute when Codex env available. |
+| Unit Codex materializer/bootstrap/thread-manager/event/history tests under `tests/unit/agent-execution/backends/codex/**` | Descriptor -> thread config, dynamic send-message removal, no-leak event payloads, canonical event/history | AC-RMCP-024..029 | Still Valid | Code review round 5 executed focused Codex suite; no blocking findings. | Re-run focused Codex suite as executable evidence. |
+| `tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` and session-service tests | MCP initialize/list/call/content negotiation, bearer/session denial, expiry/revoke | AC-RMCP-008/023/028/029 | Still Valid | Prior API/E2E and code review evidence; route remains central to Claude and Codex. | Re-run focused route/session coverage as available. |
+| Missing direct top-level Claude -> Codex, Codex -> Claude, Claude -> AutoByteus, AutoByteus -> Claude | No existing direct same-team proof | AC-RMCP-021/022 | Add Durable Coverage | Gap was raised by user and accepted by solution design. | Add focused all-runtime matrix E2E gated by all three live flags. |
 
 ## Stale Or Obsolete Coverage Decisions
 
 | Path / Scenario | Obsolete Assertion | Why It Is Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` live send-message old raw-name/result-shape assertion | Old raw-name guard only mentioned `mcp__autobyteus_team__send_message_to`; old memory/result assertion expected `{ accepted: true }` | Claude provider wire name intentionally changed to `mcp__autobyteus_agent_tools__send_message_to`, old `autobyteus_team` send-message path is removed, and route-backed tool results preserve MCP content shape | REQ-RMCP-004/005/006/007/008/018, AC-RMCP-002/003/006/007/014, implementation handoff Legacy / Compatibility Removal Check, code-review round 2 | Already updated before this round: scenario forbids both old and new provider wire-name leaks, registers Agent Tools MCP routes in the live harness, and expects MCP text-content result shape | N/A because the scenario remains valuable and was updated, not removed. |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` live send-message optional `message_type` assertion | Tool lifecycle/memory assertions required `message_type: expect.any(String)` for live Claude provider arguments | `message_type` is optional in `buildSendMessageToParameterSchema()` and `parseSendMessageToToolArguments()` defaults missing values to `agent_message`. The first round-2 live recheck showed real Claude may omit this optional field on one hop while route-backed delivery succeeds. This is not part of the current materializer/memory contract. | REQ-RMCP-018 and AC-RMCP-014 require canonical tool identity, invocation correlation, args/result preservation, and MCP content result shape; they do not require a live LLM to include optional message_type. | Update assertions to require recipient/content and result shape; stop requiring optional `message_type` in provider arguments/raw traces. | N/A because the scenario remains valuable and the obsolete sub-assertion should be relaxed, not removed. |
+| `codex-team-inter-agent-roundtrip.e2e.test.ts` comments/setup that say team routing safety comes from dynamic `send_message_to` handlers | Codex team send-message is dynamic-tool based | Codex sender must now use Agent Tools MCP; dynamic fallback removed | Codex MCP materializer correction and implementation handoff | Update comments/setup to route-backed MCP server setup | N/A |
+| Codex/mixed/standalone E2E route setup that starts only websocket routes before Codex send-message execution | Codex sender can execute without `/mcp/agent-tools/:sessionId` | Route-backed Codex materializer needs reachable MCP endpoint and internal base URL | DS-RMCP-006/007; source `AgentToolMcpSessionService` | Update E2E server setup | N/A |
 
 ## Durable Coverage To Add
 
 | Scenario ID | Behavior / Boundary | Requirement / Acceptance Criteria / Design Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
 | --- | --- | --- | --- | --- |
-| None this round | N/A | N/A | N/A | Round 2 implementation already added the required source/unit durable coverage and code review round 2 passed it; no new file is needed for the optional `message_type` correction. |
+| E2E-MATRIX-001 | Direct top-level AutoByteus -> Claude, Claude -> AutoByteus, Codex -> Claude, Claude -> Codex, AutoByteus -> Codex, and Codex -> AutoByteus mixed-runtime delivery in one three-member team | AC-RMCP-021/022; DS-RMCP-011; requirement-gap response | `autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts` | Existing durable files do not directly prove all mixed pairs, especially Claude↔AutoByteus and Claude↔Codex. |
 
 ## Durable Coverage To Update
 
 | Scenario ID | Existing Path / Scenario | Required Update | Requirement / Acceptance Criteria / Design Evidence | Notes |
 | --- | --- | --- | --- | --- |
-| E2E-CLAUDE-003 | `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts` live inter-agent send-message lifecycle and memory trace assertions | Stop requiring optional `message_type` in provider tool arguments/raw traces; continue requiring recipient/content, canonical tool name, invocation correlation, no provider-name leaks, and MCP text-content result shape | REQ-RMCP-018, AC-RMCP-014, `send_message_to` schema marks `message_type` optional and parser defaults it | This is a coverage correction discovered by real-client execution. It is not an implementation reroute because route-backed delivery and first-hop memory trace readback progressed past the prior LIVE-CLAUDE-001 failure. |
+| E2E-CODEX-001 | `codex-team-inter-agent-roundtrip.e2e.test.ts` send-message scenarios | Register Agent Tools MCP routes and seed internal server base URL before Codex run bootstrap; remove stale dynamic-handler wording | AC-RMCP-019/022/024..028 | Needed for Codex same-runtime proof under new route-backed contract. |
+| E2E-MIXED-001 | `mixed-team-runtime-graphql.e2e.test.ts` | Register Agent Tools MCP routes and seed internal server base URL before create/restore; keep server alive through restore | AC-RMCP-021/022/029 | Needed for AutoByteus↔Codex rows after Codex cutover. |
+| E2E-NESTED-001 | `nested-mixed-team-runtime-graphql.e2e.test.ts` | Register Agent Tools MCP routes and seed internal server base URL before create/restore | AC-RMCP-021/022 | Keeps partial nested coverage current; not the sole matrix proof. |
+| E2E-CODEX-DIRECT-001 | `codex-standalone-send-message-global-routing.e2e.test.ts` | Register Agent Tools MCP routes and seed internal server base URL before Codex sender bootstrap | AC-RMCP-023 | Needed for exact-run failure-path proof after Codex cutover. |
 
 ## Durable Coverage To Remove
 
 | Existing Path / Scenario | Removal Reason | Requirement / Acceptance Criteria / Design Evidence | Replacement Or No-Replacement Decision |
 | --- | --- | --- | --- |
-| None | N/A | N/A | N/A |
+| None planned | N/A | N/A | N/A |
 
 ## Temporary Executable Validation Plan
 
 | Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
 | --- | --- | --- | --- |
-| PROBE-001 | `claude --version`, Node/pnpm/macOS version checks, and auth-environment inspection | Confirms real Claude SDK/Claude Code live E2E execution is feasible and records runtime target | Environment discovery only; not product coverage. |
-| PROBE-002 | Static `rg` scans for old provider names, raw bearer headers, `mcpServers`, descriptor logging/debug surfaces, and route-side memory persistence shortcuts | Confirms no old production path remains, no obvious raw descriptor/header logging exists, and forbidden memory persistence shortcuts were not added | Complements durable tests; static scans are execution evidence, not durable repository coverage. |
-| PROBE-003 | Targeted live Claude E2E with `RUN_CLAUDE_E2E=1` | Rechecks LIVE-CLAUDE-001 in the real Claude SDK remote MCP path | The durable E2E test remains gated because it requires external Claude credentials/model access; the one-off run records current environment evidence. |
+| ENV-001 | `node --version`, `pnpm --version`, `sw_vers`, `codex --version`, `claude --version`, and live env flag inspection | Records platform/runtime availability | Environment evidence only. |
+| SCAN-001 | Static `rg` scans over `src`/`tests` for deleted provider names, dynamic Codex send-message builders, raw descriptor/bearer/log surfaces | Confirms no obsolete production fallback or obvious leak surface | Static executable audit, not durable product coverage. |
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Antigravity CLI, Claude Code CLI, Codex App Server materializers | Explicitly out of scope/deferred by current requirements and design | Future materializers may leak bearer config or mishandle process isolation | Future runtime-materializer tickets must add real-client config, cleanup, and redaction coverage. |
-| Browser/media/task-delegation/publish-artifacts through `autobyteus_agent_tools` | V1 Agent Tools MCP only exposes `send_message_to`; other tool families remain on current Claude mechanisms | Future adapters could bypass catalog/executor seams | Future Agent Tools MCP adapter tickets must add provider + executor coverage. |
-| Full live Claude E2E file on every validation run | Requires external Claude Code authentication/model access and is intentionally gated by `RUN_CLAUDE_E2E=1` | Default CI/validation may only compile/skip live scenarios | Recheck targeted LIVE-CLAUDE-001 first; broaden only if the fix or results implicate shared live E2E behavior. |
+| Live rows requiring unavailable LM Studio/Codex/Claude environment | Unknown until execution; tests are environment-gated | Cannot claim all-runtime proof for unavailable rows | Execution report must list executed vs unavailable rows. If installed runtime cannot honor approved thread-scoped config, route to `solution_designer`; do not fall back to process/file config. |
 
 ## Ambiguities Or Reroute Triggers
 
 | Issue | Classification (`Requirement Gap`/`Design Impact`/`Unclear`/`Local Fix`) | Evidence | Recommended Recipient |
 | --- | --- | --- | --- |
-| LIVE-CLAUDE-001 prior failure: targeted live Claude send-message roundtrip emitted canonical stream lifecycle and delivered team messages, but `getTeamMemberRunMemoryView(... includeRawTraces: true ...)` stayed empty for the sender invocation | Recheck required after stale optional `message_type` assertion update | Round 1 execution report recorded `Observed traces: []`; first round-2 live recheck progressed through two route-backed deliveries and failed on a coverage-only optional field assertion before final second-hop memory assertion | None before rerun after E2E assertion update; route according to new evidence if memory traces are still absent. |
-| Any observed raw descriptor, bearer header, unredacted MCP config, old `mcp__autobyteus_team__send_message_to` production path, route-side raw trace writer, or member-handle fallback memoryDir derivation | Local Fix or Design Impact depending on source | Current requirements/design forbid legacy/secret leaks and fallback/route-side persistence | `implementation_engineer` for implementation-only leak/shortcut; `solution_designer` if upstream artifacts prove ambiguous. |
+| Installed Codex app-server rejects thread-scoped `config.mcp_servers` despite design probe | Design Impact | Would contradict Codex MCP materializer correction | `solution_designer` |
+| Live all-runtime matrix exposes implementation bug in route-backed setup/canonicalization/projection | Local Fix | Runtime/E2E failure after current coverage is valid | `implementation_engineer` |
+| Credentials or local model runtime unavailable | Blocked/Not Tested (environment) | E2E gate not executable locally | Record in execution report; do not claim proof for unavailable rows. |
 
 ## Execution Plan
 
-1. Record runtime target versions with `node --version`, `pnpm --version`, `sw_vers`, `claude --version`, and `printenv ANTHROPIC_API_KEY` redaction check.
-2. Apply the E2E-CLAUDE-003 durable coverage correction for optional `message_type` assertions before final rerun.
-3. Execute the focused memory/mixed-team invariant suite that code review round 2 passed.
-4. Execute the focused Claude/Agent Tools/memory suite that code review round 2 passed.
-5. Execute the default-gated live Claude E2E file compile/skipped run.
-6. Execute the targeted live Claude route-backed send-message roundtrip with `RUN_CLAUDE_E2E=1`, rechecking LIVE-CLAUDE-001 first.
-7. Run build and whitespace validation: `pnpm -C autobyteus-server-ts run build` and `git diff --check`.
-8. Run static scans for old provider/name paths, raw secret/debug/log surfaces, and forbidden route-side/member-handle fallback memory persistence shortcuts.
-9. Update the canonical execution coverage report with pass/fail evidence. Because repository-resident durable E2E coverage is edited in this round, a passing result must route back to `code_reviewer` before delivery.
+1. Apply durable E2E updates described above before final execution.
+2. Run default-gated compile/skip coverage for all touched live E2E files.
+3. Run focused Codex Agent Tools MCP/unit coverage and Agent Tools MCP route/session coverage.
+4. Run live same-runtime and mixed-runtime E2Es whose environment gates are available: AutoByteus same-runtime, Codex same-runtime, Claude same-runtime, AutoByteus↔Codex, all-runtime matrix, nested mixed partial, and Codex standalone direct failure path.
+5. Run build, `git diff --check`, and static leak/fallback scans.
+6. Update `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-execution-coverage-report.md` with executed/unavailable rows and failure classification.
+7. Because repository-resident durable E2E coverage will be added/updated in this API/E2E round, route back to `code_reviewer` after execution rather than directly to delivery.
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes`; update the live Claude E2E optional `message_type` assertions before final rerun.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
-- Notes: Round 2 execution must recheck LIVE-CLAUDE-001 before declaring pass. The initial round-2 live run exposed one additional stale/over-strict E2E assertion: optional `message_type` should not be required in live Claude provider arguments. Because this file is repository-resident durable coverage, a passing result after this edit must return through `code_reviewer` before delivery.
+- Notes: The user requirement is accepted in upstream artifacts. Current coverage is incomplete without new direct mixed-runtime rows and existing Codex live E2Es require route-backed MCP server setup updates after the Codex cutover.
+
+## Round 3 Execution Addendum: Mixed Restore Local Fix Required
+
+This addendum keeps the coverage investigation current after live execution of the Round 3 plan.
+
+### Decision Updates
+
+| Scenario ID | Path / Scenario | Prior Decision | Updated Decision | Evidence | Action |
+| --- | --- | --- | --- | --- | --- |
+| E2E-MATRIX-001 | `autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts` | Add Durable Coverage | Added / Valid | Live matrix passed with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1`, proving all six directed mixed-runtime rows in one top-level team. | Keep durable coverage; route through code review after implementation local fix. |
+| E2E-MIXED-001 | `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts` restore scenario | Needs Update | Still Valid; Local Fix required | After route-backed setup update, live AutoByteus -> Codex and Codex -> AutoByteus pre-restore delivery/projection succeeded, but `restoreAgentTeamRun` failed with `metadata is missing`. Temporary diagnostic evidence showed `TeamRunService` using a default-root `TeamRunMetadataService` while the catalog used the test memory root. | Do not remove or weaken coverage. Route to `implementation_engineer` to make metadata service/restore memory-root-safe. |
+
+### Reroute Classification
+
+- Classification: `Local Fix`
+- Recommended Recipient: `implementation_engineer`
+- Rationale: The failing restore scenario is explicitly in the reviewed design/acceptance criteria and the coverage assertion is valid. The failure is an implementation memory-root/singleton issue exposed by the updated route-backed Codex E2E setup, not obsolete coverage and not a requirement ambiguity.
+- Supporting reroute artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-local-fix-mixed-restore-metadata.md`
+
+## Round 4 Execution Addendum: Mixed Restore Resolved And Final Coverage Route
+
+This addendum keeps the coverage investigation current after code-review round 6 and final API/E2E re-execution.
+
+### Decision Updates
+
+| Scenario ID | Path / Scenario | Prior Decision | Updated Decision | Evidence | Action |
+| --- | --- | --- | --- | --- | --- |
+| E2E-MATRIX-001 | `autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts` | Added / Valid | Still Valid / Passing | Re-ran with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1`; all six directed mixed-runtime rows passed in one top-level AutoByteus+Codex+Claude team. | Keep durable coverage and route through code review because it was added during API/E2E. |
+| E2E-MIXED-001 | `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts` restore scenario | Still Valid; Local Fix required | Still Valid / Passing | After code-review round 6 local fix, re-ran with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1`; pre-restore and post-restore AutoByteus <-> Codex delivery/projection passed. | Keep restore/rematerialization coverage; no further reroute required. |
+| E2E-AUTOBYTEUS-001 | `autobyteus-team-runtime-graphql.e2e.test.ts` same-runtime communication | Still Valid | Still Valid / Passing | Re-ran with `RUN_LMSTUDIO_E2E=1`; native AutoByteus send-message row passed. | Keep existing coverage. |
+| E2E-CODEX-001 | `codex-team-inter-agent-roundtrip.e2e.test.ts` same-runtime communication | Needs Update | Updated / Passing | Re-ran with `RUN_CODEX_E2E=1`; Codex route-backed Agent Tools MCP send-message row passed. | Keep updated coverage and route through code review. |
+| E2E-CLAUDE-001 | `claude-team-inter-agent-roundtrip.e2e.test.ts` same-runtime communication | Still Valid | Still Valid / Passing | Re-ran with `RUN_CLAUDE_E2E=1`; Claude Agent SDK Agent Tools MCP send-message row passed. | Keep existing updated coverage. |
+
+### Final Investigation Classification
+
+- Proceed To API/E2E Execution: `Complete`
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes` — added/updated durable E2E coverage remains in the repository.
+- Reroute Required Before Delivery: `Yes`
+- Recommended Recipient: `code_reviewer`
+- Rationale: API/E2E passed, but repository-resident durable coverage was added/updated after the initial code review, so the cumulative package must return through code review before delivery.
+- Open Local Fix / Design Impact / Requirement Gap: `None`

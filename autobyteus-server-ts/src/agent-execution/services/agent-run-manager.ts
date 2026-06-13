@@ -125,6 +125,9 @@ export class AgentRunManager {
     context: AgentRunContext<RuntimeAgentRunContext>,
   ): Promise<AgentRun> {
     const { runId } = context;
+    if (this.hasActiveRun(runId)) {
+      throw new AgentCreationError(`Agent run '${runId}' is already active.`);
+    }
     const runtimeKind = context.config.runtimeKind;
     const backendFactory = this.resolveBackendFactory(runtimeKind);
     if (!backendFactory) {

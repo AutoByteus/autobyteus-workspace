@@ -23,6 +23,7 @@ const createRunContext = (
     serviceTier?: string | null;
     threadId?: string | null;
     teamRunId?: string | null;
+    appServerConfig?: Record<string, unknown> | null;
   } = {},
 ) =>
   new AgentRunContext({
@@ -56,6 +57,7 @@ const createRunContext = (
         sandbox: input.sandbox ?? "workspace-write",
         baseInstructions: null,
         developerInstructions: null,
+        appServerConfig: input.appServerConfig ?? null,
         dynamicTools: [],
       },
       threadId: input.threadId ?? null,
@@ -301,6 +303,71 @@ describe("CodexThreadManager", () => {
       expect.objectContaining({
         threadId: "thread-existing",
         serviceTier: "fast",
+      }),
+    );
+  });
+
+  it("passes thread-scoped app-server config to thread start and resume", async () => {
+    const request = vi.fn(async (method: string) => ({
+      thread: {
+        id: method === "thread/resume" ? "thread-resumed-config" : "thread-started-config",
+      },
+    }));
+    const client = {
+      request,
+      onNotification: vi.fn(() => () => {}),
+      onServerRequest: vi.fn(() => () => {}),
+      onClose: vi.fn(() => () => {}),
+    } as unknown as CodexAppServerClient;
+    const clientManager = {
+      acquireClient: vi.fn(async () => client),
+      releaseClient: vi.fn(async () => undefined),
+    } as unknown as CodexAppServerClientManager;
+    const threadCleanup = {
+      cleanupThreadResources: vi.fn(async () => undefined),
+    } as unknown as CodexThreadCleanup;
+    const clientThreadRouter = {
+      registerThread: vi.fn(() => () => {}),
+    } as unknown as CodexClientThreadRouter;
+    const manager = new CodexThreadManager(
+      clientManager,
+      threadCleanup,
+      clientThreadRouter,
+    );
+    const appServerConfig = {
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
+          http_headers: {
+            Authorization: "Bearer unit-test-agent-tools-token",
+          },
+          enabled_tools: ["send_message_to"],
+          startup_timeout_sec: 5,
+        },
+      },
+    };
+
+    await manager.createThread(
+      createRunContext("run-start-config", "/tmp/workspace", { appServerConfig }),
+    );
+    await manager.restoreThread(
+      createRunContext("run-resume-config", "/tmp/workspace", {
+        threadId: "thread-existing-config",
+        appServerConfig,
+      }),
+    );
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/start",
+      expect.objectContaining({
+        config: appServerConfig,
+      }),
+    );
+    expect(request).toHaveBeenCalledWith(
+      "thread/resume",
+      expect.objectContaining({
+        threadId: "thread-existing-config",
+        config: appServerConfig,
       }),
     );
   });

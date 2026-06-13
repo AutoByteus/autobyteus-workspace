@@ -18,7 +18,9 @@ Callers must not provide both selectors, omit both selectors, or use selector
 aliases such as `recipient`, `recipientName`, or `targetAgentRunId`. `content`
 must be a non-empty self-contained message body. Optional `reference_files` must
 be an array of absolute local path strings and should be used in addition to, not
-instead of, explanatory message content.
+instead of, explanatory message content. Optional `message_type` defaults to
+`agent_message` when omitted; runtime/provider traces must not require providers
+to echo that optional field when the semantic delivery is otherwise valid.
 
 ## `recipient_name` Team Route
 
@@ -98,8 +100,10 @@ native tool surfaces when the current agent/tool configuration includes it:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
 - Codex receives dynamic tool registration/specs built from the shared contract.
-- Claude receives the first-party MCP tool/handler built from the shared
-  contract.
+- Claude Agent SDK receives the first-party
+  `mcp__autobyteus_agent_tools__send_message_to` tool by materializing the
+  server-hosted `autobyteus_agent_tools` MCP descriptor; application surfaces
+  still see canonical `send_message_to`.
 - External process runtimes can receive a session-scoped
   `autobyteus_agent_tools` Streamable HTTP MCP descriptor from the Agent Tools
   MCP Server. That surface also reuses this shared contract and dispatcher, and

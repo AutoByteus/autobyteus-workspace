@@ -214,15 +214,19 @@ result object before terminal lifecycle events are emitted. Non-AutoByteus MCP
 tools and unknown browser-like suffixes stay unchanged.
 
 Claude `send_message_to` is also a first-party MCP tool with a canonical event
-contract. The dedicated handler owns the logical delivery invocation and emits
-canonical segment plus lifecycle events: `SEGMENT_START`,
-`TOOL_EXECUTION_STARTED`, one terminal `TOOL_EXECUTION_SUCCEEDED` or
-`TOOL_EXECUTION_FAILED`, then `SEGMENT_END`. The handler calls the shared
-`src/agent-communication` dispatcher, so `recipient_name` stays a team-context
-route while `target_agent_run_id` is the global live-only exact active-run route.
-Raw SDK transport events named `mcp__autobyteus_team__send_message_to` are
-suppressed as duplicate MCP noise; they must not replace the handler-owned
-canonical lifecycle or create extra Activity rows.
+contract, but it is no longer registered on the Claude `autobyteus_team`
+in-process MCP server. When configured, `ClaudeSession` materializes the
+server-hosted `autobyteus_agent_tools` HTTP MCP descriptor into SDK `mcpServers`
+and pre-approves `mcp__autobyteus_agent_tools__send_message_to` in
+`allowedTools`. The actual delivery still runs through the Agent Tools MCP
+route and shared `src/agent-communication` dispatcher, so `recipient_name` stays
+a team-context route while `target_agent_run_id` is the global live-only exact
+active-run route. The generic Claude tool-use coordinator/converter owns the
+route-backed lifecycle, normalizing provider wire names to application-facing
+`send_message_to` for segment, approval, execution, run-history, and memory
+events. Provider wire names must not leak to application surfaces, and the
+route-backed MCP text-content result shape is preserved instead of converting
+back to the old handler object shape.
 
 Claude team task delegation tools are also first-party MCP tools on the team
 server. `delegate_tasks`, `submit_task_result`, and `review_task_result` are

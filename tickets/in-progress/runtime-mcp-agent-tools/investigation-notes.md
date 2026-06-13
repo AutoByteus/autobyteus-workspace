@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete; dedicated task worktree found and remote refreshed.
-- Current Status: Deep investigation complete; design-ready scope selected.
-- Investigation Goal: Derive the runtime MCP agent-tools follow-up requirements from the empty ticket folder, the base branch, and the completed upstream `streamable-mcp-runtime-tools` ticket.
-- Scope Classification (`Small`/`Medium`/`Large`): Medium.
-- Scope Classification Rationale: The selected change is one runtime materializer plus a targeted Claude refactor, not all runtime materializers. It crosses Claude query setup, MCP server config merging, allowed tool gating, event normalization, tests, and obsolete file removal.
-- Scope Summary: Implement Claude Agent SDK programmatic materialization of the existing AutoByteus Agent Tools MCP Server for `send_message_to`; remove the duplicate Claude in-process `send_message_to` MCP implementation; defer Codex App Server, Claude Code CLI, and Antigravity CLI materializers.
+- Current Status: Deep investigation complete; design corrected after Codex MCP materializer scope challenge.
+- Investigation Goal: Derive the runtime MCP agent-tools follow-up requirements from the empty ticket folder, the base branch, the completed upstream `streamable-mcp-runtime-tools` ticket, and the later design-impact/API-E2E reroutes.
+- Scope Classification (`Small`/`Medium`/`Large`): Large.
+- Scope Classification Rationale: The selected change now includes two external/runtime Agent Tools MCP `send_message_to` materializers (Claude Agent SDK and Codex App Server), removal/gating of duplicate runtime-specific send-message paths, runtime-memory/run-history invariant work, and all-active-runtime E2E coverage.
+- Scope Summary: Implement Claude Agent SDK programmatic materialization and Codex App Server thread-scoped MCP config materialization of the existing AutoByteus Agent Tools MCP Server for `send_message_to`; remove the duplicate Claude in-process `send_message_to` MCP implementation; remove/gate Codex dynamic `send_message_to`; keep AutoByteus native local; defer Claude Code CLI and Antigravity CLI materializers.
 
 ## Request Context
 
@@ -43,14 +43,14 @@ Relevant upstream conclusions:
 1. The base branch intentionally created a **central AutoByteus Agent Tools MCP Server** and stopped short of production runtime materializers.
 2. `AgentToolMcpDescriptor` is the canonical runtime-only, secret-bearing descriptor. Runtime materializers must consume this descriptor and must not hand-build route URLs, tokens, or tool allowlists from registry internals.
 3. Claude Agent SDK materialization was already investigated and accepted as a programmatic path: convert the descriptor into `{ mcpServers, allowedTools }` and pass it into SDK query options; no `.mcp.json`, `.claude/`, or other bearer-token file is needed.
-4. Codex App Server materialization was investigated but flagged high-risk because AutoByteus currently reuses a cwd-keyed app-server process. Per-run bearer config must not be injected into a shared process without a separate isolation design.
+4. Codex App Server materialization was investigated. The high-risk shape is process-wide bearer config on the cwd-keyed shared app-server process; the safe shape is per-thread `thread/start` / `thread/resume` `config.mcp_servers` materialization, which was later verified locally and is now in scope.
 5. Antigravity CLI materialization was investigated as workspace `.agents/mcp_config.json`, but the AGY runtime/materializer is not present in this branch and would need explicit file cleanup/rewrite/redaction policy.
 6. Claude Code CLI materialization was investigated as generated ephemeral `--mcp-config`, but there is no Claude Code runtime backend in this branch.
 7. V1 Agent Tools MCP sessions are memory-only, app-level run/member sessions with bearer-token capability isolation. Raw descriptors must not be logged, persisted, emitted, or written to durable project files.
 8. `send_message_to` execution authority is `SendMessageToDispatcher`; the MCP route/tool executor must not call runtime wrappers such as AutoByteus `BaseTool`, Codex dynamic registration, or Claude handler shortcuts.
-9. The prior implementation handoff explicitly listed production materializers for AGY, Claude Code CLI, Codex App Server, and Claude Agent SDK as deferred.
+9. The prior implementation handoff explicitly listed production materializers for AGY, Claude Code CLI, Codex App Server, and Claude Agent SDK as deferred. The current ticket promotes Claude Agent SDK and Codex App Server `send_message_to` materializers into scope after the user clarified the unified-solution requirement.
 
-Scope implication for this follow-up: implement exactly one deferred materializer first, using the lowest-risk programmatic path already validated by upstream investigation: Claude Agent SDK.
+Scope implication for this follow-up: implement backend-local materializers for Claude Agent SDK and Codex App Server. Do not use a generic all-runtime config writer; do not implement Claude Code CLI or Antigravity CLI materializers here.
 
 ## Source Log
 
@@ -63,7 +63,7 @@ Scope implication for this follow-up: implement exactly one deferred materialize
 | 2026-06-13 | Command | `git rev-parse HEAD` and `git rev-parse origin/codex/streamable-mcp-runtime-tools` | Record exact base state | Both resolved to `3a82ba5cb95542004fe4a4604fc600bc5404a0a8`. | No |
 | 2026-06-13 | Repo/Spec | `tickets/done/streamable-mcp-runtime-tools/investigation-notes.md` | Read required upstream investigation lineage | Confirmed runtime materializer matrix, Codex/Claude/AGY probes, Claude SDK programmatic materialization, session/security policy, and external runtime deferrals. | Incorporated into requirements/design. |
 | 2026-06-13 | Spec | `tickets/done/streamable-mcp-runtime-tools/design-spec.md` | Verify prior ownership/design constraints | Confirmed runtime-specific materializers belong under runtime backend folders, consume `AgentToolMcpDescriptor`, and must not implement tool behavior. Found explicit future Claude SDK materializer file suggestion. | Incorporated into design. |
-| 2026-06-13 | Doc | `tickets/done/streamable-mcp-runtime-tools/implementation-handoff.md` | Confirm what base branch actually delivered/deferred | Base delivered route/session/catalog/executor; production runtime materializers remained deferred. | Current ticket picks Claude SDK first. |
+| 2026-06-13 | Doc | `tickets/done/streamable-mcp-runtime-tools/implementation-handoff.md` | Confirm what base branch actually delivered/deferred | Base delivered route/session/catalog/executor; production runtime materializers remained deferred. | Current ticket now picks Claude SDK and Codex App Server send-message materializers. |
 | 2026-06-13 | Code | `autobyteus-server-ts/src/agent-tools/mcp/**` | Inspect base Agent Tools MCP subsystem | Server has session service, descriptor/redaction, route gate, method dispatcher, catalog, schema/result mapping, and `send_message_to` execution through `SendMessageToDispatcher`. | Reuse; do not alter route unless tests reveal need. |
 | 2026-06-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | Find Claude SDK query setup | `executeTurn` resolves tooling, builds MCP servers, passes `mcpServers` and `allowedTools` to `sdkClient.startQueryTurn`. | Insert/ensure Agent Tools MCP descriptor before config build. |
 | 2026-06-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts` and `claude-session-mcp-server-config.ts` | Inspect MCP server config merge | Current `sendMessageToToolingEnabled` causes `autobyteus_team` in-process server creation and request approval handler wiring. | Change team server to task-delegation only and merge Agent Tools MCP server separately. |
@@ -73,7 +73,9 @@ Scope implication for this follow-up: implement exactly one deferred materialize
 | 2026-06-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/claude-send-message-tool-name.ts`, event converter, tool-use coordinator | Inspect event/tool name handling | Current code treats old team MCP send-message as duplicate noise and suppresses events because handler emitted canonical events itself. | New remote MCP lifecycle should not be suppressed; normalize prefixed name to canonical. |
 | 2026-06-13 | Code | `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | Verify SDK query option passthrough | `startQueryTurn` builds options with `mcpServers`, `allowedTools`, `canUseTool`/auto allow, cwd/env/settings. | Materializer can pass standard config through existing client. |
 | 2026-06-13 | Code/Lockfile | `pnpm-lock.yaml`, `autobyteus-server-ts/package.json`, local/packed `@anthropic-ai/claude-agent-sdk@0.2.71` type definitions | Verify remote HTTP MCP config shape | SDK supports `mcpServers?: Record<string, McpServerConfig>` and HTTP config `{ type: "http", url, headers? }`. | Use as contract for materializer. |
-| 2026-06-13 | Code | `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts`, `codex-thread-manager.ts` | Check whether Codex should be first target | App-server process reuse is cwd-keyed; thread start/resume currently passes `config: null` and dynamic tools. | Codex materializer remains out-of-scope. |
+| 2026-06-13 | Code | `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts`, `codex-thread-manager.ts` | Check current Codex runtime config path | App-server process reuse is cwd-keyed; thread start/resume currently passes `config: null` and dynamic tools. | Do not use process-wide config; add thread-scoped config materialization. |
+| 2026-06-13 | Command | `codex app-server generate-ts --out /tmp/codex-app-server-proto`; inspect `v2/ThreadStartParams.ts` and `v2/ThreadResumeParams.ts` | Verify app-server protocol supports per-thread config | Both start and resume params contain `config?: { [key: string]?: JsonValue } | null`, allowing runtime-provided config without process-level `-c` overrides. | Use `thread/start`/`thread/resume` config for Codex Agent Tools MCP. |
+| 2026-06-13 | Local Probe | `/tmp/autobyteus-agent-tools-mcp-thread-config-probe-20260613-133706/result.json` | Verify Codex app-server honors thread-scoped MCP config | Started dummy Streamable HTTP MCP server, launched `codex app-server --stdio`, passed `config.mcp_servers.autobyteus_agent_tools` in `thread/start`, observed MCP status, and `mcpServer/tool/call` returned `pong:thread-config`. | Codex materializer is feasible without shared process args or project files. |
 | 2026-06-13 | Code | `autobyteus-server-ts/src/runtime-management/runtime-kind-enum.ts` | Verify available runtimes | Only `autobyteus`, `claude_agent_sdk`, and `codex_app_server` exist. | Claude Code/Antigravity materializers require future runtime backends. |
 
 ## Current Behavior / Current Flow
@@ -112,7 +114,7 @@ AgentRunManager.createAgentRun
   -> sdkClient.startQueryTurn({ mcpServers, allowedTools, canUseTool/autoExecuteTools })
 ```
 
-Current design issue: `send_message_to` is still built as a Claude-specific in-process MCP tool under `autobyteus_team`, duplicating the new central Agent Tools MCP Server path and requiring special event suppression.
+Current design issue: `send_message_to` is still built as a Claude-specific in-process MCP tool under `autobyteus_team`, duplicating the new central Agent Tools MCP Server path and requiring special event suppression. Separately, Codex still registers `send_message_to` as a dynamic tool even though Codex app-server can consume the same Agent Tools MCP endpoint through thread-scoped config.
 
 ### Target Claude flow
 
@@ -143,16 +145,16 @@ ClaudeSession.executeTurn
 | Prior implementation handoff | Production materializers deferred, but route/session/catalog/executor are complete | Current ticket should create a production call site for the existing service. | Use service, do not modify registry internals. |
 | Current Claude team MCP builder | Builds both send-message and task delegation into `autobyteus_team` | `autobyteus_team` has two responsibilities; send-message must move to `autobyteus_agent_tools`. | Refactor builder/tests. |
 | Current event converter/coordinator | Suppresses old MCP send-message events because handler emits canonical events | New remote MCP path needs generic lifecycle; suppression would drop Activity events. | Normalize instead of suppress. |
-| Codex app-server client manager | Process reuse by cwd | Per-run bearer config injection is unsafe without isolation. | Keep Codex out of scope. |
+| Codex app-server client manager and protocol | Process reuse by cwd, but thread/start/resume support per-thread config | Process-wide bearer config is unsafe; thread-scoped config is the safe Codex materializer seam. | Implement backend-local Codex materializer using thread config. |
 | Runtime enum | No Claude Code or Antigravity runtime kind | No runtime backend to host those materializers. | Keep future tickets. |
 
 ## Relevant Files / Components
 
 | Path / Component | Current Responsibility | Finding / Observation | Design / Ownership Implication |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | Create/revoke sessions and build descriptors | Ready for runtime materializers; no production caller yet. | Claude must call this service, not registry internals. |
+| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | Create/revoke sessions and build descriptors | Ready for runtime materializers; no production caller yet. | Claude and Codex must call this service, not registry internals. |
 | `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts` | Secret/redacted descriptor and session types | `AgentToolMcpDescriptor` already has `name`, `transport`, `serverUrl`, `headers`, `enabledTools`. | Claude materializer consumes this exact shape. |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts` | Execute MCP calls | Delegates `send_message_to` to `SendMessageToDispatcher`. | Preserve as only Claude send-message execution path after cutover. |
+| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts` | Execute MCP calls | Delegates `send_message_to` to `SendMessageToDispatcher`. | Preserve as only Claude/Codex external-runtime send-message execution path after cutover. |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | Per-run Claude SDK query/turn lifecycle | Natural in-memory owner for secret descriptor; already passes `mcpServers` into SDK. | Add session-service dependency and lazy descriptor creation. |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts` | Creates/restores `ClaudeSession` and owns dependencies | Current dependency bundle lacks Agent Tools MCP session service. | Inject service for testability. |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts` | Merge Claude MCP server maps | Currently treats send-message as team MCP reason. | Merge Agent Tools MCP descriptor separately; team server only task delegation. |
@@ -170,13 +172,14 @@ ClaudeSession.executeTurn
 
 | Date | Method (`Repro`/`Trace`/`Probe`/`Script`/`Test`/`Setup`) | Exact Command / Method | Observation | Implication |
 | --- | --- | --- | --- | --- |
-| 2026-06-13 | Upstream probe review | Prior done-ticket local Codex/Claude Code probes | Codex App Server and Claude Code can consume the server-hosted endpoint, but require runtime-specific config/process ownership. | Do not implement those materializers in this ticket. |
+| 2026-06-13 | Upstream probe review | Prior done-ticket local Codex/Claude Code probes | Codex App Server and Claude Code can consume the server-hosted endpoint, but require runtime-specific config/process ownership. | Implement Codex via thread-scoped config; keep Claude Code CLI for a future runtime ticket. |
 | 2026-06-13 | Local package contract check | Workspace lockfile and package type definitions for `@anthropic-ai/claude-agent-sdk@0.2.71` | SDK supports HTTP MCP server config in `mcpServers`; AutoByteus wrapper passes it through. | Claude SDK materializer is feasible without new dependency. |
 | 2026-06-13 | Static code trace | Current Claude session/tooling files | Claude already constructs MCP config per query turn and passes allowed tools. | Best insertion point is Claude session/query setup. |
+| 2026-06-13 | Static/protocol probe | Current Codex thread/bootstrap files plus generated app-server protocol | Codex currently passes `config: null`, but app-server start/resume support thread-scoped config and the live probe honored `mcp_servers`. | Best insertion point is Codex bootstrap/thread config plus thread manager request payloads. |
 
 ## External / Public Source Findings
 
-No new external public source was required for the final current-ticket scope beyond the upstream done-ticket's documented public-source/probe findings. This investigation relied on repository code, archived upstream ticket artifacts, and the locally locked Claude Agent SDK package contract.
+No new external public source was required for the final current-ticket scope beyond the upstream done-ticket's documented public-source/probe findings. This investigation relied on repository code, archived upstream ticket artifacts, the locally locked Claude Agent SDK package contract, local Codex app-server protocol generation, and a local Codex thread-config MCP probe.
 
 The upstream done-ticket had already recorded official/public source checks for Codex MCP, Claude Code MCP, MCP Streamable HTTP transport, and local client probes. Those findings are inherited as upstream evidence and cited through the archived upstream artifacts rather than re-browsed here.
 
@@ -191,11 +194,12 @@ The upstream done-ticket had already recorded official/public source checks for 
 ## Findings From Code / Docs / Data / Logs
 
 1. The central Agent Tools MCP server is complete enough for a runtime materializer: it can create secret descriptors, list `send_message_to`, execute through `SendMessageToDispatcher`, and revoke sessions by run/member owner.
-2. The only available runtime with a safe, currently implemented materializer surface is Claude Agent SDK. It already accepts programmatic MCP config and does not require writing bearer tokens to disk.
+2. Claude Agent SDK has a safe programmatic materializer surface through SDK query `mcpServers`; Codex App Server has a safe thread-scoped materializer surface through `thread/start` / `thread/resume` `config.mcp_servers`.
 3. Current Claude send-message support duplicates the newly centralized MCP execution path and uses special event suppression. That special case becomes wrong once the execution path is remote MCP.
-4. The correct cutover removes `send_message_to` from `autobyteus_team`; that name remains a task-delegation MCP server name only.
-5. Event and history names must stay canonical (`send_message_to`) even though the provider wire name becomes `mcp__autobyteus_agent_tools__send_message_to`.
-6. No current code should persist the descriptor in `ClaudeAgentRunContext` because runtime contexts can be serialized/restored. A live `ClaudeSession` private field/dependency path is the correct in-memory ownership point.
+4. Current Codex send-message support duplicates the centralized MCP execution path through dynamic tool registration. That dynamic registration must be removed/gated off when Agent Tools MCP is configured.
+5. The correct Claude cutover removes `send_message_to` from `autobyteus_team`; that name remains a task-delegation MCP server name only.
+6. Event and history names must stay canonical (`send_message_to`) even though provider wire names may be Claude-prefixed or Codex MCP server-qualified.
+7. No current code should persist the descriptor in `ClaudeAgentRunContext`, `CodexAgentRunContext`, run history, team metadata, project config, or process launch args. Live runtime/session setup is the correct in-memory ownership point.
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -204,20 +208,22 @@ The upstream done-ticket had already recorded official/public source checks for 
 - Upstream done-ticket artifacts are in this branch under `tickets/done/streamable-mcp-runtime-tools` and are authoritative lineage for materializer design.
 - No backward-compatibility fallback should keep `mcp__autobyteus_team__send_message_to` active.
 - Existing Claude task-delegation/browser/media/publish-artifacts surfaces must remain unchanged outside the send-message cutover.
+- Existing Codex browser/media/task-delegation/publish-artifacts dynamic tools remain runtime-local; only `send_message_to` cuts over to Agent Tools MCP in this ticket.
+- Codex Agent Tools MCP config must be passed through app-server thread config, not shared process launch args or trusted project files.
 
 ## Open Unknowns / Risks
 
-- The current in-progress ticket folder was empty. The chosen scope is inferred; if the intended target is all materializers or a specific external runtime, requirements must reset before implementation.
+- The current in-progress ticket folder was empty. The final refined scope is inferred from upstream artifacts plus user clarification: Claude Agent SDK and Codex App Server `send_message_to` materializers are in scope; Claude Code CLI and Antigravity CLI remain out of scope.
 - Real Claude SDK HTTP MCP behavior should be validated by API/E2E if feasible, because the SDK's spawned Claude Code transport is outside local unit test control.
 - If Claude SDK emits different raw lifecycle chunks for remote MCP than existing tests model, event canonicalization may require small implementation adjustment.
 - If a long-running Claude session outlives the default Agent Tools MCP session TTL, the implementation should recreate the descriptor instead of reusing a stale one. Design calls this out; tests can cover the normal creation/no-creation gates first.
 
 ## Notes For Architect Reviewer
 
-- This design intentionally expands one upstream-deferred materializer: Claude Agent SDK. It does **not** implement every deferred materializer.
+- This design intentionally expands two upstream-deferred materializers for `send_message_to`: Claude Agent SDK and Codex App Server. It does **not** implement every deferred materializer; Claude Code CLI and Antigravity CLI remain future runtime-specific work.
 - The prior done-ticket at `tickets/done/streamable-mcp-runtime-tools` is part of the source package and should be considered upstream context.
-- The key architecture decision to review is the clean cutover from Claude's in-process `autobyteus_team` send-message tool to the server-hosted `autobyteus_agent_tools` MCP server, with no compatibility fallback.
-- If the architecture reviewer believes the current ticket should implement Codex/Claude Code/AGY instead or as well, that is a Requirement Gap, not an implementation-local issue.
+- The key architecture decisions to review are the clean cutover from Claude's in-process `autobyteus_team` send-message tool to server-hosted `autobyteus_agent_tools`, and the clean cutover from Codex dynamic `send_message_to` to Codex app-server thread-scoped `mcp_servers.autobyteus_agent_tools`, with no compatibility fallbacks.
+- If implementation cannot prove Codex thread-scoped config works in the installed app-server version, route back to solution design rather than using process-wide or file-backed bearer config.
 
 ## Design-Impact Rework Investigation (2026-06-13)
 
@@ -374,3 +380,141 @@ The live route-backed test proved the route and canonical stream event conversio
 3. stale coverage remains in the memory assertion result shape after traces are restored (`toolResult` should preserve the new MCP content result, not the old `{ accepted: true }` object).
 
 The old path masked this because it made `send_message_to` lifecycle emission a Claude-handler responsibility. The new path is architecturally cleaner, but it exposes the missing explicit invariant: every executable non-AutoByteus team member run must have a concrete durable memoryDir before it starts, and all run-history/memory read/write services in the test/app process must agree on the same app memory root.
+
+## Requirement-Gap Rework Investigation: All Active Runtime Communication E2E (2026-06-13)
+
+### Trigger
+
+`api_e2e_engineer` rerouted a Requirement Gap after the user challenged Claude-only live validation. The gap artifact is `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-mcp-agent-tools/tickets/in-progress/runtime-mcp-agent-tools/api-e2e-runtime-communication-scope-gap.md`.
+
+User intent recorded by API/E2E: all active runtime agent communications should be E2E tested, not only Claude Agent SDK, otherwise the product cannot claim communication works across runtimes.
+
+### Active Runtime Inventory
+
+Source: `autobyteus-server-ts/src/runtime-management/runtime-kind-enum.ts`.
+
+Active runtime kinds in this server branch:
+
+- `RuntimeKind.AUTOBYTEUS` (`autobyteus`): native AutoByteus runtime, exposes `send_message_to` through `AutoByteusSendMessageToTool`.
+- `RuntimeKind.CODEX_APP_SERVER` (`codex_app_server`): Codex App Server runtime; current code exposes `send_message_to` through Codex dynamic tool registration, but corrected target scope exposes it through Codex app-server Agent Tools MCP thread config.
+- `RuntimeKind.CLAUDE_AGENT_SDK` (`claude_agent_sdk`): Claude Agent SDK runtime, changed by this ticket to expose `send_message_to` through route-backed `autobyteus_agent_tools` MCP.
+
+Antigravity CLI and Claude Code CLI materializers are not runtime backends in this branch and remain outside this all-active-runtime matrix.
+
+### Runtime Entry Points Into Common Communication Spine
+
+Sources inspected:
+
+- `autobyteus-server-ts/src/agent-tools/agent-communication/send-message-to.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/agent-communication/codex-send-message-dynamic-tool-registration.ts`
+- `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-executor.ts`
+- `autobyteus-server-ts/src/agent-communication/services/send-message-to-dispatcher.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-message-recipient-resolver.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts`
+
+Current convergence spine:
+
+```text
+AutoByteus native BaseTool OR Codex Agent Tools MCP OR Claude Agent Tools MCP
+  -> SendMessageToDispatcher.dispatch(...)
+  -> parse/validate exactly one selector
+  -> recipient_name: memberTeamContext.deliverInterAgentMessage(...)
+  -> MixedTeamManager / TeamMemberDeliveryCoordinator
+  -> TeamMessageRecipientResolver
+  -> MixedTeamMemberRegistry / target member handle
+  -> buildInterAgentDeliveryInputMessage(...)
+  -> recipient AgentRun.postUserMessage(...)
+```
+
+`target_agent_run_id` direct delivery uses `GlobalAgentRunMessageRouter` and `AgentRunManager.getActiveRun(...)`; that path is shared with the same runtime adapters but is not the primary teammate roster matrix.
+
+### Existing Durable E2E Coverage Inventory Against Runtime Matrix
+
+Files inspected:
+
+- `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts`
+
+Observed coverage:
+
+| Directed runtime pair | Existing durable evidence | Gap decision |
+| --- | --- | --- |
+| AutoByteus -> AutoByteus | `autobyteus-team-runtime-graphql.e2e.test.ts` routes `send_message_to` between real AutoByteus team members | Still valid; include in required matrix execution/inventory. |
+| Codex -> Codex | `codex-team-inter-agent-roundtrip.e2e.test.ts` covers Codex team send-message roundtrip | Still valid; include in required matrix execution/inventory. |
+| Claude -> Claude | `claude-team-inter-agent-roundtrip.e2e.test.ts` covers live route-backed Claude ping/pong send-message | Still valid and changed by this ticket; include in required matrix execution/inventory. |
+| AutoByteus -> Codex | `mixed-team-runtime-graphql.e2e.test.ts` covers AutoByteus/Codex mixed runtime communication in one direction | Still valid; include in required matrix execution/inventory. |
+| Codex -> AutoByteus | `mixed-team-runtime-graphql.e2e.test.ts` covers AutoByteus/Codex mixed runtime communication in the opposite direction | Still valid; include in required matrix execution/inventory. |
+| Codex -> Claude | `nested-mixed-team-runtime-graphql.e2e.test.ts` covers a Codex child coordinator sending to a Claude child teammate | Still valid as partial all-runtime evidence, but it is nested and does not prove all six top-level mixed-runtime directed pairs. |
+| AutoByteus -> Claude | No focused top-level directed pair found | Needs new or updated durable E2E matrix coverage. |
+| Claude -> AutoByteus | No focused top-level directed pair found | Needs new or updated durable E2E matrix coverage. |
+| Claude -> Codex | No focused top-level directed pair found | Needs new or updated durable E2E matrix coverage. |
+
+### Design Decision
+
+Accept the user's expanded acceptance bar in this ticket and the later Codex unified-solution correction. The production code scope is now Claude Agent SDK materializer, Codex App Server Agent Tools MCP materializer, and the memory invariant. API/E2E acceptance still requires all active runtime `send_message_to` communication evidence before delivery.
+
+Codex must be re-scoped into Agent Tools MCP materialization for `send_message_to`; the safe implementation path is thread-scoped `thread/start` / `thread/resume` config. Codex must not use process-wide `-c` overrides on the shared cwd-keyed client manager, trusted project `.codex/config.toml`, or a dynamic `send_message_to` fallback after cutover. AutoByteus remains local-tool based; Claude uses the route-backed Agent Tools MCP path.
+
+### Revised Matrix Requirement
+
+API/E2E must inventory and execute or update durable coverage for this directed teammate communication matrix before delivery, subject to existing live-test environment gates:
+
+```text
+AutoByteus -> AutoByteus
+Codex      -> Codex
+Claude     -> Claude
+AutoByteus -> Codex
+Codex      -> AutoByteus
+AutoByteus -> Claude
+Claude     -> AutoByteus
+Codex      -> Claude
+Claude     -> Codex
+```
+
+Each executed row should assert at minimum:
+
+- sender runtime actually executes `send_message_to` through its runtime entry adapter;
+- application-facing lifecycle uses canonical `send_message_to` where that runtime emits tool lifecycle;
+- recipient team communication projection is emitted with correct sender/recipient/content;
+- recipient runtime accepts the inter-agent input and reaches a terminal/idle/assistant-output state appropriate for that runtime;
+- provider-specific old Claude wire names and secret Agent Tools MCP descriptors do not leak in application-facing events;
+- memory/raw-trace behavior is asserted where the sender runtime is recordable and the existing product contract expects raw traces.
+
+
+## Codex MCP Materializer Correction Investigation (2026-06-13)
+
+### Trigger
+
+The user challenged the design because the existing `design-spec.md` left Codex App Server on dynamic `send_message_to` even though the earlier streamable-MCP ticket investigated Codex MCP support and the project goal is a unified Agent Tools MCP solution.
+
+### Findings
+
+- Prior upstream investigation already proved Codex supports Streamable HTTP MCP config through normal Codex `mcp_servers.*` config and that `codex app-server --stdio -c 'mcp_servers.autobyteus_agent_tools.url=...' -c 'mcp_servers.autobyteus_agent_tools.http_headers={Authorization="Bearer ..."}'` initialized the dummy Agent Tools MCP server and called tools.
+- The unsafe part of that prior probe is not Codex MCP itself; it is applying a run/member bearer descriptor to the shared cwd-keyed app-server process via launch args or a trusted project file.
+- Current app-server protocol generation (`codex app-server generate-ts --out /tmp/codex-app-server-proto`) shows `ThreadStartParams` and `ThreadResumeParams` both accept `config?: { [key: string]?: JsonValue } | null`.
+- A refreshed local probe at `/tmp/autobyteus-agent-tools-mcp-thread-config-probe-20260613-133706/result.json` passed `config.mcp_servers.autobyteus_agent_tools` directly in `thread/start`; Codex app-server reported the MCP server in `mcpServerStatus/list`, listed `dummy_ping` and `send_message_to`, and `mcpServer/tool/call` returned `{ content: [{ type: "text", text: "pong:thread-config" }], isError: false }`.
+- Current AutoByteus Codex runtime code (`codex-thread-manager.ts`) still sends `config: null` on both `thread/start` and `thread/resume`; `codex-thread-config.ts` has only `dynamicTools`; bootstrap strategies still build `buildSendMessageToDynamicToolRegistrations(...)`.
+
+### Design Consequence
+
+The earlier Claude-only design is incomplete. Codex App Server must be added to the same Agent Tools MCP `send_message_to` spine using a Codex-backend-local materializer:
+
+```text
+CodexThreadBootstrapper
+  -> resolveConfiguredAgentToolExposure(...)
+  -> if send_message_to configured:
+       AgentToolMcpSessionService.createAgentToolMcpSession({ owner, sender, configuredExposure, runtimeKind })
+       Codex materializer builds config.mcp_servers.autobyteus_agent_tools
+       Codex dynamic tool registrations exclude send_message_to
+  -> CodexThreadManager.thread/start or thread/resume passes config object
+  -> Codex app-server MCP client calls /mcp/agent-tools/:sessionId
+  -> Agent Tools MCP route/executor
+  -> SendMessageToDispatcher
+```
+
+The authoritative forbidden shapes are process-wide launch `-c` bearer config on the cwd-keyed app-server process, trusted project `.codex/config.toml` bearer writes, durable descriptor persistence, and a dynamic `send_message_to` fallback after MCP cutover.

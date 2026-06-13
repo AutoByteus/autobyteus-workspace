@@ -242,10 +242,13 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   resolves only through `AgentRunManager.getActiveRun(...)`, rejects inactive or
   non-live ids, and emits direct target-run events without `team_run_id` or Team
   Communication projection. Claude Agent SDK members route first-party MCP
-  `send_message_to` through the dedicated handler, which emits canonical
-  `send_message_to` start and terminal lifecycle events; raw MCP transport chunks
-  such as `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
-  suppressed before they create extra Activity rows.
+  `send_message_to` through the server-hosted `autobyteus_agent_tools` descriptor
+  and provider wire name `mcp__autobyteus_agent_tools__send_message_to`, not
+  through the task-delegation-only `autobyteus_team` server. The Claude runtime
+  converter normalizes the route-backed lifecycle to canonical `send_message_to`
+  before Activity, run-history, team stream, or memory consumers see it; raw MCP
+  provider names must not leak into application-facing events or create extra
+  Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
@@ -290,7 +293,16 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   history should not list them as independent top-level team rows.
 - Historical flat team metadata is not compatibility-read for nested topology;
   unsupported legacy metadata fails instead of guessing a lost tree.
-- Every member `AgentRun` receives a resolved `memoryDir` on create and restore through the mixed member-run path. Direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`; nested members use the root-hierarchical `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/...` shape.
+- Every executable member `AgentRun` receives a resolved `memoryDir` on create
+  and restore through the mixed member-run path before the run reaches
+  `AgentRunManager`. Direct members use
+  `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`; nested members use the
+  root-hierarchical
+  `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/...` shape.
+  Task-agent activation/recovery uses the same team memory scope plus the
+  generated task-agent run id. `MixedAgentMemberHandle` only consumes this value
+  and fails fast for recordable non-AutoByteus member configs that omit it; it
+  must not derive a hidden fallback memory path.
 - Member memory recording is attached at the `AgentRunManager` layer for mixed team members; runtime-specific AgentRun backends keep their own provider-local runtime details below that boundary.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.

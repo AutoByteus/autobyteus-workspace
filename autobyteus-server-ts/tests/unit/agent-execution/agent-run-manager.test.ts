@@ -114,6 +114,51 @@ describe("AgentRunManager", () => {
     expect(codexBackendFactory.restoreBackend).toHaveBeenCalledWith(restoreContext);
   });
 
+  it("removes stale inactive registry entries before restoring a run", async () => {
+    let runActive = true;
+    const config = new AgentRunConfig({
+      runtimeKind: "codex_app_server",
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "gpt-5.3-codex",
+      autoExecuteTools: false,
+      workspaceId: "workspace-1",
+      llmConfig: { reasoning_effort: "medium" },
+      skillAccessMode: null,
+    });
+    const createManagedBackend = () => ({
+      ...createBackend({
+        runId: "run-codex",
+        runtimeKind: "codex_app_server",
+      }),
+      isActive: () => runActive,
+    });
+    const codexBackendFactory = {
+      createBackend: vi.fn().mockResolvedValue(createManagedBackend()),
+      restoreBackend: vi.fn().mockImplementation(() => {
+        runActive = true;
+        return Promise.resolve(createManagedBackend());
+      }),
+    };
+    const manager = new AgentRunManager({
+      codexBackendFactory: codexBackendFactory as any,
+    });
+
+    const originalRun = await manager.createAgentRun(config, "run-codex");
+    runActive = false;
+
+    const restoredRun = await manager.restoreAgentRun(
+      new AgentRunContext({
+        runId: "run-codex",
+        runtimeContext: null,
+        config,
+      }),
+    );
+
+    expect(restoredRun).not.toBe(originalRun);
+    expect(manager.getActiveRun("run-codex")).toBe(restoredRun);
+    expect(codexBackendFactory.restoreBackend).toHaveBeenCalledTimes(1);
+  });
+
   it("delegates Claude create to a runtime-managed run factory", async () => {
     const claudeBackendFactory = {
       createBackend: vi.fn().mockResolvedValue(
