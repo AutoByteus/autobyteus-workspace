@@ -28,6 +28,7 @@ autobyteus-web/
 │   ├── SkillsList.vue                  # Skills listing with cards
 │   ├── SkillCard.vue                   # Individual skill card
 │   ├── SkillDetail.vue                 # Skill explorer & file viewer
+│   ├── SkillDescriptionSummary.vue     # Compact description summary + inline More/Less disclosure
 │   ├── SkillWorkspaceLoader.vue        # [NEW] Transient workspace lifecycle manager
 │   ├── SkillVersioningPanel.vue        # Versioning actions & status
 │   └── SkillVersionCompareModal.vue    # Per-file version diff viewer
@@ -53,6 +54,22 @@ The skills page uses component-based navigation (not URL query parameters):
 | ---------------- | ----------- | ------------------------------ |
 | `list` (default) | SkillsList  | Browse available skills        |
 | `detail`         | SkillDetail | View/edit files within a skill |
+
+
+## Skill Detail Header
+
+`SkillDetail.vue` uses a compact header so the file workspace remains close to
+the top of the page. The first header row owns navigation, skill identity, and
+the compact `SkillVersioningPanel`; the second row owns the skill description
+summary. The description is one line by default with truncation and a localized
+`More` control.
+
+`SkillDescriptionSummary.vue` owns the description disclosure state. Clicking
+`More` expands the full description inline in normal document flow and changes
+the control to `Less`; clicking `Less` collapses back to the one-line summary.
+This disclosure must not use an overlay/popover because the skill workspace
+(file explorer, tabs, and document content) should never be covered by the
+description panel.
 
 ## Architecture: Skill Workspaces
 

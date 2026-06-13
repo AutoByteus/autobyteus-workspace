@@ -11,18 +11,17 @@
   <div v-else-if="skill" class="skill-detail">
     <!-- Compact Header -->
     <header class="compact-header">
-      <div class="header-top-row">
-        <button class="btn-back" @click="$emit('back')">
-          <Icon icon="heroicons:arrow-left" class="back-icon" />
-        </button>
-      </div>
-      
-      <div class="header-main-row">
-        <div class="title-group">
-          <h2 class="skill-title">{{ skill.name }}</h2>
-          <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
+      <div class="header-title-row">
+        <div class="header-identity">
+          <button class="btn-back" @click="$emit('back')">
+            <Icon icon="heroicons:arrow-left" class="back-icon" />
+          </button>
+          <div class="title-group">
+            <h2 class="skill-title">{{ skill.name }}</h2>
+            <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
+          </div>
         </div>
-        
+
         <!-- Versioning Controls (Placeholder for integrated panel) -->
         <div class="header-actions">
            <SkillVersioningPanel
@@ -41,7 +40,7 @@
         </div>
       </div>
 
-      <p class="description">{{ skill.description }}</p>
+      <SkillDescriptionSummary :description="skill.description" />
     </header>
 
     <!-- Main Workspace -->
@@ -77,6 +76,7 @@ import { Icon } from '@iconify/vue'
 import SkillWorkspaceLoader from './SkillWorkspaceLoader.vue'
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue'
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue'
+import SkillDescriptionSummary from './SkillDescriptionSummary.vue'
 import SkillVersioningPanel from './SkillVersioningPanel.vue'
 import SkillVersionCompareModal from './SkillVersionCompareModal.vue'
 import type { Skill, SkillVersion } from '~/types/skill'
@@ -260,14 +260,18 @@ async function handleActivateVersion(version: string) {
 
 /* Compact Header */
 .compact-header {
-  padding: 1.25rem 2rem;
+  padding: 0.875rem 2rem 0.75rem;
   border-bottom: 1px solid #e5e7eb;
   background: white;
   flex-shrink: 0;
 }
 
-.header-top-row {
-  margin-bottom: 0.5rem;
+.header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 0;
 }
 
 .btn-back {
@@ -278,10 +282,13 @@ async function handleActivateVersion(version: string) {
   border: none;
   color: #6b7280;
   cursor: pointer;
-  padding: 0.25rem;
-  margin-left: -0.25rem; /* Optical alignment */
-  border-radius: 4px;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  margin-left: -0.375rem; /* Optical alignment */
+  border-radius: 8px;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-back:hover {
@@ -297,27 +304,30 @@ async function handleActivateVersion(version: string) {
   font-size: 1.25rem;
 }
 
-.header-main-row {
+.header-identity {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
-  gap: 2rem;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
 .title-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
 .skill-title {
   margin: 0;
-  font-size: 2rem; /* Large and bold */
+  font-size: 1.5rem;
   font-weight: 700;
   color: #111827;
   letter-spacing: -0.025em;
-  line-height: 1.1;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-actions {
@@ -331,14 +341,28 @@ async function handleActivateVersion(version: string) {
   padding: 0.125rem 0.625rem;
   border-radius: 9999px;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
-.description {
-  margin: 0;
-  color: #6b7280;
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 800px;
+.btn-back:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .compact-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .header-actions {
+    align-self: stretch;
+  }
 }
 
 /* Workspace */
