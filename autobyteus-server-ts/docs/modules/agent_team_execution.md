@@ -241,14 +241,17 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   live-only exact `AgentRun.runId` route owned by `src/agent-communication`,
   resolves only through `AgentRunManager.getActiveRun(...)`, rejects inactive or
   non-live ids, and emits direct target-run events without `team_run_id` or Team
-  Communication projection. Claude Agent SDK members route first-party MCP
-  `send_message_to` through the server-hosted `autobyteus_agent_tools` descriptor
-  and provider wire name `mcp__autobyteus_agent_tools__send_message_to`, not
-  through the task-delegation-only `autobyteus_team` server. The Claude runtime
-  converter normalizes the route-backed lifecycle to canonical `send_message_to`
-  before Activity, run-history, team stream, or memory consumers see it; raw MCP
-  provider names must not leak into application-facing events or create extra
-  Activity rows.
+  Communication projection. Codex App Server and Claude Agent SDK members route
+  first-party MCP `send_message_to` through the server-hosted
+  `autobyteus_agent_tools` descriptor. Codex receives this as thread-scoped
+  `config.mcp_servers.autobyteus_agent_tools`; Claude receives it through SDK
+  `mcpServers` and provider wire name
+  `mcp__autobyteus_agent_tools__send_message_to`, not through the
+  task-delegation-only `autobyteus_team` server. Runtime converters normalize
+  the route-backed lifecycle to canonical `send_message_to` before Activity,
+  run-history, team stream, or memory consumers see it; raw MCP provider/server
+  names and bearer/header config details must not leak into application-facing
+  events or create extra Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not

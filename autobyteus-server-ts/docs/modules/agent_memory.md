@@ -54,13 +54,14 @@ Codex and Claude runs are recorded by the server as **storage-only** memory:
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
-Route-backed Agent Tools MCP calls, including Claude Agent SDK
-`send_message_to`, are recorded only after the runtime adapter normalizes them
-into canonical `AgentRunEvent` tool lifecycles. The MCP route, method
+Route-backed Agent Tools MCP calls, including Codex App Server and Claude Agent
+SDK `send_message_to`, are recorded only after the runtime adapter normalizes
+them into canonical `AgentRunEvent` tool lifecycles. The MCP route, method
 dispatcher, executor, and `SendMessageToDispatcher` must not write raw traces
 directly. For `send_message_to`, raw traces use the canonical tool name
 `send_message_to`, preserve the provider invocation id as the tool-call id, and
-preserve the MCP text-content result shape.
+preserve the MCP text-content result shape without provider/server-qualified
+tool names or bearer/header descriptor details.
 
 ## Memory Explorer Read Model
 

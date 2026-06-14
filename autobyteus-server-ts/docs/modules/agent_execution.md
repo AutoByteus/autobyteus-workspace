@@ -213,6 +213,19 @@ content-block/content-envelope results are parsed into the standard browser
 result object before terminal lifecycle events are emitted. Non-AutoByteus MCP
 tools and unknown browser-like suffixes stay unchanged.
 
+Codex App Server `send_message_to` is a first-party Agent Tools MCP call, not a
+Codex dynamic tool. When configured, Codex bootstrap creates a live
+`autobyteus_agent_tools` descriptor and passes it only as thread-scoped
+`config.mcp_servers.autobyteus_agent_tools` to `thread/start` / `thread/resume`.
+The old Codex dynamic `send_message_to` registration/spec-builder path is
+removed and must not be restored as a compatibility fallback. Codex MCP
+tool-call conversion and diagnostic history replay must canonicalize the
+route-backed tool to application-facing `send_message_to`, preserve the
+invocation id, arguments, and MCP content result/error shape, and sanitize nested
+serialized payloads so `autobyteus_agent_tools`, provider-qualified tool names,
+`Authorization`, bearer tokens, and `http_headers` do not leak into events, run
+history, or memory traces.
+
 Claude `send_message_to` is also a first-party MCP tool with a canonical event
 contract, but it is no longer registered on the Claude `autobyteus_team`
 in-process MCP server. When configured, `ClaudeSession` materializes the

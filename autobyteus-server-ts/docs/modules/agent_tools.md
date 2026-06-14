@@ -26,10 +26,10 @@ Browser-tool support is runtime-gated:
 canonical contract, selector parsing, runtime-neutral dispatcher, direct
 exact-run routing, and optional direct-message grants live under
 `src/agent-communication`; AutoByteus, Codex, and Claude adapters project the
-same contract through their configured runtime surfaces. Claude Agent SDK now
-projects `send_message_to` through the server-hosted
-`autobyteus_agent_tools` MCP descriptor instead of a Claude-specific
-`autobyteus_team` send-message handler.
+same contract through their configured runtime surfaces. Codex App Server and
+Claude Agent SDK now project `send_message_to` through the server-hosted
+`autobyteus_agent_tools` MCP descriptor instead of runtime-specific
+send-message wrappers/handlers.
 
 The tool accepts exactly one target selector:
 
@@ -64,10 +64,11 @@ token hash, derives `enabledTools` from server-supported definitions, and
 redacts secret descriptors for diagnostics. `tools/list` returns only tools
 enabled for that session, and `tools/call` rejects unknown or unconfigured tools
 before executor dispatch. V1 supports `send_message_to` by reusing the shared
-agent-communication contract and dispatcher. Claude Agent SDK materializes this
-surface only when `send_message_to` is configured, using
-`mcp__autobyteus_agent_tools__send_message_to` as the provider wire name while
-application events, run history, and memory expose canonical `send_message_to`.
+agent-communication contract and dispatcher. Codex App Server and Claude Agent
+SDK materialize this surface only when `send_message_to` is configured. Their
+provider/server-qualified wire names stay below the runtime converter; application
+events, run history, and memory expose canonical `send_message_to` and must not
+contain bearer/header descriptor details.
 See
 [Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
 security, and future-adapter contract.

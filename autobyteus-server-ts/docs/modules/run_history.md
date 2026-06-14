@@ -252,6 +252,10 @@ Important identity/storage rules:
   - bare `memberName` is display/top-level identity and is not sufficient for duplicate nested leaf names
 - team-member memory identity is root-hierarchical: direct members use `rootTeamRunId + memberRunId`, nested members use `rootTeamRunId + teamRunPath + memberRunId`, and task-agent runs use that same team memory scope plus their generated `taskAgentRunId`
 - `AgentMemoryLocationService` is the shared shape for read/write/projection consumers that need `rootTeamRunId`, `teamRunPath`, member/task run identity, route/path metadata, and resolved `memoryDir`; `TeamRunMemoryTopologyReader` can load root metadata from either a root team run id or a child team run id
+- team metadata lookup services and topology readers must bind to the current
+  configured app memory root; restore, context-file resolution, and memory
+  readback must not reuse a default-root singleton after tests or deployments
+  select a different memory directory
 - Codex and Claude standalone/team-member/task-agent runs write storage-only local memory through the same resolved memory directories as native AutoByteus-owned runs; native AutoByteus memory contents remain owned by the native `autobyteus-ts` memory manager
 - runtime-native identifiers remain separate from domain identifiers:
   - AutoByteus native agent id

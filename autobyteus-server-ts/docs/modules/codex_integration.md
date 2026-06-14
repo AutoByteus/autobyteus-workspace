@@ -42,15 +42,25 @@ be routed among multiple active threads remain server-side diagnostics; server
 requests receive a transport-level error response, but the router must not
 broadcast them or call per-thread runtime-error projection.
 
-Codex agent communication uses the same dynamic-tool lifecycle normalization as
-other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool backed
-by the shared `src/agent-communication` dispatcher: `recipient_name` requires a
-team member context, while `target_agent_run_id` can be used by configured
+Codex agent communication uses the server-hosted Agent Tools MCP surface for
+`send_message_to`. When the configured tool set includes `send_message_to`,
+`CodexThreadBootstrapper` creates a live `AgentToolMcpDescriptor`, materializes
+it as thread-scoped `config.mcp_servers.autobyteus_agent_tools`, and passes that
+config to `thread/start` and `thread/resume`. The descriptor must not be written
+to trusted project config, process-wide app-server launch flags, or durable
+history. The old Codex dynamic `send_message_to` registration/spec builder is
+removed and must not be retained as a fallback. Selector semantics still come
+from the shared `src/agent-communication` dispatcher: `recipient_name` requires
+a team member context, while `target_agent_run_id` can be used by configured
 standalone or team-member Codex runs to reach an exact currently active
-`AgentRun.runId`. A successful delivery is no longer represented only by
-`SEGMENT_START` / `SEGMENT_END`; the sender stream must also contain matching
-`TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
-the dynamic tool invocation id.
+`AgentRun.runId`.
+
+Route-backed Codex `send_message_to` is normalized from the Codex MCP tool-call
+lifecycle to application-facing `send_message_to`. Sender streams and memory
+traces must preserve invocation id, arguments, and MCP content result/error
+shape, while sanitizing provider/server-qualified names (`autobyteus_agent_tools`
+or `mcp__autobyteus_agent_tools__send_message_to`) plus `Authorization`,
+`Bearer`, and `http_headers` config details from app-facing payloads.
 
 Codex team task delegation is projected as dynamic tools generated from the
 server-owned task-delegation manifest. When an agent definition enables
@@ -194,7 +204,8 @@ Team runtime:
 - `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
 - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
-- `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
+- `src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts`
+- `src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-event-payload.ts`
 - `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
 
 ## Skills

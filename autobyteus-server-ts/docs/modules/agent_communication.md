@@ -99,7 +99,10 @@ Runtime adapters expose one logical `send_message_to` capability through their
 native tool surfaces when the current agent/tool configuration includes it:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
-- Codex receives dynamic tool registration/specs built from the shared contract.
+- Codex App Server receives the first-party Agent Tools MCP server through
+  thread-scoped `config.mcp_servers.autobyteus_agent_tools` generated from a
+  private descriptor; the old dynamic `send_message_to` registration path is not
+  retained as a fallback.
 - Claude Agent SDK receives the first-party
   `mcp__autobyteus_agent_tools__send_message_to` tool by materializing the
   server-hosted `autobyteus_agent_tools` MCP descriptor; application surfaces

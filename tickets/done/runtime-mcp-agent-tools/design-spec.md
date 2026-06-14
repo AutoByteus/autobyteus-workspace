@@ -269,7 +269,10 @@ Rules:
 
 - AutoByteus native remains a local in-process tool wrapper. It already lives in the server process and converges on `SendMessageToDispatcher`; it does not need to become an HTTP MCP client in this ticket.
 - Claude Code CLI and Antigravity CLI do not have runtime backends here. Do not add orphan materializer files without runtime owners.
-- Browser/media/task-delegation/publish-artifacts remain on existing Claude MCP/in-process surfaces and existing Codex dynamic tool surfaces. Do not expose them through `autobyteus_agent_tools` until the Agent Tools MCP catalog has explicit adapters.
+- Browser/media/task-delegation/publish-artifacts remain on their existing runtime-specific exposure surfaces for this ticket:
+  - Codex exposes them through the app-server `dynamicTools` mechanism built from the existing dynamic registration builders.
+  - Claude exposes them through the existing SDK-created local MCP server builders (`autobyteus_browser`, `autobyteus_image_audio`, `autobyteus_team`, and `autobyteus_published_artifacts`), not through the new route-backed `autobyteus_agent_tools` HTTP MCP server.
+  Do not expose these non-target tools through `autobyteus_agent_tools` until the Agent Tools MCP catalog has explicit adapters for them.
 
 
 ### DS-RMCP-009 — Route-Backed Tool Lifecycle Persists Through Canonical AgentRun Memory Spine
@@ -516,6 +519,17 @@ Forbidden:
 | All-runtime E2E matrix harness | API/E2E coverage | active runtime test environment + team definitions | directed pair evidence for same-runtime and mixed-runtime communication | Coverage owner only; must not create production routing shortcuts. |
 
 ## Data Shape Details
+
+### `send_message_to` Schema Authority
+
+For `send_message_to`, the Agent Tools MCP catalog/contract is the authoritative external-runtime schema after this cutover. Claude and Codex materializers must not define separate argument schemas for `send_message_to`; they only expose the server-owned MCP tool through runtime-specific config.
+
+Runtime implications:
+
+- Claude provider wire name is `mcp__autobyteus_agent_tools__send_message_to`, but the schema comes from Agent Tools MCP.
+- Codex MCP server/tool exposure comes from `mcp_servers.autobyteus_agent_tools`, but the schema comes from Agent Tools MCP.
+- AutoByteus native may keep its local in-process wrapper, but it must remain semantically aligned with the same shared `send_message_to` parser/validator/dispatcher contract rather than creating a divergent schema.
+- Other tool families can still be available across runtimes when configured, but in this ticket they are not all served by the new `autobyteus_agent_tools` MCP catalog. Their exposure remains through each runtime's existing adapter/config path, while still using shared tool contracts/manifests where those already exist. A future design can move each family into the Agent Tools MCP catalog one by one.
 
 ### Claude SDK MCP Server Config
 

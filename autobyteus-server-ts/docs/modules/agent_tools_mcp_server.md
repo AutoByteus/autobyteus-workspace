@@ -5,9 +5,10 @@
 The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools
 to external runtimes through a session-scoped Streamable HTTP MCP endpoint. It
 is a server-hosted tool surface for runtimes that cannot call in-process
-AutoByteus tool wrappers directly. Claude Agent SDK is the first production
-runtime materializer: configured Claude runs consume this endpoint
-programmatically through the SDK `mcpServers` query option.
+AutoByteus tool wrappers directly. Claude Agent SDK and Codex App Server are the
+first production runtime materializers: configured Claude runs consume this
+endpoint through the SDK `mcpServers` query option, and configured Codex runs
+consume it through thread-scoped app-server `config.mcp_servers`.
 
 This module is distinct from [MCP Server Management](./mcp_server_management.md):
 MCP Server Management consumes and registers external MCP servers as AutoByteus
@@ -20,6 +21,8 @@ to an MCP client.
 - `src/agent-tools/mcp/providers`
 - Claude runtime materializer in
   `src/agent-execution/backends/claude/agent-tools-mcp`
+- Codex runtime materializer in
+  `src/agent-execution/backends/codex/agent-tools-mcp`
 - route registration in `src/server-runtime.ts`
 - run/member lifecycle revocation hooks in:
   - `src/agent-execution/services/agent-run-manager.ts`
@@ -92,6 +95,31 @@ configured, the session does not create an Agent Tools MCP descriptor or expose
 that allowed tool. Restored or refreshed Claude sessions rematerialize a fresh
 descriptor instead of persisting or reusing bearer-token config files.
 
+Codex App Server materialization is also live-session scoped, but uses the app
+server thread protocol. When a Codex standalone or team-member run is configured
+for `send_message_to`, `CodexThreadBootstrapper` creates an Agent Tools MCP
+session and passes only a thread-scoped config object into `thread/start` and
+`thread/resume`:
+
+```ts
+{
+  mcp_servers: {
+    autobyteus_agent_tools: {
+      url: descriptor.serverUrl,
+      http_headers: descriptor.headers,
+      enabled_tools: descriptor.enabledTools,
+      startup_timeout_sec: 5,
+    },
+  },
+}
+```
+
+Codex must not materialize this bearer-bearing descriptor through shared
+process-wide launch flags, `CODEX_APP_SERVER_ARGS*`, trusted
+`.codex/config.toml`, or any other durable project file. If `send_message_to` is
+not configured, Codex does not create the descriptor or pass the MCP server
+config for this surface.
+
 ## Configured Tool Boundary
 
 The server-side session is the security boundary. `AgentToolMcpCatalog` derives
@@ -127,8 +155,7 @@ The first supported MCP tool is `send_message_to`.
 `src/agent-communication` public contract and parameter schema. Tool execution
 delegates through `AgentToolMcpToolExecutor` to the shared
 `SendMessageToDispatcher`, so selector semantics remain identical to the native
-AutoByteus, Codex dynamic-tool, and Claude Agent SDK Agent Tools MCP
-projections:
+AutoByteus local wrapper and the Codex/Claude Agent Tools MCP projections:
 
 - `recipient_name` requires an active `MemberTeamContext` and routes through
   team-local delivery.
@@ -137,10 +164,12 @@ projections:
 The MCP result mapper returns standard MCP text content and sets `isError` when
 the shared `AgentOperationResult` is not accepted.
 
-For Claude Agent SDK, route-backed `send_message_to` lifecycle events are
-normalized to the canonical application-facing tool name `send_message_to`.
-Provider wire names such as `mcp__autobyteus_agent_tools__send_message_to` must
-not leak into frontend events, run history, or memory read models.
+For Codex App Server and Claude Agent SDK, route-backed `send_message_to`
+lifecycle events are normalized to the canonical application-facing tool name
+`send_message_to`. Provider/server-qualified names such as
+`mcp__autobyteus_agent_tools__send_message_to`, `autobyteus_agent_tools`, and
+bearer/header config details must not leak into frontend events, run history, or
+memory read models.
 
 ## Future Tool Adapters
 
@@ -158,8 +187,8 @@ they become supported on this MCP surface.
 
 ## Out Of Scope For V1
 
-- production runtime MCP config materializers for Codex App Server, Claude Code
-  CLI, or Antigravity CLI;
+- production runtime MCP config materializers for Claude Code CLI or
+  Antigravity CLI;
 - persisted MCP sessions or persisted bearer-token reuse across restored runs;
 - stale bearer-token config cleanup;
 - complex long-lived or resumable SSE server push; and
