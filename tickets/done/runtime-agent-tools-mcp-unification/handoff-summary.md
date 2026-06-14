@@ -2,14 +2,14 @@
 
 ## Status
 
-- Current status: `User verified; repository finalization in progress`
+- Current status: `Completed; finalized into codex/streamable-mcp-runtime-tools`
 - Current owner: `delivery_engineer`
 - Ticket branch: `codex/runtime-agent-tools-mcp-unification`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification`
-- Ticket artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification`
+- Worktree: `Removed during post-finalization cleanup: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification`
+- Ticket artifact folder: `tickets/done/runtime-agent-tools-mcp-unification` on `codex/streamable-mcp-runtime-tools`
 - Bootstrap base branch: `origin/codex/streamable-mcp-runtime-tools`
 - Finalization target recorded by bootstrap: `origin/codex/streamable-mcp-runtime-tools` / branch `codex/streamable-mcp-runtime-tools`, unless the user directs otherwise
-- Last updated: 2026-06-14 10:45 CEST (+0200)
+- Last updated: 2026-06-14 10:47 CEST (+0200)
 
 ## Integrated-State Refresh
 
@@ -174,7 +174,7 @@ Known non-blocking repository baseline:
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
+- Docs sync report: `tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Delivery docs check: `git diff --check` passed after docs/report edits.
 
@@ -184,7 +184,7 @@ Known non-blocking repository baseline:
   - root `README.md` setup/build/release context.
   - `autobyteus-web/README.md` desktop application build, macOS verbose build/no-notarization command, and integrated backend packaging notes.
   - `autobyteus-server-ts/README.md` backend build prerequisites and `pnpm -C autobyteus-server-ts build` notes.
-- Build command run from `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web`:
+- Build command run from the pre-cleanup ticket worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web`:
 
 ```bash
 NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
@@ -196,8 +196,8 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 - Architecture: `macOS arm64`.
 - Integrated backend: prepared and bundled by the build command.
 - Signing/notarization: skipped for local testing (`APPLE_SIGNING_IDENTITY` not set; identity explicitly `null`; `NO_TIMESTAMP=1`).
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/logs/delivery/electron-build-mac-20260614T082344Z.log`
-- Testable artifacts:
+- Build log: `tickets/done/runtime-agent-tools-mcp-unification/logs/delivery/electron-build-mac-20260614T082344Z.log`
+- Temporary local test artifacts (user-tested before finalization; removed with the ticket worktree cleanup):
   - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.54.dmg`
     - Size: `360M`
     - SHA256: `15f9f2271e453ad6f0aabba8809f6b083e36aeaf7d12d1b1fa4112bc15c641cc`
@@ -214,7 +214,7 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 
 ## Suggested User Verification Focus
 
-Before approving finalization, please verify the behavior most relevant to the target runtime path:
+User verification was completed before finalization. The original recommended verification focus was:
 
 1. Review the updated durable docs for the intended architecture, especially `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`, `agent_tools.md`, `agent_execution.md`, and `codex_integration.md`.
 2. In a configured Codex App Server run, confirm migrated tools appear under thread-scoped `config.mcp_servers.autobyteus_agent_tools.enabled_tools` and not under migrated `dynamicTools`.
@@ -227,20 +227,35 @@ Before approving finalization, please verify the behavior most relevant to the t
 - Explicit user verification/completion received: `Yes`
 - Verification reference: user confirmed on 2026-06-14: ‘i tested it. it works. Let's do finalization.’
 - Ticket archive state: moved to `tickets/done/runtime-agent-tools-mcp-unification/` before final commit
-- Repository finalization: `In progress` — ticket branch commit/push, merge into `codex/streamable-mcp-runtime-tools`, target push, and worktree cleanup are being executed.
+- Repository finalization: `Completed` — ticket branch commit `46ac7d2368109fcf75d12db0248529e83fa108c3` was pushed to `origin/codex/runtime-agent-tools-mcp-unification`, merged into `codex/streamable-mcp-runtime-tools` as `f2b61c388893ada926a8d747bfefbe2c5e40f94d`, and pushed to `origin/codex/streamable-mcp-runtime-tools`.
 - Release requested: `No`
 - Release/publication/deployment applicable now: `No`
 
+
+## Repository Finalization Result
+
+- Finalization target branch: `codex/streamable-mcp-runtime-tools`
+- Finalization target remote: `origin`
+- Finalization target refresh after user verification: completed; target remained at `9b6d8938e17f94148a4f23ab3ce04fbaaaf85014` before merge.
+- Ticket branch final commit: `46ac7d2368109fcf75d12db0248529e83fa108c3`
+- Ticket branch push: completed to `origin/codex/runtime-agent-tools-mcp-unification`
+- Target merge commit: `f2b61c388893ada926a8d747bfefbe2c5e40f94d`
+- Target push: completed to `origin/codex/streamable-mcp-runtime-tools`
+- Ticket worktree cleanup: completed; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification` was removed.
+- Local ticket branch cleanup: completed; local `codex/runtime-agent-tools-mcp-unification` was removed after the ticket commit was safely reachable from the remote ticket branch and finalization target.
+- Remote ticket branch cleanup: not required; `origin/codex/runtime-agent-tools-mcp-unification` remains as the pushed ticket branch.
+- Release, tag, version bump, publication, or deployment: not required.
+
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/release-deployment-report.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/handoff-summary.md`
+- Requirements doc: `tickets/done/runtime-agent-tools-mcp-unification/requirements-doc.md`
+- Investigation notes: `tickets/done/runtime-agent-tools-mcp-unification/investigation-notes.md`
+- Design spec: `tickets/done/runtime-agent-tools-mcp-unification/design-spec.md`
+- Design review report: `tickets/done/runtime-agent-tools-mcp-unification/design-review-report.md`
+- Implementation handoff: `tickets/done/runtime-agent-tools-mcp-unification/implementation-handoff.md`
+- Code review report: `tickets/done/runtime-agent-tools-mcp-unification/code-review-report.md`
+- API/E2E coverage investigation: `tickets/done/runtime-agent-tools-mcp-unification/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `tickets/done/runtime-agent-tools-mcp-unification/api-e2e-execution-coverage-report.md`
+- Docs sync report: `tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
+- Delivery / release / deployment report: `tickets/done/runtime-agent-tools-mcp-unification/release-deployment-report.md`
+- This handoff summary: `tickets/done/runtime-agent-tools-mcp-unification/handoff-summary.md`

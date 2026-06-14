@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, deployment, tag, or version bump is in scope before explicit user verification. This report records the delivery-stage integrated-state refresh, docs sync, and pre-verification hold for `runtime-agent-tools-mcp-unification`.
+No release, publication, deployment, tag, or version bump is in scope for this ticket. This report records the completed delivery-stage integrated-state refresh, docs sync, user verification, repository finalization into `codex/streamable-mcp-runtime-tools`, and ticket-worktree cleanup for `runtime-agent-tools-mcp-unification`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/runtime-agent-tools-mcp-unification/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Updated after confirming latest tracked base was current and after completing long-lived docs sync.
+- Notes: Updated after confirming latest tracked base was current, completing long-lived docs sync, receiving user verification, finalizing the repository, and cleaning up the ticket worktree.
 
 ## Initial Delivery Integration Refresh
 
@@ -36,7 +36,7 @@ No release, publication, deployment, tag, or version bump is in scope before exp
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/runtime-agent-tools-mcp-unification/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`
@@ -56,7 +56,7 @@ No release, publication, deployment, tag, or version bump is in scope before exp
 ## Local Electron Build For User Testing
 
 - README files reviewed before build: root `README.md`, `autobyteus-web/README.md`, and `autobyteus-server-ts/README.md`.
-- Command run from `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web`:
+- Command run from the pre-cleanup ticket worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web`:
 
 ```bash
 NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
@@ -66,8 +66,8 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 - Build flavor/version/arch: `enterprise` / `1.3.54` / `macOS arm64`.
 - Integrated backend: prepared and bundled.
 - Signing/notarization: skipped for local testing.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/logs/delivery/electron-build-mac-20260614T082344Z.log`
-- Artifacts:
+- Build log: `tickets/done/runtime-agent-tools-mcp-unification/logs/delivery/electron-build-mac-20260614T082344Z.log`
+- Temporary local artifacts (user-tested before finalization; removed with ticket worktree cleanup):
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.54.dmg` — `360M`, SHA256 `15f9f2271e453ad6f0aabba8809f6b083e36aeaf7d12d1b1fa4112bc15c641cc`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.54.zip` — `357M`, SHA256 `872dcf2e63eaad740a32900d520c6ae89dc02e7fd2d7cd6bd6725447b26bbed2`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` — `1.2G`
@@ -78,27 +78,27 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification`
+- Archived ticket path: `tickets/done/runtime-agent-tools-mcp-unification` on the finalized target branch
 
 ## Version / Tag / Release Commit
 
-N/A before user verification. No version bump, tag, or release commit was created.
+No version bump, tag, release commit, publication, or deployment was required or created.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/investigation-notes.md`
+- Bootstrap context source: `tickets/done/runtime-agent-tools-mcp-unification/investigation-notes.md`
 - Ticket branch: `codex/runtime-agent-tools-mcp-unification`
-- Ticket branch commit result: `In progress`
-- Ticket branch push result: `Pending`
+- Ticket branch commit result: `Completed` — `46ac7d2368109fcf75d12db0248529e83fa108c3` (`feat(agent-tools): unify runtime tools mcp`)
+- Ticket branch push result: `Completed` — pushed to `origin/codex/runtime-agent-tools-mcp-unification`
 - Finalization target remote: `origin`
 - Finalization target branch: `codex/streamable-mcp-runtime-tools`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed yet`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress`
+- Re-integration before final merge result: `Not needed`; target remained at `9b6d8938e17f94148a4f23ab3ce04fbaaaf85014` after the post-verification refresh.
+- Target branch update result: `Completed` using a temporary clean worktree because the existing local `streamable-mcp-runtime-tools` worktree had unrelated dirty state and was not touched.
+- Merge into target result: `Completed` — merge commit `f2b61c388893ada926a8d747bfefbe2c5e40f94d` (`merge: runtime agent tools mcp unification`)
+- Push target branch result: `Completed` — pushed to `origin/codex/streamable-mcp-runtime-tools`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -113,17 +113,17 @@ N/A before user verification. No version bump, tag, or release commit was create
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification`
-- Worktree cleanup result: `Blocked`
-- Worktree prune result: `Blocked`
-- Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is not allowed before user verification and repository finalization.
+- Worktree cleanup result: `Completed` — `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification` was removed after finalization.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — local `codex/runtime-agent-tools-mcp-unification` was removed after the ticket commit was reachable from the remote ticket branch and finalization target.
+- Remote branch cleanup result: `Not required`; `origin/codex/runtime-agent-tools-mcp-unification` remains as the pushed ticket branch.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A for pre-verification handoff; repository finalization is intentionally held pending user verification.
+- Why final handoff could not complete: N/A; finalization completed.
 
 ## Release Notes Summary
 
@@ -133,7 +133,7 @@ N/A before user verification. No version bump, tag, or release commit was create
 
 ## Deployment Steps
 
-No deployment steps are applicable before explicit user verification. If the user later requests a release or deployment, refresh the target from remote again, protect delivery-owned edits, re-integrate if needed, rerun required checks, update the handoff/report if user-facing state changes, then obtain renewed verification before final merge/release.
+No deployment steps were applicable. Repository finalization completed after explicit user verification; no release, publication, tag, version bump, or deployment was requested.
 
 ## Environment Or Migration Notes
 
@@ -163,20 +163,41 @@ git diff --check
 
 Result: passed after docs/report edits.
 
+```bash
+git diff --check
+```
+
+Result: passed in the temporary clean finalization-target worktree after merging the ticket commit into `codex/streamable-mcp-runtime-tools`.
+
+```bash
+git push origin HEAD:refs/heads/codex/runtime-agent-tools-mcp-unification
+git push origin HEAD:refs/heads/codex/streamable-mcp-runtime-tools
+```
+
+Result: both pushes completed; remote ticket branch is at `46ac7d2368109fcf75d12db0248529e83fa108c3` and remote target branch is at merge commit `f2b61c388893ada926a8d747bfefbe2c5e40f94d` before this final report update.
+
+```bash
+git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification
+git worktree prune
+git branch -D codex/runtime-agent-tools-mcp-unification
+```
+
+Result: completed; the dedicated ticket worktree and local ticket branch were removed.
+
 Upstream validation authority remains the latest code review/API-E2E artifacts:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-agent-tools-mcp-unification/tickets/done/runtime-agent-tools-mcp-unification/api-e2e-execution-coverage-report.md`
+- `tickets/done/runtime-agent-tools-mcp-unification/code-review-report.md`
+- `tickets/done/runtime-agent-tools-mcp-unification/api-e2e-execution-coverage-report.md`
 
 ## Rollback Criteria
 
-If user verification finds that any migrated Claude/Codex tool still appears through old runtime-specific paths, that route-backed execution leaks MCP descriptor secrets into events/history/memory, or that configured/availability gating differs from the documented behavior, do not finalize. Route to the appropriate owner based on classification:
+If post-finalization validation finds that any migrated Claude/Codex tool still appears through old runtime-specific paths, that route-backed execution leaks MCP descriptor secrets into events/history/memory, or that configured/availability gating differs from the documented behavior, route to the appropriate owner based on classification:
 
 - `Local Fix`: `implementation_engineer`
 - `Design Impact`, `Requirement Gap`, or `Unclear`: `solution_designer`
 
-Before any later finalization, re-fetch the finalization target, re-integrate if it advanced, rerun required checks, and update docs/handoff if the user-facing state changes.
+For any follow-up fix, branch from the finalized target, re-fetch the target, rerun the relevant checks, and update docs/handoff if user-facing state changes.
 
 ## Final Status
 
-User verified the local build. Repository finalization is in progress against `codex/streamable-mcp-runtime-tools`.
+Completed. User verified the local build; ticket branch `46ac7d2368109fcf75d12db0248529e83fa108c3` was pushed, merged into `codex/streamable-mcp-runtime-tools` as `f2b61c388893ada926a8d747bfefbe2c5e40f94d`, the target branch was pushed to `origin`, and the dedicated ticket worktree/local ticket branch were removed. No release, tag, version bump, publication, or deployment was required.
