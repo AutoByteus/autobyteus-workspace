@@ -20,8 +20,10 @@ Audio/image model catalogs and media-serving integration.
 Server-owned media agent tools live in `src/agent-tools/media` and reuse the
 multimedia client factories/model catalogs for provider-specific execution.
 The server-owned tool layer is responsible for agent-facing contracts,
-runtime-specific projection, default-model resolution, media-local path
-handling, and result shaping.
+runtime projection, default-model resolution, media-local path handling, and
+result shaping. AutoByteus uses local wrappers; Codex App Server and Claude
+Agent SDK receive configured media tools through the unified
+`autobyteus_agent_tools` Agent Tools MCP descriptor.
 
 The active first-party agent tool names are:
 

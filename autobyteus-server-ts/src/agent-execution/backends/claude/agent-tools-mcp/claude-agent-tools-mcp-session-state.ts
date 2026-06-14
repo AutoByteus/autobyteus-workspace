@@ -21,16 +21,10 @@ export class ClaudeAgentToolsMcpSessionState {
 
   constructor(private readonly sessionService: ClaudeAgentToolsMcpSessionServiceLike) {}
 
-  ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor {
-    if (!runContext.runtimeContext.configuredToolExposure.sendMessageToConfigured) {
-      throw new Error(
-        "CLAUDE_AGENT_TOOLS_MCP_NOT_CONFIGURED: send_message_to is not configured for this run.",
-      );
-    }
-
+  ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
     const existing = this.liveDescriptor;
     if (existing && existing.expiresAt.getTime() > Date.now()) {
-      return existing.descriptor;
+      return existing.descriptor.enabledTools.length > 0 ? existing.descriptor : null;
     }
 
     const result = this.sessionService.createAgentToolMcpSession({
@@ -44,13 +38,18 @@ export class ClaudeAgentToolsMcpSessionState {
         memberTeamContext: runContext.runtimeContext.memberTeamContext,
       }),
       configuredExposure: runContext.runtimeContext.configuredToolExposure,
+      executionContext: {
+        workingDirectory: runContext.runtimeContext.sessionConfig.workingDirectory,
+        memoryDir: runContext.config.memoryDir,
+        applicationExecutionContext: runContext.config.applicationExecutionContext,
+      },
       runtimeKind: runContext.config.runtimeKind,
     });
     this.liveDescriptor = {
       descriptor: result.descriptor,
       expiresAt: result.session.expiresAt,
     };
-    return result.descriptor;
+    return result.descriptor.enabledTools.length > 0 ? result.descriptor : null;
   }
 }
 

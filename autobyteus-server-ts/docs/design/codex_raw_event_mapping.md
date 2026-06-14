@@ -70,12 +70,12 @@ Normalized result:
 
 ## Dynamic Tool Lifecycle Spine
 
-For Codex dynamic tools, including `delegate_tasks`, `submit_task_result`, and
-`review_task_result`, the raw `dynamicToolCall` item lifecycle is the
-authoritative execution lifecycle. `send_message_to` is intentionally not a
-Codex dynamic tool after the Agent Tools MCP cutover; its lifecycle belongs to
-the MCP tool spine below. Display/conversation segments and tool execution
-lifecycle remain separate normalized surfaces.
+For non-migrated Codex dynamic tools, the raw `dynamicToolCall` item lifecycle
+is the authoritative execution lifecycle. Browser, media, task delegation,
+`send_message_to`, and `publish_artifacts` are intentionally not Codex dynamic
+tools after the Agent Tools MCP unification; their lifecycle belongs to the MCP
+tool spine below. Display/conversation segments and tool execution lifecycle
+remain separate normalized surfaces.
 
 Normalized result:
 
@@ -86,8 +86,8 @@ Normalized result:
 `SEGMENT_START` / `SEGMENT_END` tell the UI that a tool-call segment exists and
 has finished display parsing. They are not execution success/failure authority.
 `TOOL_EXECUTION_*` events drive Activity terminal state and storage-only memory
-tool-call/tool-result traces. Browser dynamic tools use this same generalized
-dynamic-tool mapping rather than a browser-specific terminal lifecycle branch.
+tool-call/tool-result traces. Migrated server-owned backend tools must not be
+reintroduced on this dynamic-tool mapping as compatibility fallbacks.
 
 ## MCP Tool Lifecycle Spine
 
@@ -112,14 +112,16 @@ Normalized result:
 tool-call and tool-result raw traces. The memory recorder must not parse raw
 Codex MCP item internals to repair missing arguments.
 
-Codex `send_message_to` uses this MCP spine through the thread-scoped
+Codex Agent Tools MCP calls use this MCP spine through the thread-scoped
 `autobyteus_agent_tools` server config. Live conversion and diagnostic
-`thread/read` replay canonicalize that provider/server-qualified tool identity
-to application-facing `send_message_to`, preserve invocation id, arguments, and
-MCP content result/error shape, and sanitize nested payloads so
-`autobyteus_agent_tools`, `mcp__autobyteus_agent_tools__send_message_to`,
-`Authorization`, bearer tokens, and `http_headers` do not reach frontend events,
-run history, or memory read models.
+`thread/read` replay canonicalize provider/server-qualified tool identities to
+application-facing canonical names such as `send_message_to`, `generate_image`,
+`delegate_tasks`, and `publish_artifacts`, preserve invocation id, arguments,
+and MCP content result/error shape, and sanitize nested payloads so
+`autobyteus_agent_tools`,
+`mcp__autobyteus_agent_tools__publish_artifacts`, `Authorization`, bearer
+tokens, and `http_headers` do not reach frontend events, run history, or memory
+read models.
 
 ## Web Search Lifecycle Spine
 
@@ -235,7 +237,7 @@ Forbidden downstream effect:
 | `item/fileChange/requestApproval` | file-change approval request | `TOOL_APPROVAL_REQUESTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `codex/local/toolApproved` | local approval acknowledgement | `TOOL_APPROVED` | `codex-item-event-converter.ts` | Keep |
 | `item/fileChange/outputDelta` | file-change status/log text | `TOOL_LOG(edit_file)` | `codex-item-event-converter.ts` | Keep |
-| `item/tool/call` | dynamic tool call server request for non-`send_message_to` Codex dynamic tools | no `AgentRunEvent`; handled as request/response control flow | `codex-thread-server-request-handler.ts` | Keep outside normalized runtime-event spine; `send_message_to` is route-backed MCP, not dynamic |
+| `item/tool/call` | dynamic tool call server request for non-migrated Codex dynamic tools | no `AgentRunEvent`; handled as request/response control flow | `codex-thread-server-request-handler.ts` | Keep outside normalized runtime-event spine; migrated server-owned backend tools are route-backed Agent Tools MCP, not dynamic |
 | `rawResponseItem/completed` | `item.type = functionCallOutput` | `TOOL_LOG` | `codex-raw-response-event-converter.ts` | Keep |
 | `rawResponseItem/completed` | `item.type = custom_tool_call` or custom tool output | none in the normalized runtime-event spine | `codex-raw-response-event-converter.ts` | Keep ignored; file mutation state comes from `fileChange` events |
 | `rawResponseItem/completed` | `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only duplicate-window fallback/provenance; de-dupe with `thread/compacted` |

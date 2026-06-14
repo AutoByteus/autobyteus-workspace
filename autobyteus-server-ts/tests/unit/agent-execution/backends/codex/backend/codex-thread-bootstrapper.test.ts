@@ -102,14 +102,23 @@ const createSkill = (name: string) =>
     rootPath: path.join("/tmp", name),
   });
 
-const createAgentToolMcpDescriptor = (): AgentToolMcpDescriptor => ({
+const SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES = new Set([
+  "send_message_to",
+  "open_tab",
+  "read_page",
+  "generate_image",
+  "generate_speech",
+  "publish_artifacts",
+]);
+
+const createAgentToolMcpDescriptor = (enabledTools: string[] = ["send_message_to"]): AgentToolMcpDescriptor => ({
   name: "autobyteus_agent_tools",
   transport: "streamable_http",
   serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
   headers: {
     Authorization: "Bearer unit-test-agent-tools-token",
   },
-  enabledTools: ["send_message_to"],
+  enabledTools,
 });
 
 const createMaterializerMock = () => ({
@@ -158,7 +167,9 @@ const createBootstrapper = (input: {
       session: {
         expiresAt: new Date(Date.now() + 60_000),
       },
-      descriptor: input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(),
+      descriptor: input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
+        (input.toolNames ?? []).filter((toolName) => SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES.has(toolName)),
+      ),
       redactedDescriptor: null,
     })),
   } as unknown as AgentToolMcpSessionService;
@@ -395,7 +406,7 @@ describe("CodexThreadBootstrapper", () => {
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
   });
 
-  it("does not expose browser dynamic tools unless both bridge env and browser toolNames are present", async () => {
+  it("does not materialize Agent Tools MCP browser config unless browser tools are available", async () => {
     process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
     process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
 
@@ -417,6 +428,7 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper: noBridgeBootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["open_tab"],
+      agentToolsDescriptor: createAgentToolMcpDescriptor([]),
       requestImplementation: async () => ({ data: [] }),
     });
 
@@ -485,20 +497,21 @@ describe("CodexThreadBootstrapper", () => {
     });
   });
 
-  it("does not create an Agent Tools MCP session when send_message_to is not configured", async () => {
+  it("does not materialize Agent Tools MCP config when no configured tool is available", async () => {
     const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
       skills: [],
       toolNames: ["open_tab"],
+      agentToolsDescriptor: createAgentToolMcpDescriptor([]),
       requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
 
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
-    expect(agentToolMcpSessionService.createAgentToolMcpSession).not.toHaveBeenCalled();
+    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledTimes(1);
   });
 
-  it("exposes configured browser dynamic tools and Agent Tools MCP send_message_to when allowed", async () => {
+  it("exposes configured browser tools only through Agent Tools MCP when allowed", async () => {
     process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
     process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
 
@@ -509,21 +522,18 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
-    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
-
-    expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
         autobyteus_agent_tools: {
           url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
-          enabled_tools: ["send_message_to"],
+          enabled_tools: ["send_message_to", "open_tab", "read_page"],
         },
       },
     });
   });
 
-  it("exposes publish_artifacts as a Codex dynamic tool only when the agent config allows it", async () => {
+  it("exposes publish_artifacts only through Agent Tools MCP when the agent config allows it", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["publish_artifacts"],
@@ -531,17 +541,18 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
-    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
-    expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifacts"]);
-    expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
-      required: ["artifacts"],
-      additionalProperties: false,
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          enabled_tools: ["publish_artifacts"],
+        },
+      },
     });
   });
 
-  it("exposes only configured media dynamic tools for Codex", async () => {
+  it("exposes only configured media tools through Agent Tools MCP for Codex", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["generate_image", "generate_speech", "read_file"],
@@ -549,16 +560,14 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
-    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
-    expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual([
-      "generate_image",
-      "generate_speech",
-    ]);
-    expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
-      required: expect.arrayContaining(["prompt", "output_file_path"]),
-      additionalProperties: false,
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          enabled_tools: ["generate_image", "generate_speech"],
+        },
+      },
     });
   });
 
@@ -574,7 +583,7 @@ describe("CodexThreadBootstrapper", () => {
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
 
-  it("exposes only the plural artifact dynamic tool for mixed old/new Codex configs", async () => {
+  it("exposes only the plural artifact Agent Tools MCP tool for mixed old/new Codex configs", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["publish_artifacts", "publish_artifact"],
@@ -582,9 +591,15 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
-    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifacts"]);
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          enabled_tools: ["publish_artifacts"],
+        },
+      },
+    });
   });
 
 });

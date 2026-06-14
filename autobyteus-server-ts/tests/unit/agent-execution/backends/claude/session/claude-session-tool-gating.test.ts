@@ -106,6 +106,20 @@ const createSession = (configuredToolNames: string[] = [], input: {
   const memberTeamContext = input.memberTeamContext === undefined
     ? createMemberTeamContext()
     : input.memberTeamContext;
+  const supportedAgentToolsMcpNames = new Set([
+    "send_message_to",
+    "open_tab",
+    "read_page",
+    "generate_image",
+    "generate_speech",
+    "delegate_tasks",
+    "submit_task_result",
+    "review_task_result",
+    "publish_artifacts",
+  ]);
+  const enabledTools = configuredToolNames.filter((toolName) =>
+    supportedAgentToolsMcpNames.has(toolName),
+  );
   const createAgentToolMcpSession = vi.fn(() => ({
     session: {
       expiresAt: new Date(Date.now() + 60_000),
@@ -115,7 +129,7 @@ const createSession = (configuredToolNames: string[] = [], input: {
       transport: "streamable_http",
       serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-gating",
       headers: { Authorization: "Bearer fake-token" },
-      enabledTools: ["send_message_to"],
+      enabledTools,
     },
   }));
 
@@ -192,9 +206,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        sendMessageToToolingEnabled: false,
-        enabledBrowserToolNames: ["read_page"],
-        publishArtifactsToolingEnabled: false,
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["read_page"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -202,10 +216,10 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         prompt: expect.stringContaining(
           "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
         ),
-        allowedTools: ["read_page", "mcp__autobyteus_browser__read_page"],
+        allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
-    expect(createAgentToolMcpSession).not.toHaveBeenCalled();
+    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(1);
   });
 
   it("enables send_message_to and only the configured browser tools when toolNames explicitly allow them", async () => {
@@ -223,9 +237,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        sendMessageToToolingEnabled: true,
-        enabledBrowserToolNames: ["open_tab", "read_page"],
-        publishArtifactsToolingEnabled: false,
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["send_message_to", "open_tab", "read_page"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -238,8 +252,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           "mcp__autobyteus_agent_tools__send_message_to",
           "open_tab",
           "read_page",
-          "mcp__autobyteus_browser__open_tab",
-          "mcp__autobyteus_browser__read_page",
+          "mcp__autobyteus_agent_tools__open_tab",
+          "mcp__autobyteus_agent_tools__read_page",
         ]),
       }),
     );
@@ -262,7 +276,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        sendMessageToToolingEnabled: true,
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["send_message_to"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -400,22 +416,22 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        sendMessageToToolingEnabled: false,
-        enabledBrowserToolNames: [],
-        publishArtifactsToolingEnabled: true,
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["publish_artifacts"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "publish_artifacts",
-          "mcp__autobyteus_published_artifacts__publish_artifacts",
+          "mcp__autobyteus_agent_tools__publish_artifacts",
         ],
       }),
     );
   });
 
-  it("enables media tools and their autobyteus_image_audio MCP names only when configured", async () => {
+  it("enables media tools and their autobyteus_agent_tools MCP names only when configured", async () => {
     const { session, startQueryTurn } = createSession(["generate_image", "generate_speech"]);
 
     await (session as any).executeTurn({
@@ -426,22 +442,24 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        enabledMediaToolNames: ["generate_image", "generate_speech"],
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["generate_image", "generate_speech"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "generate_image",
-          "mcp__autobyteus_image_audio__generate_image",
+          "mcp__autobyteus_agent_tools__generate_image",
           "generate_speech",
-          "mcp__autobyteus_image_audio__generate_speech",
+          "mcp__autobyteus_agent_tools__generate_speech",
         ],
       }),
     );
   });
 
-  it("enables task delegation tools and their autobyteus_team MCP names only when configured", async () => {
+  it("enables task delegation tools and their autobyteus_agent_tools MCP names only when configured", async () => {
     const { session, startQueryTurn } = createSession([
       "delegate_tasks",
       ["mark", "task", "completed"].join("_"),
@@ -460,12 +478,13 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        taskDelegationToolingEnabled: true,
-        enabledTaskDelegationToolNames: [
-          "delegate_tasks",
-          "submit_task_result",
-          "review_task_result",
-        ],
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: [
+            "delegate_tasks",
+            "submit_task_result",
+            "review_task_result",
+          ],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -473,11 +492,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         prompt: expect.stringContaining("Task delegation protocol"),
         allowedTools: [
           "delegate_tasks",
-          "mcp__autobyteus_team__delegate_tasks",
+          "mcp__autobyteus_agent_tools__delegate_tasks",
           "submit_task_result",
-          "mcp__autobyteus_team__submit_task_result",
+          "mcp__autobyteus_agent_tools__submit_task_result",
           "review_task_result",
-          "mcp__autobyteus_team__review_task_result",
+          "mcp__autobyteus_agent_tools__review_task_result",
         ],
       }),
     );
@@ -494,7 +513,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        publishArtifactsToolingEnabled: false,
+        agentToolsMcpDescriptor: null,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -515,14 +534,16 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        publishArtifactsToolingEnabled: true,
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["publish_artifacts"],
+        }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "publish_artifacts",
-          "mcp__autobyteus_published_artifacts__publish_artifacts",
+          "mcp__autobyteus_agent_tools__publish_artifacts",
         ],
       }),
     );

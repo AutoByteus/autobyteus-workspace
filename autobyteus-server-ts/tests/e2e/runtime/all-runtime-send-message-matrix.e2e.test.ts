@@ -303,7 +303,6 @@ const assertNoProviderOrSecretLeaks = (messages: WsMessage[]): void => {
   for (const forbidden of [
     "autobyteus_agent_tools",
     "mcp__autobyteus_agent_tools__send_message_to",
-    "mcp__autobyteus_team__send_message_to",
     "Authorization",
     "Bearer",
     "http_headers",

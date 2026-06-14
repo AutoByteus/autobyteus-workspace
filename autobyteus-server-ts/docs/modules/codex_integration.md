@@ -42,42 +42,44 @@ be routed among multiple active threads remain server-side diagnostics; server
 requests receive a transport-level error response, but the router must not
 broadcast them or call per-thread runtime-error projection.
 
-Codex agent communication uses the server-hosted Agent Tools MCP surface for
-`send_message_to`. When the configured tool set includes `send_message_to`,
-`CodexThreadBootstrapper` creates a live `AgentToolMcpDescriptor`, materializes
-it as thread-scoped `config.mcp_servers.autobyteus_agent_tools`, and passes that
-config to `thread/start` and `thread/resume`. The descriptor must not be written
-to trusted project config, process-wide app-server launch flags, or durable
-history. The old Codex dynamic `send_message_to` registration/spec builder is
-removed and must not be retained as a fallback. Selector semantics still come
-from the shared `src/agent-communication` dispatcher: `recipient_name` requires
-a team member context, while `target_agent_run_id` can be used by configured
-standalone or team-member Codex runs to reach an exact currently active
-`AgentRun.runId`.
+Codex exposes in-scope server-owned backend agent tools through the
+server-hosted Agent Tools MCP surface. When the configured tool set includes at
+least one available supported tool, `CodexThreadBootstrapper` creates a live
+`AgentToolMcpDescriptor`, materializes it as thread-scoped
+`config.mcp_servers.autobyteus_agent_tools`, and passes that config to
+`thread/start` and `thread/resume`. The descriptor must not be written to
+trusted project config, process-wide app-server launch flags, or durable
+history. The old Codex dynamic registration/spec-builder paths for migrated
+browser, media, task-delegation, `send_message_to`, and `publish_artifacts`
+tools are removed and must not be retained as fallbacks.
 
-Route-backed Codex `send_message_to` is normalized from the Codex MCP tool-call
-lifecycle to application-facing `send_message_to`. Sender streams and memory
-traces must preserve invocation id, arguments, and MCP content result/error
-shape, while sanitizing provider/server-qualified names (`autobyteus_agent_tools`
-or `mcp__autobyteus_agent_tools__send_message_to`) plus `Authorization`,
+Route-backed Codex Agent Tools MCP calls are normalized from the Codex
+`mcpToolCall` lifecycle to application-facing canonical tool names. Sender
+streams and memory traces must preserve invocation id, arguments, and MCP
+content result/error shape, while sanitizing provider/server-qualified names
+(`autobyteus_agent_tools` or
+`mcp__autobyteus_agent_tools__publish_artifacts`) plus `Authorization`,
 `Bearer`, and `http_headers` config details from app-facing payloads.
 
-Codex team task delegation is projected as dynamic tools generated from the
-server-owned task-delegation manifest. When an agent definition enables
-`delegate_tasks`, `submit_task_result`, and/or `review_task_result`, Codex receives those tools with JSON
-schemas derived from `src/agent-tools/task-delegation`; handlers call
-`TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
-runtime does not mutate task state directly and must not expose the removed
-legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
-`get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
-ready-to-run/no-dependencies task guidance from the shared manifest/schema:
-dependent follow-up work should be delegated after reviewing a submitted task
-result. Activation details are pushed to task-agent instances as work packets,
-results use `submit_task_result`, and acceptance or revision uses
-`review_task_result` with system-mediated notifications. This remains a
-configured-tool boundary: Codex runtime code must not add
-ticket-specific provider `tool_choice` overrides, forced-tool dampening, or
-framework auto-review behavior for task results.
+Family semantics still come from the shared server-owned services:
+
+- `send_message_to` selector semantics come from the shared
+  `src/agent-communication` dispatcher: `recipient_name` requires a team member
+  context, while `target_agent_run_id` can be used by configured standalone or
+  team-member Codex runs to reach an exact currently active `AgentRun.runId`.
+- Task-delegation tools call `TaskDelegationToolService` with the current
+  `MemberTeamContext`, inherit the canonical ready-to-run/no-dependencies
+  guidance from the shared manifest/schema, and remain unavailable for
+  standalone sessions.
+- Browser, media, and `publish_artifacts` tools execute through their shared
+  family services/manifests instead of Codex dynamic handlers.
+
+The Codex runtime does not mutate task state directly and must not expose the
+removed legacy task-plan names (`create_task`, `create_tasks`,
+`assign_task_to`, `get_my_tasks`, or `get_task_plan_status`). This remains a
+configured-tool boundary: Codex runtime code must not add ticket-specific
+provider `tool_choice` overrides, forced-tool dampening, or framework
+auto-review behavior for task results.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -206,7 +208,8 @@ Team runtime:
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts`
 - `src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-event-payload.ts`
-- `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
+- `src/agent-tools/mcp`
+- `src/agent-tools/mcp/providers`
 
 ## Skills
 
@@ -312,10 +315,12 @@ and must not pass Codex native provider output into focused member history.
 Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
-- `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`, `delegate_tasks`, `submit_task_result`, and `review_task_result`.
-- `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
-  when available, for example `functions.exec_command`.
+- `dynamicToolCall` -> canonical `tool_call` rows for unrelated custom dynamic
+  tools. Migrated server-owned backend tool families are not Codex dynamic
+  tools.
+- `mcpToolCall` -> canonical `tool_call` rows with canonicalized Agent Tools MCP
+  names when applicable, or server-qualified names for other MCP servers when
+  available.
 - `webSearch` -> `search_web`.
 - `commandExecution` -> `run_bash`.
 - `fileChange` -> `edit_file`.
@@ -335,11 +340,13 @@ conversation is being applied.
 ## Event-Normalization Rules
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
-- `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
-- `item/started` with `item.type = mcpToolCall` follows the dynamic-tool split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's tool name, turn id, and arguments.
+- `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for non-migrated Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
+- `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments.
 - `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)`, and completion produces exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
-- Browser dynamic tools use the generalized `dynamicToolCall` lifecycle path rather than a browser-only terminal event special case.
+- Browser/media/task-delegation/communication/published-artifact tools from
+  `autobyteus_agent_tools` use the MCP lifecycle path, not Codex
+  `dynamicToolCall`.
 - `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle. After conversion, `AgentRunEventPipeline` derives the Artifacts-tab `FILE_CHANGE` event; Codex frontend code must not infer artifacts from supplemental diff events.
 - Codex may expose multiple start-like normalized facts for one file operation. Duplicate identical interim `FILE_CHANGE` `pending` updates for the same path/source invocation are acceptable when idempotent, followed by terminal `available`/`failed`, and the run-file-changes projection remains one row.
 - `turn/diff/updated` is treated as supplemental diff information and is intentionally not promoted into lifecycle or artifact ownership.

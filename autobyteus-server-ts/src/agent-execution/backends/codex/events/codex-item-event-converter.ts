@@ -63,12 +63,13 @@ const createTerminalToolExecutionEvent = (
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
   const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
-  const toolArguments = context.resolveDynamicToolArguments(payload);
-  const hasToolArguments = Object.keys(toolArguments).length > 0;
   const serializedPayload = serializeCodexItemEventPayload(payload);
+  const toolArguments = context.resolveDynamicToolArguments(serializedPayload as JsonObject);
+  const hasToolArguments = Object.keys(toolArguments).length > 0;
   const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
   if (status === "declined") {
-    const reason = context.resolveToolDecisionReason(payload) ?? "Tool execution denied.";
+    const reason = context.resolveToolDecisionReason(serializedPayload as JsonObject) ??
+      "Tool execution denied.";
     return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
       ...serializedPayload,
       ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -76,7 +77,7 @@ const createTerminalToolExecutionEvent = (
       ...(toolName ? { tool_name: toolName } : {}),
       ...(hasToolArguments ? { arguments: toolArguments } : {}),
       reason,
-      error: context.resolveToolError(payload),
+      error: context.resolveToolError(serializedPayload as JsonObject),
     });
   }
   const eventType = context.isExecutionFailure(payload)
@@ -89,8 +90,8 @@ const createTerminalToolExecutionEvent = (
     ...(toolName ? { tool_name: toolName } : {}),
     ...(hasToolArguments ? { arguments: toolArguments } : {}),
     ...(context.isExecutionFailure(payload)
-      ? { error: context.resolveToolError(payload) }
-      : { result: context.resolveToolResult(payload) }),
+      ? { error: context.resolveToolError(serializedPayload as JsonObject) }
+      : { result: context.resolveToolResult(serializedPayload as JsonObject) }),
   });
 };
 
@@ -99,9 +100,10 @@ const createDynamicToolSegmentStartEvent = (
   codexEventName: string,
   payload: JsonObject,
 ): AgentRunEvent => {
-  const metadata = context.resolveSegmentMetadata(payload);
+  const serializedPayload = serializeCodexItemEventPayload(payload);
+  const metadata = context.resolveSegmentMetadata(serializedPayload as JsonObject);
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-    ...serializeCodexItemEventPayload(payload),
+    ...serializedPayload,
     id: context.resolveSegmentStartId(payload, "tool_call"),
     segment_type: "tool_call",
     ...(metadata ? { metadata } : {}),
@@ -116,12 +118,13 @@ const createDynamicToolLifecycleStartedEvent = (
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
   const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload));
+  const serializedPayload = serializeCodexItemEventPayload(payload);
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-    ...serializeCodexItemEventPayload(payload),
+    ...serializedPayload,
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
-    arguments: context.resolveDynamicToolArguments(payload),
+    arguments: context.resolveDynamicToolArguments(serializedPayload as JsonObject),
   });
 };
 
@@ -130,9 +133,10 @@ const createSegmentEndEvent = (
   codexEventName: string,
   payload: JsonObject,
 ): AgentRunEvent => {
-  const metadata = context.resolveSegmentMetadata(payload);
+  const serializedPayload = serializeCodexItemEventPayload(payload);
+  const metadata = context.resolveSegmentMetadata(serializedPayload as JsonObject);
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-    ...serializeCodexItemEventPayload(payload),
+    ...serializedPayload,
     id: context.resolveSegmentId(payload),
     ...(metadata ? { metadata } : {}),
   });

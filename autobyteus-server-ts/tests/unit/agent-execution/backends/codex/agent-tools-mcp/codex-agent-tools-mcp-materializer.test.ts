@@ -14,7 +14,7 @@ const descriptor: AgentToolMcpDescriptor = {
   headers: {
     Authorization: "Bearer unit-test-token",
   },
-  enabledTools: ["send_message_to"],
+  enabledTools: ["send_message_to", "generate_image"],
 };
 
 describe("codex-agent-tools-mcp-materializer", () => {
@@ -28,7 +28,7 @@ describe("codex-agent-tools-mcp-materializer", () => {
           http_headers: {
             Authorization: "Bearer unit-test-token",
           },
-          enabled_tools: ["send_message_to"],
+          enabled_tools: ["send_message_to", "generate_image"],
           startup_timeout_sec: 5,
         },
       },
@@ -49,6 +49,14 @@ describe("codex-agent-tools-mcp-materializer", () => {
     expect(
       normalizeCodexAgentToolsToolNameForEvent("autobyteus_agent_tools.send_message_to"),
     ).toBe("send_message_to");
+    expect(
+      normalizeCodexAgentToolsToolNameForEvent("mcp__autobyteus_agent_tools__generate_image"),
+    ).toBe("generate_image");
+    expect(
+      normalizeCodexAgentToolsToolNameForEvent(
+        "mcp__autobyteus_agent_tools__generate_image Authorization: Bearer secret",
+      ),
+    ).toBe("mcp__autobyteus_agent_tools__generate_image Authorization: Bearer secret");
     expect(isCodexAgentToolsSendMessageToolName("run_bash")).toBe(false);
   });
 });

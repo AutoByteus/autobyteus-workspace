@@ -6,9 +6,9 @@ const GENERATED_OUTPUT_TOOL_NAMES = new Set([
   "generate_image",
   "edit_image",
   "generate_speech",
-  "mcp__autobyteus_image_audio__generate_image",
-  "mcp__autobyteus_image_audio__edit_image",
-  "mcp__autobyteus_image_audio__generate_speech",
+  "mcp__autobyteus_agent_tools__generate_image",
+  "mcp__autobyteus_agent_tools__edit_image",
+  "mcp__autobyteus_agent_tools__generate_speech",
 ]);
 
 const asTrimmedString = (value: unknown): string | null => {

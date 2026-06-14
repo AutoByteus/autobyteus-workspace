@@ -15,7 +15,7 @@ const descriptor: AgentToolMcpDescriptor = {
   headers: {
     Authorization: "Bearer unit-test-token",
   },
-  enabledTools: ["send_message_to"],
+  enabledTools: ["send_message_to", "open_tab"],
 };
 
 describe("claude-agent-tools-mcp-materializer", () => {
@@ -43,6 +43,16 @@ describe("claude-agent-tools-mcp-materializer", () => {
         "mcp__autobyteus_agent_tools__send_message_to",
       ),
     ).toBe("send_message_to");
+    expect(
+      normalizeClaudeAgentToolsToolNameForEvent(
+        "mcp__autobyteus_agent_tools__open_tab",
+      ),
+    ).toBe("open_tab");
+    expect(
+      normalizeClaudeAgentToolsToolNameForEvent(
+        "mcp__autobyteus_agent_tools__open_tab Authorization: Bearer secret",
+      ),
+    ).toBe("mcp__autobyteus_agent_tools__open_tab Authorization: Bearer secret");
     expect(normalizeClaudeAgentToolsToolNameForEvent("Bash")).toBe("Bash");
   });
 });

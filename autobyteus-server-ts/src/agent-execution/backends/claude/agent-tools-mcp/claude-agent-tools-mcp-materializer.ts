@@ -1,6 +1,9 @@
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import { CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME } from "./claude-agent-tools-mcp-tool-name.js";
+import {
+  CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME,
+  buildClaudeAgentToolsMcpToolName,
+} from "./claude-agent-tools-mcp-tool-name.js";
 
 export type ClaudeAgentToolsMcpHttpServerConfig = {
   type: "http";
@@ -22,4 +25,4 @@ export const materializeClaudeAgentToolsMcpServers = (
   },
 });
 
-export { CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME };
+export { CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME, buildClaudeAgentToolsMcpToolName };

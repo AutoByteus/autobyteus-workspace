@@ -206,52 +206,53 @@ user input, interrupted streamed assistant text/reasoning, and completed
 tool-result facts. This is distinct from `stop()`, which remains terminal
 runtime shutdown and runs cleanup.
 
-Claude browser MCP tools add one extra converter responsibility: allowlisted
-`mcp__autobyteus_browser__<tool>` names for known stable browser tools are
-projected to canonical names such as `open_tab`, and successful MCP
-content-block/content-envelope results are parsed into the standard browser
-result object before terminal lifecycle events are emitted. Non-AutoByteus MCP
-tools and unknown browser-like suffixes stay unchanged.
+Claude Agent SDK and Codex App Server expose in-scope server-owned backend
+agent tools through the unified Agent Tools MCP route, not through runtime-owned
+duplicated tool projections. When at least one configured and available tool is
+enabled, the runtime materializer creates a live `autobyteus_agent_tools`
+descriptor:
 
-Codex App Server `send_message_to` is a first-party Agent Tools MCP call, not a
-Codex dynamic tool. When configured, Codex bootstrap creates a live
-`autobyteus_agent_tools` descriptor and passes it only as thread-scoped
-`config.mcp_servers.autobyteus_agent_tools` to `thread/start` / `thread/resume`.
-The old Codex dynamic `send_message_to` registration/spec-builder path is
-removed and must not be restored as a compatibility fallback. Codex MCP
-tool-call conversion and diagnostic history replay must canonicalize the
-route-backed tool to application-facing `send_message_to`, preserve the
-invocation id, arguments, and MCP content result/error shape, and sanitize nested
-serialized payloads so `autobyteus_agent_tools`, provider-qualified tool names,
-`Authorization`, bearer tokens, and `http_headers` do not leak into events, run
-history, or memory traces.
+- Codex passes it only as thread-scoped
+  `config.mcp_servers.autobyteus_agent_tools` to `thread/start` /
+  `thread/resume`.
+- Claude passes it only through SDK `mcpServers` and pre-approves generated
+  provider wire names such as
+  `mcp__autobyteus_agent_tools__generate_image` in `allowedTools`.
 
-Claude `send_message_to` is also a first-party MCP tool with a canonical event
-contract, but it is no longer registered on the Claude `autobyteus_team`
-in-process MCP server. When configured, `ClaudeSession` materializes the
-server-hosted `autobyteus_agent_tools` HTTP MCP descriptor into SDK `mcpServers`
-and pre-approves `mcp__autobyteus_agent_tools__send_message_to` in
-`allowedTools`. The actual delivery still runs through the Agent Tools MCP
-route and shared `src/agent-communication` dispatcher, so `recipient_name` stays
-a team-context route while `target_agent_run_id` is the global live-only exact
-active-run route. The generic Claude tool-use coordinator/converter owns the
-route-backed lifecycle, normalizing provider wire names to application-facing
-`send_message_to` for segment, approval, execution, run-history, and memory
-events. Provider wire names must not leak to application surfaces, and the
-route-backed MCP text-content result shape is preserved instead of converting
-back to the old handler object shape.
+The old migrated Codex `dynamicTools` builders and old Claude local MCP server
+builders for browser, media, task delegation, `send_message_to`, and
+`publish_artifacts` are removed and must not be restored as compatibility
+fallbacks. Generic Codex dynamic-tool infrastructure remains valid for unrelated
+custom dynamic tools.
 
-Claude team task delegation tools are also first-party MCP tools on the team
-server. `delegate_tasks`, `submit_task_result`, and `review_task_result` are
-built from the server-owned task-delegation manifest and call
-`TaskDelegationToolService` with the current member/team context; raw SDK MCP
-plumbing must not own delegation state. Claude inherits the canonical
-ready-to-run/no-dependencies task guidance from the shared manifest/schema:
-task-agents submit results with `submit_task_result`, and original delegators
-accept or request revision with `review_task_result`. Tool results are
-canonical JSON payloads or canonical task-delegation error payloads, and normal
-lifecycle projection still owns the visible transcript/Activity state. The old
-task-plan polling and creation tool names are not exposed through this MCP
-surface.
+Runtime converters must canonicalize all Agent Tools MCP provider identities
+before emitting application-facing events. Provider/server-qualified names such
+as `autobyteus_agent_tools` and
+`mcp__autobyteus_agent_tools__delegate_tasks` normalize to canonical tool names
+such as `delegate_tasks`; bearer tokens, session ids, `Authorization`, and
+`http_headers` are sanitized from events, run history, and memory traces. MCP
+text-content result/error shapes remain preserved while family-specific result
+payloads stay owned by the underlying browser, media, task-delegation,
+communication, or published-artifact service.
+
+Family-specific execution ownership stays below the Agent Tools MCP adapter:
+
+- `send_message_to` still runs through the shared
+  `src/agent-communication` dispatcher, so `recipient_name` stays a
+  team-context route and `target_agent_run_id` remains the global live-only exact
+  active-run route.
+- Browser tools use the shared browser service and normalize successful results
+  into the standard browser result object before terminal lifecycle events are
+  emitted.
+- Media tools return the canonical `{ file_path }` result shape so generated
+  media files continue to project as generated-output file changes.
+- Task-delegation tools call `TaskDelegationToolService` with the current
+  `MemberTeamContext` and inherit the canonical ready-to-run/no-dependencies
+  guidance from the shared manifest/schema.
+- `publish_artifacts` calls the published-artifact publication service for the
+  active owning run and continues to drive published-artifact projection/events.
+
+Non-AutoByteus MCP tools and unknown provider names stay unchanged; converters
+must not rewrite unrelated MCP traffic.
 
 The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

@@ -39,6 +39,44 @@ describe("codex-thread-history-item-normalizer", () => {
     });
   });
 
+  it("keeps non-send Agent Tools MCP tool names canonical in history tool traces", () => {
+    const normalized = normalizeCodexThreadHistoryItem({
+      item: {
+        type: "mcpToolCall",
+        id: "call-generate-image",
+        server: "autobyteus_agent_tools",
+        tool: "mcp__autobyteus_agent_tools__generate_image",
+        arguments: {
+          prompt: "sunrise",
+          output_file_path: "out.png",
+        },
+        status: "completed",
+        contentItems: [
+          {
+            type: "inputText",
+            text: "{\"file_path\":\"/tmp/out.png\"}",
+          },
+        ],
+      },
+      turnIndex: 0,
+      itemIndex: 2,
+    });
+
+    expect(normalized).toMatchObject({
+      family: "mcp_tool_call",
+      invocationId: "call-generate-image",
+      toolName: "generate_image",
+      toolArgs: {
+        prompt: "sunrise",
+        output_file_path: "out.png",
+      },
+      toolResult: {
+        file_path: "/tmp/out.png",
+      },
+      status: "success",
+    });
+  });
+
   it("still qualifies non-Agent Tools MCP history items with their server name", () => {
     const normalized = normalizeCodexThreadHistoryItem({
       item: {
