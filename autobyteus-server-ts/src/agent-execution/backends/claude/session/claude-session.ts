@@ -400,7 +400,7 @@ export class ClaudeSession {
   private async executeTurn(options: ClaudeSessionTurnExecutionInput): Promise<void> {
     const activeTurn =
       this.activeTurnExecution?.turnId === options.turnId ? this.activeTurnExecution : null;
-    const toolingOptions = resolveClaudeSessionToolingOptions({
+    const configuredToolingOptions = resolveClaudeSessionToolingOptions({
       configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
       memberTeamContext: this.runContext.runtimeContext.memberTeamContext,
@@ -408,22 +408,20 @@ export class ClaudeSession {
     const turnInput = buildClaudeTurnInput({
       runContext: this.runContext,
       content: options.content,
-      sendMessageToEnabled: toolingOptions.sendMessageToToolingEnabled,
-      taskDelegationEnabled: toolingOptions.taskDelegationToolingEnabled,
+      sendMessageToEnabled: configuredToolingOptions.sendMessageToToolingEnabled,
+      taskDelegationEnabled: configuredToolingOptions.taskDelegationToolingEnabled,
     });
-    const agentToolsMcpDescriptor = toolingOptions.sendMessageToToolingEnabled
+    const agentToolsMcpDescriptor = configuredToolingOptions.agentToolsMcpToolingRequested
       ? this.agentToolsMcpSessionState.ensureDescriptor(this.runContext)
       : null;
+    const toolingOptions = resolveClaudeSessionToolingOptions({
+      configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
+      hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
+      memberTeamContext: this.runContext.runtimeContext.memberTeamContext,
+      agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
+    });
     const mcpServers = await buildClaudeSessionMcpServerConfig({
-      sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
       agentToolsMcpDescriptor,
-      taskDelegationToolingEnabled: toolingOptions.taskDelegationToolingEnabled,
-      enabledTaskDelegationToolNames: toolingOptions.enabledTaskDelegationToolNames,
-      enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
-      enabledMediaToolNames: toolingOptions.enabledMediaToolNames,
-      publishArtifactsToolingEnabled: toolingOptions.publishArtifactsToolingEnabled,
-      runContext: this.runContext,
-      sdkClient: this.dependencies.sdkClient,
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,

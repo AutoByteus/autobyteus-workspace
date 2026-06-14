@@ -1,9 +1,8 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import {
-  getSendMessageToDispatcher,
-  type SendMessageToDispatcher,
-} from "../../agent-communication/services/send-message-to-dispatcher.js";
-import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
+  AgentToolMcpCatalog,
+  getAgentToolMcpCatalog,
+} from "./agent-tool-mcp-catalog.js";
 import type {
   AgentToolMcpSession,
   AgentToolMcpToolExecutionEvent,
@@ -17,7 +16,7 @@ export type ExecuteAgentToolMcpCallInput = {
 
 export class AgentToolMcpToolExecutor {
   private static instance: AgentToolMcpToolExecutor | null = null;
-  private readonly sendMessageDispatcher: SendMessageToDispatcher;
+  private readonly catalog: AgentToolMcpCatalog;
 
   static getInstance(): AgentToolMcpToolExecutor {
     if (!AgentToolMcpToolExecutor.instance) {
@@ -30,8 +29,8 @@ export class AgentToolMcpToolExecutor {
     AgentToolMcpToolExecutor.instance = null;
   }
 
-  constructor(deps: { sendMessageDispatcher?: SendMessageToDispatcher } = {}) {
-    this.sendMessageDispatcher = deps.sendMessageDispatcher ?? getSendMessageToDispatcher();
+  constructor(deps: { catalog?: AgentToolMcpCatalog } = {}) {
+    this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
   }
 
   async executeAgentToolMcpCall(
@@ -52,14 +51,18 @@ export class AgentToolMcpToolExecutor {
   private async executeKnownTool(
     input: ExecuteAgentToolMcpCallInput,
   ): Promise<AgentOperationResult> {
-    if (input.toolName === SEND_MESSAGE_TO_TOOL_NAME) {
-      return this.sendMessageDispatcher.dispatch({
-        toolName: SEND_MESSAGE_TO_TOOL_NAME,
-        rawArguments: input.rawArguments,
-        sender: input.session.sender,
-      });
+    const availability = this.catalog.resolveToolCallAvailability(input.session, input.toolName);
+    if (!availability.ok) {
+      throw new Error(
+        availability.reason === "unknown_tool"
+          ? `Unknown Agent Tools MCP tool '${input.toolName}'.`
+          : `Agent Tools MCP tool '${input.toolName}' is not enabled for this session.`,
+      );
     }
-    throw new Error(`Unsupported Agent Tools MCP executor '${input.toolName}'.`);
+    return availability.adapter.execute({
+      session: input.session,
+      rawArguments: input.rawArguments,
+    });
   }
 
   private buildExecutionEvent(

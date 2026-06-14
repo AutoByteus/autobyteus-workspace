@@ -1,5 +1,6 @@
 import type { AgentRunMessageSenderContext } from "../../agent-communication/domain/agent-run-message-sender.js";
 import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
@@ -51,6 +52,12 @@ export type AgentToolMcpToolExecutionObserver = {
   ) => void | Promise<void>;
 };
 
+export type AgentToolMcpExecutionContext = {
+  workingDirectory?: string | null;
+  memoryDir?: string | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
+};
+
 export type AgentToolMcpSession = {
   sessionId: string;
   tokenHash: Buffer;
@@ -58,6 +65,7 @@ export type AgentToolMcpSession = {
   sender: AgentRunMessageSenderContext;
   runtimeKind: RuntimeKind | string | null;
   configuredExposure: ConfiguredAgentToolExposure;
+  executionContext: AgentToolMcpExecutionContext;
   enabledTools: string[];
   createdAt: Date;
   expiresAt: Date;
@@ -69,6 +77,7 @@ export type AgentToolMcpCreateSessionInput = {
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   configuredExposure: ConfiguredAgentToolExposure;
+  executionContext?: AgentToolMcpExecutionContext | null;
   enabledTools: string[];
   runtimeKind?: RuntimeKind | string | null;
   ttlMillis?: number | null;
@@ -98,6 +107,16 @@ export const cloneAgentToolMcpSessionOwnerIdentity = (
   memberRunId: owner.memberRunId ?? null,
   memberRouteKey: owner.memberRouteKey ?? null,
   memberName: owner.memberName ?? null,
+});
+
+export const cloneAgentToolMcpExecutionContext = (
+  context: AgentToolMcpExecutionContext | null | undefined,
+): AgentToolMcpExecutionContext => ({
+  workingDirectory: context?.workingDirectory ?? null,
+  memoryDir: context?.memoryDir ?? null,
+  applicationExecutionContext: context?.applicationExecutionContext
+    ? structuredClone(context.applicationExecutionContext)
+    : null,
 });
 
 export const redactAgentToolMcpDescriptor = (

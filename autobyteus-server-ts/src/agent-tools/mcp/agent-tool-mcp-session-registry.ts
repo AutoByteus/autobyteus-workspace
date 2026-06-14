@@ -1,5 +1,6 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import {
+  cloneAgentToolMcpExecutionContext,
   cloneAgentToolMcpSessionOwnerIdentity,
   type AgentToolMcpCreateSessionInput,
   type AgentToolMcpSession,
@@ -56,6 +57,7 @@ export class AgentToolMcpSessionRegistry {
       sender: input.sender,
       runtimeKind: input.runtimeKind ?? input.sender.runtimeKind ?? null,
       configuredExposure: cloneConfiguredExposure(input.configuredExposure),
+      executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
       enabledTools: [...input.enabledTools],
       createdAt,
       expiresAt: new Date(createdAt.getTime() + ttlMillis),

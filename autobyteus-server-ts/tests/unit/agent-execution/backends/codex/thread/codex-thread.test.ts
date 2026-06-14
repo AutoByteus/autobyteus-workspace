@@ -330,7 +330,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("team dynamic ok"));
     const { thread, client } = createThread(true, {
       dynamicToolHandlers: {
-        publish_artifacts: handler,
+        custom_team_dynamic: handler,
       },
       memberTeamContext: createMemberTeamContext(),
     });
@@ -361,9 +361,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-team-dynamic-1",
-      tool: "publish_artifacts",
+      tool: "custom_team_dynamic",
       arguments: {
-        artifacts: [{ path: "handoff.md" }],
+        value: "team-auto",
       },
     });
 
@@ -423,7 +423,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("dynamic ok"));
     const { thread, client } = createThread(false, {
       dynamicToolHandlers: {
-        publish_artifacts: handler,
+        custom_manual_dynamic: handler,
       },
     });
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
@@ -435,9 +435,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-dynamic-1",
-      tool: "publish_artifacts",
+      tool: "custom_manual_dynamic",
       arguments: {
-        artifacts: [{ path: "review.md" }],
+        value: "review",
       },
     });
 
@@ -447,9 +447,9 @@ describe("CodexThread Codex approval surfaces", () => {
       expect.objectContaining({
         responseMode: "dynamic_tool_call",
         invocationId: "call-dynamic-1",
-        toolName: "publish_artifacts",
+        toolName: "custom_manual_dynamic",
         arguments: {
-          artifacts: [{ path: "review.md" }],
+          value: "review",
         },
       }),
     );
@@ -458,9 +458,9 @@ describe("CodexThread Codex approval surfaces", () => {
         method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
         params: expect.objectContaining({
           invocation_id: "call-dynamic-1",
-          tool_name: "publish_artifacts",
+          tool_name: "custom_manual_dynamic",
           arguments: {
-            artifacts: [{ path: "review.md" }],
+            value: "review",
           },
         }),
       }),
@@ -475,7 +475,7 @@ describe("CodexThread Codex approval surfaces", () => {
         threadId: "thread-1",
         turnId: "turn-1",
         callId: "call-dynamic-1",
-        toolName: "publish_artifacts",
+        toolName: "custom_manual_dynamic",
       }),
     );
     expect(client.respondSuccess).toHaveBeenCalledWith(401, {
@@ -501,7 +501,7 @@ describe("CodexThread Codex approval surfaces", () => {
     });
     const { thread, client } = createThread(false, {
       dynamicToolHandlers: {
-        publish_artifacts: handler,
+        custom_repeat_dynamic: handler,
       },
     });
 
@@ -509,9 +509,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-repeat-1",
-      tool: "publish_artifacts",
+      tool: "custom_repeat_dynamic",
       arguments: {
-        artifacts: [{ path: "/tmp/report.md" }],
+        value: "repeat",
       },
     });
 
@@ -542,7 +542,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("should not run"));
     const { thread, client } = createThread(false, {
       dynamicToolHandlers: {
-        generate_image: handler,
+        custom_denied_dynamic: handler,
       },
     });
 
@@ -550,9 +550,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-denied-1",
-      tool: "generate_image",
+      tool: "custom_denied_dynamic",
       arguments: {
-        prompt: "cat",
+        value: "deny",
       },
     });
 
@@ -570,7 +570,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("auto dynamic ok"));
     const { thread, client } = createThread(true, {
       dynamicToolHandlers: {
-        generate_speech: handler,
+        custom_auto_dynamic: handler,
       },
     });
 
@@ -578,9 +578,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-auto-dynamic-1",
-      tool: "generate_speech",
+      tool: "custom_auto_dynamic",
       arguments: {
-        text: "hello",
+        value: "auto",
       },
     });
 

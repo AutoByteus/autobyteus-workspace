@@ -1,15 +1,17 @@
 import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
 import type { AgentToolMcpSession } from "./agent-tool-mcp-session.js";
 import type {
-  AgentToolMcpDefinitionProvider,
-  AgentToolMcpSupportedToolDefinition,
-} from "./agent-tool-mcp-definition-provider.js";
+  AgentToolMcpAdapterProvider,
+  AgentToolMcpAvailabilityContext,
+  AgentToolMcpToolAdapter,
+} from "./agent-tool-mcp-adapter.js";
+import type { AgentToolMcpSupportedToolDefinition } from "./agent-tool-mcp-definition-provider.js";
 import {
   AgentToolsMcpSchemaMapper,
   getAgentToolsMcpSchemaMapper,
   type AgentToolsMcpInputSchema,
 } from "./agent-tools-mcp-schema-mapper.js";
-import { SendMessageToMcpDefinitionProvider } from "./providers/send-message-to-mcp-definition-provider.js";
+import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 
 export type AgentToolsMcpToolDefinition = {
   name: string;
@@ -18,12 +20,12 @@ export type AgentToolsMcpToolDefinition = {
 };
 
 export type AgentToolMcpCallAvailability =
-  | { ok: true; definition: AgentToolMcpSupportedToolDefinition }
+  | { ok: true; definition: AgentToolMcpSupportedToolDefinition; adapter: AgentToolMcpToolAdapter }
   | { ok: false; reason: "unknown_tool" | "tool_not_enabled" };
 
 export class AgentToolMcpCatalog {
   private static instance: AgentToolMcpCatalog | null = null;
-  private readonly definitionsByName: Map<string, AgentToolMcpSupportedToolDefinition>;
+  private readonly adaptersByName: Map<string, AgentToolMcpToolAdapter>;
   private readonly schemaMapper: AgentToolsMcpSchemaMapper;
 
   static getInstance(): AgentToolMcpCatalog {
@@ -38,25 +40,40 @@ export class AgentToolMcpCatalog {
   }
 
   constructor(input: {
-    providers?: AgentToolMcpDefinitionProvider[];
+    providers?: AgentToolMcpAdapterProvider[];
+    adapters?: AgentToolMcpToolAdapter[];
     schemaMapper?: AgentToolsMcpSchemaMapper;
   } = {}) {
     this.schemaMapper = input.schemaMapper ?? getAgentToolsMcpSchemaMapper();
-    this.definitionsByName = new Map(
-      (input.providers ?? [new SendMessageToMcpDefinitionProvider()]).map((provider) => {
-        const definition = provider.getDefinition();
-        return [definition.name, definition];
-      }),
-    );
+    const adapters = input.adapters ?? (input.providers ?? buildDefaultAgentToolMcpAdapterProviders())
+      .flatMap((provider) => provider.getAdapters());
+    this.adaptersByName = new Map();
+    for (const adapter of adapters) {
+      const toolName = adapter.definition.name;
+      if (this.adaptersByName.has(toolName)) {
+        throw new Error(`Duplicate Agent Tools MCP adapter '${toolName}'.`);
+      }
+      this.adaptersByName.set(toolName, adapter);
+    }
   }
 
   listSupportedToolNames(): string[] {
-    return Array.from(this.definitionsByName.keys());
+    return Array.from(this.adaptersByName.keys());
   }
 
-  resolveConfiguredSupportedToolNames(exposure: ConfiguredAgentToolExposure): string[] {
-    const configuredToolNames = new Set(exposure.configuredToolNames);
-    return this.listSupportedToolNames().filter((toolName) => configuredToolNames.has(toolName));
+  resolveConfiguredSupportedToolNames(
+    input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
+  ): string[] {
+    const context = this.normalizeAvailabilityContext(input);
+    const configuredToolNames = new Set(context.configuredExposure.configuredToolNames);
+    return this.listSupportedToolNames().filter((toolName) => {
+      const adapter = this.adaptersByName.get(toolName);
+      return Boolean(
+        adapter &&
+        configuredToolNames.has(toolName) &&
+        adapter.isAvailable(context),
+      );
+    });
   }
 
   listMcpToolsForSession(session: AgentToolMcpSession): AgentToolsMcpToolDefinition[] {
@@ -70,25 +87,38 @@ export class AgentToolMcpCatalog {
     session: AgentToolMcpSession,
     toolName: string,
   ): AgentToolMcpCallAvailability {
-    const definition = this.definitionsByName.get(toolName) ?? null;
-    if (!definition) {
+    const adapter = this.adaptersByName.get(toolName) ?? null;
+    if (!adapter) {
       return { ok: false, reason: "unknown_tool" };
     }
     if (!session.enabledTools.includes(toolName)) {
       return { ok: false, reason: "tool_not_enabled" };
     }
-    return { ok: true, definition };
+    return { ok: true, definition: adapter.definition, adapter };
+  }
+
+  private normalizeAvailabilityContext(
+    input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
+  ): AgentToolMcpAvailabilityContext {
+    if ("configuredExposure" in input) {
+      return input;
+    }
+    return {
+      configuredExposure: input,
+      sender: null,
+      executionContext: {},
+    };
   }
 
   private buildMcpToolDefinition(toolName: string): AgentToolsMcpToolDefinition {
-    const definition = this.definitionsByName.get(toolName);
-    if (!definition) {
+    const adapter = this.adaptersByName.get(toolName);
+    if (!adapter) {
       throw new Error(`Unsupported Agent Tools MCP definition '${toolName}'.`);
     }
     return {
-      name: definition.name,
-      description: definition.description,
-      inputSchema: this.schemaMapper.toMcpInputSchema(definition.inputSchema),
+      name: adapter.definition.name,
+      description: adapter.definition.description,
+      inputSchema: this.schemaMapper.toMcpInputSchema(adapter.definition.inputSchema),
     };
   }
 }

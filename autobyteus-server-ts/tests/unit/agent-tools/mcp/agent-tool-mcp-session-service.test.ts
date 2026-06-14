@@ -7,7 +7,7 @@ import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
-import type { SendMessageToDispatcher } from "../../../../src/agent-communication/services/send-message-to-dispatcher.js";
+import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 
 const buildSender = () => buildAgentRunMessageSenderContext({
   senderRunId: "run-1",
@@ -17,8 +17,24 @@ const buildSender = () => buildAgentRunMessageSenderContext({
 
 const buildService = (registry = new AgentToolMcpSessionRegistry()) => new AgentToolMcpSessionService({
   registry,
-  catalog: new AgentToolMcpCatalog(),
+  catalog: new AgentToolMcpCatalog({
+    adapters: [buildSendMessageAdapter(vi.fn())],
+  }),
   getInternalBaseUrl: () => "http://127.0.0.1:8080",
+});
+
+const buildSendMessageAdapter = (dispatch: ReturnType<typeof vi.fn>): AgentToolMcpToolAdapter => ({
+  definition: {
+    name: SEND_MESSAGE_TO_TOOL_NAME,
+    description: "Send a message",
+    inputSchema: { type: "object", properties: {}, required: [] },
+  },
+  isAvailable: () => true,
+  execute: ({ session, rawArguments }) => dispatch({
+    toolName: SEND_MESSAGE_TO_TOOL_NAME,
+    rawArguments,
+    sender: session.sender,
+  }),
 });
 
 describe("AgentToolMcpSessionService", () => {
@@ -123,7 +139,7 @@ describe("AgentToolMcpToolExecutor", () => {
       },
     });
     const executor = new AgentToolMcpToolExecutor({
-      sendMessageDispatcher: { dispatch } as unknown as SendMessageToDispatcher,
+      catalog: new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter(dispatch)] }),
     });
 
     const result = await executor.executeAgentToolMcpCall({

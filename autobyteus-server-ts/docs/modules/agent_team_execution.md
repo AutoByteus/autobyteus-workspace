@@ -243,11 +243,11 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   non-live ids, and emits direct target-run events without `team_run_id` or Team
   Communication projection. Codex App Server and Claude Agent SDK members route
   first-party MCP `send_message_to` through the server-hosted
-  `autobyteus_agent_tools` descriptor. Codex receives this as thread-scoped
+  `autobyteus_agent_tools` descriptor alongside other migrated server-owned
+  backend tools. Codex receives this as thread-scoped
   `config.mcp_servers.autobyteus_agent_tools`; Claude receives it through SDK
-  `mcpServers` and provider wire name
-  `mcp__autobyteus_agent_tools__send_message_to`, not through the
-  task-delegation-only `autobyteus_team` server. Runtime converters normalize
+  `mcpServers` and provider wire names such as
+  `mcp__autobyteus_agent_tools__send_message_to`. Runtime converters normalize
   the route-backed lifecycle to canonical `send_message_to` before Activity,
   run-history, team stream, or memory consumers see it; raw MCP provider/server
   names and bearer/header config details must not leak into application-facing
@@ -255,13 +255,14 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
-  runtime-level provider policy. Runtime adapters must expose `send_message_to`,
-  `delegate_tasks`, `submit_task_result`, and `review_task_result` only when the current member/tool
-  configuration includes them, and must not add provider `tool_choice` special
-  cases, forced-tool dampening, or framework auto-review behavior for
-  task results. If a model does not call an available tool despite clear
-  instructions, treat that as prompt/model/test configuration until a framework
-  invariant above is violated.
+  runtime-level provider policy. Codex App Server and Claude Agent SDK receive
+  them through Agent Tools MCP only when the current member/tool configuration
+  and member-team context make them available; AutoByteus uses its local
+  wrappers. Runtime adapters must not add provider `tool_choice` special cases,
+  forced-tool dampening, or framework auto-review behavior for task results. If
+  a model does not call an available tool despite clear instructions, treat that
+  as prompt/model/test configuration until a framework invariant above is
+  violated.
 
 ## Mixed Member Event Bridge
 

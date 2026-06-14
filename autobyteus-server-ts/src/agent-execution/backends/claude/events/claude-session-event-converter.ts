@@ -2,8 +2,6 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
-import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
-import { isMediaToolName } from "../../../../agent-tools/media/media-tool-contract.js";
 import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
@@ -11,9 +9,6 @@ import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/cl
 import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { normalizeClaudeMediaToolResult } from "../media/claude-media-tool-result-normalizer.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
-
-const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
-const CLAUDE_MEDIA_MCP_TOOL_PREFIX = "mcp__autobyteus_image_audio__";
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
   asString(payload.id);
@@ -35,14 +30,6 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
   const agentToolsToolName = normalizeClaudeAgentToolsToolNameForEvent(trimmed);
   if (agentToolsToolName !== trimmed) {
     return agentToolsToolName;
-  }
-  if (trimmed.startsWith(CLAUDE_BROWSER_MCP_TOOL_PREFIX)) {
-    const candidate = trimmed.slice(CLAUDE_BROWSER_MCP_TOOL_PREFIX.length);
-    return isBrowserToolName(candidate) ? candidate : trimmed;
-  }
-  if (trimmed.startsWith(CLAUDE_MEDIA_MCP_TOOL_PREFIX)) {
-    const candidate = trimmed.slice(CLAUDE_MEDIA_MCP_TOOL_PREFIX.length);
-    return isMediaToolName(candidate) ? candidate : trimmed;
   }
   return trimmed;
 };

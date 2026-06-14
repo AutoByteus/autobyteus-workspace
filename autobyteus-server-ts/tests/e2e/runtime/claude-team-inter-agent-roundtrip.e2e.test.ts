@@ -776,7 +776,6 @@ Rules:
           const toolName = payloadToolName ?? metadataToolName ?? "";
           return [
             "mcp__autobyteus_agent_tools__send_message_to",
-            "mcp__autobyteus_team__send_message_to",
           ].includes(toolName.toLowerCase());
         });
         expect(rawProviderSendMessageEvents).toHaveLength(0);

@@ -775,7 +775,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
   );
 
   it(
-    "executes open_tab through the live Claude browser MCP path",
+    "executes open_tab through the live Claude Agent Tools MCP path",
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-browser-tool");
@@ -862,7 +862,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
   );
 
   it(
-    "executes the full browser tool surface through the live Claude browser MCP path",
+    "executes the full browser tool surface through the live Claude Agent Tools MCP path",
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-browser-surface");

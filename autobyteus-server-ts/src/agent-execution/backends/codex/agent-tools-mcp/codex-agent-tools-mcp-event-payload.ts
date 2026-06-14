@@ -1,20 +1,16 @@
 import {
-  SEND_MESSAGE_TO_TOOL_NAME,
-} from "../../../../agent-communication/services/send-message-to-tool-contract.js";
-import {
   AGENT_TOOLS_MCP_SERVER_NAME,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
+import {
+  isAgentToolsMcpProviderToolName,
+  normalizeAgentToolsMcpToolNameForEvent,
+  replaceAgentToolsMcpProviderNamesInText,
+} from "../../../../agent-tools/mcp/agent-tools-mcp-tool-name.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import {
-  CODEX_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME,
-  isCodexAgentToolsSendMessageToolName,
   normalizeCodexAgentToolsToolNameForEvent,
 } from "./codex-agent-tools-mcp-materializer.js";
 
-const QUALIFIED_SEND_MESSAGE_TOOL_NAME =
-  `${AGENT_TOOLS_MCP_SERVER_NAME}.${SEND_MESSAGE_TO_TOOL_NAME}`;
-const DOUBLE_UNDERSCORE_SEND_MESSAGE_TOOL_NAME =
-  `${AGENT_TOOLS_MCP_SERVER_NAME}__${SEND_MESSAGE_TO_TOOL_NAME}`;
 const AGENT_TOOLS_REDACTED_SERVER_NAME = "agent_tools";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
@@ -30,31 +26,45 @@ const normalizedKey = (key: string): string =>
 
 const isSecretKey = (key: string): boolean =>
   new Set([
+    "accesstoken",
+    "apikey",
     "authorization",
+    "authorizationheader",
+    "authtoken",
     "headers",
     "httpheaders",
     "bearer",
     "bearertoken",
     "capabilitytoken",
+    "refreshtoken",
+    "secret",
+    "sessionid",
+    "sessiontoken",
     "token",
     "tokenhash",
   ]).has(normalizedKey(key));
 
-const valueContainsAgentToolsProviderMarker = (value: unknown): boolean =>
-  JSON.stringify(value)?.includes(AGENT_TOOLS_MCP_SERVER_NAME) ?? false;
-
-const valueContainsSecretMarker = (value: unknown): boolean => {
+const valueContainsAgentToolsProviderMarker = (value: unknown): boolean => {
   const serialized = JSON.stringify(value) ?? "";
-  return /\bBearer\b/i.test(serialized) || /\bAuthorization\b/i.test(serialized);
+  return serialized.includes(AGENT_TOOLS_MCP_SERVER_NAME) ||
+    /\/mcp\/agent-tools\//i.test(serialized);
 };
 
 const shouldOmitValue = (key: string, value: unknown): boolean => {
   const keyToken = normalizedKey(key);
-  if (isSecretKey(key) && valueContainsSecretMarker(value)) {
+  if (isSecretKey(key)) {
     return true;
   }
   if (
-    ["server", "servername", "serverinfo", "mcpserver", "mcpservername"].includes(keyToken) &&
+    [
+      "server",
+      "servername",
+      "serverinfo",
+      "mcpserver",
+      "mcpservername",
+      "serverurl",
+      "url",
+    ].includes(keyToken) &&
     valueContainsAgentToolsProviderMarker(value)
   ) {
     return true;
@@ -63,16 +73,19 @@ const shouldOmitValue = (key: string, value: unknown): boolean => {
 };
 
 const sanitizeString = (value: string): string => {
-  if (normalizeCodexAgentToolsToolNameForEvent(value) === SEND_MESSAGE_TO_TOOL_NAME) {
-    return SEND_MESSAGE_TO_TOOL_NAME;
+  const canonicalToolName = normalizeCodexAgentToolsToolNameForEvent(value);
+  if (canonicalToolName && canonicalToolName !== value && isAgentToolsMcpProviderToolName(value)) {
+    return canonicalToolName;
   }
-  return value
-    .replaceAll(CODEX_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME, SEND_MESSAGE_TO_TOOL_NAME)
-    .replaceAll(QUALIFIED_SEND_MESSAGE_TOOL_NAME, SEND_MESSAGE_TO_TOOL_NAME)
-    .replaceAll(DOUBLE_UNDERSCORE_SEND_MESSAGE_TOOL_NAME, SEND_MESSAGE_TO_TOOL_NAME)
-    .replaceAll(AGENT_TOOLS_MCP_SERVER_NAME, AGENT_TOOLS_REDACTED_SERVER_NAME)
+  return replaceAgentToolsMcpProviderNamesInText(value, AGENT_TOOLS_REDACTED_SERVER_NAME)
+    .replace(/\/mcp\/agent-tools\/[^/?#\s"'`,}\]]+/gi, "/mcp/agent-tools/<redacted>")
+    .replace(/\bAuthorization\b\s*[:=]\s*Bearer\s+[^\s,}\]]+/gi, "authorization_redacted=<redacted>")
     .replace(/Bearer\s+[^\s,}\]]+/gi, "<redacted>")
-    .replace(/Authorization/gi, "authorization_redacted");
+    .replace(
+      /\b(authorization|bearerToken|capabilityToken|accessToken|refreshToken|sessionToken|token|tokenHash|apiKey)\b\s*[:=]\s*["']?[^"',}\]\s]+["']?/gi,
+      "$1=<redacted>",
+    )
+    .replace(/\bAuthorization\b/gi, "authorization_redacted");
 };
 
 const sanitizeValue = (value: unknown, key = ""): unknown => {
@@ -107,7 +120,7 @@ const hasAgentToolsProviderMarker = (payload: Record<string, unknown>): boolean 
   return serverName === AGENT_TOOLS_MCP_SERVER_NAME;
 };
 
-const hasSendMessageToolName = (payload: Record<string, unknown>): boolean => {
+const hasAgentToolsToolName = (payload: Record<string, unknown>): boolean => {
   const item = asObject(payload.item);
   return [
     payload.tool_name,
@@ -116,18 +129,31 @@ const hasSendMessageToolName = (payload: Record<string, unknown>): boolean => {
     item?.tool_name,
     item?.tool,
     item?.name,
-  ].some((value) => isCodexAgentToolsSendMessageToolName(asString(value)));
+  ].some((value) => {
+    const toolName = asString(value);
+    return Boolean(
+      toolName && (
+        isAgentToolsMcpProviderToolName(toolName) ||
+        toolName.includes(AGENT_TOOLS_MCP_SERVER_NAME)
+      ),
+    );
+  });
 };
 
-export const isCodexAgentToolsSendMessagePayload = (
+export const isCodexAgentToolsMcpPayload = (
   payload: Record<string, unknown>,
-): boolean => hasSendMessageToolName(payload) || hasAgentToolsProviderMarker(payload);
+): boolean =>
+  hasAgentToolsToolName(payload) ||
+  hasAgentToolsProviderMarker(payload) ||
+  valueContainsAgentToolsProviderMarker(payload);
+
+export const isCodexAgentToolsSendMessagePayload = isCodexAgentToolsMcpPayload;
 
 export const serializeCodexItemEventPayload = (
   payload: Record<string, unknown>,
 ): Record<string, unknown> => {
   const serialized = serializePayload(payload);
-  if (!isCodexAgentToolsSendMessagePayload(serialized)) {
+  if (!isCodexAgentToolsMcpPayload(serialized)) {
     return serialized;
   }
   return sanitizeValue(serialized) as Record<string, unknown>;

@@ -1,5 +1,4 @@
 import { composeMemberRunInstructions } from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
-import { buildTaskDelegationDynamicToolRegistrations } from "../task-delegation/build-task-delegation-dynamic-tool-registrations.js";
 import type {
   CodexThreadBootstrapPreparation,
   CodexThreadBootstrapStrategy,
@@ -8,13 +7,6 @@ import { renderMarkdownInstructionSections } from "../backend/codex-thread-boots
 import type { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexAgentRunContext } from "../backend/codex-agent-run-context.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
-
-const mergeDynamicToolRegistrations = <T>(
-  ...groups: Array<T[] | null>
-): T[] | null => {
-  const merged = groups.flatMap((group) => group ?? []);
-  return merged.length > 0 ? merged : null;
-};
 
 export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootstrapStrategy {
   appliesTo(
@@ -73,12 +65,7 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
         },
       ]),
       developerInstructions: instructionComposition.runtimeInstruction,
-      dynamicToolRegistrations: mergeDynamicToolRegistrations(
-        buildTaskDelegationDynamicToolRegistrations({
-          memberTeamContext,
-          enabledToolNames: taskDelegationToolNames,
-        }),
-      ),
+      dynamicToolRegistrations: null,
     };
   }
 }

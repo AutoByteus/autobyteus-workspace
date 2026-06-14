@@ -1,3 +1,6 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -11,7 +14,13 @@ import { registerAgentToolsMcpRoutes } from "../../../../src/agent-tools/mcp/age
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
-import type { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
+import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../src/services/published-artifacts/published-artifact-tool-contract.js";
+import { PublishedArtifactPublicationService } from "../../../../src/services/published-artifacts/published-artifact-publication-service.js";
+import { PublishedArtifactProjectionStore } from "../../../../src/services/published-artifacts/published-artifact-projection-store.js";
+import { PublishedArtifactSnapshotStore } from "../../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 
 type SessionFixture = {
   sessionId: string;
@@ -22,6 +31,186 @@ const sender = buildAgentRunMessageSenderContext({
   senderRunId: "mcp-sender-run",
   senderName: "sender",
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+});
+
+describe("Agent Tools MCP route publish_artifacts integration", () => {
+  it("publishes through the route-backed MCP server for an active run without leaking descriptor secrets", async () => {
+    const tempDirs: string[] = [];
+    const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agent-tools-mcp-publish-workspace-"));
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-tools-mcp-publish-memory-"));
+    tempDirs.push(workspaceRoot, memoryDir);
+    const runId = "run-agent-tools-mcp-publish";
+    const artifactRelativePath = path.join("reports", "mcp-published-artifact.md");
+    const artifactAbsolutePath = path.join(workspaceRoot, artifactRelativePath);
+    const artifactBody = "# Route-backed artifact\n\nPublished through Agent Tools MCP.";
+    await fs.mkdir(path.dirname(artifactAbsolutePath), { recursive: true });
+    await fs.writeFile(artifactAbsolutePath, artifactBody, "utf8");
+
+    const localEvents: Array<{ eventType: string; payload: Record<string, unknown> }> = [];
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const publicationService = new PublishedArtifactPublicationService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue({
+          runId,
+          config: {
+            memoryDir,
+            workspaceId: "workspace-agent-tools-mcp-publish",
+          },
+          emitLocalEvent: (event: { eventType: string; payload: Record<string, unknown> }) => {
+            localEvents.push(event);
+          },
+        }),
+      } as any,
+      workspaceManager: {
+        getOrCreateWorkspace: vi.fn().mockResolvedValue({
+          getBasePath: () => workspaceRoot,
+        }),
+      } as any,
+      projectionStore,
+      snapshotStore,
+    });
+    const catalog = new AgentToolMcpCatalog({
+      providers: [new PublishArtifactsMcpAdapterProvider(publicationService)],
+    });
+    const app = fastify();
+    const registry = new AgentToolMcpSessionRegistry();
+    const dispatcher = new AgentToolsMcpMethodDispatcher({
+      catalog,
+      toolExecutor: new AgentToolMcpToolExecutor({ catalog }),
+    });
+    await registerAgentToolsMcpRoutes(app, { registry, dispatcher });
+    await app.ready();
+
+    const { session, capabilityToken } = registry.createSession({
+      owner: { runId },
+      sender,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      configuredExposure: buildConfiguredAgentToolExposure([PUBLISH_ARTIFACTS_TOOL_NAME]),
+      enabledTools: [PUBLISH_ARTIFACTS_TOOL_NAME],
+      executionContext: {
+        workingDirectory: workspaceRoot,
+        memoryDir,
+      },
+    });
+    const sessionUrl = `/mcp/agent-tools/${session.sessionId}`;
+    const headers = {
+      authorization: `Bearer ${capabilityToken}`,
+      "content-type": "application/json",
+      accept: "application/json",
+    };
+    const post = (payload: unknown) => app.inject({
+      method: "POST",
+      url: sessionUrl,
+      headers,
+      payload: JSON.stringify(payload),
+    });
+
+    try {
+      const tools = await post({ jsonrpc: "2.0", id: "tools", method: "tools/list", params: {} });
+      expect(tools.statusCode).toBe(200);
+      const toolsBody = tools.json() as { result: { tools: Array<{ name: string; inputSchema: { required: string[] } }> } };
+      expect(toolsBody.result.tools).toHaveLength(1);
+      expect(toolsBody.result.tools[0]).toMatchObject({
+        name: PUBLISH_ARTIFACTS_TOOL_NAME,
+        inputSchema: {
+          type: "object",
+          required: ["artifacts"],
+          additionalProperties: false,
+        },
+      });
+
+      const published = await post({
+        jsonrpc: "2.0",
+        id: "publish",
+        method: "tools/call",
+        params: {
+          name: PUBLISH_ARTIFACTS_TOOL_NAME,
+          arguments: {
+            artifacts: [
+              {
+                path: artifactRelativePath,
+                description: "Route-backed publication",
+              },
+            ],
+          },
+        },
+      });
+      expect(published.statusCode).toBe(200);
+      const publishedBody = published.json() as {
+        result: { content: Array<{ type: "text"; text: string }> };
+      };
+      const publishedPayload = JSON.parse(publishedBody.result.content[0]!.text) as {
+        success: boolean;
+        artifacts: Array<Record<string, unknown>>;
+      };
+      const canonicalArtifactPath = (await fs.realpath(artifactAbsolutePath)).replace(/\\/g, "/");
+      expect(publishedPayload).toMatchObject({
+        success: true,
+        artifacts: [
+          {
+            runId,
+            path: canonicalArtifactPath,
+            type: "file",
+            status: "available",
+            description: "Route-backed publication",
+          },
+        ],
+      });
+
+      const projection = await projectionStore.readProjection(memoryDir);
+      expect(projection.summaries).toEqual(publishedPayload.artifacts);
+      expect(projection.revisions).toHaveLength(1);
+      await expect(
+        snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+      ).resolves.toBe(artifactBody);
+      expect(localEvents).toHaveLength(1);
+      expect(localEvents[0]).toMatchObject({
+        eventType: AgentRunEventType.ARTIFACT_PERSISTED,
+        payload: projection.summaries[0],
+      });
+
+      const invalid = await post({
+        jsonrpc: "2.0",
+        id: "invalid-publish",
+        method: "tools/call",
+        params: {
+          name: PUBLISH_ARTIFACTS_TOOL_NAME,
+          arguments: { path: artifactRelativePath },
+        },
+      });
+      expect(invalid.statusCode).toBe(200);
+      const invalidBody = invalid.json() as {
+        result: { isError: true; content: Array<{ type: "text"; text: string }> };
+      };
+      expect(invalidBody.result.isError).toBe(true);
+      expect(JSON.parse(invalidBody.result.content[0]!.text)).toMatchObject({
+        error: {
+          code: "publish_artifacts_failed",
+          message: "publish_artifacts disallows top-level fields: path.",
+        },
+      });
+      expect((await projectionStore.readProjection(memoryDir)).summaries).toEqual(
+        publishedPayload.artifacts,
+      );
+
+      const serializedAppFacingData = JSON.stringify({
+        published: publishedBody,
+        invalid: invalidBody,
+        localEvents,
+        projection,
+      });
+      expect(serializedAppFacingData).not.toContain(capabilityToken);
+      expect(serializedAppFacingData).not.toContain(session.sessionId);
+      expect(serializedAppFacingData).not.toContain("Bearer");
+      expect(serializedAppFacingData).not.toContain("Authorization");
+      expect(serializedAppFacingData).not.toContain("autobyteus_agent_tools");
+      expect(serializedAppFacingData).not.toContain("mcp__autobyteus_agent_tools__");
+    } finally {
+      await app.close();
+      await Promise.all(tempDirs.map((dir) => fs.rm(dir, { recursive: true, force: true })));
+    }
+  });
 });
 
 describe("Agent Tools MCP route", () => {

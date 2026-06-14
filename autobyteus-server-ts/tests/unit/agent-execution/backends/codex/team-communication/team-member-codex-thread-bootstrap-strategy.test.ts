@@ -113,7 +113,7 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.developerInstructions).not.toContain("Use recipient_name for one logical roster recipient:");
   });
 
-  it("adds task delegation dynamic tools only when the agent configuration enables them", () => {
+  it("keeps task delegation as Agent Tools MCP instructions without dynamic registrations", () => {
     const strategy = new TeamMemberCodexThreadBootstrapStrategy();
     const memberTeamContext = createMemberTeamContext();
     const runContext = new AgentRunContext({
@@ -145,11 +145,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
 
     expect(preparation.developerInstructions).toContain("Task delegation protocol");
     expect(preparation.developerInstructions).toContain("Do not use `create_task`");
-    expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
-      .toEqual([
-        "delegate_tasks",
-        "submit_task_result",
-        "review_task_result",
-      ]);
+    expect(preparation.developerInstructions).toContain("Use `delegate_tasks`");
+    expect(preparation.developerInstructions).toContain("`submit_task_result`");
+    expect(preparation.developerInstructions).toContain("`review_task_result`");
+    expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 });
