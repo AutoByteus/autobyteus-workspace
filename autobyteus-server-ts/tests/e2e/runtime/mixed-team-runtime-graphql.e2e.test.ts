@@ -5,13 +5,18 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
@@ -19,20 +24,26 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
-const codexBinaryReady = spawnSync("codex", ["--version"], {
-  stdio: "ignore",
-}).status === 0;
+const codexBinaryReady =
+  spawnSync("codex", ["--version"], {
+    stdio: "ignore",
+  }).status === 0;
 const liveMixedTestsEnabled =
   process.env.RUN_LMSTUDIO_E2E === "1" && process.env.RUN_CODEX_E2E === "1";
-const describeMixedRuntime = codexBinaryReady && liveMixedTestsEnabled ? describe : describe.skip;
-const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+const describeMixedRuntime =
+  codexBinaryReady && liveMixedTestsEnabled ? describe : describe.skip;
+const originalCodexApprovalPolicy =
+  process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 
-const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void> =>
+const waitForSocketOpen = (
+  socket: WebSocket,
+  timeoutMs = 10_000,
+): Promise<void> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(
       () => reject(new Error("Timed out waiting for websocket open")),
@@ -47,6 +58,20 @@ const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void>
       reject(error);
     });
   });
+
+const closeSocket = async (socket: WebSocket): Promise<void> => {
+  if (socket.readyState === WebSocket.CLOSED) {
+    return;
+  }
+  await new Promise<void>((resolve) => {
+    const timer = setTimeout(resolve, 2_000);
+    socket.once("close", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.close();
+  });
+};
 
 type WsMessage = {
   type: string;
@@ -73,7 +98,9 @@ const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
       return null;
     }
     const payload =
-      parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+      parsed.payload &&
+      typeof parsed.payload === "object" &&
+      !Array.isArray(parsed.payload)
         ? (parsed.payload as Record<string, unknown>)
         : {};
     return {
@@ -102,9 +129,14 @@ const waitForMessage = async (
 
   const preview = messages
     .slice(-25)
-    .map((message) => `${message.type}:${JSON.stringify(message.payload).slice(0, 180)}`)
+    .map(
+      (message) =>
+        `${message.type}:${JSON.stringify(message.payload).slice(0, 180)}`,
+    )
     .join(" | ");
-  throw new Error(`Timed out waiting for team websocket message '${label}'. preview='${preview}'`);
+  throw new Error(
+    `Timed out waiting for team websocket message '${label}'. preview='${preview}'`,
+  );
 };
 
 const waitForMessageAfter = async (
@@ -122,10 +154,23 @@ const waitForMessageAfter = async (
   );
 };
 
-const assistantTextMatches = (message: WsMessage, memberName: string, token: string): boolean => {
-  const agentName = typeof message.payload.agent_name === "string" ? message.payload.agent_name : null;
-  const memberRouteKey = typeof message.payload.member_route_key === "string" ? message.payload.member_route_key : null;
-  if ((agentName && agentName !== memberName) || (memberRouteKey && memberRouteKey !== memberName)) {
+const assistantTextMatches = (
+  message: WsMessage,
+  memberName: string,
+  token: string,
+): boolean => {
+  const agentName =
+    typeof message.payload.agent_name === "string"
+      ? message.payload.agent_name
+      : null;
+  const memberRouteKey =
+    typeof message.payload.member_route_key === "string"
+      ? message.payload.member_route_key
+      : null;
+  if (
+    (agentName && agentName !== memberName) ||
+    (memberRouteKey && memberRouteKey !== memberName)
+  ) {
     return false;
   }
 
@@ -149,10 +194,7 @@ const assistantTextMatches = (message: WsMessage, memberName: string, token: str
         : typeof item?.text === "string"
           ? item.text
           : null;
-    return (
-      text !== null &&
-      text.includes(token)
-    );
+    return text !== null && text.includes(token);
   }
 
   if (message.type === "ASSISTANT_COMPLETE") {
@@ -167,11 +209,11 @@ const assistantTextMatches = (message: WsMessage, memberName: string, token: str
         ? message.payload.text
         : typeof item?.text === "string"
           ? item.text
-        : typeof message.payload.content === "string"
-          ? message.payload.content
-          : typeof message.payload.result === "string"
-            ? message.payload.result
-            : null;
+          : typeof message.payload.content === "string"
+            ? message.payload.content
+            : typeof message.payload.result === "string"
+              ? message.payload.result
+              : null;
     return typeof text === "string" && text.includes(token);
   }
 
@@ -188,18 +230,19 @@ const sendTeamMessageOverSocket = (
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
-        content: input.content,
-        target_member_route_key: input.targetMemberRouteKey ?? null,
-        context_file_paths: input.contextFilePaths ?? [],
-        image_urls: input.imageUrls ?? [],
-      });
+    content: input.content,
+    target_member_route_key: input.targetMemberRouteKey ?? null,
+    context_file_paths: input.contextFilePaths ?? [],
+    image_urls: input.imageUrls ?? [],
+  });
 };
 
 const findMemberBinding = (
   members: TeamMemberMetadata[],
   memberName: string,
 ): TeamMemberMetadata => {
-  const binding = members.find((member) => member.memberName === memberName) ?? null;
+  const binding =
+    members.find((member) => member.memberName === memberName) ?? null;
   expect(binding).toBeTruthy();
   return binding as TeamMemberMetadata;
 };
@@ -208,14 +251,21 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
+  let runtimeServerApp: FastifyInstance | null = null;
+  let runtimeServerUrl: URL;
+  let originalInternalServerBaseUrl: string | undefined;
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
+    originalInternalServerBaseUrl =
+      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
-    testDataDir = await mkdtemp(path.join(os.tmpdir(), "mixed-team-runtime-e2e-appdata-"));
+    testDataDir = await mkdtemp(
+      path.join(os.tmpdir(), "mixed-team-runtime-e2e-appdata-"),
+    );
     await writeFile(
       path.join(testDataDir, ".env"),
       "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
@@ -225,16 +275,43 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
-    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+    const graphqlPath = require.resolve("graphql", {
+      paths: [typeGraphqlRoot],
+    });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+
+    runtimeServerApp = fastify();
+    await registerAgentToolsMcpRoutes(runtimeServerApp);
+    await runtimeServerApp.register(websocket);
+    await registerAgentWebsocket(runtimeServerApp);
+    const streamAddress = await runtimeServerApp.listen({
+      port: 0,
+      host: "127.0.0.1",
+    });
+    seedInternalServerBaseUrlFromListenAddress({
+      requestedHost: "127.0.0.1",
+      listenAddress: runtimeServerApp.server.address(),
+    });
+    runtimeServerUrl = new URL(streamAddress);
   });
 
   afterAll(async () => {
     if (typeof originalCodexApprovalPolicy === "string") {
-      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY =
+        originalCodexApprovalPolicy;
     } else {
       delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+    }
+    if (originalInternalServerBaseUrl) {
+      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
+        originalInternalServerBaseUrl;
+    } else {
+      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+    }
+    if (runtimeServerApp) {
+      await runtimeServerApp.close();
+      runtimeServerApp = null;
     }
 
     for (const root of createdWorkspaceRoots) {
@@ -249,7 +326,10 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
   });
 
   afterEach(async () => {
-    const exec = async <T>(query: string, variables?: Record<string, unknown>): Promise<T | null> => {
+    const exec = async <T>(
+      query: string,
+      variables?: Record<string, unknown>,
+    ): Promise<T | null> => {
       const result = await graphql({
         schema,
         source: query,
@@ -300,7 +380,10 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     createdWorkspaceRoots.clear();
   });
 
-  const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+  const execGraphql = async <T>(
+    query: string,
+    variables?: Record<string, unknown>,
+  ): Promise<T> => {
     const result = await graphql({
       schema,
       source: query,
@@ -331,13 +414,19 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
 
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models
-        .map((model) => model.modelIdentifier)
-        .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.trim().length > 0),
+    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      (provider) =>
+        provider.models
+          .map((model) => model.modelIdentifier)
+          .filter(
+            (modelIdentifier): modelIdentifier is string =>
+              modelIdentifier.trim().length > 0,
+          ),
     );
     if (modelIdentifiers.length === 0) {
-      throw new Error("No AutoByteus model identifier was returned for mixed runtime e2e.");
+      throw new Error(
+        "No AutoByteus model identifier was returned for mixed runtime e2e.",
+      );
     }
 
     const exactOverride = process.env.LMSTUDIO_MODEL_ID?.trim();
@@ -345,7 +434,8 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       return exactOverride;
     }
 
-    const preferredFragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
+    const preferredFragment =
+      process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
     const preferredMatch = modelIdentifiers.find((modelIdentifier) =>
       modelIdentifier.includes(preferredFragment),
     );
@@ -378,13 +468,19 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
 
-    const allModelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models
-        .map((model) => model.modelIdentifier)
-        .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.length > 0),
+    const allModelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      (provider) =>
+        provider.models
+          .map((model) => model.modelIdentifier)
+          .filter(
+            (modelIdentifier): modelIdentifier is string =>
+              modelIdentifier.length > 0,
+          ),
     );
     if (allModelIdentifiers.length === 0) {
-      throw new Error("No Codex runtime model was returned by availableLlmProvidersWithModels.");
+      throw new Error(
+        "No Codex runtime model was returned by availableLlmProvidersWithModels.",
+      );
     }
 
     const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
@@ -454,17 +550,16 @@ Rules:
     return result.createAgentDefinition.id;
   };
 
-  const openTeamSocket = async (teamRunId: string): Promise<{
-    streamApp: ReturnType<typeof fastify>;
+  const openTeamSocket = async (
+    teamRunId: string,
+  ): Promise<{
     socket: WebSocket;
     messages: WsMessage[];
   }> => {
-    const streamApp = fastify();
-    await streamApp.register(websocket);
-    await registerAgentWebsocket(streamApp);
-    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-    const streamUrl = new URL(streamAddress);
-    const socket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+    const streamUrl = runtimeServerUrl;
+    const socket = new WebSocket(
+      `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+    );
     const messages: WsMessage[] = [];
     socket.on("message", (raw) => {
       const parsed = parseWsMessage(raw);
@@ -473,9 +568,13 @@ Rules:
       }
     });
     await waitForSocketOpen(socket);
-    await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
+    await waitForMessage(
+      messages,
+      (message) => message.type === "CONNECTED",
+      "CONNECTED",
+      15_000,
+    );
     return {
-      streamApp,
       socket,
       messages,
     };
@@ -536,16 +635,16 @@ Rules:
           recipientMemberName: input.recipientMemberName,
           content: input.content,
         }) ||
-        (
-          message.type === "MEMBER_INPUT_MESSAGE" &&
+        (message.type === "MEMBER_INPUT_MESSAGE" &&
           message.payload.agent_name === input.recipientMemberName &&
-          message.payload.content === input.content
-        ),
+          message.payload.content === input.content),
       `${input.recipientMemberName} delivery message`,
     );
   };
 
-  const fetchResumeMetadata = async (teamRunId: string): Promise<TeamMemberMetadata[]> => {
+  const fetchResumeMetadata = async (
+    teamRunId: string,
+  ): Promise<TeamMemberMetadata[]> => {
     const teamResumeQuery = `
       query TeamResume($teamRunId: String!) {
         getTeamRunResumeConfig(teamRunId: $teamRunId) {
@@ -591,14 +690,12 @@ Rules:
       }
     `;
 
-    let projection:
-      | {
-          agentRunId: string;
-          summary: string | null;
-          lastActivityAt: string | null;
-          conversation: Array<Record<string, unknown>>;
-        }
-      | null = null;
+    let projection: {
+      agentRunId: string;
+      summary: string | null;
+      lastActivityAt: string | null;
+      conversation: Array<Record<string, unknown>>;
+    } | null = null;
     const deadline = Date.now() + 120_000;
     while (Date.now() < deadline) {
       const result = await execGraphql<{
@@ -614,7 +711,11 @@ Rules:
       });
       projection = result.getTeamMemberRunProjection;
       const serializedConversation = JSON.stringify(projection.conversation);
-      if (input.requiredTokens.every((token) => serializedConversation.includes(token))) {
+      if (
+        input.requiredTokens.every((token) =>
+          serializedConversation.includes(token),
+        )
+      ) {
         return projection;
       }
       await wait(2_000);
@@ -625,61 +726,62 @@ Rules:
     );
   };
 
-  it(
-    "creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration",
-    async () => {
-      const unique = randomUUID();
-      const autoByteusModelIdentifier = await fetchAutoByteusModelIdentifier();
-      const codexModelIdentifier = await fetchPreferredCodexToolModelIdentifier();
-      expect(autoByteusModelIdentifier).not.toBe(codexModelIdentifier);
+  it("creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration", async () => {
+    const unique = randomUUID();
+    const autoByteusModelIdentifier = await fetchAutoByteusModelIdentifier();
+    const codexModelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+    expect(autoByteusModelIdentifier).not.toBe(codexModelIdentifier);
 
-      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "mixed-team-runtime-workspace-"));
-      createdWorkspaceRoots.add(workspaceRootPath);
+    const workspaceRootPath = await mkdtemp(
+      path.join(os.tmpdir(), "mixed-team-runtime-workspace-"),
+    );
+    createdWorkspaceRoots.add(workspaceRootPath);
 
-      const coordinatorAgentDefinitionId = await createAgentDefinition({
-        memberName: "coordinator",
-        description: "Live mixed-runtime AutoByteus coordinator.",
-      });
-      const specialistAgentDefinitionId = await createAgentDefinition({
-        memberName: "specialist",
-        description: "Live mixed-runtime Codex specialist.",
-      });
+    const coordinatorAgentDefinitionId = await createAgentDefinition({
+      memberName: "coordinator",
+      description: "Live mixed-runtime AutoByteus coordinator.",
+    });
+    const specialistAgentDefinitionId = await createAgentDefinition({
+      memberName: "specialist",
+      description: "Live mixed-runtime Codex specialist.",
+    });
 
-      const createTeamDefinitionMutation = `
+    const createTeamDefinitionMutation = `
         mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
           createAgentTeamDefinition(input: $input) {
             id
           }
         }
       `;
-      const teamDefinitionResult = await execGraphql<{
-        createAgentTeamDefinition: { id: string };
-      }>(createTeamDefinitionMutation, {
-        input: {
-          name: `mixed-runtime-team-${unique}`,
-          description: "Live mixed AutoByteus+Codex runtime validation team.",
-          instructions: "Coordinate the team to execute directed teammate messaging only.",
-          coordinatorMemberName: "coordinator",
-          nodes: [
-            {
-              memberName: "coordinator",
-              ref: coordinatorAgentDefinitionId,
-              refType: "AGENT",
-              refScope: "SHARED",
-            },
-            {
-              memberName: "specialist",
-              ref: specialistAgentDefinitionId,
-              refType: "AGENT",
-              refScope: "SHARED",
-            },
-          ],
-        },
-      });
-      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
-      createdTeamDefinitionIds.add(teamDefinitionId);
+    const teamDefinitionResult = await execGraphql<{
+      createAgentTeamDefinition: { id: string };
+    }>(createTeamDefinitionMutation, {
+      input: {
+        name: `mixed-runtime-team-${unique}`,
+        description: "Live mixed AutoByteus+Codex runtime validation team.",
+        instructions:
+          "Coordinate the team to execute directed teammate messaging only.",
+        coordinatorMemberName: "coordinator",
+        nodes: [
+          {
+            memberName: "coordinator",
+            ref: coordinatorAgentDefinitionId,
+            refType: "AGENT",
+            refScope: "SHARED",
+          },
+          {
+            memberName: "specialist",
+            ref: specialistAgentDefinitionId,
+            refType: "AGENT",
+            refScope: "SHARED",
+          },
+        ],
+      },
+    });
+    const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+    createdTeamDefinitionIds.add(teamDefinitionId);
 
-      const createTeamRunMutation = `
+    const createTeamRunMutation = `
         mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
           createAgentTeamRun(input: $input) {
             success
@@ -688,107 +790,133 @@ Rules:
           }
         }
       `;
-      const createTeamRunResult = await execGraphql<{
-        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(createTeamRunMutation, {
-        input: {
-          teamDefinitionId,
-          memberConfigs: [
-            {
-              memberName: "coordinator",
-              agentDefinitionId: coordinatorAgentDefinitionId,
-              llmModelIdentifier: autoByteusModelIdentifier,
-              autoExecuteTools: true,
-              skillAccessMode: "NONE",
-              runtimeKind: RuntimeKind.AUTOBYTEUS,
-              workspaceRootPath,
-            },
-            {
-              memberName: "specialist",
-              agentDefinitionId: specialistAgentDefinitionId,
-              llmModelIdentifier: codexModelIdentifier,
-              autoExecuteTools: true,
-              skillAccessMode: "NONE",
-              runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-              workspaceRootPath,
-            },
-          ],
-        },
+    const createTeamRunResult = await execGraphql<{
+      createAgentTeamRun: {
+        success: boolean;
+        message: string;
+        teamRunId: string | null;
+      };
+    }>(createTeamRunMutation, {
+      input: {
+        teamDefinitionId,
+        memberConfigs: [
+          {
+            memberName: "coordinator",
+            agentDefinitionId: coordinatorAgentDefinitionId,
+            llmModelIdentifier: autoByteusModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            workspaceRootPath,
+          },
+          {
+            memberName: "specialist",
+            agentDefinitionId: specialistAgentDefinitionId,
+            llmModelIdentifier: codexModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            workspaceRootPath,
+          },
+        ],
+      },
+    });
+
+    expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+    expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+    const teamRunId = createTeamRunResult.createAgentTeamRun
+      .teamRunId as string;
+    createdTeamRunIds.add(teamRunId);
+
+    const preRestoreAutoToCodexReplyToken = `MIXED_A2C_BEFORE_${unique}`;
+    const preRestoreCodexToAutoReplyToken = `MIXED_C2A_BEFORE_${unique}`;
+    const postRestoreAutoToCodexReplyToken = `MIXED_A2C_AFTER_${unique}`;
+    const postRestoreCodexToAutoReplyToken = `MIXED_C2A_AFTER_${unique}`;
+
+    const autoToCodexInstruction = (
+      replyToken: string,
+      messageType: string,
+    ): string => {
+      const argsJson = JSON.stringify({
+        recipient_name: "specialist",
+        content: `Reply with exactly ${replyToken} and nothing else.`,
+        message_type: messageType,
       });
+      return `Call send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
+    };
 
-      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
-      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
-      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
-      createdTeamRunIds.add(teamRunId);
+    const codexToAutoInstruction = (
+      replyToken: string,
+      messageType: string,
+    ): string => {
+      const argsJson = JSON.stringify({
+        recipient_name: "coordinator",
+        content: `Reply with exactly ${replyToken} and nothing else.`,
+        message_type: messageType,
+      });
+      return `Call send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
+    };
 
-      const preRestoreAutoToCodexReplyToken = `MIXED_A2C_BEFORE_${unique}`;
-      const preRestoreCodexToAutoReplyToken = `MIXED_C2A_BEFORE_${unique}`;
-      const postRestoreAutoToCodexReplyToken = `MIXED_A2C_AFTER_${unique}`;
-      const postRestoreCodexToAutoReplyToken = `MIXED_C2A_AFTER_${unique}`;
+    const firstConnection = await openTeamSocket(teamRunId);
+    try {
+      const autoToCodexStartIndex = firstConnection.messages.length;
+      sendTeamMessageOverSocket(firstConnection.socket, {
+        targetMemberRouteKey: "coordinator",
+        content: autoToCodexInstruction(
+          preRestoreAutoToCodexReplyToken,
+          "mixed_a2c_before_restore",
+        ),
+      });
+      await waitForInterAgentDeliveryTurn({
+        messages: firstConnection.messages,
+        startIndex: autoToCodexStartIndex,
+        senderMemberName: "coordinator",
+        recipientMemberName: "specialist",
+        content: `Reply with exactly ${preRestoreAutoToCodexReplyToken} and nothing else.`,
+      });
+      await waitForMessageAfter(
+        firstConnection.messages,
+        autoToCodexStartIndex,
+        (message) =>
+          assistantTextMatches(
+            message,
+            "specialist",
+            preRestoreAutoToCodexReplyToken,
+          ),
+        "specialist reply before restore",
+      );
 
-      const autoToCodexInstruction = (replyToken: string, messageType: string): string => {
-        const argsJson = JSON.stringify({
-          recipient_name: "specialist",
-          content: `Reply with exactly ${replyToken} and nothing else.`,
-          message_type: messageType,
-        });
-        return `Call send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
-      };
+      const codexToAutoStartIndex = firstConnection.messages.length;
+      sendTeamMessageOverSocket(firstConnection.socket, {
+        targetMemberRouteKey: "specialist",
+        content: codexToAutoInstruction(
+          preRestoreCodexToAutoReplyToken,
+          "mixed_c2a_before_restore",
+        ),
+      });
+      await waitForInterAgentDeliveryTurn({
+        messages: firstConnection.messages,
+        startIndex: codexToAutoStartIndex,
+        senderMemberName: "specialist",
+        recipientMemberName: "coordinator",
+        content: `Reply with exactly ${preRestoreCodexToAutoReplyToken} and nothing else.`,
+      });
+      await waitForMessageAfter(
+        firstConnection.messages,
+        codexToAutoStartIndex,
+        (message) =>
+          assistantTextMatches(
+            message,
+            "coordinator",
+            preRestoreCodexToAutoReplyToken,
+          ),
+        "coordinator reply before restore",
+      );
+    } finally {
+      await closeSocket(firstConnection.socket);
+    }
 
-      const codexToAutoInstruction = (replyToken: string, messageType: string): string => {
-        const argsJson = JSON.stringify({
-          recipient_name: "coordinator",
-          content: `Reply with exactly ${replyToken} and nothing else.`,
-          message_type: messageType,
-        });
-        return `Call send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
-      };
-
-      const firstConnection = await openTeamSocket(teamRunId);
-      try {
-        const autoToCodexStartIndex = firstConnection.messages.length;
-        sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberRouteKey: "coordinator",
-          content: autoToCodexInstruction(preRestoreAutoToCodexReplyToken, "mixed_a2c_before_restore"),
-        });
-        await waitForInterAgentDeliveryTurn({
-          messages: firstConnection.messages,
-          startIndex: autoToCodexStartIndex,
-          senderMemberName: "coordinator",
-          recipientMemberName: "specialist",
-          content: `Reply with exactly ${preRestoreAutoToCodexReplyToken} and nothing else.`,
-        });
-        await waitForMessageAfter(
-          firstConnection.messages,
-          autoToCodexStartIndex,
-          (message) => assistantTextMatches(message, "specialist", preRestoreAutoToCodexReplyToken),
-          "specialist reply before restore",
-        );
-
-        const codexToAutoStartIndex = firstConnection.messages.length;
-        sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberRouteKey: "specialist",
-          content: codexToAutoInstruction(preRestoreCodexToAutoReplyToken, "mixed_c2a_before_restore"),
-        });
-        await waitForInterAgentDeliveryTurn({
-          messages: firstConnection.messages,
-          startIndex: codexToAutoStartIndex,
-          senderMemberName: "specialist",
-          recipientMemberName: "coordinator",
-          content: `Reply with exactly ${preRestoreCodexToAutoReplyToken} and nothing else.`,
-        });
-        await waitForMessageAfter(
-          firstConnection.messages,
-          codexToAutoStartIndex,
-          (message) => assistantTextMatches(message, "coordinator", preRestoreCodexToAutoReplyToken),
-          "coordinator reply before restore",
-        );
-      } finally {
-        firstConnection.socket.close();
-        await firstConnection.streamApp.close();
-      }
-
-      const terminateMutation = `
+    const terminateMutation = `
         mutation TerminateAgentTeamRun($teamRunId: String!) {
           terminateAgentTeamRun(teamRunId: $teamRunId) {
             success
@@ -796,46 +924,62 @@ Rules:
           }
         }
       `;
-      const firstTerminateResult = await execGraphql<{
-        terminateAgentTeamRun: { success: boolean; message: string };
-      }>(terminateMutation, { teamRunId });
-      expect(firstTerminateResult.terminateAgentTeamRun.success).toBe(true);
+    const firstTerminateResult = await execGraphql<{
+      terminateAgentTeamRun: { success: boolean; message: string };
+    }>(terminateMutation, { teamRunId });
+    expect(firstTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const storedBeforeRestore = await fetchResumeMetadata(teamRunId);
-      expect(storedBeforeRestore).toHaveLength(2);
+    const storedBeforeRestore = await fetchResumeMetadata(teamRunId);
+    expect(storedBeforeRestore).toHaveLength(2);
 
-      const coordinatorBeforeRestore = findMemberBinding(storedBeforeRestore, "coordinator");
-      const specialistBeforeRestore = findMemberBinding(storedBeforeRestore, "specialist");
-      expect(coordinatorBeforeRestore.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-      expect(specialistBeforeRestore.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
-      expect(coordinatorBeforeRestore.llmModelIdentifier).toBe(autoByteusModelIdentifier);
-      expect(specialistBeforeRestore.llmModelIdentifier).toBe(codexModelIdentifier);
-      expect(coordinatorBeforeRestore.workspaceRootPath).toBe(workspaceRootPath);
-      expect(specialistBeforeRestore.workspaceRootPath).toBe(workspaceRootPath);
-      expect(coordinatorBeforeRestore.platformAgentRunId).toBeTruthy();
-      expect(specialistBeforeRestore.platformAgentRunId).toBeTruthy();
+    const coordinatorBeforeRestore = findMemberBinding(
+      storedBeforeRestore,
+      "coordinator",
+    );
+    const specialistBeforeRestore = findMemberBinding(
+      storedBeforeRestore,
+      "specialist",
+    );
+    expect(coordinatorBeforeRestore.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(specialistBeforeRestore.runtimeKind).toBe(
+      RuntimeKind.CODEX_APP_SERVER,
+    );
+    expect(coordinatorBeforeRestore.llmModelIdentifier).toBe(
+      autoByteusModelIdentifier,
+    );
+    expect(specialistBeforeRestore.llmModelIdentifier).toBe(
+      codexModelIdentifier,
+    );
+    expect(coordinatorBeforeRestore.workspaceRootPath).toBe(workspaceRootPath);
+    expect(specialistBeforeRestore.workspaceRootPath).toBe(workspaceRootPath);
+    expect(coordinatorBeforeRestore.platformAgentRunId).toBeTruthy();
+    expect(specialistBeforeRestore.platformAgentRunId).toBeTruthy();
 
-      const coordinatorProjectionBeforeRestore = await waitForProjectionTokens({
-        teamRunId,
-        memberRouteKey: coordinatorBeforeRestore.memberRouteKey,
-        requiredTokens: [preRestoreCodexToAutoReplyToken],
-      });
-      expect(coordinatorProjectionBeforeRestore.agentRunId).toBe(coordinatorBeforeRestore.memberRunId);
-      expect(JSON.stringify(coordinatorProjectionBeforeRestore.conversation)).toContain(
-        preRestoreCodexToAutoReplyToken,
-      );
+    const coordinatorProjectionBeforeRestore = await waitForProjectionTokens({
+      teamRunId,
+      memberRouteKey: coordinatorBeforeRestore.memberRouteKey,
+      requiredTokens: [preRestoreCodexToAutoReplyToken],
+    });
+    expect(coordinatorProjectionBeforeRestore.agentRunId).toBe(
+      coordinatorBeforeRestore.memberRunId,
+    );
+    expect(
+      JSON.stringify(coordinatorProjectionBeforeRestore.conversation),
+    ).toContain(preRestoreCodexToAutoReplyToken);
 
-      const specialistProjectionBeforeRestore = await waitForProjectionTokens({
-        teamRunId,
-        memberRouteKey: specialistBeforeRestore.memberRouteKey,
-        requiredTokens: [preRestoreAutoToCodexReplyToken],
-      });
-      expect(specialistProjectionBeforeRestore.agentRunId).toBe(specialistBeforeRestore.memberRunId);
-      expect(JSON.stringify(specialistProjectionBeforeRestore.conversation)).toContain(
-        preRestoreAutoToCodexReplyToken,
-      );
+    const specialistProjectionBeforeRestore = await waitForProjectionTokens({
+      teamRunId,
+      memberRouteKey: specialistBeforeRestore.memberRouteKey,
+      requiredTokens: [preRestoreAutoToCodexReplyToken],
+    });
+    expect(specialistProjectionBeforeRestore.agentRunId).toBe(
+      specialistBeforeRestore.memberRunId,
+    );
+    expect(
+      JSON.stringify(specialistProjectionBeforeRestore.conversation),
+    ).toContain(preRestoreAutoToCodexReplyToken);
 
-      const restoreMutation = `
+    const restoreMutation = `
         mutation RestoreAgentTeamRun($teamRunId: String!) {
           restoreAgentTeamRun(teamRunId: $teamRunId) {
             success
@@ -844,96 +988,147 @@ Rules:
           }
         }
       `;
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(restoreMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+    const restoreResult = await execGraphql<{
+      restoreAgentTeamRun: {
+        success: boolean;
+        message: string;
+        teamRunId: string | null;
+      };
+    }>(restoreMutation, { teamRunId });
+    expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
+    expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
 
-      const secondConnection = await openTeamSocket(teamRunId);
-      try {
-        const autoToCodexAfterRestoreStartIndex = secondConnection.messages.length;
-        sendTeamMessageOverSocket(secondConnection.socket, {
-          targetMemberRouteKey: "coordinator",
-          content: autoToCodexInstruction(postRestoreAutoToCodexReplyToken, "mixed_a2c_after_restore"),
-        });
-        await waitForInterAgentDeliveryTurn({
-          messages: secondConnection.messages,
-          startIndex: autoToCodexAfterRestoreStartIndex,
-          senderMemberName: "coordinator",
-          recipientMemberName: "specialist",
-          content: `Reply with exactly ${postRestoreAutoToCodexReplyToken} and nothing else.`,
-        });
-        await waitForMessageAfter(
-          secondConnection.messages,
-          autoToCodexAfterRestoreStartIndex,
-          (message) => assistantTextMatches(message, "specialist", postRestoreAutoToCodexReplyToken),
-          "specialist reply after restore",
-        );
-
-        const codexToAutoAfterRestoreStartIndex = secondConnection.messages.length;
-        sendTeamMessageOverSocket(secondConnection.socket, {
-          targetMemberRouteKey: "specialist",
-          content: codexToAutoInstruction(postRestoreCodexToAutoReplyToken, "mixed_c2a_after_restore"),
-        });
-        await waitForInterAgentDeliveryTurn({
-          messages: secondConnection.messages,
-          startIndex: codexToAutoAfterRestoreStartIndex,
-          senderMemberName: "specialist",
-          recipientMemberName: "coordinator",
-          content: `Reply with exactly ${postRestoreCodexToAutoReplyToken} and nothing else.`,
-        });
-        await waitForMessageAfter(
-          secondConnection.messages,
-          codexToAutoAfterRestoreStartIndex,
-          (message) => assistantTextMatches(message, "coordinator", postRestoreCodexToAutoReplyToken),
-          "coordinator reply after restore",
-        );
-      } finally {
-        secondConnection.socket.close();
-        await secondConnection.streamApp.close();
-      }
-
-      const secondTerminateResult = await execGraphql<{
-        terminateAgentTeamRun: { success: boolean; message: string };
-      }>(terminateMutation, { teamRunId });
-      expect(secondTerminateResult.terminateAgentTeamRun.success).toBe(true);
-
-      const storedAfterRestore = await fetchResumeMetadata(teamRunId);
-      const coordinatorAfterRestore = findMemberBinding(storedAfterRestore, "coordinator");
-      const specialistAfterRestore = findMemberBinding(storedAfterRestore, "specialist");
-      expect(coordinatorAfterRestore.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-      expect(specialistAfterRestore.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
-      expect(coordinatorAfterRestore.llmModelIdentifier).toBe(autoByteusModelIdentifier);
-      expect(specialistAfterRestore.llmModelIdentifier).toBe(codexModelIdentifier);
-      expect(coordinatorAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
-      expect(specialistAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
-      expect(coordinatorAfterRestore.memberRouteKey).toBe(coordinatorBeforeRestore.memberRouteKey);
-      expect(specialistAfterRestore.memberRouteKey).toBe(specialistBeforeRestore.memberRouteKey);
-      expect(specialistAfterRestore.platformAgentRunId).toBe(specialistBeforeRestore.platformAgentRunId);
-
-      const coordinatorProjectionAfterRestore = await waitForProjectionTokens({
-        teamRunId,
-        memberRouteKey: coordinatorAfterRestore.memberRouteKey,
-        requiredTokens: [preRestoreCodexToAutoReplyToken, postRestoreCodexToAutoReplyToken],
+    const secondConnection = await openTeamSocket(teamRunId);
+    try {
+      const autoToCodexAfterRestoreStartIndex =
+        secondConnection.messages.length;
+      sendTeamMessageOverSocket(secondConnection.socket, {
+        targetMemberRouteKey: "coordinator",
+        content: autoToCodexInstruction(
+          postRestoreAutoToCodexReplyToken,
+          "mixed_a2c_after_restore",
+        ),
       });
-      const coordinatorSerializedConversation = JSON.stringify(
-        coordinatorProjectionAfterRestore.conversation,
-      );
-      expect(coordinatorSerializedConversation).toContain(preRestoreCodexToAutoReplyToken);
-      expect(coordinatorSerializedConversation).toContain(postRestoreCodexToAutoReplyToken);
-
-      const specialistProjectionAfterRestore = await waitForProjectionTokens({
-        teamRunId,
-        memberRouteKey: specialistAfterRestore.memberRouteKey,
-        requiredTokens: [preRestoreAutoToCodexReplyToken, postRestoreAutoToCodexReplyToken],
+      await waitForInterAgentDeliveryTurn({
+        messages: secondConnection.messages,
+        startIndex: autoToCodexAfterRestoreStartIndex,
+        senderMemberName: "coordinator",
+        recipientMemberName: "specialist",
+        content: `Reply with exactly ${postRestoreAutoToCodexReplyToken} and nothing else.`,
       });
-      const specialistSerializedConversation = JSON.stringify(
-        specialistProjectionAfterRestore.conversation,
+      await waitForMessageAfter(
+        secondConnection.messages,
+        autoToCodexAfterRestoreStartIndex,
+        (message) =>
+          assistantTextMatches(
+            message,
+            "specialist",
+            postRestoreAutoToCodexReplyToken,
+          ),
+        "specialist reply after restore",
       );
-      expect(specialistSerializedConversation).toContain(preRestoreAutoToCodexReplyToken);
-      expect(specialistSerializedConversation).toContain(postRestoreAutoToCodexReplyToken);
-    },
-    420_000,
-  );
+
+      const codexToAutoAfterRestoreStartIndex =
+        secondConnection.messages.length;
+      sendTeamMessageOverSocket(secondConnection.socket, {
+        targetMemberRouteKey: "specialist",
+        content: codexToAutoInstruction(
+          postRestoreCodexToAutoReplyToken,
+          "mixed_c2a_after_restore",
+        ),
+      });
+      await waitForInterAgentDeliveryTurn({
+        messages: secondConnection.messages,
+        startIndex: codexToAutoAfterRestoreStartIndex,
+        senderMemberName: "specialist",
+        recipientMemberName: "coordinator",
+        content: `Reply with exactly ${postRestoreCodexToAutoReplyToken} and nothing else.`,
+      });
+      await waitForMessageAfter(
+        secondConnection.messages,
+        codexToAutoAfterRestoreStartIndex,
+        (message) =>
+          assistantTextMatches(
+            message,
+            "coordinator",
+            postRestoreCodexToAutoReplyToken,
+          ),
+        "coordinator reply after restore",
+      );
+    } finally {
+      await closeSocket(secondConnection.socket);
+    }
+
+    const secondTerminateResult = await execGraphql<{
+      terminateAgentTeamRun: { success: boolean; message: string };
+    }>(terminateMutation, { teamRunId });
+    expect(secondTerminateResult.terminateAgentTeamRun.success).toBe(true);
+
+    const storedAfterRestore = await fetchResumeMetadata(teamRunId);
+    const coordinatorAfterRestore = findMemberBinding(
+      storedAfterRestore,
+      "coordinator",
+    );
+    const specialistAfterRestore = findMemberBinding(
+      storedAfterRestore,
+      "specialist",
+    );
+    expect(coordinatorAfterRestore.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(specialistAfterRestore.runtimeKind).toBe(
+      RuntimeKind.CODEX_APP_SERVER,
+    );
+    expect(coordinatorAfterRestore.llmModelIdentifier).toBe(
+      autoByteusModelIdentifier,
+    );
+    expect(specialistAfterRestore.llmModelIdentifier).toBe(
+      codexModelIdentifier,
+    );
+    expect(coordinatorAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
+    expect(specialistAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
+    expect(coordinatorAfterRestore.memberRouteKey).toBe(
+      coordinatorBeforeRestore.memberRouteKey,
+    );
+    expect(specialistAfterRestore.memberRouteKey).toBe(
+      specialistBeforeRestore.memberRouteKey,
+    );
+    expect(specialistAfterRestore.platformAgentRunId).toBe(
+      specialistBeforeRestore.platformAgentRunId,
+    );
+
+    const coordinatorProjectionAfterRestore = await waitForProjectionTokens({
+      teamRunId,
+      memberRouteKey: coordinatorAfterRestore.memberRouteKey,
+      requiredTokens: [
+        preRestoreCodexToAutoReplyToken,
+        postRestoreCodexToAutoReplyToken,
+      ],
+    });
+    const coordinatorSerializedConversation = JSON.stringify(
+      coordinatorProjectionAfterRestore.conversation,
+    );
+    expect(coordinatorSerializedConversation).toContain(
+      preRestoreCodexToAutoReplyToken,
+    );
+    expect(coordinatorSerializedConversation).toContain(
+      postRestoreCodexToAutoReplyToken,
+    );
+
+    const specialistProjectionAfterRestore = await waitForProjectionTokens({
+      teamRunId,
+      memberRouteKey: specialistAfterRestore.memberRouteKey,
+      requiredTokens: [
+        preRestoreAutoToCodexReplyToken,
+        postRestoreAutoToCodexReplyToken,
+      ],
+    });
+    const specialistSerializedConversation = JSON.stringify(
+      specialistProjectionAfterRestore.conversation,
+    );
+    expect(specialistSerializedConversation).toContain(
+      preRestoreAutoToCodexReplyToken,
+    );
+    expect(specialistSerializedConversation).toContain(
+      postRestoreAutoToCodexReplyToken,
+    );
+  }, 420_000);
 });

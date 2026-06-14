@@ -1,0 +1,295 @@
+diff --git a/autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts b/autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+index 10887241..9c5cda53 100644
+--- a/autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
++++ b/autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+@@ -213,10 +213,16 @@ export class AgentMemoryLocationService {
+ }
+
+ let cachedAgentMemoryLocationService: AgentMemoryLocationService | null = null;
++let cachedAgentMemoryLocationServiceMemoryDir: string | null = null;
+
+ export const getAgentMemoryLocationService = (): AgentMemoryLocationService => {
+-  if (!cachedAgentMemoryLocationService) {
+-    cachedAgentMemoryLocationService = new AgentMemoryLocationService();
++  const memoryDir = appConfigProvider.config.getMemoryDir();
++  if (
++    !cachedAgentMemoryLocationService ||
++    cachedAgentMemoryLocationServiceMemoryDir !== memoryDir
++  ) {
++    cachedAgentMemoryLocationService = new AgentMemoryLocationService({ memoryDir });
++    cachedAgentMemoryLocationServiceMemoryDir = memoryDir;
+   }
+   return cachedAgentMemoryLocationService;
+ };
+diff --git a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+index a63aebb5..26e8628b 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+@@ -4,6 +4,8 @@ import type { AgentRun } from "../../../../agent-execution/domain/agent-run.js";
+ import { isAgentRunEvent } from "../../../../agent-execution/domain/agent-run-event.js";
+ import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+ import { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
++import type { AgentMemoryScope } from "../../../../agent-memory/domain/agent-memory-location.js";
++import { getAgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+ import type { TeamRunContext } from "../../../domain/team-run-context.js";
+ import type {
+   InterAgentMessageDeliveryIntent,
+@@ -258,7 +260,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
+       llmModelIdentifier: this.options.config.llmModelIdentifier,
+       autoExecuteTools: this.options.config.autoExecuteTools,
+       workspaceId: this.options.config.workspaceId,
+-      memoryDir: this.options.config.memoryDir ?? null,
++      memoryDir: this.resolveMemberMemoryDir(),
+       llmConfig: this.options.config.llmConfig,
+       skillAccessMode: this.options.config.skillAccessMode,
+       runtimeKind: this.options.config.runtimeKind,
+@@ -268,6 +270,42 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
+     });
+   }
+
++  private resolveMemberMemoryDir(): string {
++    const configuredMemoryDir = this.options.config.memoryDir?.trim();
++    if (configuredMemoryDir) {
++      return configuredMemoryDir;
++    }
++    const memoryLocationService = getAgentMemoryLocationService();
++    const scope = this.resolveMemoryScope();
++
++    if (this.options.taskAgentInstance) {
++      const logicalLocation = memoryLocationService.getTeamAgentRunLocation({
++        rootTeamRunId: scope.rootTeamRunId,
++        teamRunPath: scope.teamRunPath,
++        agentRunId: this.options.taskAgentInstance.logicalMember.templateMemberRunId,
++      });
++      return memoryLocationService.getTaskAgentLocation({
++        logicalMemberLocation: logicalLocation,
++        taskAgentRunId: this.context.memberRunId,
++        logicalMemberRunId: this.options.taskAgentInstance.logicalMember.templateMemberRunId,
++        logicalMemberRouteKey: this.options.taskAgentInstance.logicalMember.memberRouteKey,
++      }).memoryDir;
++    }
++
++    return memoryLocationService.getTeamAgentRunLocation({
++      rootTeamRunId: scope.rootTeamRunId,
++      teamRunPath: scope.teamRunPath,
++      agentRunId: this.context.memberRunId,
++    }).memoryDir;
++  }
++
++  private resolveMemoryScope(): AgentMemoryScope {
++    const parentScope = this.options.teamContext.runtimeContext.parentBoundary?.memoryScope;
++    return parentScope
++      ? { rootTeamRunId: parentScope.rootTeamRunId, teamRunPath: [...parentScope.teamRunPath] }
++      : { rootTeamRunId: this.options.teamContext.runId, teamRunPath: [] };
++  }
++
+   private buildMemberTeamContextInputs(): MemberTeamContextMemberInput[] {
+     return this.options.teamContext.runtimeContext.memberContexts.map((member) => {
+       const memberConfig = this.findMemberConfig(member.memberRouteKey);
+diff --git a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+index 647c818b..349b52d4 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+@@ -3,6 +3,7 @@ import {
+   AgentMemoryLocationService,
+   getAgentMemoryLocationService,
+ } from "../../../agent-memory/services/agent-memory-location-service.js";
++import { appConfigProvider } from "../../../config/app-config-provider.js";
+ import {
+   TeamRunConfig,
+   type TeamRunMemberConfig,
+@@ -206,10 +207,13 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
+ }
+
+ let cachedMixedTeamRunBackendFactory: MixedTeamRunBackendFactory | null = null;
++let cachedMixedTeamRunBackendFactoryMemoryDir: string | null = null;
+
+ export const getMixedTeamRunBackendFactory = (): MixedTeamRunBackendFactory => {
+-  if (!cachedMixedTeamRunBackendFactory) {
++  const memoryDir = appConfigProvider.config.getMemoryDir();
++  if (!cachedMixedTeamRunBackendFactory || cachedMixedTeamRunBackendFactoryMemoryDir !== memoryDir) {
+     cachedMixedTeamRunBackendFactory = new MixedTeamRunBackendFactory();
++    cachedMixedTeamRunBackendFactoryMemoryDir = memoryDir;
+   }
+   return cachedMixedTeamRunBackendFactory;
+ };
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+index 79f87e91..f1db2221 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+@@ -22,6 +22,7 @@ import {
+   getRunFileChangeService,
+ } from "../../services/run-file-changes/run-file-change-service.js";
+ import { getTaskDelegationRunRegistry } from "../task-delegation/task-delegation-run-registry.js";
++import { appConfigProvider } from "../../config/app-config-provider.js";
+
+ const logger = {
+   info: (...args: unknown[]) => console.info(...args),
+@@ -45,6 +46,7 @@ type AgentTeamRunManagerOptions = {
+
+ export class AgentTeamRunManager {
+   private static instance: AgentTeamRunManager | null = null;
++  private static instanceMemoryDir: string | null = null;
+   private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+   private readonly teamCommunicationService: TeamCommunicationService;
+   private readonly runFileChangeService: RunFileChangeService;
+@@ -53,8 +55,10 @@ export class AgentTeamRunManager {
+   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
+
+   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
+-    if (!AgentTeamRunManager.instance) {
++    const memoryDir = appConfigProvider.config.getMemoryDir();
++    if (!AgentTeamRunManager.instance || AgentTeamRunManager.instanceMemoryDir !== memoryDir) {
+       AgentTeamRunManager.instance = new AgentTeamRunManager(options);
++      AgentTeamRunManager.instanceMemoryDir = memoryDir;
+     }
+     return AgentTeamRunManager.instance;
+   }
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts b/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+index 5b8b7031..079e87f9 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+@@ -491,10 +491,13 @@ export class TeamRunService {
+ }
+
+ let cachedTeamRunService: TeamRunService | null = null;
++let cachedTeamRunServiceMemoryDir: string | null = null;
+
+ export const getTeamRunService = (): TeamRunService => {
+-  if (!cachedTeamRunService) {
++  const memoryDir = appConfigProvider.config.getMemoryDir();
++  if (!cachedTeamRunService || cachedTeamRunServiceMemoryDir !== memoryDir) {
+     cachedTeamRunService = new TeamRunService();
++    cachedTeamRunServiceMemoryDir = memoryDir;
+   }
+   return cachedTeamRunService;
+ };
+diff --git a/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts b/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
+index 776ce380..4662fac2 100644
+--- a/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
++++ b/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
+@@ -191,12 +191,13 @@ const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>
+   "";
+
+ let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
++let cachedTeamRunHistoryServiceMemoryDir: string | null = null;
+
+ export const getTeamRunHistoryService = (): TeamRunHistoryService => {
+-  if (!cachedTeamRunHistoryService) {
+-    cachedTeamRunHistoryService = new TeamRunHistoryService(
+-      appConfigProvider.config.getMemoryDir(),
+-    );
++  const memoryDir = appConfigProvider.config.getMemoryDir();
++  if (!cachedTeamRunHistoryService || cachedTeamRunHistoryServiceMemoryDir !== memoryDir) {
++    cachedTeamRunHistoryService = new TeamRunHistoryService(memoryDir);
++    cachedTeamRunHistoryServiceMemoryDir = memoryDir;
+   }
+   return cachedTeamRunHistoryService;
+ };
+diff --git a/autobyteus-server-ts/src/run-history/services/team-run-metadata-service.ts b/autobyteus-server-ts/src/run-history/services/team-run-metadata-service.ts
+index 57eab238..ac810f98 100644
+--- a/autobyteus-server-ts/src/run-history/services/team-run-metadata-service.ts
++++ b/autobyteus-server-ts/src/run-history/services/team-run-metadata-service.ts
+@@ -29,12 +29,13 @@ export class TeamRunMetadataService {
+ }
+
+ let cachedTeamRunMetadataService: TeamRunMetadataService | null = null;
++let cachedTeamRunMetadataServiceMemoryDir: string | null = null;
+
+ export const getTeamRunMetadataService = (): TeamRunMetadataService => {
+-  if (!cachedTeamRunMetadataService) {
+-    cachedTeamRunMetadataService = new TeamRunMetadataService(
+-      appConfigProvider.config.getMemoryDir(),
+-    );
++  const memoryDir = appConfigProvider.config.getMemoryDir();
++  if (!cachedTeamRunMetadataService || cachedTeamRunMetadataServiceMemoryDir !== memoryDir) {
++    cachedTeamRunMetadataService = new TeamRunMetadataService(memoryDir);
++    cachedTeamRunMetadataServiceMemoryDir = memoryDir;
+   }
+   return cachedTeamRunMetadataService;
+ };
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+index a54ae932..09a16ec7 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+@@ -12,6 +12,80 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+
+ describe("MixedTeamMemberRegistry task-agent memory", () => {
++  it("starts logical team members with a team-scoped memoryDir when config memoryDir is missing", async () => {
++    const createdConfigs: unknown[] = [];
++    const createAgentRun = vi.fn(async (config, runId) => {
++      createdConfigs.push(config);
++      return {
++        runId,
++        config,
++        isActive: () => true,
++        getPlatformAgentRunId: () => null,
++        getStatusSnapshot: () => ({ status: "idle", can_interrupt: true }),
++        subscribeToEvents: () => () => undefined,
++        postUserMessage: async () => ({ accepted: true }),
++        approveToolInvocation: async () => ({ accepted: true }),
++        interrupt: async () => ({ accepted: true }),
++        terminate: async () => ({ accepted: true }),
++      };
++    });
++    const logicalMember = new MixedAgentMemberContext({
++      memberName: "worker",
++      memberPath: ["worker"],
++      memberRouteKey: "worker",
++      memberRunId: "worker-template-run",
++      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
++      platformAgentRunId: null,
++    });
++    const teamContext = new TeamRunContext({
++      runId: "owning-team-run",
++      teamBackendKind: TeamBackendKind.MIXED,
++      coordinatorMemberName: "worker",
++      coordinatorMemberRouteKey: "worker",
++      config: new TeamRunConfig({
++        teamDefinitionId: "team-def",
++        teamBackendKind: TeamBackendKind.MIXED,
++        memberConfigs: [{
++          memberName: "worker",
++          memberRouteKey: "worker",
++          memberRunId: "worker-template-run",
++          agentDefinitionId: "agent-worker",
++          llmModelIdentifier: "model-1",
++          autoExecuteTools: false,
++          skillAccessMode: SkillAccessMode.NONE,
++          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
++          memoryDir: null,
++        }],
++      }),
++      runtimeContext: new MixedTeamRunContext({
++        coordinatorMemberRouteKey: "worker",
++        memberContexts: [logicalMember],
++      }),
++    });
++    const registry = new MixedTeamMemberRegistry({
++      teamContext,
++      subTeamRunFactory: {} as never,
++      agentRunManager: { createAgentRun } as never,
++      publish: vi.fn(),
++      notifyStatusChange: vi.fn(),
++      deliverInterAgentMessage: vi.fn(),
++    });
++
++    const result = await registry
++      .getOrCreate(logicalMember)
++      .postMessage(new AgentInputUserMessage("start member", SenderType.USER));
++
++    expect(result).toMatchObject({ accepted: true });
++    expect(createAgentRun).toHaveBeenCalledWith(
++      expect.objectContaining({
++        memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
++          .getTeamAgentRunDirPath({ rootTeamRunId: "owning-team-run", teamRunPath: [] }, "worker-template-run"),
++      }),
++      "worker-template-run",
++    );
++    expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).toBeTruthy();
++  });
++
+   it("starts task agents with their own memoryDir under the logical member team path", async () => {
+     const createdConfigs: unknown[] = [];
+     const createAgentRun = vi.fn(async (config, runId) => {

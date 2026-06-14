@@ -25,6 +25,8 @@ import type { AgentDefinitionService } from "../../../../../../src/agent-definit
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
 import type { CodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+import type { AgentToolMcpSessionService } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
@@ -100,6 +102,16 @@ const createSkill = (name: string) =>
     rootPath: path.join("/tmp", name),
   });
 
+const createAgentToolMcpDescriptor = (): AgentToolMcpDescriptor => ({
+  name: "autobyteus_agent_tools",
+  transport: "streamable_http",
+  serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
+  headers: {
+    Authorization: "Bearer unit-test-agent-tools-token",
+  },
+  enabledTools: ["send_message_to"],
+});
+
 const createMaterializerMock = () => ({
   materializeConfiguredCodexWorkspaceSkills: vi.fn(async (input: {
     workingDirectory: string;
@@ -117,6 +129,7 @@ const createBootstrapper = (input: {
   skills: Skill[];
   requestImplementation: () => Promise<unknown>;
   toolNames?: string[];
+  agentToolsDescriptor?: AgentToolMcpDescriptor;
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   const workspaceResolver = {
@@ -140,6 +153,15 @@ const createBootstrapper = (input: {
     acquireClient: vi.fn(async () => client),
     releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
+  const agentToolMcpSessionService = {
+    createAgentToolMcpSession: vi.fn(() => ({
+      session: {
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+      descriptor: input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(),
+      redactedDescriptor: null,
+    })),
+  } as unknown as AgentToolMcpSessionService;
   const teamStrategy = {
     appliesTo: () => false,
     prepare: async () => {
@@ -154,6 +176,7 @@ const createBootstrapper = (input: {
     new DefaultCodexThreadBootstrapStrategy(),
     teamStrategy,
     clientManager,
+    agentToolMcpSessionService,
   );
 
   return {
@@ -161,6 +184,7 @@ const createBootstrapper = (input: {
     workspaceSkillMaterializer,
     client,
     clientManager,
+    agentToolMcpSessionService,
   };
 };
 
@@ -401,21 +425,80 @@ describe("CodexThreadBootstrapper", () => {
     expect(noBridgeRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
 
-  it("exposes standalone send_message_to when the agent config allows it", async () => {
-    const { bootstrapper } = createBootstrapper({
+  it("materializes standalone send_message_to through Agent Tools MCP thread config", async () => {
+    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
       skills: [],
       toolNames: ["send_message_to"],
       requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
-    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
-    expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["send_message_to"]);
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
+          http_headers: {
+            Authorization: "Bearer unit-test-agent-tools-token",
+          },
+          enabled_tools: ["send_message_to"],
+          startup_timeout_sec: 5,
+        },
+      },
+    });
+    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: { runId: "run-1" },
+        sender: expect.objectContaining({
+          senderRunId: "run-1",
+          senderName: "agent-def",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          memberTeamContext: null,
+        }),
+      }),
+    );
   });
 
-  it("exposes configured browser dynamic tools and standalone send_message_to when allowed", async () => {
+  it("recreates Agent Tools MCP thread config on restore instead of reusing persisted descriptors", async () => {
+    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
+      skills: [],
+      toolNames: ["send_message_to"],
+      agentToolsDescriptor: {
+        ...createAgentToolMcpDescriptor(),
+        serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-restored",
+      },
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext());
+
+    expect(runContext.runtimeContext.threadId).toBe("thread-existing");
+    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledTimes(1);
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          url: "http://127.0.0.1:3000/mcp/agent-tools/session-restored",
+          enabled_tools: ["send_message_to"],
+        },
+      },
+    });
+  });
+
+  it("does not create an Agent Tools MCP session when send_message_to is not configured", async () => {
+    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
+      skills: [],
+      toolNames: ["open_tab"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
+    expect(agentToolMcpSessionService.createAgentToolMcpSession).not.toHaveBeenCalled();
+  });
+
+  it("exposes configured browser dynamic tools and Agent Tools MCP send_message_to when allowed", async () => {
     process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
     process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
 
@@ -429,7 +512,15 @@ describe("CodexThreadBootstrapper", () => {
     const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
     expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["send_message_to", "open_tab", "read_page"]);
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
+          enabled_tools: ["send_message_to"],
+        },
+      },
+    });
   });
 
   it("exposes publish_artifacts as a Codex dynamic tool only when the agent config allows it", async () => {

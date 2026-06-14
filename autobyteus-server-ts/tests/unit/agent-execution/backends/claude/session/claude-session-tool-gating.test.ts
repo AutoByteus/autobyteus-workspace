@@ -99,11 +99,25 @@ const createMemberTeamContext = (input: {
   });
 
 const createSession = (configuredToolNames: string[] = [], input: {
-  memberTeamContext?: MemberTeamContext;
+  memberTeamContext?: MemberTeamContext | null;
 } = {}) => {
   const startQueryTurn = vi.fn(async () => createResultQuery());
   const closeQuery = vi.fn();
-  const memberTeamContext = input.memberTeamContext ?? createMemberTeamContext();
+  const memberTeamContext = input.memberTeamContext === undefined
+    ? createMemberTeamContext()
+    : input.memberTeamContext;
+  const createAgentToolMcpSession = vi.fn(() => ({
+    session: {
+      expiresAt: new Date(Date.now() + 60_000),
+    },
+    descriptor: {
+      name: "autobyteus_agent_tools",
+      transport: "streamable_http",
+      serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-gating",
+      headers: { Authorization: "Bearer fake-token" },
+      enabledTools: ["send_message_to"],
+    },
+  }));
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -146,6 +160,9 @@ const createSession = (configuredToolNames: string[] = [], input: {
         requestToolApprovalDecision: vi.fn(),
         clearPendingToolApprovals: vi.fn(),
       } as any,
+      agentToolMcpSessionService: {
+        createAgentToolMcpSession,
+      } as any,
       isRunSessionActive: () => true,
       terminateRunSession: vi.fn(async () => undefined),
     },
@@ -154,6 +171,7 @@ const createSession = (configuredToolNames: string[] = [], input: {
   return {
     session,
     startQueryTurn,
+    createAgentToolMcpSession,
   };
 };
 
@@ -164,7 +182,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("does not enable send_message_to or browser tools that are missing from agent toolNames", async () => {
-    const { session, startQueryTurn } = createSession(["read_page"]);
+    const { session, startQueryTurn, createAgentToolMcpSession } = createSession(["read_page"]);
 
     await (session as any).executeTurn({
       turnId: "turn-1",
@@ -187,6 +205,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         allowedTools: ["read_page", "mcp__autobyteus_browser__read_page"],
       }),
     );
+    expect(createAgentToolMcpSession).not.toHaveBeenCalled();
   });
 
   it("enables send_message_to and only the configured browser tools when toolNames explicitly allow them", async () => {
@@ -216,7 +235,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",
-          "mcp__autobyteus_team__send_message_to",
+          "mcp__autobyteus_agent_tools__send_message_to",
           "open_tab",
           "read_page",
           "mcp__autobyteus_browser__open_tab",
@@ -253,8 +272,119 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         ),
         allowedTools: [
           "send_message_to",
-          "mcp__autobyteus_team__send_message_to",
+          "mcp__autobyteus_agent_tools__send_message_to",
         ],
+      }),
+    );
+  });
+
+  it("creates an Agent Tools MCP session with member sender context when send_message_to is configured", async () => {
+    const memberTeamContext = createMemberTeamContext();
+    const { session, createAgentToolMcpSession } = createSession(["send_message_to"], {
+      memberTeamContext,
+    });
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(createAgentToolMcpSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: {
+          runId: "run-1",
+          teamRunId: "team-1",
+          memberRunId: "run-1",
+          memberRouteKey: "professor",
+          memberName: "Professor",
+        },
+        sender: expect.objectContaining({
+          senderRunId: "run-1",
+          senderName: "Professor",
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          memberTeamContext,
+        }),
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      }),
+    );
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentToolsMcpDescriptor: expect.objectContaining({
+          name: "autobyteus_agent_tools",
+          headers: { Authorization: "Bearer fake-token" },
+        }),
+      }),
+    );
+  });
+
+  it("creates an Agent Tools MCP session with standalone sender context when no team context exists", async () => {
+    const { session, createAgentToolMcpSession } = createSession(["send_message_to"], {
+      memberTeamContext: null,
+    });
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(createAgentToolMcpSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: { runId: "run-1" },
+        sender: expect.objectContaining({
+          senderRunId: "run-1",
+          senderName: "agent-1",
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          memberTeamContext: null,
+        }),
+      }),
+    );
+  });
+
+  it("refreshes the live Agent Tools MCP descriptor before a configured turn when it expires", async () => {
+    const { session, createAgentToolMcpSession } = createSession(["send_message_to"]);
+    createAgentToolMcpSession
+      .mockImplementationOnce(() => ({
+        session: { expiresAt: new Date(Date.now() - 1) },
+        descriptor: {
+          name: "autobyteus_agent_tools",
+          transport: "streamable_http",
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/expired",
+          headers: { Authorization: "Bearer expired" },
+          enabledTools: ["send_message_to"],
+        },
+      }))
+      .mockImplementationOnce(() => ({
+        session: { expiresAt: new Date(Date.now() + 60_000) },
+        descriptor: {
+          name: "autobyteus_agent_tools",
+          transport: "streamable_http",
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/fresh",
+          headers: { Authorization: "Bearer fresh" },
+          enabledTools: ["send_message_to"],
+        },
+      }));
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+    await (session as any).executeTurn({
+      turnId: "turn-2",
+      content: new AgentInputUserMessage("again").content,
+      abortController: new AbortController(),
+    });
+
+    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(2);
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        agentToolsMcpDescriptor: expect.objectContaining({
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/fresh",
+          headers: { Authorization: "Bearer fresh" },
+        }),
       }),
     );
   });

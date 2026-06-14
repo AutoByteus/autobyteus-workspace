@@ -330,7 +330,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("team dynamic ok"));
     const { thread, client } = createThread(true, {
       dynamicToolHandlers: {
-        send_message_to: handler,
+        publish_artifacts: handler,
       },
       memberTeamContext: createMemberTeamContext(),
     });
@@ -361,10 +361,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-team-dynamic-1",
-      tool: "send_message_to",
+      tool: "publish_artifacts",
       arguments: {
-        recipient_name: "pong",
-        content: "ready",
+        artifacts: [{ path: "handoff.md" }],
       },
     });
 
@@ -424,7 +423,7 @@ describe("CodexThread Codex approval surfaces", () => {
     const handler = vi.fn(async () => createCodexDynamicToolTextResult("dynamic ok"));
     const { thread, client } = createThread(false, {
       dynamicToolHandlers: {
-        send_message_to: handler,
+        publish_artifacts: handler,
       },
     });
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
@@ -436,10 +435,9 @@ describe("CodexThread Codex approval surfaces", () => {
       threadId: "thread-1",
       turnId: "turn-1",
       callId: "call-dynamic-1",
-      tool: "send_message_to",
+      tool: "publish_artifacts",
       arguments: {
-        recipient_name: "code_reviewer",
-        content: "ready",
+        artifacts: [{ path: "review.md" }],
       },
     });
 
@@ -449,10 +447,9 @@ describe("CodexThread Codex approval surfaces", () => {
       expect.objectContaining({
         responseMode: "dynamic_tool_call",
         invocationId: "call-dynamic-1",
-        toolName: "send_message_to",
+        toolName: "publish_artifacts",
         arguments: {
-          recipient_name: "code_reviewer",
-          content: "ready",
+          artifacts: [{ path: "review.md" }],
         },
       }),
     );
@@ -461,10 +458,9 @@ describe("CodexThread Codex approval surfaces", () => {
         method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
         params: expect.objectContaining({
           invocation_id: "call-dynamic-1",
-          tool_name: "send_message_to",
+          tool_name: "publish_artifacts",
           arguments: {
-            recipient_name: "code_reviewer",
-            content: "ready",
+            artifacts: [{ path: "review.md" }],
           },
         }),
       }),
@@ -479,7 +475,7 @@ describe("CodexThread Codex approval surfaces", () => {
         threadId: "thread-1",
         turnId: "turn-1",
         callId: "call-dynamic-1",
-        toolName: "send_message_to",
+        toolName: "publish_artifacts",
       }),
     );
     expect(client.respondSuccess).toHaveBeenCalledWith(401, {

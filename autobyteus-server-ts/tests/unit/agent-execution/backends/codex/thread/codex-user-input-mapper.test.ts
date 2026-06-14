@@ -3,24 +3,38 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 
-const { resolverResolveMock } = vi.hoisted(() => ({
-  resolverResolveMock: vi.fn<(uri: string) => string | null>(),
-}));
-
-vi.mock("../../../../../../src/context-files/services/context-file-local-path-resolver.js", () => ({
-  ContextFileLocalPathResolver: vi.fn(
+const { ContextFileLocalPathResolverMock, resolverResolveMock } = vi.hoisted(() => {
+  const resolverResolveMock = vi.fn<(uri: string) => string | null>();
+  const ContextFileLocalPathResolverMock = vi.fn(
     function ContextFileLocalPathResolverMock(this: { resolve: typeof resolverResolveMock }) {
       this.resolve = resolverResolveMock;
     },
-  ),
+  );
+  return { ContextFileLocalPathResolverMock, resolverResolveMock };
+});
+
+vi.mock("../../../../../../src/context-files/services/context-file-local-path-resolver.js", () => ({
+  ContextFileLocalPathResolver: ContextFileLocalPathResolverMock,
 }));
 
 import { toCodexUserInput } from "../../../../../../src/agent-execution/backends/codex/thread/codex-user-input-mapper.js";
 
+const contextFileResolverConstructorCallsAfterImport =
+  ContextFileLocalPathResolverMock.mock.calls.length;
+
 describe("toCodexUserInput", () => {
   beforeEach(() => {
+    ContextFileLocalPathResolverMock.mockClear();
     resolverResolveMock.mockReset();
     resolverResolveMock.mockReturnValue(null);
+  });
+
+  it("defers context-file resolver construction until input conversion", () => {
+    expect(contextFileResolverConstructorCallsAfterImport).toBe(0);
+
+    toCodexUserInput(new AgentInputUserMessage("Review"));
+
+    expect(ContextFileLocalPathResolverMock).toHaveBeenCalledTimes(1);
   });
 
   it("emits both localImage input and Reference files text for an image context file", () => {

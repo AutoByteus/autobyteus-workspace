@@ -11,7 +11,6 @@ import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
-import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
 import type { ClaudeSessionConfig } from "./claude-session-config.js";
 import { buildClaudeTurnInput } from "./claude-turn-input-builder.js";
 import {
@@ -27,8 +26,12 @@ import {
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
-import type { ClaudeSdkClient, ClaudeSdkQueryLike } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
+import {
+  getAgentToolMcpSessionService,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
+import type { ClaudeSessionDependencies, ClaudeSessionStateInput } from "./claude-session-state-input.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 
@@ -38,24 +41,6 @@ const formatClaudeRuntimeError = (error: unknown): string =>
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
-
-export type ClaudeSessionDependencies = {
-  sessionMessageCache: ClaudeSessionMessageCache;
-  sdkClient: ClaudeSdkClient;
-  activeQueriesByRunId: Map<string, ClaudeSdkQueryLike>;
-  toolingCoordinator: ClaudeSessionToolUseCoordinator;
-  contextFileLocalPathResolver?: ContextFilePathResolverLike;
-  isRunSessionActive: () => boolean;
-  terminateRunSession: () => Promise<void>;
-};
-
-type ClaudeSessionStateInput = {
-  runContext: ClaudeRunContext;
-  dependencies: ClaudeSessionDependencies;
-  listeners?: Set<(event: ClaudeSessionEvent) => void>;
-  activeAbortController?: AbortController | null;
-  activeTurnId?: string | null;
-};
 
 export class ClaudeSession {
   readonly runContext: ClaudeRunContext;
@@ -67,6 +52,7 @@ export class ClaudeSession {
   private isInterruptingActiveTurn = false;
   private rawClaudeChunkSequence = 0;
   private readonly contextFileLocalPathResolver: ContextFilePathResolverLike;
+  private readonly agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
 
   constructor(input: ClaudeSessionStateInput) {
     this.runContext = input.runContext;
@@ -78,6 +64,9 @@ export class ClaudeSession {
     this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
     this.contextFileLocalPathResolver =
       input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
+    this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
+      input.dependencies.agentToolMcpSessionService ?? getAgentToolMcpSessionService(),
+    );
   }
 
   get runId(): string {
@@ -422,8 +411,12 @@ export class ClaudeSession {
       sendMessageToEnabled: toolingOptions.sendMessageToToolingEnabled,
       taskDelegationEnabled: toolingOptions.taskDelegationToolingEnabled,
     });
+    const agentToolsMcpDescriptor = toolingOptions.sendMessageToToolingEnabled
+      ? this.agentToolsMcpSessionState.ensureDescriptor(this.runContext)
+      : null;
     const mcpServers = await buildClaudeSessionMcpServerConfig({
       sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
+      agentToolsMcpDescriptor,
       taskDelegationToolingEnabled: toolingOptions.taskDelegationToolingEnabled,
       enabledTaskDelegationToolNames: toolingOptions.enabledTaskDelegationToolNames,
       enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
@@ -431,8 +424,6 @@ export class ClaudeSession {
       publishArtifactsToolingEnabled: toolingOptions.publishArtifactsToolingEnabled,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,
-      toolingCoordinator: this.dependencies.toolingCoordinator,
-      emitRuntimeEvent: (event) => this.emitRuntimeEvent(event),
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,

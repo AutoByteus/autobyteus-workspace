@@ -27,23 +27,23 @@ describe("codex-configured-tool-gating", () => {
     const registrations = [
       createRegistration("open_tab"),
       createRegistration("read_page"),
-      createRegistration("send_message_to"),
+      createRegistration("publish_artifacts"),
     ];
 
     const filtered = filterDynamicToolRegistrationsByToolNames(
       registrations,
-      new Set(["open_tab", "send_message_to"]),
+      new Set(["open_tab", "publish_artifacts"]),
     );
 
     expect(filtered).toHaveLength(2);
     expect(filtered?.map((registration) => registration.spec.name)).toEqual([
       "open_tab",
-      "send_message_to",
+      "publish_artifacts",
     ]);
   });
 
   it("returns no dynamic registrations when the agent configured no matching tools", () => {
-    const registrations = [createRegistration("send_message_to")];
+    const registrations = [createRegistration("publish_artifacts")];
 
     expect(
       filterDynamicToolRegistrationsByToolNames(registrations, new Set(["open_tab"])),

@@ -1,3 +1,4 @@
+import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
 import type { TeamRunMetadata } from "../store/team-run-metadata-types.js";
@@ -29,12 +30,16 @@ export class TeamRunMetadataService {
 }
 
 let cachedTeamRunMetadataService: TeamRunMetadataService | null = null;
+let cachedTeamRunMetadataMemoryDir: string | null = null;
 
 export const getTeamRunMetadataService = (): TeamRunMetadataService => {
-  if (!cachedTeamRunMetadataService) {
-    cachedTeamRunMetadataService = new TeamRunMetadataService(
-      appConfigProvider.config.getMemoryDir(),
-    );
+  const memoryDir = path.resolve(appConfigProvider.config.getMemoryDir());
+  if (
+    !cachedTeamRunMetadataService ||
+    cachedTeamRunMetadataMemoryDir !== memoryDir
+  ) {
+    cachedTeamRunMetadataService = new TeamRunMetadataService(memoryDir);
+    cachedTeamRunMetadataMemoryDir = memoryDir;
   }
   return cachedTeamRunMetadataService;
 };

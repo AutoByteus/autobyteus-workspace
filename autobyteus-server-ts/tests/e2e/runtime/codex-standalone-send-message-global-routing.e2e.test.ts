@@ -5,13 +5,18 @@ import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import fastify from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -72,6 +77,20 @@ const waitForSocketOpen = (
       reject(error);
     });
   });
+
+const closeSocket = async (socket: WebSocket): Promise<void> => {
+  if (socket.readyState === WebSocket.CLOSED) {
+    return;
+  }
+  await new Promise<void>((resolve) => {
+    const timer = setTimeout(resolve, 2_000);
+    socket.once("close", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.close();
+  });
+};
 
 const waitForMessageAfter = async (
   messages: WsMessage[],
@@ -193,9 +212,14 @@ describeCodexStandaloneDirect(
     let schema: GraphQLSchema;
     let graphql: typeof graphqlFn;
     let testDataDir: string | null = null;
+    let runtimeServerApp: FastifyInstance | null = null;
+    let runtimeServerUrl: URL;
+    let originalInternalServerBaseUrl: string | undefined;
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
+      originalInternalServerBaseUrl =
+        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
       testDataDir = await mkdtemp(
         path.join(os.tmpdir(), "codex-standalone-send-message-e2e-"),
       );
@@ -213,10 +237,34 @@ describeCodexStandaloneDirect(
       });
       const graphqlModule = await import(graphqlPath);
       graphql = graphqlModule.graphql as typeof graphqlFn;
+
+      runtimeServerApp = fastify();
+      await registerAgentToolsMcpRoutes(runtimeServerApp);
+      await runtimeServerApp.register(websocket);
+      await registerAgentWebsocket(runtimeServerApp);
+      const address = await runtimeServerApp.listen({
+        port: 0,
+        host: "127.0.0.1",
+      });
+      seedInternalServerBaseUrlFromListenAddress({
+        requestedHost: "127.0.0.1",
+        listenAddress: runtimeServerApp.server.address(),
+      });
+      runtimeServerUrl = new URL(address);
     });
 
     afterAll(async () => {
       await getCodexAppServerClientManager().close();
+      if (originalInternalServerBaseUrl) {
+        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
+          originalInternalServerBaseUrl;
+      } else {
+        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+      }
+      if (runtimeServerApp) {
+        await runtimeServerApp.close();
+        runtimeServerApp = null;
+      }
       for (const workspaceRoot of createdWorkspaceRoots) {
         await rm(workspaceRoot, { recursive: true, force: true });
       }
@@ -368,15 +416,10 @@ describeCodexStandaloneDirect(
     const openAgentSocket = async (
       runId: string,
     ): Promise<{
-      app: Awaited<ReturnType<typeof fastify>>;
       socket: WebSocket;
       messages: WsMessage[];
     }> => {
-      const app = fastify();
-      await app.register(websocket);
-      await registerAgentWebsocket(app);
-      const address = await app.listen({ port: 0, host: "127.0.0.1" });
-      const url = new URL(address);
+      const url = runtimeServerUrl;
       const socket = new WebSocket(
         `ws://${url.hostname}:${url.port}/ws/agent/${runId}`,
       );
@@ -395,7 +438,7 @@ describeCodexStandaloneDirect(
         "CONNECTED",
         15_000,
       );
-      return { app, socket, messages };
+      return { socket, messages };
     };
 
     it("delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination", async () => {
@@ -567,10 +610,8 @@ describeCodexStandaloneDirect(
           `Exact AgentRun target '${targetRunId}' is not active.`,
         );
       } finally {
-        senderConnection.socket.close();
-        targetConnection.socket.close();
-        await senderConnection.app.close().catch(() => undefined);
-        await targetConnection.app.close().catch(() => undefined);
+        await closeSocket(senderConnection.socket);
+        await closeSocket(targetConnection.socket);
         await terminateAgentRun(senderRunId).catch(() => undefined);
         if (!targetTerminated) {
           await terminateAgentRun(targetRunId).catch(() => undefined);

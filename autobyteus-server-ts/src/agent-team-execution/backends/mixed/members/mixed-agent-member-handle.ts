@@ -16,6 +16,7 @@ import {
   type TeamRunMemberInputEventPayload,
 } from "../../../domain/team-run-event.js";
 import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
@@ -238,6 +239,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   private async buildMemberRunConfig(): Promise<AgentRunConfig> {
+    this.assertRecordableMemberMemoryDir();
     const memberTeamContext = await (this.options.memberTeamContextBuilder ?? getMemberTeamContextBuilder()).build({
       teamRunId: this.options.teamContext.runId,
       teamDefinitionId: this.options.teamContext.config?.teamDefinitionId ?? "",
@@ -266,6 +268,20 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
       selfEvolution: this.options.config.selfEvolutionEffective ?? this.options.config.selfEvolution ?? null,
     });
+  }
+
+  private assertRecordableMemberMemoryDir(): void {
+    if (this.options.config.runtimeKind === RuntimeKind.AUTOBYTEUS) {
+      return;
+    }
+    if (typeof this.options.config.memoryDir === "string" && this.options.config.memoryDir.trim().length > 0) {
+      return;
+    }
+    throw new Error(
+      `Executable mixed-team member '${this.context.memberRouteKey}' (${this.context.memberRunId}) ` +
+        "is missing memoryDir before AgentRun creation. " +
+        "The mixed-team runtime owner must materialize member memoryDir upstream.",
+    );
   }
 
   private buildMemberTeamContextInputs(): MemberTeamContextMemberInput[] {

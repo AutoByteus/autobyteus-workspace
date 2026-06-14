@@ -1,6 +1,9 @@
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
-import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
+import {
+  CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME,
+  CLAUDE_SEND_MESSAGE_TOOL_NAME,
+} from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
 const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
 const CLAUDE_MEDIA_MCP_TOOL_PREFIX = "mcp__autobyteus_image_audio__";
@@ -71,7 +74,7 @@ const resolveAllowedToolNames = (input: {
   const allowedTools = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
     allowedTools.add(CLAUDE_SEND_MESSAGE_TOOL_NAME);
-    allowedTools.add(CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME);
+    allowedTools.add(CLAUDE_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME);
   }
   if (input.hasMaterializedSkills) {
     allowedTools.add("Skill");

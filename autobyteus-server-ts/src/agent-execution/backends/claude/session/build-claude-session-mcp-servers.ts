@@ -1,7 +1,7 @@
+import { materializeClaudeAgentToolsMcpServers } from "../agent-tools-mcp/claude-agent-tools-mcp-materializer.js";
 import { buildClaudeTeamMcpServers } from "../team-communication/claude-team-mcp-server-builder.js";
 import type { ClaudeSdkClient } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
-import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
-import type { ClaudeSendMessageToolApprovalHandler } from "../agent-communication/claude-send-message-tool-call-handler.js";
+import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { buildClaudeBrowserMcpServers } from "../browser/build-claude-browser-mcp-servers.js";
 import { buildClaudeMediaMcpServer } from "../media/build-claude-media-mcp-server.js";
@@ -29,6 +29,7 @@ const mergeMcpServerMaps = (
 
 export const buildClaudeSessionMcpServers = async (options: {
   sendMessageToToolingEnabled: boolean;
+  agentToolsMcpDescriptor?: AgentToolMcpDescriptor | null;
   taskDelegationToolingEnabled?: boolean;
   enabledTaskDelegationToolNames?: Iterable<string> | null;
   enabledBrowserToolNames?: Iterable<string> | null;
@@ -36,23 +37,26 @@ export const buildClaudeSessionMcpServers = async (options: {
   publishArtifactsToolingEnabled: boolean;
   runContext: ClaudeRunContext;
   sdkClient: ClaudeSdkClient;
-  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
-  emitEvent: (runContext: ClaudeRunContext, event: ClaudeSessionEvent) => void;
 }): Promise<Record<string, unknown> | null> => {
-  const teamToolingEnabled =
-    options.sendMessageToToolingEnabled || options.taskDelegationToolingEnabled === true;
-  const teamMcpServers = teamToolingEnabled
+  if (options.sendMessageToToolingEnabled && !options.agentToolsMcpDescriptor) {
+    throw new Error(
+      "CLAUDE_AGENT_TOOLS_MCP_DESCRIPTOR_MISSING: send_message_to tooling requires an Agent Tools MCP descriptor.",
+    );
+  }
+
+  const agentToolsMcpServers = options.agentToolsMcpDescriptor
+    ? materializeClaudeAgentToolsMcpServers(options.agentToolsMcpDescriptor)
+    : null;
+
+  const teamMcpServers = options.taskDelegationToolingEnabled === true
     ? await buildClaudeTeamMcpServers({
         runContext: options.runContext,
         sdkClient: options.sdkClient,
-        requestToolApproval: options.requestToolApproval,
-        emitEvent: options.emitEvent,
-        sendMessageToToolingEnabled: options.sendMessageToToolingEnabled,
         enabledTaskDelegationToolNames: options.enabledTaskDelegationToolNames,
       })
     : null;
 
-  if (teamToolingEnabled && !teamMcpServers) {
+  if (options.taskDelegationToolingEnabled === true && !teamMcpServers) {
     throw new Error(
       "CLAUDE_QUERY_MCP_UNAVAILABLE: Unable to build team MCP server configuration.",
     );
@@ -79,5 +83,11 @@ export const buildClaudeSessionMcpServers = async (options: {
       })
     : null;
 
-  return mergeMcpServerMaps(teamMcpServers, browserMcpServers, mediaMcpServer, publishedArtifactMcpServer);
+  return mergeMcpServerMaps(
+    agentToolsMcpServers,
+    teamMcpServers,
+    browserMcpServers,
+    mediaMcpServer,
+    publishedArtifactMcpServer,
+  );
 };
