@@ -90,7 +90,7 @@ Release requested by user after verification. Release version `1.3.55` was prepa
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `scripts/desktop-release.sh release 1.3.55 --release-notes tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` after repository finalization.
-- Release/publication/deployment result: `Completed` for source/tag publication trigger — release commit `fdf84782` (`chore(release): bump workspace release version to 1.3.55`) and annotated tag `v1.3.55` were pushed; GitHub release workflows were queued/started from the tag.
+- Release/publication/deployment result: `Completed` for source/tag publication trigger and desktop/mobile/messaging workflows observed successful; release commit `fdf84782` and annotated tag `v1.3.55` were pushed. Server Docker workflow `27550483881` was still in progress at last check.
 - Release notes handoff result: `Used` — `tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` was copied to `.github/release-notes/release-notes.md` by the release script.
 - Blocker (if applicable): None; release/deployment is simply out of scope unless requested after verification.
 
@@ -146,12 +146,12 @@ Repository finalization and release publication trigger are complete after user 
 
 ## Release Workflow Trigger Evidence
 
-GitHub Actions runs observed for pushed tag `v1.3.55` / commit `fdf84782` via `gh run list --commit fdf84782694410fa2c5cf4a381ad75744b954898 --limit 10`:
+GitHub Actions runs observed for pushed tag `v1.3.55` / commit `fdf84782` via `gh run list --commit fdf84782694410fa2c5cf4a381ad75744b954898 --limit 10`. After polling until 2026-06-15 16:05 CEST:
 
-- Desktop Release — run `27550483845` — `in_progress` at observation time.
-- Android APK Release — run `27550483659` — `in_progress` at observation time.
-- iOS App Store Connect Release — run `27550483664` — `in_progress` at observation time.
-- Server Docker Release — run `27550483881` — `queued` at observation time.
-- Release Messaging Gateway — run `27550484575` — `queued` at observation time.
+- Desktop Release — run `27550483845` — `completed/success` (17m9s).
+- Android APK Release — run `27550483659` — `completed/success` (3m25s).
+- iOS App Store Connect Release — run `27550483664` — `completed/success` (9m12s).
+- Release Messaging Gateway — run `27550484575` — `completed/success` (2m33s).
+- Server Docker Release — run `27550483881` — still `in_progress` at ~23m.
 
-These workflows are asynchronous; follow-up release asset verification should inspect those runs and the resulting GitHub Release assets once the workflows complete.
+The version tag and desktop/mobile/messaging release workflows succeeded or were running as noted above. Server Docker publication is asynchronous and should be checked separately if Docker image availability is required immediately.

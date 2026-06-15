@@ -130,8 +130,8 @@ User verification has been received. The ticket was moved to `tickets/done/incom
 ## Release Workflow Trigger Evidence
 
 - `gh run list --commit fdf84782694410fa2c5cf4a381ad75744b954898 --limit 10` showed the tag-triggered workflows started/queued for `v1.3.55`:
-  - Desktop Release: `27550483845` (`in_progress` at observation time)
-  - Android APK Release: `27550483659` (`in_progress` at observation time)
-  - iOS App Store Connect Release: `27550483664` (`in_progress` at observation time)
-  - Server Docker Release: `27550483881` (`queued` at observation time)
-  - Release Messaging Gateway: `27550484575` (`queued` at observation time)
+  - Desktop Release: `27550483845` (`completed/success`)
+  - Android APK Release: `27550483659` (`completed/success`)
+  - iOS App Store Connect Release: `27550483664` (`completed/success`)
+  - Release Messaging Gateway: `27550484575` (`completed/success`)
+  - Server Docker Release: `27550483881` (`in_progress` at ~23m when last checked)
