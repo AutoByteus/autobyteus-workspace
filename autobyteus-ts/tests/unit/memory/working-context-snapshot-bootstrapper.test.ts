@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
+import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
 import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import {
@@ -18,6 +18,7 @@ import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-c
 const makeMemoryManager = (store: unknown = {}) => ({
   store,
   resetWorkingContextSnapshot: vi.fn(),
+  ensureWorkingContextToolProtocolSafeForNextLlm: vi.fn(),
   retriever: { retrieve: vi.fn(() => new MemoryBundle()) },
   listRawTracesOrdered: vi.fn(() => []),
   compactionPolicy: { maxItemChars: 200 },
@@ -49,7 +50,74 @@ describe('WorkingContextSnapshotBootstrapper', () => {
 
     expect((schemaGate.ensureCurrentSchema as any).mock.invocationCallOrder[0]).toBeLessThan((snapshotStore.read as any).mock.invocationCallOrder[0]);
     expect(memoryManager.resetWorkingContextSnapshot).toHaveBeenCalledTimes(1);
+    expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledWith({
+      recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+    });
     expect(memoryManager.retriever.retrieve).not.toHaveBeenCalled();
+  });
+
+  it('repairs a schema-valid cached snapshot with missing native tool results during bootstrap', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'working-context-bootstrap-tool-repair-'));
+    try {
+      const agentId = 'agent_cached_tool_repair';
+      const store = new FileMemoryStore(tempDir, agentId);
+      const snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
+      store.add([
+        new RawTraceItem({
+          id: 'rt_cached_call',
+          ts: 1,
+          turnId: 'turn_cached',
+          seq: 1,
+          traceType: 'tool_call',
+          content: '',
+          sourceEvent: 'PendingToolInvocationEvent',
+          toolName: 'generate_image',
+          toolCallId: 'call_cached',
+          toolArgs: { prompt: 'page two' }
+        })
+      ]);
+      const cached = new WorkingContextSnapshot();
+      cached.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
+      cached.appendMessage(new Message(MessageRole.ASSISTANT, {
+        content: 'Generating page two.',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_cached', name: 'generate_image', arguments: { prompt: 'page two' } }
+        ])
+      }));
+      cached.appendMessage(new Message(MessageRole.USER, { content: 'please continue' }));
+      snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(cached, {
+        schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
+        agent_id: agentId,
+      }));
+
+      const manager = new MemoryManager({ store, workingContextSnapshotStore: snapshotStore });
+      new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+        manager,
+        'System',
+        new WorkingContextSnapshotBootstrapOptions()
+      );
+
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.map((message) => message.role)).toEqual([
+        MessageRole.SYSTEM,
+        MessageRole.ASSISTANT,
+        MessageRole.TOOL,
+        MessageRole.USER,
+      ]);
+      expect((messages[2].tool_payload as ToolResultPayload).toolCallId).toBe('call_cached');
+      expect((messages[2].tool_payload as ToolResultPayload).toolResult).toContain(
+        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+      );
+      const persisted = snapshotStore.read(agentId);
+      expect(JSON.stringify(persisted)).toContain('call_cached');
+      expect(manager.listRawTracesOrdered().some((trace) =>
+        trace.traceType === 'operation_boundary' &&
+        trace.sourceEvent === 'WorkingContextSnapshotBootstrapper' &&
+        trace.toolCallId === 'call_cached'
+      )).toBe(true);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 
   it('rebuilds through natural recovery projection when the snapshot schema is stale', () => {
@@ -97,6 +165,9 @@ describe('WorkingContextSnapshotBootstrapper', () => {
     expect(memoryManager.resetWorkingContextSnapshot).toHaveBeenCalledWith(
       snapshotRebuilder.rebuild.mock.results[0].value
     );
+    expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledWith({
+      recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+    });
   });
 
   it('rebuilds without reading the cache when schema reset invalidated the snapshot', () => {
@@ -129,6 +200,9 @@ describe('WorkingContextSnapshotBootstrapper', () => {
     expect(memoryManager.resetWorkingContextSnapshot).toHaveBeenCalledWith(
       snapshotRebuilder.rebuild.mock.results[0].value
     );
+    expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledWith({
+      recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+    });
   });
 
   it('starts clean after schema reset when no canonical rebuild inputs remain', () => {
@@ -151,6 +225,9 @@ describe('WorkingContextSnapshotBootstrapper', () => {
       expect.objectContaining({ role: MessageRole.SYSTEM, content: 'System' })
     ]);
     expect(memoryManager.retriever.retrieve).toHaveBeenCalledTimes(1);
+    expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledWith({
+      recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+    });
     expect(snapshotStore.read).not.toHaveBeenCalled();
   });
 

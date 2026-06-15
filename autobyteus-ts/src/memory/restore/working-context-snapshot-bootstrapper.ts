@@ -56,6 +56,9 @@ export class WorkingContextSnapshotBootstrapper {
       if (payload && WorkingContextSnapshotSerializer.validate(payload)) {
         const { snapshot } = WorkingContextSnapshotSerializer.deserialize(payload);
         memoryManager.resetWorkingContextSnapshot(snapshot.buildMessages());
+        memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+          recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+        });
         return;
       }
     }
@@ -69,6 +72,9 @@ export class WorkingContextSnapshotBootstrapper {
       retainedMessages: recoveredMessages,
     });
     memoryManager.resetWorkingContextSnapshot(snapshotMessages);
+    memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+      recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
+    });
   }
 
   private resolveSnapshotStore(memoryManager: MemoryManager): WorkingContextSnapshotStore | null {

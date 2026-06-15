@@ -308,7 +308,63 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('appends operation-boundary notes and projects working context without restoring accepted user input', async () => {
+  it('ensures crash-recovered incomplete tool calls get one synthetic result and one recovery marker', () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_crash_recovery_marker');
+      const manager = new MemoryManager({ store });
+      store.add([
+        new RawTraceItem({
+          id: 'rt_missing_tool_call',
+          ts: 1,
+          turnId: 'turn_crash',
+          seq: 1,
+          traceType: 'tool_call',
+          content: '',
+          sourceEvent: 'PendingToolInvocationEvent',
+          toolName: 'generate_image',
+          toolCallId: 'call_crash',
+          toolArgs: { prompt: 'page two' }
+        })
+      ]);
+      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
+        content: 'Generating page two.',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_crash', name: 'generate_image', arguments: { prompt: 'page two' } }
+        ])
+      }));
+      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.USER, {
+        content: 'please continue there was a shutdown'
+      }));
+
+      const firstRepair = manager.ensureWorkingContextToolProtocolSafeForNextLlm();
+      const secondRepair = manager.ensureWorkingContextToolProtocolSafeForNextLlm();
+
+      expect(firstRepair.didRepair).toBe(true);
+      expect(secondRepair.didRepair).toBe(false);
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.map((message) => message.role)).toEqual([
+        MessageRole.ASSISTANT,
+        MessageRole.TOOL,
+        MessageRole.USER,
+      ]);
+      const syntheticResult = messages[1].tool_payload as ToolResultPayload;
+      expect(syntheticResult.toolCallId).toBe('call_crash');
+      expect(syntheticResult.toolResult).toContain(
+        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+      );
+      const recoveryMarkers = manager.listRawTracesOrdered().filter((item) =>
+        item.traceType === 'operation_boundary' &&
+        item.sourceEvent === 'WorkingContextToolProtocolRecovery' &&
+        item.toolCallId === 'call_crash'
+      );
+      expect(recoveryMarkers).toHaveLength(1);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('appends operation-boundary notes and closes interrupted tool calls with source-accurate synthetic results', async () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_projection');
@@ -344,8 +400,13 @@ describe('MemoryManager', () => {
         message.content.includes('interrupted request as cancelled') &&
         message.content.includes('Treat the next user message as the active instruction')
       )).toBe(true);
-      expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(false);
-      expect(messages.some((message) => message.tool_payload instanceof ToolResultPayload)).toBe(false);
+      expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(true);
+      const syntheticResult = messages.find(
+        (message) => message.tool_payload instanceof ToolResultPayload
+      )?.tool_payload as ToolResultPayload | undefined;
+      expect(syntheticResult?.toolCallId).toBe('inv-interrupt');
+      expect(syntheticResult?.toolResult).toContain('Tool execution was interrupted before a result was recorded.');
+      expect(syntheticResult?.toolResult).not.toContain('runtime shutdown');
 
       const rawItems = manager.listRawTracesOrdered();
       expect(rawItems.some((item) => item.traceType === 'user' && item.content === 'interrupted user input')).toBe(true);
@@ -353,6 +414,11 @@ describe('MemoryManager', () => {
         item.traceType === 'operation_boundary' &&
         item.sourceEvent === 'AgentTurnInterruptedEvent' &&
         item.content.includes('user_interrupt')
+      )).toBe(true);
+      expect(rawItems.some((item) =>
+        item.traceType === 'operation_boundary' &&
+        item.sourceEvent === 'AgentTurnInterruptedToolProtocolRecovery' &&
+        item.toolCallId === 'inv-interrupt'
       )).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -388,7 +454,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('projects partial native tool batches as safe text while retaining completed result facts', async () => {
+  it('repairs partial native tool batches as native results while retaining completed facts', async () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_partial_tools');
@@ -416,26 +482,27 @@ describe('MemoryManager', () => {
       });
 
       const messages = manager.getWorkingContextMessages();
-      expect(messages.some((message) => message.tool_payload)).toBe(false);
-      expect(messages.some((message) =>
-        typeof message.content === 'string' &&
-        message.content.includes('Interrupted tool request was cancelled and fenced') &&
-        message.content.includes('historical only') &&
-        message.content.includes('safe_tool') &&
-        message.content.includes('slow_tool')
-      )).toBe(true);
-      expect(messages.some((message) =>
-        typeof message.content === 'string' &&
-        message.content.includes('Completed tool results before interruption') &&
-        message.content.includes('safe_tool') &&
-        message.content.includes('SAFE_FACT')
-      )).toBe(true);
+      expect(messages[0]?.tool_payload).toBeInstanceOf(ToolCallPayload);
+      expect(messages[1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect(messages[2]?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect((messages[1].tool_payload as ToolResultPayload).toolCallId).toBe('call_A');
+      expect((messages[1].tool_payload as ToolResultPayload).toolResult).toBe('SAFE_FACT');
+      expect((messages[2].tool_payload as ToolResultPayload).toolCallId).toBe('call_B');
+      expect((messages[2].tool_payload as ToolResultPayload).toolResult).toContain(
+        'Tool execution was interrupted before a result was recorded.'
+      );
       expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
       expect(messages.at(-1)?.role).toBe(MessageRole.SYSTEM);
-      expect(manager.listRawTracesOrdered().some((item) =>
+      const rawItems = manager.listRawTracesOrdered();
+      expect(rawItems.some((item) =>
         item.traceType === 'tool_result' &&
         item.toolCallId === 'call_A' &&
         item.toolResult === 'SAFE_FACT'
+      )).toBe(true);
+      expect(rawItems.some((item) =>
+        item.traceType === 'operation_boundary' &&
+        item.sourceEvent === 'AgentTurnInterruptedToolProtocolRecovery' &&
+        item.toolCallId === 'call_B'
       )).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

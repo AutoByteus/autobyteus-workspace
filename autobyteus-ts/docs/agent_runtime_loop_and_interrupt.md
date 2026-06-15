@@ -283,15 +283,21 @@ context:
 4. `AgentTurnRunner` appends an `operation_boundary` raw trace noting that the
    turn was interrupted before normal completion;
 5. `MemoryManager.projectWorkingContextForNextLlm({ mode: 'llm_safe', fenceIncompleteToolProtocolScope, includeCommittedFacts: true })`
-   rebuilds the next prompt through `projectLlmSafeWorkingContext(...)`.
+   runs the memory-owned tool-protocol safety boundary, persists any repaired
+   working-context snapshot, and appends the interruption operation-boundary
+   note for the next prompt.
 
-The LLM-safe projector can keep complete native tool call/result sequences as
-structured history. Unsafe partial native tool-call protocol is removed from
-future provider prompts. Completed results from an interrupted partial batch are
-preserved as assistant-text facts, followed by the operation-boundary note.
-Follow-up turns therefore keep accepted user input, interrupted assistant
-partial output, and completed facts without replaying malformed or incomplete
-tool-call protocol.
+Memory, not provider renderers, owns native tool-call protocol repair before the
+next LLM request. Complete assistant tool-call/result groups remain structured
+history. If an assistant native tool-call message is missing one or more
+matching tool-result messages, the safety boundary inserts immediate result
+messages for those missing calls: first from committed raw `tool_result` facts
+when available, otherwise as synthetic interrupted/unknown results. Synthetic
+repairs also get idempotent raw `operation_boundary` recovery markers so future
+inspection can see that an abandoned call was not assumed successful. Follow-up
+turns therefore keep accepted user input, interrupted assistant partial output,
+completed facts, and provider-safe tool-call adjacency without retrying or
+executing abandoned tool calls implicitly.
 
 `TurnToolInputPort` rejects late approvals and external tool results after a
 turn is interrupted or completed. Direct tool execution results remain
