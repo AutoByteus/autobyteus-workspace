@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Pre-finalization delivery handoff for `incomplete-tool-call-resume-recovery` after code review, API/E2E coverage, post-API/E2E coverage-code re-review, latest `origin/personal` refresh, delivery docs sync, focused delivery verification, and README-guided local macOS ARM64 Electron build verification. No release, publication, version bump, tag, or deployment is currently in scope before explicit user verification.
+Final delivery, repository finalization, and release-trigger report for `incomplete-tool-call-resume-recovery` after code review, API/E2E coverage, post-API/E2E coverage-code re-review, latest `origin/personal` refresh, delivery docs sync, focused delivery verification, README-guided local macOS ARM64 Electron build verification, user verification, merge to `personal`, and requested `1.3.55` release tag publication.
 
 ## Handoff Summary
 
@@ -81,7 +81,7 @@ Release requested by user after verification. Release version `1.3.55` was prepa
 - Re-integration before final merge result: `Not needed` — target did not advance after verification; `personal` was already at `aae7027e` before merge.
 - Target branch update result: `Completed` — local `personal` was refreshed from `origin/personal` before merge.
 - Merge into target result: `Completed` — merge commit `8f22da18` (`merge: incomplete tool-call resume recovery`).
-- Push target branch result: `Completed` — `origin/personal` advanced to `ee86be80` after ticket merge, release commit, and final report updates.
+- Push target branch result: `Completed` — `origin/personal` advanced to `48665006` after ticket merge, release commit, final report updates, and release-trigger evidence updates.
 - Repository finalization status: `Completed`
 - Blocker (if applicable): None currently; final merge/release steps are in progress.
 
