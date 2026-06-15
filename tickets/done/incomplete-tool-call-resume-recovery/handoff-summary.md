@@ -125,4 +125,13 @@ Please verify the integrated handoff state. After explicit user confirmation tha
 - Release commit: `fdf84782` (`chore(release): bump workspace release version to 1.3.55`).
 - Release tag: annotated tag `v1.3.55` points to release commit `fdf84782`.
 - Release notes copied to `.github/release-notes/release-notes.md`; `autobyteus-web` and `autobyteus-message-gateway` versions are `1.3.55`; managed messaging release manifest top release is `v1.3.55`.
-- The final push of `personal` and tag `v1.3.55` publishes the release trigger.
+- Final push completed: `origin/personal` is `ee86be80`; tag `v1.3.55` was pushed and points to release commit `fdf84782`.
+
+## Release Workflow Trigger Evidence
+
+- `gh run list --commit fdf84782694410fa2c5cf4a381ad75744b954898 --limit 10` showed the tag-triggered workflows started/queued for `v1.3.55`:
+  - Desktop Release: `27550483845` (`in_progress` at observation time)
+  - Android APK Release: `27550483659` (`in_progress` at observation time)
+  - iOS App Store Connect Release: `27550483664` (`in_progress` at observation time)
+  - Server Docker Release: `27550483881` (`queued` at observation time)
+  - Release Messaging Gateway: `27550484575` (`queued` at observation time)

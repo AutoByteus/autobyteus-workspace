@@ -81,7 +81,7 @@ Release requested by user after verification. Release version `1.3.55` was prepa
 - Re-integration before final merge result: `Not needed` — target did not advance after verification; `personal` was already at `aae7027e` before merge.
 - Target branch update result: `Completed` — local `personal` was refreshed from `origin/personal` before merge.
 - Merge into target result: `Completed` — merge commit `8f22da18` (`merge: incomplete tool-call resume recovery`).
-- Push target branch result: `Completed` for ticket merge; release/report updates pending final push at this checkpoint.
+- Push target branch result: `Completed` — `origin/personal` advanced to `ee86be80` after ticket merge, release commit, and final report updates.
 - Repository finalization status: `Completed`
 - Blocker (if applicable): None currently; final merge/release steps are in progress.
 
@@ -90,7 +90,7 @@ Release requested by user after verification. Release version `1.3.55` was prepa
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `scripts/desktop-release.sh release 1.3.55 --release-notes tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` after repository finalization.
-- Release/publication/deployment result: `Completed` for source/tag publication trigger — local release commit `fdf84782` (`chore(release): bump workspace release version to 1.3.55`) and annotated tag `v1.3.55` were created; pushing the tag triggers the documented GitHub release workflows.
+- Release/publication/deployment result: `Completed` for source/tag publication trigger — release commit `fdf84782` (`chore(release): bump workspace release version to 1.3.55`) and annotated tag `v1.3.55` were pushed; GitHub release workflows were queued/started from the tag.
 - Release notes handoff result: `Used` — `tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` was copied to `.github/release-notes/release-notes.md` by the release script.
 - Blocker (if applicable): None; release/deployment is simply out of scope unless requested after verification.
 
@@ -141,4 +141,17 @@ Before finalization, rollback is to keep the branch unmerged and discard/revise 
 
 ## Final Status
 
-Repository finalization and release preparation are complete after user verification. The ticket branch was committed/pushed, merged into `personal`, release `1.3.55` was prepared with the documented desktop release helper, and the final branch/tag push is the remaining publication step for this report commit.
+Repository finalization and release publication trigger are complete after user verification. The ticket branch was committed/pushed, merged into `personal`, release `1.3.55` was prepared with the documented desktop release helper, `origin/personal` was pushed, and tag `v1.3.55` was pushed to start the release workflows.
+
+
+## Release Workflow Trigger Evidence
+
+GitHub Actions runs observed for pushed tag `v1.3.55` / commit `fdf84782` via `gh run list --commit fdf84782694410fa2c5cf4a381ad75744b954898 --limit 10`:
+
+- Desktop Release — run `27550483845` — `in_progress` at observation time.
+- Android APK Release — run `27550483659` — `in_progress` at observation time.
+- iOS App Store Connect Release — run `27550483664` — `in_progress` at observation time.
+- Server Docker Release — run `27550483881` — `queued` at observation time.
+- Release Messaging Gateway — run `27550484575` — `queued` at observation time.
+
+These workflows are asynchronous; follow-up release asset verification should inspect those runs and the resulting GitHub Release assets once the workflows complete.
