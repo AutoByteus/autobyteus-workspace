@@ -15,7 +15,14 @@ import { WorkingContextSnapshot } from './working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
-import { projectLlmSafeWorkingContext } from './working-context-llm-safe-projector.js';
+import {
+  AGENT_INTERRUPTED_TOOL_RESULT_CONTENT,
+  type WorkingContextToolProtocolRepairResult,
+} from './working-context-tool-protocol-repairer.js';
+import {
+  ensureMemoryManagerWorkingContextToolProtocolSafe,
+  type MemoryManagerToolProtocolSafetyInput,
+} from './memory-manager-tool-protocol-safety.js';
 import { getMessageProvenance, setMessageProvenance, type MessageProvenance } from './message-provenance.js';
 import { buildToolIntentTraces, buildToolResultTraces } from './raw-trace-ingestion.js';
 
@@ -49,6 +56,8 @@ export type ProjectWorkingContextForNextLlmInput = {
   fenceIncompleteToolProtocolScope?: MemoryProjectionScope;
   includeCommittedFacts?: boolean;
 };
+
+export type EnsureWorkingContextToolProtocolSafeForNextLlmInput = MemoryManagerToolProtocolSafetyInput;
 
 export type OperationBoundaryNoteInput = {
   scope: MemoryProjectionScope;
@@ -397,6 +406,12 @@ export class MemoryManager {
     );
   }
 
+  ensureWorkingContextToolProtocolSafeForNextLlm(
+    input: EnsureWorkingContextToolProtocolSafeForNextLlmInput = {}
+  ): WorkingContextToolProtocolRepairResult {
+    return ensureMemoryManagerWorkingContextToolProtocolSafe(this, input);
+  }
+
   async projectWorkingContextForNextLlm(input: ProjectWorkingContextForNextLlmInput = {}): Promise<void> {
     const mode = input.mode ?? 'llm_safe';
     if (mode !== 'llm_safe') {
@@ -410,18 +425,21 @@ export class MemoryManager {
         )
       : null;
     const boundaryContent = fenceTurnId ? this.getOperationBoundaryNoteContent(fenceTurnId) : null;
-    const completedToolResults =
-      fenceTurnId && input.includeCommittedFacts !== false
-        ? this.getCompletedToolResultsForTurn(fenceTurnId)
-        : [];
+    this.ensureWorkingContextToolProtocolSafeForNextLlm({
+      scope: input.fenceIncompleteToolProtocolScope,
+      includeCommittedFacts: input.includeCommittedFacts,
+      syntheticInterruptedToolResultContent: fenceTurnId ? AGENT_INTERRUPTED_TOOL_RESULT_CONTENT : undefined,
+      recoverySourceEvent: fenceTurnId
+        ? 'AgentTurnInterruptedToolProtocolRecovery'
+        : 'WorkingContextToolProtocolRecovery',
+    });
 
-    const currentMessages = this.workingContextSnapshot.buildMessages();
-    const projectedMessages = projectLlmSafeWorkingContext(
-      currentMessages,
-      boundaryContent,
-      completedToolResults
-    );
-    this.resetWorkingContextSnapshot(projectedMessages, this.workingContextSnapshot.lastCompactionTs);
+    if (boundaryContent && !this.getWorkingContextMessages().some((message) => message.content === boundaryContent)) {
+      this.appendWorkingContextMessage(
+        new Message(MessageRole.SYSTEM, { content: boundaryContent }),
+        { sourceKind: 'recovery', turnId: fenceTurnId }
+      );
+    }
   }
 
   listRawTracesOrdered(limit?: number): RawTraceItem[] {
@@ -522,22 +540,13 @@ export class MemoryManager {
 
   private getOperationBoundaryNoteContent(turnId: string): string | null {
     const marker = this.listRawTracesOrdered()
-      .filter((item) => item.turnId === turnId && item.traceType === OPERATION_BOUNDARY_TRACE_TYPE)
+      .filter((item) =>
+        item.turnId === turnId &&
+        item.traceType === OPERATION_BOUNDARY_TRACE_TYPE &&
+        item.sourceEvent === 'AgentTurnInterruptedEvent'
+      )
       .at(-1);
     return marker?.content ?? null;
-  }
-
-  private getCompletedToolResultsForTurn(turnId: string): ToolResultEvent[] {
-    return this.listRawTracesOrdered()
-      .filter((item) => item.turnId === turnId && item.traceType === 'tool_result')
-      .map((item) => new ToolResultEvent(
-        item.toolName ?? 'unknown_tool',
-        item.toolResult,
-        item.toolCallId ?? undefined,
-        item.toolError ?? undefined,
-        item.toolArgs ?? undefined,
-        turnId
-      ));
   }
 
 }

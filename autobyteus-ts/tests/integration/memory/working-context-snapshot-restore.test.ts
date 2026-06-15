@@ -25,7 +25,7 @@ describe('WorkingContextSnapshot restore integration', () => {
       snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
 
       const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
-        schema_version: 3,
+        schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
         agent_id: 'agent_cache'
       });
 
@@ -84,13 +84,12 @@ describe('WorkingContextSnapshot restore integration', () => {
       const messages = manager.getWorkingContextMessages();
       expect(messages[0].role).toBe(MessageRole.SYSTEM);
       expect(messages[1].role).toBe(MessageRole.USER);
-      expect(messages[1].content).toContain('[MEMORY:EPISODIC]');
-      expect(messages[1].content).toContain('[MEMORY:USER_PREFERENCES]');
+      expect(messages[1].content).toContain('Earlier progress:');
+      expect(messages[1].content).toContain('User preferences:');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
-
 
   it('clears stale semantic memory and starts clean when schema-reset leaves no canonical rebuild inputs', () => {
     const tempDir = makeTempDir();

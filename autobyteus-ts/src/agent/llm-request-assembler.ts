@@ -24,6 +24,9 @@ export class LLMRequestAssembler {
   ): Promise<RequestPackage> {
     const userMessage = this.buildUserMessage(processedUserInput);
     this.ensureSystemPrompt(systemPrompt ?? undefined);
+    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+      recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
+    });
 
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
@@ -33,6 +36,9 @@ export class LLMRequestAssembler {
       : false;
 
     this.memoryManager.appendWorkingContextUserMessage(userMessage, { turnId });
+    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+      recoverySourceEvent: 'LLMRequestAssembler.preRender',
+    });
     const finalMessages = this.memoryManager.getWorkingContextMessages();
     const renderedPayload = await this.renderPayload(finalMessages);
 
@@ -48,6 +54,9 @@ export class LLMRequestAssembler {
     systemPrompt?: string | null,
   ): Promise<RequestPackage> {
     this.ensureSystemPrompt(systemPrompt ?? undefined);
+    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+      recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
+    });
 
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
@@ -56,6 +65,9 @@ export class LLMRequestAssembler {
         })
       : false;
 
+    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+      recoverySourceEvent: 'LLMRequestAssembler.preRender',
+    });
     const finalMessages = this.memoryManager.getWorkingContextMessages();
     const renderedPayload = await this.renderPayload(finalMessages);
 

@@ -250,6 +250,29 @@ keeps the memory layer canonical and makes LLMs stateless executors.
 Memory now also ensures the system prompt exists in the working context snapshot
 so the provider call remains stateless.
 
+### Provider-Safe Native Tool Protocol Boundary
+
+The working context snapshot is also responsible for provider-native tool-call
+adjacency. Before any provider renderer sees the message list, `MemoryManager`
+enforces `ensureWorkingContextToolProtocolSafeForNextLlm(...)`:
+
+- completed assistant tool-call/result groups stay structured and unchanged;
+- missing result messages for assistant native tool calls are inserted
+  immediately after the assistant tool-call message, preserving the provider's
+  required adjacency shape;
+- if raw memory contains a completed result for a missing call, that result is
+  restored into the working context;
+- if no completed result exists, memory inserts a synthetic interrupted/unknown
+  tool result and records an idempotent raw `operation_boundary` recovery marker
+  so the abandoned call is auditable and not treated as successful.
+
+`WorkingContextSnapshotBootstrapper` runs this boundary after cached snapshot
+restore and after fallback rebuild, so a schema-valid but provider-invalid cache
+cannot poison a resumed run. `LLMRequestAssembler` also runs the same boundary
+before pending compaction and again immediately before rendering, so normal user
+turns and tool-continuation turns share the same memory-owned invariant. Prompt
+renderers remain provider adapters; they do not repair malformed history.
+
 ---
 
 ## 10. Compaction and Token Budget
@@ -428,6 +451,10 @@ Automated compaction still includes the current exact required final JSON shape 
   stale, the gate backfills the current manifest without forcing a reset.
 - Direct snapshot restore now happens only when the schema gate did not reset
   and the cached payload validates against schema `4`.
+- After either a direct cached restore or a fallback rebuild, bootstrap enforces
+  `MemoryManager.ensureWorkingContextToolProtocolSafeForNextLlm(...)` before the
+  runtime continues, repairing any incomplete native tool-call/result adjacency
+  and persisting the repaired snapshot.
 - Missing or stale payloads rebuild through `WorkingContextRecoveryProjector`
   plus `WorkingContextSnapshotRebuilder`: the projector turns the latest raw
   traces into natural recovery messages and the rebuilder prepends system prompt
@@ -691,10 +718,12 @@ src/memory/
 │   └── working-context-snapshot-rebuilder.ts
 ├── compaction-snapshot-builder.ts       # natural compacted-memory baseline for compatibility/bootstrap use
 ├── compaction-snapshot-recent-turn-formatter.ts
+├── memory-manager-tool-protocol-safety.ts
 ├── message-provenance.ts
 ├── raw-trace-ingestion.ts
 ├── tool-interaction-builder.ts
 ├── turn-tracker.ts
+├── working-context-tool-protocol-repairer.ts
 ├── working-context-snapshot.ts
 ├── working-context-snapshot-serializer.ts
 └── memory-manager.ts
@@ -709,14 +738,20 @@ src/agent/
 ### Responsibility Map
 
 - **MemoryManager**: receives events, persists user/tool/assistant traces,
-  appends canonical working-context messages, records provenance metadata, and
-  owns working-context snapshot reset/persistence.
+  appends canonical working-context messages, records provenance metadata, owns
+  working-context snapshot reset/persistence, and exposes the tool-protocol
+  safety boundary used before LLM dispatch.
+- **MemoryManagerToolProtocolSafety / WorkingContextToolProtocolRepairer**:
+  repair incomplete native assistant tool-call groups by inserting matching
+  tool-result messages from raw completed facts when available, or synthetic
+  interrupted/unknown results plus raw recovery markers when unavailable.
 - **LlmPhase**: evaluates post-response token usage, requests compaction, runs
   immediate no-tool compaction, and defers tool-call compaction until tool
   results are ingested.
-- **LLMRequestAssembler**: ensures system prompt presence, runs pending
-  compaction before provider dispatch, appends normal user input only for normal
-  user requests, and renders provider payloads.
+- **LLMRequestAssembler**: ensures system prompt presence, runs the
+  memory-owned tool-protocol safety boundary before pending compaction and again
+  before provider dispatch, appends normal user input only for normal user
+  requests, and renders provider payloads.
 - **PendingCompactionExecutor**: runs the working-context compaction sequence,
   resolves runtime settings/model selection, reports lifecycle status, and
   converts failures into a clean pre-dispatch error boundary.
@@ -736,8 +771,9 @@ src/agent/
   reset-on-mismatch behavior for persisted semantic memory, reset metadata
   writes, and cached-snapshot invalidation triggers.
 - **WorkingContextSnapshotBootstrapper / Serializer**: own gate-first startup
-  restore decisions, schema-4 cache validation, and natural recovery rebuild
-  fallback.
+  restore decisions, schema-4 cache validation, natural recovery rebuild
+  fallback, and invocation of the memory-owned tool-protocol safety boundary
+  before restored snapshots are used.
 - **WorkingContextRecoveryProjector**: projects recent raw traces into natural
   recovery messages only when no valid working-context snapshot exists.
 - **WorkingContextSnapshotRebuilder / CompactedMemoryMessageBuilder**: rebuild
@@ -1404,9 +1440,20 @@ without reintroducing direct-model compaction summarization.
   - Persists user/tool/assistant traces and `tool_continuation` boundaries
   - Appends provider-facing working-context messages with memory provenance
   - Owns direct working-context snapshot append/reset authority
+  - Exposes `ensureWorkingContextToolProtocolSafeForNextLlm(...)` for bootstrap,
+    interruption recovery, and request assembly
+
+- `src/memory/memory-manager-tool-protocol-safety.ts`
+  - Coordinates working-context tool-protocol repair against raw trace facts
+  - Persists repaired snapshots and idempotent synthetic recovery markers
+
+- `src/memory/working-context-tool-protocol-repairer.ts`
+  - Rewrites incomplete assistant native tool-call groups into provider-safe
+    assistant/tool-result adjacency while preserving completed groups
 
 - `src/agent/llm-request-assembler.ts`
   - Ensures the system prompt is present
+  - Runs tool-protocol safety before pending compaction and before rendering
   - Runs `PendingCompactionExecutor` before normal user or tool-continuation
     provider dispatch when compaction is pending
   - Appends the new user message for normal user input only
@@ -1428,6 +1475,7 @@ without reintroducing direct-model compaction summarization.
   - Uses valid cached snapshots when present
   - Rebuilds stale or missing caches through natural recovery projection plus
     compacted-memory snapshot rebuild
+  - Enforces memory-owned native tool-protocol safety after either restore path
 
 - `src/memory/restore/working-context-recovery-projector.ts`
   - Converts recent raw traces into natural recovery messages only for bootstrap
