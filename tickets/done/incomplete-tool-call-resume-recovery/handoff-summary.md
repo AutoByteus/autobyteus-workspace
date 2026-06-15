@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: User verified local Electron build and requested finalization plus new version release; repository finalization/release in progress.
+- Delivery state: User verified local Electron build; ticket finalized, merged to `personal`, and release `1.3.55` prepared.
 - Ticket branch: `codex/incomplete-tool-call-resume-recovery`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/incomplete-tool-call-resume-recovery`
 - Finalization target/base branch: `origin/personal` / local `personal` (from bootstrap context).
@@ -113,3 +113,16 @@ Please verify the integrated handoff state. After explicit user confirmation tha
 - User verification received on 2026-06-15: “its working. lets finalize and release a new version”.
 - Requested release version path: next desktop/workspace release `1.3.55` via `scripts/desktop-release.sh` after repository finalization.
 - Ticket will be archived to `/Users/normy/autobyteus_org/autobyteus-worktrees/incomplete-tool-call-resume-recovery/tickets/done/incomplete-tool-call-resume-recovery` before final commit.
+
+## Finalization And Release
+
+- User verification received on 2026-06-15: “its working. lets finalize and release a new version”.
+- Ticket branch finalization commit: `2a13b4b5` (`fix(memory): recover incomplete native tool-call resumes`).
+- Ticket branch push: completed to `origin/codex/incomplete-tool-call-resume-recovery`.
+- Target merge: `personal` merge commit `8f22da18` (`merge: incomplete tool-call resume recovery`) pushed to `origin/personal`.
+- Release version: `1.3.55`.
+- Release helper: `scripts/desktop-release.sh release 1.3.55 --release-notes tickets/done/incomplete-tool-call-resume-recovery/release-notes.md --branch release/incomplete-tool-call-1.3.55 --no-push`.
+- Release commit: `fdf84782` (`chore(release): bump workspace release version to 1.3.55`).
+- Release tag: annotated tag `v1.3.55` points to release commit `fdf84782`.
+- Release notes copied to `.github/release-notes/release-notes.md`; `autobyteus-web` and `autobyteus-message-gateway` versions are `1.3.55`; managed messaging release manifest top release is `v1.3.55`.
+- The final push of `personal` and tag `v1.3.55` publishes the release trigger.
