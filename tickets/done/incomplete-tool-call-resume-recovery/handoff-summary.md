@@ -135,3 +135,6 @@ User verification has been received. The ticket was moved to `tickets/done/incom
   - iOS App Store Connect Release: `27550483664` (`completed/success`)
   - Release Messaging Gateway: `27550484575` (`completed/success`)
   - Server Docker Release: `27550483881` (`in_progress` at ~23m when last checked)
+
+
+GitHub Release asset verification via `gh release view v1.3.55` showed release `v1.3.55` published, not draft, not prerelease, with 19 assets including macOS ARM64/x64 DMG+ZIP+blockmaps, Windows EXE, Linux AppImage, Android APK, updater metadata (`latest-mac.yml`, `latest-linux.yml`, `latest.yml`), messaging gateway tarball/checksum/manifest, and `release-manifest.json`.

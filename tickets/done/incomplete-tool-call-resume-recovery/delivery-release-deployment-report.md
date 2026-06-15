@@ -90,7 +90,7 @@ Release requested by user after verification. Release version `1.3.55` was prepa
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `scripts/desktop-release.sh release 1.3.55 --release-notes tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` after repository finalization.
-- Release/publication/deployment result: `Completed` for source/tag publication trigger and desktop/mobile/messaging workflows observed successful; release commit `fdf84782` and annotated tag `v1.3.55` were pushed. Server Docker workflow `27550483881` was still in progress at last check.
+- Release/publication/deployment result: `Completed` for source/tag publication trigger, GitHub Release asset publication, and desktop/mobile/messaging workflows observed successful; release commit `fdf84782` and annotated tag `v1.3.55` were pushed. Server Docker workflow `27550483881` was still in progress at last check.
 - Release notes handoff result: `Used` — `tickets/done/incomplete-tool-call-resume-recovery/release-notes.md` was copied to `.github/release-notes/release-notes.md` by the release script.
 - Blocker (if applicable): None; release/deployment is simply out of scope unless requested after verification.
 
@@ -155,3 +155,5 @@ GitHub Actions runs observed for pushed tag `v1.3.55` / commit `fdf84782` via `g
 - Server Docker Release — run `27550483881` — still `in_progress` at ~23m.
 
 The version tag and desktop/mobile/messaging release workflows succeeded or were running as noted above. Server Docker publication is asynchronous and should be checked separately if Docker image availability is required immediately.
+
+GitHub Release asset verification via `gh release view v1.3.55` showed release `v1.3.55` published, not draft, not prerelease, with 19 assets including macOS ARM64/x64 DMG+ZIP+blockmaps, Windows EXE, Linux AppImage, Android APK, updater metadata (`latest-mac.yml`, `latest-linux.yml`, `latest.yml`), messaging gateway tarball/checksum/manifest, and `release-manifest.json`.
