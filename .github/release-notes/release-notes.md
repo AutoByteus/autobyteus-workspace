@@ -1,27 +1,24 @@
-# Release Notes — Incomplete Tool-Call Resume Recovery
+# Release Notes — Streamable MCP Runtime Tools
 
 ## What Changed
 
-- Fixed resumed AutoByteus runs that could get permanently stuck after a shutdown during a native tool call.
-- Added a memory-owned safety boundary that repairs incomplete provider-native tool-call history before the next LLM request is rendered or sent.
-- Preserved completed native assistant tool-call/result pairs as structured history.
-- Restored committed raw tool results when a cached working-context snapshot is missing the immediate provider-visible result message.
-- Inserted synthetic interrupted/unknown tool results for abandoned calls when no real tool result exists, without claiming success or inventing output.
-- Recorded idempotent raw recovery markers so the original abandoned tool call remains auditable.
-- Removed the obsolete text-fencing-only working-context projector path.
+- Codex and Claude now use the server-hosted `autobyteus_agent_tools` Streamable HTTP MCP gateway for AutoByteus agent tools.
+- Unified browser, media, task-delegation, `send_message_to`, and `publish_artifacts` exposure through one run-scoped MCP route.
+- Added owner-lifetime MCP sessions with bearer-token descriptors that are revoked with their owning agent run or team member.
+- Normalized Agent Tools MCP activity so application events, run history, and memory use canonical tool names rather than provider wire names.
+- Added configured MCP-origin tool support for Codex and Claude through the same gateway, preserving registered tool names and MCP result fields.
+- Replaced older Codex dynamic-tool and Claude runtime-specific local MCP paths for these migrated tools.
 
 ## Validation
 
-- Latest `origin/personal` was refreshed before delivery; the ticket branch was already current with `aae7027ee1dfca2a509c16f72ff067de4090aa7b`.
-- Code review and post-API/E2E durable coverage-code re-review passed.
-- Targeted unit/integration/API-E2E suite passed: 10 files / 39 tests.
-- TypeScript package build passed: `pnpm --dir autobyteus-ts run build`.
-- Delivery reran the persisted restore/resume integration test successfully.
-- Local macOS ARM64 Electron build passed and produced `1.3.54` personal DMG/ZIP artifacts for verification.
-- `git diff --check` passed after delivery artifact updates.
+- Merged the finalized streamable MCP branch into `origin/personal`.
+- User tested the locally built macOS Electron app from `personal` and confirmed it is working.
+- Solution designer verified the current `personal` branch contains the intended streamable/server-hosted MCP implementation.
+- Targeted MCP/runtime tests passed on `personal`.
+- Local macOS ARM64 Electron build from `personal` passed and produced `AutoByteus_personal_macos-arm64-1.3.55` artifacts for user testing.
 
 ## Notes
 
-- No data migration command is required; existing poisoned cached snapshots are repaired when restored or before the next provider render path.
-- The synthetic recovery result intentionally says completion status is unknown and no output is available in memory.
-- UI polish for old pending/parsed tool-call cards remains outside this runtime/provider-safety release scope.
+- No manual migration command is required.
+- Existing configured MCP tools must still be discovered/registered before assignment to agents.
+- Provider runtimes receive run-scoped Agent Tools MCP descriptors; raw external MCP server configs are not copied into Codex or Claude provider-specific config.
