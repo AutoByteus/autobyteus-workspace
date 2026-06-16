@@ -84,7 +84,7 @@ describe("AgentToolMcpSessionService", () => {
     expect(result.session.enabledTools).toEqual([]);
   });
 
-  it("resolves, expires, revokes, and revokes sessions by explicit owner identity", () => {
+  it("resolves beyond the old active TTL, revokes explicitly, and revokes sessions by owner identity", () => {
     let now = new Date("2026-06-13T10:00:00.000Z");
     const registry = new AgentToolMcpSessionRegistry({ now: () => now });
     const service = buildService(registry);
@@ -92,7 +92,6 @@ describe("AgentToolMcpSessionService", () => {
       owner: { runId: "run-3", memberRunId: "member-run-3" },
       sender: buildSender(),
       configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
-      ttlMillis: 1000,
     });
     const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
 
@@ -102,10 +101,12 @@ describe("AgentToolMcpSessionService", () => {
       reason: "token_mismatch",
     });
 
-    now = new Date("2026-06-13T10:00:01.001Z");
+    now = new Date("2026-06-14T00:00:00.001Z");
+    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token }).ok).toBe(true);
+    expect(service.revokeAgentToolMcpSession(created.session.sessionId)).toBe(true);
     expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token })).toMatchObject({
       ok: false,
-      reason: "expired",
+      reason: "revoked",
     });
 
     const second = service.createAgentToolMcpSession({
@@ -113,12 +114,43 @@ describe("AgentToolMcpSessionService", () => {
       sender: buildSender(),
       configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
+    const nonMatching = service.createAgentToolMcpSession({
+      owner: { runId: "run-3", memberRunId: "member-run-other" },
+      sender: buildSender(),
+      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+    });
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForMemberRun("member-run-3")).toBeGreaterThanOrEqual(1);
+    const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+    expect(service.revokeAgentToolMcpSessionsForMemberRun("member-run-3")).toBe(1);
     expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",
     });
+    expect(registry.resolveSession({
+      sessionId: nonMatching.session.sessionId,
+      bearerToken: nonMatchingToken,
+    }).ok).toBe(true);
+  });
+
+  it("treats a fresh in-memory registry as unable to resolve old descriptors", () => {
+    const originalRegistry = new AgentToolMcpSessionRegistry();
+    const service = buildService(originalRegistry);
+    const created = service.createAgentToolMcpSession({
+      owner: { runId: "run-restart" },
+      sender: buildSender(),
+      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+    });
+    const oldToken = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+    const freshRegistry = new AgentToolMcpSessionRegistry();
+
+    expect(originalRegistry.resolveSession({
+      sessionId: created.session.sessionId,
+      bearerToken: oldToken,
+    }).ok).toBe(true);
+    expect(freshRegistry.resolveSession({
+      sessionId: created.session.sessionId,
+      bearerToken: oldToken,
+    })).toMatchObject({ ok: false, reason: "missing_session" });
   });
 });
 

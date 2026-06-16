@@ -1,10 +1,29 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import {
+  getAgentToolMcpSessionRegistry,
+  resetAgentToolMcpSessionRegistryForTests,
+} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
+import {
+  resetAgentToolMcpSessionServiceForTests,
+} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
+import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 
 describe("AgentRunManager", () => {
+  beforeEach(() => {
+    resetAgentToolMcpSessionServiceForTests();
+    resetAgentToolMcpSessionRegistryForTests();
+  });
+
+  afterEach(() => {
+    resetAgentToolMcpSessionServiceForTests();
+    resetAgentToolMcpSessionRegistryForTests();
+  });
+
   const createBackend = (options: {
     runId: string;
     runtimeKind: "codex_app_server" | "claude_agent_sdk";
@@ -369,5 +388,66 @@ describe("AgentRunManager", () => {
 
     expect(unsubscribe).toHaveBeenCalledTimes(1);
     expect(unsubscribeMemory).toHaveBeenCalledTimes(1);
+  });
+
+  it("revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run", async () => {
+    const codexBackendFactory = {
+      createBackend: vi.fn().mockResolvedValue(
+        createBackend({
+          runId: "run-with-mcp",
+          runtimeKind: "codex_app_server",
+        }),
+      ),
+      restoreBackend: vi.fn(),
+    };
+    const manager = new AgentRunManager({
+      codexBackendFactory: codexBackendFactory as any,
+    });
+    const registry = getAgentToolMcpSessionRegistry();
+    const sender = buildAgentRunMessageSenderContext({
+      senderRunId: "run-with-mcp",
+      senderName: "agent",
+      runtimeKind: "codex_app_server",
+    });
+    const matching = registry.createSession({
+      owner: { runId: "run-with-mcp" },
+      sender,
+      configuredExposure: buildConfiguredAgentToolExposure([]),
+      enabledTools: [],
+    });
+    const nonMatching = registry.createSession({
+      owner: { runId: "other-run" },
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: "other-run",
+        senderName: "other",
+        runtimeKind: "codex_app_server",
+      }),
+      configuredExposure: buildConfiguredAgentToolExposure([]),
+      enabledTools: [],
+    });
+
+    await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-1",
+        llmModelIdentifier: "gpt-5.3-codex",
+        autoExecuteTools: false,
+        workspaceId: "workspace-1",
+        llmConfig: null,
+        skillAccessMode: null,
+      }),
+      "run-with-mcp",
+    );
+
+    await expect(manager.terminateAgentRun("run-with-mcp")).resolves.toBe(true);
+
+    expect(registry.resolveSession({
+      sessionId: matching.session.sessionId,
+      bearerToken: matching.capabilityToken,
+    })).toMatchObject({ ok: false, reason: "revoked" });
+    expect(registry.resolveSession({
+      sessionId: nonMatching.session.sessionId,
+      bearerToken: nonMatching.capabilityToken,
+    }).ok).toBe(true);
   });
 });

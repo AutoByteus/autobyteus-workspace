@@ -164,9 +164,7 @@ const createBootstrapper = (input: {
   } as unknown as CodexAppServerClientManager;
   const agentToolMcpSessionService = {
     createAgentToolMcpSession: vi.fn(() => ({
-      session: {
-        expiresAt: new Date(Date.now() + 60_000),
-      },
+      session: {},
       descriptor: input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
         (input.toolNames ?? []).filter((toolName) => SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES.has(toolName)),
       ),

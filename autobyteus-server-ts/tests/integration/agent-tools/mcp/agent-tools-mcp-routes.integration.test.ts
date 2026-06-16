@@ -468,6 +468,58 @@ describe("Agent Tools MCP route", () => {
     expect(unsupportedProtocol.json()).toMatchObject({ error: { code: -32600 } });
   });
 
+  it("rejects revoked sessions at the route without dispatching tools or leaking descriptor secrets", async () => {
+    executeAgentToolMcpCall.mockClear();
+
+    expect(registry.revokeSession(enabledSession.sessionId)).toBe(true);
+    const revoked = await post(enabledSession, {
+      jsonrpc: "2.0",
+      id: "revoked",
+      method: "tools/call",
+      params: {
+        name: SEND_MESSAGE_TO_TOOL_NAME,
+        arguments: { target_agent_run_id: "target-run", content: "hello" },
+      },
+    });
+
+    expect(revoked.statusCode).toBe(404);
+    expect(revoked.json()).toMatchObject({ error: "session_unavailable" });
+    expect(executeAgentToolMcpCall).not.toHaveBeenCalled();
+    expectNoSessionSecretLeak(revoked, enabledSession);
+  });
+
+  it("rejects old descriptors after in-memory registry reset and accepts a freshly materialized descriptor", async () => {
+    const oldDescriptor = enabledSession;
+    registry.clear();
+    executeAgentToolMcpCall.mockClear();
+
+    const oldResponse = await post(oldDescriptor, { jsonrpc: "2.0", id: "old", method: "ping" });
+    expect(oldResponse.statusCode).toBe(404);
+    expect(oldResponse.json()).toMatchObject({ error: "session_unavailable" });
+    expect(executeAgentToolMcpCall).not.toHaveBeenCalled();
+    expectNoSessionSecretLeak(oldResponse, oldDescriptor);
+
+    const freshDescriptor = createSession([SEND_MESSAGE_TO_TOOL_NAME]);
+    const freshPing = await post(freshDescriptor, { jsonrpc: "2.0", id: "fresh-ping", method: "ping" });
+    expect(freshPing.statusCode).toBe(200);
+    expect(freshPing.json()).toMatchObject({ result: {} });
+
+    const freshCall = await post(freshDescriptor, {
+      jsonrpc: "2.0",
+      id: "fresh-call",
+      method: "tools/call",
+      params: {
+        name: SEND_MESSAGE_TO_TOOL_NAME,
+        arguments: { target_agent_run_id: "target-run", content: "hello-fresh" },
+      },
+    });
+    expect(freshCall.statusCode).toBe(200);
+    expect(freshCall.json()).toMatchObject({
+      result: { content: [{ type: "text", text: "Delivered via MCP." }] },
+    });
+    expect(executeAgentToolMcpCall).toHaveBeenCalledTimes(1);
+  });
+
   it("classifies malformed JSON, invalid envelopes, method invalid params, and unknown methods", async () => {
     const malformed = await app.inject({
       method: "POST",
@@ -549,6 +601,13 @@ describe("Agent Tools MCP route", () => {
   const expectNoDefaultRouteLeak = (response: { body: string }, session: SessionFixture) => {
     expect(response.body).not.toContain("Route CONNECT:");
     expect(response.body).not.toContain(url(session));
+    expectNoSessionSecretLeak(response, session);
+  };
+
+  const expectNoSessionSecretLeak = (response: { body: string }, session: SessionFixture) => {
     expect(response.body).not.toContain(session.sessionId);
+    expect(response.body).not.toContain(session.token);
+    expect(response.body).not.toContain("Bearer");
+    expect(response.body).not.toContain("Authorization");
   };
 });

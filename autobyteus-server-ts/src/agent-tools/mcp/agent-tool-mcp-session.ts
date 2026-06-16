@@ -68,7 +68,6 @@ export type AgentToolMcpSession = {
   executionContext: AgentToolMcpExecutionContext;
   enabledTools: string[];
   createdAt: Date;
-  expiresAt: Date;
   revokedAt: Date | null;
   toolExecutionObserver: AgentToolMcpToolExecutionObserver | null;
 };
@@ -80,7 +79,6 @@ export type AgentToolMcpCreateSessionInput = {
   executionContext?: AgentToolMcpExecutionContext | null;
   enabledTools: string[];
   runtimeKind?: RuntimeKind | string | null;
-  ttlMillis?: number | null;
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };
 
@@ -92,7 +90,6 @@ export type AgentToolMcpSessionResolveInput = {
 export type AgentToolMcpSessionResolveFailureReason =
   | "missing_session"
   | "revoked"
-  | "expired"
   | "token_mismatch";
 
 export type AgentToolMcpSessionResolveResult =

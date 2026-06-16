@@ -4,7 +4,10 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 
 describe("AgentRunService termination", () => {
   const createSubject = (options: { metadata?: Record<string, unknown> | null } = {}) => {
-    const agentRunManager = { getActiveRun: vi.fn() } as never;
+    const agentRunManager = {
+      getActiveRun: vi.fn(),
+      terminateAgentRun: vi.fn().mockResolvedValue(true),
+    };
     const metadataService = {
       readMetadata: vi.fn().mockResolvedValue(options.metadata ?? null),
       writeMetadata: vi.fn().mockResolvedValue(undefined),
@@ -16,7 +19,7 @@ describe("AgentRunService termination", () => {
     };
 
     const service = new AgentRunService("/tmp/agent-run-service-test", {
-      agentRunManager,
+      agentRunManager: agentRunManager as never,
       metadataService: metadataService as never,
       historyCatalogService: historyCatalogService as never,
     });
@@ -24,12 +27,13 @@ describe("AgentRunService termination", () => {
     return { service, mocks: { agentRunManager, metadataService, historyCatalogService } };
   };
 
-  it("routes non-native runtime runs through the live AgentRun subject", async () => {
+  it("routes non-native runtime runs through the manager cleanup boundary", async () => {
     const { service, mocks } = createSubject();
+    const directTerminate = vi.fn();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate: directTerminate,
     });
 
     const result = await service.terminateAgentRun("run-1");
@@ -41,15 +45,18 @@ describe("AgentRunService termination", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
     expect(mocks.agentRunManager.getActiveRun).toHaveBeenCalledWith("run-1");
+    expect(mocks.agentRunManager.terminateAgentRun).toHaveBeenCalledWith("run-1");
+    expect(directTerminate).not.toHaveBeenCalled();
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "run-1" });
   });
 
-  it("routes autobyteus runtime runs through the live AgentRun subject and performs shared cleanup once", async () => {
+  it("routes autobyteus runtime runs through the manager cleanup boundary and records termination once", async () => {
     const { service, mocks } = createSubject();
+    const directTerminate = vi.fn();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate: directTerminate,
     });
 
     const result = await service.terminateAgentRun("run-2");
@@ -60,6 +67,8 @@ describe("AgentRunService termination", () => {
       route: "native",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
+    expect(mocks.agentRunManager.terminateAgentRun).toHaveBeenCalledWith("run-2");
+    expect(directTerminate).not.toHaveBeenCalled();
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(1);
   });
 
@@ -76,14 +85,17 @@ describe("AgentRunService termination", () => {
       runtimeKind: null,
     });
     expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
+    expect(mocks.agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
   });
 
-  it("skips shared cleanup when AgentRun termination is rejected", async () => {
+  it("skips metadata and history updates when manager termination is rejected", async () => {
     const { service, mocks } = createSubject();
+    mocks.agentRunManager.terminateAgentRun.mockResolvedValue(false);
+    const directTerminate = vi.fn();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
-      terminate: vi.fn().mockResolvedValue({ accepted: false, code: "RUN_SESSION_NOT_FOUND" }),
+      terminate: directTerminate,
     });
 
     const result = await service.terminateAgentRun("run-3");
@@ -94,6 +106,8 @@ describe("AgentRunService termination", () => {
       route: "not_found",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
+    expect(mocks.agentRunManager.terminateAgentRun).toHaveBeenCalledWith("run-3");
+    expect(directTerminate).not.toHaveBeenCalled();
     expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
@@ -116,7 +130,7 @@ describe("AgentRunService termination", () => {
     mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       getPlatformAgentRunId: vi.fn().mockReturnValue("thread-new"),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate: vi.fn(),
     });
 
     await service.terminateAgentRun("run-4");

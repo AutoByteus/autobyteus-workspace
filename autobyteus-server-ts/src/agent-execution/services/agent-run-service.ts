@@ -109,8 +109,8 @@ export class AgentRunService {
 
     const route: AgentRunTerminationRoute =
       activeRun.runtimeKind === RuntimeKind.AUTOBYTEUS ? "native" : "runtime";
-    const result = await activeRun.terminate();
-    if (!result.accepted) {
+    const terminated = await this.agentRunManager.terminateAgentRun(runId);
+    if (!terminated) {
       return this.notFound(activeRun.runtimeKind);
     }
 

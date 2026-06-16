@@ -121,9 +121,7 @@ const createSession = (configuredToolNames: string[] = [], input: {
     supportedAgentToolsMcpNames.has(toolName),
   );
   const createAgentToolMcpSession = vi.fn(() => ({
-    session: {
-      expiresAt: new Date(Date.now() + 60_000),
-    },
+    session: {},
     descriptor: {
       name: "autobyteus_agent_tools",
       transport: "streamable_http",
@@ -358,21 +356,21 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
-  it("refreshes the live Agent Tools MCP descriptor before a configured turn when it expires", async () => {
+  it("reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh", async () => {
     const { session, createAgentToolMcpSession } = createSession(["send_message_to"]);
     createAgentToolMcpSession
       .mockImplementationOnce(() => ({
-        session: { expiresAt: new Date(Date.now() - 1) },
+        session: {},
         descriptor: {
           name: "autobyteus_agent_tools",
           transport: "streamable_http",
-          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/expired",
-          headers: { Authorization: "Bearer expired" },
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/live",
+          headers: { Authorization: "Bearer live" },
           enabledTools: ["send_message_to"],
         },
       }))
       .mockImplementationOnce(() => ({
-        session: { expiresAt: new Date(Date.now() + 60_000) },
+        session: {},
         descriptor: {
           name: "autobyteus_agent_tools",
           transport: "streamable_http",
@@ -393,13 +391,13 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       abortController: new AbortController(),
     });
 
-    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(2);
+    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(1);
     expect(buildClaudeSessionMcpServersMock).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
-          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/fresh",
-          headers: { Authorization: "Bearer fresh" },
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/live",
+          headers: { Authorization: "Bearer live" },
         }),
       }),
     );
