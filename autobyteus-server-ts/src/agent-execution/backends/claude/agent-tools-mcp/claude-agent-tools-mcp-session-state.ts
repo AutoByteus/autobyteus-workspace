@@ -13,7 +13,6 @@ export type ClaudeAgentToolsMcpSessionServiceLike = Pick<
 
 type LiveClaudeAgentToolsMcpDescriptor = {
   descriptor: AgentToolMcpDescriptor;
-  expiresAt: Date;
 };
 
 export class ClaudeAgentToolsMcpSessionState {
@@ -23,7 +22,7 @@ export class ClaudeAgentToolsMcpSessionState {
 
   ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
     const existing = this.liveDescriptor;
-    if (existing && existing.expiresAt.getTime() > Date.now()) {
+    if (existing) {
       return existing.descriptor.enabledTools.length > 0 ? existing.descriptor : null;
     }
 
@@ -47,7 +46,6 @@ export class ClaudeAgentToolsMcpSessionState {
     });
     this.liveDescriptor = {
       descriptor: result.descriptor,
-      expiresAt: result.session.expiresAt,
     };
     return result.descriptor.enabledTools.length > 0 ? result.descriptor : null;
   }

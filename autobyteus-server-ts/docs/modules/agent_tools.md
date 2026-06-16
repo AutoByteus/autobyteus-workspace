@@ -66,9 +66,13 @@ Tools MCP Server exposes configured AutoByteus tools outward to an MCP client.
 
 The session service snapshots configured tool exposure, stores only a bearer
 token hash, derives `enabledTools` from server-supported definitions, and
-redacts secret descriptors for diagnostics. `tools/list` returns only tools
-enabled for that session, and `tools/call` rejects unknown or unconfigured tools
-before executor dispatch. The default adapter catalog supports
+redacts secret descriptors for diagnostics. Active session validity is
+owner-lifetime and process-memory scoped: the descriptor works only while the
+registry entry is present, not revoked, and matched by bearer auth; restart or
+registry reset invalidates old descriptors until the runtime materializes a
+fresh descriptor. `tools/list` returns only tools enabled for that session, and
+`tools/call` rejects unknown or unconfigured tools before executor dispatch.
+The default adapter catalog supports
 `send_message_to`, browser, media, task-delegation, and `publish_artifacts`
 tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Codex App Server and Claude Agent SDK materialize

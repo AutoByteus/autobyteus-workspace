@@ -9,7 +9,6 @@ import {
   type AgentToolMcpSessionResolveResult,
 } from "./agent-tool-mcp-session.js";
 
-const DEFAULT_SESSION_TTL_MILLIS = 12 * 60 * 60 * 1000;
 const SESSION_ID_RANDOM_BYTES = 18;
 const TOKEN_RANDOM_BYTES = 32;
 
@@ -47,7 +46,6 @@ export class AgentToolMcpSessionRegistry {
 
   createSession(input: AgentToolMcpCreateSessionInput): AgentToolMcpSessionRegistryCreateResult {
     const createdAt = this.now();
-    const ttlMillis = normalizeTtlMillis(input.ttlMillis);
     const sessionId = this.createUniqueSessionId();
     const capabilityToken = this.createCapabilityToken();
     const session: AgentToolMcpSession = {
@@ -60,7 +58,6 @@ export class AgentToolMcpSessionRegistry {
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
       enabledTools: [...input.enabledTools],
       createdAt,
-      expiresAt: new Date(createdAt.getTime() + ttlMillis),
       revokedAt: null,
       toolExecutionObserver: input.toolExecutionObserver ?? null,
     };
@@ -75,9 +72,6 @@ export class AgentToolMcpSessionRegistry {
     }
     if (session.revokedAt) {
       return { ok: false, reason: "revoked" };
-    }
-    if (session.expiresAt.getTime() <= this.now().getTime()) {
-      return { ok: false, reason: "expired" };
     }
     if (!doesBearerTokenMatch(input.bearerToken, session.tokenHash)) {
       return { ok: false, reason: "token_mismatch" };
@@ -108,19 +102,6 @@ export class AgentToolMcpSessionRegistry {
       revokedCount += 1;
     }
     return revokedCount;
-  }
-
-  purgeExpiredSessions(): number {
-    const nowMillis = this.now().getTime();
-    let purgedCount = 0;
-    for (const [sessionId, session] of this.sessions.entries()) {
-      if (session.expiresAt.getTime() > nowMillis) {
-        continue;
-      }
-      this.sessions.delete(sessionId);
-      purgedCount += 1;
-    }
-    return purgedCount;
   }
 
   clear(): void {
@@ -159,16 +140,6 @@ export const hashBearerToken = (token: string): Buffer =>
 const doesBearerTokenMatch = (token: string, expectedHash: Buffer): boolean => {
   const actualHash = hashBearerToken(token);
   return actualHash.length === expectedHash.length && timingSafeEqual(actualHash, expectedHash);
-};
-
-const normalizeTtlMillis = (ttlMillis: number | null | undefined): number => {
-  if (ttlMillis === null || ttlMillis === undefined) {
-    return DEFAULT_SESSION_TTL_MILLIS;
-  }
-  if (!Number.isFinite(ttlMillis) || ttlMillis <= 0) {
-    throw new Error("AgentToolMcpSession ttlMillis must be a positive finite number.");
-  }
-  return ttlMillis;
 };
 
 const normalizeOwner = (

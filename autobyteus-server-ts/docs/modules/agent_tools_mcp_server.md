@@ -67,17 +67,26 @@ redacts both the bearer token and the session id in the URL.
 
 `AgentToolMcpSessionRegistry` stores only the token hash, owner identity, sender
 context, runtime kind, configured exposure snapshot, enabled tool list, creation
-time, expiry time, and optional execution observer. The default session TTL is
-12 hours. Sessions are revoked when their owning `AgentRun` is unregistered and
-when a mixed-team member handle is disposed.
+time, revocation time, and optional execution observer. Active sessions do not
+expire from a fixed wall-clock TTL. A request is valid only while the session is
+present in the current process-memory registry, is not revoked, and the bearer
+token matches the stored token hash.
+
+Sessions are revoked when their owning `AgentRun` is terminated or
+unregistered through `AgentRunManager` and when a mixed-team member handle is
+disposed. A server/process restart clears the in-memory registry, so descriptors
+from the previous process fail with the redacted `404 session_unavailable`
+route response. Restored, resumed, or newly started runtime owners must
+materialize a fresh descriptor in the current process before they use Agent
+Tools MCP.
 
 ## Runtime Materialization
 
 Claude Agent SDK materialization is programmatic and live-session scoped. When
 the current Claude run has at least one configured, available Agent Tools MCP
-tool, `ClaudeSession` creates or refreshes an Agent Tools MCP session, keeps the
-secret descriptor only in private session memory, and passes the materialized
-SDK config under the reserved server name:
+tool, `ClaudeSession` creates an Agent Tools MCP session, reuses the private
+descriptor while that `ClaudeSession` object remains live, and passes the
+materialized SDK config under the reserved server name:
 
 ```ts
 {
@@ -93,9 +102,9 @@ Claude allowed-tool entries are generated from the descriptor's `enabledTools`.
 For each enabled canonical tool name, Claude pre-approves both the canonical
 name and the provider wire name such as
 `mcp__autobyteus_agent_tools__generate_image`. If no supported tool is enabled,
-the session does not create an Agent Tools MCP descriptor. Restored or refreshed
-Claude sessions rematerialize a fresh descriptor instead of persisting or
-reusing bearer-token config files.
+the session does not create an Agent Tools MCP descriptor. Restored or newly
+created Claude sessions rematerialize a fresh descriptor instead of persisting,
+reusing, or refreshing bearer-token config by expiry.
 
 Codex App Server materialization is also live-session scoped, but uses the app
 server thread protocol. When a Codex standalone or team-member run has at least
