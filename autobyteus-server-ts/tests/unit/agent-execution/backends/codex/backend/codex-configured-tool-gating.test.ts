@@ -25,28 +25,28 @@ const createRegistration = (name: string): CodexDynamicToolRegistration => ({
 describe("codex-configured-tool-gating", () => {
   it("filters dynamic registrations down to the names explicitly configured on the agent", () => {
     const registrations = [
-      createRegistration("open_tab"),
-      createRegistration("read_page"),
-      createRegistration("send_message_to"),
+      createRegistration("custom_dynamic_alpha"),
+      createRegistration("custom_dynamic_beta"),
+      createRegistration("custom_dynamic_gamma"),
     ];
 
     const filtered = filterDynamicToolRegistrationsByToolNames(
       registrations,
-      new Set(["open_tab", "send_message_to"]),
+      new Set(["custom_dynamic_alpha", "custom_dynamic_gamma"]),
     );
 
     expect(filtered).toHaveLength(2);
     expect(filtered?.map((registration) => registration.spec.name)).toEqual([
-      "open_tab",
-      "send_message_to",
+      "custom_dynamic_alpha",
+      "custom_dynamic_gamma",
     ]);
   });
 
   it("returns no dynamic registrations when the agent configured no matching tools", () => {
-    const registrations = [createRegistration("send_message_to")];
+    const registrations = [createRegistration("custom_dynamic_alpha")];
 
     expect(
-      filterDynamicToolRegistrationsByToolNames(registrations, new Set(["open_tab"])),
+      filterDynamicToolRegistrationsByToolNames(registrations, new Set(["custom_dynamic_beta"])),
     ).toBeNull();
     expect(filterDynamicToolRegistrationsByToolNames(registrations, new Set())).toBeNull();
   });

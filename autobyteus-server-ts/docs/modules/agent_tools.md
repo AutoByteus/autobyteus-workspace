@@ -19,15 +19,22 @@ Browser-tool support is runtime-gated:
 - embedded Electron runtimes resolve the Browser bridge from environment variables injected at desktop startup
 - remote nodes can resolve the same Browser bridge through an in-memory runtime registration when a desktop client explicitly pairs that node with its local browser
 - browser tool exposure still stays subject to the active runtime/tool projection and the configured agent tool names
+- Codex App Server and Claude Agent SDK receive configured browser tools
+  through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor when
+  browser support is available; the old Codex browser `dynamicTools` path and
+  old Claude `autobyteus_browser` MCP server path are not retained for these
+  migrated tools
 
 ## Server-Owned Agent Communication Tool
 
 `send_message_to` is the shared first-party agent communication tool. Its
 canonical contract, selector parsing, runtime-neutral dispatcher, direct
 exact-run routing, and optional direct-message grants live under
-`src/agent-communication`; AutoByteus, Codex, and Claude adapters project that
-same contract through their own tool surfaces when the current configuration
-includes `send_message_to`.
+`src/agent-communication`; AutoByteus, Codex, and Claude adapters project the
+same contract through their configured runtime surfaces. Codex App Server and
+Claude Agent SDK now project `send_message_to` through the server-hosted
+`autobyteus_agent_tools` MCP descriptor instead of runtime-specific
+send-message wrappers/handlers.
 
 The tool accepts exactly one target selector:
 
@@ -44,6 +51,46 @@ Standalone configured runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_name` unless the run is actually executing as a team
 member. See [Agent Communication](./agent_communication.md) for the full selector
 and projection contract.
+
+## Server-Hosted Agent Tools MCP Server
+
+`src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
+session-scoped Streamable HTTP MCP surface for external runtimes that need to
+call configured AutoByteus tools. Runtime materializers receive descriptors for
+the reserved MCP server name `autobyteus_agent_tools` and endpoint
+`/mcp/agent-tools/:sessionId`.
+
+This server-hosted MCP surface is not the MCP Server Management subsystem.
+MCP Server Management imports external MCP servers into AutoByteus; the Agent
+Tools MCP Server exposes configured AutoByteus tools outward to an MCP client.
+That outward set includes selected built-in server-owned tool families and
+selected `ToolOrigin.MCP` registry tools discovered from configured external MCP
+servers. Codex App Server and Claude Agent SDK do not receive direct
+provider-native copies of raw external MCP config for those tools.
+
+The session service snapshots configured tool exposure, stores only a bearer
+token hash, derives `enabledTools` from server-supported definitions and
+selected MCP-origin registry definitions, and redacts secret descriptors for
+diagnostics. Active session validity is owner-lifetime and process-memory
+scoped: the descriptor works only while the registry entry is present, not
+revoked, and matched by bearer auth; restart or registry reset invalidates old
+descriptors until the runtime materializes a fresh descriptor. `tools/list`
+returns only tools enabled for that session, and `tools/call` rejects unknown or
+unconfigured tools before executor dispatch.
+The default adapter catalog supports
+`send_message_to`, browser, media, task-delegation, and `publish_artifacts`
+tool families by delegating to their existing family manifests/services instead
+of runtime-specific handlers. Configured MCP-origin tools delegate through the
+registry-created tool and existing MCP proxy path, preserving registered names
+such as prefixed `db_query` at the provider boundary while the proxy owns the
+remote MCP tool call. Codex App Server and Claude Agent SDK materialize this
+surface when at least one configured tool is available for the session. Their
+provider/server-qualified wire names stay below the runtime converter;
+application events, run history, and memory expose canonical registered tool
+names and must not contain bearer/header descriptor details.
+See
+[Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
+security, and adapter contract.
 
 ## Server-Owned Task Delegation Tools
 
@@ -66,10 +113,10 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   server-owned local wrappers for the canonical delegation and acceptance tools
   when configured, and they strip the legacy task-management tool names from
   mixed team contexts.
-- Codex receives dynamic tool registrations built from the task-delegation
-  manifest.
-- Claude receives first-party MCP tools on the team MCP server, built from the
-  same manifest and service.
+- Codex App Server and Claude Agent SDK receive configured task-delegation
+  tools through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor.
+  The old Codex task-delegation `dynamicTools` path and the old Claude
+  `autobyteus_team` MCP server path are not retained for these migrated tools.
 - Tool availability is configuration-driven. Runtime adapters must not expose
   these tools when the member is not configured for them, and this layer must
   not add provider `tool_choice` policy, forced-tool dampening, or
@@ -107,10 +154,10 @@ Runtime projection is explicit:
 
 - AutoByteus uses thin local tool wrappers registered from the server media
   manifest.
-- Codex receives dynamic tool registrations built from the same manifest.
-- Claude receives MCP tools under the reserved server name
-  `autobyteus_image_audio`; a user-configured MCP server with that same name is
-  rejected rather than silently overwritten.
+- Codex App Server and Claude Agent SDK receive configured media tools through
+  the unified `autobyteus_agent_tools` Agent Tools MCP descriptor. The old Codex
+  media `dynamicTools` path and the old Claude `autobyteus_image_audio` MCP
+  server path are not retained for these migrated tools.
 
 `generate_image` and `edit_image` use an array-shaped `input_images` public
 contract across all projections. Callers must pass image references as
@@ -135,6 +182,28 @@ workspace/Downloads/system-temp safe-path helper remains available for unrelated
 tools, but it is not the authority for server-owned media local paths.
 
 All media tools return the canonical result shape `{ file_path }`. Runtime event
-normalizers preserve that result shape, including Claude MCP-prefixed tool names
-such as `mcp__autobyteus_image_audio__generate_image`, so generated media files
-continue to project as generated-output file changes.
+normalizers preserve that result shape from Agent Tools MCP provider wire names
+such as `mcp__autobyteus_agent_tools__generate_image`, so generated media files
+continue to project as generated-output file changes while application surfaces
+see canonical names like `generate_image`.
+
+## Server-Owned Published Artifacts Tool
+
+`publish_artifacts` is the first-party publication boundary for artifacts that
+an agent has already written. Its canonical contract and parameter schema live
+under `src/services/published-artifacts` and
+`src/agent-tools/published-artifacts`.
+
+Runtime projection is explicit:
+
+- AutoByteus uses the local server-owned wrapper.
+- Codex App Server and Claude Agent SDK receive `publish_artifacts` through the
+  unified `autobyteus_agent_tools` Agent Tools MCP descriptor. The old Codex
+  dynamic registration path and the old Claude `autobyteus_published_artifacts`
+  MCP server path are not retained for this migrated tool.
+
+Agent Tools MCP execution publishes against the active owning run id and uses
+the session execution context as fallback workspace, memory, and application
+runtime context. Application-facing events and published-artifact projections
+must use the canonical `publish_artifacts` identity and must not expose the MCP
+session id, bearer token, or provider-qualified server/tool name.

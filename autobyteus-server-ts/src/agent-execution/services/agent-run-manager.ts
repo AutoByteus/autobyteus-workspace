@@ -33,6 +33,7 @@ import {
   AgentRunMemoryRecorder,
   getAgentRunMemoryRecorder,
 } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getAgentToolMcpSessionService } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -124,6 +125,9 @@ export class AgentRunManager {
     context: AgentRunContext<RuntimeAgentRunContext>,
   ): Promise<AgentRun> {
     const { runId } = context;
+    if (this.hasActiveRun(runId)) {
+      throw new AgentCreationError(`Agent run '${runId}' is already active.`);
+    }
     const runtimeKind = context.config.runtimeKind;
     const backendFactory = this.resolveBackendFactory(runtimeKind);
     if (!backendFactory) {
@@ -276,6 +280,7 @@ export class AgentRunManager {
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId);
     this.unregisterRunFileChanges(runId);
     this.unregisterPublishedArtifactRelay(runId);
     this.unregisterMemoryRecorder(runId);

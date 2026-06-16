@@ -5,6 +5,9 @@ import {
   resolveCodexToolItemFamily,
   type CodexToolItemFamily,
 } from "../items/codex-tool-item-family.js";
+import {
+  normalizeCodexAgentToolsToolNameForEvent,
+} from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 
 export type CodexThreadHistoryToolStatus = "parsed" | "success" | "error" | "denied";
 
@@ -104,11 +107,13 @@ const resolveToolName = (
   }
 
   const payload = { item };
-  const parsedName = toolPayloadParser.resolveToolName(payload);
+  const parsedName = normalizeCodexAgentToolsToolNameForEvent(
+    toolPayloadParser.resolveToolName(payload),
+  );
   const historyName = family === "mcp_tool_call"
     ? qualifyMcpToolName(item, parsedName)
     : parsedName;
-  return historyName ?? "tool";
+  return normalizeCodexAgentToolsToolNameForEvent(historyName) ?? "tool";
 };
 
 const resolveToolArguments = (

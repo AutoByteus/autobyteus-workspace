@@ -20,6 +20,7 @@ export type CodexThreadConfig = {
   sandbox: CodexSandboxMode;
   baseInstructions: string | null;
   developerInstructions: string | null;
+  appServerConfig?: JsonObject | null;
   dynamicTools: JsonObject[] | null;
 };
 
@@ -32,6 +33,7 @@ export const buildCodexThreadConfig = (input: {
   sandbox: CodexSandboxMode;
   baseInstructions?: string | null;
   developerInstructions?: string | null;
+  appServerConfig?: JsonObject | null;
   dynamicTools?: JsonObject[] | null;
 }): CodexThreadConfig => ({
   model: input.model,
@@ -42,5 +44,6 @@ export const buildCodexThreadConfig = (input: {
   sandbox: input.sandbox,
   baseInstructions: asTrimmedString(input.baseInstructions),
   developerInstructions: asTrimmedString(input.developerInstructions),
+  appServerConfig: input.appServerConfig ?? null,
   dynamicTools: Array.isArray(input.dynamicTools) ? input.dynamicTools : null,
 });

@@ -1,26 +1,11 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { resolveCodexToolItemFamily } from "../items/codex-tool-item-family.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
-
-const isSendMessageToToolName = (value: string | null): boolean => {
-  if (!value) {
-    return false;
-  }
-  return value.trim().toLowerCase() === "send_message_to";
-};
-
-const normalizeToolNameForEvent = (value: string | null): string | null => {
-  if (!value) {
-    return null;
-  }
-  if (isSendMessageToToolName(value)) {
-    return "send_message_to";
-  }
-  return value;
-};
+import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
+import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
+import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
 
 export type CodexItemEventConverterContext = {
   createEvent: (
@@ -78,13 +63,14 @@ const createTerminalToolExecutionEvent = (
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
-  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
-  const toolArguments = context.resolveDynamicToolArguments(payload);
+  const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
+  const serializedPayload = serializeCodexItemEventPayload(payload);
+  const toolArguments = context.resolveDynamicToolArguments(serializedPayload as JsonObject);
   const hasToolArguments = Object.keys(toolArguments).length > 0;
-  const serializedPayload = serializePayload(payload);
   const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
   if (status === "declined") {
-    const reason = context.resolveToolDecisionReason(payload) ?? "Tool execution denied.";
+    const reason = context.resolveToolDecisionReason(serializedPayload as JsonObject) ??
+      "Tool execution denied.";
     return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
       ...serializedPayload,
       ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -92,10 +78,11 @@ const createTerminalToolExecutionEvent = (
       ...(toolName ? { tool_name: toolName } : {}),
       ...(hasToolArguments ? { arguments: toolArguments } : {}),
       reason,
-      error: context.resolveToolError(payload),
+      error: context.resolveToolError(serializedPayload as JsonObject),
     });
   }
-  const eventType = context.isExecutionFailure(payload)
+  const failed = context.isExecutionFailure(payload);
+  const eventType = failed
     ? AgentRunEventType.TOOL_EXECUTION_FAILED
     : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED;
   return context.createEvent(codexEventName, eventType, {
@@ -104,9 +91,14 @@ const createTerminalToolExecutionEvent = (
     ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
     ...(hasToolArguments ? { arguments: toolArguments } : {}),
-    ...(context.isExecutionFailure(payload)
-      ? { error: context.resolveToolError(payload) }
-      : { result: context.resolveToolResult(payload) }),
+    ...(failed
+      ? { error: context.resolveToolError(serializedPayload as JsonObject) }
+      : {
+          result: normalizeBrowserMcpToolResult(
+            toolName,
+            context.resolveToolResult(serializedPayload as JsonObject),
+          ),
+        }),
   });
 };
 
@@ -115,9 +107,10 @@ const createDynamicToolSegmentStartEvent = (
   codexEventName: string,
   payload: JsonObject,
 ): AgentRunEvent => {
-  const metadata = context.resolveSegmentMetadata(payload);
+  const serializedPayload = serializeCodexItemEventPayload(payload);
+  const metadata = context.resolveSegmentMetadata(serializedPayload as JsonObject);
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-    ...serializePayload(payload),
+    ...serializedPayload,
     id: context.resolveSegmentStartId(payload, "tool_call"),
     segment_type: "tool_call",
     ...(metadata ? { metadata } : {}),
@@ -131,13 +124,14 @@ const createDynamicToolLifecycleStartedEvent = (
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
-  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
+  const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload));
+  const serializedPayload = serializeCodexItemEventPayload(payload);
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-    ...serializePayload(payload),
+    ...serializedPayload,
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
-    arguments: context.resolveDynamicToolArguments(payload),
+    arguments: context.resolveDynamicToolArguments(serializedPayload as JsonObject),
   });
 };
 
@@ -146,9 +140,10 @@ const createSegmentEndEvent = (
   codexEventName: string,
   payload: JsonObject,
 ): AgentRunEvent => {
-  const metadata = context.resolveSegmentMetadata(payload);
+  const serializedPayload = serializeCodexItemEventPayload(payload);
+  const metadata = context.resolveSegmentMetadata(serializedPayload as JsonObject);
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-    ...serializePayload(payload),
+    ...serializedPayload,
     id: context.resolveSegmentId(payload),
     ...(metadata ? { metadata } : {}),
   });
@@ -160,7 +155,7 @@ const createWebSearchSegmentStartEvent = (
   payload: JsonObject,
 ): AgentRunEvent =>
   context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     id: context.resolveSegmentStartId(payload, "tool_call"),
     segment_type: "tool_call",
     metadata: context.resolveWebSearchMetadata(payload),
@@ -174,7 +169,7 @@ const createWebSearchLifecycleStartedEvent = (
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     tool_name: "search_web",
@@ -190,7 +185,7 @@ const createWebSearchTerminalLifecycleEvent = (
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
   const basePayload = {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     tool_name: "search_web",
@@ -216,7 +211,7 @@ const createWebSearchSegmentEndEvent = (
   payload: JsonObject,
 ): AgentRunEvent =>
   context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     id: context.resolveSegmentId(payload),
     metadata: context.resolveWebSearchMetadata(payload),
   });
@@ -228,7 +223,7 @@ const createFileChangeSegmentStartEvent = (
 ): AgentRunEvent => {
   const segmentMetadata = context.resolveSegmentMetadata(payload) ?? {};
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     id: context.resolveSegmentStartId(payload, "edit_file"),
     segment_type: "edit_file",
     metadata: {
@@ -245,7 +240,7 @@ const createFileChangeLifecycleStartedEvent = (
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
     tool_name: "edit_file",
     arguments: context.resolveToolArguments(payload, "edit_file"),
@@ -259,7 +254,7 @@ const createFileChangeSegmentEndEvent = (
 ): AgentRunEvent => {
   const metadata = context.resolveSegmentMetadata(payload);
   return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-    ...serializePayload(payload),
+    ...serializeCodexItemEventPayload(payload),
     id: context.resolveSegmentId(payload),
     ...(metadata ? { metadata } : {}),
   });
@@ -280,14 +275,17 @@ export const convertCodexItemEvent = (
       if (itemFamily === "command_execution") {
         context.clearReasoningSegmentForTurn(payload);
         const invocationId = context.resolveInvocationId(payload);
-        const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
+        const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, "run_bash"));
         const commandValue = context.resolveCommandValue(payload);
-        if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+        if (
+          isCodexAgentToolsSendMessageToolName(toolName) ||
+          isCodexAgentToolsSendMessageToolName(commandValue)
+        ) {
           return [];
         }
         return [
           context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-            ...serializePayload(payload),
+            ...serializeCodexItemEventPayload(payload),
             ...(invocationId ? { invocation_id: invocationId } : {}),
             ...(toolName ? { tool_name: toolName } : {}),
             arguments: context.resolveToolArguments(payload, "run_bash"),
@@ -317,7 +315,7 @@ export const convertCodexItemEvent = (
       const segmentMetadata = context.resolveSegmentMetadata(payload);
       return [
         context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-          ...serializePayload(payload),
+          ...serializeCodexItemEventPayload(payload),
           id: context.resolveSegmentStartId(payload, segmentType),
           segment_type: segmentType,
           ...(segmentMetadata
@@ -349,7 +347,7 @@ export const convertCodexItemEvent = (
         }
         return [
           context.createEvent(codexEventName, AgentRunEventType.SEGMENT_CONTENT, {
-            ...serializePayload(payload),
+            ...serializeCodexItemEventPayload(payload),
             id: context.resolveReasoningSegmentId(payload),
             delta: reasoningDelta,
             segment_type: "reasoning",
@@ -357,16 +355,19 @@ export const convertCodexItemEvent = (
         ];
       }
       if (itemFamily === "command_execution") {
-        const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
+        const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, "run_bash"));
         const commandValue = context.resolveCommandValue(payload);
-        if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+        if (
+          isCodexAgentToolsSendMessageToolName(toolName) ||
+          isCodexAgentToolsSendMessageToolName(commandValue)
+        ) {
           return [];
         }
         return [createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash")];
       }
       if (itemFamily === "file_change") {
         const invocationId = context.resolveInvocationId(payload);
-        const serializedPayload = serializePayload(payload);
+        const serializedPayload = serializeCodexItemEventPayload(payload);
         const events: AgentRunEvent[] = [];
         const failed = context.isExecutionFailure(payload);
         const declined = context.resolveExecutionStatus(payload)?.toLowerCase() === "declined";
@@ -436,7 +437,7 @@ export const convertCodexItemEvent = (
       }
       return [
         context.createEvent(codexEventName, AgentRunEventType.SEGMENT_CONTENT, {
-          ...serializePayload(payload),
+          ...serializeCodexItemEventPayload(payload),
           id: context.resolveReasoningSegmentId(payload),
           delta: reasoningDelta,
           segment_type: "reasoning",
@@ -448,7 +449,7 @@ export const convertCodexItemEvent = (
         context.createEvent(
           codexEventName,
           AgentRunEventType.TODO_LIST_UPDATE,
-          serializePayload(payload),
+          serializeCodexItemEventPayload(payload),
         ),
       ];
     case CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL:
@@ -459,12 +460,12 @@ export const convertCodexItemEvent = (
         codexEventName === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
           ? "edit_file"
           : "run_bash";
-      const toolName = normalizeToolNameForEvent(
+      const toolName = normalizeCodexAgentToolsToolNameForEvent(
         context.resolveToolName(payload, fallbackToolName),
       );
       return [
         context.createEvent(codexEventName, AgentRunEventType.TOOL_APPROVAL_REQUESTED, {
-          ...serializePayload(payload),
+          ...serializeCodexItemEventPayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
           arguments: context.resolveToolArguments(payload, fallbackToolName),
@@ -473,11 +474,11 @@ export const convertCodexItemEvent = (
     }
     case CodexThreadEventName.LOCAL_TOOL_APPROVED: {
       const invocationId = context.resolveInvocationId(payload);
-      const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
+      const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, "run_bash"));
       const reason = context.resolveToolDecisionReason(payload);
       return [
         context.createEvent(codexEventName, AgentRunEventType.TOOL_APPROVED, {
-          ...serializePayload(payload),
+          ...serializeCodexItemEventPayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
           ...(reason ? { reason } : {}),
@@ -494,7 +495,7 @@ export const convertCodexItemEvent = (
       }
       return [
         context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
-          ...serializePayload(payload),
+          ...serializeCodexItemEventPayload(payload),
           tool_invocation_id: invocationId,
           tool_name: "edit_file",
           log_entry: logEntry,

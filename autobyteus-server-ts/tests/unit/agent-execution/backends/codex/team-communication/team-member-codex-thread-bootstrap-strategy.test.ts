@@ -49,7 +49,7 @@ const createMemberTeamContext = (input: {
   });
 
 describe("TeamMemberCodexThreadBootstrapStrategy", () => {
-  it("uses the runtime-local member team context for dynamic send_message_to exposure", () => {
+  it("uses the runtime-local member team context for Agent Tools MCP send_message_to instructions", () => {
     const strategy = new TeamMemberCodexThreadBootstrapStrategy();
     const memberTeamContext = createMemberTeamContext();
     const runContext = new AgentRunContext({
@@ -75,20 +75,12 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
 
     expect(preparation.baseInstructions).toContain("Team Instruction");
     expect(preparation.baseInstructions).toContain("Agent Instruction");
-    expect(preparation.dynamicToolRegistrations).toHaveLength(1);
-    expect(preparation.dynamicToolRegistrations?.[0]?.spec).toEqual(
-      expect.objectContaining({
-        name: "send_message_to",
-        inputSchema: expect.objectContaining({
-          properties: expect.objectContaining({
-            recipient_name: expect.not.objectContaining({ enum: expect.anything() }),
-          }),
-        }),
-      }),
-    );
+    expect(preparation.developerInstructions).toContain("If you use `send_message_to`");
+    expect(preparation.developerInstructions).toContain("Set `target_agent_run_id`");
+    expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 
-  it("exposes send_message_to for exact-run-only contexts with no static recipients", () => {
+  it("keeps exact-run-only send_message_to as instructions without adding dynamic tool registrations", () => {
     const strategy = new TeamMemberCodexThreadBootstrapStrategy();
     const memberTeamContext = createMemberTeamContext({
       allowedRecipientNames: [],
@@ -113,8 +105,7 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       configuredToolExposure: buildConfiguredAgentToolExposure(["send_message_to"]),
     });
 
-    expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
-      .toEqual(["send_message_to"]);
+    expect(preparation.dynamicToolRegistrations).toBeNull();
     expect(preparation.developerInstructions).toContain(
       "No logical `recipient_name` roster recipients are currently listed for this run.",
     );
@@ -122,7 +113,7 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.developerInstructions).not.toContain("Use recipient_name for one logical roster recipient:");
   });
 
-  it("adds task delegation dynamic tools only when the agent configuration enables them", () => {
+  it("keeps task delegation as Agent Tools MCP instructions without dynamic registrations", () => {
     const strategy = new TeamMemberCodexThreadBootstrapStrategy();
     const memberTeamContext = createMemberTeamContext();
     const runContext = new AgentRunContext({
@@ -154,11 +145,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
 
     expect(preparation.developerInstructions).toContain("Task delegation protocol");
     expect(preparation.developerInstructions).toContain("Do not use `create_task`");
-    expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
-      .toEqual([
-        "delegate_tasks",
-        "submit_task_result",
-        "review_task_result",
-      ]);
+    expect(preparation.developerInstructions).toContain("Use `delegate_tasks`");
+    expect(preparation.developerInstructions).toContain("`submit_task_result`");
+    expect(preparation.developerInstructions).toContain("`review_task_result`");
+    expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 });

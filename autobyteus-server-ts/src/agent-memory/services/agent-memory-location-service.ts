@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { TeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
 import { TeamRunMemoryTopologyReader } from "../../run-history/services/team-run-memory-topology-reader.js";
 import type {
   TeamRunAgentMemberMetadata,
@@ -40,8 +41,11 @@ export class AgentMemoryLocationService {
     topologyReader?: Pick<TeamRunMemoryTopologyReader, "loadRootTeamMetadataForMemoryLocation">;
     memoryDir?: string;
   } = {}) {
-    this.layout = input.layout ?? new AgentMemoryLayout(input.memoryDir ?? appConfigProvider.config.getMemoryDir());
-    this.topologyReader = input.topologyReader ?? new TeamRunMemoryTopologyReader();
+    const memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.layout = input.layout ?? new AgentMemoryLayout(memoryDir);
+    this.topologyReader =
+      input.topologyReader ??
+      new TeamRunMemoryTopologyReader(new TeamRunMetadataService(memoryDir));
   }
 
   getStandaloneLocation(input: {

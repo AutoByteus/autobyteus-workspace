@@ -5,6 +5,9 @@ import {
 } from "../items/codex-tool-item-family.js";
 import { CodexToolPayloadParser } from "../items/codex-tool-payload-parser.js";
 import { CodexReasoningPayloadParser } from "./codex-reasoning-payload-parser.js";
+import {
+  normalizeCodexAgentToolsToolNameForEvent,
+} from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -108,7 +111,9 @@ export class CodexItemEventPayloadParser {
         : segmentType === "run_bash"
           ? "run_bash"
           : undefined;
-    const toolName = this.toolPayloadParser.resolveToolName(payload, fallbackToolName);
+    const toolName = normalizeCodexAgentToolsToolNameForEvent(
+      this.toolPayloadParser.resolveToolName(payload, fallbackToolName),
+    );
     const pathValue = asString(payload.path) ?? asString(item.path) ?? fileChangePath;
     const patchValue =
       asString(payload.patch) ??

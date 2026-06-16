@@ -54,6 +54,20 @@ Codex and Claude runs are recorded by the server as **storage-only** memory:
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
+Route-backed Agent Tools MCP calls from Codex App Server and Claude Agent SDK
+are recorded only after the runtime adapter normalizes them into canonical
+`AgentRunEvent` tool lifecycles. The MCP route, method dispatcher, executor,
+and family services/dispatchers must not write raw traces directly. Raw traces
+use canonical tool names such as `send_message_to`, `generate_image`,
+`delegate_tasks`, and `publish_artifacts`, preserve the provider invocation id
+as the tool-call id, and store the normalized application-facing result payload
+without provider/server-qualified tool names, MCP session ids, or bearer/header
+descriptor details. For families with a canonical public result contract, the
+stored result follows that contract rather than the raw MCP content envelope;
+for example browser `open_tab` records the direct browser result with
+`tab_id`, and media generation records `{ file_path }`. Unknown non-AutoByteus
+MCP results may still retain their provider result shape.
+
 ## Memory Explorer Read Model
 
 The memory explorer is a backend-for-frontend read model for the `/memory` UI. It is memory-derived: configured agents or teams with no persisted memory do not appear.
@@ -74,6 +88,11 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 `TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
 
 Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from recursive metadata and `AgentMemoryLocationService`, so nested member availability is resolved from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` memory directory rather than from a flattened root-team/member assumption.
+
+When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
+its topology/readback collaborators must use the same memory root. Do not mix a
+writer rooted in one app memory directory with a reader backed by a global or
+different memory root; raw-trace readback depends on that root consistency.
 
 ### Explorer GraphQL Queries
 

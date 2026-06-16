@@ -128,74 +128,103 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
-  it("suppresses raw MCP send_message_to segment and lifecycle transport noise", () => {
+  it("normalizes Agent Tools MCP send_message_to segment and lifecycle events", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
-    expect(
-      converter.convert({
-        method: ClaudeSessionEventName.ITEM_ADDED,
-        params: {
-          id: "invoke-send-message",
-          segment_type: "tool_call",
-          tool_name: "mcp__autobyteus_team__send_message_to",
+    const [segmentStart] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_ADDED,
+      params: {
+        id: "invoke-send-message",
+        segment_type: "tool_call",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+          message_type: "roundtrip_ping",
+        },
+      },
+    });
+    const [started] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      params: {
+        invocation_id: "invoke-send-message",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+      },
+    });
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-send-message",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        result: { accepted: true },
+      },
+    });
+    const [segmentEnd] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMPLETED,
+      params: {
+        id: "invoke-send-message",
+        segment_type: "tool_call",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+      },
+    });
+
+    expect(segmentStart).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      payload: {
+        tool_name: "send_message_to",
+        metadata: {
+          tool_name: "send_message_to",
           arguments: {
             recipient_name: "pong",
             content: "hello",
             message_type: "roundtrip_ping",
           },
         },
-      }),
-    ).toEqual([]);
-
-    expect(
-      converter.convert({
-        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
-        params: {
-          invocation_id: "invoke-send-message",
-          tool_name: "mcp__autobyteus_team__send_message_to",
+      },
+    });
+    expect(started).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      payload: {
+        invocation_id: "invoke-send-message",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+      },
+    });
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-send-message",
+        tool_name: "send_message_to",
+        result: { accepted: true },
+      },
+    });
+    expect(segmentEnd).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        tool_name: "send_message_to",
+        metadata: {
+          tool_name: "send_message_to",
           arguments: {
             recipient_name: "pong",
             content: "hello",
           },
         },
-      }),
-    ).toEqual([]);
-
-    expect(
-      converter.convert({
-        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
-        params: {
-          invocation_id: "invoke-send-message",
-          tool_name: "mcp__autobyteus_team__send_message_to",
-        },
-      }),
-    ).toEqual([]);
-
-    expect(
-      converter.convert({
-        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
-        params: {
-          invocation_id: "invoke-send-message",
-          tool_name: "mcp__autobyteus_team__send_message_to",
-          result: { accepted: true },
-        },
-      }),
-    ).toEqual([]);
-
-    expect(
-      converter.convert({
-        method: ClaudeSessionEventName.ITEM_COMPLETED,
-        params: {
-          id: "invoke-send-message",
-          segment_type: "tool_call",
-          tool_name: "mcp__autobyteus_team__send_message_to",
-          arguments: {
-            recipient_name: "pong",
-            content: "hello",
-          },
-        },
-      }),
-    ).toEqual([]);
+      },
+    });
+    expect(JSON.stringify([segmentStart, started, completed, segmentEnd])).not.toContain(
+      "mcp__autobyteus_agent_tools__send_message_to",
+    );
   });
 
   it("passes canonical send_message_to segment and started lifecycle events", () => {
@@ -326,7 +355,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-browser",
-        tool_name: "mcp__autobyteus_browser__open_tab",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         result: {
           tab_id: "browser-1",
           status: "opened",
@@ -354,7 +383,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-browser-content-block",
-        tool_name: "mcp__autobyteus_browser__open_tab",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         result: [
           {
             type: "text",
@@ -391,7 +420,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-browser-envelope",
-        tool_name: "mcp__autobyteus_browser__open_tab",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         result: {
           content: [
             {
@@ -426,7 +455,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-media",
-        tool_name: "mcp__autobyteus_image_audio__generate_image",
+        tool_name: "mcp__autobyteus_agent_tools__generate_image",
         result: {
           content: [
             {
@@ -452,7 +481,7 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
-  it("preserves unknown MCP browser-like names and results", () => {
+  it("strips the Agent Tools MCP provider from unknown migrated-provider names", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const rawResult = [
       {
@@ -467,7 +496,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-unknown-browser-like",
-        tool_name: "mcp__autobyteus_browser__unknown_tool",
+        tool_name: "mcp__autobyteus_agent_tools__unknown_tool",
         result: rawResult,
       },
     });
@@ -476,7 +505,7 @@ describe("ClaudeSessionEventConverter", () => {
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       payload: {
         invocation_id: "invoke-unknown-browser-like",
-        tool_name: "mcp__autobyteus_browser__unknown_tool",
+        tool_name: "unknown_tool",
         result: rawResult,
       },
     });
@@ -522,7 +551,7 @@ describe("ClaudeSessionEventConverter", () => {
         id: "invoke-browser",
         turn_id: "turn-1",
         segment_type: "tool_call",
-        tool_name: "mcp__autobyteus_browser__open_tab",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         arguments: {
           url: "http://localhost:3000",
         },
@@ -543,7 +572,7 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(JSON.stringify(segmentStart.payload)).not.toContain("mcp__autobyteus_browser__open_tab");
+    expect(JSON.stringify(segmentStart.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
   });
 
   it("normalizes browser MCP tool names in provided segment end metadata", () => {
@@ -555,9 +584,9 @@ describe("ClaudeSessionEventConverter", () => {
         id: "invoke-browser",
         turn_id: "turn-1",
         segment_type: "tool_call",
-        tool_name: "mcp__autobyteus_browser__open_tab",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         metadata: {
-          tool_name: "mcp__autobyteus_browser__open_tab",
+          tool_name: "mcp__autobyteus_agent_tools__open_tab",
           result: {
             tab_id: "browser-1",
             status: "opened",
@@ -581,7 +610,7 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(JSON.stringify(segmentEnd.payload)).not.toContain("mcp__autobyteus_browser__open_tab");
+    expect(JSON.stringify(segmentEnd.payload)).not.toContain("mcp__autobyteus_agent_tools__open_tab");
   });
 
   it("preserves arguments on failed Claude tool completion events", () => {

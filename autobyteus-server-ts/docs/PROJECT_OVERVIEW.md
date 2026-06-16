@@ -14,6 +14,8 @@
 - GraphQL: `/graphql`
 - REST: `/rest/*`
   - Phone Access management and pairing: `/rest/remote-access/*`
+- MCP Streamable HTTP:
+  - AutoByteus Agent Tools MCP Server: `/mcp/agent-tools/:sessionId`
 - Mobile web/PWA static shell: `/mobile` and `/mobile/*`
 - WebSocket:
   - `/ws/agent/:runId`
@@ -27,6 +29,7 @@ Major domains under `src/`:
 
 - Agent definition and execution
 - Agent team definition and execution
+- Server-hosted Agent Tools MCP sessions for configured server-owned tools
 - External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
 - Skills and skill versioning
@@ -69,4 +72,5 @@ This keeps startup robust while still warming caches shortly after boot.
 - `features/remote_access.md`
 - `modules/README.md`
   - `modules/self_evolution.md`
+  - `modules/agent_tools_mcp_server.md`
 - `design/startup_initialization_and_lazy_services.md`

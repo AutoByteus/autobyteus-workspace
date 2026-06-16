@@ -42,8 +42,6 @@ import {
   getCodexAppServerClientManager,
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
-import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
-import { buildMediaDynamicToolRegistrationsForEnabledToolNames } from "../media/build-media-dynamic-tool-registrations.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   DEFAULT_CODEX_SANDBOX_MODE,
@@ -51,14 +49,18 @@ import {
   normalizeCodexSandboxMode,
   type CodexSandboxMode,
 } from "../../../../runtime-management/codex/codex-sandbox-mode-setting.js";
-import { buildCodexPublishArtifactsDynamicToolRegistration } from "../published-artifacts/build-codex-publish-artifacts-dynamic-tool-registration.js";
-import {
-  filterDynamicToolRegistrationsByToolNames,
-} from "./codex-configured-tool-gating.js";
 import {
   resolveConfiguredAgentToolExposure,
-  toConfiguredAgentToolNameSet,
+  type ConfiguredAgentToolExposure,
 } from "../../../shared/configured-agent-tool-exposure.js";
+import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
+import {
+  getAgentToolMcpSessionService,
+  type AgentToolMcpSessionService,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import {
+  materializeCodexAgentToolsMcpThreadConfig,
+} from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -181,6 +183,7 @@ export class CodexThreadBootstrapper {
   private readonly defaultBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly teamBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly clientManager: CodexAppServerClientManager;
+  private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
 
   constructor(
     workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
@@ -190,6 +193,7 @@ export class CodexThreadBootstrapper {
     defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
     teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamMemberCodexThreadBootstrapStrategy(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
+    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;
@@ -198,6 +202,7 @@ export class CodexThreadBootstrapper {
     this.defaultBootstrapStrategy = defaultBootstrapStrategy;
     this.teamBootstrapStrategy = teamBootstrapStrategy;
     this.clientManager = clientManager;
+    this.agentToolMcpSessionService = agentToolMcpSessionService;
   }
 
   async bootstrapForCreate(
@@ -234,33 +239,17 @@ export class CodexThreadBootstrapper {
       agentInstruction,
       configuredToolExposure,
     );
-    const publishedArtifactToolRegistrations =
-      configuredToolExposure.publishArtifactsConfigured
-        ? buildCodexPublishArtifactsDynamicToolRegistration()
-        : null;
-    const dynamicToolRegistrations = mergeDynamicToolRegistrations(
-      mergeDynamicToolRegistrations(
-        filterDynamicToolRegistrationsByToolNames(
-          mergeDynamicToolRegistrations(
-            threadConfigInput.dynamicToolRegistrations,
-            publishedArtifactToolRegistrations,
-          ),
-          toConfiguredAgentToolNameSet(configuredToolExposure),
-        ),
-        buildMediaDynamicToolRegistrationsForEnabledToolNames({
-          enabledToolNames: configuredToolExposure.enabledMediaToolNames,
-          workingDirectory,
-        }),
-      ),
-      buildBrowserDynamicToolRegistrationsForEnabledToolNames(
-        configuredToolExposure.enabledBrowserToolNames,
-      ),
-    );
+    const dynamicToolRegistrations = threadConfigInput.dynamicToolRegistrations;
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
       workingDirectory,
       baseInstructions: threadConfigInput.baseInstructions,
       developerInstructions: threadConfigInput.developerInstructions,
+      appServerConfig: this.createAgentToolsMcpAppServerConfig({
+        runContext,
+        configuredToolExposure,
+        workingDirectory,
+      }),
       dynamicToolRegistrations,
     });
     const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
@@ -298,6 +287,7 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
     baseInstructions: string | null;
     developerInstructions: string | null;
+    appServerConfig: ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null;
     dynamicToolRegistrations: CodexDynamicToolRegistration[] | null;
   }): CodexThreadConfig {
     return buildCodexThreadConfig({
@@ -313,14 +303,51 @@ export class CodexThreadBootstrapper {
       sandbox: resolveEffectiveCodexSandboxModeForRunConfig(input.agentRunConfig),
       baseInstructions: input.baseInstructions,
       developerInstructions: input.developerInstructions,
+      appServerConfig: input.appServerConfig,
       dynamicTools: buildCodexDynamicToolSpecs(input.dynamicToolRegistrations),
     });
+  }
+
+  private createAgentToolsMcpAppServerConfig(input: {
+    runContext: AgentRunContext<CodexAgentRunContext | null>;
+    configuredToolExposure: ConfiguredAgentToolExposure;
+    workingDirectory: string;
+  }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null {
+    const memberTeamContext = input.runContext.config.memberTeamContext;
+    const result = this.agentToolMcpSessionService.createAgentToolMcpSession({
+      owner: memberTeamContext
+        ? {
+            runId: input.runContext.runId,
+            teamRunId: memberTeamContext.teamRunId,
+            memberRunId: memberTeamContext.memberRunId,
+            memberRouteKey: memberTeamContext.memberRouteKey,
+            memberName: memberTeamContext.memberName,
+          }
+        : { runId: input.runContext.runId },
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: input.runContext.runId,
+        senderName: memberTeamContext?.memberName ?? input.runContext.config.agentDefinitionId,
+        runtimeKind: input.runContext.config.runtimeKind,
+        memberTeamContext: memberTeamContext ?? null,
+      }),
+      configuredExposure: input.configuredToolExposure,
+      executionContext: {
+        workingDirectory: input.workingDirectory,
+        memoryDir: input.runContext.config.memoryDir,
+        applicationExecutionContext: input.runContext.config.applicationExecutionContext,
+      },
+      runtimeKind: input.runContext.config.runtimeKind,
+    });
+    if (result.descriptor.enabledTools.length === 0) {
+      return null;
+    }
+    return materializeCodexAgentToolsMcpThreadConfig(result.descriptor);
   }
 
   private async prepareThreadConfigInput(
     runContext: AgentRunContext<CodexAgentRunContext | null>,
     agentInstruction: string | null,
-    configuredToolExposure: import("../../../shared/configured-agent-tool-exposure.js").ConfiguredAgentToolExposure,
+    configuredToolExposure: ConfiguredAgentToolExposure,
   ) {
     const strategy = this.teamBootstrapStrategy.appliesTo(runContext)
       ? this.teamBootstrapStrategy
@@ -390,17 +417,6 @@ export class CodexThreadBootstrapper {
     }
   }
 }
-
-const mergeDynamicToolRegistrations = (
-  primary: CodexDynamicToolRegistration[] | null,
-  secondary: CodexDynamicToolRegistration[] | null,
-): CodexDynamicToolRegistration[] | null => {
-  const merged = [
-    ...(Array.isArray(primary) ? primary : []),
-    ...(Array.isArray(secondary) ? secondary : []),
-  ];
-  return merged.length > 0 ? merged : null;
-};
 
 let cachedCodexThreadBootstrapper: CodexThreadBootstrapper | null = null;
 

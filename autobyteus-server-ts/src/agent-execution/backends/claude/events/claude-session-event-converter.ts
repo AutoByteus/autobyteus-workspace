@@ -2,18 +2,13 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
-import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
-import { isMediaToolName } from "../../../../agent-tools/media/media-tool-contract.js";
 import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
-import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
+import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { normalizeClaudeMediaToolResult } from "../media/claude-media-tool-result-normalizer.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
-
-const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
-const CLAUDE_MEDIA_MCP_TOOL_PREFIX = "mcp__autobyteus_image_audio__";
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
   asString(payload.id);
@@ -32,13 +27,9 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
     return null;
   }
   const trimmed = value.trim();
-  if (trimmed.startsWith(CLAUDE_BROWSER_MCP_TOOL_PREFIX)) {
-    const candidate = trimmed.slice(CLAUDE_BROWSER_MCP_TOOL_PREFIX.length);
-    return isBrowserToolName(candidate) ? candidate : trimmed;
-  }
-  if (trimmed.startsWith(CLAUDE_MEDIA_MCP_TOOL_PREFIX)) {
-    const candidate = trimmed.slice(CLAUDE_MEDIA_MCP_TOOL_PREFIX.length);
-    return isMediaToolName(candidate) ? candidate : trimmed;
+  const agentToolsToolName = normalizeClaudeAgentToolsToolNameForEvent(trimmed);
+  if (agentToolsToolName !== trimmed) {
+    return agentToolsToolName;
   }
   return trimmed;
 };
@@ -170,10 +161,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMPLETED: {
         const id = resolveSegmentId(payload);
         const segmentType = asString(payload.segment_type);
-        const rawToolName = asString(payload.tool_name);
-        if (isClaudeSendMessageMcpToolName(rawToolName)) {
-          return [];
-        }
         const toolName = resolveToolName(payload);
         const segmentMetadata = resolveSegmentMetadata(payload);
         if (!id || !segmentType) {
@@ -194,9 +181,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageMcpToolName(toolName)) {
-          return [];
-        }
         return [this.createEvent(
           claudeEventName,
           AgentRunEventType.TOOL_EXECUTION_STARTED,
@@ -211,9 +195,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageMcpToolName(toolName)) {
-          return [];
-        }
         return [this.createEvent(
           claudeEventName,
           AgentRunEventType.TOOL_APPROVAL_REQUESTED,
@@ -228,9 +209,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_APPROVED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageMcpToolName(toolName)) {
-          return [];
-        }
         const reason = asString(payload.reason);
         return [this.createEvent(claudeEventName, AgentRunEventType.TOOL_APPROVED, {
           ...serializePayload(payload),
@@ -242,9 +220,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageMcpToolName(toolName)) {
-          return [];
-        }
         const reason = asString(payload.reason) ?? "Tool execution denied.";
         return [this.createEvent(claudeEventName, AgentRunEventType.TOOL_DENIED, {
           ...serializePayload(payload),
@@ -258,9 +233,6 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageMcpToolName(toolName)) {
-          return [];
-        }
         const error = asString(payload.error);
         const hasArguments = Object.prototype.hasOwnProperty.call(payload, "arguments");
         const browserNormalizedResult = normalizeClaudeBrowserToolResult(toolName, payload.result ?? null);

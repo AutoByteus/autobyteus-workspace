@@ -1,83 +1,12 @@
-import { buildClaudeTeamMcpServers } from "../team-communication/claude-team-mcp-server-builder.js";
-import type { ClaudeSdkClient } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
-import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
-import type { ClaudeSendMessageToolApprovalHandler } from "../agent-communication/claude-send-message-tool-call-handler.js";
-import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import { buildClaudeBrowserMcpServers } from "../browser/build-claude-browser-mcp-servers.js";
-import { buildClaudeMediaMcpServer } from "../media/build-claude-media-mcp-server.js";
-import { buildClaudePublishArtifactsMcpServer } from "../published-artifacts/build-claude-publish-artifacts-mcp-server.js";
-
-const mergeMcpServerMaps = (
-  ...maps: Array<Record<string, unknown> | null>
-): Record<string, unknown> | null => {
-  const merged: Record<string, unknown> = {};
-  for (const map of maps) {
-    if (!map) {
-      continue;
-    }
-    for (const [name, serverConfig] of Object.entries(map)) {
-      if (Object.prototype.hasOwnProperty.call(merged, name)) {
-        throw new Error(
-          `CLAUDE_MCP_SERVER_NAME_CONFLICT: MCP server '${name}' is already configured for this session.`,
-        );
-      }
-      merged[name] = serverConfig;
-    }
-  }
-  return Object.keys(merged).length > 0 ? merged : null;
-};
+import { materializeClaudeAgentToolsMcpServers } from "../agent-tools-mcp/claude-agent-tools-mcp-materializer.js";
+import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 
 export const buildClaudeSessionMcpServers = async (options: {
-  sendMessageToToolingEnabled: boolean;
-  taskDelegationToolingEnabled?: boolean;
-  enabledTaskDelegationToolNames?: Iterable<string> | null;
-  enabledBrowserToolNames?: Iterable<string> | null;
-  enabledMediaToolNames?: Iterable<string> | null;
-  publishArtifactsToolingEnabled: boolean;
-  runContext: ClaudeRunContext;
-  sdkClient: ClaudeSdkClient;
-  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
-  emitEvent: (runContext: ClaudeRunContext, event: ClaudeSessionEvent) => void;
+  agentToolsMcpDescriptor?: AgentToolMcpDescriptor | null;
 }): Promise<Record<string, unknown> | null> => {
-  const teamToolingEnabled =
-    options.sendMessageToToolingEnabled || options.taskDelegationToolingEnabled === true;
-  const teamMcpServers = teamToolingEnabled
-    ? await buildClaudeTeamMcpServers({
-        runContext: options.runContext,
-        sdkClient: options.sdkClient,
-        requestToolApproval: options.requestToolApproval,
-        emitEvent: options.emitEvent,
-        sendMessageToToolingEnabled: options.sendMessageToToolingEnabled,
-        enabledTaskDelegationToolNames: options.enabledTaskDelegationToolNames,
-      })
-    : null;
-
-  if (teamToolingEnabled && !teamMcpServers) {
-    throw new Error(
-      "CLAUDE_QUERY_MCP_UNAVAILABLE: Unable to build team MCP server configuration.",
-    );
+  const descriptor = options.agentToolsMcpDescriptor ?? null;
+  if (!descriptor || descriptor.enabledTools.length === 0) {
+    return null;
   }
-
-  const browserMcpServers = await buildClaudeBrowserMcpServers({
-    sdkClient: options.sdkClient,
-    enabledToolNames: options.enabledBrowserToolNames,
-  });
-
-  const enabledMediaToolNames = Array.from(options.enabledMediaToolNames ?? []);
-  const mediaMcpServer = enabledMediaToolNames.length > 0
-    ? await buildClaudeMediaMcpServer({
-        sdkClient: options.sdkClient,
-        enabledToolNames: enabledMediaToolNames,
-        workingDirectory: options.runContext.runtimeContext.sessionConfig.workingDirectory,
-      })
-    : null;
-
-  const publishedArtifactMcpServer = options.publishArtifactsToolingEnabled
-    ? await buildClaudePublishArtifactsMcpServer({
-        sdkClient: options.sdkClient,
-        runId: options.runContext.runId,
-      })
-    : null;
-
-  return mergeMcpServerMaps(teamMcpServers, browserMcpServers, mediaMcpServer, publishedArtifactMcpServer);
+  return materializeClaudeAgentToolsMcpServers(descriptor);
 };

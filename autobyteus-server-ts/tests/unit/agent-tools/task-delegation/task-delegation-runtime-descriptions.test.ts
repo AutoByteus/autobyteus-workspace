@@ -1,7 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildTaskDelegationDynamicToolRegistrations } from "../../../../src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.js";
-import { buildClaudeTaskDelegationToolDefinitions } from "../../../../src/agent-execution/backends/claude/task-delegation/build-claude-task-delegation-tool-definitions.js";
 import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -17,6 +15,7 @@ import {
   buildReviewTaskResultParameterSchema,
   buildSubmitTaskResultParameterSchema,
 } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.js";
+import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
 
 const findParameter = (schema: ParameterSchema, name: string) =>
   schema.parameters.find((parameter) => parameter.name === name);
@@ -87,37 +86,29 @@ describe("task delegation runtime descriptions", () => {
     expect(findParameter(schema, "decision")?.enumValues).toEqual(["accept", "request_revision"]);
   });
 
-  it("projects pure task tools into Codex dynamic tool registration", () => {
-    const registrations = buildTaskDelegationDynamicToolRegistrations({
-      memberTeamContext,
-      enabledToolNames: TASK_DELEGATION_TOOL_NAME_LIST,
-    });
+  it("projects pure task tools through Agent Tools MCP adapter definitions", () => {
+    const adapters = new TaskDelegationToolsMcpAdapterProvider().getAdapters();
 
-    expect(registrations?.map((registration) => registration.spec.name)).toEqual([
+    expect(adapters.map((adapter) => adapter.definition.name)).toEqual([
       DELEGATE_TASKS_TOOL_NAME,
       SUBMIT_TASK_RESULT_TOOL_NAME,
       REVIEW_TASK_RESULT_TOOL_NAME,
     ]);
-    expect(JSON.stringify(registrations?.map((registration) => registration.spec))).not.toContain(["mark", "task", "completed"].join("_"));
-    expect(JSON.stringify(registrations?.map((registration) => registration.spec))).not.toContain(["accept", "task"].join("_"));
-    expect(registrations?.[1]?.spec.description).toContain("selector-free");
-  });
-
-  it("projects pure task tools into Claude tool definitions", async () => {
-    const createToolDefinition = vi.fn(async (definition: Record<string, unknown>) => definition);
-    const definitions = await buildClaudeTaskDelegationToolDefinitions({
-      sdkClient: { createToolDefinition } as never,
-      memberTeamContext,
-      enabledToolNames: TASK_DELEGATION_TOOL_NAME_LIST,
-    });
-
-    expect(definitions?.map((definition) => definition.name)).toEqual([
-      DELEGATE_TASKS_TOOL_NAME,
-      SUBMIT_TASK_RESULT_TOOL_NAME,
-      REVIEW_TASK_RESULT_TOOL_NAME,
-    ]);
-    expect(createToolDefinition).toHaveBeenCalledTimes(3);
-    expect(JSON.stringify(definitions)).not.toContain(["mark", "task", "failed"].join("_"));
-    expect(JSON.stringify(definitions)).not.toContain(["accept", "task"].join("_"));
+    expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["mark", "task", "completed"].join("_"));
+    expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["accept", "task"].join("_"));
+    expect(adapters[1]?.definition.description).toContain("selector-free");
+    expect(adapters.every((adapter) => !adapter.isAvailable({
+      configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
+      sender: null,
+      executionContext: {},
+    }))).toBe(true);
+    expect(adapters.every((adapter) => adapter.isAvailable({
+      configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
+      sender: {
+        senderRunId: memberTeamContext.memberRunId,
+        memberTeamContext,
+      } as never,
+      executionContext: {},
+    }))).toBe(true);
   });
 });

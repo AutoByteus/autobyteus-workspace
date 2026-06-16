@@ -111,7 +111,7 @@ const buildArtifactItemSchema = (): ParameterSchema => {
   return itemSchema;
 };
 
-const buildArgumentSchema = (): ParameterSchema => {
+export const buildPublishArtifactsParameterSchema = (): ParameterSchema => {
   const schema = new ParameterSchema();
   schema.addParameter(
     new ParameterDefinition({
@@ -126,7 +126,7 @@ const buildArgumentSchema = (): ParameterSchema => {
   return schema;
 };
 
-const argumentSchema = buildArgumentSchema();
+const argumentSchema = buildPublishArtifactsParameterSchema();
 
 const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Promise<string> => {
   const runId =

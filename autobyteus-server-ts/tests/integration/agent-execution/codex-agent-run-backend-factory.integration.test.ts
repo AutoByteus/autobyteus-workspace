@@ -1333,7 +1333,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("executes open_tab through the live Codex browser dynamic tool path", async () => {
+  it("executes open_tab through the live Codex Agent Tools MCP path", async () => {
     const workspaceRoot = await createWorkspace("codex-backend-browser-tool");
     browserBridgeServer = new BrowserBridgeLiveTestServer();
     await browserBridgeServer.start();
@@ -1441,7 +1441,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("publishes an existing workspace file through the live Codex publish_artifacts dynamic tool path", async () => {
+  it("publishes an existing workspace file through the live Codex Agent Tools MCP path", async () => {
     const workspaceRoot = await createWorkspace("codex-backend-publish-artifacts");
     const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceRoot);
     clientManager = new CodexAppServerClientManager({
@@ -1605,7 +1605,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("executes the full browser tool surface through the live Codex browser dynamic tool path", async () => {
+  it("executes the full browser tool surface through the live Codex Agent Tools MCP path", async () => {
     clientManager = new CodexAppServerClientManager(
       (cwd) => new CodexAppServerClient({ cwd }),
     );

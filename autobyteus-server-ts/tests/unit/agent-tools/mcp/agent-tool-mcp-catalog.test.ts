@@ -1,0 +1,241 @@
+import { describe, expect, it } from "vitest";
+import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
+import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
+import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
+import { BrowserToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/browser-tools-mcp-adapter-provider.js";
+import { MediaToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/media-tools-mcp-adapter-provider.js";
+import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
+import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
+import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
+
+const sender = buildAgentRunMessageSenderContext({
+  senderRunId: "run-1",
+  senderName: "agent",
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+});
+
+const memberSender = buildAgentRunMessageSenderContext({
+  senderRunId: "member-run-1",
+  senderName: "member",
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  memberTeamContext: {
+    teamRunId: "team-1",
+    teamDefinitionId: "team-def",
+    teamName: "team",
+    teamBackendKind: "MIXED",
+    memberName: "member",
+    memberPath: ["member"],
+    memberRouteKey: "member",
+    memberRunId: "member-run-1",
+    coordinatorMemberRouteKey: null,
+    members: [],
+  } as any,
+});
+
+const createCatalog = (browserSupported: boolean): AgentToolMcpCatalog =>
+  new AgentToolMcpCatalog({
+    providers: [
+      new SendMessageToMcpAdapterProvider({ dispatch: async () => ({ accepted: true }) } as any),
+      new BrowserToolsMcpAdapterProvider({ isBrowserSupported: () => browserSupported } as any),
+      new MediaToolsMcpAdapterProvider({} as any),
+      new TaskDelegationToolsMcpAdapterProvider({} as any),
+      new PublishArtifactsMcpAdapterProvider({} as any),
+    ],
+  });
+
+describe("AgentToolMcpCatalog", () => {
+  it("resolves configured supported tools across families with browser and team availability gates", () => {
+    const exposure = buildConfiguredAgentToolExposure([
+      "send_message_to",
+      "open_tab",
+      "generate_image",
+      "delegate_tasks",
+      "publish_artifacts",
+      "unknown_tool",
+    ]);
+
+    expect(createCatalog(false).resolveConfiguredSupportedToolNames({
+      configuredExposure: exposure,
+      sender,
+      executionContext: { workingDirectory: "/tmp/workspace" },
+    })).toEqual(["send_message_to", "generate_image", "publish_artifacts"]);
+
+    expect(createCatalog(true).resolveConfiguredSupportedToolNames({
+      configuredExposure: exposure,
+      sender: memberSender,
+      executionContext: { workingDirectory: "/tmp/workspace" },
+    })).toEqual([
+      "send_message_to",
+      "open_tab",
+      "generate_image",
+      "delegate_tasks",
+      "publish_artifacts",
+    ]);
+  });
+});
+
+class FakeConfiguredMcpTool extends BaseTool {
+  constructor(private readonly result: unknown = { content: [{ type: "text", text: "ok" }] }) {
+    super();
+  }
+  static getDescription(): string { return "Fake configured MCP tool"; }
+  static getArgumentSchema(): ParameterSchema | null { return null; }
+  protected async _execute(): Promise<unknown> { return this.result; }
+}
+
+const buildMcpDefinition = (
+  name: string,
+  serverId: string,
+  result: unknown = { content: [{ type: "text", text: "ok" }] },
+): ToolDefinition => new ToolDefinition(
+  name,
+  `Description for ${name}`,
+  ToolOrigin.MCP,
+  "MCP",
+  () => new ParameterSchema(),
+  () => null,
+  {
+    customFactory: () => new FakeConfiguredMcpTool(result),
+    metadata: { mcp_server_id: serverId },
+  },
+);
+
+class FakeToolRegistry {
+  private readonly definitions = new Map<string, ToolDefinition>();
+  register(definition: ToolDefinition): void { this.definitions.set(definition.name, definition); }
+  getToolDefinition(name: string): ToolDefinition | undefined { return this.definitions.get(name); }
+  createTool(name: string): BaseTool {
+    const definition = this.definitions.get(name);
+    if (!definition) {
+      throw new Error(`No definition for ${name}`);
+    }
+    const tool = definition.customFactory!();
+    tool.definition = definition;
+    return tool;
+  }
+}
+
+const buildSession = (input: {
+  enabledTools: string[];
+  configuredMcpToolSources: any[];
+  owner?: { runId: string; memberRunId?: string };
+}) => ({
+  sessionId: "session",
+  tokenHash: Buffer.from("hash"),
+  owner: input.owner ?? { runId: "run" },
+  sender,
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  configuredExposure: buildConfiguredAgentToolExposure(input.enabledTools),
+  executionContext: {},
+  enabledTools: input.enabledTools,
+  configuredMcpToolSources: input.configuredMcpToolSources,
+  createdAt: new Date(),
+  revokedAt: null,
+  toolExecutionObserver: null,
+});
+
+describe("AgentToolMcpCatalog configured MCP bridge", () => {
+  it("adds selected MCP-origin registry tools to session exposure and tools/list", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite"));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+      "db_query",
+    ]));
+
+    expect(exposure.enabledTools).toEqual(["db_query"]);
+    expect(exposure.configuredMcpToolSources).toEqual([
+      { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
+    ]);
+    expect(exposure.diagnostics).toEqual([]);
+
+    const tools = catalog.listMcpToolsForSession(buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any);
+
+    expect(tools).toEqual([
+      {
+        name: "db_query",
+        description: "Description for db_query",
+        inputSchema: { type: "object", properties: {}, required: [], additionalProperties: false },
+      },
+    ]);
+  });
+
+  it("keeps built-in adapter names authoritative when a configured MCP tool collides", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("send_message_to", "server-a"));
+    const [sendMessageAdapter] = new SendMessageToMcpAdapterProvider({
+      dispatch: async () => ({ accepted: true }),
+    } as any).getAdapters();
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [sendMessageAdapter!],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+      "send_message_to",
+    ]));
+
+    expect(exposure.enabledTools).toEqual(["send_message_to"]);
+    expect(exposure.configuredMcpToolSources).toEqual([]);
+    expect(exposure.diagnostics).toEqual([expect.objectContaining({
+      code: "configured_mcp_tool_collision",
+      registeredToolName: "send_message_to",
+    })]);
+  });
+
+  it("resolves configured MCP calls through a registry-backed adapter", async () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite", {
+      content: [{ type: "text", text: "rows" }],
+      structuredContent: { count: 1 },
+    }));
+    const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
+    const exposure = catalog.resolveConfiguredSessionToolExposure(
+      buildConfiguredAgentToolExposure(["db_query"]),
+    );
+    const session = buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+      owner: { runId: "run", memberRunId: "member-run" },
+    }) as any;
+
+    const availability = catalog.resolveToolCallAvailability(session, "db_query");
+
+    expect(availability.ok).toBe(true);
+    if (!availability.ok) {
+      throw new Error("Expected configured MCP tool to be available.");
+    }
+    await expect(availability.adapter.execute({ session, rawArguments: { sql: "select 1" } })).resolves.toEqual({
+      kind: "mcp_tool_result",
+      result: {
+        content: [{ type: "text", text: "rows" }],
+        structuredContent: { count: 1 },
+      },
+    });
+  });
+
+  it("fails closed when a session configured MCP source no longer matches the registry", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite"));
+    const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure(["db_query"]));
+    registry.register(buildMcpDefinition("db_query", "different-server"));
+
+    expect(catalog.resolveToolCallAvailability(buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any, "db_query")).toEqual({ ok: false, reason: "unknown_tool" });
+  });
+});

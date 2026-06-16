@@ -22,7 +22,7 @@ Agent Artifacts cover:
 - `write_file`
 - `edit_file`
 - generated outputs from known output-producing tools (`generate_image`,
-  `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP
+  `edit_image`, `generate_speech`, including Agent Tools MCP route-backed
   forms)
 
 Canonical runtime shape:

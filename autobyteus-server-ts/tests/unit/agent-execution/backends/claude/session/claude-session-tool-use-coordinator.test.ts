@@ -295,7 +295,7 @@ describe("ClaudeSessionToolUseCoordinator", () => {
     });
   });
 
-  it("keeps send_message_to raw tool_use lifecycle suppressed", () => {
+  it("emits lifecycle for Agent Tools MCP send_message_to raw tool use", () => {
     const { coordinator, events } = createCoordinator();
     const runContext = buildRunContext();
 
@@ -306,7 +306,7 @@ describe("ClaudeSessionToolUseCoordinator", () => {
           {
             type: "tool_use",
             id: "toolu-send-message-1",
-            name: "mcp__autobyteus_team__send_message_to",
+            name: "mcp__autobyteus_agent_tools__send_message_to",
             input: {
               recipient_name: "worker",
               content: "hello",
@@ -328,6 +328,25 @@ describe("ClaudeSessionToolUseCoordinator", () => {
       },
     });
 
-    expect(events).toEqual([]);
+    expect(events.map((event) => event.method)).toEqual([
+      ClaudeSessionEventName.ITEM_ADDED,
+      ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      ClaudeSessionEventName.ITEM_COMPLETED,
+      ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+    ]);
+    expect(events[0]?.params).toMatchObject({
+      id: "toolu-send-message-1",
+      tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+      arguments: {
+        recipient_name: "worker",
+        content: "hello",
+      },
+    });
+    expect(events[3]?.params).toMatchObject({
+      invocation_id: "toolu-send-message-1",
+      tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+      result: "{\"ok\":true}",
+    });
   });
+
 });

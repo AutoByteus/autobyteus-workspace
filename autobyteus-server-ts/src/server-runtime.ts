@@ -22,6 +22,7 @@ import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstr
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import { registerAgentToolsMcpRoutes } from "./agent-tools/mcp/agent-tools-mcp-routes.js";
 import { registerRemoteAccessPolicyPlugin } from "./api/security/remote-access-policy-plugin.js";
 import { registerMobileWebStaticRoutes } from "./api/static/mobile-web.js";
 import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
@@ -62,6 +63,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   });
   const maxUploadFileSizeBytes = 25 * 1024 * 1024;
 
+  await registerAgentToolsMcpRoutes(app);
   await app.register(cors, {
     origin: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

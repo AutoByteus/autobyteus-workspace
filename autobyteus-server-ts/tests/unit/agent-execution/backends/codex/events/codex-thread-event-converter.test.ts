@@ -3,6 +3,29 @@ import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/
 import { CodexThreadEventConverter } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
+const expectNoAgentToolsProviderMarkers = (
+  payloads: Array<Record<string, unknown>>,
+): void => {
+  for (const payload of payloads) {
+    const serialized = JSON.stringify(payload);
+    expect(serialized).not.toContain("autobyteus_agent_tools");
+    expect(serialized).not.toContain("mcp__autobyteus_agent_tools__");
+    expect(serialized).not.toContain("Authorization");
+    expect(serialized).not.toContain("Bearer");
+    expect(serialized).not.toContain("http_headers");
+  }
+};
+
+const expectNoAgentToolsSecrets = (
+  payloads: Array<Record<string, unknown>>,
+  secrets: string[],
+): void => {
+  const serialized = JSON.stringify(payloads);
+  for (const secret of secrets) {
+    expect(serialized).not.toContain(secret);
+  }
+};
+
 describe("CodexThreadEventConverter", () => {
   it("ignores codex-prefixed internal events at the dispatcher boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
@@ -327,14 +350,14 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("maps local dynamic tool approval requests into TOOL_APPROVAL_REQUESTED with arguments", () => {
+  it("maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
       method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
       params: {
         invocation_id: "call_send_message_approval",
-        tool_name: "send_message_to",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
           recipient_name: "code_reviewer",
           content: "ready for review",
@@ -502,6 +525,68 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
+  });
+
+  it("normalizes observed local MCP open_tab completion envelopes into direct browser results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_open_tab",
+        turn_id: "turn-browser-1",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
+        arguments: {
+          url: "https://example.com",
+          wait_until: "domcontentloaded",
+          reuse_existing: true,
+          title: "Open Tab Test",
+        },
+        result: {
+          content: [
+            {
+              type: "text",
+              text: "{\n  \"tab_id\": \"65ab2c\",\n  \"status\": \"reused\",\n  \"url\": \"https://example.com/\",\n  \"title\": \"Open Tab Test\"\n}",
+            },
+          ],
+          structuredContent: null,
+          _meta: null,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_open_tab",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__open_tab",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_open_tab",
+        turn_id: "turn-browser-1",
+        tool_name: "open_tab",
+        arguments: {
+          url: "https://example.com",
+          wait_until: "domcontentloaded",
+          reuse_existing: true,
+          title: "Open Tab Test",
+        },
+        result: {
+          tab_id: "65ab2c",
+          status: "reused",
+          url: "https://example.com/",
+          title: "Open Tab Test",
+        },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
   });
 
   it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
@@ -711,16 +796,17 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("fans out dynamicToolCall starts into tool_call segment and lifecycle start", () => {
+  it("fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
-          type: "dynamicToolCall",
+          type: "mcpToolCall",
           id: "call_send_message",
-          tool: "send_message_to",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__send_message_to",
           arguments: {
             recipient_name: "pong",
             content: "hello",
@@ -735,9 +821,13 @@ describe("CodexThreadEventConverter", () => {
       AgentRunEventType.SEGMENT_START,
       AgentRunEventType.TOOL_EXECUTION_STARTED,
     ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
     expect(converted[0]).toMatchObject({
       runId: "run-1",
       payload: {
+        item: {
+          tool: "send_message_to",
+        },
         id: "call_send_message",
         segment_type: "tool_call",
         metadata: {
@@ -749,9 +839,17 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
+    expect(converted[0].payload).toMatchObject({
+      item: expect.not.objectContaining({
+        server: expect.anything(),
+      }),
+    });
     expect(converted[1]).toMatchObject({
       runId: "run-1",
       payload: {
+        item: {
+          tool: "send_message_to",
+        },
         invocation_id: "call_send_message",
         tool_name: "send_message_to",
         arguments: {
@@ -762,16 +860,267 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("fans out successful dynamicToolCall completions into terminal success and segment end", () => {
+  it("maps successful Agent Tools MCP send_message_to completions into canonical terminal success", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_send_message",
+        turn_id: "turn-1",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_send_message",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__send_message_to",
+          status: "completed",
+          success: true,
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Delivered message to pong.",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        item: {
+          tool: "send_message_to",
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Delivered message to pong.",
+            },
+          ],
+        },
+        invocation_id: "call_send_message",
+        turn_id: "turn-1",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+        result: "Delivered message to pong.",
+      },
+    });
+  });
+
+  it("normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generate_image",
+        turn_id: "turn-1",
+        tool_name: "mcp__autobyteus_agent_tools__generate_image",
+        arguments: {
+          prompt: "sunrise",
+          output_file_path: "out.png",
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generate_image",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__generate_image",
+          status: "completed",
+          success: true,
+          contentItems: [
+            {
+              type: "inputText",
+              text: "{\"file_path\":\"/tmp/out.png\"}",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      payload: {
+        item: {
+          tool: "generate_image",
+        },
+        invocation_id: "call_generate_image",
+        tool_name: "generate_image",
+        arguments: {
+          prompt: "sunrise",
+          output_file_path: "out.png",
+        },
+        result: {
+          file_path: "/tmp/out.png",
+        },
+      },
+    });
+  });
+
+  it("redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generate_image_secret_probe",
+        turn_id: "turn-1",
+        tool_name: "mcp__autobyteus_agent_tools__generate_image",
+        serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-secret-123",
+        http_headers: {
+          Authorization: "Bearer raw-header-token",
+        },
+        arguments: {
+          prompt: "sunrise",
+          capabilityToken: "raw-capability-token",
+          nested: {
+            token: "raw-nested-token",
+            safe: "keep me",
+          },
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generate_image_secret_probe",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__generate_image",
+          status: "completed",
+          success: true,
+          capabilityToken: "raw-item-capability-token",
+          tokenHash: "raw-token-hash",
+          contentItems: [
+            {
+              type: "inputText",
+              text:
+                "mcp__autobyteus_agent_tools__generate_image Authorization: Bearer raw-freeform-token " +
+                "http://127.0.0.1:3000/mcp/agent-tools/session-text-456 capabilityToken=raw-text-capability",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expectNoAgentToolsSecrets(converted.map((event) => event.payload), [
+      "raw-header-token",
+      "raw-capability-token",
+      "raw-nested-token",
+      "raw-item-capability-token",
+      "raw-token-hash",
+      "raw-freeform-token",
+      "raw-text-capability",
+      "session-secret-123",
+      "session-text-456",
+    ]);
+    expect(converted[0]).toMatchObject({
+      payload: {
+        tool_name: "generate_image",
+        arguments: {
+          prompt: "sunrise",
+          nested: {
+            safe: "keep me",
+          },
+        },
+        item: {
+          tool: "generate_image",
+          contentItems: [
+            {
+              text: expect.stringContaining("generate_image"),
+            },
+          ],
+        },
+      },
+    });
+    const serialized = JSON.stringify(converted.map((event) => event.payload));
+    expect(serialized).toContain("/mcp/agent-tools/<redacted>");
+    expect(serialized).toContain("authorization_redacted=<redacted>");
+    expect(serialized).toContain("capabilityToken=<redacted>");
+  });
+
+  it("maps failed Agent Tools MCP send_message_to completions into canonical terminal failure", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_send_message_failed",
+        turn_id: "turn-1",
+        tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+        arguments: {
+          recipient_name: "missing",
+          content: "hello",
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_send_message_failed",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__send_message_to",
+          status: "completed",
+          success: false,
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Recipient missing was not found.",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_FAILED,
+    ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        item: {
+          tool: "send_message_to",
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Recipient missing was not found.",
+            },
+          ],
+        },
+        invocation_id: "call_send_message_failed",
+        turn_id: "turn-1",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "missing",
+          content: "hello",
+        },
+        error: "Recipient missing was not found.",
+      },
+    });
+  });
+
+  it("sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
-          type: "dynamicToolCall",
-          id: "call_send_message",
-          tool: "send_message_to",
+          type: "mcpToolCall",
+          id: "call_send_message_segment_end",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__send_message_to",
           arguments: {
             recipient_name: "pong",
             content: "hello",
@@ -789,21 +1138,22 @@ describe("CodexThreadEventConverter", () => {
     });
 
     expect(converted.map((event) => event.eventType)).toEqual([
-      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       AgentRunEventType.SEGMENT_END,
     ]);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
     expect(converted[0]).toMatchObject({
       runId: "run-1",
       payload: {
-        invocation_id: "call_send_message",
-        tool_name: "send_message_to",
-        result: "Delivered message to pong.",
-      },
-    });
-    expect(converted[1]).toMatchObject({
-      runId: "run-1",
-      payload: {
-        id: "call_send_message",
+        item: {
+          tool: "send_message_to",
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Delivered message to pong.",
+            },
+          ],
+        },
+        id: "call_send_message_segment_end",
         metadata: {
           tool_name: "send_message_to",
           arguments: {
@@ -815,7 +1165,7 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("fans out failed dynamicToolCall completions into terminal failure with contentItems error and segment end", () => {
+  it("maps generic dynamic tool completions into terminal success and segment end", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -823,64 +1173,11 @@ describe("CodexThreadEventConverter", () => {
       params: {
         item: {
           type: "dynamicToolCall",
-          id: "call_send_message_failed",
-          tool: "send_message_to",
-          arguments: {
-            recipient_name: "missing",
-            content: "hello",
-          },
-          status: "completed",
-          success: false,
-          contentItems: [
-            {
-              type: "inputText",
-              text: "Recipient missing was not found.",
-            },
-          ],
-        },
-      },
-    });
-
-    expect(converted.map((event) => event.eventType)).toEqual([
-      AgentRunEventType.TOOL_EXECUTION_FAILED,
-      AgentRunEventType.SEGMENT_END,
-    ]);
-    expect(converted[0]).toMatchObject({
-      runId: "run-1",
-      payload: {
-        invocation_id: "call_send_message_failed",
-        tool_name: "send_message_to",
-        error: "Recipient missing was not found.",
-      },
-    });
-    expect(converted[1]).toMatchObject({
-      runId: "run-1",
-      payload: {
-        id: "call_send_message_failed",
-        metadata: {
-          tool_name: "send_message_to",
-          arguments: {
-            recipient_name: "missing",
-            content: "hello",
-          },
-        },
-      },
-    });
-  });
-
-  it("maps browser dynamic tool completions into terminal success and segment end", () => {
-    const converter = new CodexThreadEventConverter("run-1");
-
-    const converted = converter.convert({
-      method: CodexThreadEventName.ITEM_COMPLETED,
-      params: {
-        item: {
-          type: "dynamicToolCall",
-          id: "call_browser_open",
-          name: "open_tab",
+          id: "call_custom_dynamic",
+          name: "custom_dynamic_tool",
           status: "completed",
           result: {
-            tab_id: "browser-1",
+            tab_id: "dynamic-1",
             status: "opened",
           },
         },
@@ -895,10 +1192,10 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
       payload: {
-        invocation_id: "call_browser_open",
-        tool_name: "open_tab",
+        invocation_id: "call_custom_dynamic",
+        tool_name: "custom_dynamic_tool",
         result: {
-          tab_id: "browser-1",
+          tab_id: "dynamic-1",
           status: "opened",
         },
       },
@@ -907,15 +1204,15 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_END,
       runId: "run-1",
       payload: {
-        id: "call_browser_open",
+        id: "call_custom_dynamic",
         metadata: {
-          tool_name: "open_tab",
+          tool_name: "custom_dynamic_tool",
         },
       },
     });
   });
 
-  it("parses browser dynamic tool JSON text results from contentItems", () => {
+  it("parses generic dynamic tool JSON text results from contentItems", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -923,14 +1220,14 @@ describe("CodexThreadEventConverter", () => {
       params: {
         item: {
           type: "dynamicToolCall",
-          id: "call_browser_open_text",
-          name: "open_tab",
+          id: "call_custom_dynamic_text",
+          name: "custom_dynamic_tool",
           status: "completed",
           contentItems: [
             {
               type: "inputText",
               text: JSON.stringify({
-                tab_id: "browser-text-1",
+                tab_id: "dynamic-text-1",
                 status: "opened",
                 url: "https://example.com",
                 title: "Example",
@@ -949,10 +1246,10 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
       payload: {
-        invocation_id: "call_browser_open_text",
-        tool_name: "open_tab",
+        invocation_id: "call_custom_dynamic_text",
+        tool_name: "custom_dynamic_tool",
         result: {
-          tab_id: "browser-text-1",
+          tab_id: "dynamic-text-1",
           status: "opened",
           url: "https://example.com",
           title: "Example",
@@ -963,9 +1260,9 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_END,
       runId: "run-1",
       payload: {
-        id: "call_browser_open_text",
+        id: "call_custom_dynamic_text",
         metadata: {
-          tool_name: "open_tab",
+          tool_name: "custom_dynamic_tool",
         },
       },
     });

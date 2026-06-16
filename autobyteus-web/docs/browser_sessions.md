@@ -279,17 +279,29 @@ The embedded desktop server is not the only runtime path anymore.
 
 ### Codex
 
-Codex browser tools are exposed as dynamic tools.
-Runtime-specific raw result shapes are normalized into canonical browser tool events at the Codex event-converter boundary.
+Codex browser tools are exposed through the server-hosted
+`autobyteus_agent_tools` Agent Tools MCP descriptor when the agent is configured
+for browser tools and the browser bridge is available. Runtime-specific raw
+result shapes are normalized into canonical browser tool events at the Codex
+event-converter boundary; for example,
+`mcp__autobyteus_agent_tools__open_tab` must stream as `open_tab` with
+`result.tab_id` available directly before the renderer sees
+`TOOL_EXECUTION_SUCCEEDED`. Browser tools are not Codex dynamic tools.
 
 ### Claude
 
-Claude browser tools are exposed through MCP projection.
-MCP-prefixed raw tool names are normalized into canonical browser tool names at the Claude event-converter boundary.
-Successful Claude browser MCP content-block or content-envelope results are also normalized there into the same canonical browser result objects used by other runtimes.
-For example, `mcp__autobyteus_browser__open_tab` must stream as `open_tab` with `result.tab_id` available directly before the renderer sees `TOOL_EXECUTION_SUCCEEDED`.
+Claude browser tools are exposed through the same server-hosted
+`autobyteus_agent_tools` Agent Tools MCP descriptor. MCP-prefixed raw tool names
+are normalized into canonical browser tool names at the Claude event-converter
+boundary. Successful Claude browser MCP content-block or content-envelope
+results are also normalized there into the same canonical browser result objects
+used by other runtimes. For example,
+`mcp__autobyteus_agent_tools__open_tab` must stream as `open_tab` with
+`result.tab_id` available directly before the renderer sees
+`TOOL_EXECUTION_SUCCEEDED`.
 
-The Claude browser normalization is intentionally allowlisted to the AutoByteus browser MCP prefix and known stable browser tool names.
+Browser normalization is intentionally limited to the AutoByteus Agent Tools MCP
+prefix and known stable browser tool names.
 Unknown browser-like suffixes and tools from other MCP servers must remain raw so the converter does not rewrite unrelated MCP traffic.
 Conversation tool cards, Activity rows, and Browser-shell focus handling consume the backend-provided canonical event contract; they should not strip MCP prefixes or parse Claude MCP result envelopes as presentation logic.
 

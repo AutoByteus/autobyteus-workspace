@@ -13,10 +13,14 @@ import { ContextFileLocalPathResolver } from "../../../../context-files/services
 
 const HTTP_URL_PATTERN = /^https?:\/\//i;
 const IMAGE_DATA_URL_PATTERN = /^data:image\//i;
-const contextFileLocalPathResolver = new ContextFileLocalPathResolver();
-const contextFileReferenceOptions: ContextFileReferenceSectionOptions = {
+
+type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
+
+const createContextFileReferenceOptions = (
+  contextFileLocalPathResolver: ContextFilePathResolverLike,
+): ContextFileReferenceSectionOptions => ({
   resolveUri: (uri) => contextFileLocalPathResolver.resolve(uri),
-};
+});
 
 const resolveLocalPathUri = (uri: string): string | null => {
   const normalizedUri = uri.trim();
@@ -35,7 +39,10 @@ const resolveLocalPathUri = (uri: string): string | null => {
   return path.isAbsolute(normalizedUri) ? normalizedUri : null;
 };
 
-const toCodexImageInput = (rawUri: string): JsonObject | null => {
+const toCodexImageInput = (
+  rawUri: string,
+  contextFileLocalPathResolver: ContextFilePathResolverLike,
+): JsonObject | null => {
   const uri = rawUri.trim();
   if (!uri) {
     return null;
@@ -62,12 +69,20 @@ const toCodexImageInput = (rawUri: string): JsonObject | null => {
   return { type: "localImage", path: uri };
 };
 
-const isEligibleReferenceFile = (contextFile: ContextFile): boolean =>
-  collectContextFileReferencePaths([contextFile], contextFileReferenceOptions).length > 0;
+const isEligibleReferenceFile = (
+  contextFile: ContextFile,
+  contextFileReferenceOptions: ContextFileReferenceSectionOptions,
+): boolean =>
+  collectContextFileReferencePaths([contextFile], contextFileReferenceOptions)
+    .length > 0;
 
 export const toCodexUserInput = (
   message: AgentInputUserMessage,
 ): Array<JsonObject> => {
+  const contextFileLocalPathResolver = new ContextFileLocalPathResolver();
+  const contextFileReferenceOptions = createContextFileReferenceOptions(
+    contextFileLocalPathResolver,
+  );
   const baseText = message.content.trim();
   const textLines: string[] = [];
   if (baseText) {
@@ -77,14 +92,20 @@ export const toCodexUserInput = (
 
   for (const contextFile of message.contextFiles ?? []) {
     if (contextFile.fileType === ContextFileType.IMAGE) {
-      const imageInput = toCodexImageInput(contextFile.uri);
+      const imageInput = toCodexImageInput(
+        contextFile.uri,
+        contextFileLocalPathResolver,
+      );
       if (imageInput) {
         inputs.push(imageInput);
       }
       continue;
     }
 
-    if (!isEligibleReferenceFile(contextFile) && contextFile.uri.trim()) {
+    if (
+      !isEligibleReferenceFile(contextFile, contextFileReferenceOptions) &&
+      contextFile.uri.trim()
+    ) {
       textLines.push(`Context file: ${contextFile.uri.trim()}`);
     }
   }

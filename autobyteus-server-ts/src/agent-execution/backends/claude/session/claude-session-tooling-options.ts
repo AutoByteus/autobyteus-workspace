@@ -1,12 +1,8 @@
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
+import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-artifacts/published-artifact-tool-contract.js";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
 import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
-import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
-
-const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
-const CLAUDE_MEDIA_MCP_TOOL_PREFIX = "mcp__autobyteus_image_audio__";
-const CLAUDE_TASK_DELEGATION_MCP_TOOL_PREFIX = "mcp__autobyteus_team__";
-const CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME =
-  "mcp__autobyteus_published_artifacts__publish_artifacts";
+import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
 export type ClaudeSessionToolingOptions = {
   sendMessageToToolingEnabled: boolean;
@@ -15,6 +11,8 @@ export type ClaudeSessionToolingOptions = {
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
+  agentToolsMcpToolingRequested: boolean;
+  agentToolsMcpEnabledToolNames: string[];
   allowedTools: string[];
 };
 
@@ -22,6 +20,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   configuredToolExposure: ConfiguredAgentToolExposure;
   hasMaterializedSkills: boolean;
   memberTeamContext: MemberTeamContext | null;
+  agentToolsMcpEnabledToolNames?: Iterable<string> | null;
 }): ClaudeSessionToolingOptions => {
   const enabledBrowserToolNames = [
     ...input.configuredToolExposure.enabledBrowserToolNames,
@@ -38,13 +37,19 @@ export const resolveClaudeSessionToolingOptions = (input: {
     input.configuredToolExposure.publishArtifactsConfigured;
   const taskDelegationToolingEnabled =
     Boolean(input.memberTeamContext) && enabledTaskDelegationToolNames.length > 0;
-  const allowedTools = resolveAllowedToolNames({
+  const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
     sendMessageToToolingEnabled,
     enabledBrowserToolNames,
     enabledMediaToolNames,
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
+  });
+  const agentToolsMcpEnabledToolNames = normalizeToolNames(
+    input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
+  );
+  const allowedTools = resolveAllowedToolNames({
+    agentToolsMcpEnabledToolNames,
     hasMaterializedSkills: input.hasMaterializedSkills,
   });
 
@@ -55,44 +60,60 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
+    agentToolsMcpToolingRequested: agentToolsMcpEnabledToolNames.length > 0,
+    agentToolsMcpEnabledToolNames,
     allowedTools,
   };
 };
 
-const resolveAllowedToolNames = (input: {
+const collectConfiguredAgentToolsMcpToolNames = (input: {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
-  hasMaterializedSkills: boolean;
 }): string[] => {
-  const allowedTools = new Set<string>();
+  const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
-    allowedTools.add(CLAUDE_SEND_MESSAGE_TOOL_NAME);
-    allowedTools.add(CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME);
-  }
-  if (input.hasMaterializedSkills) {
-    allowedTools.add("Skill");
+    toolNames.add(SEND_MESSAGE_TO_TOOL_NAME);
   }
   for (const toolName of input.enabledBrowserToolNames) {
-    allowedTools.add(toolName);
-    allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
+    toolNames.add(toolName);
   }
   for (const toolName of input.enabledMediaToolNames) {
-    allowedTools.add(toolName);
-    allowedTools.add(`${CLAUDE_MEDIA_MCP_TOOL_PREFIX}${toolName}`);
+    toolNames.add(toolName);
   }
   if (input.taskDelegationToolingEnabled) {
     for (const toolName of input.enabledTaskDelegationToolNames) {
-      allowedTools.add(toolName);
-      allowedTools.add(`${CLAUDE_TASK_DELEGATION_MCP_TOOL_PREFIX}${toolName}`);
+      toolNames.add(toolName);
     }
   }
   if (input.publishArtifactsToolingEnabled) {
-    allowedTools.add("publish_artifacts");
-    allowedTools.add(CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME);
+    toolNames.add(PUBLISH_ARTIFACTS_TOOL_NAME);
+  }
+  return [...toolNames];
+};
+
+const normalizeToolNames = (toolNames: Iterable<string> | null | undefined): string[] => [
+  ...new Set(
+    Array.from(toolNames ?? [])
+      .map((toolName) => toolName.trim())
+      .filter(Boolean),
+  ),
+];
+
+const resolveAllowedToolNames = (input: {
+  agentToolsMcpEnabledToolNames: string[];
+  hasMaterializedSkills: boolean;
+}): string[] => {
+  const allowedTools = new Set<string>();
+  if (input.hasMaterializedSkills) {
+    allowedTools.add("Skill");
+  }
+  for (const toolName of input.agentToolsMcpEnabledToolNames) {
+    allowedTools.add(toolName);
+    allowedTools.add(buildClaudeAgentToolsMcpToolName(toolName));
   }
   return [...allowedTools];
 };
