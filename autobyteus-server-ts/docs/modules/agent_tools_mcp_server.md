@@ -3,17 +3,20 @@
 ## Scope
 
 The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools
-to external runtimes through a session-scoped Streamable HTTP MCP endpoint. It
-is a server-hosted tool surface for runtimes that cannot call in-process
-AutoByteus tool wrappers directly. Claude Agent SDK and Codex App Server are the
-first production runtime materializers: configured Claude runs consume this
-endpoint through the SDK `mcpServers` query option, and configured Codex runs
-consume it through thread-scoped app-server `config.mcp_servers`.
+and selected configured MCP-origin registry tools to external runtimes through a
+session-scoped Streamable HTTP MCP endpoint. It is a server-hosted tool surface
+for runtimes that cannot call in-process AutoByteus tool wrappers directly.
+Claude Agent SDK and Codex App Server are the first production runtime
+materializers: configured Claude runs consume this endpoint through the SDK
+`mcpServers` query option, and configured Codex runs consume it through
+thread-scoped app-server `config.mcp_servers`.
 
 This module is distinct from [MCP Server Management](./mcp_server_management.md):
 MCP Server Management consumes and registers external MCP servers as AutoByteus
-tools, while the Agent Tools MCP Server exposes AutoByteus-owned tools outward
-to an MCP client.
+tools. The Agent Tools MCP Server then exposes the agent-definition-selected
+registered tool names outward to an MCP client through one runtime-scoped
+`autobyteus_agent_tools` descriptor. It does not directly materialize raw
+external MCP server configs into Codex or Claude provider-specific config.
 
 ## TS Source
 
@@ -67,10 +70,11 @@ redacts both the bearer token and the session id in the URL.
 
 `AgentToolMcpSessionRegistry` stores only the token hash, owner identity, sender
 context, runtime kind, configured exposure snapshot, enabled tool list, creation
-time, revocation time, and optional execution observer. Active sessions do not
-expire from a fixed wall-clock TTL. A request is valid only while the session is
-present in the current process-memory registry, is not revoked, and the bearer
-token matches the stored token hash.
+time, revocation time, optional execution observer, and redaction-safe
+configured MCP source snapshots (`kind`, registered tool name, MCP server id).
+Active sessions do not expire from a fixed wall-clock TTL. A request is valid
+only while the session is present in the current process-memory registry, is not
+revoked, and the bearer token matches the stored token hash.
 
 Sessions are revoked when their owning `AgentRun` is terminated or
 unregistered through `AgentRunManager` and when a mixed-team member handle is
@@ -134,13 +138,18 @@ this surface.
 ## Configured Tool Boundary
 
 The server-side session is the security boundary. `AgentToolMcpCatalog` derives
-the enabled MCP tool list from the agent's configured AutoByteus tool exposure
-and the server-supported MCP providers. A client-side `enabled_tools` field in a
-runtime config is only a narrowing/materialization convenience; editing it
-cannot grant access to tools that the session did not enable.
+the enabled MCP tool list from the agent's configured AutoByteus tool exposure,
+the server-supported MCP adapters, and the shared tool registry. Registry
+definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are eligible only
+when the registered tool name is selected by the agent definition and does not
+collide with a built-in Agent Tools MCP adapter. A client-side `enabled_tools`
+field in a runtime config is only a narrowing/materialization convenience;
+editing it cannot grant access to tools that the session did not enable.
 
 `tools/list` returns only tools enabled for the resolved session, and
 `tools/call` rejects unknown or unconfigured tools before reaching any executor.
+Stale configured MCP snapshots fail closed if the current registry definition is
+missing, no longer MCP-origin, or no longer belongs to the same MCP server id.
 
 ## JSON-RPC Methods
 
@@ -160,9 +169,10 @@ sessions fail before tool execution.
 
 ## Supported Tool Families
 
-`AgentToolMcpCatalog` is adapter-backed. Each adapter supplies the MCP tool
-definition, availability gate, and execution delegate for one canonical
-AutoByteus tool name. The default adapter set currently covers:
+`AgentToolMcpCatalog` is adapter-backed for server-owned tool families and
+registry-backed for configured MCP-origin tools. Each server-owned adapter
+supplies the MCP tool definition, availability gate, and execution delegate for
+one canonical AutoByteus tool name. The default adapter set currently covers:
 
 - `send_message_to`
 - browser tools from `src/agent-tools/browser`
@@ -173,6 +183,14 @@ AutoByteus tool name. The default adapter set currently covers:
 The catalog still filters by the agent's configured tool names first. A tool
 that is supported by an adapter but not configured for the agent is absent from
 `tools/list` and rejected by `tools/call`.
+
+Configured MCP-origin tools are resolved from the shared `defaultToolRegistry`
+rather than by re-reading persisted MCP config in provider runtime code. The
+provider-facing tool name is the registered AutoByteus tool name, including any
+configured `toolNamePrefix` such as `db_query`. Execution creates the registry
+tool and delegates through the existing `GenericMcpTool` / MCP proxy path, so
+remote tool-name mapping, transport ownership, connection reuse, and cleanup
+remain with MCP Server Management and `autobyteus-ts`.
 
 Family-specific behavior remains owned by the existing family services and
 manifests:
@@ -195,7 +213,9 @@ manifests:
   workspace, memory, and application-scoped publication.
 
 The MCP result mapper returns standard MCP text content and sets `isError` when
-the shared `AgentOperationResult` is not accepted.
+the shared `AgentOperationResult` is not accepted. Configured MCP-origin tools
+may also return raw MCP tool results; their `content`, `isError`,
+`structuredContent`, and `_meta` fields are preserved for the provider runtime.
 
 For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP lifecycle
 events are normalized to canonical application-facing tool names such as
@@ -220,5 +240,7 @@ gates explicitly, and add durable route/session/executor coverage.
 - persisted MCP sessions or persisted bearer-token reuse across restored runs;
 - stale bearer-token config cleanup;
 - complex long-lived or resumable SSE server push;
-- exposing every local registry tool through Agent Tools MCP; and
+- exposing every local registry tool through Agent Tools MCP;
+- direct provider-native external MCP config materialization for configured MCP
+  servers; and
 - moving native AutoByteus in-process tools to this HTTP MCP route.

@@ -411,7 +411,10 @@ export class ClaudeSession {
       sendMessageToEnabled: configuredToolingOptions.sendMessageToToolingEnabled,
       taskDelegationEnabled: configuredToolingOptions.taskDelegationToolingEnabled,
     });
-    const agentToolsMcpDescriptor = configuredToolingOptions.agentToolsMcpToolingRequested
+    const agentToolsMcpDescriptor = (
+      configuredToolingOptions.agentToolsMcpToolingRequested ||
+      this.runContext.runtimeContext.configuredToolExposure.configuredToolNames.length > 0
+    )
       ? this.agentToolsMcpSessionState.ensureDescriptor(this.runContext)
       : null;
     const toolingOptions = resolveClaudeSessionToolingOptions({

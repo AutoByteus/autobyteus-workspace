@@ -56,14 +56,15 @@ export class AgentToolMcpSessionService {
   createAgentToolMcpSession(
     input: Omit<AgentToolMcpCreateSessionInput, "enabledTools">,
   ): CreateAgentToolMcpSessionResult {
-    const enabledTools = this.catalog.resolveConfiguredSupportedToolNames({
+    const exposure = this.catalog.resolveConfiguredSessionToolExposure({
       configuredExposure: input.configuredExposure,
       sender: input.sender,
       executionContext: input.executionContext ?? {},
     });
     const { session, capabilityToken } = this.registry.createSession({
       ...input,
-      enabledTools,
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
     });
     const descriptor = this.buildDescriptor(session, capabilityToken);
     return {

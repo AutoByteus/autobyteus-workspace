@@ -42,16 +42,19 @@ be routed among multiple active threads remain server-side diagnostics; server
 requests receive a transport-level error response, but the router must not
 broadcast them or call per-thread runtime-error projection.
 
-Codex exposes in-scope server-owned backend agent tools through the
-server-hosted Agent Tools MCP surface. When the configured tool set includes at
-least one available supported tool, `CodexThreadBootstrapper` creates a live
-`AgentToolMcpDescriptor`, materializes it as thread-scoped
-`config.mcp_servers.autobyteus_agent_tools`, and passes that config to
-`thread/start` and `thread/resume`. The descriptor must not be written to
-trusted project config, process-wide app-server launch flags, or durable
+Codex exposes in-scope configured backend agent tools through the server-hosted
+Agent Tools MCP surface. When the configured tool set includes at least one
+available supported tool, including selected MCP-origin registry tools,
+`CodexThreadBootstrapper` creates a live `AgentToolMcpDescriptor`, materializes
+it as thread-scoped `config.mcp_servers.autobyteus_agent_tools`, and passes that
+config to `thread/start` and `thread/resume`. The descriptor must not be written
+to trusted project config, process-wide app-server launch flags, or durable
 history. The old Codex dynamic registration/spec-builder paths for migrated
 browser, media, task-delegation, `send_message_to`, and `publish_artifacts`
-tools are removed and must not be retained as fallbacks.
+tools are removed and must not be retained as fallbacks. Raw external MCP server
+configs are not directly materialized into Codex `mcp_servers`; configured
+MCP-origin calls delegate back through the registry-created AutoByteus MCP tool
+path.
 
 Route-backed Codex Agent Tools MCP calls are normalized from the Codex
 `mcpToolCall` lifecycle to application-facing canonical tool names. Sender
@@ -78,6 +81,9 @@ Family semantics still come from the shared server-owned services:
   standalone sessions.
 - Browser, media, and `publish_artifacts` tools execute through their shared
   family services/manifests instead of Codex dynamic handlers.
+- Configured MCP-origin tools appear under their registered AutoByteus names
+  such as prefixed `db_query`; remote tool-name and transport details stay owned
+  by MCP Server Management and the shared MCP proxy path.
 
 The Codex runtime does not mutate task state directly and must not expose the
 removed legacy task-plan names (`create_task`, `create_tasks`,

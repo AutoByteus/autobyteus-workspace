@@ -1,4 +1,4 @@
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { AgentToolMcpExecutionResult } from "./agent-tool-mcp-adapter.js";
 import {
   AgentToolMcpCatalog,
   getAgentToolMcpCatalog,
@@ -35,7 +35,7 @@ export class AgentToolMcpToolExecutor {
 
   async executeAgentToolMcpCall(
     input: ExecuteAgentToolMcpCallInput,
-  ): Promise<AgentOperationResult> {
+  ): Promise<AgentToolMcpExecutionResult> {
     const event = this.buildExecutionEvent(input.session, input.toolName);
     await this.notifyStart(input.session, event);
     try {
@@ -50,7 +50,7 @@ export class AgentToolMcpToolExecutor {
 
   private async executeKnownTool(
     input: ExecuteAgentToolMcpCallInput,
-  ): Promise<AgentOperationResult> {
+  ): Promise<AgentToolMcpExecutionResult> {
     const availability = this.catalog.resolveToolCallAvailability(input.session, input.toolName);
     if (!availability.ok) {
       throw new Error(
@@ -86,12 +86,12 @@ export class AgentToolMcpToolExecutor {
   private async notifyComplete(
     session: AgentToolMcpSession,
     event: AgentToolMcpToolExecutionEvent,
-    result: AgentOperationResult,
+    result: AgentToolMcpExecutionResult,
   ): Promise<void> {
     await session.toolExecutionObserver?.onToolComplete?.({
       ...event,
-      accepted: result.accepted,
-      code: result.code ?? null,
+      accepted: isExecutionResultAccepted(result),
+      code: executionResultCode(result),
     });
   }
 
@@ -111,3 +111,9 @@ export const getAgentToolMcpToolExecutor = (): AgentToolMcpToolExecutor =>
 export const resetAgentToolMcpToolExecutorForTests = (): void => {
   AgentToolMcpToolExecutor.resetInstance();
 };
+
+const isExecutionResultAccepted = (result: AgentToolMcpExecutionResult): boolean =>
+  result.kind === "operation_result" ? result.result.accepted : result.result.isError !== true;
+
+const executionResultCode = (result: AgentToolMcpExecutionResult): string | null =>
+  result.kind === "operation_result" ? result.result.code ?? null : null;

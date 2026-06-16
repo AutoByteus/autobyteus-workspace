@@ -1,4 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { AgentToolMcpExecutionResult } from "./agent-tool-mcp-adapter.js";
 
 export type JsonRpcId = string | number | null;
 
@@ -26,9 +27,13 @@ export type McpTextContent = {
   text: string;
 };
 
+export type McpContent = Record<string, unknown> & { type: string };
+
 export type McpToolResult = {
-  content: McpTextContent[];
-  isError?: true;
+  content: McpContent[];
+  isError?: boolean;
+  structuredContent?: unknown;
+  _meta?: Record<string, unknown>;
 };
 
 export class AgentToolsMcpResultMapper {
@@ -51,6 +56,16 @@ export class AgentToolsMcpResultMapper {
     };
   }
 
+  toolResultFromExecutionResult(
+    toolName: string,
+    result: AgentToolMcpExecutionResult,
+  ): McpToolResult {
+    if (result.kind === "mcp_tool_result") {
+      return cloneMcpToolResult(result.result);
+    }
+    return this.toolResultFromOperationResult(toolName, result.result);
+  }
+
   toolResultFromOperationResult(
     toolName: string,
     result: AgentOperationResult,
@@ -68,3 +83,27 @@ export class AgentToolsMcpResultMapper {
 
 export const getAgentToolsMcpResultMapper = (): AgentToolsMcpResultMapper =>
   new AgentToolsMcpResultMapper();
+
+const cloneMcpToolResult = (result: McpToolResult): McpToolResult => {
+  const clone: McpToolResult = {
+    content: result.content.map((item) => structuredCloneSafe(item) as McpContent),
+  };
+  if (result.isError === true) {
+    clone.isError = true;
+  }
+  if ("structuredContent" in result) {
+    clone.structuredContent = structuredCloneSafe(result.structuredContent);
+  }
+  if (result._meta) {
+    clone._meta = structuredCloneSafe(result._meta) as Record<string, unknown>;
+  }
+  return clone;
+};
+
+const structuredCloneSafe = (value: unknown): unknown => {
+  try {
+    return structuredClone(value);
+  } catch {
+    return JSON.parse(JSON.stringify(value));
+  }
+};

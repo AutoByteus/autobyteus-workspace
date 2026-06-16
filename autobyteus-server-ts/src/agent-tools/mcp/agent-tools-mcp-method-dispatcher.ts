@@ -133,10 +133,10 @@ export class AgentToolsMcpMethodDispatcher {
     }
 
     try {
-      const operationResult = await this.toolExecutor.executeAgentToolMcpCall({ session, toolName, rawArguments });
+      const executionResult = await this.toolExecutor.executeAgentToolMcpCall({ session, toolName, rawArguments });
       return this.json(200, this.resultMapper.jsonRpcSuccess(
         id,
-        this.resultMapper.toolResultFromOperationResult(toolName, operationResult),
+        this.resultMapper.toolResultFromExecutionResult(toolName, executionResult),
       ));
     } catch {
       return this.internalError(id);

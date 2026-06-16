@@ -56,30 +56,38 @@ and projection contract.
 
 `src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
 session-scoped Streamable HTTP MCP surface for external runtimes that need to
-call server-owned agent tools. Runtime materializers receive descriptors for the
-reserved MCP server name `autobyteus_agent_tools` and endpoint
+call configured AutoByteus tools. Runtime materializers receive descriptors for
+the reserved MCP server name `autobyteus_agent_tools` and endpoint
 `/mcp/agent-tools/:sessionId`.
 
 This server-hosted MCP surface is not the MCP Server Management subsystem.
 MCP Server Management imports external MCP servers into AutoByteus; the Agent
 Tools MCP Server exposes configured AutoByteus tools outward to an MCP client.
+That outward set includes selected built-in server-owned tool families and
+selected `ToolOrigin.MCP` registry tools discovered from configured external MCP
+servers. Codex App Server and Claude Agent SDK do not receive direct
+provider-native copies of raw external MCP config for those tools.
 
 The session service snapshots configured tool exposure, stores only a bearer
-token hash, derives `enabledTools` from server-supported definitions, and
-redacts secret descriptors for diagnostics. Active session validity is
-owner-lifetime and process-memory scoped: the descriptor works only while the
-registry entry is present, not revoked, and matched by bearer auth; restart or
-registry reset invalidates old descriptors until the runtime materializes a
-fresh descriptor. `tools/list` returns only tools enabled for that session, and
-`tools/call` rejects unknown or unconfigured tools before executor dispatch.
+token hash, derives `enabledTools` from server-supported definitions and
+selected MCP-origin registry definitions, and redacts secret descriptors for
+diagnostics. Active session validity is owner-lifetime and process-memory
+scoped: the descriptor works only while the registry entry is present, not
+revoked, and matched by bearer auth; restart or registry reset invalidates old
+descriptors until the runtime materializes a fresh descriptor. `tools/list`
+returns only tools enabled for that session, and `tools/call` rejects unknown or
+unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, browser, media, task-delegation, and `publish_artifacts`
 tool families by delegating to their existing family manifests/services instead
-of runtime-specific handlers. Codex App Server and Claude Agent SDK materialize
-this surface when at least one configured tool is available for the session.
-Their provider/server-qualified wire names stay below the runtime converter;
-application events, run history, and memory expose canonical tool names and
-must not contain bearer/header descriptor details.
+of runtime-specific handlers. Configured MCP-origin tools delegate through the
+registry-created tool and existing MCP proxy path, preserving registered names
+such as prefixed `db_query` at the provider boundary while the proxy owns the
+remote MCP tool call. Codex App Server and Claude Agent SDK materialize this
+surface when at least one configured tool is available for the session. Their
+provider/server-qualified wire names stay below the runtime converter;
+application events, run history, and memory expose canonical registered tool
+names and must not contain bearer/header descriptor details.
 See
 [Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
 security, and adapter contract.

@@ -1,4 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
+import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -72,5 +76,166 @@ describe("AgentToolMcpCatalog", () => {
       "delegate_tasks",
       "publish_artifacts",
     ]);
+  });
+});
+
+class FakeConfiguredMcpTool extends BaseTool {
+  constructor(private readonly result: unknown = { content: [{ type: "text", text: "ok" }] }) {
+    super();
+  }
+  static getDescription(): string { return "Fake configured MCP tool"; }
+  static getArgumentSchema(): ParameterSchema | null { return null; }
+  protected async _execute(): Promise<unknown> { return this.result; }
+}
+
+const buildMcpDefinition = (
+  name: string,
+  serverId: string,
+  result: unknown = { content: [{ type: "text", text: "ok" }] },
+): ToolDefinition => new ToolDefinition(
+  name,
+  `Description for ${name}`,
+  ToolOrigin.MCP,
+  "MCP",
+  () => new ParameterSchema(),
+  () => null,
+  {
+    customFactory: () => new FakeConfiguredMcpTool(result),
+    metadata: { mcp_server_id: serverId },
+  },
+);
+
+class FakeToolRegistry {
+  private readonly definitions = new Map<string, ToolDefinition>();
+  register(definition: ToolDefinition): void { this.definitions.set(definition.name, definition); }
+  getToolDefinition(name: string): ToolDefinition | undefined { return this.definitions.get(name); }
+  createTool(name: string): BaseTool {
+    const definition = this.definitions.get(name);
+    if (!definition) {
+      throw new Error(`No definition for ${name}`);
+    }
+    const tool = definition.customFactory!();
+    tool.definition = definition;
+    return tool;
+  }
+}
+
+const buildSession = (input: {
+  enabledTools: string[];
+  configuredMcpToolSources: any[];
+  owner?: { runId: string; memberRunId?: string };
+}) => ({
+  sessionId: "session",
+  tokenHash: Buffer.from("hash"),
+  owner: input.owner ?? { runId: "run" },
+  sender,
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  configuredExposure: buildConfiguredAgentToolExposure(input.enabledTools),
+  executionContext: {},
+  enabledTools: input.enabledTools,
+  configuredMcpToolSources: input.configuredMcpToolSources,
+  createdAt: new Date(),
+  revokedAt: null,
+  toolExecutionObserver: null,
+});
+
+describe("AgentToolMcpCatalog configured MCP bridge", () => {
+  it("adds selected MCP-origin registry tools to session exposure and tools/list", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite"));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+      "db_query",
+    ]));
+
+    expect(exposure.enabledTools).toEqual(["db_query"]);
+    expect(exposure.configuredMcpToolSources).toEqual([
+      { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
+    ]);
+    expect(exposure.diagnostics).toEqual([]);
+
+    const tools = catalog.listMcpToolsForSession(buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any);
+
+    expect(tools).toEqual([
+      {
+        name: "db_query",
+        description: "Description for db_query",
+        inputSchema: { type: "object", properties: {}, required: [], additionalProperties: false },
+      },
+    ]);
+  });
+
+  it("keeps built-in adapter names authoritative when a configured MCP tool collides", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("send_message_to", "server-a"));
+    const [sendMessageAdapter] = new SendMessageToMcpAdapterProvider({
+      dispatch: async () => ({ accepted: true }),
+    } as any).getAdapters();
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [sendMessageAdapter!],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+      "send_message_to",
+    ]));
+
+    expect(exposure.enabledTools).toEqual(["send_message_to"]);
+    expect(exposure.configuredMcpToolSources).toEqual([]);
+    expect(exposure.diagnostics).toEqual([expect.objectContaining({
+      code: "configured_mcp_tool_collision",
+      registeredToolName: "send_message_to",
+    })]);
+  });
+
+  it("resolves configured MCP calls through a registry-backed adapter", async () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite", {
+      content: [{ type: "text", text: "rows" }],
+      structuredContent: { count: 1 },
+    }));
+    const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
+    const exposure = catalog.resolveConfiguredSessionToolExposure(
+      buildConfiguredAgentToolExposure(["db_query"]),
+    );
+    const session = buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+      owner: { runId: "run", memberRunId: "member-run" },
+    }) as any;
+
+    const availability = catalog.resolveToolCallAvailability(session, "db_query");
+
+    expect(availability.ok).toBe(true);
+    if (!availability.ok) {
+      throw new Error("Expected configured MCP tool to be available.");
+    }
+    await expect(availability.adapter.execute({ session, rawArguments: { sql: "select 1" } })).resolves.toEqual({
+      kind: "mcp_tool_result",
+      result: {
+        content: [{ type: "text", text: "rows" }],
+        structuredContent: { count: 1 },
+      },
+    });
+  });
+
+  it("fails closed when a session configured MCP source no longer matches the registry", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite"));
+    const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
+    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure(["db_query"]));
+    registry.register(buildMcpDefinition("db_query", "different-server"));
+
+    expect(catalog.resolveToolCallAvailability(buildSession({
+      enabledTools: exposure.enabledTools,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any, "db_query")).toEqual({ ok: false, reason: "unknown_tool" });
   });
 });

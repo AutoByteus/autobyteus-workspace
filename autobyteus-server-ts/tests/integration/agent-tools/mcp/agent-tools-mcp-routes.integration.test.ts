@@ -6,6 +6,10 @@ import cors from "@fastify/cors";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
+import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
@@ -13,8 +17,10 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { registerAgentToolsMcpRoutes } from "../../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
+import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { toAgentToolMcpOperationResult } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../src/services/published-artifacts/published-artifact-tool-contract.js";
 import { PublishedArtifactPublicationService } from "../../../../src/services/published-artifacts/published-artifact-publication-service.js";
@@ -27,11 +33,79 @@ type SessionFixture = {
   token: string;
 };
 
+type ConfiguredMcpCall = {
+  agentId: string | null;
+  args: Record<string, unknown>;
+};
+
 const sender = buildAgentRunMessageSenderContext({
   senderRunId: "mcp-sender-run",
   senderName: "sender",
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
 });
+
+class FakeConfiguredMcpTool extends BaseTool<unknown, Record<string, unknown>, unknown> {
+  constructor(private readonly calls: ConfiguredMcpCall[]) {
+    super();
+  }
+
+  static getDescription(): string { return "Fake configured MCP tool"; }
+  static getArgumentSchema(): ParameterSchema | null { return new ParameterSchema(); }
+
+  protected async _execute(context: unknown, args: Record<string, unknown> = {}): Promise<unknown> {
+    this.calls.push({
+      agentId: typeof (context as { agentId?: unknown })?.agentId === "string"
+        ? (context as { agentId: string }).agentId
+        : null,
+      args,
+    });
+    if (args.mode === "error") {
+      return {
+        content: [{ type: "text", text: "remote failure" }],
+        isError: true,
+        structuredContent: { code: "REMOTE_FAILURE" },
+        _meta: { traceId: "trace-safe" },
+      };
+    }
+    return {
+      content: [{ type: "text", text: `rows for ${String(args.sql ?? "")}` }],
+      structuredContent: { rows: [{ value: 1 }] },
+      _meta: { remoteToolName: "query" },
+    };
+  }
+}
+
+const buildMcpDefinition = (
+  name: string,
+  serverId: string,
+  calls: ConfiguredMcpCall[],
+): ToolDefinition => new ToolDefinition(
+  name,
+  `Description for ${name}`,
+  ToolOrigin.MCP,
+  "MCP",
+  () => new ParameterSchema(),
+  () => null,
+  {
+    customFactory: () => new FakeConfiguredMcpTool(calls),
+    metadata: { mcp_server_id: serverId },
+  },
+);
+
+class FakeToolRegistry {
+  private readonly definitions = new Map<string, ToolDefinition>();
+  register(definition: ToolDefinition): void { this.definitions.set(definition.name, definition); }
+  getToolDefinition(name: string): ToolDefinition | undefined { return this.definitions.get(name); }
+  createTool(name: string): BaseTool {
+    const definition = this.definitions.get(name);
+    if (!definition) {
+      throw new Error(`No definition for ${name}`);
+    }
+    const tool = definition.customFactory!();
+    tool.definition = definition;
+    return tool;
+  }
+}
 
 describe("Agent Tools MCP route publish_artifacts integration", () => {
   it("publishes through the route-backed MCP server for an active run without leaking descriptor secrets", async () => {
@@ -213,6 +287,145 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
   });
 });
 
+describe("Agent Tools MCP route configured MCP integration", () => {
+  it("exposes and calls configured MCP-origin tools over the official Streamable HTTP client", async () => {
+    const app = fastify();
+    const registry = new AgentToolMcpSessionRegistry();
+    const calls: ConfiguredMcpCall[] = [];
+    const toolRegistry = new FakeToolRegistry();
+    toolRegistry.register(buildMcpDefinition("db_query", "sqlite", calls));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [],
+      registry: toolRegistry as any,
+    });
+    const dispatcher = new AgentToolsMcpMethodDispatcher({
+      catalog,
+      toolExecutor: new AgentToolMcpToolExecutor({ catalog }),
+    });
+    await registerAgentToolsMcpRoutes(app, { registry, dispatcher });
+    await app.ready();
+    await app.listen({ host: "127.0.0.1", port: 0 });
+    const address = app.server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected Fastify to listen on a loopback TCP port.");
+    }
+
+    const sessionService = new AgentToolMcpSessionService({
+      registry,
+      catalog,
+      getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
+    });
+    const created = sessionService.createAgentToolMcpSession({
+      owner: { runId: "run-configured-mcp", memberRunId: "member-configured-mcp" },
+      sender,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      configuredExposure: buildConfiguredAgentToolExposure(["db_query"]),
+    });
+    const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+    const sdkClient = new Client({ name: "autobyteus-configured-mcp-sdk-probe", version: "0.0.1" });
+    const transport = new StreamableHTTPClientTransport(
+      new URL(created.descriptor.serverUrl),
+      { requestInit: { headers: { Authorization: `Bearer ${token}` } } },
+    );
+
+    const post = (payload: unknown) => app.inject({
+      method: "POST",
+      url: `/mcp/agent-tools/${created.session.sessionId}`,
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      payload: JSON.stringify(payload),
+    });
+
+    try {
+      await sdkClient.connect(transport);
+
+      const tools = await sdkClient.listTools();
+      expect(tools.tools).toEqual([
+        expect.objectContaining({
+          name: "db_query",
+          description: "Description for db_query",
+          inputSchema: { type: "object", properties: {}, required: [], additionalProperties: false },
+        }),
+      ]);
+
+      await expect(sdkClient.callTool({
+        name: "db_query",
+        arguments: { sql: "select 1" },
+      })).resolves.toMatchObject({
+        content: [{ type: "text", text: "rows for select 1" }],
+        structuredContent: { rows: [{ value: 1 }] },
+        _meta: { remoteToolName: "query" },
+      });
+      expect(calls).toEqual([
+        { agentId: "member-configured-mcp", args: { sql: "select 1" } },
+      ]);
+
+      const remoteFailure = await post({
+        jsonrpc: "2.0",
+        id: "remote-failure",
+        method: "tools/call",
+        params: {
+          name: "db_query",
+          arguments: { mode: "error" },
+        },
+      });
+      expect(remoteFailure.statusCode).toBe(200);
+      expect(remoteFailure.json()).toMatchObject({
+        result: {
+          content: [{ type: "text", text: "remote failure" }],
+          isError: true,
+          structuredContent: { code: "REMOTE_FAILURE" },
+          _meta: { traceId: "trace-safe" },
+        },
+      });
+
+      const unconfigured = sessionService.createAgentToolMcpSession({
+        owner: { runId: "run-unconfigured-mcp" },
+        sender,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        configuredExposure: buildConfiguredAgentToolExposure([]),
+      });
+      const unconfiguredToken = unconfigured.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+      const rejected = await app.inject({
+        method: "POST",
+        url: `/mcp/agent-tools/${unconfigured.session.sessionId}`,
+        headers: {
+          authorization: `Bearer ${unconfiguredToken}`,
+          "content-type": "application/json",
+          accept: "application/json",
+        },
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "unconfigured-call",
+          method: "tools/call",
+          params: { name: "db_query", arguments: {} },
+        }),
+      });
+      expect(rejected.statusCode).toBe(200);
+      expect(rejected.json()).toMatchObject({
+        error: { code: -32602, message: "Unknown MCP tool" },
+      });
+      expect(calls).toHaveLength(2);
+
+      const serializedAppFacingData = JSON.stringify({
+        tools,
+        remoteFailure: remoteFailure.json(),
+        rejected: rejected.json(),
+      });
+      expect(serializedAppFacingData).not.toContain(token);
+      expect(serializedAppFacingData).not.toContain(created.session.sessionId);
+      expect(serializedAppFacingData).not.toContain("Bearer");
+      expect(serializedAppFacingData).not.toContain("Authorization");
+    } finally {
+      await sdkClient.close();
+      await app.close();
+    }
+  });
+});
+
 describe("Agent Tools MCP route", () => {
   let app: FastifyInstance;
   let registry: AgentToolMcpSessionRegistry;
@@ -225,9 +438,17 @@ describe("Agent Tools MCP route", () => {
     registry = new AgentToolMcpSessionRegistry();
     executeAgentToolMcpCall = vi.fn(async ({ rawArguments }: { rawArguments: Record<string, unknown> }) => {
       if (rawArguments.fail) {
-        return { accepted: false, code: "INVALID_TOOL_ARGUMENTS", message: "Validation failed." };
+        return toAgentToolMcpOperationResult({
+          accepted: false,
+          code: "INVALID_TOOL_ARGUMENTS",
+          message: "Validation failed.",
+        });
       }
-      return { accepted: true, code: "DELIVERED", message: "Delivered via MCP." };
+      return toAgentToolMcpOperationResult({
+        accepted: true,
+        code: "DELIVERED",
+        message: "Delivered via MCP.",
+      });
     });
     const dispatcher = new AgentToolsMcpMethodDispatcher({
       catalog: new AgentToolMcpCatalog(),

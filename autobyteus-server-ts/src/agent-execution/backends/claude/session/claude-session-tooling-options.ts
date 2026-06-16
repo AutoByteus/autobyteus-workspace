@@ -60,7 +60,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
-    agentToolsMcpToolingRequested: configuredAgentToolsMcpToolNames.length > 0,
+    agentToolsMcpToolingRequested: agentToolsMcpEnabledToolNames.length > 0,
     agentToolsMcpEnabledToolNames,
     allowedTools,
   };

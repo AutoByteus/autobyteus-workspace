@@ -2,6 +2,7 @@ import type { AgentRunMessageSenderContext } from "../../agent-communication/dom
 import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
 export const AGENT_TOOLS_MCP_TRANSPORT = "streamable_http";
@@ -67,6 +68,7 @@ export type AgentToolMcpSession = {
   configuredExposure: ConfiguredAgentToolExposure;
   executionContext: AgentToolMcpExecutionContext;
   enabledTools: string[];
+  configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
   createdAt: Date;
   revokedAt: Date | null;
   toolExecutionObserver: AgentToolMcpToolExecutionObserver | null;
@@ -78,6 +80,7 @@ export type AgentToolMcpCreateSessionInput = {
   configuredExposure: ConfiguredAgentToolExposure;
   executionContext?: AgentToolMcpExecutionContext | null;
   enabledTools: string[];
+  configuredMcpToolSources?: ConfiguredMcpAgentToolSource[];
   runtimeKind?: RuntimeKind | string | null;
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };

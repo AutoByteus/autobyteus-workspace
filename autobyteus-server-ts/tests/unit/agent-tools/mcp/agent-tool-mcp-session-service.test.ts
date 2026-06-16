@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
+import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
@@ -7,7 +11,11 @@ import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
-import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
+import {
+  toAgentToolMcpOperationResult,
+  toAgentToolMcpToolResult,
+  type AgentToolMcpToolAdapter,
+} from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 
 const buildSender = () => buildAgentRunMessageSenderContext({
   senderRunId: "run-1",
@@ -23,6 +31,42 @@ const buildService = (registry = new AgentToolMcpSessionRegistry()) => new Agent
   getInternalBaseUrl: () => "http://127.0.0.1:8080",
 });
 
+class FakeConfiguredMcpTool extends BaseTool {
+  static getDescription(): string { return "Fake configured MCP tool"; }
+  static getArgumentSchema(): ParameterSchema | null { return null; }
+  protected async _execute(): Promise<unknown> {
+    return { content: [{ type: "text", text: "ok" }] };
+  }
+}
+
+const buildMcpDefinition = (name: string, serverId: string): ToolDefinition => new ToolDefinition(
+  name,
+  `Description for ${name}`,
+  ToolOrigin.MCP,
+  "MCP",
+  () => new ParameterSchema(),
+  () => null,
+  {
+    customFactory: () => new FakeConfiguredMcpTool(),
+    metadata: { mcp_server_id: serverId },
+  },
+);
+
+class FakeToolRegistry {
+  private readonly definitions = new Map<string, ToolDefinition>();
+  register(definition: ToolDefinition): void { this.definitions.set(definition.name, definition); }
+  getToolDefinition(name: string): ToolDefinition | undefined { return this.definitions.get(name); }
+  createTool(name: string): BaseTool {
+    const definition = this.definitions.get(name);
+    if (!definition) {
+      throw new Error(`No definition for ${name}`);
+    }
+    const tool = definition.customFactory!();
+    tool.definition = definition;
+    return tool;
+  }
+}
+
 const buildSendMessageAdapter = (dispatch: ReturnType<typeof vi.fn>): AgentToolMcpToolAdapter => ({
   definition: {
     name: SEND_MESSAGE_TO_TOOL_NAME,
@@ -30,11 +74,11 @@ const buildSendMessageAdapter = (dispatch: ReturnType<typeof vi.fn>): AgentToolM
     inputSchema: { type: "object", properties: {}, required: [] },
   },
   isAvailable: () => true,
-  execute: ({ session, rawArguments }) => dispatch({
+  execute: async ({ session, rawArguments }) => toAgentToolMcpOperationResult(await dispatch({
     toolName: SEND_MESSAGE_TO_TOOL_NAME,
     rawArguments,
     sender: session.sender,
-  }),
+  })),
 });
 
 describe("AgentToolMcpSessionService", () => {
@@ -69,6 +113,49 @@ describe("AgentToolMcpSessionService", () => {
     expect(result.redactedDescriptor.serverUrl).toBe("http://127.0.0.1:8080/mcp/agent-tools/%3Credacted%3E");
     expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
     expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
+  });
+
+  it("creates descriptor enabled tools and session sources for selected configured MCP registry tools", () => {
+    const sessionRegistry = new AgentToolMcpSessionRegistry();
+    const toolRegistry = new FakeToolRegistry();
+    toolRegistry.register(buildMcpDefinition("db_query", "sqlite"));
+    const service = new AgentToolMcpSessionService({
+      registry: sessionRegistry,
+      catalog: new AgentToolMcpCatalog({
+        adapters: [buildSendMessageAdapter(vi.fn())],
+        registry: toolRegistry as any,
+      }),
+      getInternalBaseUrl: () => "http://127.0.0.1:8080",
+    });
+
+    const result = service.createAgentToolMcpSession({
+      owner: { runId: "run-configured" },
+      sender: buildSender(),
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      configuredExposure: buildConfiguredAgentToolExposure([
+        "db_query",
+        SEND_MESSAGE_TO_TOOL_NAME,
+      ]),
+    });
+
+    expect(result.descriptor.enabledTools).toEqual([
+      SEND_MESSAGE_TO_TOOL_NAME,
+      "db_query",
+    ]);
+    expect(result.session.enabledTools).toEqual(result.descriptor.enabledTools);
+    expect(result.session.configuredMcpToolSources).toEqual([
+      { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
+    ]);
+    expect(result.redactedDescriptor.enabledTools).toEqual(result.descriptor.enabledTools);
+
+    const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+    expect(JSON.stringify(result.session.configuredMcpToolSources)).not.toContain(rawToken);
+    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
+    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
+    expect(sessionRegistry.resolveSession({
+      sessionId: result.session.sessionId,
+      bearerToken: rawToken,
+    }).ok).toBe(true);
   });
 
   it("does not expose send_message_to when it was not configured", () => {
@@ -180,7 +267,7 @@ describe("AgentToolMcpToolExecutor", () => {
       rawArguments: { target_agent_run_id: "run-5", content: "hello" },
     });
 
-    expect(result).toMatchObject({ accepted: true, message: "Delivered message." });
+    expect(result).toMatchObject({ kind: "operation_result", result: { accepted: true, message: "Delivered message." } });
     expect(dispatch).toHaveBeenCalledWith({
       toolName: SEND_MESSAGE_TO_TOOL_NAME,
       rawArguments: { target_agent_run_id: "run-5", content: "hello" },
@@ -194,6 +281,44 @@ describe("AgentToolMcpToolExecutor", () => {
     expect(completes).toHaveBeenCalledWith(expect.objectContaining({
       accepted: true,
       code: "DELIVERED",
+    }));
+  });
+
+  it("emits observer completion as rejected for raw MCP error results", async () => {
+    const completes = vi.fn();
+    const registry = new AgentToolMcpSessionRegistry();
+    const rawMcpAdapter: AgentToolMcpToolAdapter = {
+      definition: {
+        name: "db_query",
+        description: "Query database",
+        inputSchema: { type: "object", properties: {}, required: [] },
+      },
+      isAvailable: () => true,
+      execute: async () => toAgentToolMcpToolResult({
+        content: [{ type: "text", text: "remote failure" }],
+        isError: true,
+      }),
+    };
+    const { session } = registry.createSession({
+      owner: { runId: "run-raw-mcp" },
+      sender: buildSender(),
+      configuredExposure: buildConfiguredAgentToolExposure(["db_query"]),
+      enabledTools: ["db_query"],
+      toolExecutionObserver: { onToolComplete: completes },
+    });
+    const executor = new AgentToolMcpToolExecutor({
+      catalog: new AgentToolMcpCatalog({ adapters: [rawMcpAdapter] }),
+    });
+
+    await executor.executeAgentToolMcpCall({
+      session,
+      toolName: "db_query",
+      rawArguments: {},
+    });
+
+    expect(completes).toHaveBeenCalledWith(expect.objectContaining({
+      accepted: false,
+      code: null,
     }));
   });
 });

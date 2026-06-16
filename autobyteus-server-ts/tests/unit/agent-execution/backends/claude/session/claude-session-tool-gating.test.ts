@@ -116,6 +116,7 @@ const createSession = (configuredToolNames: string[] = [], input: {
     "submit_task_result",
     "review_task_result",
     "publish_artifacts",
+    "db_query",
   ]);
   const enabledTools = configuredToolNames.filter((toolName) =>
     supportedAgentToolsMcpNames.has(toolName),
@@ -495,6 +496,32 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           "mcp__autobyteus_agent_tools__submit_task_result",
           "review_task_result",
           "mcp__autobyteus_agent_tools__review_task_result",
+        ],
+      }),
+    );
+  });
+
+  it("creates Agent Tools MCP tooling for configured MCP-only Claude tools", async () => {
+    const { session, startQueryTurn } = createSession(["db_query"]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentToolsMcpDescriptor: expect.objectContaining({
+          enabledTools: ["db_query"],
+        }),
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: [
+          "db_query",
+          "mcp__autobyteus_agent_tools__db_query",
         ],
       }),
     );

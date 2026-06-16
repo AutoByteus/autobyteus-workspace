@@ -14,7 +14,7 @@ const descriptor: AgentToolMcpDescriptor = {
   headers: {
     Authorization: "Bearer unit-test-token",
   },
-  enabledTools: ["send_message_to", "generate_image"],
+  enabledTools: ["send_message_to", "generate_image", "db_query"],
 };
 
 describe("codex-agent-tools-mcp-materializer", () => {
@@ -28,7 +28,7 @@ describe("codex-agent-tools-mcp-materializer", () => {
           http_headers: {
             Authorization: "Bearer unit-test-token",
           },
-          enabled_tools: ["send_message_to", "generate_image"],
+          enabled_tools: ["send_message_to", "generate_image", "db_query"],
           startup_timeout_sec: 5,
         },
       },
@@ -52,6 +52,9 @@ describe("codex-agent-tools-mcp-materializer", () => {
     expect(
       normalizeCodexAgentToolsToolNameForEvent("mcp__autobyteus_agent_tools__generate_image"),
     ).toBe("generate_image");
+    expect(
+      normalizeCodexAgentToolsToolNameForEvent("mcp__autobyteus_agent_tools__db_query"),
+    ).toBe("db_query");
     expect(
       normalizeCodexAgentToolsToolNameForEvent(
         "mcp__autobyteus_agent_tools__generate_image Authorization: Bearer secret",

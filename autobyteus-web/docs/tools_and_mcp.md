@@ -9,6 +9,10 @@ The Tools and MCP module enables users to:
 - Browse local tools with category grouping and search
 - Add and configure MCP (Model Context Protocol) servers
 - Discover and register tools from MCP servers
+- Assign discovered MCP-origin tool names to agents through the normal tool
+  selection flow; native AutoByteus, Codex App Server, and Claude Agent SDK
+  runtimes consume the same registered names, with Codex/Claude receiving them
+  through the server-hosted `autobyteus_agent_tools` runtime MCP bridge
 - Preview MCP server connections before saving
 - Bulk import MCP server configurations from JSON
 - View tool parameters and schemas
@@ -139,6 +143,13 @@ interface McpServer {
   headers?: Record<string, string>;
 }
 ```
+
+Discovered MCP tools are registered in the backend tool registry as MCP-origin
+tools. When an agent definition selects those registered tool names, the native
+AutoByteus runtime executes them through the configured MCP proxy path. Codex
+App Server and Claude Agent SDK do not receive raw provider-specific copies of
+the MCP server config; they see the selected registered tool names through the
+run-scoped `autobyteus_agent_tools` MCP descriptor.
 
 ## State Management (toolManagementStore.ts)
 

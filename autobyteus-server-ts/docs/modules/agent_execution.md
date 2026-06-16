@@ -206,11 +206,12 @@ user input, interrupted streamed assistant text/reasoning, and completed
 tool-result facts. This is distinct from `stop()`, which remains terminal
 runtime shutdown and runs cleanup.
 
-Claude Agent SDK and Codex App Server expose in-scope server-owned backend
-agent tools through the unified Agent Tools MCP route, not through runtime-owned
-duplicated tool projections. When at least one configured and available tool is
-enabled, the runtime materializer creates a live `autobyteus_agent_tools`
-descriptor:
+Claude Agent SDK and Codex App Server expose in-scope configured backend agent
+tools through the unified Agent Tools MCP route, not through runtime-owned
+duplicated tool projections. The enabled set includes selected server-owned
+tool families and selected configured MCP-origin registry tools. When at least
+one configured and available tool is enabled, the runtime materializer creates a
+live `autobyteus_agent_tools` descriptor:
 
 - Codex passes it only as thread-scoped
   `config.mcp_servers.autobyteus_agent_tools` to `thread/start` /
@@ -224,6 +225,10 @@ builders for browser, media, task delegation, `send_message_to`, and
 `publish_artifacts` are removed and must not be restored as compatibility
 fallbacks. Generic Codex dynamic-tool infrastructure remains valid for unrelated
 custom dynamic tools.
+Raw external MCP server configs are likewise not copied directly into Codex or
+Claude provider-native MCP config for configured MCP-origin tools; the
+registered tool name is exposed through `autobyteus_agent_tools`, and execution
+delegates through the shared registry/MCP proxy owner.
 
 Runtime converters must canonicalize all Agent Tools MCP provider identities
 before emitting application-facing events. Provider/server-qualified names such
@@ -233,7 +238,7 @@ such as `delegate_tasks`; bearer tokens, session ids, `Authorization`, and
 `http_headers` are sanitized from events, run history, and memory traces. MCP
 text-content result/error shapes remain preserved while family-specific result
 payloads stay owned by the underlying browser, media, task-delegation,
-communication, or published-artifact service.
+communication, published-artifact, or configured MCP proxy service.
 
 Family-specific execution ownership stays below the Agent Tools MCP adapter:
 
@@ -251,6 +256,10 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
   guidance from the shared manifest/schema.
 - `publish_artifacts` calls the published-artifact publication service for the
   active owning run and continues to drive published-artifact projection/events.
+- Configured MCP-origin tools use their registered AutoByteus names, including
+  any configured prefix, and preserve raw MCP result fields (`content`,
+  `isError`, `structuredContent`, `_meta`) when the remote MCP call returns
+  them.
 
 Non-AutoByteus MCP tools and unknown provider names stay unchanged; converters
 must not rewrite unrelated MCP traffic.
