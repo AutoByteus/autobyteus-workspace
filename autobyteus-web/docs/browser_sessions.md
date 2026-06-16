@@ -283,7 +283,10 @@ Codex browser tools are exposed through the server-hosted
 `autobyteus_agent_tools` Agent Tools MCP descriptor when the agent is configured
 for browser tools and the browser bridge is available. Runtime-specific raw
 result shapes are normalized into canonical browser tool events at the Codex
-event-converter boundary; browser tools are not Codex dynamic tools.
+event-converter boundary; for example,
+`mcp__autobyteus_agent_tools__open_tab` must stream as `open_tab` with
+`result.tab_id` available directly before the renderer sees
+`TOOL_EXECUTION_SUCCEEDED`. Browser tools are not Codex dynamic tools.
 
 ### Claude
 

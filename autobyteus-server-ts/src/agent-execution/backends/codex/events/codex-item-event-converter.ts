@@ -5,6 +5,7 @@ import { resolveCodexToolItemFamily } from "../items/codex-tool-item-family.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
+import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
 
 export type CodexItemEventConverterContext = {
   createEvent: (
@@ -80,7 +81,8 @@ const createTerminalToolExecutionEvent = (
       error: context.resolveToolError(serializedPayload as JsonObject),
     });
   }
-  const eventType = context.isExecutionFailure(payload)
+  const failed = context.isExecutionFailure(payload);
+  const eventType = failed
     ? AgentRunEventType.TOOL_EXECUTION_FAILED
     : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED;
   return context.createEvent(codexEventName, eventType, {
@@ -89,9 +91,14 @@ const createTerminalToolExecutionEvent = (
     ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
     ...(hasToolArguments ? { arguments: toolArguments } : {}),
-    ...(context.isExecutionFailure(payload)
+    ...(failed
       ? { error: context.resolveToolError(serializedPayload as JsonObject) }
-      : { result: context.resolveToolResult(serializedPayload as JsonObject) }),
+      : {
+          result: normalizeBrowserMcpToolResult(
+            toolName,
+            context.resolveToolResult(serializedPayload as JsonObject),
+          ),
+        }),
   });
 };
 

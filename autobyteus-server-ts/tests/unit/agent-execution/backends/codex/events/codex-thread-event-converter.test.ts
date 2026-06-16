@@ -527,6 +527,68 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("normalizes observed local MCP open_tab completion envelopes into direct browser results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_open_tab",
+        turn_id: "turn-browser-1",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
+        arguments: {
+          url: "https://example.com",
+          wait_until: "domcontentloaded",
+          reuse_existing: true,
+          title: "Open Tab Test",
+        },
+        result: {
+          content: [
+            {
+              type: "text",
+              text: "{\n  \"tab_id\": \"65ab2c\",\n  \"status\": \"reused\",\n  \"url\": \"https://example.com/\",\n  \"title\": \"Open Tab Test\"\n}",
+            },
+          ],
+          structuredContent: null,
+          _meta: null,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_open_tab",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__open_tab",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_open_tab",
+        turn_id: "turn-browser-1",
+        tool_name: "open_tab",
+        arguments: {
+          url: "https://example.com",
+          wait_until: "domcontentloaded",
+          reuse_existing: true,
+          title: "Open Tab Test",
+        },
+        result: {
+          tab_id: "65ab2c",
+          status: "reused",
+          url: "https://example.com/",
+          title: "Open Tab Test",
+        },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+  });
+
   it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

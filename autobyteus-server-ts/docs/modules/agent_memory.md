@@ -60,9 +60,13 @@ are recorded only after the runtime adapter normalizes them into canonical
 and family services/dispatchers must not write raw traces directly. Raw traces
 use canonical tool names such as `send_message_to`, `generate_image`,
 `delegate_tasks`, and `publish_artifacts`, preserve the provider invocation id
-as the tool-call id, and preserve the MCP text-content result shape without
-provider/server-qualified tool names, MCP session ids, or bearer/header
-descriptor details.
+as the tool-call id, and store the normalized application-facing result payload
+without provider/server-qualified tool names, MCP session ids, or bearer/header
+descriptor details. For families with a canonical public result contract, the
+stored result follows that contract rather than the raw MCP content envelope;
+for example browser `open_tab` records the direct browser result with
+`tab_id`, and media generation records `{ file_path }`. Unknown non-AutoByteus
+MCP results may still retain their provider result shape.
 
 ## Memory Explorer Read Model
 

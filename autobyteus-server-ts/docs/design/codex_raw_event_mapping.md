@@ -116,12 +116,19 @@ Codex Agent Tools MCP calls use this MCP spine through the thread-scoped
 `autobyteus_agent_tools` server config. Live conversion and diagnostic
 `thread/read` replay canonicalize provider/server-qualified tool identities to
 application-facing canonical names such as `send_message_to`, `generate_image`,
-`delegate_tasks`, and `publish_artifacts`, preserve invocation id, arguments,
-and MCP content result/error shape, and sanitize nested payloads so
+`delegate_tasks`, and `publish_artifacts`, preserve invocation id and arguments,
+apply any family-specific result canonicalization owned by the corresponding
+tool family, and sanitize nested payloads so
 `autobyteus_agent_tools`,
 `mcp__autobyteus_agent_tools__publish_artifacts`, `Authorization`, bearer
 tokens, and `http_headers` do not reach frontend events, run history, or memory
 read models.
+
+Browser tools are the main family-specific exception to raw MCP result-envelope
+preservation: successful known-browser tool results must be normalized before
+`TOOL_EXECUTION_SUCCEEDED` is emitted so application-facing payloads contain the
+standard browser result object, for example `open_tab` with `result.tab_id`
+available directly. Other unknown MCP server results stay raw.
 
 ## Web Search Lifecycle Spine
 

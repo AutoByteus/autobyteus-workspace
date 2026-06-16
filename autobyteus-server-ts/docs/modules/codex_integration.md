@@ -55,11 +55,16 @@ tools are removed and must not be retained as fallbacks.
 
 Route-backed Codex Agent Tools MCP calls are normalized from the Codex
 `mcpToolCall` lifecycle to application-facing canonical tool names. Sender
-streams and memory traces must preserve invocation id, arguments, and MCP
-content result/error shape, while sanitizing provider/server-qualified names
+streams and memory traces must preserve invocation id and arguments, apply
+family-specific result canonicalization where that family owns a public result
+contract, and sanitize provider/server-qualified names
 (`autobyteus_agent_tools` or
 `mcp__autobyteus_agent_tools__publish_artifacts`) plus `Authorization`,
 `Bearer`, and `http_headers` config details from app-facing payloads.
+For known browser tools, Codex must emit the standard browser result object
+instead of the raw MCP content envelope so `open_tab` exposes `result.tab_id`
+directly to Browser-shell focus handling. Unknown non-AutoByteus MCP traffic
+keeps its provider result shape.
 
 Family semantics still come from the shared server-owned services:
 
