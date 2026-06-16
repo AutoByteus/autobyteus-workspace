@@ -58,8 +58,8 @@ No version bump, tag, release commit, or release notes are required before user 
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/streamable-mcp-runtime-tools/tickets/open-tab-streamable-mcp-browser-regression/investigation-notes.md`
 - Ticket branch: `codex/streamable-mcp-runtime-tools`
-- Ticket branch commit result: `Completed` (`fix(agent-tools): normalize browser MCP results`; final branch commit, see git log for exact hash)
-- Ticket branch push result: `Pending at metadata update time`
+- Ticket branch commit result: `Completed` (`4ee352e6 fix(agent-tools): normalize browser MCP results`; followed by finalization metadata commit)
+- Ticket branch push result: `Completed`
 - Finalization target remote: `origin`
 - Finalization target branch: `codex/streamable-mcp-runtime-tools` (recorded task branch / tracked upstream for this branch-specific fix)
 - Target advanced after user verification: `No`
@@ -67,8 +67,8 @@ No version bump, tag, release commit, or release notes are required before user 
 - Re-integration before final merge result: `Not needed`
 - Target branch update result: `Already current before commit`
 - Merge into target result: `Not required`
-- Push target branch result: `Pending at metadata update time`
-- Repository finalization status: `Completed locally; push pending at metadata update time`
+- Push target branch result: `Completed` (`origin/codex/streamable-mcp-runtime-tools` updated)
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -152,4 +152,4 @@ If failure evidence points to the event canonicalization code, route as `Local F
 
 ## Final Status
 
-`Finalized locally on same branch; push pending at metadata update time.`
+`Finalized and pushed on same branch.`

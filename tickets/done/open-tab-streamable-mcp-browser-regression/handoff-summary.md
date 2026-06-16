@@ -106,9 +106,9 @@ Delivery integration check:
 - Finalization target branch: `codex/streamable-mcp-runtime-tools`
 - User verification reference: User message on 2026-06-16: “it works lets finalize the ticket.”
 - Target refresh after user verification: `git fetch origin --prune` passed; `HEAD`, upstream, and merge-base all `c572fcd686513045f53c01c34f3198dd565fd8a4`; divergence `0 0`.
-- Commit status: `Completed` (`fix(agent-tools): normalize browser MCP results`; final branch commit, see git log for exact hash)
-- Push status: `Pending at metadata update time`
+- Commit status: `Completed` (`4ee352e6 fix(agent-tools): normalize browser MCP results`; followed by finalization metadata commit)
+- Push status: `Complete` (`origin/codex/streamable-mcp-runtime-tools` updated)
 - Merge status: `Not required` — finalization is on the worktree branch itself.
 - Release/publication/deployment status: `Not required`
 - Worktree cleanup status: `Not performed` — this is the branch worktree the user is testing from.
-- Blockers / notes: Unrelated untracked folder remains excluded: `/Users/normy/autobyteus_org/autobyteus-worktrees/streamable-mcp-runtime-tools/tickets/server-configured-mcp-runtime-materialization/`.
+- Blockers / notes: None for this ticket. Unrelated untracked folder remains excluded: `/Users/normy/autobyteus_org/autobyteus-worktrees/streamable-mcp-runtime-tools/tickets/server-configured-mcp-runtime-materialization/`.
