@@ -48,8 +48,16 @@ pnpm exec vitest run   tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts
 - Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/streamable-mcp-runtime-tools/release-deployment-report.md`
 - Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/streamable-mcp-runtime-tools/handoff-summary.md`
 
-## Cleanup / Release
+## Release
 
-- Release/tag/deployment: Not performed; not requested for this merge.
+- Release requested after user tested the built Electron app from `personal` and confirmed everything was working.
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/streamable-mcp-runtime-tools/release-notes.md`
+- Release command: `pnpm release 1.3.56 -- --release-notes tickets/done/streamable-mcp-runtime-tools/release-notes.md`
+- Release commit: `82b046b11641a5ba0fc12746ba96724ba99969f4`
+- Release tag: `v1.3.56`
+- Result: branch `personal` and tag `v1.3.56` pushed successfully.
+
+## Cleanup
+
 - Branch cleanup: Not performed. The source branch/worktree is retained unless separately requested because it remains useful for local build artifacts and branch history inspection.
-- Root worktree had pre-existing unrelated untracked `.article-work/` and `docs/articles/`; they were left untouched.
+- Root worktree had pre-existing unrelated untracked `.article-work/` and `docs/articles/`; they were protected during release and restored afterward.
