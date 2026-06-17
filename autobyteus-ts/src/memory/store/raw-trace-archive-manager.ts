@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -45,9 +44,6 @@ const traceTs = (item: Record<string, unknown>): number | null =>
 
 const utcStamp = (date: Date): string =>
   date.toISOString().replace(/[-:.]/g, '');
-
-const hashBoundaryKey = (boundaryKey: string): string =>
-  crypto.createHash('sha256').update(boundaryKey).digest('hex').slice(0, 8);
 
 export type RawTraceArchiveBoundaryInput = {
   boundaryType: RawTraceArchiveBoundaryType;
@@ -136,7 +132,7 @@ export class RawTraceArchiveManager {
     const manifest = this.removePendingSegmentsForBoundary(this.readManifest(), boundary.boundaryKey);
     const index = manifest.next_segment_index;
     const archivedAt = Date.now() / 1000;
-    const fileName = this.buildArchiveSegmentFileName(index, new Date(archivedAt * 1000), boundary.boundaryKey);
+    const fileName = this.buildArchiveSegmentFileName(index, new Date(archivedAt * 1000));
     const entry = this.buildSegmentEntry(index, fileName, archivedAt, records, boundary, 'pending');
     manifest.next_segment_index = index + 1;
     manifest.segments.push(entry);
@@ -177,8 +173,8 @@ export class RawTraceArchiveManager {
     writeJson(this.getManifestPath(), manifest as unknown as Record<string, unknown>);
   }
 
-  private buildArchiveSegmentFileName(index: number, date: Date, boundaryKey: string): string {
-    return `${String(index).padStart(6, '0')}_${utcStamp(date)}_${hashBoundaryKey(boundaryKey)}.jsonl`;
+  private buildArchiveSegmentFileName(index: number, date: Date): string {
+    return `${String(index).padStart(6, '0')}_${utcStamp(date)}.jsonl`;
   }
 
   private buildSegmentEntry(

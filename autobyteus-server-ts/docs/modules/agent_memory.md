@@ -135,6 +135,8 @@ Current archive/rotation behavior:
 
 - Native AutoByteus compaction archives compacted raw traces into `native_compaction` segments.
 - Codex/Claude provider-boundary rotation archives settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- New archive segment file names use only the zero-padded segment index plus UTC timestamp, for example `000001_20260430T103015123Z.jsonl`; boundary identity remains in the manifest `boundary_key` rather than in a filename hash suffix.
+- Archive readers open each manifest `file_name` exactly as recorded, so manifest-listed historical hash-suffixed files remain readable without reintroducing hash parsing, migration, or dual write paths.
 - Complete-corpus reads include complete archive segments plus active records, ordered by timestamp, turn id, sequence, then id.
 - Pending archive manifest entries are retry state only and are not exposed to readers.
 - Sequence initialization for restored external runs reads active records plus complete archive segments so per-turn `seq` values continue without reuse.

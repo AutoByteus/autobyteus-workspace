@@ -10,6 +10,9 @@ import {
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from '../../../src/memory/store/memory-file-names.js';
 
+const SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN = /^\d{6}_\d{8}T\d{9}Z\.jsonl$/;
+const HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN = /^\d{6}_\d{8}T\d{9}Z_[a-f0-9]{8}\.jsonl$/;
+
 const tempDirs = new Set<string>();
 
 const mkTempDir = async () => {
@@ -116,6 +119,8 @@ describe('RunMemoryFileStore', () => {
     const manifest = store.readRawTraceArchiveManifest();
     expect(manifest.segments).toHaveLength(1);
     expect(manifest.segments[0]).toMatchObject({ boundary_type: 'native_compaction', status: 'complete', record_count: 1 });
+    expect(manifest.segments[0].file_name).toMatch(SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN);
+    expect(manifest.segments[0].file_name).not.toMatch(HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN);
     expect(store.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-remove']);
   });
 
@@ -160,6 +165,9 @@ describe('RunMemoryFileStore', () => {
 
     expect(store.listRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-marker', 'rt-after']);
     expect(store.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-before']);
+    const manifest = store.readRawTraceArchiveManifest();
+    expect(manifest.segments[0].file_name).toMatch(SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN);
+    expect(manifest.segments[0].file_name).not.toMatch(HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN);
     expect(store.readCompleteRawTraceCorpusDicts().map((trace) => trace.id)).toEqual([
       'rt-before',
       'rt-marker',
