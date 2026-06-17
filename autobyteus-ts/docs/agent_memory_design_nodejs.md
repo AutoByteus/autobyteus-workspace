@@ -124,9 +124,14 @@ Codex/Claude run and team-member memory recording.
 
 `RawTraceArchiveManager` is the only owner of segmented archive internals:
 `raw_traces_archive_manifest.json`, immutable files under `raw_traces_archive/`,
-pending/complete segment state, deterministic segment filenames, and idempotent
-same-boundary retry behavior. The old monolithic `raw_traces_archive.jsonl` file
-is intentionally not a current compatibility read/write target.
+pending/complete segment state, deterministic segment filenames using the
+zero-padded segment index plus UTC timestamp only (for example
+`000001_20260430T103015123Z.jsonl`), and idempotent same-boundary retry
+behavior. Boundary identity stays in the manifest `boundary_key`; readers open
+manifest `file_name` values verbatim, so manifest-listed historical
+hash-suffixed files remain readable without hash parsing, migration, or dual
+write paths. The old monolithic `raw_traces_archive.jsonl` file is intentionally
+not a current compatibility read/write target.
 
 ### 7.1 File-Backed Store Layout (Default)
 
