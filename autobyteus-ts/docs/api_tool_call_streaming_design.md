@@ -478,8 +478,9 @@ Provider adapters may normalize provider-specific request legality before
 calling the shared builder. Keep those rules in the provider adapter rather than
 adding provider-specific branches to `OpenAICompatibleRequestBuilder`; for
 example, `KimiLLM` normalizes `kimi-k2.6` temperature and thinking defaults for
-Moonshot-safe tool workflows before delegating to the shared OpenAI-compatible
-request path.
+Moonshot-safe tool workflows, while `kimi-k2.7-code` keeps thinking on and
+normalizes fixed sampling/tool-choice fields before delegating to the shared
+OpenAI-compatible request path.
 
 ```ts
 async function* _streamUserMessageToLLM(

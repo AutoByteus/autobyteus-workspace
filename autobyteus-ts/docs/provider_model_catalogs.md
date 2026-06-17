@@ -26,7 +26,9 @@ or changing provider-specific request-shaping behavior.
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
-| LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-04-25 | Uses the existing Kimi OpenAI-compatible adapter. |
+| LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-06-16 | General-purpose Kimi model; keeps K2.6-specific tool-workflow normalization. |
+| LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Coding/agentic Kimi model; always-on thinking and fixed sampling constraints are enforced in `KimiLLM`. |
+| LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
 | Image | `gemini-3.1-flash-image-preview` | `gemini-3.1-flash-image-preview` | Gemini | 2026-05-05 | Registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
@@ -124,9 +126,25 @@ capability matrix before forcing `tool_choice: "required"`; if the provider
 rejects forced tool choice, treat it as a model capability constraint rather
 than a shared request-builder contract.
 
+### Zhipu GLM 5.2
+
+`glm-5.2` is the active built-in GLM model. Its catalog schema exposes flat,
+renderable keys while `GlmLLM` owns provider-native conversion:
+
+- `thinking_type: "enabled" | "disabled"` maps to top-level
+  `thinking.type`;
+- `reasoning_effort: "high" | "max"` defaults to `max` and is sent only
+  while thinking is enabled; and
+- `GlmLLM` removes the flat `thinking_type` key before calling the shared
+  OpenAI-compatible request builder.
+
+`glm-5.1` is no longer an active built-in model and must not be retained as an
+alias or fallback row.
+
 ### Kimi K2.6
 
-`kimi-k2.6` follows safe request normalization for Moonshot tool workflows:
+`kimi-k2.6` is retained as the general-purpose Kimi model and follows safe
+request normalization for Moonshot tool workflows:
 
 - when a request uses tools and the caller has not explicitly supplied a
   thinking override, the Kimi adapter sends `thinking: { type: "disabled" }` to
@@ -135,6 +153,24 @@ than a shared request-builder contract.
   before the shared OpenAI-compatible request builder runs: tool workflows use
   `temperature: 0.6`, non-tool requests use `temperature: 1`, and explicit
   per-request `temperature` kwargs are preserved.
+
+### Kimi K2.7 Code
+
+`kimi-k2.7-code` is registered separately for coding and agentic workflows. It
+uses the same Kimi OpenAI-compatible endpoint but has different request
+constraints from K2.6:
+
+- the adapter never auto-injects `thinking: { type: "disabled" }` for K2.7
+  Code because thinking is always on;
+- the shared default `LLMConfig.temperature = 0.7` is overridden locally to the
+  provider-fixed `temperature: 1.0`;
+- explicit non-default fixed sampling controls are normalized to documented
+  fixed values (`top_p: 0.95`, `n: 1`, `presence_penalty: 0`,
+  `frequency_penalty: 0`); and
+- unsupported forced tool choices for tool requests are normalized to `auto`.
+
+`kimi-k2-thinking` is no longer an active built-in model and must not be
+retained as an alias for K2.7 Code.
 
 ### Gemini LLM Models
 

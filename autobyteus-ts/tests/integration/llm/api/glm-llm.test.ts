@@ -3,25 +3,31 @@ import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/strea
 import { GlmLLM } from '../../../../src/llm/api/glm-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
+import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 
 const apiKey = process.env.GLM_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
 
 const TURN_ID = 'turn_test';
 
-const isUnauthorizedGlmError = (error: unknown): boolean => {
-  const message = String(error ?? '');
-  return message.includes('401') || message.includes('身份验证失败');
+const skipIfGlmProviderAccessError = (error: unknown): boolean => {
+  const message = String(error ?? '').toLowerCase();
+  if (message.includes('身份验证失败')) {
+    console.warn('[provider integration skip] GLM/glm-5.2: invalid_or_missing_credentials');
+    return true;
+  }
+  return skipIfProviderAccessError('GLM', 'glm-5.2', error);
 };
 
 const buildModel = () =>
   new LLMModel({
-    name: 'glm-5.1',
-    value: 'glm-5.1',
-    canonicalName: 'glm-5.1',
+    name: 'glm-5.2',
+    value: 'glm-5.2',
+    canonicalName: 'glm-5.2',
     provider: LLMProvider.GLM
   });
 
@@ -101,8 +107,7 @@ runIntegration('GlmLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error) {
-      if (isUnauthorizedGlmError(error)) {
-        console.warn('Skipping GLM integration assertions due to unauthorized API key.');
+      if (skipIfGlmProviderAccessError(error)) {
         return;
       }
       throw error;
@@ -129,8 +134,7 @@ runIntegration('GlmLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error) {
-      if (isUnauthorizedGlmError(error)) {
-        console.warn('Skipping GLM integration assertions due to unauthorized API key.');
+      if (skipIfGlmProviderAccessError(error)) {
         return;
       }
       throw error;
@@ -150,8 +154,7 @@ runIntegration('GlmLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error) {
-      if (isUnauthorizedGlmError(error)) {
-        console.warn('Skipping GLM integration assertions due to unauthorized API key.');
+      if (skipIfGlmProviderAccessError(error)) {
         return;
       }
       throw error;
@@ -179,8 +182,7 @@ runIntegration('GlmLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error) {
-      if (isUnauthorizedGlmError(error)) {
-        console.warn('Skipping GLM integration assertions due to unauthorized API key.');
+      if (skipIfGlmProviderAccessError(error)) {
         return;
       }
       throw error;
@@ -194,8 +196,65 @@ runIntegration('GlmLLM Integration', () => {
     try {
       await runToolCallContinuation(llm);
     } catch (error) {
-      if (isUnauthorizedGlmError(error)) {
-        console.warn('Skipping GLM integration assertions due to unauthorized API key.');
+      if (skipIfGlmProviderAccessError(error)) {
+        return;
+      }
+      throw error;
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
+
+  it('accepts enabled thinking with max reasoning effort', async () => {
+    const llm = new GlmLLM(
+      buildModel(),
+      new LLMConfig({
+        extraParams: {
+          thinking_type: 'enabled',
+          reasoning_effort: 'max'
+        }
+      })
+    );
+
+    try {
+      const response = await llm.sendMessages([
+        new Message(MessageRole.SYSTEM, { content: 'You are a concise assistant.' }),
+        new Message(MessageRole.USER, { content: 'Reply with one short sentence about GLM.' })
+      ]);
+      expect(response).toBeInstanceOf(CompleteResponse);
+      expect(typeof response.content).toBe('string');
+      expect((response.content ?? '').trim().length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfGlmProviderAccessError(error)) {
+        return;
+      }
+      throw error;
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
+
+  it('accepts disabled thinking without stale reasoning effort', async () => {
+    const llm = new GlmLLM(
+      buildModel(),
+      new LLMConfig({
+        extraParams: {
+          thinking_type: 'disabled',
+          reasoning_effort: 'max'
+        }
+      })
+    );
+
+    try {
+      const response = await llm.sendMessages([
+        new Message(MessageRole.SYSTEM, { content: 'You are a concise assistant.' }),
+        new Message(MessageRole.USER, { content: 'Reply with one short sentence about GLM.' })
+      ]);
+      expect(response).toBeInstanceOf(CompleteResponse);
+      expect(typeof response.content).toBe('string');
+      expect((response.content ?? '').trim().length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfGlmProviderAccessError(error)) {
         return;
       }
       throw error;

@@ -115,10 +115,10 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       sourceUrl: 'https://platform.kimi.ai/docs/models',
       verifiedAt: '2026-04-25'
     },
-    'kimi-k2-thinking': {
+    'kimi-k2.7-code': {
       maxContextTokens: 256000,
-      sourceUrl: 'https://platform.moonshot.ai/docs/guide/auto-reconnect',
-      verifiedAt: '2026-04-09'
+      sourceUrl: 'https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart',
+      verifiedAt: '2026-06-16'
     }
   },
   [LLMProvider.QWEN]: {
@@ -131,12 +131,12 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.GLM]: {
-    'glm-5.1': {
-      maxContextTokens: 200000,
-      maxInputTokens: 200000,
+    'glm-5.2': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
       maxOutputTokens: 128000,
-      sourceUrl: 'https://docs.bigmodel.cn/cn/guide/start/model-overview',
-      verifiedAt: '2026-04-09'
+      sourceUrl: 'https://docs.bigmodel.cn/cn/guide/models/text/glm-5.2',
+      verifiedAt: '2026-06-16'
     }
   },
   [LLMProvider.MINIMAX]: {

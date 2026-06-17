@@ -3,6 +3,7 @@ import { KimiLLM } from '../../../../src/llm/api/kimi-llm.js';
 import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
@@ -13,11 +14,11 @@ const runIntegration = apiKey ? describe : describe.skip;
 
 const TURN_ID = 'turn_test';
 
-const buildModel = () =>
+const buildModel = (value = 'kimi-k2.6') =>
   new LLMModel({
-    name: 'kimi-k2.6',
-    value: 'kimi-k2.6',
-    canonicalName: 'kimi-k2.6',
+    name: value,
+    value,
+    canonicalName: value,
     provider: LLMProvider.KIMI
   });
 
@@ -80,6 +81,67 @@ const runToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
   ];
 
   const continuationResponse = await llm.sendMessages(continuationMessages);
+  expect(typeof continuationResponse.content).toBe('string');
+  expect((continuationResponse.content ?? '').trim().length).toBeGreaterThan(0);
+};
+
+const runK2_7CodeToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
+  const toolPromptMessages = [
+    new Message(MessageRole.SYSTEM, {
+      content: 'You are a coding assistant. When a tool is available and the user asks for it, call the tool before answering.'
+    }),
+    new Message(MessageRole.USER, {
+      content: 'Use the echo_number tool with number 42. Do not answer until after the tool result is provided.'
+    })
+  ];
+  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+  let streamedReasoning = '';
+  let streamedContent = '';
+
+  for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
+    tools: [TOOL_SCHEMA],
+    tool_choice: { type: 'function', function: { name: 'echo_number' } }
+  })) {
+    if (chunk.reasoning) {
+      streamedReasoning += chunk.reasoning;
+    }
+    if (chunk.content) {
+      streamedContent += chunk.content;
+    }
+    parser.feed(chunk);
+  }
+  parser.finalize();
+
+  const invocations = parser.getAllInvocations();
+  expect(invocations.length).toBeGreaterThan(0);
+  expect(streamedReasoning.trim().length).toBeGreaterThan(0);
+
+  const continuationMessages = [
+    ...toolPromptMessages,
+    new Message(MessageRole.ASSISTANT, {
+      content: streamedContent.trim().length ? streamedContent : null,
+      reasoning_content: streamedReasoning,
+      tool_payload: new ToolCallPayload(
+        invocations.map((invocation) => ({
+          id: invocation.id,
+          name: invocation.name,
+          arguments: invocation.arguments
+        }))
+      )
+    }),
+    ...invocations.map(
+      (invocation) =>
+        new Message(MessageRole.TOOL, {
+          content: null,
+          tool_payload: new ToolResultPayload(invocation.id, invocation.name, { number: 42, ok: true })
+        })
+    ),
+    new Message(MessageRole.USER, {
+      content: 'All tool results are available. Provide one short final sentence.'
+    })
+  ];
+
+  const continuationResponse = await llm.sendMessages(continuationMessages, null, { max_tokens: 64 });
   expect(typeof continuationResponse.content).toBe('string');
   expect((continuationResponse.content ?? '').trim().length).toBeGreaterThan(0);
 };
@@ -191,6 +253,57 @@ runIntegration('KimiLLM Integration', () => {
       await runToolCallContinuation(llm);
     } catch (error) {
       if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
+
+  it('accepts kimi-k2.7-code simple requests with adapter-normalized parameters', async () => {
+    const llm = new KimiLLM(
+      buildModel('kimi-k2.7-code'),
+      new LLMConfig({
+        temperature: 0.7,
+        topP: 0.5,
+        presencePenalty: 0.8,
+        frequencyPenalty: 0.9,
+        extraParams: {
+          thinking: { type: 'disabled' },
+          n: 2
+        }
+      })
+    );
+
+    try {
+      const response = await llm.sendMessages(
+        [
+          new Message(MessageRole.SYSTEM, { content: 'You are a concise coding assistant.' }),
+          new Message(MessageRole.USER, { content: 'Write one sentence explaining what TypeScript interfaces are.' })
+        ],
+        null,
+        { max_tokens: 64 }
+      );
+      expect(response).toBeInstanceOf(CompleteResponse);
+      expect(typeof response.content).toBe('string');
+      expect((response.content ?? '').trim().length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.7-code', error)) {
+        return;
+      }
+      throw error;
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
+
+  it('preserves streamed kimi-k2.7-code reasoning through tool-call continuation', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.7-code'));
+    try {
+      await runK2_7CodeToolCallContinuation(llm);
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.7-code', error)) {
         return;
       }
       throw error;

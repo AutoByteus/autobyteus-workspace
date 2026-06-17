@@ -95,6 +95,10 @@ export class OpenAICompatibleLLM extends BaseLLM {
     return null;
   }
 
+  protected getRequestConfig(_kwargs: Record<string, unknown>): LLMConfig {
+    return this.config;
+  }
+
   private extractReasoningFromRecord(record: unknown): string | null {
     if (!record || typeof record !== 'object') {
       return null;
@@ -112,7 +116,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
     const params = OpenAICompatibleRequestBuilder.build({
       model: this.model.value,
       messages: formattedMessages,
-      config: this.config,
+      config: this.getRequestConfig(kwargs),
       kwargs
     });
 
@@ -140,7 +144,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       model: this.model.value,
       messages: formattedMessages,
       stream: true,
-      config: this.config,
+      config: this.getRequestConfig(kwargs),
       kwargs
     });
 

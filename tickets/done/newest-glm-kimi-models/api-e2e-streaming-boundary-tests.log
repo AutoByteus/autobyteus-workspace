@@ -1,0 +1,35 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/unit/llm/api/openai-compatible-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/streaming/kimi-tool-id-event-stream-boundary.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/openai-compatible-llm.test.ts (12 tests) 7ms
+stdout | tests/integration/agent/streaming/kimi-tool-id-event-stream-boundary.test.ts > Kimi-shaped tool-call id stream boundary > preserves distinct run_bash numeric invocation ids through handler, notifier, and event stream
+AgentExternalEventNotifier initialized for agent_id 'agent-kimi-boundary' (NotifierID: 33a4ae92-d8bb-4736-92f1-f779e9d267ca).
+AgentEventStream (ID: 869277a4-b921-4989-bebf-508903aa69eb) initialized for agent_id 'agent-kimi-boundary'. Subscribed to notifier.
+Starting to stream items from queue 'agent_agent-kimi-boundary_allEvents'.
+AgentExternalEventNotifier (NotifierID: 33a4ae92-d8bb-4736-92f1-f779e9d267ca, AgentID: agent-kimi-boundary) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 33a4ae92-d8bb-4736-92f1-f779e9d267ca, AgentID: agent-kimi-boundary) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 33a4ae92-d8bb-4736-92f1-f779e9d267ca, AgentID: agent-kimi-boundary) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 3 tool invocations.
+AgentEventStream (ID: 869277a4-b921-4989-bebf-508903aa69eb) for 'agent-kimi-boundary': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/streaming/kimi-tool-id-event-stream-boundary.test.ts > Kimi-shaped tool-call id stream boundary > preserves distinct run_bash numeric invocation ids through handler, notifier, and event stream
+Sentinel [object Object] received from queue 'agent_agent-kimi-boundary_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_agent-kimi-boundary_allEvents'.
+
+ ✓ tests/integration/agent/streaming/kimi-tool-id-event-stream-boundary.test.ts (1 test) 14ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  05:48:25
+   Duration  329ms (transform 269ms, setup 51ms, import 372ms, tests 21ms, environment 0ms)
+

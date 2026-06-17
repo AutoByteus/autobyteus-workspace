@@ -1,0 +1,16 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-web
+
+stdout | utils/__tests__/llmThinkingConfigAdapter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/llmThinkingConfigAdapter.spec.ts (6 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  11:33:06
+   Duration  4.14s (transform 2.41s, setup 3.67s, collect 9ms, tests 4ms, environment 128ms, prepare 131ms)
+

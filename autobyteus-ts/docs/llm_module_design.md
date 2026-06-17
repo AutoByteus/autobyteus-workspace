@@ -125,11 +125,16 @@ Current examples of provider-specific model rules:
 - `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
   thinking schema, docs-backed curated token limits, and explicit API-key /
   Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
-- `kimi-k2.6` disables thinking automatically for tool workflows when the
-  caller has not supplied an explicit thinking override. It also normalizes
-  provider-safe temperature defaults: tool workflows use `temperature: 0.6`,
-  non-tool requests use `temperature: 1`, and explicit per-request
-  `temperature` kwargs are preserved.
+- `glm-5.2` replaces `glm-5.1` as the active GLM model and exposes
+  `thinking_type` plus `reasoning_effort` schema fields. `GlmLLM` maps the flat
+  thinking key to provider-native `thinking.type` and omits
+  `reasoning_effort` when thinking is disabled.
+- `kimi-k2.6` remains the general-purpose Kimi model. It disables thinking
+  automatically for tool workflows when the caller has not supplied an explicit
+  thinking override and normalizes provider-safe K2.6 temperature defaults.
+- `kimi-k2.7-code` is the coding/agentic Kimi model. It keeps thinking on and
+  normalizes K2.7 Code fixed sampling/tool-choice constraints locally in
+  `KimiLLM` before the shared request builder runs.
 
 See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
 audio/TTS, and image models.
@@ -195,8 +200,11 @@ agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
-per-request `temperature`. `DeepSeekLLM` similarly owns V4 thinking request
-normalization: user-facing `thinking_type` is converted to
+per-request `temperature`, while `kimi-k2.7-code` overrides the generic default
+temperature and other fixed sampling/tool-choice fields to provider-valid
+values. `GlmLLM` owns GLM `thinking_type` to `thinking.type` conversion and
+omits stale effort values when thinking is disabled. `DeepSeekLLM` similarly
+owns V4 thinking request normalization: user-facing `thinking_type` is converted to
 `extra_body.thinking.type`, stale raw top-level `thinking` is dropped, and
 disabled thinking omits `reasoning_effort` instead of sending an OpenAI-style
 `none` effort.
@@ -331,4 +339,5 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
 | DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{extra_body: {thinking: {type: "enabled"}}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
-| Zhipu GLM        | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |
+| Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |
+| Zhipu GLM 5.2     | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |

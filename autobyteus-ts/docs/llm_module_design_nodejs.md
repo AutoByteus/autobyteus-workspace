@@ -56,8 +56,9 @@ Two OpenAI-style paths coexist:
   pass-through. The default agent/server path leaves `tool_choice` unset.
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
-  requests to Moonshot-safe temperature defaults unless the caller explicitly
-  passes a per-request `temperature`.
+  requests to Moonshot-safe temperature defaults and applies separate
+  `kimi-k2.7-code` fixed sampling/tool-choice constraints. `GlmLLM` maps the
+  flat GLM thinking schema to provider-native request fields.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -136,7 +137,9 @@ The current latest-model support set is summarized in
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
-- Moonshot/Kimi `kimi-k2.6` (verified 2026-04-25).
+- Moonshot/Kimi `kimi-k2.6` general-purpose model and `kimi-k2.7-code`
+  coding/agentic model (verified 2026-06-16).
+- Zhipu GLM `glm-5.2` (verified 2026-06-16).
 
 Provider adapters own request-shape differences:
 
@@ -148,11 +151,15 @@ Provider adapters own request-shape differences:
 - `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
   modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
   Gemini thinking config schema.
+- `GlmLLM` maps GLM `thinking_type` to provider-native `thinking.type`, sends
+  `reasoning_effort` for enabled thinking, and omits stale effort values when
+  thinking is disabled.
 - `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
   thinking when tool workflows have no explicit thinking override. Kimi also
   normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
   workflows and `1` for non-tool requests, while preserving explicit
-  per-request temperature kwargs.
+  per-request temperature kwargs. For `kimi-k2.7-code`, it keeps thinking on and
+  normalizes fixed sampling/tool-choice fields to provider-valid values.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.

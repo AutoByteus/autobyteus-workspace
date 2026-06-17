@@ -96,9 +96,9 @@ describe('ModelMetadataResolver', () => {
     });
     const curatedFallback = await resolver.resolve({
       provider: LLMProvider.KIMI,
-      name: 'kimi-k2-thinking',
-      value: 'kimi-k2-thinking',
-      canonicalName: 'kimi-k2-thinking'
+      name: 'kimi-k2.7-code',
+      value: 'kimi-k2.7-code',
+      canonicalName: 'kimi-k2.7-code'
     });
 
     expect(liveMetadata.maxContextTokens).toBe(262144);

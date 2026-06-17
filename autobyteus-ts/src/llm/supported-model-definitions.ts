@@ -116,9 +116,17 @@ const geminiSchema = new ParameterSchema([
 
 const glmSchema = new ParameterSchema([
   new ParameterDefinition({
+    name: 'reasoning_effort',
+    type: ParameterType.ENUM,
+    description: 'Controls GLM-5.2 thinking effort when thinking mode is enabled.',
+    required: false,
+    defaultValue: 'max',
+    enumValues: ['high', 'max']
+  }),
+  new ParameterDefinition({
     name: 'thinking_type',
     type: ParameterType.ENUM,
-    description: 'Enable or disable deep thinking',
+    description: 'Enable or disable GLM-5.2 thinking mode.',
     required: false,
     defaultValue: 'enabled',
     enumValues: ['enabled', 'disabled']
@@ -280,12 +288,11 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'kimi-k2.6'
   },
   {
-    name: 'kimi-k2-thinking',
-    value: 'kimi-k2-thinking',
+    name: 'kimi-k2.7-code',
+    value: 'kimi-k2.7-code',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2-thinking',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.6, 2.5) })
+    canonicalName: 'kimi-k2.7-code'
   },
   {
     name: 'qwen3-max',
@@ -298,12 +305,12 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     })
   },
   {
-    name: 'glm-5.1',
-    value: 'glm-5.1',
+    name: 'glm-5.2',
+    value: 'glm-5.2',
     provider: LLMProvider.GLM,
     llmClass: GlmLLM,
-    canonicalName: 'glm-5.1',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(13.8, 13.8) }),
+    canonicalName: 'glm-5.2',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.4, 4.4) }),
     configSchema: glmSchema
   },
   {

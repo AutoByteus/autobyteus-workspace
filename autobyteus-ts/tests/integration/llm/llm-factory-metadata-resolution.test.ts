@@ -61,6 +61,7 @@ describe('LLMFactory metadata resolution', () => {
     const deepseekModels = await LLMFactory.listModelsByProvider(LLMProvider.DEEPSEEK);
     const geminiModels = await LLMFactory.listModelsByProvider(LLMProvider.GEMINI);
     const kimiModels = await LLMFactory.listModelsByProvider(LLMProvider.KIMI);
+    const glmModels = await LLMFactory.listModelsByProvider(LLMProvider.GLM);
     const qwenModels = await LLMFactory.listModelsByProvider(LLMProvider.QWEN);
 
     const gpt55 = openaiModels.find((model) => model.model_identifier === 'gpt-5.5');
@@ -132,9 +133,40 @@ describe('LLMFactory metadata resolution', () => {
       max_context_tokens: 256000
     });
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.config_schema).toBeUndefined();
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')).toMatchObject({
+      provider_type: LLMProvider.KIMI,
+      value: 'kimi-k2.7-code',
+      max_context_tokens: 256000
+    });
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')?.config_schema).toBeUndefined();
+    const glm52 = glmModels.find((model) => model.model_identifier === 'glm-5.2');
+    expect(glm52).toMatchObject({
+      model_identifier: 'glm-5.2',
+      display_name: 'glm-5.2',
+      value: 'glm-5.2',
+      canonical_name: 'glm-5.2',
+      provider_type: LLMProvider.GLM,
+      max_context_tokens: 1000000,
+      max_input_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    expect(glm52?.config_schema).toMatchObject({
+      properties: {
+        reasoning_effort: expect.objectContaining({
+          enum: ['high', 'max'],
+          default: 'max'
+        }),
+        thinking_type: expect.objectContaining({
+          enum: ['enabled', 'disabled'],
+          default: 'enabled'
+        })
+      }
+    });
     expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-chat');
     expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-reasoner');
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
+    expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.1');
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -167,6 +199,7 @@ describe('LLMFactory metadata resolution', () => {
           json: async () => ({
             data: [
               { id: 'kimi-k2.6', context_length: 256000 },
+              { id: 'kimi-k2.7-code', context_length: 262144 },
               { id: 'kimi-k2-thinking', context_length: 131072 }
             ]
           })
@@ -226,7 +259,8 @@ describe('LLMFactory metadata resolution', () => {
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.max_output_tokens).toBe(128000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.value).toBe('claude-opus-4-7');
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.max_context_tokens).toBe(256000);
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2-thinking')?.max_context_tokens).toBe(131072);
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')?.max_context_tokens).toBe(262144);
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
     expect(mistralModels.find((model) => model.model_identifier === 'mistral-large-3')?.max_context_tokens).toBe(300000);
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_input_tokens).toBe(1048576);
