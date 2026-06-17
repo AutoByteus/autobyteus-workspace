@@ -100,7 +100,7 @@ describe('llmThinkingConfigAdapter', () => {
   });
 
   it('uses DeepSeek thinking_type semantics and schema default effort', () => {
-    expect(detectThinkingProvider(deepSeekSchema)).toBe('deepseek');
+    expect(detectThinkingProvider(deepSeekSchema)).toBe('typed');
     expect(getThinkingControlState(deepSeekSchema, null)).toMatchObject({
       supported: true,
       enabled: true,
@@ -130,6 +130,7 @@ describe('llmThinkingConfigAdapter', () => {
       thinking_level: { type: 'string', enum: ['minimal', 'low', 'medium', 'high'], default: 'medium' },
     };
     const glmSchema = {
+      reasoning_effort: { type: 'string', enum: ['high', 'max'], default: 'max' },
       thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'enabled' },
     };
 
@@ -140,8 +141,15 @@ describe('llmThinkingConfigAdapter', () => {
     });
     expect(getThinkingControlState(glmSchema, null).enabled).toBe(true);
     expect(getThinkingToggleOwnedParamKeys(glmSchema)).toEqual(['thinking_type']);
-    expect(applyThinkingToggle(glmSchema, false, { thinking_type: 'enabled' })).toEqual({
+    expect(applyThinkingToggle(glmSchema, false, {
+      thinking_type: 'enabled',
+      reasoning_effort: 'max',
+    })).toEqual({
       thinking_type: 'disabled',
+    });
+    expect(applyThinkingToggle(glmSchema, true, { thinking_type: 'disabled' })).toEqual({
+      thinking_type: 'enabled',
+      reasoning_effort: 'max',
     });
   });
 

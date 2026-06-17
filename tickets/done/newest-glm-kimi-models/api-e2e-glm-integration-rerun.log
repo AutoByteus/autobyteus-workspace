@@ -1,0 +1,25 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/integration/llm/api/glm-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/api/glm-llm.test.ts > GlmLLM Integration > should support tool-call continuation without strict ordering errors
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/integration/llm/api/glm-llm.test.ts (7 tests) 81281ms
+     ✓ should successfully make a simple completion call  11120ms
+     ✓ should stream response incrementally  10026ms
+     ✓ should support public sendUserMessage  21808ms
+     ✓ should support public streamUserMessage  16817ms
+     ✓ should support tool-call continuation without strict ordering errors  11239ms
+     ✓ accepts enabled thinking with max reasoning effort  8267ms
+     ✓ accepts disabled thinking without stale reasoning effort  2000ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  05:42:07
+   Duration  81.63s (transform 162ms, setup 25ms, import 245ms, tests 81.28s, environment 0ms)
+

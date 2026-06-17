@@ -1,0 +1,61 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support tool-call continuation without strict ordering errors
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > preserves streamed kimi-k2.7-code reasoning through tool-call continuation
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ❯ tests/integration/llm/api/kimi-llm.test.ts (7 tests | 2 failed) 24306ms
+     ✓ should successfully make a simple completion call  1796ms
+     ✓ should stream response incrementally  3993ms
+     × should support public sendUserMessage 7314ms
+     × should support public streamUserMessage 4026ms
+     ✓ should support tool-call continuation without strict ordering errors  3508ms
+     ✓ accepts kimi-k2.7-code simple requests with adapter-normalized parameters  1374ms
+     ✓ preserves streamed kimi-k2.7-code reasoning through tool-call continuation  2292ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support public sendUserMessage
+AssertionError: expected '' to contain 'guido van rossum'
+
+- Expected
++ Received
+
+- guido van rossum
+
+ ❯ tests/integration/llm/api/kimi-llm.test.ts:210:46
+    208|       expect(response).toBeInstanceOf(CompleteResponse);
+    209|       expect(typeof response.content).toBe('string');
+    210|       expect(response.content.toLowerCase()).toContain('guido van ross…
+       |                                              ^
+    211|     } catch (error) {
+    212|       if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support public streamUserMessage
+AssertionError: expected 0 to be greater than 1
+ ❯ tests/integration/llm/api/kimi-llm.test.ts:237:37
+    235|       }
+    236| 
+    237|       expect(receivedTokens.length).toBeGreaterThan(1);
+       |                                     ^
+    238|       expect(completeResponse.toLowerCase()).toContain('django');
+    239|       expect(completeResponse.toLowerCase()).toContain('flask');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  05:43:38
+   Duration  24.64s (transform 152ms, setup 26ms, import 232ms, tests 24.31s, environment 0ms)
+

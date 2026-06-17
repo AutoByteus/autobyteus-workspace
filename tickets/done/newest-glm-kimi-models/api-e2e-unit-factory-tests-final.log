@@ -1,0 +1,33 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/unit/llm/api/glm-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/llm-factory-metadata-resolution.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/kimi-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/metadata/model-metadata-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/metadata/model-metadata-resolver.test.ts (6 tests) 4ms
+ ✓ tests/unit/llm/api/glm-llm.test.ts (6 tests) 5ms
+ ✓ tests/unit/llm/api/kimi-llm.test.ts (9 tests) 6ms
+ ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (3 tests) 25ms
+
+ Test Files  4 passed (4)
+      Tests  24 passed (24)
+   Start at  05:45:54
+   Duration  766ms (transform 565ms, setup 97ms, import 1.09s, tests 39ms, environment 0ms)
+

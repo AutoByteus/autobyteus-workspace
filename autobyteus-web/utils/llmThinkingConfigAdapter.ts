@@ -5,7 +5,7 @@ import {
   type UiModelConfigSchema,
 } from '~/utils/llmConfigSchema';
 
-type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'glm' | 'deepseek';
+type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'typed';
 
 type ThinkingConfig = Record<string, unknown>;
 
@@ -22,8 +22,7 @@ const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   openai: ['reasoning_effort', 'reasoning_summary'],
   claude: ['thinking_enabled', 'thinking_budget_tokens', 'thinking_display', 'reasoning_effort'],
   gemini: ['thinking_level', 'include_thoughts'],
-  glm: ['thinking_type'],
-  deepseek: ['thinking_type', 'reasoning_effort'],
+  typed: ['thinking_type', 'reasoning_effort'],
 };
 
 const hasKey = (
@@ -83,10 +82,9 @@ const positiveOpenAiValue = (
 export const detectThinkingProvider = (schema: UiModelConfigSchema | null): ThinkingProvider | null => {
   if (!schema) return null;
   if ('thinking_enabled' in schema) return 'claude';
-  if ('thinking_type' in schema && 'reasoning_effort' in schema) return 'deepseek';
+  if ('thinking_type' in schema) return 'typed';
   if ('reasoning_effort' in schema || 'reasoning_summary' in schema) return 'openai';
   if ('thinking_level' in schema || 'include_thoughts' in schema) return 'gemini';
-  if ('thinking_type' in schema) return 'glm';
   return null;
 };
 
@@ -129,21 +127,7 @@ const claudeState = (
   };
 };
 
-const deepSeekState = (
-  schema: UiModelConfigSchema,
-  config: ThinkingConfig | null | undefined,
-): ThinkingControlState => {
-  const thinkingType = effectiveValue(schema, config, 'thinking_type');
-  return {
-    supported: true,
-    enabled: thinkingType === 'enabled',
-    canEnable: enumIncludes(schema.thinking_type, 'enabled'),
-    canDisable: enumIncludes(schema.thinking_type, 'disabled'),
-    toggleOwnedKeys: ['thinking_type'],
-  };
-};
-
-const glmState = (
+const typedThinkingState = (
   schema: UiModelConfigSchema,
   config: ThinkingConfig | null | undefined,
 ): ThinkingControlState => {
@@ -201,10 +185,8 @@ export const getThinkingControlState = (
       return openAiState(schema, config);
     case 'claude':
       return claudeState(schema, config);
-    case 'deepseek':
-      return deepSeekState(schema, config);
-    case 'glm':
-      return glmState(schema, config);
+    case 'typed':
+      return typedThinkingState(schema, config);
     case 'gemini':
       return geminiState(schema, config);
   }
@@ -286,11 +268,7 @@ export const applyThinkingToggle = (
       }
       break;
     }
-    case 'glm': {
-      applyKey(next, schema, 'thinking_type', enabled ? 'enabled' : 'disabled');
-      break;
-    }
-    case 'deepseek': {
+    case 'typed': {
       applyKey(next, schema, 'thinking_type', enabled ? 'enabled' : 'disabled');
       if (enabled) {
         if (next.reasoning_effort === undefined) {

@@ -1,0 +1,13 @@
+Environment key presence after local .env.test copy (values not printed):
+GLM_API_KEY=set
+KIMI_API_KEY=set
+
+Active source/test/doc references to removed IDs (excluding archival/build outputs):
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:168:    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:169:    expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.1');
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:203:              { id: 'kimi-k2-thinking', context_length: 131072 }
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:263:    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
+autobyteus-ts/docs/provider_model_catalogs.md:31:| LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
+autobyteus-ts/docs/provider_model_catalogs.md:141:`glm-5.1` is no longer an active built-in model and must not be retained as an
+autobyteus-ts/docs/provider_model_catalogs.md:172:`kimi-k2-thinking` is no longer an active built-in model and must not be
+autobyteus-ts/docs/llm_module_design.md:128:- `glm-5.2` replaces `glm-5.1` as the active GLM model and exposes

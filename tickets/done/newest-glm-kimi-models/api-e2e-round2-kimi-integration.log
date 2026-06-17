@@ -1,0 +1,28 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (6) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support tool-call continuation without strict ordering errors
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > preserves streamed kimi-k2.7-code reasoning through tool-call continuation
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/integration/llm/api/kimi-llm.test.ts (7 tests) 28914ms
+     ✓ should successfully make a simple completion call  1647ms
+     ✓ should stream response incrementally  3663ms
+     ✓ should support public sendUserMessage  6704ms
+     ✓ should support public streamUserMessage  9400ms
+     ✓ should support tool-call continuation without strict ordering errors  2066ms
+     ✓ accepts kimi-k2.7-code simple requests with adapter-normalized parameters  2010ms
+     ✓ preserves streamed kimi-k2.7-code reasoning through tool-call continuation  3421ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  09:07:58
+   Duration  29.24s (transform 142ms, setup 23ms, import 220ms, tests 28.91s, environment 0ms)
+

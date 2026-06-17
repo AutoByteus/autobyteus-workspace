@@ -1,0 +1,44 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models/autobyteus-ts
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support tool-call continuation without strict ordering errors
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > preserves streamed kimi-k2.7-code reasoning through tool-call continuation
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ❯ tests/integration/llm/api/kimi-llm.test.ts (7 tests | 1 failed) 924588ms
+     ✓ should successfully make a simple completion call  1154ms
+     ✓ should stream response incrementally  1607ms
+     × should support public sendUserMessage 910259ms
+     ✓ should support public streamUserMessage  4757ms
+     ✓ should support tool-call continuation without strict ordering errors  1467ms
+     ✓ accepts kimi-k2.7-code simple requests with adapter-normalized parameters  2041ms
+     ✓ preserves streamed kimi-k2.7-code reasoning through tool-call continuation  3300ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/kimi-llm.test.ts > KimiLLM Integration > should support public sendUserMessage
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/llm/api/kimi-llm.test.ts:201:3
+    199|   }, 120000);
+    200| 
+    201|   it('should support public sendUserMessage', async () => {
+       |   ^
+    202|     const llm = new KimiLLM(buildModel());
+    203|     const userMessageText = 'Who developed the programming language Py…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  23:56:03
+   Duration  924.91s (transform 145ms, setup 23ms, import 223ms, tests 924.59s, environment 0ms)
+
