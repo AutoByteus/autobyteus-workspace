@@ -4,7 +4,7 @@
 
 - Ticket: `newest-glm-kimi-models`
 - Date: `2026-06-17`
-- Current Status: `User verified; repository finalization and release in progress`
+- Current Status: `Finalized and released`
 - Latest authoritative validation round: API/E2E Round 3 `Pass`, following code-review Round 5 `Pass` for the corrected current-project package
 
 ## Delivery Summary
@@ -108,7 +108,17 @@
 ## Finalization Record
 
 - Ticket archive state: `Archived under tickets/done/newest-glm-kimi-models/ before final commit`.
-- Repository finalization status: `In progress after user verification`.
-- Release/publication/deployment status: `New version release requested; release in progress after repository finalization`.
-- Cleanup status: `Deferred until after target branch finalization and release make cleanup safe`.
+- Repository finalization status: `Completed`; target merge commit `8513e4abb859d4cabc238aebac442fa72346e73c` pushed to `origin/personal`.
+- Release/publication/deployment status: `Completed`; release `v1.3.57` pushed with release commit `7f01fbe477a15f5e62b76bd759ee54e253516a2f` and tag object `3fbc0f0cb78c4578b0f7acd3bb334aa343ac0868`.
+- Cleanup status: `Completed`; dedicated ticket worktree and local/remote ticket branches removed after merge/release.
 - Bootstrap/finalization target record: Dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/newest-glm-kimi-models` on branch `codex/newest-glm-kimi-models`, based on `origin/personal`; expected finalization target branch is `personal`.
+
+## Final Release Record
+
+- Ticket branch commit: `e1476fc5ea9ba35772771b3772e9cee00a5d2c73`
+- Target merge commit: `8513e4abb859d4cabc238aebac442fa72346e73c`
+- Release version: `1.3.57`
+- Release commit: `7f01fbe477a15f5e62b76bd759ee54e253516a2f`
+- Release tag: `v1.3.57` (tag object `3fbc0f0cb78c4578b0f7acd3bb334aa343ac0868`, tagged commit `7f01fbe477a15f5e62b76bd759ee54e253516a2f`)
+- Release helper command: `pnpm release 1.3.57 -- --release-notes tickets/done/newest-glm-kimi-models/release-notes.md`
+- Cleanup: ticket worktree removed; local and remote `codex/newest-glm-kimi-models` branches deleted.
