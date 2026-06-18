@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-spec.md`
 - Current Review Round: 2
 - Trigger: Requirements approval update from `solution_designer`; user explicitly approved the proposed UX/design summary with “sounds good.”
 - Prior Review Round Reviewed: 1
@@ -20,7 +20,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

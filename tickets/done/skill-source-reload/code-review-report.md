@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/requirements.md`
 - Current Review Round: 3
 - Trigger: API/E2E returned after adding/updating repository-resident durable coverage for skill source reload.
 - Prior Review Round Reviewed: 2
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-execution-coverage-report.md`
-- Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-execution-coverage-report.md`
+- Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -43,8 +43,8 @@ Durable coverage reviewed:
 
 Coverage artifacts reviewed:
 
-- `tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`
-- `tickets/in-progress/skill-source-reload/api-e2e-execution-coverage-report.md`
+- `tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`
+- `tickets/done/skill-source-reload/api-e2e-execution-coverage-report.md`
 
 Reviewer verification commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload` in Round 3:
 

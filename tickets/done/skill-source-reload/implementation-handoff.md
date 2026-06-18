@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-review-report.md` (latest authoritative review round: Round 2, pass; requirements approval update only)
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-review-report.md` (latest authoritative review round: Round 2, pass; requirements approval update only)
 
 ## What Changed
 

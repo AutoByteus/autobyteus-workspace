@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: Code-review pass for skill source reload; updated Round 2 code-review handoff received during execution and reviewed before final rerun.
 - Prior Round Reviewed: N/A
@@ -22,11 +22,11 @@
 
 ## Execution Basis
 
-Execution followed the canonical coverage investigation at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`. The Round 2 upstream update was reviewed before the final rerun. It only records explicit user approval and Round 2 design/code-review pass; it does not change scope, acceptance criteria, design shape, implementation code, or coverage decisions.
+Execution followed the canonical coverage investigation at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`. The Round 2 upstream update was reviewed before the final rerun. It only records explicit user approval and Round 2 design/code-review pass; it does not change scope, acceptance criteria, design shape, implementation code, or coverage decisions.
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -135,8 +135,8 @@ No new persistent services, external accounts, network dependencies, or temporar
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/in-progress/skill-source-reload/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/tickets/done/skill-source-reload/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 

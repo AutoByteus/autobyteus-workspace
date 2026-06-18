@@ -8,6 +8,8 @@ The Skills module allows users to:
 
 - View available global skills and bundled package skills (file-based
   capabilities from configured skill directories and imported agent packages).
+- Reload the visible skill catalog after files in already configured skill
+  source folders are changed on disk, without restarting the application.
 - View the content of skill files (scripts, docs) using the **generic File Explorer**.
 - Create new skills.
 - Edit skill files directly in the browser with **Monaco Editor**.
@@ -162,6 +164,7 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 | Action                 | Description                              |
 | :--------------------- | :--------------------------------------- |
 | `fetchAllSkills()`     | Load all skills from the server.         |
+| `reloadSkillCatalog()` | Explicitly rescan configured skill sources and bundled package skill roots, replace the visible skill list, and refresh cached skill-source metadata. |
 | `fetchSkill(name)`     | Load a specific skill by name.           |
 | `createSkill(payload)` | Create a new skill directory + SKILL.md. |
 | `deleteSkill(name)`    | Delete the entire skill directory.       |
@@ -171,6 +174,18 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 | `activateSkillVersion(name, version)` | Activate a specific skill version. |
 
 > **Note:** File operations (view, edit, save) are now handled by the generic `FileExplorerStore` via the skill's transient workspace.
+
+The Skills list header exposes a localized **Reload** action backed by the
+GraphQL `reloadSkillCatalog` mutation. Reload updates card metadata such as
+description, file count, added skills, removed skills, and source counts after
+external file edits. The button has its own `reloading` state and success/error
+feedback; duplicate concurrent reloads are ignored. If the currently selected
+skill disappears during reload, `skillStore` clears `currentSkill` so the page
+can return to the list state.
+
+Reload is intentionally a catalog/UI refresh. It affects the Skills page and
+future agent selections, but it does not claim to update skill content that has
+already been materialized inside active agent runs.
 
 ### workspace.ts (Skill Registration)
 
