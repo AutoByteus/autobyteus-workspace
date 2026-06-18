@@ -16,8 +16,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -423,7 +426,7 @@ export type CreateAgentRunInput = {
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
   selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
 };
@@ -582,7 +585,7 @@ export type ExternalChannelLaunchPresetGql = {
   llmConfig?: Maybe<Scalars['JSONObject']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -591,15 +594,9 @@ export type ExternalChannelLaunchPresetInput = {
   llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['input'];
 };
-
-export enum ExternalChannelSkillAccessModeEnum {
-  GlobalDiscovery = 'GLOBAL_DISCOVERY',
-  None = 'NONE',
-  PreloadedOnly = 'PRELOADED_ONLY'
-}
 
 export type ExternalChannelTeamDefinitionOptionGql = {
   __typename?: 'ExternalChannelTeamDefinitionOptionGql';
@@ -616,7 +613,7 @@ export type ExternalChannelTeamLaunchPresetGql = {
   llmConfig?: Maybe<Scalars['JSONObject']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -625,7 +622,7 @@ export type ExternalChannelTeamLaunchPresetInput = {
   llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['input'];
 };
 
@@ -939,6 +936,7 @@ export type Mutation = {
   reloadAgentPackage: Array<AgentPackage>;
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
+  reloadSkillCatalog: SkillCatalogReloadResult;
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
@@ -1736,7 +1734,7 @@ export type RunMetadataConfigObject = {
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
   runtimeReference: RunRuntimeReferenceObject;
-  skillAccessMode?: Maybe<ExternalChannelSkillAccessModeEnum>;
+  skillAccessMode?: Maybe<SkillAccessModeEnum>;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -1812,6 +1810,18 @@ export type Skill = {
   name: Scalars['String']['output'];
   rootPath: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
+};
+
+export enum SkillAccessModeEnum {
+  GlobalDiscovery = 'GLOBAL_DISCOVERY',
+  None = 'NONE',
+  PreloadedOnly = 'PRELOADED_ONLY'
+}
+
+export type SkillCatalogReloadResult = {
+  __typename?: 'SkillCatalogReloadResult';
+  skillSources: Array<SkillSource>;
+  skills: Array<Skill>;
 };
 
 export type SkillDiff = {
@@ -1950,7 +1960,7 @@ export type TeamMemberConfigInput = {
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
   selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  skillAccessMode: SkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
@@ -2376,7 +2386,7 @@ export type UpsertExternalChannelBindingMutationVariables = Exact<{
 }>;
 
 
-export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null } };
+export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null } };
 
 export type DeleteExternalChannelBindingMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -2658,7 +2668,7 @@ export type ExternalChannelCapabilitiesQuery = { __typename?: 'Query', externalC
 export type ExternalChannelBindingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null }> };
+export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: SkillAccessModeEnum, llmConfig?: any | null } | null }> };
 
 export type ExternalChannelTeamDefinitionOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2852,7 +2862,7 @@ export type GetAgentRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
+export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
 
 export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2959,6 +2969,11 @@ export type RemoveSkillSourceMutationVariables = Exact<{
 
 
 export type RemoveSkillSourceMutation = { __typename?: 'Mutation', removeSkillSource: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> };
+
+export type ReloadSkillCatalogMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReloadSkillCatalogMutation = { __typename?: 'Mutation', reloadSkillCatalog: { __typename?: 'SkillCatalogReloadResult', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null }>, skillSources: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> } };
 
 export type GetSkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7217,6 +7232,46 @@ export function useRemoveSkillSourceMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<RemoveSkillSourceMutation, RemoveSkillSourceMutationVariables>(RemoveSkillSourceDocument, options);
 }
 export type RemoveSkillSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveSkillSourceMutation, RemoveSkillSourceMutationVariables>;
+export const ReloadSkillCatalogDocument = gql`
+    mutation ReloadSkillCatalog {
+  reloadSkillCatalog {
+    skills {
+      name
+      description
+      content
+      rootPath
+      fileCount
+      isReadonly
+      isDisabled
+      isVersioned
+      activeVersion
+    }
+    skillSources {
+      path
+      skillCount
+      isDefault
+    }
+  }
+}
+    `;
+
+/**
+ * __useReloadSkillCatalogMutation__
+ *
+ * To run a mutation, you first call `useReloadSkillCatalogMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useReloadSkillCatalogMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useReloadSkillCatalogMutation();
+ */
+export function useReloadSkillCatalogMutation(options: VueApolloComposable.UseMutationOptions<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables>(ReloadSkillCatalogDocument, options);
+}
+export type ReloadSkillCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables>;
 export const GetSkillsDocument = gql`
     query GetSkills {
   skills {

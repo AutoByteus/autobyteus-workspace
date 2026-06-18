@@ -18,14 +18,9 @@ import {
   ENABLE_SKILL_VERSIONING,
   ACTIVATE_SKILL_VERSION,
 } from '~/graphql/skills'
-import type {
-  Skill,
-  CreateSkillInput,
-  UpdateSkillInput,
-  DeleteSkillResult,
-  SkillVersion,
-  SkillDiff,
-} from '~/types/skill'
+import { RELOAD_SKILL_CATALOG } from '~/graphql/skillSources'
+import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
+import type { Skill, CreateSkillInput, UpdateSkillInput, DeleteSkillResult, SkillVersion, SkillDiff } from '~/types/skill'
 
 export const useSkillStore = defineStore('skill', () => {
 
@@ -33,7 +28,7 @@ export const useSkillStore = defineStore('skill', () => {
   const skills = ref<Skill[]>([])
   const currentSkill = ref<Skill | null>(null)
   const currentSkillTree = ref<string | null>(null)
-  const loading = ref(false)
+  const loading = ref(false), reloading = ref(false)
   const error = ref('')
 
   function updateSkillVersionMetadata(skillName: string, updates: Partial<Skill>) {
@@ -72,6 +67,46 @@ export const useSkillStore = defineStore('skill', () => {
       throw e
     } finally {
       loading.value = false
+    }
+  }
+
+  async function reloadSkillCatalog(): Promise<void> {
+    if (reloading.value) {
+      return
+    }
+
+    reloading.value = true
+    error.value = ''
+
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: RELOAD_SKILL_CATALOG,
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((e) => e.message).join(', '))
+      }
+
+      const reloadResult = data?.reloadSkillCatalog
+      if (!reloadResult) {
+        throw new Error('Failed to reload skills: No data returned')
+      }
+
+      skills.value = reloadResult.skills
+
+      if (currentSkill.value) {
+        currentSkill.value =
+          reloadResult.skills.find((skill: Skill) => skill.name === currentSkill.value?.name) ?? null
+      }
+
+      const skillSourcesStore = useSkillSourcesStore()
+      skillSourcesStore.replaceSkillSources(reloadResult.skillSources)
+    } catch (e: any) {
+      error.value = e.message
+      throw e
+    } finally {
+      reloading.value = false
     }
   }
 
@@ -503,6 +538,7 @@ export const useSkillStore = defineStore('skill', () => {
   const getCurrentSkill = computed(() => currentSkill.value)
   const getCurrentSkillTree = computed(() => currentSkillTree.value)
   const getLoading = computed(() => loading.value)
+  const getReloading = computed(() => reloading.value)
   const getError = computed(() => error.value)
 
   return {
@@ -511,9 +547,11 @@ export const useSkillStore = defineStore('skill', () => {
     currentSkill,
     currentSkillTree,
     loading,
+    reloading,
     error,
     // Actions
     fetchAllSkills,
+    reloadSkillCatalog,
     fetchSkill,
     fetchSkillFileTree,
     readFileContent,
@@ -535,6 +573,7 @@ export const useSkillStore = defineStore('skill', () => {
     getCurrentSkill,
     getCurrentSkillTree,
     getLoading,
+    getReloading,
     getError,
   }
 })

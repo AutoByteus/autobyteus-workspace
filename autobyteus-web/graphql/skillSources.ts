@@ -29,3 +29,26 @@ export const REMOVE_SKILL_SOURCE = gql`
     }
   }
 `
+
+export const RELOAD_SKILL_CATALOG = gql`
+  mutation ReloadSkillCatalog {
+    reloadSkillCatalog {
+      skills {
+        name
+        description
+        content
+        rootPath
+        fileCount
+        isReadonly
+        isDisabled
+        isVersioned
+        activeVersion
+      }
+      skillSources {
+        path
+        skillCount
+        isDefault
+      }
+    }
+  }
+`

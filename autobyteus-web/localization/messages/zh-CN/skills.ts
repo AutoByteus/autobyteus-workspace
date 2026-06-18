@@ -3,6 +3,10 @@ import type { TranslationCatalog } from '../../runtime/types';
 const skillMessages = {
   'skills.components.skills.SkillsList.title': '技能',
   'skills.components.skills.SkillsList.sources': '来源',
+  'skills.components.skills.SkillsList.reload': '重新加载',
+  'skills.components.skills.SkillsList.reloading': '正在重新加载...',
+  'skills.components.skills.SkillsList.reload_success': '技能已重新加载。',
+  'skills.components.skills.SkillsList.reload_error': '重新加载技能失败。',
   'skills.components.skills.SkillsList.no_skills_match_query': '没有技能匹配你的搜索词“{{query}}”。',
   'skills.components.skills.SkillsList.no_skills_created_yet': '尚未创建任何技能',
   'skills.components.skills.SkillsList.create_your_first_skill': '创建你的第一个技能以扩展能力。',
