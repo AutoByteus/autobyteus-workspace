@@ -1,12 +1,5 @@
-# Release Notes: Skill Source Reload
+# Release Notes: Intel macOS Terminal startup
 
-## User-Facing Changes
-
-- Added a Skills page **Reload** action that refreshes the visible skill catalog after files in already configured skill source folders change on disk.
-- Reload updates skill cards and cached skill-source counts without requiring an application restart.
-- Reload shows in-progress, success, and failure feedback and avoids duplicate concurrent submissions.
-
-## Scope Notes
-
-- Reload is global for the configured skill catalog and bundled package skill roots.
-- Reload refreshes catalog/UI state for browsing and future selections; it does not update skill content already materialized inside active agent runs.
+- Fixed packaged AutoByteus Terminal startup on Intel macOS where the Terminal tab could connect but never show a shell prompt because the packaged `node-pty` helper selected for x64 was not executable.
+- Added macOS package validation so ARM64 and Intel x64 builds check the staged and final packaged Terminal runtime before release.
+- Improved Terminal startup diagnostics so native PTY startup failures are surfaced to the UI instead of appearing as a silent hang.
