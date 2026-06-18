@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/code-review-report.md`
 - Current Investigation Round: `1`
 - Trigger: Code review passed for ticket `home-nodes-menu`; API/E2E coverage investigation may begin.
 - Prior Investigation Reviewed: `N/A`

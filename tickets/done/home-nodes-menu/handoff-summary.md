@@ -4,7 +4,7 @@
 
 - Ticket: `home-nodes-menu`
 - Branch: `codex/home-nodes-menu`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Finalization target: `origin/personal`
 - Current delivery status: User verification received; repository finalization in progress with no release/version bump.
 
@@ -39,7 +39,7 @@
 
 ## Delivery Docs Sync
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/docs-sync-report.md`
 - Docs updated:
   - `README.md`
   - `autobyteus-web/README.md`
@@ -56,11 +56,11 @@
 
 Upstream implementation/API-E2E/code review evidence remains authoritative for behavior:
 
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
-- Browser probe evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-browser-probe-results.json`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
+- Browser probe evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-browser-probe-results.json`
 
 Delivery-stage checks run:
 
@@ -87,10 +87,10 @@ User verified the local Electron build on 2026-06-18 and requested finalization 
 
 - Request: User asked to read README and build Electron for local testing.
 - README command used: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac` from `autobyteus-web/README.md`.
-- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/autobyteus-web`
+- Working directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`
 - Result: `Passed`
 - Build artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.59.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.59.zip`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.59.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.59.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - Notes: Build was local, unsigned/not notarized for testing. Generated build/dependency outputs are ignored and are not intended for commit.

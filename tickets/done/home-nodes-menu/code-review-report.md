@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/requirements.md`
 - Current Review Round: `2`
 - Trigger: API/E2E validation passed and repository-resident durable coverage was updated after the prior code review.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -31,9 +31,9 @@ Round rules:
 
 Round 2 reviewed:
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
-- Browser probe evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-browser-probe-results.json`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md`
+- Browser probe evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-browser-probe-results.json`
 - Repository-resident durable coverage delta in `autobyteus-web/components/settings/__tests__/NodeManager.spec.ts`
 
 The changed durable coverage adds one test, `opens the Phone Setup tab from the nodeTab route query`, which sets `routeMock.query = { nodeTab: 'phoneSetup' }`, mounts `NodeManager`, and verifies that the Phone Setup tab/panel/cards are active while Manage Nodes is inactive. This directly covers `AC-005` for the existing `NodeManager` owner and complements the browser probe that validated `/nodes?nodeTab=phoneSetup` in runtime.

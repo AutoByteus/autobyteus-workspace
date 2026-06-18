@@ -3,12 +3,12 @@
 ## Current Snapshot
 
 - Ticket: `home-nodes-menu`
-- Current Stage: `10`
-- Next Stage: `Repository Finalization`
-- Code Edit Permission: `Locked Pending Finalization`
+- Current Stage: `Complete`
+- Next Stage: `None`
+- Code Edit Permission: `Locked / Complete`
 - Active Re-Entry: `No`
 - Re-Entry Classification: `N/A`
-- Last Transition ID: `T-009`
+- Last Transition ID: `T-010`
 - Last Updated: `2026-06-18`
 
 ## Stage 0 Bootstrap Record
@@ -21,24 +21,24 @@
 - Default Finalization Target Branch: `personal`
 - Remote Refresh Performed: `Yes`
 - Remote Refresh Result: `git fetch origin --prune` completed before creating `codex/home-nodes-menu`; tag `v1.3.59` fetched.
-- Ticket Worktree Path: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu`
+- Ticket Worktree Path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket Branch: `codex/home-nodes-menu`
 
 ## Stage Gates
 
 | Stage | Gate Status | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + git base branch resolved + remote freshness handled + dedicated ticket worktree/branch created + `requirements.md` Draft captured | `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/requirements.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + git base branch resolved + remote freshness handled + dedicated ticket worktree/branch created + `requirements.md` Draft captured | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/requirements.md` |
 | 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `investigation-notes.md` updated with relevant current-state files and design health evidence |
 | 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | User approved clean move on 2026-06-18; `requirements.md` status is `Design-ready` |
 | 3 Design Basis | Pass | Design basis updated for scope | `design-spec.md` produced for architecture review |
 | 4 Architecture Review | Pass | Design review completed and implementation approved | `design-review-report.md` records `Pass` decision |
 | 5 Implementation Authorization | Pass | Reviewed design package received by implementation engineer | Architecture review handoff received 2026-06-18 |
 | 6 Implementation | Pass | Source + implementation-scoped verification complete | `implementation-handoff.md` records changes and local checks |
-| 7 API/E2E + Executable Validation | Pass | executable validation gate complete | `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md` |
-| 8 Code Review | Pass | Code review gate complete | `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/code-review-report.md` records post-API/E2E durable coverage-code re-review pass |
-| 9 Docs Sync | Pass | docs sync current | `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu/docs-sync-report.md` |
-| 10 Handoff / Ticket State | In Progress | handoff and explicit verification/finalization complete | User verified packaged Electron build on 2026-06-18; ticket archived to `tickets/done/home-nodes-menu`; repository finalization in progress |
+| 7 API/E2E + Executable Validation | Pass | executable validation gate complete | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/api-e2e-execution-coverage-report.md` |
+| 8 Code Review | Pass | Code review gate complete | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/code-review-report.md` records post-API/E2E durable coverage-code re-review pass |
+| 9 Docs Sync | Pass | docs sync current | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu/docs-sync-report.md` |
+| 10 Handoff / Ticket State | Pass | handoff and explicit verification/finalization complete | User verified packaged Electron build on 2026-06-18; ticket archived; `origin/personal` updated; main checkout Electron build passed; no release/version bump performed |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -71,6 +71,7 @@
 | T-007 | 2026-06-18 | 8 | 9 | Post-API/E2E durable coverage-code re-review passed; delivery started with latest-base refresh | Stage advance | Locked Pending Delivery | code-review-report.md |
 | T-008 | 2026-06-18 | 9 | 10 | Delivery docs sync completed against current integrated base; handoff prepared and waiting for user verification | Verification hold | Locked Pending User Verification | docs-sync-report.md, handoff-summary.md, release-deployment-report.md |
 | T-009 | 2026-06-18 | 10 | 10 | User verified local Electron build and requested finalization without release/version bump | Verification received | Locked Pending Finalization | handoff-summary.md, release-deployment-report.md |
+| T-010 | 2026-06-18 | 10 | Complete | Finalized to origin/personal and built Electron from the updated main checkout | Finalized | Locked / Complete | release-deployment-report.md |
 
 ## Process Violation Log
 

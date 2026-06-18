@@ -26,10 +26,10 @@ Reference screenshots:
 ## Environment Discovery / Bootstrap Context
 
 - Project Type: `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu/tickets/done/home-nodes-menu`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/home-nodes-menu`
 - Current Branch: `codex/home-nodes-menu`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` completed before worktree creation; tag `v1.3.59` fetched.
 - Task Branch: `codex/home-nodes-menu`
@@ -44,7 +44,7 @@ Reference screenshots:
 | --- | --- | --- | --- | --- | --- |
 | 2026-06-18 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v && git branch --show-current && git symbolic-ref refs/remotes/origin/HEAD` | Resolve repo/worktree/base context | Repository root is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`; current shared checkout on `personal` with untracked `.article-work/` and `docs/articles/`; remote default `origin/personal` | No |
 | 2026-06-18 | Command | `git worktree list --porcelain && git fetch origin --prune` | Check existing worktrees and refresh remote refs before ticket branch/worktree creation | No matching `home-nodes-menu` worktree existed; fetch completed and fetched tag `v1.3.59` | No |
-| 2026-06-18 | Command | `git worktree add -b codex/home-nodes-menu /Users/normy/autobyteus_org/autobyteus-worktrees/home-nodes-menu origin/personal` | Create dedicated ticket worktree/branch | Dedicated branch/worktree created at `7e507be0` | No |
+| 2026-06-18 | Command | `git worktree add -b codex/home-nodes-menu /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated ticket worktree/branch | Dedicated branch/worktree created at `7e507be0` | No |
 | 2026-06-18 | Data | User screenshots listed in request context | Understand desired UI placement | `Nodes` appears under settings; `Media` appears in home/workspace sidebar | No |
 | 2026-06-18 | Command | `find autobyteus-web -maxdepth 3 -type f \( -name '*.vue' -o -name '*.ts' -o -name '*.mts' \)` | Identify frontend structure | Relevant shell, settings, pages, tests live under `autobyteus-web` | No |
 | 2026-06-18 | Command | `rg -n "shell\.navigation|navigation|Media|settings|nodes|NodeManager|Sidebar|side" autobyteus-web --glob '!node_modules' --glob '!dist' --glob '!*.generated.ts'` | Locate sidebar and node/media code | `AppLeftPanel.vue` and `LeftSidebarStrip.vue` declare duplicated shell nav; `pages/media.vue` exists; `pages/settings.vue` mounts `NodeManager` | No |
