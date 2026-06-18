@@ -36,7 +36,12 @@ vi.mock('node:child_process', () => ({
 }));
 
 vi.mock('../../../../src/tools/terminal/node-pty-bootstrap.js', () => ({
-  ensureNodePtySpawnHelperExecutable: mocks.ensureSpawnHelper
+  ensureNodePtySpawnHelperExecutable: mocks.ensureSpawnHelper,
+  formatNodePtySpawnHelperDiagnostics: () => 'node-pty diagnostics: platform=test arch=test',
+  getNodePtySpawnHelperDiagnostics: vi.fn(async () => ({
+    platform: 'test',
+    arch: 'test'
+  }))
 }));
 
 import { IsolatedPtySession } from '../../../../src/tools/terminal/isolated-pty-session.js';

@@ -162,7 +162,7 @@ export async function registerTerminalWebsocket(
 
           const connectionAdapter: WebSocketConnection = {
             send: (data) => socket.send(data),
-            close: (code) => socket.close(code),
+            close: (code, reason) => socket.close(code, reason),
           };
           connectPromise = handler.connect(
             connectionAdapter,
@@ -189,6 +189,8 @@ export async function registerTerminalWebsocket(
           if (closed) return;
           if (isRemoteAccessWebSocketRejection(error)) {
             closeSocketForRemoteAccessRejection(socket, error, req);
+          } else if (connectPromise) {
+            logger.warn(`Terminal connection failed during startup: ${String(error)}`);
           } else {
             logger.warn(`Terminal connection rejected: ${String(error)}`);
             socket.close(4004, "Terminal cwd unavailable");

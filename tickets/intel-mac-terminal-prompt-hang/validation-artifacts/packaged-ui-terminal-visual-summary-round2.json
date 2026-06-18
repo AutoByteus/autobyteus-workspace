@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-06-18T08:27:22.012Z",
+  "sourceApp": "/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app",
+  "sourcePort": "29695",
+  "targetPort": "29696",
+  "result": "FAIL",
+  "patch": {
+    "tmp": "/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-ui-visual-bin-UAklBQ",
+    "app": "/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-ui-visual-bin-UAklBQ/AutoByteus.app",
+    "hash": "ebe287b0eee082423eaaf755f05b4eacd272a76223660b62008b8f4813fe1ce8",
+    "portCount": 38,
+    "routeCount": 1
+  },
+  "home": "/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-ui-visual-home-71WF5h",
+  "pid": 75541,
+  "error": "Error: app exited 0\n    at waitPort (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-visual-probe-binary.mjs:21:119)\n    at async main (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-visual-probe-binary.mjs:23:711)",
+  "appCopyRemoved": true,
+  "homeRemoved": true,
+  "completedAt": "2026-06-18T08:28:11.293Z"
+}

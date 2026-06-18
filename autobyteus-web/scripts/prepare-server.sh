@@ -19,6 +19,25 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+normalize_node_pty_spawn_helpers() {
+  if [ ! -d "${TARGET_DIR}/node_modules" ]; then
+    echo -e "${YELLOW}Warning: node_modules not found; skipping node-pty spawn-helper mode normalization.${NC}"
+    return
+  fi
+
+  local normalized=0
+  while IFS= read -r helper_path; do
+    chmod a+x "${helper_path}"
+    normalized=$((normalized + 1))
+  done < <(find "${TARGET_DIR}/node_modules" -type f -name spawn-helper -path "*/node-pty/*" -print)
+
+  if [ "${normalized}" -eq 0 ]; then
+    echo -e "${YELLOW}Warning: No node-pty spawn-helper files found to normalize.${NC}"
+  else
+    echo -e "${GREEN}✓${NC} Normalized execute bits on ${normalized} node-pty spawn-helper file(s)"
+  fi
+}
+
 # Banner
 echo -e "${GREEN}=======================================${NC}"
 echo -e "${GREEN}   Preparing AutoByteus Server Files   ${NC}"
@@ -196,6 +215,9 @@ else
   echo -e "${YELLOW}electron-rebuild not found in project dependencies; using pnpm dlx fallback...${NC}"
   pnpm -C "$WEB_ROOT" dlx electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
 fi
+
+echo -e "\n${YELLOW}Normalizing node-pty spawn-helper execute bits...${NC}"
+normalize_node_pty_spawn_helpers
 
 echo -e "\n${YELLOW}Removing symlinks that point outside the bundle...${NC}"
 python3 - "$TARGET_DIR" <<'PY'

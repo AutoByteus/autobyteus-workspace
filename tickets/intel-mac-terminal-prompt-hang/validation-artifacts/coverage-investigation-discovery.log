@@ -1,0 +1,935 @@
+===== Requirements relevant =====
+# Requirements Doc
+
+## Status
+
+Design-ready - user confirmed kickoff after refreshed latest-`origin/personal` probe on 2026-06-18.
+
+## Goal / Problem Statement
+
+On Intel macOS, the packaged AutoByteus desktop Terminal tab opens but does not show a prompt. The same terminal path works on Windows and on Apple Silicon macOS. After rebasing/resetting the ticket branch to the latest `origin/personal`, the current packaged Intel app still fails before prompt output is produced.
+
+## Refreshed Diagnosis
+
+The latest source on `origin/personal` still repairs the first `node-pty` `spawn-helper` found in static order (`build/Release`, `build/Debug`, then `prebuilds/${process.platform}-${process.arch}`). In the installed Intel package, that resolves to an executable arm64 `build/Release/spawn-helper`, while `node-pty` actually selects `prebuilds/darwin-x64`. The selected x64 helper exists but has mode `0644`, so `node-pty.spawn()` fails with `posix_spawnp failed`.
+
+## Functional Requirements
+
+- REQ-001: The packaged Intel macOS app must ship with an executable `node-pty/prebuilds/darwin-x64/spawn-helper`.
+- REQ-002: Runtime helper repair must target the helper adjacent to the native module selected by `node-pty`, not the first helper found by static directory order.
+- REQ-003: Release validation must catch a packaged macOS app whose selected `node-pty` helper is non-executable.
+- REQ-004: Terminal startup failure must surface an actionable backend/frontend error rather than only showing an empty/stuck terminal.
+
+## Acceptance Criteria
+
+- AC-001: A direct websocket probe against the packaged Intel server receives shell prompt/output before timeout.
+- AC-002: In the packaged Intel app, `node-pty/lib/utils.js.loadNativeModule('pty')` selects `prebuilds/darwin-x64`, and that directory's `spawn-helper` is executable.
+- AC-003: The runtime bootstrap resolves or repairs the same helper selected by `node-pty`.
+- AC-004: If startup still fails, server logs include the selected helper path/mode and the frontend shows an error message.
+\n===== Investigation notes =====
+# Investigation Notes
+
+## Refreshed Bootstrap Context
+
+- Date: 2026-06-18 Europe/Berlin.
+- Dedicated ticket worktree: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`.
+- Branch: `codex/intel-mac-terminal-prompt-hang`.
+- Base requested by user: latest `origin/personal`.
+- Latest base after fetch: `3171a5a4416e718cb4b38464206d9603733bf7a1` (`3171a5a4 docs(ticket): record raw trace rotation release finalization`, 2026-06-18 05:51:00 +0200).
+- Existing uncommitted ticket work was preserved before reset via git stash: `backup before rebasing intel terminal ticket on origin/personal 20260618-080148`.
+- Extra backup files: `/Users/ryan-zheng/autobyteus-org/branch-backups/intel-terminal-20260618-080148/`.
+- Branch was reset to `origin/personal`; current branch HEAD equals latest `origin/personal`.
+
+## Commands / Evidence
+
+| Evidence | Result |
+| --- | --- |
+| `git fetch --prune origin` | Updated `origin/personal` from `aea805ae` to `3171a5a4`; many release tags through `v1.3.58` fetched. |
+| `git stash push -u ... && git reset --hard origin/personal` | Ticket branch based exactly on latest `origin/personal`. |
+| `pnpm install --frozen-lockfile` | Succeeded; dev `autobyteus-ts` postinstall repaired worktree `prebuilds/darwin-x64/spawn-helper`. |
+| `pnpm -C autobyteus-ts exec vitest run tests/integration/tools/terminal/isolated-pty-session.test.ts --reporter=verbose` | Passed on Intel dev dependencies. |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts --reporter=verbose` | Passed on Intel dev dependencies. |
+| Static read of `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` | Still searches `build/Release`, `build/Debug`, then current-arch prebuild. |
+| Static read of `autobyteus-web/build/scripts/afterPack.ts` | Latest personal treats `spawn-helper` as a candidate for codesigning, but does not chmod it executable. |
+| Installed app metadata | `/Applications/AutoByteus.app` is version `1.3.58`, Mach-O x86_64. |
+| Installed helper modes | `prebuilds/darwin-x64/spawn-helper` is x86_64 but mode `0644`; `build/Release/spawn-helper` is arm64 and mode `0755`. |
+| Packaged websocket probe to `ws://127.0.0.1:29695/ws/terminal/...` | Opened, then closed with code `1011`, empty reason, zero output. |
+| Server log after packaged websocket probe | `Failed to create terminal session: Error: posix_spawnp failed.` and `Terminal connection rejected: Error: posix_spawnp failed.` |
+| Electron Node probe using packaged `node-pty/lib/utils.js.loadNativeModule('pty')` | Selected `/prebuilds/darwin-x64`; selected helper mode was `644`, executable=false. |
+| Electron Node probe calling packaged `node-pty.spawn()` | Threw `Error: posix_spawnp failed.` |
+| Electron Node probe importing packaged `autobyteus-ts/dist/tools/terminal/node-pty-bootstrap.js` | `resolveNodePtySpawnHelperPath()` returned `/build/Release/spawn-helper`, mode `755`, executable=true, which is the wrong arm64 helper for the x64 runtime. |
+
+## Current Conclusion
+
+The problem remains on latest `origin/personal` and installed AutoByteus `v1.3.58`: the packaged Intel app's selected `node-pty` helper is not executable. The latest source contains a partial packaging change to consider `spawn-helper` during codesigning, but it does not set executable permissions and the runtime bootstrap still resolves the wrong helper when an executable arm64 `build/Release` helper exists in the x64 package.
+
+Windows does not hit this macOS `spawn-helper` executable-bit path. M1 works because the arm64 helper path is executable. Intel macOS fails because `node-pty` selects the x64 prebuild helper, which is mode `0644`.
+
+## Recommended Fix Shape
+
+- Update runtime bootstrap to resolve the actual native directory selected by `node-pty` and chmod the adjacent `spawn-helper`.
+- Update desktop packaging to chmod packaged Darwin `spawn-helper` files, especially `prebuilds/darwin-x64/spawn-helper` for Intel artifacts.
+- Add a packaged-runtime validation script/check that fails if the selected helper is not executable or if a packaged `node-pty.spawn()` probe fails.
+- Improve startup error propagation so frontend users see an error instead of an empty terminal.
+\n===== Design validation / legacy sections =====
+1:# Design Spec
+3:## Current-State Read
+21:## Intended Change
+28:## Task Design Health Assessment (Mandatory)
+39:## Terminology
+46:## Design Reading Order
+53:## Legacy Removal Policy (Mandatory)
+60:## Data-Flow Spine Inventory
+69:## Primary Execution Spine(s)
+74:## Spine Narratives (Mandatory)
+83:## Spine Actors / Main-Line Nodes
+94:## Ownership Map
+105:## Thin Entry Facades / Public Wrappers (If Applicable)
+112:## Removal / Decommission Plan (Mandatory)
+120:## Return Or Event Spine(s) (If Applicable)
+124:## Bounded Local / Internal Spines (If Applicable)
+130:## Off-Spine Concerns Around The Spine
+139:## Existing Capability / Subsystem Reuse Check
+149:## Subsystem / Capability-Area Allocation
+158:## Draft File Responsibility Mapping
+170:## Reusable Owned Structures Check
+177:## Shared Structure / Data Model Tightness Check
+183:## Final File Responsibility Mapping
+196:## Ownership Boundaries
+200:## Boundary Encapsulation Map
+208:## Dependency Rules
+216:## Interface Boundary Mapping
+225:## Interface Boundary Check
+233:## Main Domain Subject Naming Check
+241:## Applied Patterns (If Any)
+246:## Target Subsystem / Folder / File Mapping
+259:## Folder Boundary Check
+268:## Concrete Examples / Shape Guidance (Mandatory When Needed)
+276:## Backward-Compatibility Rejection Log (Mandatory)
+284:## Derived Layering (If Useful)
+291:## Migration / Refactor Sequence
+302:## Key Tradeoffs
+308:## Risks
+314:## Guidance For Implementation
+# Design Spec
+
+## Current-State Read
+
+The user-visible Terminal startup path is:
+
+`Terminal tab -> Terminal.vue -> useTerminalSession -> /ws/terminal/:sessionId -> TerminalHandler -> PtySessionManager -> IsolatedPtySession -> node-pty bridge -> bash prompt -> websocket output -> xterm`
+
+On latest `origin/personal` (`3171a5a4`, 2026-06-18), the development backend terminal tests pass on the Intel host after workspace dependency installation. The packaged Intel app still fails. A direct websocket probe to the packaged server opens, then closes with code `1011` and no output. The packaged server logs `Failed to create terminal session: Error: posix_spawnp failed.`
+
+The native-helper ownership problem is now precise:
+
+- Packaged Intel app: `/Applications/AutoByteus.app`, version `1.3.58`, x86_64.
+- `node-pty/lib/utils.js.loadNativeModule('pty')` selects `node-pty/prebuilds/darwin-x64` on the Intel runtime.
+- The selected helper, `prebuilds/darwin-x64/spawn-helper`, is x86_64 but mode `0644`, not executable.
+- The current AutoByteus runtime bootstrap resolves `build/Release/spawn-helper` first. In the Intel package that file is arm64 and executable, so AutoByteus repairs/checks the wrong helper.
+- Latest `autobyteus-web/build/scripts/afterPack.ts` treats `spawn-helper` as a codesigning candidate, but codesigning candidacy does not make the selected helper executable.
+
+Windows works because it does not use this Darwin helper executable-bit path. Apple Silicon works because the arm64 helper path is executable. Intel macOS fails because the x64 helper selected by `node-pty` is present but not executable.
+
+## Intended Change
+
+- Make runtime node-pty helper repair resolve and chmod the helper adjacent to the native module actually selected by `node-pty` for the current process.
+- Normalize packaged macOS `spawn-helper` permissions during desktop server-resource preparation / after-packaging so the x64 package ships valid before runtime repair is needed.
+- Add a packaged runtime validation check that fails on the current Intel package shape.
+- Surface actionable startup errors instead of allowing the frontend terminal to look silently stuck.
+
+## Task Design Health Assessment (Mandatory)
+
+- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix
+- Current design issue found (`Yes`/`No`/`Unclear`): Yes
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Missing Invariant, with duplicated helper-selection policy between runtime repair and packaging/postinstall paths.
+- Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes, targeted.
+- Evidence: Latest packaged Intel v1.3.58 has x64 selected helper mode `0644`; packaged websocket closes `1011`; packaged `node-pty.spawn()` throws `posix_spawnp failed`; packaged AutoByteus bootstrap currently resolves the executable arm64 `build/Release/spawn-helper` instead of the selected x64 prebuild helper.
+- Design response: Move the invariant from "some spawn-helper exists/executable" to "the selected node-pty native module's adjacent spawn-helper is executable". Enforce it both at runtime and in package validation.
+- Refactor rationale: The existing owner exists (`autobyteus-ts` terminal bootstrap), but its selection invariant is wrong. A one-line package chmod would help the current release but would leave runtime repair and validation able to miss the selected helper again.
+- Intentional deferrals and residual risk, if any: Do not add fallback to direct shell or another PTY backend. Fallback would hide packaging defects and make CI validation weaker. Broader release artifact pruning is limited to what is needed for terminal helper correctness.
+
+## Terminology
+
+- `Subsystem` / `capability area`: a larger functional area that owns a broader category of work and may contain multiple files plus optional module groupings.
+- `Module`: an optional intermediate grouping inside a subsystem when the codebase benefits from it. Do not use `module` as a synonym for one file or as the default ownership term.
+- `Folder` / `directory`: a physical grouping used to organize files and any optional module groupings.
+- `File`: one concrete source file and the primary unit where one concrete concern should land.
+
+## Design Reading Order
+
+1. Data-flow spine and native-helper invariant.
+2. Packaging and validation ownership.
+3. Error return path.
+4. Concrete file responsibilities and migration order.
+
+## Legacy Removal Policy (Mandatory)
+
+- Policy: `No backward compatibility; remove legacy code paths.`
+- Required action: Replace the obsolete static-order helper repair behavior (`build/Release`, `build/Debug`, then current-arch prebuild) for runtime startup. Static search may remain only as a diagnostic fallback when `node-pty`'s selected native module cannot be resolved; it must not be the normal authority.
+- Obsolete in-scope behavior: "repair first found helper" becomes invalid.
+- The design rejects dual old/new helper selection as steady state.
+
+## Data-Flow Spine Inventory
+
+| Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Governing Owner | Why It Matters |
+| --- | --- | --- | --- | --- | --- |
+| DS-001 | Primary End-to-End | User opens Terminal tab | Prompt/output rendered in xterm | Terminal streaming stack | Main failing user path. |
+| DS-002 | Primary End-to-End | Desktop package prepares server resources | Packaged app contains executable selected node-pty helper | Desktop packaging pipeline | Prevents broken Intel releases. |
+| DS-003 | Return-Event | Native terminal startup failure | Visible frontend error and actionable server log | TerminalHandler / useTerminalSession | Avoids silent stuck terminal. |
+| DS-004 | Bounded Local | IsolatedPtySession startup | Bridge ready or helper diagnostic failure | `autobyteus-ts` terminal backend | Local invariant that must select/chmod the correct helper. |
+
+## Primary Execution Spine(s)
+
+- DS-001: `Terminal tab click -> Terminal.vue -> useTerminalSession websocket -> registerTerminalWebsocket -> TerminalHandler.connect -> PtySessionManager.createSession -> IsolatedPtySession.start -> selected node-pty helper repair -> bridge bash spawn -> websocket output -> xterm prompt`
+- DS-002: `release/build workflow -> prepare server resources -> normalize node-pty helper executable bits -> afterPack/codesign -> packaged terminal runtime validation -> publishable artifact`
+
+## Spine Narratives (Mandatory)
+
+| Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
+| --- | --- | --- | --- | --- |
+| DS-001 | Frontend opens a terminal websocket for a workspace cwd. Backend creates a PTY session. The macOS isolated PTY backend repairs the selected node-pty helper, starts the bridge, and streams prompt output back. | Terminal UI, websocket session, terminal handler, PTY manager, isolated PTY backend, node-pty helper, shell prompt | Terminal streaming stack | cwd validation, resize/input events, xterm fitting |
+| DS-002 | Packaging stages server resources, ensures Darwin helper files are executable, signs native binaries, and validates that the app's runtime-selected helper can spawn. | Build workflow, server bundle, node-pty dependency, packaged app | Desktop packaging pipeline | Prisma engines, signing identity, notarization |
+| DS-003 | Startup failure is reported by the PTY owner, logged by the terminal handler with helper diagnostics, and preserved by the frontend state. | PTY failure, error protocol frame/close reason, frontend error state | TerminalHandler / useTerminalSession | log privacy, close-code mapping |
+| DS-004 | Inside `IsolatedPtySession.start()`, helper repair resolves node-pty's selected native directory and chmods that directory's `spawn-helper` before the bridge starts. | helper resolver, chmod repair, bridge process, ready message | `autobyteus-ts` terminal backend | private node-pty API drift, fallback diagnostics |
+
+## Spine Actors / Main-Line Nodes
+
+- `Terminal.vue`
+- `useTerminalSession`
+- `registerTerminalWebsocket`
+- `TerminalHandler`
+- `PtySessionManager`
+- `IsolatedPtySession`
+- `node-pty` selected native module/helper
+- Desktop packaging scripts/workflow
+
+## Ownership Map
+
+- `Terminal.vue`: owns xterm rendering and user-visible terminal surface.
+- `useTerminalSession`: owns browser websocket lifecycle and frontend terminal error state.
+- `registerTerminalWebsocket`: owns websocket route binding and cwd validation before terminal connection.
+- `TerminalHandler`: owns backend terminal websocket session lifecycle, output/error frames, and cleanup.
+- `PtySessionManager`: owns PTY session identity and session creation/closure coordination.
+- `IsolatedPtySession`: owns macOS PTY bridge startup and the native-helper startup precondition.
+- `node-pty-bootstrap`: owns the selected-helper resolution and executable-bit repair invariant.
+- Desktop packaging pipeline: owns shipped server-resource permissions and packaged-app validation.
+
+## Thin Entry Facades / Public Wrappers (If Applicable)
+
+| Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
+| --- | --- | --- | --- |
+| `registerTerminalWebsocket` route | `TerminalHandler` and `PtySessionManager` | Transport entrypoint | Native helper selection or package repair |
+| `PtySessionManager.createSession` | concrete terminal session backend | Session registry/lifecycle boundary | node-pty filesystem probing |
+
+## Removal / Decommission Plan (Mandatory)
+
+| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
+| --- | --- | --- | --- | --- |
+| Static-order runtime helper authority | It can select an executable helper for the wrong architecture | Selected-native-dir helper resolver in `node-pty-bootstrap` | In This Change | Static fallback only allowed when selected-native-dir cannot be resolved and must report diagnostics. |
+| Package validation limited to artifact presence/codesign | It misses executable-bit failure on selected helper | Packaged terminal runtime validator | In This Change | Codesigning candidate logic is not enough. |
+| Generic frontend "connection lost" overwrite after backend startup error | It hides the real terminal startup failure | Error preservation in `useTerminalSession` | In This Change | Preserve backend error if received before close. |
+
+## Return Or Event Spine(s) (If Applicable)
+
+| Path / Folder | Intended Structural Depth (`Transport`/`Main-Line Domain-Control`/`Persistence-Provider`/`Off-Spine Concern`/`Mixed Justified`) | Ownership Boundary Is Clear? (`Yes`/`No`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Justification / Corrective Action |
+| --- | --- | --- | --- | --- |
+| `autobyteus-ts/src/tools/terminal` | Main-Line Domain-Control | Yes | Low | Owns terminal backends and native startup. |
+| `autobyteus-web/scripts` | Off-Spine Concern | Yes | Low | Owns packaging/validation scripts. |
+| `autobyteus-server-ts/src/services/terminal-streaming` | Main-Line Domain-Control | Yes | Low | Owns backend terminal streaming lifecycle. |
+| `autobyteus-web/composables` | Transport/UI state | Yes | Low | Owns frontend websocket composables. |
+
+## Concrete Examples / Shape Guidance (Mandatory When Needed)
+
+| Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
+| --- | --- | --- | --- |
+| Helper repair | `selectedDir = nodePty.loadNativeModule('pty').dir; chmod selectedDir/spawn-helper` | `for dir in build/Release build/Debug prebuilds/currentArch; return first helper` | The bad shape is the current Intel failure. |
+| Package validation | Run validator against `.app` and fail if selected helper is non-executable | Only codesign files named `spawn-helper` | Codesigning does not set executable bits. |
+| Error visibility | Backend sends `type:error` then frontend preserves it | Close websocket `1011` with no frame, frontend shows generic loss | Prevents users seeing a silent hang. |
+
+## Backward-Compatibility Rejection Log (Mandatory)
+
+| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
+| --- | --- | --- | --- |
+| Keep build-first helper selection and add x64 chmod elsewhere | Smallest patch | Rejected | Runtime resolver must target selected helper. |
+| Add fallback terminal backend if node-pty fails | Could make UI appear usable | Rejected | Fix packaged native helper; fallback would hide release defects. |
+| Keep no-error websocket close behavior | Avoid protocol change | Rejected | Send/preserve actionable startup error. |
+
+## Derived Layering (If Useful)
+
+- UI layer: `Terminal.vue`, `useTerminalSession`.
+- Backend streaming layer: websocket route and `TerminalHandler`.
+- Terminal runtime layer: `PtySessionManager`, `IsolatedPtySession`, `node-pty-bootstrap`.
+- Packaging/release validation layer: server-resource preparation, afterPack, release workflow validator.
+
+## Migration / Refactor Sequence
+
+1. Update `node-pty-bootstrap.ts` to resolve the actual selected native dir and chmod the adjacent `spawn-helper`; add diagnostics.
+2. Align `fix-node-pty-permissions.mjs` so dev/postinstall repair does not preserve stale build-first behavior.
+3. Add focused unit tests for stale/wrong-arch `build/Release` plus non-executable current-arch prebuild.
+4. Update `IsolatedPtySession`/`TerminalHandler` logging to include helper diagnostics on startup failure.
+5. Add/adjust server and frontend tests for startup error frame/error preservation.
+6. Update packaging scripts to chmod Darwin helpers in staged/packaged server resources before signing/validation.
+7. Add packaged terminal validator and wire it into mac release jobs.
+8. Run dev terminal integration/E2E and package validation; verify packaged Intel websocket emits prompt.
+
+## Key Tradeoffs
+
+- Using `node-pty/lib/utils.js.loadNativeModule('pty')` couples to a private node-pty utility, but it is the most accurate oracle for the actual selected helper. Encapsulate that coupling in `node-pty-bootstrap.ts` and cover it with tests.
+- Packaging chmod plus runtime repair is intentionally redundant: packaging prevents bad releases, runtime repair protects installed/local dependency states.
+- Do not solve this by frontend retries; retrying the same non-executable helper will still fail.
+
+## Risks
+
+- `node-pty` private utility shape could change. Mitigation: one encapsulated resolver with diagnostic fallback and tests.
+- Electron-builder signing/notarization may require chmod before signing. Mitigation: chmod during preparation/afterPack before codesign and validate after packaging.
+- The installed app currently fails even at v1.3.58; final implementation must test the packaged app, not just dev dependencies.
+
+## Guidance For Implementation
+
+- Start with `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts`; make the selected helper path observable in tests.
+- Reproduce the failing package shape in a unit test: executable arm64 `build/Release/spawn-helper`, non-executable x64 `prebuilds/darwin-x64/spawn-helper`, and assert the x64 helper is selected/repaired.
+- Keep package validation explicit: print selected native dir, helper path, mode, executable status, and spawn probe result.
+- Final proof on Intel should be a direct websocket probe to the packaged server that receives prompt/output before timeout.
+\n===== Implementation handoff relevant =====
+# Implementation Handoff
+
+## Upstream Artifact Package
+
+- Requirements doc: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/requirements.md`
+- Investigation notes: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/investigation-notes.md`
+- Design spec: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/design-spec.md`
+- Design review report: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/design-review-report.md`
+
+## What Changed
+
+- Reworked `autobyteus-ts` terminal bootstrap so runtime helper repair follows node-pty's selected native module instead of the first helper that exists on disk.
+  - `node-pty-bootstrap.ts` now calls `node-pty/lib/utils.js.loadNativeModule('pty')`, normalizes bundled asar paths, verifies the adjacent `spawn-helper`, exposes diagnostics, and only uses a current-arch fallback when node-pty selection cannot be inspected.
+  - `fix-node-pty-permissions.mjs` mirrors the selected-helper behavior for postinstall/development repair.
+- Added actionable terminal startup error propagation.
+  - `IsolatedPtySession` wraps startup failures with node-pty helper diagnostics.
+  - `PtySessionManager` exposes backend name for logs/errors.
+  - `TerminalHandler` sends a typed websocket error frame and closes startup failures with `1011` / `Terminal startup failed`.
+  - The Fastify websocket adapter preserves startup failures from `TerminalHandler` instead of replacing them with a cwd rejection.
+  - `useTerminalSession` preserves backend error messages through websocket close/error events.
+- Hardened macOS packaging against the Intel helper mode defect.
+  - `prepare-server.sh` now chmods node-pty `spawn-helper` files after `electron-rebuild` on the active non-Windows dispatch path.
+  - `prepare-server.mjs` has parity normalization for the JS preparation path.
+  - `afterPack.ts` normalizes node-pty helper execute bits before custom resource signing and does not skip this normalization when `APPLE_SIGNING_IDENTITY` is absent.
+- Added package-time validation for Darwin terminal runtime resources.
+  - New CLI: `autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs`.
+  - Validates target Darwin `pty.node`, target adjacent `spawn-helper`, selected-helper existence/executable mode, best-effort `file` architecture match, and host-compatible node-pty spawn probe when `--spawn-probe` is requested.
+  - Release workflow now validates both staged `resources/server` and final `.app/Contents/Resources/server` for ARM64 and x64, with Electron-Node spawn probes gated to host-compatible arch.
+- Added/updated targeted tests for selected-helper resolution, startup diagnostics, websocket error framing, and frontend error preservation.
+
+## Key Files Or Areas
+
+- Runtime helper selection / diagnostics:
+  - `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts`
+  - `autobyteus-ts/scripts/fix-node-pty-permissions.mjs`
+  - `autobyteus-ts/src/tools/terminal/isolated-pty-session.ts`
+- Terminal server startup error propagation:
+  - `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts`
+  - `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts`
+  - `autobyteus-server-ts/src/api/websocket/terminal.ts`
+- Frontend error preservation:
+  - `autobyteus-web/composables/useTerminalSession.ts`
+- Packaging / release validation:
+  - `autobyteus-web/scripts/prepare-server.sh`
+  - `autobyteus-web/scripts/prepare-server.mjs`
+  - `autobyteus-web/build/scripts/afterPack.ts`
+  - `autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs`
+  - `.github/workflows/release-desktop.yml`
+  - `autobyteus-web/package.json`
+- Tests:
+  - `autobyteus-ts/tests/unit/tools/terminal/node-pty-bootstrap.test.ts`
+  - `autobyteus-ts/tests/unit/tools/terminal/isolated-pty-session.test.ts`
+  - `autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts`
+  - `autobyteus-web/composables/__tests__/useTerminalSession.spec.ts`
+
+## Important Assumptions
+
+- Current `node-pty@1.1.0` selection authority is `node-pty/lib/utils.js.loadNativeModule('pty')`; runtime repair now uses that authority rather than an independent build-first file search.
+- The package validator cannot safely execute cross-arch native modules on every runner, so cross-arch checks remain static mode/existence/architecture checks and the spawn probe runs only when host and target platform/arch match.
+- `file` is available on macOS release runners for best-effort architecture validation. If unavailable, the validator warns and still enforces existence and execute-bit invariants.
+- Fallback PTY/direct-shell backends remain intentionally out of scope; startup failures are exposed instead of hidden.
+
+## Known Risks
+
+- I did not run a full Electron macOS packaging job locally. The new release workflow validation is intended to exercise staged and final app resource trees during CI packaging.
+- The new validator script is a single-purpose CLI and is above the 220-line change-pressure signal. I assessed splitting it, but kept it cohesive because it owns one release validation concern and splitting would create thin indirection; it remains well below the 500-line hard guardrail.
+- `pnpm -C autobyteus-ts run build` currently fails after TypeScript compilation in `scripts/verify-runtime-dependencies.mjs` because `autobyteus-ts/package.json` is missing existing CLI runtime dependencies `ink` and `react`. This failure is outside the terminal helper changes; direct `tsc --noEmit` passes.
+
+## Task Design Health Assessment Implementation Check
+
+- Reviewed change posture: Bug Fix
+- Reviewed root-cause classification: Missing Invariant, with duplicated helper-selection policy between runtime repair and packaging/postinstall paths.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now, targeted.
+- Implementation matched the reviewed assessment (`Yes`/`No`): Yes
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
+- Evidence / notes: The implementation changes the invariant from "some helper exists/executable" to "the selected node-pty native module's adjacent helper exists/executable" and enforces it in runtime bootstrap, postinstall repair, package preparation, afterPack, and release validation.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: None
+- Legacy old-behavior retained in scope: No
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes
+- Notes: No fallback terminal backend was introduced. Runtime fallback remains limited to diagnostics/repair when node-pty's selected native module cannot be inspected.
+
+## Environment Or Dependency Notes
+
+- Worktree: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`
+- Branch: `codex/intel-mac-terminal-prompt-hang`
+- Base/current HEAD before implementation: `3171a5a4416e718cb4b38464206d9603733bf7a1`
+- Local host for checks: Darwin x64, Node `v24.4.1`.
+- Shell startup prints an unrelated `nvm` warning about version `N/A -> N/A`; commands continued normally.
+- The server unit test command resets the local Prisma SQLite test database under `autobyteus-server-ts/tests/.tmp` as part of existing test setup.
+
+## Local Implementation Checks Run
+
+Implementation-scoped checks only; API/E2E sign-off still belongs downstream.
+
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts`
+  - Pass: 3 test files, 12 tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/terminal/terminal-handler.test.ts`
+  - Pass: 1 test file, 11 tests.
+- `pnpm -C autobyteus-web exec nuxi prepare`
+  - Pass.
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts`
+  - Pass: 2 test files, 20 tests. Existing KaTeX/doctype warnings printed during test setup.
+- Typecheck / script syntax bundle:
+  - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-web exec tsc -p build/tsconfig.json --noEmit`
+  - `bash -n autobyteus-web/scripts/prepare-server.sh`
+  - `node --check autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs`
+  - `node --check autobyteus-web/scripts/prepare-server.mjs`
+  - `node --check autobyteus-ts/scripts/fix-node-pty-permissions.mjs`
+  - Pass: command completed with `typecheck-and-script-syntax OK`.
+- `node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root . --platform darwin --arch x64 --spawn-probe`
+  - Pass: validates workspace node-pty x64 helper and successfully spawns a node-pty probe on host-compatible Darwin x64.
+- Temporary package-validation fixture:
+  - With `prebuilds/darwin-x64/spawn-helper` forced to mode `0644`, validator fails with `node-pty spawn-helper is not executable ... mode=644`.
+  - After `chmod a+x`, validator passes selected-helper checks and host-compatible spawn probe.
+- `git diff --check`
+  - Pass.
+- `pnpm -C autobyteus-ts run build`
+  - Fails after `tsc -p tsconfig.build.json` in `node ./scripts/verify-runtime-dependencies.mjs` with missing runtime dependencies `ink` and `react`. Treated as pre-existing/out-of-scope package metadata issue because direct TypeScript checks pass and the missing dependencies are referenced from existing generated CLI dist files, not this terminal change.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- Run/review macOS x64 release packaging and confirm both validator placements execute: staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server`.
+- On a host-compatible Intel macOS packaged app, open Terminal and verify prompt appears instead of hanging.
+- Temporarily force packaged x64 helper mode to `0644` in a local artifact and verify the validator fails before release upload.
+- Verify startup failure UX displays the server-sent backend diagnostic rather than a generic websocket close/error.
+- Confirm no DirectShell/Pty fallback path masks node-pty packaging failures.
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+API/E2E coverage investigation, durable coverage decisions, full executable validation, and any packaged-app/manual release validation are still required downstream by `api_e2e_engineer` after code review.
+\n===== Code review relevant =====
+# Code Review Report
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/requirements.md`
+- Current Review Round: 1
+- Trigger: Implementation handoff from `implementation_engineer` for refreshed Intel macOS packaged Terminal prompt hang fix on base `3171a5a4416e718cb4b38464206d9603733bf7a1`.
+- Prior Review Round Reviewed: N/A
+- Latest Authoritative Round: 1
+- Investigation Notes Reviewed As Context: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: N/A
+- API / E2E Execution Started Yet: `No`
+- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Implementation handoff after refreshed latest-`origin/personal` reset | N/A | No | Pass | Yes | Implementation is ready for API/E2E coverage investigation and executable packaged-app validation. |
+
+## Review Scope
+
+Reviewed the uncommitted implementation patch in `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang` against the cumulative artifact package and canonical design principles. The review covered:
+
+- `autobyteus-ts` runtime node-pty selected-helper resolution, chmod repair, diagnostics, and isolated PTY startup error wrapping.
+- `autobyteus-ts` postinstall helper repair mirror.
+- `autobyteus-server-ts` terminal websocket startup error framing, close reason, backend name propagation, and route error classification.
+- `autobyteus-web` terminal frontend backend-error preservation.
+- macOS packaging chmod normalization in `prepare-server.sh`, `prepare-server.mjs`, and `afterPack.ts`.
+- New `autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs` package validator and macOS arm64/x64 release workflow gates.
+- Targeted tests added/updated for resolver selection, isolated startup diagnostics, server error framing, package validation, and frontend error preservation.
+
+Out of review scope and still required downstream: fresh signed/notarized macOS x64 packaging, packaged-server websocket probe, packaged Terminal UI E2E, and broader API/E2E coverage investigation/execution.
+
+## Prior Findings Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| N/A | N/A | N/A | N/A | First code review round for this refreshed implementation package. | N/A |
+
+## Source File Size And Structure Audit (If Applicable)
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `.github/workflows/release-desktop.yml` | 502 | N/A: workflow, not source implementation file | Reviewed size pressure | Added checks are bounded to existing macOS release jobs and call the validator instead of embedding helper policy. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/api/websocket/terminal.ts` | 185 | Pass | Pass | Route remains transport/cwd/auth owner; it no longer reclassifies `TerminalHandler` startup failures as cwd-unavailable. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts` | 128 | Pass | Pass | Backend-name accessor fits session-manager ownership. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` | 187 | Pass | Pass | Startup error frame/close behavior belongs to stream coordinator. | Pass | Pass | None. |
+| `autobyteus-ts/scripts/fix-node-pty-permissions.mjs` | 103 | Pass | Pass | Postinstall mirror is scoped to node-pty helper permission repair. | Pass | Pass | None. |
+| `autobyteus-ts/src/tools/terminal/isolated-pty-session.ts` | 345 | Pass | Reviewed existing size pressure | Added diagnostic wrapping is localized to startup failure handling inside the lifecycle owner. | Pass | Pass | None. |
+| `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` | 218 | Pass | Pass | Correct owner for selected-helper invariant, chmod repair, and diagnostics. | Pass | Pass | None. |
+| `autobyteus-web/build/scripts/afterPack.ts` | 132 | Pass | Pass | Packaged-resource chmod runs before custom signing and is not skipped when signing identity is absent. | Pass | Pass | None. |
+| `autobyteus-web/composables/useTerminalSession.ts` | 237 | Pass | Reviewed size pressure | Existing terminal websocket state owner; change only preserves prior backend error state. | Pass | Pass | None. |
+| `autobyteus-web/scripts/prepare-server.mjs` | 399 | Pass | Reviewed existing size pressure | Existing JS packaging path receives parity helper normalization. | Pass | Pass | None. |
+| `autobyteus-web/scripts/prepare-server.sh` | 215 | Pass | Pass | Active non-Windows packaging path chmods helpers after `electron-rebuild`. | Pass | Pass | None. |
+| `autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs` | 253 | Pass | Reviewed size pressure | Single-purpose validation CLI owns one release guard; splitting would create thin indirection now. | Pass | Pass | None. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Implementation preserves the `Missing Invariant` diagnosis: selected native module's adjacent helper must be executable. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Runtime startup, packaging validation, and startup-failure return spines are implemented in their intended owners. | None. |
+| Ownership boundary preservation and clarity | Pass | `node-pty-bootstrap` owns runtime helper selection; packaging scripts own shipped modes; `TerminalHandler`/`useTerminalSession` own error transport/state. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Diagnostics, package chmod, and validation support the main terminal path without becoming UI or route concerns. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing runtime bootstrap, postinstall, packaging hooks, server handler, and web composable are extended; only the missing package validator is added. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Runtime resolver is centralized; MJS postinstall mirror is bounded by install-time import constraints and covered by checks. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Diagnostics fields are concrete; frontend/server reuse existing `{ type: "error", message }` terminal protocol shape. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Release workflow delegates helper validation to the validator CLI; runtime callers use `ensureNodePtySpawnHelperExecutable()`. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | New validator and backend name accessor own real validation/reporting concerns. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | No fallback terminal backend or frontend native-helper policy was introduced. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | UI depends on terminal protocol; route depends on `TerminalHandler`; isolated session depends on bootstrap boundary. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller bypasses `node-pty-bootstrap` for runtime repair, and workflow does not inline validator internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Runtime, server streaming, frontend composable, packaging scripts, and workflow locations match their owners. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One cohesive validation CLI is acceptable for this focused release guard. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `resolveNodePtySpawnHelperPath`, diagnostics API, and validator `--server-root --platform --arch --spawn-probe` are explicit. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names clearly identify selected helper diagnostics, package terminal runtime validation, and startup error behavior. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | TS/MJS resolver overlap is intentional and narrow; the workflow does not duplicate validation implementation. | None. |
+| Patch-on-patch complexity control | Pass | Patch remains targeted despite touching runtime, packaging, server, and frontend error path. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Runtime static-order helper authority and generic error overwrite are removed as steady-state behavior. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Targeted tests cover selected-dir precedence, startup diagnostics, server error frames, frontend preservation, and validator fail/pass behavior. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests remain local to the owner under change and avoid brittle full release execution. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Local review checks and targeted suites pass; package/UI execution remains downstream API/E2E work. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No DirectShell/fallback PTY masking was added; fallback path is diagnostic/current-arch repair only when selected inspection is unavailable. | None. |
+| No legacy code retention for old behavior | Pass | Obsolete static-order runtime selection is no longer authoritative. | None. |
+
+## Review Scorecard (Mandatory)
+
+- Overall score (`/10`): 9.1
+- Overall score (`/100`): 91
+- Score calculation note: Simple average across the ten mandatory categories; the review decision is based on the checklist and findings, not the average alone.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | Implementation follows the reviewed terminal startup, packaging, and failure-return spines. | Full packaged user path still awaits API/E2E execution. | API/E2E should prove the packaged Intel prompt path end to end. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | Runtime, package validation, backend protocol, and frontend state are cleanly separated. | Postinstall mirror cannot be fully single-sourced from TS runtime code. | Keep postinstall/runtime resolver behavior aligned with tests. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.1 | Validator CLI and diagnostics APIs use explicit subject/identity fields. | Validator statically approximates node-pty selection for cross-arch checks where execution is unsafe. | Packaged host-compatible spawn probe should be run downstream. |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | Changes are placed under correct subsystem owners. | Existing web composable and packaging scripts have moderate size pressure. | Future unrelated growth should trigger extraction. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | Diagnostics and protocol payloads remain tight. | TS/MJS resolver mirroring is a small drift risk. | Preserve selected-helper tests in both runtime and package-guard paths. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | Function and script names describe concrete responsibilities. | Release workflow arm64/x64 steps are necessarily duplicated. | Consider workflow factoring only if validation expands. |
+| `7` | `API/E2E Readiness` | 9.0 | Local checks pass and downstream scenarios are explicit. | Fresh packaged app/websocket/UI validation is not yet complete. | API/E2E must investigate existing coverage and run packaged runtime validation. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | Selected helper repair handles stale wrong-arch build helpers and non-executable target helpers; diagnostics are bounded. | Private `node-pty/lib/utils.js` loader coupling remains residual risk. | Revisit if node-pty version/loader contract changes. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No fallback backend or legacy dual terminal path was introduced. | Diagnostic fallback still exists when selected inspection cannot run, but it is not normal authority. | Keep fallback limited and visible via diagnostics. |
+| `10` | `Cleanup Completeness` | 9.2 | Obsolete runtime selection authority and generic frontend error overwrite are addressed. | Final package artifact cleanup cannot be inspected until packaged build. | API/E2E/delivery should confirm final artifact state and docs impact. |
+
+## Findings
+
+None.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E coverage investigation and packaged executable validation. |
+| Tests | Test quality is acceptable | Pass | Focused unit/integration and validator fixture coverage target the changed behavior. |
+| Tests | Test maintainability is acceptable | Pass | Tests are owner-local and do not require full release packaging. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No blocking findings; downstream validation risks are listed below. |
+
+### Review Checks Run
+
+- `git diff --check`
+- `bash -n autobyteus-web/scripts/prepare-server.sh`
+- `node --check autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs`
+- `node --check autobyteus-web/scripts/prepare-server.mjs`
+- `node --check autobyteus-ts/scripts/fix-node-pty-permissions.mjs`
+- `node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root . --platform darwin --arch x64 --spawn-probe`
+- Fixture package guard: copied real `node-pty`, forced `prebuilds/darwin-x64/spawn-helper` to mode `0644`, confirmed validator failure, then `chmod a+x` and confirmed validator pass with spawn probe.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/terminal/terminal-handler.test.ts`
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts`
+- `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+- `pnpm -C autobyteus-web exec tsc -p build/tsconfig.json --noEmit`
+
+Non-blocking environment notes: the shell still prints the existing nvm `N/A -> N/A` warning, and web tests print existing KaTeX/doctype warnings. Neither affected review checks.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No alternate terminal backend/fallback path was added to hide node-pty packaging defects. |
+| No legacy old-behavior retention in changed scope | Pass | Static first-found runtime helper search is no longer the normal authority. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Backend startup errors now use protocol error frames and frontend preservation instead of silent/generic close handling. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+
+| Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None | N/A | No blocking dead/obsolete/legacy items found in changed scope. | N/A | None. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: macOS desktop release validation now includes a new packaged terminal runtime validator and Electron-Node spawn probe behavior.
+- Files or areas likely affected: Desktop release/build documentation, maintainer release checklist, or explicit delivery no-impact record if no durable docs cover release validation scripts.
+
+## Classification
+
+- N/A — latest authoritative result is `Pass`.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+## Residual Risks
+
+- Fresh macOS x64 `.app` packaging and installed-app websocket/UI validation were not executed in code review and remain required downstream.
+- Runtime resolver intentionally depends on private `node-pty@1.1.0` `lib/utils.js.loadNativeModule('pty')`; this is encapsulated and tested but should be revisited if node-pty changes.
+- Cross-arch package validation is necessarily static for non-host-compatible artifacts; the host-compatible Electron Node spawn probe must be exercised wherever the runner architecture allows.
+- `pnpm -C autobyteus-ts run build` remains reported by implementation as failing after TypeScript compilation in existing runtime dependency verification due missing `ink`/`react` package metadata. Direct terminal-relevant typechecks pass; delivery should not conflate that existing metadata issue with this terminal fix unless release packaging depends on it.
+
+## Latest Authoritative Result
+
+- Review Decision: Pass
+- Score Summary: 9.1/10 (91/100); all mandatory score categories are at least 9.0.
+- Notes: Implementation is source-review approved and ready for API/E2E coverage investigation plus packaged Intel macOS executable validation.
+\n===== Existing coverage files matching terminal/package/UI =====
+autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket-wsl.integration.test.js
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket-wsl.integration.test.ts
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.js
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.ts
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts
+autobyteus-ts/scripts/fix-node-pty-permissions.mjs
+autobyteus-ts/tests/integration/tools/terminal/background-process-manager.test.ts
+autobyteus-ts/tests/integration/tools/terminal/direct-shell-session.test.ts
+autobyteus-ts/tests/integration/tools/terminal/isolated-pty-session.test.ts
+autobyteus-ts/tests/integration/tools/terminal/pty-runtime.ts
+autobyteus-ts/tests/integration/tools/terminal/pty-session.test.ts
+autobyteus-ts/tests/integration/tools/terminal/terminal-session-manager.test.ts
+autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts
+autobyteus-ts/tests/unit/tools/terminal/ansi-utils.test.ts
+autobyteus-ts/tests/unit/tools/terminal/background-process-manager.test.ts
+autobyteus-ts/tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts
+autobyteus-ts/tests/unit/tools/terminal/command-execution/process-group-observer.test.ts
+autobyteus-ts/tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts
+autobyteus-ts/tests/unit/tools/terminal/direct-shell-session.test.ts
+autobyteus-ts/tests/unit/tools/terminal/isolated-pty-session.test.ts
+autobyteus-ts/tests/unit/tools/terminal/node-pty-bootstrap.test.ts
+autobyteus-ts/tests/unit/tools/terminal/output-buffer.test.ts
+autobyteus-ts/tests/unit/tools/terminal/prompt-detector.test.ts
+autobyteus-ts/tests/unit/tools/terminal/pty-session.test.ts
+autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts
+autobyteus-ts/tests/unit/tools/terminal/session-factory.test.ts
+autobyteus-ts/tests/unit/tools/terminal/terminal-session-manager.test.ts
+autobyteus-ts/tests/unit/tools/terminal/types.test.ts
+autobyteus-ts/tests/unit/tools/terminal/wsl-tmux-session.test.ts
+autobyteus-ts/tests/unit/tools/terminal/wsl-utils.test.ts
+autobyteus-web/build/scripts/afterPack.ts
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/integration/terminal/terminal-websocket-wsl.integration.test.js
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/integration/terminal/terminal-websocket-wsl.integration.test.ts
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/integration/terminal/terminal-websocket.integration.test.js
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/integration/terminal/terminal-websocket.integration.test.ts
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/pty-session-manager.test.js
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/pty-session-manager.test.ts
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/terminal-handler.test.js
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/terminal-handler.test.ts
+autobyteus-web/resources/server/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+autobyteus-web/resources/server/tests/integration/terminal/terminal-websocket-wsl.integration.test.js
+autobyteus-web/resources/server/tests/integration/terminal/terminal-websocket-wsl.integration.test.ts
+autobyteus-web/resources/server/tests/integration/terminal/terminal-websocket.integration.test.js
+autobyteus-web/resources/server/tests/integration/terminal/terminal-websocket.integration.test.ts
+autobyteus-web/resources/server/tests/unit/services/terminal/pty-session-manager.test.js
+autobyteus-web/resources/server/tests/unit/services/terminal/pty-session-manager.test.ts
+autobyteus-web/resources/server/tests/unit/services/terminal/terminal-handler.test.js
+autobyteus-web/resources/server/tests/unit/services/terminal/terminal-handler.test.ts
+autobyteus-web/scripts/prepare-server-dispatch.mjs
+autobyteus-web/scripts/prepare-server.mjs
+autobyteus-web/scripts/prepare-server.sh
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs
+autobyteus-web/utils/__tests__/terminalTransportCodec.spec.ts
+\n===== Relevant test/scenario names =====
+.github/workflows/release-desktop.yml:207:      - name: Verify packaged terminal runtime ARM64
+.github/workflows/release-desktop.yml:209:          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:215:          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:222:              autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:228:            echo "Skipping ARM64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
+.github/workflows/release-desktop.yml:331:      - name: Verify packaged terminal runtime x64
+.github/workflows/release-desktop.yml:333:          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:339:          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:346:              autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+.github/workflows/release-desktop.yml:352:            echo "Skipping x64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
+autobyteus-web/scripts/guard-localization-boundary.mjs:56:    const lines = content.split('\n');
+autobyteus-web/scripts/guard-localization-boundary.mjs:70:        /from\s+['"]vue-i18n['"]/.test(trimmed) ||
+autobyteus-web/scripts/guard-localization-boundary.mjs:71:        /useI18n\s*\(/.test(trimmed)
+autobyteus-web/scripts/guard-localization-boundary.mjs:92:  process.exit(1);
+autobyteus-web/build/scripts/build.ts:157:      .split('\n')
+autobyteus-web/build/scripts/build.ts:162:      const terminalName = candidate.split('/').pop()
+autobyteus-web/build/scripts/build.ts:163:      const inferred = resolveFlavorFromBranchName(terminalName)
+autobyteus-web/build/scripts/build.ts:168:      const terminalName = candidate.split('/').pop()
+autobyteus-web/build/scripts/build.ts:169:      const inferred = resolveFlavorFromBranchName(terminalName)
+autobyteus-web/build/scripts/build.ts:275:      'node-pty/prebuilds/win32-.*',
+autobyteus-web/build/scripts/build.ts:435:    process.exit(1)
+autobyteus-web/scripts/guard-web-boundary.mjs:11:  process.exit(1);
+autobyteus-web/scripts/guard-web-boundary.mjs:91:    const lines = content.split('\n');
+autobyteus-web/scripts/guard-web-boundary.mjs:94:      if (importPatterns.some((pattern) => pattern.test(line))) {
+autobyteus-web/scripts/guard-web-boundary.mjs:112:  const lines = content.split('\n');
+autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:100:describe('useWorkspaceHistorySelectionActions', () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:101:  it('does not resolve focused team history selection by duplicate bare member name', async () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts:111:  it('resolves focused team history selection by exact nested member route key', async () => {
+autobyteus-web/build/scripts/afterPack.ts:23:  // node-pty prebuilt spawn-helper can be shipped without executable bit set.
+autobyteus-web/build/scripts/afterPack.ts:25:  if (path.basename(filePath) === 'spawn-helper') return true
+autobyteus-web/build/scripts/afterPack.ts:64:    path.basename(filePath) === 'spawn-helper' &&
+autobyteus-web/build/scripts/afterPack.ts:65:    filePath.split(path.sep).includes('node-pty')
+autobyteus-web/build/scripts/afterPack.ts:73:  console.log(`  Normalized execute bits on ${helpers.length} node-pty spawn-helper file(s)`)
+autobyteus-web/build/scripts/afterPack.ts:112:  console.log('\nNormalizing packaged terminal native resources...')
+autobyteus-web/build/scripts/afterPack.ts:148:  binaries.sort((a, b) => b.split(path.sep).length - a.split(path.sep).length)
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:50:  if (!/[A-Za-z]/.test(value)) return true;
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:58:  return ALLOWED_LITERAL_PATTERNS.some((pattern) => pattern.test(value));
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:67:  if (!/\s/.test(value) && !/[.?!:]/.test(value)) return true;
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:72:  return IGNORED_FILE_PATTERNS.some((pattern) => pattern.test(filePath));
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:122:    return Boolean(name && UI_IDENTIFIER_PATTERN.test(name));
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:127:    return Boolean(name && UI_IDENTIFIER_PATTERN.test(name));
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:195:      return Boolean(ownerName && (UI_IDENTIFIER_PATTERN.test(ownerName) || UI_FUNCTION_PATTERN.test(ownerName)));
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:247:    const isTs = /\blang=['"]ts['"]/.test(attributes);
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:273:  if (VUE_SCRIPT_AUDIT_FILE_PATTERN.test(file)) {
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:291:  if (!file.includes('#script-') && !TS_FEEDBACK_FILE_PATTERN.test(file)) {
+autobyteus-web/scripts/lib/localizationLiteralAudit.mjs:310:  visit(sourceFile);
+autobyteus-web/build/scripts/generateIcons.ts:82:      process.exit(1)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:32:      process.exit(0)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:74:  const directRoot = path.join(nodeModulesRoot, 'node-pty')
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:90:        if (entry.name === 'node-pty' && await exists(path.join(fullPath, 'lib', 'utils.js'))) {
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:94:        if (fullPath.split(path.sep).length - pnpmRoot.split(path.sep).length < 5) {
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:135:    console.warn(`[terminal-runtime] warning: could not inspect architecture for ${filePath}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:150:    throw new Error(`Missing node-pty spawn-helper: ${helperPath}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:154:    throw new Error(`node-pty spawn-helper is not executable: ${helperPath} mode=${mode}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:171:      console.log(`[terminal-runtime] skipping ${ptyNodePath}; architecture does not match ${arch}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:183:  const helperPath = path.join(targetDir, 'spawn-helper')
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:186:    throw new Error(`Missing target node-pty native module: ${ptyNodePath}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:191:  console.log(`[terminal-runtime] ok target helper: ${helperPath}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:196:    throw new Error(`Only darwin packaged terminal validation is supported by this guard, got: ${platform}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:203:    throw new Error(`Could not resolve selected node-pty native dir for ${platform}-${arch}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:206:  const helperPath = path.join(selectedDir, 'spawn-helper')
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:209:  console.log(`[terminal-runtime] ok selected helper: ${helperPath}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:214:    console.log(`[terminal-runtime] skipped spawn probe: target ${platform}/${arch} differs from host ${process.platform}/${process.arch}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:221:const terminal = pty.spawn('bash', ['--noprofile', '--norc', '-lc', 'echo AUTOBYTEUS_TERMINAL_PROBE'], {
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:229:  terminal.kill()
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:230:  console.error('Timed out waiting for node-pty probe output')
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:231:  process.exit(1)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:233:terminal.onData(data => {
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:237:    terminal.kill()
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:238:    process.exit(0)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:241:terminal.onExit(({ exitCode }) => {
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:243:  if (output.includes('AUTOBYTEUS_TERMINAL_PROBE')) process.exit(0)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:244:  console.error('node-pty probe exited before expected output, exit=' + exitCode + ', output=' + output)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:245:  process.exit(1)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:261:      reject(new Error(`node-pty spawn probe failed with exit code ${code}`))
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:264:  console.log('[terminal-runtime] ok: node-pty spawn probe')
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:271:    throw new Error(`Could not find node-pty package under ${args.serverRoot}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:275:  console.log(`[terminal-runtime] node-pty root: ${root}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:284:  console.error(`[terminal-runtime] error: ${error instanceof Error ? error.message : String(error)}`)
+autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs:285:  process.exit(1)
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:113:describe('useWorkspaceHistoryTreeState', () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:114:  it('defaults workspaces, agent groups, team-definition groups, and team runs to collapsed', () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:132:  it('reveals only the selected agent run ancestry', async () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:149:  it('reveals selected team ancestry from the run-history store selected team source', async () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:169:  it('keeps selected reveal pending until matching data becomes available', async () => {
+autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts:186:  it('does not re-open an already revealed selected path after manual collapse and quiet refresh', async () => {
+autobyteus-web/scripts/prepare-server.sh:24:    echo -e "${YELLOW}Warning: node_modules not found; skipping node-pty spawn-helper mode normalization.${NC}"
+autobyteus-web/scripts/prepare-server.sh:32:  done < <(find "${TARGET_DIR}/node_modules" -type f -name spawn-helper -path "*/node-pty/*" -print)
+autobyteus-web/scripts/prepare-server.sh:35:    echo -e "${YELLOW}Warning: No node-pty spawn-helper files found to normalize.${NC}"
+autobyteus-web/scripts/prepare-server.sh:37:    echo -e "${GREEN}✓${NC} Normalized execute bits on ${normalized} node-pty spawn-helper file(s)"
+autobyteus-web/scripts/prepare-server.sh:179:if [ -d "${TARGET_DIR}/node_modules/node-pty/prebuilds" ]; then
+autobyteus-web/scripts/prepare-server.sh:192:    find "${TARGET_DIR}/node_modules/node-pty/prebuilds" -maxdepth 1 -type d \
+autobyteus-web/scripts/prepare-server.sh:213:  pnpm -C "$WEB_ROOT" exec electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
+autobyteus-web/scripts/prepare-server.sh:216:  pnpm -C "$WEB_ROOT" dlx electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
+autobyteus-web/scripts/prepare-server.sh:219:echo -e "\n${YELLOW}Normalizing node-pty spawn-helper execute bits...${NC}"
+autobyteus-web/scripts/prepare-server-dispatch.mjs:38:  process.exit(1)
+autobyteus-web/composables/__tests__/useRightPanel.spec.ts:16:describe('useRightPanel', () => {
+autobyteus-web/composables/__tests__/useRightPanel.spec.ts:17:  it('clamps actual width to the registered workspace while preserving preferred width for restoration', async () => {
+autobyteus-web/composables/__tests__/useRightPanel.spec.ts:34:  it('keeps the normal right panel minimum when enough workspace width is available', async () => {
+autobyteus-web/composables/__tests__/useRightPanel.spec.ts:46:  it('allows temporary width below the normal minimum when that is required to keep the splitter visible', async () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:4:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:9:      terminalWs: "ws://test-host:8000/ws/terminal",
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:41:const terminalTarget = (
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:50:describe("useTerminalSession", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:67:  it("connects to the cwd-based WebSocket URL", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:69:      terminalTarget({ rootPath: "/tmp/project", workspaceId: "ws-123" }),
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:78:    expect(url.pathname).toContain("/ws/terminal/");
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:85:  it("connects without cwd or rootPath query params when server-home default is enabled", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:96:    expect(url.pathname).toContain("/ws/terminal/");
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:102:  it("keeps explicit empty root paths explicit instead of falling back to server home", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:104:      target: terminalTarget({ rootPath: "" }),
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:117:  it("updates status to connected on open", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:118:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:128:  it("sends UTF-8 encoded input when connected", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:129:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:143:  it("sends non-ASCII input as UTF-8 bytes instead of browser binary-string text", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:144:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:155:  it("sends resize events", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:156:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:171:  it("handles output messages", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:172:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:188:  it("decodes Unicode output bytes before dispatching terminal text", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:189:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:206:  it("streams split UTF-8 output chunks through one session decoder", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:207:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:233:  it("preserves server startup error messages when the socket closes", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:234:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:240:        message: "Failed to create terminal session using backend IsolatedPtySession: posix_spawnp failed",
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:245:      reason: "Terminal startup failed",
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:250:    expect(session.errorMessage.value).toContain("posix_spawnp failed");
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:253:  it("uses close reason when no server error frame was received", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:254:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:259:      reason: "Terminal startup failed",
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:263:    expect(session.errorMessage.value).toBe("Terminal startup failed");
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:266:  it("handles disconnection", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:267:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:276:  it("does not crash on garbage JSON", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:277:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:286:  it("does not connect without a root path", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:292:    expect(session.errorMessage.value).toBe("No terminal root path provided");
+autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts:31:describe('auditLocalizationLiterals', () => {
+autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts:32:  it('flags raw literals in mixed templates instead of suppressing the whole file', () => {
+autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts:61:  it('flags raw user-facing labels in producer ts files', () => {
+autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts:88:  it('flags raw literals returned from vue script setup blocks', () => {
+autobyteus-web/scripts/__tests__/localizationLiteralAudit.spec.ts:119:  it('flags raw toast strings in broad store producer files', () => {
+autobyteus-web/scripts/prepare-server.mjs:42:  return value.split(path.sep).join('/')
+autobyteus-web/scripts/prepare-server.mjs:284:      if (!entry.isFile() || entry.name !== 'spawn-helper') {
+autobyteus-web/scripts/prepare-server.mjs:287:      if (!toPosixPath(fullPath).includes('/node-pty/')) {
+autobyteus-web/scripts/prepare-server.mjs:297:  warn(`Normalized execute bits on ${normalized} node-pty spawn-helper file(s)`)
+autobyteus-web/scripts/prepare-server.mjs:399:  warn('\nPruning node-pty prebuilds for host platform...')
+autobyteus-web/scripts/prepare-server.mjs:400:  await pruneNativePrebuilds(path.join(stageDir, 'node_modules', 'node-pty', 'prebuilds'))
+autobyteus-web/scripts/prepare-server.mjs:420:  const args = ['-v', electronVersion, '-m', targetDir, '-w', 'node-pty']
+autobyteus-web/scripts/prepare-server.mjs:429:  warn('\nNormalizing node-pty spawn-helper execute bits...')
+autobyteus-web/scripts/prepare-server.mjs:476:  process.exit(1)
+autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts:9:describe('useDefinitionLaunchDefaults editable seeds', () => {
+autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts:10:  it('deep-clones agent llmConfig and unlocks the editable seed', () => {
+autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts:38:  it('deep-clones team global and member override llmConfig values', () => {
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:47:    emit(event: string, detail: any = {}) {
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:72:describe('useVncSession', () => {
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:84:  it('temporarily enables control mode to request initial remote resize', () => {
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:98:    rfb.emit('connect');
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:110:  it('restores fullscreen-fit strategy after the initial resize handshake', () => {
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:122:    rfb.emit('connect');
+autobyteus-web/scripts/__tests__/workspace-package-roots.test.mjs:15:describe('workspace-package-roots', () => {
+autobyteus-web/scripts/__tests__/workspace-package-roots.test.mjs:20:  it('resolves scoped workspace package names to their actual package directories', async () => {
+autobyteus-web/scripts/__tests__/workspace-package-roots.test.mjs:31:  it('resolves workspace entries discovered through wildcard package patterns', async () => {
+autobyteus-web/scripts/__tests__/workspace-package-roots.test.mjs:42:  it('builds a package-name map keyed by package manifest names', async () => {
+autobyteus-web/composables/__tests__/useRightSideTabs.spec.ts:12:describe('useRightSideTabs', () => {
+autobyteus-web/composables/__tests__/useRightSideTabs.spec.ts:17:  it('keeps Browser visible when the desktop Browser shell is available but no tabs exist', () => {
+autobyteus-web/scripts/audit-localization-literals.mjs:16:  process.exit(1);
+autobyteus-ts/tests/unit/setup.test.ts:4:describe('Environment Setup', () => {
+autobyteus-ts/tests/unit/setup.test.ts:5:  it('should support typescript and vitest', () => {
+autobyteus-ts/tests/unit/setup.test.ts:9:  it('should support zod validation', () => {
+autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts:5:import { getDefaultSessionFactory } from '../../../src/tools/terminal/session-factory.js';
+autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts:36:describe('autobyteus-ts public surface after native CLI/TUI removal', () => {
+autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts:37:  it('keeps supported programmatic root and deep imports available', () => {
+autobyteus-ts/tests/integration/public-surface/cli-tui-removal.test.ts:48:  it('does not expose removed native CLI/TUI symbols from the root package surface', () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:10:  terminalConstructorSpy,
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:11:  terminalInstances,
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:25:  terminalConstructorSpy: vi.fn(),
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:26:  terminalInstances: [] as Array<{
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:60:      terminalConstructorSpy(this.options);
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:61:      terminalInstances.push(this);
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:87:describe('Terminal.vue', () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:93:    terminalInstances.length = 0;
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:136:  it('initializes xterm with the default app font size and connects from active workspace metadata', async () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:151:    expect(terminalConstructorSpy).toHaveBeenCalledWith(expect.objectContaining({ fontSize: 14 }));
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:152:    expect(terminalInstances).toHaveLength(1);
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:160:    expect(terminalInstances[0].writeln).toHaveBeenCalledWith(
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:168:  it('connects with the server-home default when no workspace metadata is active', async () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:188:      'No workspace root path is selected for the terminal.',
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:195:  it('uses an explicit root-path terminal target without workspace activation', async () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:202:          rootPath: '/tmp/explicit-terminal-root',
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:218:      rootPath: '/tmp/explicit-terminal-root',
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:228:  it('reconnects when switching from an explicit terminal target to server home', async () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:236:          rootPath: '/tmp/explicit-terminal-root',
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:264:  it('updates the xterm font size and refits the layout when the preset changes', async () => {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:281:    expect(terminalInstances).toHaveLength(1);
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:290:    expect(terminalInstances[0].options.fontSize).toBe(18);
+autobyteus-web/composables/__tests__/useMessagingProviderStepFlow.spec.ts:10:describe('useMessagingProviderStepFlow', () => {
+autobyteus-web/composables/__tests__/useMessagingProviderStepFlow.spec.ts:15:  it('uses manual selection over guided step until user returns to guided mode', async () => {
+autobyteus-web/composables/__tests__/useMessagingProviderStepFlow.spec.ts:84:  it('keeps step selections scoped by provider', async () => {
+autobyteus-web/composables/__tests__/useMessagingProviderStepFlow.spec.ts:109:  it('clears invalid manual selection when step is not allowed for provider', async () => {
+autobyteus-ts/tests/integration/utils/tool-call-format.test.ts:4:describe('tool_call_format (integration)', () => {
+autobyteus-ts/tests/integration/utils/tool-call-format.test.ts:5:  it('defaults to api_tool_call for unsupported parser setting', () => {
+autobyteus-ts/tests/integration/utils/tool-call-format.test.ts:10:  it('accepts api_tool_call explicitly', () => {
+autobyteus-ts/tests/unit/package/package-manifest.test.ts:8:describe('autobyteus-ts package manifest', () => {
+autobyteus-ts/tests/unit/package/package-manifest.test.ts:9:  it('ships the local postinstall script it references', () => {
+autobyteus-ts/tests/unit/package/package-manifest.test.ts:12:    expect(packageJson.scripts?.postinstall).toContain('./scripts/fix-node-pty-permissions.mjs');
+autobyteus-ts/tests/unit/package/package-manifest.test.ts:13:    expect(packageJson.files).toContain('scripts/fix-node-pty-permissions.mjs');
+autobyteus-ts/tests/integration/utils/dynamic-enum.test.ts:6:describe('DynamicEnum (integration)', () => {
+autobyteus-ts/tests/integration/utils/dynamic-enum.test.ts:7:  it('supports toString and lookup for new enum class', () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:16:describe('BrowserPanel', () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:36:  it('renders browser sessions from the store without crashing on mount', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:54:  it('shows compact zero-tab chrome and a clean empty-state hint when no browser tabs exist', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:70:  it('opens a browser tab from the Browser chrome', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:129:  it('normalizes a bare hostname before opening a browser tab', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:177:  it('refreshes the active browser tab from the Browser chrome', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:229:  it('toggles mobile device emulation for the active browser tab', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:291:  it('closes the active browser tab from the Browser chrome', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:336:  it('toggles Browser full-view mode from the Browser chrome when browser tabs exist', async () => {
+autobyteus-web/components/workspace/tools/__tests__/BrowserPanel.spec.ts:378:  it('keeps the active browser tab state intact when toggling Browser full-view mode', async () => {
+autobyteus-ts/tests/unit/task-management/todo-list.test.ts:7:describe('ToDoList', () => {
+autobyteus-ts/tests/unit/task-management/todo-list.test.ts:8:  it('adds todos with sequential ids', () => {
+autobyteus-ts/tests/unit/task-management/todo-list.test.ts:16:  it('updates todo status', () => {
+autobyteus-ts/tests/unit/task-management/todo-list.test.ts:25:  it('returns false for missing todo', () => {
+autobyteus-ts/tests/integration/utils/parameter-schema.test.ts:4:describe('ParameterSchema (integration)', () => {
+autobyteus-ts/tests/integration/utils/parameter-schema.test.ts:5:  it('validates missing required parameters', () => {
+autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts:7:describe('PromptBuilder', () => {
+autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts:8:  it('builds prompt from template file', async () => {
+autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts:22:  it('throws when template is missing', () => {
+autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts:26:  it('fills missing variables with empty strings', async () => {
+autobyteus-ts/tests/integration/helpers/benchmark-utils.ts:48:export const toPromptPath = (inputPath: string): string => inputPath.split('\\').join('/');
+autobyteus-ts/tests/unit/events/event-manager.test.ts:11:describe('EventManager', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:16:  it('notifies global subscribers on emit', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:21:    manager.emit(EventType.AGENT_TURN_STARTED, 'origin-1', { payload: 'data', extra: 'value' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:31:  it('notifies sender-specific subscribers only for matching origin', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:37:    manager.emit(EventType.AGENT_STATUS, 'sender-2', { payload: 'skip' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:40:    manager.emit(EventType.AGENT_STATUS, 'sender-1', { payload: 'hit' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:45:  it('unsubscribes a specific listener', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:54:    manager.emit(EventType.AGENT_STATUS, 'origin', { payload: 'value' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:58:  it('removes all subscriptions for a subscriber', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:68:    manager.emit(EventType.AGENT_TURN_STARTED, 'origin', { payload: 'a' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:69:    manager.emit(EventType.AGENT_STATUS, 'origin', { payload: 'b' });
+autobyteus-ts/tests/unit/events/event-manager.test.ts:75:  it('does not duplicate the same listener for a subscriber', () => {
+autobyteus-ts/tests/unit/events/event-manager.test.ts:84:    manager.emit(EventType.AGENT_TURN_STARTED, 'origin', { payload: 'data' });
+autobyteus-ts/tests/unit/utils/logger.test.ts:28:describe('logger initialization', () => {
+autobyteus-ts/tests/unit/utils/logger.test.ts:42:  it('does not override existing logger when called without explicit options', async () => {
+autobyteus-ts/tests/unit/utils/logger.test.ts:61:  it('re-attaches logger when env overrides are provided', async () => {
+autobyteus-ts/tests/unit/llm/ollama-provider.test.ts:19:describe('OllamaModelProvider', () => {
+autobyteus-ts/tests/unit/llm/ollama-provider.test.ts:38:  it('keeps discovered Ollama models in the OLLAMA provider bucket and captures context metadata', async () => {
+autobyteus-ts/tests/unit/llm/ollama-provider.test.ts:75:  it('falls back to configured num_ctx when the model is not currently running', async () => {
+autobyteus-ts/tests/unit/llm/ollama-provider.test.ts:101:  it('keeps the listed model when detail enrichment fails and leaves metadata unknown', async () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:4:describe('PromptTemplate', () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:5:  it('stores the template string', () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:11:  it('serializes to dict', () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:17:  it('fills with all variables', () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:24:  it('fills missing variables with empty strings', () => {
+autobyteus-ts/tests/unit/prompt/prompt-template.test.ts:31:  it('ignores extra variables', () => {
+autobyteus-ts/tests/unit/task-management/schemas/todo-definition.test.ts:4:describe('ToDoDefinitionSchema', () => {

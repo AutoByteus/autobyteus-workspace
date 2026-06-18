@@ -31,6 +31,10 @@ export class PtySessionManager {
     this.sessionFactory = sessionFactory ?? getDefaultSessionFactory();
   }
 
+  get backendName(): string {
+    return this.sessionFactory.name || "UnknownSessionBackend";
+  }
+
   async createSession(
     sessionId: string,
     targetKey: string,
@@ -89,9 +93,8 @@ export class PtySessionManager {
       options.signal?.removeEventListener("abort", abortListener);
     }
 
-    const backendName = this.sessionFactory.name || "UnknownSessionBackend";
     logger.info(
-      `Created terminal session ${sessionId} using backend ${backendName} for target ${targetKey}`,
+      `Created terminal session ${sessionId} using backend ${this.backendName} for target ${targetKey}`,
     );
     return session;
   }

@@ -6,7 +6,7 @@ import {
 
 export type WebSocketConnection = {
   send: (data: string) => void;
-  close: (code?: number) => void;
+  close: (code?: number, reason?: string) => void;
 };
 
 type ClientMessage =
@@ -24,6 +24,7 @@ type TerminalConnectOptions = {
 
 const READ_TIMEOUT_SECONDS = 0.05;
 const LOOP_SLEEP_MS = 10;
+const STARTUP_FAILURE_CLOSE_REASON = "Terminal startup failed";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -79,8 +80,10 @@ export class TerminalHandler {
       if (error instanceof TerminalSessionStartupAbortedError) {
         logger.info(`Terminal session startup aborted: ${sessionId}`);
       } else {
-        logger.error(`Failed to create terminal session: ${String(error)}`);
-        connection.close(1011);
+        const startupErrorMessage = this.formatStartupError(sessionId, error);
+        logger.error(startupErrorMessage);
+        this.sendStartupError(connection, startupErrorMessage);
+        connection.close(1011, STARTUP_FAILURE_CLOSE_REASON);
       }
       throw error;
     }
@@ -177,6 +180,31 @@ export class TerminalHandler {
       type: "output",
       data: data.toString("base64"),
     });
+  }
+
+  static encodeError(message: string): string {
+    return JSON.stringify({
+      type: "error",
+      message,
+    });
+  }
+
+  private formatStartupError(sessionId: string, error: unknown): string {
+    const message = error instanceof Error ? error.message : String(error);
+    return `Failed to create terminal session ${sessionId} using backend ${this.manager.backendName}: ${message}`;
+  }
+
+  private sendStartupError(
+    connection: WebSocketConnection,
+    message: string,
+  ): void {
+    try {
+      connection.send(TerminalHandler.encodeError(message));
+    } catch (sendError) {
+      logger.warn(
+        `Failed to send terminal startup error frame: ${String(sendError)}`,
+      );
+    }
   }
 }
 
