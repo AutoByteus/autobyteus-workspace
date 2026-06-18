@@ -142,7 +142,7 @@ src/tools/terminal/
 ├── pty-session.ts                        # parent-process node-pty backend
 ├── isolated-pty-session.ts               # macOS helper-process node-pty backend
 ├── isolated-pty-bridge-source.ts         # helper-process bridge source
-├── node-pty-bootstrap.ts                 # packaged spawn-helper executable repair
+├── node-pty-bootstrap.ts                 # packaged selected spawn-helper executable repair
 ├── direct-shell-session.ts               # Android/direct-shell interactive backend
 ├── wsl-tmux-session.ts                   # Windows WSL/tmux interactive backend
 └── tools/                                # LLM-facing tool functions
@@ -165,7 +165,11 @@ The server/web Terminal route is separate from agent `run_bash`, but it reuses t
 
 `IsolatedPtySession` is the default server/web Terminal backend on macOS. It launches a Node helper child process and runs `node-pty` inside that helper, so the helper owns the PTY, shell, and `node-pty` descriptors. The long-lived server process owns only the helper pipes/IPC and can release them deterministically when the WebSocket closes.
 
-Startup repairs the packaged `node-pty` `spawn-helper` executable bit if needed. Closing a session asks the helper to close over IPC, ends stdin, waits briefly, escalates to `SIGTERM` / `SIGKILL` if required, destroys helper streams, and disconnects IPC. This prevents repeated attached Terminal closes or close-before-connect churn from leaving PTY descriptors or child processes behind in the server process.
+Startup repairs the packaged `node-pty` `spawn-helper` executable bit if needed. The repair path resolves the native directory that `node-pty` actually selects for the running platform and architecture, normalizes packaged `asar` paths to unpacked resources, and then chmods the adjacent `spawn-helper`. Static fallback scanning is only a diagnostic fallback when the selected native module cannot be inspected; it must prefer the current platform/architecture before build directories so an executable helper for a different macOS architecture does not mask the selected helper.
+
+When startup fails, `node-pty-bootstrap.ts` exposes diagnostics such as platform, architecture, selected native directory, helper path, executable status, and resolution errors. Server/web terminal startup surfaces those diagnostics through the Terminal WebSocket error frame before closing.
+
+Closing a session asks the helper to close over IPC, ends stdin, waits briefly, escalates to `SIGTERM` / `SIGKILL` if required, destroys helper streams, and disconnects IPC. This prevents repeated attached Terminal closes or close-before-connect churn from leaving PTY descriptors or child processes behind in the server process.
 
 The non-interactive agent `run_bash` path does not use this backend.
 

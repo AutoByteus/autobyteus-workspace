@@ -310,6 +310,7 @@ pnpm android:server:stop
   - manual run via `workflow_dispatch`
 - Artifacts:
   - macOS ARM64 DMG + blockmap
+  - macOS Intel x64 DMG + blockmap
   - Linux x64 AppImage + blockmap
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
@@ -326,6 +327,9 @@ pnpm android:server:stop
 - Repository artifact hygiene is mandatory:
   - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, and checkout-risk path lengths.
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
+- Desktop macOS terminal runtime validation is mandatory:
+  - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64.
+  - Matching-architecture runners also execute a real `node-pty` spawn probe so a non-executable packaged `spawn-helper` cannot silently ship.
 - Android APK release:
   - public Android publishing uses `.github/workflows/release-android.yml`
   - release tags and publish-enabled manual runs require signing secrets and build `AutoByteus_personal_android-X.Y.Z-release.apk`
