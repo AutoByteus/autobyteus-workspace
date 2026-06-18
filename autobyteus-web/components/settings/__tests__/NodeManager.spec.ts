@@ -4,7 +4,6 @@ import NodeManager from '../NodeManager.vue';
 
 const {
   nodeStoreMock,
-  remoteBrowserSharingStoreMock,
   routeMock,
   windowNodeContextStoreMock,
   validateServerHostConfigurationMock,
@@ -57,12 +56,6 @@ const {
       renameNode: vi.fn().mockResolvedValue(undefined),
       removeRemoteNode: vi.fn().mockResolvedValue(undefined),
     },
-    remoteBrowserSharingStoreMock: {
-      initialize: vi.fn().mockResolvedValue(undefined),
-      prepareNodeRemoval: vi.fn().mockResolvedValue(null),
-      revokeLocalPairing: vi.fn().mockResolvedValue(undefined),
-      busyNodeId: null,
-    },
     routeMock: {
       query: {},
     },
@@ -79,10 +72,6 @@ vi.mock('~/stores/nodeStore', () => ({
   useNodeStore: () => nodeStoreMock,
 }));
 
-vi.mock('~/stores/remoteBrowserSharingStore', () => ({
-  useRemoteBrowserSharingStore: () => remoteBrowserSharingStoreMock,
-}));
-
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
 }));
@@ -97,12 +86,6 @@ vi.mock('~/utils/nodeHostValidation', () => ({
 
 vi.mock('~/utils/nodeCapabilityProbe', () => ({
   probeNodeCapabilities: probeNodeCapabilitiesMock,
-}));
-
-vi.mock('~/components/settings/RemoteBrowserSharingPanel.vue', () => ({
-  default: {
-    template: '<div data-testid="remote-browser-sharing-panel" />',
-  },
 }));
 
 vi.mock('~/components/settings/DockerNodeStartGuideCard.vue', () => ({
@@ -123,18 +106,10 @@ vi.mock('~/components/settings/PhoneSetupGuideCard.vue', () => ({
   },
 }));
 
-vi.mock('~/components/settings/RemoteNodePairingControls.vue', () => ({
-  default: {
-    props: ['node'],
-    template: '<div :data-testid="`pairing-controls-${node.id}`" />',
-  },
-}));
-
 describe('NodeManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routeMock.query = {};
-    remoteBrowserSharingStoreMock.busyNodeId = null;
     windowNodeContextStoreMock.nodeId = 'embedded-local';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
     validateServerHostConfigurationMock.mockReturnValue({
@@ -151,6 +126,7 @@ describe('NodeManager', () => {
       state: 'ready',
       error: null,
     });
+    nodeStoreMock.removeRemoteNode.mockResolvedValue(undefined);
 
     Object.defineProperty(window, 'electronAPI', {
       configurable: true,
@@ -198,11 +174,13 @@ describe('NodeManager', () => {
     expect(window.electronAPI.openNodeWindow).toHaveBeenCalledWith('embedded-local');
   });
 
-  it('initializes the remote browser sharing store and renders the panel host', async () => {
+  it('does not render removed remote browser pairing surfaces', async () => {
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.find('[data-testid="remote-browser-sharing-panel"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="remote-browser-sharing-panel"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="pair-node-remote-1"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="unpair-node-remote-1"]').exists()).toBe(false);
   });
 
   it('renders the node management tab by default and keeps Docker guide separate', async () => {
@@ -278,36 +256,12 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
-  it('prepares remote browser cleanup before removing a remote node', async () => {
+  it('removes a remote node without remote browser cleanup', async () => {
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();
 
     await wrapper.get('[data-testid="remove-node-remote-1"]').trigger('click');
 
-    expect(remoteBrowserSharingStoreMock.prepareNodeRemoval).toHaveBeenCalledWith('remote-1');
     expect(nodeStoreMock.removeRemoteNode).toHaveBeenCalledWith('remote-1');
-  });
-
-  it('revokes local pairing state if node removal fails after remote cleanup succeeded', async () => {
-    nodeStoreMock.nodes[1].browserPairing = {
-      state: 'paired',
-      advertisedBaseUrl: 'http://host.docker.internal:30123',
-      expiresAt: '2026-04-10T10:20:30.000Z',
-      updatedAt: '2026-04-10T09:20:30.000Z',
-      errorMessage: null,
-    };
-    nodeStoreMock.removeRemoteNode.mockRejectedValueOnce(new Error('Local registry write failed'));
-
-    const wrapper = mount(NodeManager);
-    await wrapper.vm.$nextTick();
-
-    await wrapper.get('[data-testid="remove-node-remote-1"]').trigger('click');
-    await Promise.resolve();
-
-    expect(remoteBrowserSharingStoreMock.revokeLocalPairing).toHaveBeenCalledWith(
-      'remote-1',
-      'revoked',
-      'Node removal failed after remote browser cleanup completed.',
-    );
   });
 });

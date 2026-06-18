@@ -47,7 +47,6 @@ export class BrowserBridgeServer {
   constructor(
     private readonly browserSessionManager: BrowserTabManager,
     private readonly authRegistry: BrowserBridgeAuthRegistry,
-    private readonly bindHost: string = '127.0.0.1',
   ) {}
 
   async start(): Promise<BrowserBridgeRuntimeEnv> {
@@ -61,7 +60,7 @@ export class BrowserBridgeServer {
 
     await new Promise<void>((resolve, reject) => {
       server.once('error', reject)
-      server.listen(0, this.bindHost, () => resolve())
+      server.listen(0, '127.0.0.1', () => resolve())
     })
 
     const address = server.address()
@@ -79,17 +78,6 @@ export class BrowserBridgeServer {
     }
     logger.info(`Browser bridge started on ${this.runtimeEnv[BROWSER_BRIDGE_BASE_URL_ENV]}`)
     return this.runtimeEnv
-  }
-
-  getRemoteBridgeBaseUrl(advertisedHost: string): string {
-    if (!this.port) {
-      throw new Error('Browser bridge is not started.')
-    }
-    return `http://${advertisedHost}:${this.port}`
-  }
-
-  isRemoteSharingActive(): boolean {
-    return this.bindHost !== '127.0.0.1'
   }
 
   async stop(): Promise<void> {
