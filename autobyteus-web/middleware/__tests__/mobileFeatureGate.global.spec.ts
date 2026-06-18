@@ -55,6 +55,16 @@ describe('mobileFeatureGate.global middleware', () => {
     });
   });
 
+
+  it('redirects the promoted nodes page as unsupported desktop settings in mobile runtime', async () => {
+    await runMiddleware('/nodes');
+
+    expect(navigateToMock).toHaveBeenCalledWith({
+      path: '/',
+      query: { unsupported: 'desktopSettings' },
+    });
+  });
+
   it('redirects the stale desktop workspace route to the phone-first mobile shell', async () => {
     await runMiddleware('/workspace');
 

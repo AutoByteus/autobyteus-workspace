@@ -57,7 +57,23 @@ describe('LeftSidebarStrip Component', () => {
     expect(labels).not.toContain('Applications')
     expect(labels).toContain('Agents')
     expect(labels).toContain('Agent Teams')
+    expect(labels).toContain('Nodes')
+    expect(labels).not.toContain('Media')
     expect(applicationsCapabilityStoreMock.ensureResolved).toHaveBeenCalledOnce()
+  })
+
+  it('navigates to the top-level nodes page from the promoted Nodes item', async () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    await wrapper.get('button[title="Nodes"]').trigger('click')
+
+    expect(routerMock.push).toHaveBeenCalledWith('/nodes')
   })
 
   it('shows Applications link when the capability is enabled', () => {

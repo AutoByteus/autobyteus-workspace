@@ -40,7 +40,7 @@ Full guide:
 
 ## Phone Access / Remote Access
 
-AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android, iOS, and travel use.
+AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android, iOS, and travel use.
 
 For remote-node Phone Access, create or open the current AutoByteus node in its own desktop window, then create the QR with a phone-facing private-network `/mobile` URL that the phone can reach and that maps to that same node. HTTPS is preferred; trusted private HTTP requires explicit cleartext acknowledgement, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/iOS/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md), [`docs/android_mobile_access.md`](docs/android_mobile_access.md), and [`docs/ios_mobile_access.md`](docs/ios_mobile_access.md).
 
@@ -48,7 +48,7 @@ User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autob
 
 ## Run The Published Server Docker
 
-If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, picks non-conflicting ports, and prints the Backend URL to add in **Settings → Nodes → Add Remote Node**.
+If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, picks non-conflicting ports, and prints the Backend URL to add in **Nodes -> Manage Nodes -> Add Remote Node**.
 
 Install the local launcher once:
 
@@ -77,7 +77,7 @@ autobyteus-docker new-container
 Repeated `new-container` calls create `autobyteus-server-0`, then
 `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-Use the printed Backend URL in **Settings → Nodes → Add Remote Node**, then open
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then open
 that Docker node window only over a trusted LAN, VPN, tailnet, or equivalent
 private-network path. Desktop/Electron access to that node follows the trusted
 private-network product model; do not expose the full backend directly to the

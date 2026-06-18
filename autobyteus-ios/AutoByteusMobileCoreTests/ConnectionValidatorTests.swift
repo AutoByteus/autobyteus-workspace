@@ -20,7 +20,7 @@ final class ConnectionValidatorTests: XCTestCase {
         let result = validator.mapStatusResponse(statusCode: 200, data: data, profile: profile)
         guard case .failed(let diagnostic) = result else { return XCTFail("Expected failed") }
         XCTAssertEqual(.phoneAccessDisabled, diagnostic.kind)
-        XCTAssertTrue(diagnostic.recoveryAction.contains("Settings -> Nodes"))
+        XCTAssertTrue(diagnostic.recoveryAction.contains("Nodes -> Phone Setup"))
     }
 
     func testMapsHTTPStatuses() throws {

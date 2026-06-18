@@ -11,7 +11,7 @@ class ConnectionDiagnosticMapperTest {
         val diagnostic = ConnectionDiagnosticMapper.phoneAccessDisabled("Home Desktop")
 
         assertEquals(ConnectionFailureKind.PhoneAccessDisabled, diagnostic.kind)
-        assertTrue(diagnostic.recoveryAction.contains("Settings -> Nodes"))
+        assertTrue(diagnostic.recoveryAction.contains("Nodes -> Phone Setup"))
     }
 
     @Test

@@ -4,7 +4,7 @@ Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus 
 
 ## What Phone Access Does
 
-- The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
+- The desktop app exposes **Phone Setup** in the top-level **Nodes** screen for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
 - Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
 - New desktop-created pairing QR codes support Tailscale/private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs. Tailscale Serve HTTPS remains the recommended path, for example `https://desktop.tailnet-name.ts.net/mobile`.
 - For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private-network URL (HTTPS or acknowledged trusted private HTTP) and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
@@ -100,15 +100,15 @@ QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 
 ## Normal Docker Node Pairing Flow
 
-1. Install the Docker launcher from **Settings -> Nodes -> Docker Guide**.
+1. Install the Docker launcher from **Nodes -> Docker Guide**.
 2. Create a Docker node:
 
    ```bash
    autobyteus-docker new-container
    ```
 
-3. Add the printed Backend URL as a remote node in **Settings -> Nodes -> Manage Nodes**, then click **Open** on that Docker node.
-4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
+3. Add the printed Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** on that Docker node.
+4. In the Docker node window, open **Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
 5. Configure a phone-facing private-network URL that maps to the Docker node. Prefer Tailscale Serve or company-controlled HTTPS ingress; trusted private HTTP is available only with cleartext acknowledgement.
 6. Paste the phone-facing `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values before QR creation.
 7. Enable Phone Access, create the QR, and scan it with the Android/iOS native wrapper or open it in the mobile browser. The pairing exchange and paired-device records belong to the Docker node.
@@ -129,7 +129,7 @@ Mobile credentials must not authorize owner-management routes such as settings c
 Use this when the embedded desktop node itself is the node your phone should use. For a separate server Docker node, use the Docker flow above.
 
 1. Start the desktop Electron app so the bundled server is running.
-2. Open **Settings -> Nodes -> Phone Setup**.
+2. Open **Nodes -> Phone Setup**.
 3. Install/sign in to Tailscale.app on the Mac and Tailscale on the phone.
 4. On macOS with **Tailscale.app** installed, sign in through the app UI and confirm the full MagicDNS hostname/FQDN there. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state. Use the bundled app executable directly for Serve:
 

@@ -55,6 +55,9 @@ export function mobileFeatureForRouteLocation(input: {
   if (path.startsWith('/applications')) {
     return 'applicationIframe';
   }
+  if (path.startsWith('/nodes')) {
+    return 'desktopSettings';
+  }
   if (path.startsWith('/settings')) {
     const section = String(input.query?.section ?? '').toLowerCase();
     return section === 'updates' || section === 'about' ? 'desktopUpdates' : 'desktopSettings';

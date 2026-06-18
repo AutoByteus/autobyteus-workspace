@@ -236,6 +236,21 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
+  it('opens the Phone Setup tab from the nodeTab route query', async () => {
+    routeMock.query = { nodeTab: 'phoneSetup' };
+
+    const wrapper = mount(NodeManager);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
+  });
+
   it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
     windowNodeContextStoreMock.nodeId = 'remote-1';
     windowNodeContextStoreMock.isEmbeddedWindow = false;
