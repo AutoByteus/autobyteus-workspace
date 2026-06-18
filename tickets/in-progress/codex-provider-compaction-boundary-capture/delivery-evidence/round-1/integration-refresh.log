@@ -1,0 +1,32 @@
+# Integration Refresh Evidence — Round 1
+
+Date: 2026-06-18
+Command: git fetch origin personal
+Result: pass
+
+HEAD:
+3171a5a4416e718cb4b38464206d9603733bf7a1
+origin/personal:
+3171a5a4416e718cb4b38464206d9603733bf7a1
+merge-base HEAD origin/personal:
+3171a5a4416e718cb4b38464206d9603733bf7a1
+
+Commits in origin/personal not in HEAD:
+
+Commits in HEAD not in origin/personal:
+
+Branch status:
+## codex/codex-provider-compaction-boundary-capture...origin/personal
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts
+ M autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-compaction-event-classifier.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-compaction-event-converter.ts
+?? tickets/in-progress/codex-provider-compaction-boundary-capture/

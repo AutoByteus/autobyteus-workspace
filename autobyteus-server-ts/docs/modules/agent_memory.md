@@ -156,10 +156,12 @@ Codex and Claude provider/session compaction metadata is real provider-owned con
 
 Normalized provider-boundary handling is storage-only:
 
-- Codex `thread/compacted` and raw Responses `type = "compaction"` items normalize to one deduplicated `provider_compaction_boundary` marker per boundary window.
+- Codex `item/started` with `item.type = "contextCompaction"` normalizes to a non-rotating `provider_compaction_boundary` status so live clients can show provider compaction in progress without moving raw traces.
+- Codex `item/completed` with `item.type = "contextCompaction"`, `rawResponseItem/completed` with raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, and deprecated `thread/compacted` normalize to deduplicated completed provider-boundary markers.
+- Codex `compaction_trigger` is treated as a trigger signal only; it must not write a provider-boundary marker or rotate raw traces.
 - Claude `status: "compacting"` normalizes to non-rotating provenance.
 - Claude `compact_boundary` normalizes to a rotation-eligible `provider_compaction_boundary` marker.
-- `ProviderCompactionBoundaryRecorder` writes the marker as a raw trace with `semantic_compaction:false` metadata.
+- `ProviderCompactionBoundaryRecorder` writes provider-boundary status/marker payloads as raw traces with `semantic_compaction:false` metadata.
 - If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete direct raw-trace segment. The marker remains active, and active plus complete rotated segments remain the complete raw-trace corpus.
 
 Provider-boundary handling must not create Codex/Claude semantic or episodic memory, rewrite trace content, drop trace history, inject memory into external runtimes, or retrieve memory from external runtimes. It is safe active-file rotation plus provenance only.

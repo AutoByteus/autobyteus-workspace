@@ -1,0 +1,71 @@
+# Handoff Summary — Codex Provider Compaction Boundary Capture
+
+## Status
+
+Ready for user verification before repository finalization.
+
+## What changed
+
+- Codex provider compaction detection now recognizes current `contextCompaction` item lifecycle events:
+  - `item/started` emits a non-rotating provider compaction status for live frontend activity visibility.
+  - `item/completed` emits a completed, rotation-eligible provider compaction boundary.
+- Raw response compaction detection now recognizes current `context_compaction` completions in addition to older `compaction` completions.
+- Deprecated `thread/compacted` remains a completed-boundary surface, with duplicate suppression across current/deprecated/raw completed reports.
+- `compaction_trigger` is explicitly treated as trigger-only and does not write a marker or rotate raw traces.
+- Provider compaction payload fields continue through single-agent and team `COMPACTION_STATUS` websocket mapping for frontend projection.
+- Durable coverage was expanded for Codex provider-boundary memory rotation, duplicate handling, distinct stable ids, trigger exclusion, provider payload preservation, frontend live projection, and historical hydration/replay exclusion.
+- Long-lived docs were updated for the final runtime contract:
+  - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
+  - `autobyteus-server-ts/docs/modules/agent_memory.md`
+  - `autobyteus-server-ts/docs/modules/codex_integration.md`
+
+## Integration refresh
+
+- Finalization target: `personal` (recorded expected target from bootstrap context).
+- Latest tracked remote base checked: `origin/personal` at `3171a5a4416e718cb4b38464206d9603733bf7a1` after `git fetch origin personal` on 2026-06-18.
+- Ticket branch: `codex/codex-provider-compaction-boundary-capture`.
+- Ticket branch head before delivery-owned docs/handoff edits: `3171a5a4416e718cb4b38464206d9603733bf7a1` with reviewed changes uncommitted in the dedicated worktree.
+- Integration method: Already current; `HEAD`, `origin/personal`, and their merge-base are the same commit.
+- New base commits integrated during delivery: None required.
+- Local checkpoint commit: Not needed because no base commits needed integration.
+- Integration evidence: `tickets/in-progress/codex-provider-compaction-boundary-capture/delivery-evidence/round-1/integration-refresh.log`.
+
+## Validation evidence
+
+Upstream code review after API/E2E durable coverage passed and reran the focused implementation/coverage checks:
+
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts` — passed, 3 files / 60 tests.
+- `cd autobyteus-web && pnpm exec vitest run services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts` — passed, 3 files / 27 tests.
+- `git diff --check` — passed during code review.
+
+Delivery integrated-state validation:
+
+- `git fetch origin personal` — passed; base did not advance beyond the reviewed candidate state.
+- No post-integration test rerun was required because no new base commits were integrated.
+- `git diff --check` — passed after delivery docs/handoff edits.
+- Evidence: `tickets/in-progress/codex-provider-compaction-boundary-capture/delivery-evidence/round-1/git-diff-check.log`.
+
+Known broader validation limits carried forward from upstream artifacts:
+
+- Live forced Codex provider compaction remains out of scope because reliable live payload evidence was unavailable; coverage uses approved generated protocol shapes.
+- Full repository build/typecheck blockers remain documented as pre-existing/environment issues outside this change path.
+
+## Documentation sync summary
+
+- Docs sync artifact: `tickets/in-progress/codex-provider-compaction-boundary-capture/docs-sync-report.md`
+- Docs result: Updated.
+- Docs updated:
+  - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
+  - `autobyteus-server-ts/docs/modules/agent_memory.md`
+  - `autobyteus-server-ts/docs/modules/codex_integration.md`
+
+## Release / deployment status
+
+- Release/publication/deployment: Not run before user verification.
+- Release notes: Not created; no release was requested or required for the pre-verification handoff. If the user asks for a versioned release after verification, delivery should create release notes before the release path.
+
+## User verification hold
+
+Waiting for explicit user verification before ticket archival, commit/push, merge into `personal`, worktree cleanup, or any release/deployment work.
+
+Suggested user confirmation if the handoff looks good: `Verified; please finalize`.

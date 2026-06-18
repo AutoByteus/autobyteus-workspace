@@ -200,7 +200,7 @@ speculatively writing or recovering from diagnostic `thread/read`.
 
 ## Provider Compaction Boundary Guardrail
 
-Codex provider/session compaction signals are provider-owned context management, not AutoByteus semantic compaction. The installed Codex protocol may expose names or payloads such as `thread/compacted`, `ContextCompactedEvent`, or Responses `type = "compaction"` items. This server integration may normalize those signals into `COMPACTION_STATUS` events carrying a `provider_compaction_boundary` payload.
+Codex provider/session compaction signals are provider-owned context management, not AutoByteus semantic compaction. The installed Codex protocol may expose names or payloads such as `item/started` / `item/completed` with `item.type = "contextCompaction"`, raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, or deprecated `thread/compacted`. This server integration may normalize those signals into `COMPACTION_STATUS` events carrying a `provider_compaction_boundary` payload. `compaction_trigger` is a trigger signal, not a completed boundary.
 
 Allowed downstream effect:
 
@@ -247,7 +247,10 @@ Forbidden downstream effect:
 | `item/tool/call` | dynamic tool call server request for non-migrated Codex dynamic tools | no `AgentRunEvent`; handled as request/response control flow | `codex-thread-server-request-handler.ts` | Keep outside normalized runtime-event spine; migrated server-owned backend tools are route-backed Agent Tools MCP, not dynamic |
 | `rawResponseItem/completed` | `item.type = functionCallOutput` | `TOOL_LOG` | `codex-raw-response-event-converter.ts` | Keep |
 | `rawResponseItem/completed` | `item.type = custom_tool_call` or custom tool output | none in the normalized runtime-event spine | `codex-raw-response-event-converter.ts` | Keep ignored; file mutation state comes from `fileChange` events |
-| `rawResponseItem/completed` | `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only duplicate-window fallback/provenance; de-dupe with `thread/compacted` |
+| `item/started` | `item.type = contextCompaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.context_compaction_started, status=compacting, rotation_eligible=false)` | `codex-item-compaction-event-converter.ts`, `codex-thread-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as live provider-compaction progress/provenance; do not rotate raw traces |
+| `item/completed` | `item.type = contextCompaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.context_compaction_completed, status=compacted, rotation_eligible=true)` | `codex-item-compaction-event-converter.ts`, `codex-thread-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as current completed provider-boundary marker/rotation signal; de-dupe with raw response and deprecated surfaces |
+| `rawResponseItem/completed` | `item.type = context_compaction` or `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, status=compacted, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as completed provider-boundary marker/rotation signal; de-dupe with current item lifecycle and deprecated thread surfaces |
+| `rawResponseItem/completed` | `item.type = compaction_trigger` | none | `codex-raw-response-event-converter.ts` | Keep ignored for storage; trigger is not a completed boundary |
 | `thread/started` | thread lifecycle start | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
 | `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }` | `codex-thread-lifecycle-event-converter.ts` | Keep |
 | `thread/tokenUsage/updated` | token accounting update | none in normalized stream; records per-turn token usage readiness on `CodexThread` | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as thread-state side effect plus explicit normalized no-op |
@@ -303,7 +306,7 @@ Output shape:
   above, but do not use them as the normal UI display fallback or merge partner.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
 - Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy transition-field transport.
-- Treat provider/session compaction signals as storage-only boundary metadata: marker append plus eligible segmented archive rotation only. Never treat them as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
+- Treat provider/session compaction signals as storage-only boundary metadata: non-rotating in-progress provenance for Codex `contextCompaction` starts, marker append plus eligible segmented archive rotation for completed provider boundaries, and no marker/rotation for `compaction_trigger`. Never treat provider compaction as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
 - Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.
 - When new raw Codex event names appear, update this audit table before extending the converter boundary.

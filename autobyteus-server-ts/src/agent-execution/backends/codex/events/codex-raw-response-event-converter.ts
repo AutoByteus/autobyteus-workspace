@@ -2,6 +2,7 @@ import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
+import { isCodexCompletedCompactionItemType } from "./codex-compaction-event-classifier.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
 export type CodexRawResponseEventConverterContext = {
@@ -32,7 +33,7 @@ export const convertCodexRawResponseEvent = (
   }
 
   const itemType = context.resolveItemType(payload);
-  if (itemType === "compaction") {
+  if (isCodexCompletedCompactionItemType(itemType)) {
     return context.createCompactionBoundaryEvent("codex.raw_response_compaction_item", payload);
   }
   if (itemType !== "functioncalloutput") {

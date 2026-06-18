@@ -3,11 +3,15 @@ import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { resolveCodexToolItemFamily } from "../items/codex-tool-item-family.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import {
+  convertCodexItemCompactionEvent,
+  type CodexItemCompactionEventConverterContext,
+} from "./codex-item-compaction-event-converter.js";
 import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
 import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
 
-export type CodexItemEventConverterContext = {
+export type CodexItemEventConverterContext = CodexItemCompactionEventConverterContext & {
   createEvent: (
     codexEventName: string,
     eventType: AgentRunEventType,
@@ -19,7 +23,6 @@ export type CodexItemEventConverterContext = {
     segmentType?: "text" | "reasoning",
   ) => AgentRunEvent | null;
   clearReasoningSegmentForTurn: (payload: JsonObject) => void;
-  resolveItemType: (payload: JsonObject) => string | null;
   isUserMessageItem: (itemType: string | null) => boolean;
   isReasoningItem: (itemType: string | null) => boolean;
   resolveWebSearchMetadata: (payload: JsonObject) => Record<string, unknown>;
@@ -267,6 +270,8 @@ export const convertCodexItemEvent = (
 ): AgentRunEvent[] => {
   switch (codexEventName) {
     case CodexThreadEventName.ITEM_STARTED: {
+      const compactionEvents = convertCodexItemCompactionEvent(context, codexEventName, payload);
+      if (compactionEvents) return compactionEvents;
       const itemType = context.resolveItemType(payload);
       const itemFamily = resolveCodexToolItemFamily(itemType);
       if (context.isUserMessageItem(itemType) || context.isReasoningItem(itemType)) {
@@ -335,6 +340,8 @@ export const convertCodexItemEvent = (
       return textEvent ? [textEvent] : [];
     }
     case CodexThreadEventName.ITEM_COMPLETED: {
+      const compactionEvents = convertCodexItemCompactionEvent(context, codexEventName, payload);
+      if (compactionEvents) return compactionEvents;
       const itemType = context.resolveItemType(payload);
       const itemFamily = resolveCodexToolItemFamily(itemType);
       if (context.isUserMessageItem(itemType)) {

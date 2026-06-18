@@ -60,6 +60,8 @@ export type ProviderCompactionBoundaryPayload = {
   source_surface:
     | "codex.thread_compacted"
     | "codex.raw_response_compaction_item"
+    | "codex.context_compaction_started"
+    | "codex.context_compaction_completed"
     | "claude.compact_boundary"
     | "claude.status_compacting"
     | string;

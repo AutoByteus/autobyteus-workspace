@@ -37,6 +37,12 @@ type RuntimeRunReference = {
   metadata: Record<string, unknown> | null;
 };
 
+type CodexCompactionSourceSurface =
+  | "codex.thread_compacted"
+  | "codex.raw_response_compaction_item"
+  | "codex.context_compaction_started"
+  | "codex.context_compaction_completed";
+
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -90,6 +96,7 @@ export class CodexThreadEventConverter {
   private providerBoundarySequence = 0;
   private readonly emittedBoundaryKeys: string[] = [];
   private readonly emittedBoundaryWindowKeys: string[] = [];
+  private readonly emittedNoStableIdBoundaryWindowKeys: string[] = [];
 
   private readonly turnEventConverterContext: CodexTurnEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
@@ -105,6 +112,13 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createSegmentContentEvent: (codexEventName, payload, segmentType) =>
       this.createSegmentContentEvent(codexEventName, payload, segmentType),
+    createCompactionStatusEvent: (sourceSurface, payload, status, rotationEligible) =>
+      this.createCodexProviderCompactionStatusEvent(
+        sourceSurface,
+        payload,
+        status,
+        rotationEligible,
+      ),
     clearReasoningSegmentForTurn: (payload) =>
       this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
@@ -159,7 +173,12 @@ export class CodexThreadEventConverter {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
     createCompactionBoundaryEvent: (sourceSurface, payload) =>
-      this.createCodexCompactionBoundaryEvent(sourceSurface, payload),
+      this.createCodexProviderCompactionStatusEvent(
+        sourceSurface,
+        payload,
+        "compacted",
+        true,
+      ),
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
@@ -185,9 +204,11 @@ export class CodexThreadEventConverter {
       return [];
     }
     if (codexEventName === CodexThreadEventName.THREAD_COMPACTED) {
-      const converted = this.createCodexCompactionBoundaryEvent(
+      const converted = this.createCodexProviderCompactionStatusEvent(
         "codex.thread_compacted",
         payload,
+        "compacted",
+        true,
       );
       return converted ? [converted] : [];
     }
@@ -279,37 +300,45 @@ export class CodexThreadEventConverter {
     };
   }
 
-  private createCodexCompactionBoundaryEvent(
-    sourceSurface: "codex.thread_compacted" | "codex.raw_response_compaction_item",
+  private createCodexProviderCompactionStatusEvent(
+    sourceSurface: CodexCompactionSourceSurface,
     payload: JsonObject,
+    status: "compacting" | "compacted",
+    rotationEligible: boolean,
   ): AgentRunEvent | null {
-    const boundary = this.buildCodexCompactionBoundaryPayload(sourceSurface, payload);
+    const boundary = this.buildCodexCompactionStatusPayload(
+      sourceSurface,
+      payload,
+      status,
+      rotationEligible,
+    );
     if (!boundary) {
       return null;
     }
     const boundaryKey = asString(boundary.boundary_key);
-    const boundaryWindowKey = this.buildBoundaryWindowKey(boundary);
-    if (
-      !boundaryKey ||
-      this.hasEmittedBoundaryKey(boundaryKey) ||
-      this.hasEmittedBoundaryWindowKey(boundaryWindowKey)
-    ) {
+    if (!boundaryKey) {
       return null;
     }
-    this.rememberBoundaryKey(boundaryKey);
-    this.rememberBoundaryWindowKey(boundaryWindowKey);
+
+    if (rotationEligible && this.hasEmittedCompletedBoundary(boundaryKey, boundary)) {
+      return null;
+    }
+    if (rotationEligible) {
+      this.rememberCompletedBoundary(boundaryKey, boundary);
+    }
+
     return this.createEvent(
-      sourceSurface === "codex.thread_compacted"
-        ? CodexThreadEventName.THREAD_COMPACTED
-        : CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      this.resolveCompactionCodexEventName(sourceSurface),
       AgentRunEventType.COMPACTION_STATUS,
       boundary,
     );
   }
 
-  private buildCodexCompactionBoundaryPayload(
-    sourceSurface: "codex.thread_compacted" | "codex.raw_response_compaction_item",
+  private buildCodexCompactionStatusPayload(
+    sourceSurface: CodexCompactionSourceSurface,
     payload: JsonObject,
+    status: "compacting" | "compacted",
+    rotationEligible: boolean,
   ): Record<string, unknown> | null {
     this.providerBoundarySequence += 1;
     const item = asObject(payload.item);
@@ -338,7 +367,12 @@ export class CodexThreadEventConverter {
       asString(item?.turn_id) ??
       asString(item?.turnId);
     const boundaryKeyParts = stableId
-      ? ["codex", threadId ?? "thread", stableId]
+      ? [
+          "codex",
+          threadId ?? "thread",
+          stableId,
+          ...(rotationEligible ? [] : [status]),
+        ]
       : ["codex", threadId ?? "thread", sourceSurface, turnId ?? "turn", String(this.providerBoundarySequence)];
     return {
       kind: "provider_compaction_boundary",
@@ -352,12 +386,57 @@ export class CodexThreadEventConverter {
       provider_timestamp: asNumber(payload.ts) ?? asNumber(payload.timestamp) ?? null,
       turn_id: turnId,
       trigger: asString(payload.trigger) ?? asString(item?.trigger) ?? "auto",
-      status: "compacted",
+      status,
       pre_tokens: asNumber(payload.pre_tokens) ?? asNumber(item?.pre_tokens) ?? null,
-      rotation_eligible: true,
+      rotation_eligible: rotationEligible,
       semantic_compaction: false,
       raw: serializePayload(payload),
     };
+  }
+
+  private resolveCompactionCodexEventName(
+    sourceSurface: CodexCompactionSourceSurface,
+  ): CodexThreadEventName {
+    switch (sourceSurface) {
+      case "codex.thread_compacted":
+        return CodexThreadEventName.THREAD_COMPACTED;
+      case "codex.context_compaction_started":
+        return CodexThreadEventName.ITEM_STARTED;
+      case "codex.context_compaction_completed":
+        return CodexThreadEventName.ITEM_COMPLETED;
+      case "codex.raw_response_compaction_item":
+        return CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED;
+    }
+  }
+
+  private hasEmittedCompletedBoundary(
+    boundaryKey: string,
+    boundary: Record<string, unknown>,
+  ): boolean {
+    if (this.hasEmittedBoundaryKey(boundaryKey)) {
+      return true;
+    }
+    const stableId = asString(boundary.provider_event_id);
+    const boundaryWindowKey = this.buildBoundaryWindowKey(boundary);
+    if (!stableId && this.hasEmittedBoundaryWindowKey(boundaryWindowKey)) {
+      return true;
+    }
+    if (stableId && this.hasEmittedNoStableIdBoundaryWindowKey(boundaryWindowKey)) {
+      return true;
+    }
+    return false;
+  }
+
+  private rememberCompletedBoundary(
+    boundaryKey: string,
+    boundary: Record<string, unknown>,
+  ): void {
+    this.rememberBoundaryKey(boundaryKey);
+    const boundaryWindowKey = this.buildBoundaryWindowKey(boundary);
+    this.rememberBoundaryWindowKey(boundaryWindowKey);
+    if (!asString(boundary.provider_event_id)) {
+      this.rememberNoStableIdBoundaryWindowKey(boundaryWindowKey);
+    }
   }
 
   private hasEmittedBoundaryKey(key: string): boolean {
@@ -384,5 +463,16 @@ export class CodexThreadEventConverter {
   private rememberBoundaryWindowKey(key: string): void {
     this.emittedBoundaryWindowKeys.push(key);
     if (this.emittedBoundaryWindowKeys.length > 100) this.emittedBoundaryWindowKeys.shift();
+  }
+
+  private hasEmittedNoStableIdBoundaryWindowKey(key: string): boolean {
+    return this.emittedNoStableIdBoundaryWindowKeys.includes(key);
+  }
+
+  private rememberNoStableIdBoundaryWindowKey(key: string): void {
+    this.emittedNoStableIdBoundaryWindowKeys.push(key);
+    if (this.emittedNoStableIdBoundaryWindowKeys.length > 100) {
+      this.emittedNoStableIdBoundaryWindowKeys.shift();
+    }
   }
 }

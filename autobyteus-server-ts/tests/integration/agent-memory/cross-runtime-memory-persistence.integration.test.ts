@@ -130,6 +130,67 @@ const readView = (memoryDir: string, includeArchive = false) =>
       includeSemantic: false,
     });
 
+const createCodexMemoryHarness = async (preferredRunId: string) => {
+  const memoryDir = await mkTempDir();
+  const recorder = new AgentRunMemoryRecorder();
+  const { factory } = createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER);
+  const manager = new AgentRunManager({
+    autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+    codexBackendFactory: factory,
+    claudeBackendFactory: createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK).factory,
+    runFileChangeService: createNoopSidecar() as never,
+    publishedArtifactRelayService: createNoopSidecar() as never,
+    memoryRecorder: recorder,
+  });
+  const run = await manager.createAgentRun(
+    new AgentRunConfig({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "gpt-codex",
+      autoExecuteTools: true,
+      workspaceId: "workspace-1",
+      memoryDir,
+      skillAccessMode: SkillAccessMode.NONE,
+    }),
+    preferredRunId,
+  );
+  return {
+    memoryDir,
+    recorder,
+    run,
+    converter: new CodexThreadEventConverter(run.runId),
+    turnId: `turn-${run.runId}`,
+  };
+};
+
+const emitAssistantTrace = (
+  run: { runId: string; emitLocalEvent: (event: AgentRunEvent) => void },
+  turnId: string,
+  id: string,
+  delta: string,
+  timestamp: number,
+) => {
+  run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+    id,
+    turn_id: turnId,
+    segment_type: "text",
+    delta,
+    timestamp,
+  }));
+  run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+    id,
+    turn_id: turnId,
+    segment_type: "text",
+  }));
+};
+
+const emitConverted = (
+  run: { emitLocalEvent: (event: AgentRunEvent) => void },
+  converted: AgentRunEvent[],
+) => {
+  converted.forEach((convertedEvent) => run.emitLocalEvent(convertedEvent));
+};
+
 afterEach(async () => {
   vi.clearAllMocks();
   await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
@@ -609,6 +670,299 @@ describe("cross-runtime memory persistence integration", () => {
       ts: 3,
     });
     expect(continued.seq).toBe(3);
+  });
+
+  it("keeps Codex contextCompaction start non-rotating in the recorder flow", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-context-compaction-start-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-start", "before codex compaction start", 1);
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "context-item-start-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 2,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.getRawTraceArchiveRevisionInfo()).toBeNull();
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(store.listRawTracesOrdered()[1]?.toolResult).toMatchObject({
+      provider: "codex",
+      source_surface: "codex.context_compaction_started",
+      boundary_key: "codex:thread-1:context-item-start-1:compacting",
+      status: "compacting",
+      rotation_eligible: false,
+    });
+  });
+
+  it("rotates Codex raw traces at item/completed contextCompaction boundaries", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-context-compaction-completed-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-context-boundary", "before context boundary", 1);
+    const completedEvents = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "context-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 2,
+      },
+    });
+    expect(completedEvents).toHaveLength(1);
+    emitConverted(run, completedEvents);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "provider_compaction_boundary",
+    ]);
+    expect(store.listRawTracesOrdered()[0]?.toolResult).toMatchObject({
+      provider: "codex",
+      source_surface: "codex.context_compaction_completed",
+      boundary_key: "codex:thread-1:context-item-1",
+      status: "compacted",
+      rotation_eligible: true,
+    });
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "codex:thread-1:context-item-1",
+        status: "complete",
+        record_count: 1,
+      }),
+    ]);
+    expect(readView(memoryDir, true).rawTraces?.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+  });
+
+  it("rotates Codex raw traces at rawResponseItem/completed context_compaction boundaries", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-raw-context-compaction-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-raw-boundary", "before raw context boundary", 1);
+    const rawCompletedEvents = converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "context_compaction",
+          id: "raw-context-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 2,
+      },
+    });
+    expect(rawCompletedEvents).toHaveLength(1);
+    emitConverted(run, rawCompletedEvents);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "provider_compaction_boundary",
+    ]);
+    expect(store.listRawTracesOrdered()[0]?.toolResult).toMatchObject({
+      provider: "codex",
+      source_surface: "codex.raw_response_compaction_item",
+      boundary_key: "codex:thread-1:raw-context-item-1",
+      provider_response_id: "response-1",
+      status: "compacted",
+      rotation_eligible: true,
+    });
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "codex:thread-1:raw-context-item-1",
+        status: "complete",
+        record_count: 1,
+      }),
+    ]);
+  });
+
+  it("dedupes duplicate Codex contextCompaction and raw context_compaction completed surfaces before rotation", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-context-compaction-duplicate-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-duplicate-boundary", "before duplicate boundary", 1);
+    const itemCompleted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "duplicate-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 2,
+      },
+    });
+    expect(itemCompleted).toHaveLength(1);
+    emitConverted(run, itemCompleted);
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "context_compaction",
+          id: "duplicate-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 3,
+      },
+    })).toEqual([]);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(1);
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "codex:thread-1:duplicate-item-1",
+        status: "complete",
+        record_count: 1,
+      }),
+    ]);
+    expect(readView(memoryDir, true).rawTraces?.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(1);
+  });
+
+  it("keeps distinct Codex stable completed IDs as separate provider boundaries", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-context-compaction-distinct-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-first-boundary", "before first boundary", 1);
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "context-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 2,
+      },
+    }));
+    emitAssistantTrace(run, turnId, "codex-before-second-boundary", "before second boundary", 3);
+    const secondCompleted = converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "context_compaction",
+          id: "context-item-2",
+          response_id: "response-2",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+        timestamp: 4,
+      },
+    });
+    expect(secondCompleted).toHaveLength(1);
+    emitConverted(run, secondCompleted);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "codex:thread-1:context-item-1",
+        status: "complete",
+        record_count: 1,
+      }),
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "codex:thread-1:context-item-2",
+        status: "complete",
+        record_count: 2,
+      }),
+    ]);
+    const completeView = readView(memoryDir, true).rawTraces ?? [];
+    expect(completeView.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(completeView.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(2);
+    expect(completeView.map((trace) => trace.toolResult).filter(Boolean)).toEqual([
+      expect.objectContaining({ boundary_key: "codex:thread-1:context-item-1" }),
+      expect.objectContaining({ boundary_key: "codex:thread-1:context-item-2" }),
+    ]);
+  });
+
+  it("does not rotate or record provider markers for Codex compaction_trigger alone", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-compaction-trigger-memory-run",
+    );
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitAssistantTrace(run, turnId, "codex-before-trigger", "before trigger", 1);
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "compaction_trigger",
+          id: "trigger-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+      },
+    })).toEqual([]);
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction_trigger",
+          id: "trigger-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+      },
+    })).toEqual([]);
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction_trigger",
+          id: "trigger-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+      },
+    })).toEqual([]);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.getRawTraceArchiveRevisionInfo()).toBeNull();
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual(["assistant"]);
+    expect(readView(memoryDir, true).rawTraces?.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(0);
   });
 
   it("keeps Claude compacting status non-rotating and rotates only at compact_boundary", async () => {

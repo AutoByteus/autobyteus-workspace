@@ -85,6 +85,199 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("normalizes contextCompaction item start into a non-rotating provider compaction status", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "compaction-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        kind: "provider_compaction_boundary",
+        runtime_kind: "CODEX",
+        provider: "codex",
+        source_surface: "codex.context_compaction_started",
+        boundary_key: "codex:thread-1:compaction-item-1:compacting",
+        provider_thread_id: "thread-1",
+        provider_event_id: "compaction-item-1",
+        turn_id: "turn-1",
+        status: "compacting",
+        rotation_eligible: false,
+        semantic_compaction: false,
+      },
+    });
+  });
+
+  it("normalizes contextCompaction item completion into a rotating provider compaction boundary", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "compaction-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        kind: "provider_compaction_boundary",
+        runtime_kind: "CODEX",
+        provider: "codex",
+        source_surface: "codex.context_compaction_completed",
+        boundary_key: "codex:thread-1:compaction-item-1",
+        provider_thread_id: "thread-1",
+        provider_event_id: "compaction-item-1",
+        turn_id: "turn-1",
+        status: "compacted",
+        rotation_eligible: true,
+        semantic_compaction: false,
+      },
+    });
+  });
+
+  it("does not let contextCompaction start suppress the later completed boundary", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "compaction-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    const completed = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "compaction-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(completed).toHaveLength(1);
+    expect(completed[0]).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        boundary_key: "codex:thread-1:compaction-item-1",
+        provider_event_id: "compaction-item-1",
+        status: "compacted",
+        rotation_eligible: true,
+      },
+    });
+  });
+
+  it("normalizes raw context_compaction items into provider compaction boundaries", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "context_compaction",
+          id: "compaction-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        source_surface: "codex.raw_response_compaction_item",
+        boundary_key: "codex:thread-1:compaction-item-1",
+        provider_response_id: "response-1",
+        status: "compacted",
+        rotation_eligible: true,
+      },
+    });
+  });
+
+  it("dedupes completed contextCompaction and raw context_compaction surfaces for the same item", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "contextCompaction",
+          id: "compaction-item-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "context_compaction",
+          id: "compaction-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("ignores compaction_trigger items as non-boundary signals", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "compaction_trigger",
+          id: "trigger-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction_trigger",
+          id: "trigger-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
   it("dedupes raw compaction items when thread/compacted already reported the boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
@@ -208,7 +401,7 @@ describe("CodexThreadEventConverter", () => {
     })).toEqual([]);
   });
 
-  it("dedupes raw compaction items with a different stable id after thread/compacted in the same window", () => {
+  it("keeps raw compaction items with a distinct stable id after thread/compacted in the same window", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     expect(converter.convert({
@@ -231,10 +424,10 @@ describe("CodexThreadEventConverter", () => {
         thread_id: "thread-1",
         turn_id: "turn-1",
       },
-    })).toEqual([]);
+    })).toHaveLength(1);
   });
 
-  it("dedupes thread/compacted with a different stable id after a raw compaction item in the same window", () => {
+  it("keeps thread/compacted with a distinct stable id after a raw compaction item in the same window", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     expect(converter.convert({
@@ -257,7 +450,7 @@ describe("CodexThreadEventConverter", () => {
         id: "thread-boundary-1",
         turn_id: "turn-1",
       },
-    })).toEqual([]);
+    })).toHaveLength(1);
   });
 
   it("maps thread status changes into normalized AGENT_STATUS payloads", () => {
