@@ -176,7 +176,7 @@ Standalone agent persisted files:
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext`
 - runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
-- segmented raw-trace archive after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_archive_manifest.json` plus `memory/agents/<runId>/raw_traces_archive/*.jsonl`
+- rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
 Team persisted files:
 
@@ -191,7 +191,7 @@ Team persisted files:
   recursive `memberTree`; agent-member entries may include optional
   `selfEvolutionEffective` launch snapshots
 - member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
-- optional member segmented archive: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_archive_manifest.json` plus `raw_traces_archive/*.jsonl`
+- optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
 
 Important identity/storage rules:
@@ -432,14 +432,14 @@ Runtime-native diagnostic utilities:
 
 ## Archive / Rotation / Retention Boundaries
 
-This section describes raw-trace segment archives and is separate from the
+This section describes raw-trace rotation segments and is separate from the
 history-row visibility archive flag documented above.
 
-Native AutoByteus compaction archives compacted raw traces into segmented `native_compaction` archive entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into segmented `provider_compaction_boundary` archive entries. Run-history and memory-view readers include only complete archive segments plus active records, dedupe by raw trace id, and ignore pending manifest entries.
+Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Run-history and memory-view readers include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries.
 
-The old monolithic `raw_traces_archive.jsonl` path is intentionally not a current read/write target. Historical monolithic archive files are not read under the approved no-compatibility policy.
+The prior `raw_traces_archive_manifest.json` plus `raw_traces_archive/` layout is migration/fallback input only. Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete entries to the direct rotated layout and decommissions old authoritative files after verification. The old monolithic `raw_traces_archive.jsonl` path is intentionally not a current read/write target and historical monolithic archive files are not read under the approved no-compatibility policy.
 
-Segmented archives are not compression or retention. There is still no total-storage retention policy, no archive compression, and no working-context snapshot windowing/retention behavior.
+Rotated raw-trace segments are not compression or retention. There is still no total-storage retention policy, no archive compression, and no working-context snapshot windowing/retention behavior.
 
 ## Team Restore / Projection Contract
 

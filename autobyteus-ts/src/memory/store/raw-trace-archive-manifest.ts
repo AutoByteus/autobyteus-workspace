@@ -1,4 +1,10 @@
 export const RAW_TRACE_ARCHIVE_MANIFEST_SCHEMA_VERSION = 1;
+export const RAW_TRACES_MANIFEST_FILE_NAME = 'raw_traces_manifest.json';
+export const RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME = 'raw_traces_archive_manifest.json';
+export const RAW_TRACES_ARCHIVE_DIR_NAME = 'raw_traces_archive';
+
+export const buildRawTraceSegmentFileName = (index: number): string =>
+  `raw_traces_${String(index).padStart(6, '0')}.jsonl`;
 
 export type RawTraceArchiveBoundaryType =
   | 'native_compaction'

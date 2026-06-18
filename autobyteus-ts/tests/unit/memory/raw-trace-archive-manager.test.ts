@@ -4,8 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { RawTraceArchiveManager } from '../../../src/memory/store/raw-trace-archive-manager.js';
 
-const SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN = /^\d{6}_\d{8}T\d{9}Z\.jsonl$/;
-const HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN = /^\d{6}_\d{8}T\d{9}Z_[a-f0-9]{8}\.jsonl$/;
+const ROTATED_RAW_TRACE_FILE_NAME_PATTERN = /^raw_traces_\d{6}\.jsonl$/;
 
 const tempDirs = new Set<string>();
 
@@ -30,7 +29,7 @@ afterEach(async () => {
 });
 
 describe('RawTraceArchiveManager', () => {
-  it('creates simplified archive segment file names and preserves manifest boundary authority', async () => {
+  it('creates direct rotated raw trace segment files and preserves manifest boundary authority', async () => {
     const memoryDir = await mkTempDir();
     const manager = new RawTraceArchiveManager(memoryDir);
 
@@ -45,10 +44,12 @@ describe('RawTraceArchiveManager', () => {
     });
 
     expect(result?.created).toBe(true);
-    expect(result?.segment.file_name).toMatch(SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN);
-    expect(result?.segment.file_name).not.toMatch(HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN);
+    expect(result?.segment.file_name).toMatch(ROTATED_RAW_TRACE_FILE_NAME_PATTERN);
     expect(result?.segment.boundary_key).toBe('codex:thread:boundary:full-key');
-    expect(await pathExists(path.join(manager.getArchiveDirPath(), result?.segment.file_name ?? ''))).toBe(true);
+    expect(await pathExists(path.join(memoryDir, result?.segment.file_name ?? ''))).toBe(true);
+    expect(await pathExists(manager.getArchiveDirPath())).toBe(false);
+    expect(await pathExists(manager.getManifestPath())).toBe(true);
+    expect(await pathExists(manager.getOldArchiveManifestPath())).toBe(false);
 
     const manifest = manager.readManifest();
     expect(manifest.segments).toHaveLength(1);
@@ -73,7 +74,7 @@ describe('RawTraceArchiveManager', () => {
     expect(manager.readManifest().segments).toHaveLength(1);
   });
 
-  it('reads complete archive segments by exact manifest file name, including hash-suffixed old names', async () => {
+  it('reads old-layout complete archive segments through the old manifest fallback', async () => {
     const memoryDir = await mkTempDir();
     const manager = new RawTraceArchiveManager(memoryDir);
     await fs.mkdir(manager.getArchiveDirPath(), { recursive: true });
@@ -83,7 +84,7 @@ describe('RawTraceArchiveManager', () => {
       'utf-8',
     );
     await fs.writeFile(
-      manager.getManifestPath(),
+      manager.getOldArchiveManifestPath(),
       JSON.stringify({
         schema_version: 1,
         next_segment_index: 2,
@@ -106,9 +107,8 @@ describe('RawTraceArchiveManager', () => {
   it('ignores pending archive manifest segments during complete archive reads', async () => {
     const memoryDir = await mkTempDir();
     const manager = new RawTraceArchiveManager(memoryDir);
-    await fs.mkdir(manager.getArchiveDirPath(), { recursive: true });
     await fs.writeFile(
-      path.join(manager.getArchiveDirPath(), '000001_20260430T103015123Z.jsonl'),
+      path.join(memoryDir, 'raw_traces_000001.jsonl'),
       JSON.stringify({ id: 'rt-pending', ts: 1, turn_id: 'turn-1', seq: 1, trace_type: 'user', content: 'pending', source_event: 'test' }) + '\n',
       'utf-8',
     );
@@ -119,7 +119,7 @@ describe('RawTraceArchiveManager', () => {
         next_segment_index: 2,
         segments: [{
           index: 1,
-          file_name: '000001_20260430T103015123Z.jsonl',
+          file_name: 'raw_traces_000001.jsonl',
           boundary_type: 'provider_compaction_boundary',
           boundary_key: 'pending',
           archived_at: 1,
@@ -136,9 +136,8 @@ describe('RawTraceArchiveManager', () => {
   it('supersedes stale pending entries when retrying archive creation for the same boundary', async () => {
     const memoryDir = await mkTempDir();
     const manager = new RawTraceArchiveManager(memoryDir);
-    await fs.mkdir(manager.getArchiveDirPath(), { recursive: true });
     await fs.writeFile(
-      path.join(manager.getArchiveDirPath(), '000001_20260430T103015123Z.jsonl'),
+      path.join(memoryDir, 'raw_traces_000001.jsonl'),
       JSON.stringify({ id: 'rt-pending', ts: 1, turn_id: 'turn-1', seq: 1, trace_type: 'user', content: 'pending', source_event: 'test' }) + '\n',
       'utf-8',
     );
@@ -149,7 +148,7 @@ describe('RawTraceArchiveManager', () => {
         next_segment_index: 2,
         segments: [{
           index: 1,
-          file_name: '000001_20260430T103015123Z.jsonl',
+          file_name: 'raw_traces_000001.jsonl',
           boundary_type: 'provider_compaction_boundary',
           boundary_key: 'boundary-1',
           archived_at: 1,
@@ -178,8 +177,8 @@ describe('RawTraceArchiveManager', () => {
       status: 'complete',
       record_count: 1,
     });
-    expect(manifest.segments[0].file_name).toMatch(SIMPLIFIED_ARCHIVE_FILE_NAME_PATTERN);
-    expect(manifest.segments[0].file_name).not.toMatch(HASH_SUFFIX_ARCHIVE_FILE_NAME_PATTERN);
+    expect(manifest.segments[0].file_name).toMatch(ROTATED_RAW_TRACE_FILE_NAME_PATTERN);
+    expect(await pathExists(path.join(memoryDir, manifest.segments[0].file_name))).toBe(true);
     expect(manager.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-settled']);
   });
 });
