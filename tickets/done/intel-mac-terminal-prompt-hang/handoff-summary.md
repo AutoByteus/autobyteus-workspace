@@ -4,7 +4,7 @@
 
 - Ticket: `intel-mac-terminal-prompt-hang`
 - Date: 2026-06-18
-- Current Status: `Finalization in progress; release requested`
+- Current Status: `Finalized and release dispatched`
 - Workflow State Source: cumulative delivery artifact chain under `tickets/done/intel-mac-terminal-prompt-hang/`.
 - Worktree: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`
 - Ticket branch: `codex/intel-mac-terminal-prompt-hang`
@@ -134,3 +134,16 @@ Residual risk:
 - Release/publication/deployment status: Pending.
 - Worktree cleanup status: Pending after repository finalization and release dispatch.
 - Blockers / notes: None at this stage.
+
+
+## Release Completion Summary
+
+- Release version: `1.3.60`
+- Release tag: `v1.3.60`
+- Release commit: `9c53433d83bd470445930f1a8739d2cd68bbe268` (`chore(release): bump workspace release version to 1.3.60`)
+- Release tag object: `cee5954ae4e12fd94006cee8241d33c6ef43252c`
+- Release helper command used: `pnpm release 1.3.60 -- --release-notes tickets/done/intel-mac-terminal-prompt-hang/release-notes.md`
+- Repository finalization: `personal` was fast-forwarded to ticket branch commit `0a464978411f0b5f376bd8ebf3c1b0f75a9a30e75`, pushed, then release helper pushed release commit `9c53433d83bd470445930f1a8739d2cd68bbe268` and tag `v1.3.60`.
+- Remote tag verification: `git ls-remote --tags origin v1.3.60` returned `refs/tags/v1.3.60`.
+- Initial workflow trigger check for tag `v1.3.60`: Desktop Release `27758829333`, Android APK Release `27758829375`, iOS App Store Connect Release `27758829347`, Release Messaging Gateway `27758829379`, and Server Docker Release `27758829439` were queued or in progress at report update time.
+- Notes: This post-release record update is after the `v1.3.60` tag and does not alter the tagged release contents.
