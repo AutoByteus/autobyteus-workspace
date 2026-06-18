@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-06-18T07:51:23.341Z",
+  "appServerRoot": "/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server",
+  "appBin": "/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "port": 54457,
+  "dataDir": "/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-packaged-server-probe-PBMhxW",
+  "envPath": "/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-packaged-server-probe-PBMhxW/.env",
+  "cwdForTerminal": "/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang",
+  "health": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  },
+  "terminal": {
+    "sessionId": "pkg-probe-1781769088963",
+    "url": "ws://127.0.0.1:54457/ws/terminal/pkg-probe-1781769088963?cwd=%2FUsers%2Fryan-zheng%2Fautobyteus-org%2Fautobyteus-workspace-intel-terminal-prompt-hang",
+    "opened": true,
+    "initialOutputObserved": true,
+    "markerObserved": true,
+    "marker": "__AUTOBYTEUS_PACKAGED_TERMINAL_MARKER_1781769088963__",
+    "outputPreview": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n~/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang $ printf '__AUT \rOBYTEUS_PACKAGED_TERMINAL_MARKER_1781769088963__:%s\\n' \"$PWD\"\r\n__AUTOBYTEUS_PACKAGED_TERMINAL_MARKER_1781769088963__:/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang\r\n~/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang $ ",
+    "outputLength": 539,
+    "frameCount": 7,
+    "errorFrames": [],
+    "closed": {
+      "code": 1000,
+      "reason": "probe complete",
+      "wasClean": true
+    }
+  },
+  "serverExitCode": 0,
+  "result": "PASS",
+  "completedAt": "2026-06-18T07:51:30.130Z",
+  "dataDirRemovedAfterPass": true
+}

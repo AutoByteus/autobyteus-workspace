@@ -230,6 +230,39 @@ describe("useTerminalSession", () => {
     expect(outputSpy).toHaveBeenCalledWith("┌");
   });
 
+  it("preserves server startup error messages when the socket closes", () => {
+    const session = useTerminalSession({ target: terminalTarget() });
+    session.connect();
+
+    mockWs.onmessage?.({
+      data: JSON.stringify({
+        type: "error",
+        message: "Failed to create terminal session using backend IsolatedPtySession: posix_spawnp failed",
+      }),
+    });
+    mockWs.onclose?.({
+      code: 1011,
+      reason: "Terminal startup failed",
+      wasClean: false,
+    });
+
+    expect(session.connectionStatus.value).toBe("disconnected");
+    expect(session.errorMessage.value).toContain("posix_spawnp failed");
+  });
+
+  it("uses close reason when no server error frame was received", () => {
+    const session = useTerminalSession({ target: terminalTarget() });
+    session.connect();
+
+    mockWs.onclose?.({
+      code: 1011,
+      reason: "Terminal startup failed",
+      wasClean: false,
+    });
+
+    expect(session.errorMessage.value).toBe("Terminal startup failed");
+  });
+
   it("handles disconnection", () => {
     const session = useTerminalSession({ target: terminalTarget() });
     session.connect();

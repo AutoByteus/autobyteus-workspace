@@ -204,6 +204,30 @@ jobs:
           echo "Prisma client dir: $CLIENT_DIR"
           test -f "$CLIENT_DIR/libquery_engine-darwin-arm64.dylib.node"
 
+      - name: Verify packaged terminal runtime ARM64
+        run: |
+          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+            --server-root autobyteus-web/resources/server \
+            --platform darwin \
+            --arch arm64
+          APP_SERVER_ROOT="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"
+          test -n "$APP_SERVER_ROOT"
+          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+            --server-root "$APP_SERVER_ROOT" \
+            --platform darwin \
+            --arch arm64
+          if [ "$(node -p 'process.platform')" = "darwin" ] && [ "$(node -p 'process.arch')" = "arm64" ]; then
+            APP_BUNDLE="${APP_SERVER_ROOT%/Contents/Resources/server}"
+            ELECTRON_RUN_AS_NODE=1 "$APP_BUNDLE/Contents/MacOS/AutoByteus" \
+              autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+              --server-root "$APP_SERVER_ROOT" \
+              --platform darwin \
+              --arch arm64 \
+              --spawn-probe
+          else
+            echo "Skipping ARM64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
+          fi
+
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -303,6 +327,30 @@ jobs:
           test -n "$CLIENT_DIR"
           echo "Prisma client dir: $CLIENT_DIR"
           test -f "$CLIENT_DIR/libquery_engine-darwin.dylib.node"
+
+      - name: Verify packaged terminal runtime x64
+        run: |
+          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+            --server-root autobyteus-web/resources/server \
+            --platform darwin \
+            --arch x64
+          APP_SERVER_ROOT="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"
+          test -n "$APP_SERVER_ROOT"
+          node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+            --server-root "$APP_SERVER_ROOT" \
+            --platform darwin \
+            --arch x64
+          if [ "$(node -p 'process.platform')" = "darwin" ] && [ "$(node -p 'process.arch')" = "x64" ]; then
+            APP_BUNDLE="${APP_SERVER_ROOT%/Contents/Resources/server}"
+            ELECTRON_RUN_AS_NODE=1 "$APP_BUNDLE/Contents/MacOS/AutoByteus" \
+              autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+              --server-root "$APP_SERVER_ROOT" \
+              --platform darwin \
+              --arch x64 \
+              --spawn-probe
+          else
+            echo "Skipping x64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
+          fi
 
       - name: Upload macOS Intel artifacts
         uses: actions/upload-artifact@v4

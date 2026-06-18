@@ -1,7 +1,11 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ISOLATED_PTY_BRIDGE_SOURCE } from './isolated-pty-bridge-source.js';
-import { ensureNodePtySpawnHelperExecutable } from './node-pty-bootstrap.js';
+import {
+  ensureNodePtySpawnHelperExecutable,
+  formatNodePtySpawnHelperDiagnostics,
+  getNodePtySpawnHelperDiagnostics,
+} from './node-pty-bootstrap.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -129,7 +133,7 @@ export class IsolatedPtySession {
       await this.waitForStartup();
     } catch (error) {
       await this.close().catch(() => undefined);
-      throw error;
+      throw await this.createStartupError(error);
     }
 
     if (this.closed || this.child !== child) {
@@ -228,6 +232,21 @@ export class IsolatedPtySession {
     this.startupResolve = undefined;
     this.startupReject = undefined;
     reject?.(error);
+  }
+
+  private async createStartupError(error: unknown): Promise<Error> {
+    const message = error instanceof Error ? error.message : String(error);
+    const diagnostics = await getNodePtySpawnHelperDiagnostics().catch((diagnosticError) => ({
+      platform: process.platform,
+      arch: process.arch,
+      resolutionError: diagnosticError instanceof Error
+        ? diagnosticError.message
+        : String(diagnosticError),
+    }));
+
+    return new Error(
+      `PTY bridge startup failed: ${message}. ${formatNodePtySpawnHelperDiagnostics(diagnostics)}`,
+    );
   }
 
   private async closeInternal(): Promise<void> {

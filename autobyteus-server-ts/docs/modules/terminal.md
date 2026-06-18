@@ -12,7 +12,7 @@ Terminal WebSocket session management, interactive PTY stream forwarding, and li
 - `autobyteus-ts/src/tools/terminal/session-factory.ts` — platform-specific interactive terminal backend selection.
 - `autobyteus-ts/src/tools/terminal/isolated-pty-session.ts` — macOS isolated PTY helper-process backend.
 - `autobyteus-ts/src/tools/terminal/isolated-pty-bridge-source.ts` — helper-process bridge that owns `node-pty` and shell descriptors.
-- `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` — packaged `node-pty` `spawn-helper` executable-permission repair.
+- `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` — packaged `node-pty` selected-native-module `spawn-helper` executable-permission repair and diagnostics.
 
 ## Runtime Model
 
@@ -34,6 +34,7 @@ File Explorer watcher physical close is isolated in the File Explorer watcher ru
 Important cleanup guarantees:
 
 - A session is registered before async startup and removed if startup fails or is aborted.
+- If PTY startup fails after the WebSocket is accepted, the server sends a terminal `error` frame with the startup diagnostic and then closes with code `1011` / reason `Terminal startup failed`.
 - Closing before startup completes aborts startup, closes any partial session, and disconnects any late-created session.
 - Disconnect removes the read-loop task, closes the PTY backend, and waits for the loop to exit.
 - Invalid explicit cwd/rootPath closes the WebSocket without creating a PTY session.
@@ -50,7 +51,7 @@ Important cleanup guarantees:
 | macOS / Darwin | `IsolatedPtySession` | Helper child process owns `node-pty`, the PTY descriptors, and the interactive shell. |
 | Other Unix-like systems | `PtySession` | Parent-process `node-pty` backend, with direct-shell fallback. |
 
-For macOS, `IsolatedPtySession` keeps `node-pty` file descriptors out of the long-lived server process. The server owns only the helper child pipes/IPC; the helper owns the PTY and exits on close. The session first repairs the packaged `node-pty` `spawn-helper` executable bit when needed, then starts the bridge process with `TERM=xterm-256color` and a deterministic prompt.
+For macOS, `IsolatedPtySession` keeps `node-pty` file descriptors out of the long-lived server process. The server owns only the helper child pipes/IPC; the helper owns the PTY and exits on close. The session first asks `node-pty-bootstrap` to resolve the native module that `node-pty` selects for the running packaged architecture and repair the adjacent `spawn-helper` executable bit when needed, then starts the bridge process with `TERM=xterm-256color` and a deterministic prompt. This selected-helper invariant is important for Intel packages because an executable helper in `build/Release` can coexist with the actual `prebuilds/darwin-x64` helper.
 
 The close path asks the helper to close over IPC, ends stdin, waits briefly, then escalates to `SIGTERM` / `SIGKILL` if needed and destroys the helper streams. This prevents repeated normal close and close-before-connect cycles from leaving `/dev/ptmx`, `/dev/ttys`, revoked PTY, or child-process residue in the server process.
 
@@ -85,8 +86,10 @@ Durable validation should keep covering:
 - close-before-connect / early-close cleanup;
 - macOS descriptor pressure for repeated Terminal WebSocket churn;
 - absence of child-process and PTY descriptor residue after churn;
-- packaged `node-pty` `spawn-helper` executable-permission repair;
+- packaged `node-pty` selected-helper executable-permission repair and startup diagnostics;
 - no accidental file-explorer watcher acquisition from terminal-only paths.
+
+Release/package validation should additionally run `autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs` for each macOS target architecture against both the staged server resources and the final `.app/Contents/Resources/server` tree. Matching-architecture hosts should enable `--spawn-probe` so the selected packaged `node-pty` helper proves it can start a real PTY.
 
 Representative tests and evidence:
 

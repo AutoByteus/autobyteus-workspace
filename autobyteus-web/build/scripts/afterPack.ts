@@ -57,6 +57,22 @@ function getAllFiles(dirPath: string, files: string[] = []): string[] {
   return files
 }
 
+function normalizeNodePtySpawnHelpers(resourcesPath: string): void {
+  const nodeModulesPath = path.join(resourcesPath, 'node_modules')
+  const scanRoot = fs.existsSync(nodeModulesPath) ? nodeModulesPath : resourcesPath
+  const helpers = getAllFiles(scanRoot).filter((filePath) => (
+    path.basename(filePath) === 'spawn-helper' &&
+    filePath.split(path.sep).includes('node-pty')
+  ))
+
+  for (const helper of helpers) {
+    const currentMode = fs.statSync(helper).mode & 0o777
+    fs.chmodSync(helper, currentMode | 0o111)
+  }
+
+  console.log(`  Normalized execute bits on ${helpers.length} node-pty spawn-helper file(s)`)
+}
+
 /**
  * Sign a single file with codesign
  */
@@ -84,14 +100,6 @@ export default async function afterPack(context: AfterPackContext): Promise<void
     return
   }
 
-  const identity = process.env.APPLE_SIGNING_IDENTITY
-  if (!identity) {
-    console.log('[WARN] APPLE_SIGNING_IDENTITY not set, skipping extra resource signing')
-    return
-  }
-
-  console.log('\nSigning extra resources (server binaries)...')
-
   // Path to resources inside the packaged app
   const appPath = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`)
   const resourcesPath = path.join(appPath, 'Contents', 'Resources', 'server')
@@ -100,6 +108,17 @@ export default async function afterPack(context: AfterPackContext): Promise<void
     console.log(`  Server resources not found at ${resourcesPath}, skipping`)
     return
   }
+
+  console.log('\nNormalizing packaged terminal native resources...')
+  normalizeNodePtySpawnHelpers(resourcesPath)
+
+  const identity = process.env.APPLE_SIGNING_IDENTITY
+  if (!identity) {
+    console.log('[WARN] APPLE_SIGNING_IDENTITY not set, skipping extra resource signing')
+    return
+  }
+
+  console.log('\nSigning extra resources (server binaries)...')
 
   // Scan likely native binary locations only
   const scanRoots = [

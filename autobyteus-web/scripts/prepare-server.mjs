@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process'
-import { cp, mkdir, readFile, readdir, rm, stat, writeFile, lstat } from 'node:fs/promises'
+import { chmod, cp, mkdir, readFile, readdir, rm, stat, writeFile, lstat } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveWorkspacePackageRoot } from '../../scripts/workspace-package-roots.mjs'
@@ -267,6 +267,36 @@ async function pruneNativePrebuilds(nodePtyPrebuildsPath) {
   }
 }
 
+async function normalizeNodePtySpawnHelpers(nodeModulesRoot) {
+  if (!(await exists(nodeModulesRoot))) {
+    return
+  }
+
+  let normalized = 0
+  async function walk(currentPath) {
+    const entries = await readdir(currentPath, { withFileTypes: true })
+    for (const entry of entries) {
+      const fullPath = path.join(currentPath, entry.name)
+      if (entry.isDirectory()) {
+        await walk(fullPath)
+        continue
+      }
+      if (!entry.isFile() || entry.name !== 'spawn-helper') {
+        continue
+      }
+      if (!toPosixPath(fullPath).includes('/node-pty/')) {
+        continue
+      }
+      const currentMode = (await stat(fullPath)).mode & 0o777
+      await chmod(fullPath, currentMode | 0o111)
+      normalized += 1
+    }
+  }
+
+  await walk(nodeModulesRoot)
+  warn(`Normalized execute bits on ${normalized} node-pty spawn-helper file(s)`)
+}
+
 async function assertNoSymlinks(rootPath) {
   const symlinks = []
 
@@ -395,6 +425,9 @@ async function rebuildNativeModulesForElectron() {
     warn('electron-rebuild not found in project dependencies; using pnpm dlx fallback...')
     await runCommand('pnpm', ['-C', webRoot, 'dlx', 'electron-rebuild', ...args])
   }
+
+  warn('\nNormalizing node-pty spawn-helper execute bits...')
+  await normalizeNodePtySpawnHelpers(path.join(targetDir, 'node_modules'))
 }
 
 async function publishStageToTarget() {

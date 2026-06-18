@@ -1,0 +1,12 @@
+# UI port precheck
+Started: 2026-06-18T09:55:05+02:00
+Before quit:
+COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node       2706 ryan-zheng   92u  IPv6 0x627a8f6e7b084cd1      0t0  TCP *:29695 (LISTEN)
+AutoByteu 51737 ryan-zheng   27u  IPv4 0x627a8f6e79b3dd69      0t0  TCP *:29695 (LISTEN)
+After installed quit:
+COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node       2706 ryan-zheng   92u  IPv6 0x627a8f6e7b084cd1      0t0  TCP *:29695 (LISTEN)
+AutoByteu 51737 ryan-zheng   27u  IPv4 0x627a8f6e79b3dd69      0t0  TCP *:29695 (LISTEN)
+Node listen test:
+LISTEN_FAIL EADDRINUSE listen EADDRINUSE: address already in use :::29695

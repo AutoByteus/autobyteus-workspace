@@ -4,10 +4,10 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 
 const requireFromHere = createRequire(import.meta.url);
-const nativeModuleDirs = [
+const currentArchFallbackDirs = [
+  `prebuilds/${process.platform}-${process.arch}`,
   'build/Release',
   'build/Debug',
-  `prebuilds/${process.platform}-${process.arch}`,
 ];
 const nativeModuleRelatives = ['..', '.'];
 
@@ -46,6 +46,24 @@ const ensureExecutable = async (filePath) => {
   return true;
 };
 
+const resolveFallbackHelperPath = async (utilsPath) => {
+  const utilsDir = path.dirname(utilsPath);
+
+  for (const nativeDir of currentArchFallbackDirs) {
+    for (const relative of nativeModuleRelatives) {
+      const baseDir = normalizeBundledPath(path.resolve(utilsDir, relative, nativeDir));
+      const ptyNodePath = path.join(baseDir, 'pty.node');
+      const helperPath = path.join(baseDir, 'spawn-helper');
+
+      if (await fileExists(ptyNodePath) && await fileExists(helperPath)) {
+        return helperPath;
+      }
+    }
+  }
+
+  return null;
+};
+
 const resolveNodePtySpawnHelperPath = async () => {
   let utilsPath;
 
@@ -55,18 +73,29 @@ const resolveNodePtySpawnHelperPath = async () => {
     return null;
   }
 
-  const utilsDir = path.dirname(utilsPath);
+  let utilsModule;
+  try {
+    utilsModule = requireFromHere('node-pty/lib/utils.js');
+  } catch {
+    return resolveFallbackHelperPath(utilsPath);
+  }
 
-  for (const relative of nativeModuleRelatives) {
-    for (const nativeDir of nativeModuleDirs) {
-      const baseDir = normalizeBundledPath(path.resolve(utilsDir, relative, nativeDir));
-      const ptyNodePath = path.join(baseDir, 'pty.node');
-      const helperPath = path.join(baseDir, 'spawn-helper');
+  if (typeof utilsModule.loadNativeModule !== 'function') {
+    return resolveFallbackHelperPath(utilsPath);
+  }
 
-      if (await fileExists(ptyNodePath) && await fileExists(helperPath)) {
-        return helperPath;
-      }
+  try {
+    const nativeModule = utilsModule.loadNativeModule('pty');
+    if (!nativeModule || typeof nativeModule.dir !== 'string') {
+      return resolveFallbackHelperPath(utilsPath);
     }
+    const baseDir = normalizeBundledPath(path.resolve(path.dirname(utilsPath), nativeModule.dir));
+    const helperPath = path.join(baseDir, 'spawn-helper');
+    if (await fileExists(path.join(baseDir, 'pty.node')) && await fileExists(helperPath)) {
+      return helperPath;
+    }
+  } catch {
+    return resolveFallbackHelperPath(utilsPath);
   }
 
   return null;

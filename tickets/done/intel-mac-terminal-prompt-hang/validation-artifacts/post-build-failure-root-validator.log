@@ -1,0 +1,35 @@
+# Post-build-failure state
+Time: 2026-06-18T09:23:02+02:00
+Git status short:
+ M .github/workflows/release-desktop.yml
+ M autobyteus-server-ts/src/api/websocket/terminal.ts
+ M autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts
+ M autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts
+ M autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts
+ M autobyteus-ts/scripts/fix-node-pty-permissions.mjs
+ M autobyteus-ts/src/tools/terminal/isolated-pty-session.ts
+ M autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts
+ M autobyteus-ts/tests/unit/tools/terminal/isolated-pty-session.test.ts
+ M autobyteus-ts/tests/unit/tools/terminal/node-pty-bootstrap.test.ts
+ M autobyteus-web/build/scripts/afterPack.ts
+ M autobyteus-web/composables/__tests__/useTerminalSession.spec.ts
+ M autobyteus-web/composables/useTerminalSession.ts
+ M autobyteus-web/package.json
+ M autobyteus-web/scripts/prepare-server.mjs
+ M autobyteus-web/scripts/prepare-server.sh
+?? autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs
+?? tickets/intel-mac-terminal-prompt-hang/
+
+resources/server listing:
+autobyteus-web/resources/server
+
+electron-dist listing:
+
+Root validator (current repo root) partial check:
++ node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root . --platform darwin --arch x64 --spawn-probe
+[terminal-runtime] node-pty root: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
++ set +x
+Cleaned incomplete package output at 2026-06-18T09:23:22+02:00

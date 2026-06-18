@@ -1,0 +1,380 @@
+# Targeted durable terminal/API/E2E/UI tests
+Started: 2026-06-18T09:20:03+02:00
+Worktree: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang
+Node: v24.4.1
+pnpm: 10.28.2
+
++ pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts
+
+ RUN  v4.0.18 /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/node-pty-bootstrap.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts (4 tests) 32ms
+ ✓ tests/integration/tools/terminal/isolated-pty-session.test.ts (1 test) 124ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (7 tests) 1295ms
+
+ Test Files  3 passed (3)
+      Tests  12 passed (12)
+   Start at  09:20:05
+   Duration  1.66s (transform 252ms, setup 163ms, import 239ms, tests 1.45s, environment 1ms)
+
++ pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/terminal/terminal-handler.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+
+ RUN  v4.0.18 /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Created terminal session real-pty-cwd using backend IsolatedPtySession for target /var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-terminal-e2e-av1j5k/workspace with spaces
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Terminal WebSocket connected: real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Terminal websocket attached for cwd /var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-terminal-e2e-av1j5k/workspace with spaces
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Closed PTY session real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal WebSocket disconnected: real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Created terminal session real-pty-server-home-default using backend IsolatedPtySession for target /Users/ryan-zheng
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal WebSocket connected: real-pty-server-home-default
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal websocket attached for cwd /Users/ryan-zheng
+
+stderr | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Terminal connection rejected: Error: ENOENT: no such file or directory, stat '/var/folders/_r/s63mv8pd2p59y0vtl6p796200000gn/T/autobyteus-terminal-e2e-YINX13/missing'
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Terminal WebSocket disconnected: invalid-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-0
+Closed PTY session early-close-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-1
+Closed PTY session early-close-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-2
+Closed PTY session early-close-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-3
+Closed PTY session early-close-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-4
+Closed PTY session early-close-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session real-pty-server-home-default
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: real-pty-server-home-default
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-5
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-6
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-7
+
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 624ms
+stdout | tests/unit/services/terminal/terminal-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > writes input to session
+Created terminal session s1 using backend MockPtySession for target target-1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > resizes session
+Created terminal session s1 using backend MockPtySession for target target-1
+
+stderr | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > ignores messages for unknown session
+Message for unknown session: missing
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Created terminal session s1 using backend MockPtySession for target target-1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Terminal WebSocket connected: s1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Terminal WebSocket disconnected: s1
+
+stderr | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > sends startup error frames before closing terminal startup failures
+Failed to create terminal session s1 using backend FailingPtySession: posix_spawnp failed. node-pty diagnostics: platform=darwin arch=x64 helperPath=/tmp/spawn-helper helperExecutable=false
+
+ ✓ tests/unit/services/terminal/terminal-handler.test.ts (11 tests) 27ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  09:20:08
+   Duration  8.25s (transform 2.53s, setup 44ms, import 6.23s, tests 652ms, environment 0ms)
+
++ pnpm -C autobyteus-web exec vitest run composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTerminalSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/5515a624-90a0-40fb-ad4d-1bf4e362269d?cwd=%2Ftmp%2Fproject
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects without cwd or rootPath query params when server-home default is enabled
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/2907f1a8-afa3-4bcb-b62d-4810dececff1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > keeps explicit empty root paths explicit instead of falling back to server home
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/48159b9e-7084-4283-9961-b409f568717c?cwd=
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/1807cce4-b10a-44ee-a768-eca3b6a41a94?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends UTF-8 encoded input when connected
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/49b36f37-ddb8-4479-9bf1-198a397a7004?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends non-ASCII input as UTF-8 bytes instead of browser binary-string text
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/419e2df1-669a-4f33-8088-dc7c380ec104?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/a78ceb89-c531-4791-8974-fc22c9efa86c?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/e9bfdacb-db45-498f-816e-fb1383debd21?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > decodes Unicode output bytes before dispatching terminal text
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/dfb598c4-3c09-4cfe-b8c1-2411f8ddfb04?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > streams split UTF-8 output chunks through one session decoder
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/c4fdedb7-9b84-4ac1-beca-77ce8c64bfdd?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > preserves server startup error messages when the socket closes
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/9ca32727-315f-4073-9a6c-c04cf5aa1d94?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Disconnected: 1011 Terminal startup failed
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > preserves server startup error messages when the socket closes
+[useTerminalSession] Server error: Failed to create terminal session using backend IsolatedPtySession: posix_spawnp failed
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > uses close reason when no server error frame was received
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/b380df48-6584-4719-bb8a-d0c861ba1fa9?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Disconnected: 1011 Terminal startup failed
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/f77b8170-39b4-42ec-b349-e9d668d7d073?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/02a47cb4-4f89-453d-8205-1136c8eac341?cwd=%2Ftmp%2Fws-1
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at MockWebSocket.ws.onmessage (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/composables/useTerminalSession.ts:161:32)
+    at /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:282:14
+    at Proxy.assertThrows (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path
+[useTerminalSession] No terminal root path
+
+ ✓ composables/__tests__/useTerminalSession.spec.ts (15 tests) 37ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts (5 tests) 160ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  09:20:22
+   Duration  9.93s (transform 5.08s, setup 16.81s, collect 129ms, tests 197ms, environment 1.01s, prepare 647ms)
+
++ set +x
+
+Completed: 2026-06-18T09:20:32+02:00

@@ -1,0 +1,29 @@
+# Round 2 packaged UI Terminal visual probe binary patch with installed app paused
+Started: 2026-06-18T10:27:21+02:00
+Source app: autobyteus-web/electron-dist/mac/AutoByteus.app
+Installed app was running: 0
+Installed app processes before pause:
+61556
+61567
+61569
+61573
+62023
+62123
+62124
+70337
+75359
+Installed app processes after pause:
+61556
+61567
+61569
+61573
+62023
+62123
+62124
+70337
+75359
+Port 29696 precheck:
++ node /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-visual-probe-binary.mjs autobyteus-web/electron-dist/mac/AutoByteus.app /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts
+Error: app exited 0
+    at waitPort (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-visual-probe-binary.mjs:21:119)
+    at async main (file:///Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-visual-probe-binary.mjs:23:711)

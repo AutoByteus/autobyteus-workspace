@@ -36,6 +36,7 @@ CI build behavior:
   - messaging gateway package version matches the pushed tag
   - bundled managed messaging release manifest matches the pushed tag
 - macOS builds run with `--arm64` and `--x64` explicitly.
+- macOS builds validate the packaged Terminal runtime for both architectures. The validator checks staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server` `node-pty` helpers, and runs a real spawn probe when the runner architecture matches the target.
 - `NO_TIMESTAMP=1` is enabled for macOS build stability.
 - Apple signing/notarization is enabled when required secrets are configured.
 
@@ -102,3 +103,21 @@ pnpm build:electron:mac -- --x64
 pnpm build:electron:linux
 pnpm build:electron:windows
 ```
+
+After a local macOS package build, validate the Terminal native runtime before handing the package to a tester:
+
+```bash
+node scripts/verify-packaged-terminal-runtime.mjs \
+  --server-root resources/server \
+  --platform darwin \
+  --arch x64
+
+APP_SERVER_ROOT="$(find electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"
+node scripts/verify-packaged-terminal-runtime.mjs \
+  --server-root "$APP_SERVER_ROOT" \
+  --platform darwin \
+  --arch x64 \
+  --spawn-probe
+```
+
+Use `--arch arm64` for an Apple Silicon package. The spawn probe is meaningful only when the local host matches the target architecture; otherwise rely on the static packaged-runtime checks and the matching GitHub Actions job.

@@ -191,7 +191,7 @@ export function useTerminalSession(
         );
         flushAndResetOutputDecoder();
         connectionStatus.value = "disconnected";
-        if (!event.wasClean) {
+        if (!event.wasClean && !errorMessage.value) {
           errorMessage.value = event.reason || "Connection lost";
         }
         ws = null;
@@ -199,7 +199,9 @@ export function useTerminalSession(
 
       ws.onerror = (event) => {
         console.error("[useTerminalSession] WebSocket error:", event);
-        errorMessage.value = "WebSocket connection error";
+        if (!errorMessage.value) {
+          errorMessage.value = "WebSocket connection error";
+        }
       };
     } catch (err) {
       console.error("[useTerminalSession] Failed to connect:", err);

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from "vitest";
+import { describe, expect, it, beforeEach, vi } from "vitest";
 import {
   TerminalHandler,
   PtySessionManager,
@@ -40,6 +40,14 @@ class MockPtySession implements TerminalSession {
 
   async close(): Promise<void> {
     this.closed = true;
+  }
+}
+
+class FailingPtySession extends MockPtySession {
+  async start(_cwd: string): Promise<void> {
+    throw new Error(
+      "posix_spawnp failed. node-pty diagnostics: platform=darwin arch=x64 helperPath=/tmp/spawn-helper helperExecutable=false",
+    );
   }
 }
 
@@ -85,6 +93,13 @@ describe("TerminalHandler parsing", () => {
 
     expect(parsed.type).toBe("output");
     expect(Buffer.from(parsed.data, "base64").toString("utf8")).toBe("hello");
+  });
+
+  it("encodes error", () => {
+    const result = TerminalHandler.encodeError("terminal failed");
+    const parsed = JSON.parse(result) as { type: string; message: string };
+
+    expect(parsed).toEqual({ type: "error", message: "terminal failed" });
   });
 });
 
@@ -132,5 +147,29 @@ describe("TerminalHandler messaging", () => {
 
     await handler.disconnect("s1");
     expect(manager.getSession("s1")).toBeNull();
+  });
+
+  it("sends startup error frames before closing terminal startup failures", async () => {
+    const failingManager = new PtySessionManager(FailingPtySession);
+    const failingHandler = new TerminalHandler(failingManager);
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    await expect(
+      failingHandler.connect(connection, "target-1", "s1", "/tmp"),
+    ).rejects.toThrow("posix_spawnp failed");
+
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    const message = JSON.parse(connection.send.mock.calls[0][0]) as {
+      type: string;
+      message: string;
+    };
+    expect(message.type).toBe("error");
+    expect(message.message).toContain("Failed to create terminal session s1");
+    expect(message.message).toContain("backend FailingPtySession");
+    expect(message.message).toContain("platform=darwin arch=x64");
+    expect(connection.close).toHaveBeenCalledWith(1011, "Terminal startup failed");
   });
 });

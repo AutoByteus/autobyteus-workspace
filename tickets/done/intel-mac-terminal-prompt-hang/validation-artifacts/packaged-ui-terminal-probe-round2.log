@@ -1,0 +1,18 @@
+# Round 2 packaged UI Terminal probe with asar-integrity patch
+Started: 2026-06-18T10:20:59+02:00
+Source app: autobyteus-web/electron-dist/mac/AutoByteus.app
+Port 29696 precheck:
++ node /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts/packaged-ui-terminal-probe.mjs autobyteus-web/electron-dist/mac/AutoByteus.app /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/intel-mac-terminal-prompt-hang/validation-artifacts
+/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:247
+  const failError = new Error("Process failed to launch!");
+                    ^
+
+Error: Process failed to launch!
+    at waitForLine (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:247:21)
+    at Electron.launch (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/electron/electron.js:195:32)
+    at async ElectronDispatcher.launch (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/electronDispatcher.js:38:33)
+    at async ProgressController.run (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/progress.js:98:22)
+    at async ElectronDispatcher._runCommand (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/dispatcher.js:91:14)
+    at async DispatcherConnection.dispatch (/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/server/dispatchers/dispatcher.js:325:22)
+
+Node.js v24.4.1

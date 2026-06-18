@@ -1,13 +1,13 @@
 # Electron Packaging and Server Management
 
-This document describes the design and implementation of the **Electron desktop packaging** in autobyteus-web, which bundles and manages a local Python backend server for a fully self-contained desktop application.
+This document describes the design and implementation of the **Electron desktop packaging** in autobyteus-web, which bundles and manages a local Node.js backend server for a fully self-contained desktop application.
 
 ## Overview
 
 AutoByteus is packaged as an Electron application that:
 
 - Provides a native desktop experience across Windows, macOS, and Linux
-- Bundles a pre-compiled Python backend server (compiled via Nuitka)
+- Bundles a prepared Node.js backend server with production dependencies and native modules
 - Manages the server lifecycle automatically
 - Uses IPC for secure communication between main and renderer processes
 
@@ -31,7 +31,7 @@ graph TB
     end
 
     subgraph Resources
-        Server[Bundled Server<br/>autobyteus_server]
+        Server[Bundled Server<br/>Node.js app]
         Data[App Data Directory]
     end
 
@@ -293,8 +293,12 @@ npx ts-node build/scripts/build.ts --mac
 npx ts-node build/scripts/build.ts
 ```
 
-`scripts/prepare-server.sh` now builds the Node server, deploys it into `resources/server`, and rebuilds native modules (e.g., `node-pty`) for the Electron runtime.
+`scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime.
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
+
+For macOS terminal packaging, every `node-pty` `spawn-helper` found under the staged server `node_modules` must be executable before the app is packed. The packaging hooks normalize all matching helper files rather than only one architecture-specific path, because `node-pty` may select `prebuilds/darwin-x64`, `prebuilds/darwin-arm64`, or a build directory depending on the packaged runtime. The runtime guard in `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` still repairs the selected helper at startup, but packaging should ship the selected helper already executable.
+
+`scripts/verify-packaged-terminal-runtime.mjs` is the release-time validator for this invariant. It checks the staged `resources/server` tree and the final `.app/Contents/Resources/server` tree for the target Darwin architecture, verifies that the selected and target `node-pty` helpers are executable, checks Darwin architecture tokens when the `file` tool is available, and runs a real `node-pty` spawn probe when the build host matches the target architecture.
 
 On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from:
 
@@ -405,6 +409,8 @@ The bundled server is located at `resources/server/` and includes:
 | `package.json`       | Server package metadata                   |
 | `.env`               | Default environment configuration         |
 | `download/`          | Pre-packaged downloadable assets (optional) |
+
+On macOS, the packaged server's `node_modules` includes `node-pty` native binaries and `spawn-helper` files. Keep `prepare-server`, `afterPack`, and `verify-packaged-terminal-runtime.mjs` aligned so the helper adjacent to the `node-pty` native module selected for the packaged architecture is present, executable, and architecture-compatible in both the staged resources and final `.app` resources.
 
 At runtime, the server:
 

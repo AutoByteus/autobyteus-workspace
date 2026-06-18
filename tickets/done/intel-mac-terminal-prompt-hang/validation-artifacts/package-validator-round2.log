@@ -1,0 +1,93 @@
+# Round 2 packaged terminal runtime validators
+Started: 2026-06-18T09:48:32+02:00
+Staged root: autobyteus-web/resources/server
+App server root: autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server
+App bundle: autobyteus-web/electron-dist/mac/AutoByteus.app
+App bin: autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/MacOS/AutoByteus
+Host: darwin/x64
+
+## Static staged validator
++ node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/resources/server --platform darwin --arch x64
+[terminal-runtime] node-pty root: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
++ set +x
+
+## Static final app validator
++ node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server --platform darwin --arch x64
+[terminal-runtime] node-pty root: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
++ set +x
+
+## Host Node staged spawn probe
++ node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/resources/server --platform darwin --arch x64 --spawn-probe
+[terminal-runtime] node-pty root: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
++ set +x
+
+## Electron Node final app spawn probe
++ ELECTRON_RUN_AS_NODE=1
++ autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/MacOS/AutoByteus autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server --platform darwin --arch x64 --spawn-probe
+[terminal-runtime] node-pty root: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
++ set +x
+
+## Helper modes and architectures
+### Root: autobyteus-web/resources/server
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  34120 Jun 18 09:42 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper: Mach-O 64-bit executable x86_64
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  9248 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper: Mach-O 64-bit executable x86_64
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  50480 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+### pty.node files: autobyteus-web/resources/server
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+-rwxr-xr-x@ 1 ryan-zheng  staff  76104 Jun 18 09:42 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node: Mach-O 64-bit bundle x86_64
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  293376 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node: PE32+ executable (DLL) (GUI) Aarch64, for MS Windows
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  52864 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node: Mach-O 64-bit bundle x86_64
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  303104 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node: PE32+ executable (DLL) (GUI) x86-64, for MS Windows
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  85496 Feb 19 17:22 autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+### Root: autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  34120 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper: Mach-O 64-bit executable x86_64
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  9248 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper: Mach-O 64-bit executable x86_64
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+-rwxr-xr-x@ 1 ryan-zheng  staff  50480 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+### pty.node files: autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+-rwxr-xr-x@ 1 ryan-zheng  staff  76104 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node: Mach-O 64-bit bundle x86_64
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  293376 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-arm64/pty.node: PE32+ executable (DLL) (GUI) Aarch64, for MS Windows
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  52864 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node: Mach-O 64-bit bundle x86_64
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  303104 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/win32-x64/pty.node: PE32+ executable (DLL) (GUI) x86-64, for MS Windows
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+-rw-r--r--@ 1 ryan-zheng  staff  85496 Jun 18 09:43 autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+Completed: 2026-06-18T09:48:53+02:00

@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.3.59",
+  "version": "1.3.60",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -36,6 +36,7 @@
     "prepare-server": "node ./scripts/prepare-server-dispatch.mjs",
     "prepare-server:legacy": "bash ./scripts/prepare-server.sh",
     "prepare-server:windows": "node ./scripts/prepare-server.mjs",
+    "verify-packaged-terminal-runtime": "node ./scripts/verify-packaged-terminal-runtime.mjs",
     "build:electron": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js",
     "build:electron:linux": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux",
     "build:electron:windows": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows",
