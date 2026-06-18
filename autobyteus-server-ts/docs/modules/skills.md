@@ -50,6 +50,21 @@ Create/edit/versioning behavior still depends on the existing Skills and File
 Explorer operations plus the underlying filesystem permissions of each resolved
 skill root.
 
+### Catalog Reload
+
+The GraphQL `reloadSkillCatalog` mutation is the explicit user-command boundary
+for refreshing the Skills page after files under already configured skill source
+folders change on disk. It delegates to `SkillService.reloadSkillCatalog()`,
+which performs a fresh catalog scan through the same `listSkills()` path and
+returns refreshed `skills` plus refreshed `skillSources` metadata from
+`getSkillSources()`.
+
+Reload is global for all configured skill sources. It preserves existing
+discovery ordering, duplicate first-seen precedence, malformed-skill
+warning/skip behavior, and disabled-skill lookup by skill name. It is a catalog
+and UI refresh for browsing and future selections; it does not mutate skill
+material that has already been loaded into currently running agent sessions.
+
 ## Configured Agent Skill Resolution
 
 `agent-config.json.skillNames` is an ordered list of logical skill names. Runtime

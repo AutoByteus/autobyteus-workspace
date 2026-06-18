@@ -177,6 +177,107 @@ describeGit("Skills GraphQL e2e", () => {
     expect(scriptPaths.has("scripts/run.sh")).toBe(true);
   }, 15000);
 
+  it("reloads the skill catalog after external file edits and returns refreshed sources", async () => {
+    const skillDir = path.join(tempDir, "skills", "external_skill");
+    fs.mkdirSync(skillDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(skillDir, "SKILL.md"),
+      "---\nname: external_skill\ndescription: External skill\n---\n\nExternal content\n",
+      "utf-8",
+    );
+    const removedSkillDir = path.join(tempDir, "skills", "removed_skill");
+    fs.mkdirSync(removedSkillDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(removedSkillDir, "SKILL.md"),
+      "---\nname: removed_skill\ndescription: Removed skill\n---\n\nRemoved content\n",
+      "utf-8",
+    );
+
+    const reloadMutation = `
+      mutation ReloadSkillCatalog {
+        reloadSkillCatalog {
+          skills {
+            name
+            description
+            content
+          }
+          skillSources {
+            path
+            skillCount
+            isDefault
+          }
+        }
+      }
+    `;
+
+    const initialReload = await execGraphql<{
+      reloadSkillCatalog: {
+        skills: Array<{ name: string; description: string; content: string }>;
+        skillSources: Array<{ path: string; skillCount: number; isDefault: boolean }>;
+      };
+    }>(reloadMutation);
+
+    expect(initialReload.reloadSkillCatalog.skills).toContainEqual(
+      expect.objectContaining({
+        name: "external_skill",
+        description: "External skill",
+        content: "External content",
+      }),
+    );
+    expect(initialReload.reloadSkillCatalog.skillSources).toContainEqual(
+      expect.objectContaining({
+        path: path.join(tempDir, "skills"),
+        skillCount: 2,
+        isDefault: true,
+      }),
+    );
+
+    fs.writeFileSync(
+      path.join(skillDir, "SKILL.md"),
+      "---\nname: external_skill\ndescription: Updated external skill\n---\n\nUpdated external content\n",
+      "utf-8",
+    );
+    fs.rmSync(removedSkillDir, { recursive: true, force: true });
+    const addedSkillDir = path.join(tempDir, "skills", "added_skill");
+    fs.mkdirSync(addedSkillDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(addedSkillDir, "SKILL.md"),
+      "---\nname: added_skill\ndescription: Added skill\n---\n\nAdded content\n",
+      "utf-8",
+    );
+
+    const refreshedReload = await execGraphql<{
+      reloadSkillCatalog: {
+        skills: Array<{ name: string; description: string; content: string }>;
+        skillSources: Array<{ path: string; skillCount: number; isDefault: boolean }>;
+      };
+    }>(reloadMutation);
+
+    expect(refreshedReload.reloadSkillCatalog.skills).toContainEqual(
+      expect.objectContaining({
+        name: "external_skill",
+        description: "Updated external skill",
+        content: "Updated external content",
+      }),
+    );
+    expect(refreshedReload.reloadSkillCatalog.skills).toContainEqual(
+      expect.objectContaining({
+        name: "added_skill",
+        description: "Added skill",
+      }),
+    );
+    expect(refreshedReload.reloadSkillCatalog.skills.map((skill) => skill.name)).not.toContain(
+      "removed_skill",
+    );
+    expect(refreshedReload.reloadSkillCatalog.skillSources).toContainEqual(
+      expect.objectContaining({
+        path: path.join(tempDir, "skills"),
+        skillCount: 2,
+        isDefault: true,
+      }),
+    );
+  });
+
   it("deletes a skill", async () => {
     const createMutation = `
       mutation CreateSkill($input: CreateSkillInput!) {

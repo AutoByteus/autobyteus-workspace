@@ -98,6 +98,45 @@ describe("SkillService", () => {
     expect(skills.map((skill) => skill.name)).toEqual(["skill_a", "skill_b", "skill_c"]);
   });
 
+  it("reloads edited, added, and removed skills from disk while preserving disabled state", () => {
+    writeSkill(skillsDir, "stable_skill", "Old skill", "Old content");
+    const removedSkillDir = writeSkill(
+      skillsDir,
+      "removed_skill",
+      "Removed skill",
+      "Removed content",
+    );
+
+    expect(service.reloadSkillCatalog().skills.map((skill) => skill.name)).toEqual([
+      "removed_skill",
+      "stable_skill",
+    ]);
+
+    service.disableSkill("stable_skill");
+    writeSkill(skillsDir, "stable_skill", "Updated skill", "Updated content");
+    fs.rmSync(removedSkillDir, { recursive: true, force: true });
+    writeSkill(skillsDir, "added_skill", "Added skill", "Added content");
+
+    const result = service.reloadSkillCatalog();
+    const stableSkill = result.skills.find((skill) => skill.name === "stable_skill");
+
+    expect(result.skills.map((skill) => skill.name)).toEqual(["added_skill", "stable_skill"]);
+    expect(stableSkill).toEqual(
+      expect.objectContaining({
+        description: "Updated skill",
+        content: "Updated content",
+        isDisabled: true,
+      }),
+    );
+    expect(result.skillSources).toEqual([
+      expect.objectContaining({
+        path: skillsDir,
+        skillCount: 2,
+        isDefault: true,
+      }),
+    ]);
+  });
+
   it("rejects invalid skill names", () => {
     expect(() => service.createSkill("invalid name!", "desc", "content")).toThrow(
       "Invalid skill name",

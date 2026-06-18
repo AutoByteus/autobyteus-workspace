@@ -3,6 +3,10 @@ import type { TranslationCatalog } from '../../runtime/types';
 const skillMessages = {
   'skills.components.skills.SkillsList.title': 'Skills',
   'skills.components.skills.SkillsList.sources': 'Sources',
+  'skills.components.skills.SkillsList.reload': 'Reload',
+  'skills.components.skills.SkillsList.reloading': 'Reloading...',
+  'skills.components.skills.SkillsList.reload_success': 'Skills reloaded.',
+  'skills.components.skills.SkillsList.reload_error': 'Failed to reload skills.',
   'skills.components.skills.SkillsList.no_skills_match_query': 'No skills match your search query "{{query}}".',
   'skills.components.skills.SkillsList.no_skills_created_yet': 'No skills created yet',
   'skills.components.skills.SkillsList.create_your_first_skill': 'Create your first skill to extend capabilities.',

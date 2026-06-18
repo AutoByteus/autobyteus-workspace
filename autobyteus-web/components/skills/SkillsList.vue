@@ -19,6 +19,10 @@
           <Icon icon="heroicons:cog-6-tooth" />
           <span>{{ $t('skills.components.skills.SkillsList.sources') }}</span>
         </button>
+        <button class="btn-secondary" @click="handleReloadCatalog" :disabled="loading || reloading" :title="$t('skills.components.skills.SkillsList.reload')">
+          <Icon icon="heroicons:arrow-path" :class="{ spinning: reloading }" />
+          <span>{{ reloading ? $t('skills.components.skills.SkillsList.reloading') : $t('skills.components.skills.SkillsList.reload') }}</span>
+        </button>
         <button class="btn-primary" @click="showCreateDialog = true">
           <Icon icon="heroicons:plus" />
           <span>{{ $t('skills.components.skills.SkillsList.create_skill') }}</span>
@@ -26,12 +30,15 @@
       </div>
     </div>
 
+    <div v-if="reloadSuccessMessage" class="success-alert">{{ reloadSuccessMessage }}</div>
+    <div v-if="reloadErrorMessage && !blockingError" class="error-alert">{{ reloadErrorMessage }}</div>
+
     <div v-if="loading" class="loading-state">
       <div class="spinner"></div>
       <p>{{ $t('skills.components.skills.SkillsList.loading_skills') }}</p>
     </div>
 
-    <div v-else-if="error" class="error-state">
+    <div v-else-if="blockingError" class="error-state">
       <Icon icon="heroicons:exclamation-triangle" class="error-icon" />
       <p>{{ error }}</p>
       <button class="btn-secondary" @click="skillStore.fetchAllSkills()">{{ $t('skills.components.skills.SkillsList.try_again') }}</button>
@@ -155,13 +162,14 @@ const emit = defineEmits<{
 }>()
 
 const skillStore = useSkillStore()
-const { skills, loading, error } = storeToRefs(skillStore)
+const { skills, loading, reloading, error } = storeToRefs(skillStore)
 
 const showCreateDialog = ref(false)
 const showSourcesDialog = ref(false)
 const searchQuery = ref('')
 const showDeleteConfirm = ref(false)
 const skillToDelete = ref<Skill | null>(null)
+const reloadSuccessMessage = ref(''), reloadErrorMessage = ref('')
 
 const newSkill = ref({
   name: '',
@@ -180,9 +188,24 @@ const filteredSkills = computed(() => {
   )
 })
 
+const blockingError = computed(() => Boolean(error.value && skills.value.length === 0))
+
 onMounted(async () => {
   await skillStore.fetchAllSkills()
 })
+
+async function handleReloadCatalog() {
+  reloadSuccessMessage.value = ''
+  reloadErrorMessage.value = ''
+
+  try {
+    await skillStore.reloadSkillCatalog()
+    reloadSuccessMessage.value = t('skills.components.skills.SkillsList.reload_success')
+  } catch (e) {
+    reloadErrorMessage.value = t('skills.components.skills.SkillsList.reload_error')
+    console.error('Failed to reload skills:', e)
+  }
+}
 
 async function handleCreateSkill() {
   if (!newSkill.value.name) return
@@ -349,6 +372,8 @@ button {
   border-color: #d1d5db;
 }
 
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .btn-text {
   background: transparent;
   color: #3b82f6;
@@ -437,6 +462,12 @@ button {
   margin: 0 0 1.5rem 0;
   max-width: 400px;
 }
+
+.success-alert,
+.error-alert { padding: 0.75rem; border-radius: 6px; margin: -1rem 0 1.5rem; font-size: 0.875rem; }
+.success-alert { background: #d1fae5; color: #065f46; }
+.error-alert { background: #fee2e2; color: #b91c1c; }
+.spinning { animation: spin 1s linear infinite; }
 
 /* Dialog */
 .dialog-overlay {

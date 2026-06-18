@@ -95,6 +95,15 @@ export class SkillSource {
 }
 
 @ObjectType()
+export class SkillCatalogReloadResult {
+  @Field(() => [Skill])
+  skills!: Skill[];
+
+  @Field(() => [SkillSource])
+  skillSources!: SkillSource[];
+}
+
+@ObjectType()
 export class SkillVersion {
   @Field(() => String)
   tag!: string;
@@ -337,6 +346,18 @@ export class SkillResolver {
     const versioningService = SkillVersioningService.getInstance();
     const skill = service.enableSkill(name);
     return mapSkill(skill, versioningService);
+  }
+
+  @Mutation(() => SkillCatalogReloadResult)
+  reloadSkillCatalog(): SkillCatalogReloadResult {
+    const service = SkillService.getInstance();
+    const versioningService = SkillVersioningService.getInstance();
+    const result = service.reloadSkillCatalog();
+
+    return {
+      skills: result.skills.map((skill) => mapSkill(skill, versioningService)),
+      skillSources: result.skillSources.map(mapSkillSource),
+    };
   }
 
   @Mutation(() => [SkillSource])

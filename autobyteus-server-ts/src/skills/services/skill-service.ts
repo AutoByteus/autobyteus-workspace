@@ -41,6 +41,11 @@ type SkillServiceOptions = {
   versioningService?: SkillVersioningService;
 };
 
+export type SkillCatalogReloadResult = {
+  skills: Skill[];
+  skillSources: SkillSourceInfo[];
+};
+
 export class SkillService {
   private static instance: SkillService | null = null;
 
@@ -165,6 +170,13 @@ export class SkillService {
     }
 
     return skills.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  reloadSkillCatalog(): SkillCatalogReloadResult {
+    return {
+      skills: this.listSkills(),
+      skillSources: this.getSkillSources(),
+    };
   }
 
   getSkill(name: string): Skill | null {

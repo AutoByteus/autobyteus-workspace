@@ -99,6 +99,10 @@ export const useSkillSourcesStore = defineStore('skillSources', () => {
     }
   }
 
+  function replaceSkillSources(nextSources: SkillSource[]) {
+    skillSources.value = nextSources
+  }
+
   function clearError() {
     error.value = ''
   }
@@ -117,6 +121,7 @@ export const useSkillSourcesStore = defineStore('skillSources', () => {
     fetchSkillSources,
     addSkillSource,
     removeSkillSource,
+    replaceSkillSources,
     clearError,
     // Getters
     getSkillSources,

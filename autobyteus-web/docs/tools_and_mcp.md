@@ -197,7 +197,7 @@ Full-featured MCP server configuration:
 **Features:**
 
 - Form tab: Visual configuration fields
-- JSON tab: Raw JSON input for advanced users
+- JSON tab: Raw standard `mcpServers` JSON input for advanced users
 - Transport type toggle (STDIO / HTTP)
 - STDIO config: command, args, env vars, working directory
 - HTTP config: URL, token, headers
@@ -206,11 +206,44 @@ Full-featured MCP server configuration:
 
 **Workflow:**
 
-1. User fills form or pastes JSON
-2. User clicks "Preview" to test connection
-3. Preview shows discovered tools
-4. User clicks "Save Configuration"
-5. Option to sync tools after save
+1. User chooses either **Form View** or **JSON View** as the active input surface
+2. In **Form View**, "Preview" and "Save Configuration" build the server payload from form fields
+3. In **JSON View**, "Preview" and "Save Configuration" parse the current textarea value at click time
+4. Preview shows discovered tools or a recoverable validation error
+5. User clicks "Save Configuration" to persist through the existing GraphQL/backend path
+6. Option to discover and register tools after save
+
+The JSON View accepts the standard top-level MCP shape:
+
+```json
+{
+  "mcpServers": {
+    "server-id": {
+      "command": "uv",
+      "args": ["run", "server.py"]
+    }
+  }
+}
+```
+
+For the single-server add/edit modal, JSON View must contain exactly one
+`mcpServers` entry. The server ID comes from the JSON map key when adding a new
+server; when editing an existing server, the existing server ID remains the
+identity, matching the disabled server ID field in Form View. Multiple-server
+JSON belongs in **Bulk Import**.
+
+JSON View supports both explicit and inferred transport:
+
+- STDIO: `command` implies `STDIO` when no explicit transport is present
+- Streamable HTTP: `url` implies `STREAMABLE_HTTP` when no explicit transport is present
+- accepted aliases include `transportType` / `transport_type` and
+  `toolNamePrefix` / `tool_name_prefix`
+
+**Apply JSON to Form** is only a conversion helper for users who want to switch
+from raw JSON into guided editing. It is not required before previewing or
+saving from JSON View. Disk persistence remains the existing backend-owned
+`mcps.json` format; the frontend still sends the normal `McpServerInput`
+payload through the existing store and GraphQL actions.
 
 ### McpBulkImportView.vue
 
