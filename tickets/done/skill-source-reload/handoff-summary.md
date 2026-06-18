@@ -4,7 +4,7 @@
 
 - Ticket: `skill-source-reload`
 - Date: 2026-06-18
-- Current Status: `User verified; finalization in progress`
+- Current Status: `Finalized and release dispatched`
 - Workflow State Source: N/A; source package is the cumulative delivery artifact chain under `tickets/done/skill-source-reload/`.
 
 ## Delivery Summary
@@ -62,10 +62,11 @@ Live validation summary:
 
 - Full live browser/backend smoke was not run. Durable GraphQL E2E plus Vue store/component/page/modal tests cover the scoped reload behavior.
 - Local macOS Electron build for user testing completed on 2026-06-18 with `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac` from `autobyteus-web`.
-- Test artifacts produced:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.58.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.58.zip`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Test artifacts produced before finalization under the dedicated ticket worktree:
+  - `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.58.dmg`
+  - `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.58.zip`
+  - `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- The dedicated ticket worktree was removed during post-release cleanup; signed/published artifacts are now owned by the `v1.3.59` GitHub release workflows.
 
 Infeasible criteria / user waivers: None.
 
@@ -98,14 +99,25 @@ Residual risk:
 
 ## Finalization Record
 
-- Ticket archived to: N/A — waiting for explicit user verification before moving to `tickets/done/`.
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-source-reload/`.
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-reload`
 - Ticket branch: `codex/skill-source-reload`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: Pending user verification. A delivery safety checkpoint commit exists at `78d8a037`; delivery docs/artifacts remain uncommitted for final verification.
-- Push status: Pending user verification.
-- Merge status: Pending user verification.
-- Release/publication/deployment status: Pending finalization decision; no deployment step is currently identified as required.
-- Worktree cleanup status: Pending finalization.
-- Blockers / notes: None for verification. Delivery is intentionally paused at user-verification hold.
+- Commit status: Completed — ticket branch includes checkpoint `78d8a037`, integration merge `5304d0e6`, and final delivery/archive commit `d6805b67`.
+- Push status: Completed — ticket branch pushed to `origin/codex/skill-source-reload`; `personal` pushed through release commit `4f456968`.
+- Merge status: Completed — `personal` fast-forwarded to the ticket branch at `d6805b67` before release.
+- Release/publication/deployment status: Completed for release helper/tag dispatch — `v1.3.59` pushed; Desktop, Android APK, iOS App Store Connect, Messaging Gateway, and Server Docker release workflows were triggered and queued/in progress at report update time.
+- Worktree cleanup status: Completed — dedicated ticket worktree removed, worktrees pruned, and local ticket branch deleted; remote ticket branch left intact.
+- Blockers / notes: None. This handoff-record update is after the `v1.3.59` tag and does not alter the tagged release contents.
+
+
+## Release Completion Summary
+
+- Release version: `1.3.59`
+- Release tag: `v1.3.59`
+- Release commit: `4f456968cfc758f3efbb3a863ef1d92369508801` (`chore(release): bump workspace release version to 1.3.59`)
+- Release tag object: `f664cc52801f2ba5ddfa7b8172874d0b5047f11d`
+- Release helper command used: `bash scripts/desktop-release.sh release 1.3.59 --release-notes tickets/done/skill-source-reload/release-notes.md`
+- Remote tag verification: `git ls-remote --tags origin v1.3.59` returned `refs/tags/v1.3.59`.
+- Initial workflow trigger check for tag `v1.3.59`: Desktop Release `27743987392`, Android APK Release `27743987942`, Release Messaging Gateway `27743987402`, Server Docker Release `27743987420`, and iOS App Store Connect Release `27743987419` were queued or in progress at report update time.
