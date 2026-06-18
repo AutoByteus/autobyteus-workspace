@@ -120,3 +120,21 @@ If finalized and later rolled back, revert the ticket merge from `personal`. The
 ## Final Status
 
 Ready for user verification. Repository finalization, ticket archival, push/merge, cleanup, and any release/deployment work have not been run.
+
+## Addendum — User Test Electron Build On Integrated Base
+
+- Trigger: User requested README-guided Electron build for local testing.
+- Base advanced after earlier handoff: `Yes`; `origin/personal` advanced to `7e507be0`.
+- Local checkpoint commit result: `Completed` — `d7a6162a`.
+- Integration method: `Merge` — merge commit `6317a885`.
+- Integration result: `Completed` without conflicts.
+- Post-integration executable checks rerun: `Yes`.
+- Post-integration verification result: `Passed`.
+- Checks/builds:
+  - `git diff --check` — passed after merge.
+  - `cd autobyteus-web && NO_TIMESTAMP=1 APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` — passed.
+- Local test artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.zip`
+- Repository finalization status: still held pending explicit user verification.

@@ -69,3 +69,23 @@ Known broader validation limits carried forward from upstream artifacts:
 Waiting for explicit user verification before ticket archival, commit/push, merge into `personal`, worktree cleanup, or any release/deployment work.
 
 Suggested user confirmation if the handoff looks good: `Verified; please finalize`.
+
+## User Test Build Addendum — 2026-06-18
+
+After the initial pre-verification handoff, `origin/personal` advanced to `7e507be0`. Delivery created a local checkpoint commit (`d7a6162a`), merged the latest tracked remote base into the ticket branch (`6317a885`), and rebuilt the macOS Electron app from that integrated state.
+
+Local build command used from `autobyteus-web`:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build result: passed.
+
+Artifacts for user testing:
+
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.zip`
+
+The app is locally/ad-hoc signed only, because this was a no-notarization local test build. Repository push, finalization merge, archival, cleanup, and release remain held pending explicit user verification.
