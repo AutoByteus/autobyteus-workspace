@@ -89,37 +89,16 @@ import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';
-import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
-type PrimaryNavKey =
-  | 'agents'
-  | 'agentTeams'
-  | 'applications'
-  | 'skills'
-  | 'memory'
-  | 'media';
-
 const { t } = useLocalization();
-const applicationsCapabilityStore = useApplicationsCapabilityStore()
-
-const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: string }> = [
-  { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
-  { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
-  { key: 'applications', labelKey: 'shell.navigation.applications', icon: 'heroicons:squares-2x2' },
-  { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
-  { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
-  { key: 'media', labelKey: 'shell.navigation.media', icon: 'heroicons:photo' },
-];
-
-const primaryNavItems = computed(() => {
-  return allPrimaryNavItems.filter((item) => {
-    if (item.key === 'applications') {
-      return applicationsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('applicationIframe')
-    }
-    return true;
-  });
-});
+const {
+  primaryNavItems,
+  resolvePrimaryRoute,
+  isPrimaryNavActive,
+  ensurePrimaryNavigationReady,
+} = useShellPrimaryNavigation();
 
 const route = useRoute();
 const router = useRouter();
@@ -134,40 +113,6 @@ const {
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
-const resolvePrimaryRoute = (key: PrimaryNavKey): RouteLocationRaw => {
-  switch (key) {
-    case 'agents':
-      return { path: '/agents', query: { view: 'list' } };
-    case 'agentTeams':
-      return { path: '/agent-teams', query: { view: 'team-list' } };
-    case 'applications':
-      return '/applications';
-    case 'skills':
-      return '/skills';
-    case 'memory':
-      return '/memory';
-    case 'media':
-      return '/media';
-  }
-};
-
-const isPrimaryNavActive = (key: PrimaryNavKey): boolean => {
-  switch (key) {
-    case 'agents':
-      return route.path.startsWith('/agents');
-    case 'agentTeams':
-      return route.path.startsWith('/agent-teams');
-    case 'applications':
-      return route.path.startsWith('/applications');
-    case 'skills':
-      return route.path.startsWith('/skills');
-    case 'memory':
-      return route.path.startsWith('/memory');
-    case 'media':
-      return route.path.startsWith('/media');
-  }
-};
-
 const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   try {
     await router.push(target);
@@ -176,7 +121,7 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   }
 };
 
-const navigateToPrimary = async (key: PrimaryNavKey): Promise<void> => {
+const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
   await pushRoute(resolvePrimaryRoute(key));
 };
 
@@ -195,8 +140,8 @@ const onRunningRunCreated = async (): Promise<void> => {
 };
 
 onMounted(() => {
-  void applicationsCapabilityStore.ensureResolved().catch(() => undefined)
-})
+  void ensurePrimaryNavigationReady().catch(() => undefined);
+});
 </script>
 
 <style scoped>

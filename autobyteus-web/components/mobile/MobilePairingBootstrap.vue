@@ -31,7 +31,7 @@
         </button>
       </div>
       <div v-else class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4" data-testid="mobile-pairing-instructions">
-        <p class="font-semibold text-slate-900">Scan the QR code from Desktop &gt; Settings &gt; Nodes &gt; Phone Access.</p>
+        <p class="font-semibold text-slate-900">Scan the QR code from Desktop &gt; Nodes &gt; Phone Setup &gt; Phone Access.</p>
         <p class="mt-1 text-sm text-slate-600">No server URL, port, or token setup is needed in the normal flow.</p>
         <button type="button" class="mt-3 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700" data-testid="mobile-show-pairing-text" @click="showPairingText = true">
           Paste pairing link

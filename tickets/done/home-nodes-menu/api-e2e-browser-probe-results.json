@@ -1,0 +1,100 @@
+{
+  "result": "pass",
+  "evidence": [
+    {
+      "scenario": "expanded-nav-initial",
+      "url": "http://127.0.0.1:3107/agents",
+      "expandedNav": [
+        "Agents",
+        "Agent Teams",
+        "Skills",
+        "Memory",
+        "Nodes"
+      ]
+    },
+    {
+      "scenario": "expanded-click-nodes",
+      "url": "http://127.0.0.1:3107/nodes",
+      "nodesTabs": [
+        {
+          "id": "node-manager-tab-manage",
+          "selected": "true",
+          "text": "Manage Nodes"
+        },
+        {
+          "id": "node-manager-tab-phoneSetup",
+          "selected": "false",
+          "text": "Phone Setup"
+        },
+        {
+          "id": "node-manager-tab-dockerGuide",
+          "selected": "false",
+          "text": "Docker Guide"
+        }
+      ]
+    },
+    {
+      "scenario": "direct-phone-setup-query",
+      "url": "http://127.0.0.1:3107/nodes?nodeTab=phoneSetup",
+      "phoneSetupTabs": [
+        {
+          "id": "node-manager-tab-manage",
+          "selected": "false",
+          "text": "Manage Nodes"
+        },
+        {
+          "id": "node-manager-tab-phoneSetup",
+          "selected": "true",
+          "text": "Phone Setup"
+        },
+        {
+          "id": "node-manager-tab-dockerGuide",
+          "selected": "false",
+          "text": "Docker Guide"
+        }
+      ],
+      "activePanel": "node-manager-panel-phoneSetup"
+    },
+    {
+      "scenario": "legacy-settings-section-nodes",
+      "url": "http://127.0.0.1:3107/settings?section=nodes",
+      "settingsButtons": [
+        "Back to Workspace",
+        "API Keys",
+        "Token Usage Statistics",
+        "Messaging",
+        "Display",
+        "Language",
+        "Local Tools",
+        "MCP Servers",
+        "Application Packages",
+        "Agent Packages",
+        "Server Settings",
+        "Extensions",
+        "Updates",
+        "Reload Models",
+        "New Provider0",
+        "Reload Models"
+      ],
+      "hasNodeManagerTabs": 0
+    },
+    {
+      "scenario": "collapsed-nav-initial",
+      "url": "http://127.0.0.1:3107/agents",
+      "collapsedTitles": [
+        "Collapse left panel",
+        "Add workspace",
+        "Agents",
+        "Agent Teams",
+        "Skills",
+        "Memory",
+        "Nodes",
+        "Settings"
+      ]
+    },
+    {
+      "scenario": "collapsed-click-nodes",
+      "url": "http://127.0.0.1:3107/nodes"
+    }
+  ]
+}

@@ -10,7 +10,6 @@ const translationMap: Record<string, string> = {
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
   'settings.page.sections.tokenUsage': 'Token Usage Statistics',
-  'settings.page.sections.nodes': 'Nodes',
   'settings.page.sections.messaging': 'Messaging',
   'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',
@@ -66,7 +65,6 @@ const mountSettings = () =>
         ProviderAPIKeyManager: { template: '<div data-testid="section-api-keys" />' },
         TokenUsageStatistics: { template: '<div data-testid="section-token-usage" />' },
         ConversationHistoryManager: { template: '<div data-testid="section-conversation-logs" />' },
-        NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
         DisplaySettingsManager: { template: '<div data-testid="section-display" />' },
         LanguageSettingsManager: { template: '<div data-testid="section-language" />' },
@@ -99,7 +97,7 @@ describe('settings page', () => {
     const wrapper = mountSettings()
 
     expect(wrapper.text()).toContain('API Keys')
-    expect(wrapper.text()).toContain('Nodes')
+    expect(wrapper.text()).not.toContain('Nodes')
     expect(wrapper.text()).toContain('Messaging')
     expect(wrapper.text()).toContain('Display')
     expect(wrapper.text()).toContain('Language')
@@ -112,6 +110,17 @@ describe('settings page', () => {
     const sidebarText = wrapper.text()
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'))
     expect(wrapper.get('[data-testid="settings-nav-back"]').attributes('aria-label')).toBe('Back to workspace')
+  })
+
+
+  it('treats legacy nodes section query as invalid and falls back to the default settings section', async () => {
+    routeMock.query = { section: 'nodes' }
+    const wrapper = mountSettings()
+    await nextTick()
+    const setupState = (wrapper.vm as any).$?.setupState
+
+    expect(setupState.activeSection).toBe('api-keys')
+    expect(wrapper.find('[data-testid="section-nodes"]').exists()).toBe(false)
   })
 
   it('normalizes legacy server-status route query to server-settings in remote windows', async () => {

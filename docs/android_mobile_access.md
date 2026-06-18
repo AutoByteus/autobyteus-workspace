@@ -28,14 +28,14 @@ Why this matters: the MVP credential remains in WebView-local `localStorage`, wh
 
 ## Normal Docker-node setup
 
-1. Install the Docker launcher from **Settings -> Nodes -> Docker Guide**.
+1. Install the Docker launcher from **Nodes -> Docker Guide**.
 2. Create the Docker node:
 
    ```bash
    autobyteus-docker new-container
    ```
 3. Save the printed Backend URL. Add it as a remote node only over a trusted LAN, VPN, tailnet, or equivalent private-network path; do not expose the full backend directly to the public internet.
-4. In the desktop app, add the Docker Backend URL as a remote node in **Settings -> Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
+4. In the desktop app, add the Docker Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
 5. Create or configure a phone-facing private-network URL that maps to the Docker node Backend URL. Prefer Tailscale Serve/private HTTPS ingress; acknowledged trusted private HTTP can be used on a LAN/tailnet you control.
 6. Paste that phone-facing `/mobile` URL in the Docker node window. AutoByteus verifies that this URL and the desktop management URL reach the same server instance before creating the QR. HTTP URLs require cleartext trusted-network acknowledgement before QR creation.
 7. Enable Phone Access and create the QR in the Docker node window. Android should pair to the Docker node and mobile-started work should run inside that node's container runtime.
@@ -56,7 +56,7 @@ The embedded desktop setup remains useful when the desktop node itself is the no
 
 1. Start the AutoByteus desktop/server node.
 2. Ensure the desktop is signed into Tailscale and reachable by the stable URL.
-3. Open **Settings -> Nodes -> Phone Setup**.
+3. Open **Nodes -> Phone Setup**.
 4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
 
    ```bash

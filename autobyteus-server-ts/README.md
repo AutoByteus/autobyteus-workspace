@@ -161,7 +161,7 @@ Recommended for users: start the published Docker Hub image without cloning
 this repository by using the public launcher. It pulls
 `autobyteus/autobyteus-server:latest`, keeps launcher state outside any source
 checkout, chooses non-conflicting ports, and prints the Backend URL to add in
-**Settings -> Nodes -> Add Remote Node**.
+**Nodes -> Manage Nodes -> Add Remote Node**.
 
 Install the local launcher once:
 
@@ -189,7 +189,7 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-Use the printed Backend URL in **Settings -> Nodes -> Add Remote Node**, then
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
 open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
 private-network path. The default product model does not add a separate owner
 credential for desktop/Electron access to that node; do not expose the full

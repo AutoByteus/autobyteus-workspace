@@ -6,7 +6,7 @@ const shellMessages = {
   'shell.navigation.applications': '应用程序',
   'shell.navigation.skills': '技能',
   'shell.navigation.memory': '记忆',
-  'shell.navigation.media': '媒体',
+  'shell.navigation.nodes': '节点',
   'shell.navigation.settings': '设置',
   'shell.rightTabs.files': '文件',
   'shell.rightTabs.team': '团队',

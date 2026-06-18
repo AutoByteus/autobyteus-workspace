@@ -43,18 +43,6 @@
             </li>
             <li class="w-full">
               <button
-                @click="activeSection = 'nodes'"
-                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
-                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'nodes' }"
-              >
-                <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-circle-stack-20-solid w-5 h-5"></span>
-                </div>
-                <span class="text-left">{{ $t('settings.page.sections.nodes') }}</span>
-              </button>
-            </li>
-            <li class="w-full">
-              <button
                 @click="activeSection = 'messaging'"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'messaging' }"
@@ -219,7 +207,6 @@
       <div class="h-full w-full flex flex-col">
         <ProviderAPIKeyManager v-if="activeSection === 'api-keys'" />
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />
-        <NodeManager v-if="activeSection === 'nodes'" />
         <MessagingSetupManager v-if="activeSection === 'messaging'" />
         <DisplaySettingsManager v-if="activeSection === 'display'" />
         <LanguageSettingsManager v-if="activeSection === 'language'" />
@@ -256,7 +243,6 @@ import { useServerStore } from '~/stores/serverStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import ProviderAPIKeyManager from '~/components/settings/ProviderAPIKeyManager.vue';
 import TokenUsageStatistics from '~/components/settings/TokenUsageStatistics.vue';
-import NodeManager from '~/components/settings/NodeManager.vue';
 import ServerSettingsManager from '~/components/settings/ServerSettingsManager.vue';
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
@@ -274,7 +260,6 @@ definePageMeta({
 type SettingsSection =
   | 'api-keys'
   | 'token-usage'
-  | 'nodes'
   | 'messaging'
   | 'display'
   | 'language'
@@ -297,7 +282,6 @@ const isEmbeddedWindow = computed(() => windowNodeContextStore.isEmbeddedWindow)
 const validSections = new Set<SettingsSection>([
   'api-keys',
   'token-usage',
-  'nodes',
   'messaging',
   'display',
   'language',

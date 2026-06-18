@@ -86,7 +86,7 @@ public enum ConnectionDiagnosticMapper {
             kind: .phoneAccessDisabled,
             title: "Phone Access is disabled",
             message: "\(serverName?.nonEmpty ?? "This AutoByteus node") is reachable, but Phone Access is off.",
-            recoveryAction: "Open AutoByteus on the desktop, go to Settings -> Nodes, enable Phone Access, then retry."
+            recoveryAction: "Open AutoByteus on the desktop, go to Nodes -> Phone Setup, enable Phone Access, then retry."
         )
     }
 

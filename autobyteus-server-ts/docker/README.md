@@ -19,7 +19,7 @@ The runtime image also ships with:
 
 ### No-clone users: public launcher
 
-If you want to run the published image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, creates named volumes per node, chooses non-conflicting ports, and prints the Backend URL for **Settings → Nodes → Add Remote Node**.
+If you want to run the published image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, creates named volumes per node, chooses non-conflicting ports, and prints the Backend URL for **Nodes -> Manage Nodes -> Add Remote Node**.
 
 Install the local launcher once:
 
@@ -47,7 +47,7 @@ autobyteus-docker new-container
 
 The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
 
-Use the printed Backend URL in **Settings -> Nodes -> Add Remote Node**, then
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
 open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
 private-network path. Desktop/Electron access to that node follows the trusted
 private-network product model; do not expose the full backend directly to the

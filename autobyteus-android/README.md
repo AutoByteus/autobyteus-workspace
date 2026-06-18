@@ -24,7 +24,7 @@ Agent/team run setup is not native Android code. The WebView-served **Start new*
    https://desktop.tailnet-name.ts.net/mobile
    ```
 
-3. In the desktop AutoByteus app, open **Settings -> Nodes -> Phone Setup**.
+3. In the desktop AutoByteus app, open **Nodes -> Phone Setup**.
 4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
 
    ```bash
