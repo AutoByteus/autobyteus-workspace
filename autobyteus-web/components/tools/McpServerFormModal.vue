@@ -175,6 +175,8 @@ import type { ToastType } from '~/composables/useToasts';
 
 type EnvItem = { id: number; key: string; value: string };
 type ArgItem = { id: number; value: string };
+type FormTransport = 'STDIO' | 'STREAMABLE_HTTP';
+type McpServerFormInput = Record<string, any> & { serverId: string; transportType: FormTransport };
 
 const props = defineProps<{
   server: McpServer | null;
@@ -188,7 +190,7 @@ const isEditMode = computed(() => !!props.server);
 
 const createFreshForm = () => ({
   serverId: '',
-  transportType: 'STDIO' as 'STDIO' | 'STREAMABLE_HTTP',
+  transportType: 'STDIO' as FormTransport,
   toolNamePrefix: '',
   enabled: true,
   stdioConfig: {
@@ -270,57 +272,126 @@ const updateJsonFromForm = () => {
     jsonInput.value = JSON.stringify(output, null, 2);
 };
 
-const syncFormFromJson = (): boolean => {
-    try {
-        const parsed = JSON.parse(jsonInput.value);
-        if (!parsed.mcpServers || typeof parsed.mcpServers !== 'object') {
-            throw new Error("Invalid JSON structure. Must contain a top-level 'mcpServers' object.");
-        }
-        
-        const serverIds = Object.keys(parsed.mcpServers);
-        if (serverIds.length === 0) {
-            throw new Error("The 'mcpServers' object is empty.");
-        }
+const isRecord = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
 
-        const serverId = serverIds[0];
-        const config = parsed.mcpServers[serverId];
-
-        Object.assign(form, createFreshForm());
-        envList.value = [];
-        argList.value = [];
-
-        form.serverId = isEditMode.value ? props.server!.serverId : serverId;
-        form.transportType = (config.transportType || 'stdio').toUpperCase() as 'STDIO' | 'STREAMABLE_HTTP';
-        form.toolNamePrefix = config.toolNamePrefix || '';
-        form.enabled = config.enabled !== false;
-
-        if (form.transportType === 'STDIO') {
-            form.stdioConfig.command = config.command || '';
-            form.stdioConfig.cwd = config.cwd || '';
-            form.stdioConfig.args = config.args || [];
-            form.stdioConfig.env = config.env || {};
-            argList.value = (config.args || []).map((arg: string) => ({ id: Date.now() + Math.random(), value: arg }));
-            envList.value = Object.entries(config.env || {}).map(([key, value]) => ({
-                id: Date.now() + Math.random(),
-                key,
-                value: String(value),
-            }));
-        } else { // STREAMABLE_HTTP
-            form.streamableHttpConfig.url = config.url || '';
-            form.streamableHttpConfig.token = config.token || '';
-        }
-        return true;
-    } catch (e: any) {
-        emit('show-toast', { message: `Error parsing JSON: ${e.message}`, type: 'error' as ToastType });
-        return false;
+const normalizeTransport = (config: Record<string, any>): FormTransport => {
+  const rawTransport = config.transportType ?? config.transport_type;
+  if (typeof rawTransport === 'string' && rawTransport.trim()) {
+    const normalized = rawTransport.trim().replace(/-/g, '_').toUpperCase();
+    if (normalized === 'STDIO' || normalized === 'STREAMABLE_HTTP') {
+      return normalized;
     }
+    throw new Error(`Unsupported MCP transport type '${rawTransport}'.`);
+  }
+  if (typeof config.url === 'string' && config.url.trim()) return 'STREAMABLE_HTTP';
+  if (typeof config.command === 'string' && config.command.trim()) return 'STDIO';
+  throw new Error("MCP server JSON must include either 'command' for STDIO or 'url' for HTTP.");
+};
+
+const readRecord = (value: unknown, fieldName: string): Record<string, any> => {
+  if (value === undefined || value === null) return {};
+  if (!isRecord(value)) throw new Error(`'${fieldName}' must be a JSON object.`);
+  return value;
+};
+
+const readStringArray = (value: unknown, fieldName: string): string[] => {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
+    throw new Error(`'${fieldName}' must be an array of strings.`);
+  }
+  return value;
+};
+
+const buildInputFromJson = (): McpServerFormInput => {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(jsonInput.value);
+  } catch {
+    throw new Error('Invalid JSON syntax.');
+  }
+  if (!isRecord(parsed) || !isRecord(parsed.mcpServers)) {
+    throw new Error("Invalid JSON structure. Must contain a top-level 'mcpServers' object.");
+  }
+
+  const serverIds = Object.keys(parsed.mcpServers);
+  if (serverIds.length === 0) throw new Error("The 'mcpServers' object is empty.");
+  if (serverIds.length > 1) throw new Error('This form edits one MCP server at a time. Provide exactly one server or use Bulk Import.');
+
+  const jsonServerId = serverIds[0];
+  const config = parsed.mcpServers[jsonServerId];
+  if (!jsonServerId.trim()) throw new Error('MCP server ID cannot be empty.');
+  if (!isRecord(config)) throw new Error(`MCP server '${jsonServerId}' must be a JSON object.`);
+
+  const transportType = normalizeTransport(config);
+  const base = {
+    serverId: isEditMode.value ? props.server!.serverId : jsonServerId,
+    transportType,
+    toolNamePrefix: (config.toolNamePrefix ?? config.tool_name_prefix) || null,
+    enabled: config.enabled !== false,
+  };
+
+  if (transportType === 'STDIO') {
+    if (typeof config.command !== 'string' || !config.command.trim()) {
+      throw new Error("STDIO MCP server JSON must include a non-empty 'command'.");
+    }
+    return {
+      ...base,
+      stdioConfig: {
+        command: config.command,
+        args: readStringArray(config.args, 'args'),
+        env: readRecord(config.env, 'env'),
+        cwd: typeof config.cwd === 'string' && config.cwd ? config.cwd : null,
+      },
+      streamableHttpConfig: null,
+    };
+  }
+
+  if (typeof config.url !== 'string' || !config.url.trim()) {
+    throw new Error("HTTP MCP server JSON must include a non-empty 'url'.");
+  }
+  return {
+    ...base,
+    stdioConfig: null,
+    streamableHttpConfig: {
+      url: config.url,
+      token: typeof config.token === 'string' && config.token ? config.token : null,
+      headers: readRecord(config.headers, 'headers'),
+    },
+  };
+};
+
+const applyInputToForm = (input: McpServerFormInput) => {
+  Object.assign(form, createFreshForm());
+  envList.value = [];
+  argList.value = [];
+
+  form.serverId = input.serverId;
+  form.transportType = input.transportType;
+  form.toolNamePrefix = input.toolNamePrefix || '';
+  form.enabled = input.enabled;
+
+  if (input.stdioConfig) {
+    form.stdioConfig.command = input.stdioConfig.command;
+    form.stdioConfig.cwd = input.stdioConfig.cwd || '';
+    form.stdioConfig.args = input.stdioConfig.args;
+    form.stdioConfig.env = input.stdioConfig.env;
+    argList.value = input.stdioConfig.args.map(arg => ({ id: Date.now() + Math.random(), value: arg }));
+    envList.value = Object.entries(input.stdioConfig.env).map(([key, value]) => ({ id: Date.now() + Math.random(), key, value: String(value) }));
+  } else if (input.streamableHttpConfig) {
+    form.streamableHttpConfig.url = input.streamableHttpConfig.url;
+    form.streamableHttpConfig.token = input.streamableHttpConfig.token || '';
+    form.streamableHttpConfig.headers = input.streamableHttpConfig.headers;
+  }
 };
 
 const applyJsonToForm = () => {
-    if (syncFormFromJson()) {
-        emit('show-toast', { message: 'Successfully applied JSON to form. Switching to Form View.', type: 'success' as ToastType });
-        activeTab.value = 'form';
-    }
+  try {
+    applyInputToForm(buildInputFromJson());
+    emit('show-toast', { message: 'Successfully applied JSON to form. Switching to Form View.', type: 'success' as ToastType });
+    activeTab.value = 'form';
+  } catch (e: any) {
+    emit('show-toast', { message: `Error parsing JSON: ${e.message}`, type: 'error' as ToastType });
+  }
 };
 
 
@@ -383,6 +454,7 @@ const populateFormFromServer = (server: McpServer | null) => {
     } else if (server.__typename === 'StreamableHttpMcpServerConfig') {
       form.streamableHttpConfig.url = server.url || '';
       form.streamableHttpConfig.token = server.token || '';
+      form.streamableHttpConfig.headers = server.headers || {};
     }
   }
 };
@@ -396,8 +468,8 @@ onUnmounted(() => {
     store.clearPreviewResult();
 });
 
-const buildInput = () => {
-    const input: any = {
+const buildInputFromForm = (): McpServerFormInput => {
+    const input: McpServerFormInput = {
         serverId: form.serverId,
         transportType: form.transportType,
         toolNamePrefix: form.toolNamePrefix || null,
@@ -419,27 +491,46 @@ const buildInput = () => {
     return input;
 }
 
+const buildActiveInput = (): McpServerFormInput => (
+  activeTab.value === 'json' ? buildInputFromJson() : buildInputFromForm()
+);
+
+const setPreviewError = (message: string) => {
+  store.$patch(state => {
+    state.previewResult = {
+      tools: [],
+      isError: true,
+      message,
+    };
+  });
+};
+
 const runPreview = () => {
-  if (form.serverId) {
-    store.previewMcpServer(buildInput());
-  } else {
-    store.$patch(state => {
-        state.previewResult = {
-            tools: [],
-            isError: true,
-            message: 'Server ID is required to run a preview.'
-        }
-    })
+  let payload: McpServerFormInput;
+  try {
+    payload = buildActiveInput();
+  } catch (e: any) {
+    setPreviewError(`Error parsing JSON: ${e.message}`);
+    return;
   }
+
+  if (!payload.serverId) {
+    setPreviewError('Server ID is required to run a preview.');
+    return;
+  }
+
+  store.previewMcpServer(payload);
 };
 
 const save = async () => {
-  if (activeTab.value === 'json') {
-    const success = syncFormFromJson();
-    if (!success) return;
+  let payload: McpServerFormInput;
+  try {
+    payload = buildActiveInput();
+  } catch (e: any) {
+    emit('show-toast', { message: `Error parsing JSON: ${e.message}`, type: 'error' as ToastType });
+    return;
   }
-  
-  const payload = buildInput();
+
   if (!payload.serverId) {
     emit('show-toast', { message: 'Cannot save: Server ID is missing.', type: 'error' as ToastType });
     return;
