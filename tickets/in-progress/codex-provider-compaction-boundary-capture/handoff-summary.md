@@ -89,3 +89,23 @@ Artifacts for user testing:
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.zip`
 
 The app is locally/ad-hoc signed only, because this was a no-notarization local test build. Repository push, finalization merge, archival, cleanup, and release remain held pending explicit user verification.
+
+## User Test Build Addendum — Latest `origin/personal` Refresh (2026-06-18)
+
+Per user request, delivery fetched and merged the latest `origin/personal` into the ticket branch. New base commits through `39449cfb` were integrated by merge commit `cdd018b0` without conflicts. `git diff --check` passed after the merge.
+
+A fresh macOS Electron app was rebuilt from that integrated state with:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build result: passed.
+
+Latest artifacts for user testing:
+
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.59.zip`
+
+This is still a local ad-hoc/no-notarization build. Push, finalization merge, archival, cleanup, and release remain held pending explicit user verification.
