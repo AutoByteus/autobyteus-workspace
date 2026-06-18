@@ -4,7 +4,8 @@
 
 - Ticket: `intel-mac-terminal-prompt-hang`
 - Date: 2026-06-18
-- Current Status: `Ready for user finalization decision`
+- Current Status: `Finalization in progress; release requested`
+- Workflow State Source: cumulative delivery artifact chain under `tickets/done/intel-mac-terminal-prompt-hang/`.
 - Worktree: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`
 - Ticket branch: `codex/intel-mac-terminal-prompt-hang`
 - Finalization target: `origin/personal` / `personal`
@@ -38,6 +39,16 @@
 - Integration result: completed with merge commit `b4312b5f0cfba348be3e17208b1e3afae95d23aa`; no conflicts.
 - Delivery edits started only after integrated state was current: `Yes`.
 
+## Finalization Latest-Base Refresh
+
+- User finalization/release instruction received: `Yes` — user said, "its done. lets finalize and release a new version. amke sure your branch is first based on the latest origin/personal first".
+- Protection commit before the final refresh: `81df9d0105a9ef98b5f8628683b49a5ea656cca7` (`chore(delivery): record intel terminal handoff`).
+- Latest tracked base checked for finalization: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72`.
+- Finalization integration method: merge `origin/personal` into `codex/intel-mac-terminal-prompt-hang`.
+- Finalization integration result: completed cleanly with merge commit `ab9891c3ff6348ae0f5cd9be26db5ee882514586`; `git merge-base HEAD origin/personal` equals `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72`.
+- Code changes needed for merge: `No`.
+- Code-review reroute needed after final refresh: `No`; implementation handback confirmed no Local Fix was needed.
+
 ## Verification Summary
 
 Authoritative API/E2E validation before delivery:
@@ -48,17 +59,28 @@ Authoritative API/E2E validation before delivery:
 - Packaged server websocket/API probe passed; `/rest/health` returned OK, the Terminal websocket emitted initial shell output/prompt, marker command echoed, no terminal error frames occurred, and the socket closed cleanly.
 - Packaged UI Terminal validation passed by user manual confirmation against the newly built packaged app: user reported, "it works, i tested."
 
-Post-integration executable checks run on the merged latest-base state:
+Post-integration checks after the first delivery refresh:
 
 - `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts` — passed (12 tests / 3 files).
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/terminal/terminal-handler.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts` — passed (15 tests / 2 files).
 - `pnpm -C autobyteus-web exec vitest run composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts` — passed (20 tests / 2 files).
-- Post-integration log: `tickets/intel-mac-terminal-prompt-hang/validation-artifacts/post-integration-targeted-tests.log`.
+- Log: `validation-artifacts/post-integration-targeted-tests.log`.
+
+Post-finalization-refresh checks rerun after merge commit `ab9891c3`:
+
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts` — passed (12 tests / 3 files).
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/terminal/terminal-handler.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts` — passed (15 tests / 2 files).
+- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts` — passed (20 tests / 2 files).
+- Extra latest-base UI/navigation checks from newly merged `home-nodes-menu` base: `pnpm -C autobyteus-web exec vitest run components/__tests__/AppLeftPanel.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts composables/__tests__/useShellPrimaryNavigation.spec.ts components/settings/__tests__/NodeManager.spec.ts pages/__tests__/nodes.spec.ts pages/__tests__/settings.spec.ts` — passed (37 tests / 6 files).
+- Extra mobile feature gate check: `pnpm -C autobyteus-web exec vitest run middleware/__tests__/mobileFeatureGate.global.spec.ts` — passed (4 tests / 1 file).
+- Current-root package-validator sanity check: `node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root . --platform darwin --arch x64 --spawn-probe` — passed target helper, selected helper, and `node-pty` spawn probe.
+- `git diff --check` — passed.
 
 API/E2E coverage summary:
 
-- Coverage investigation artifact: `tickets/intel-mac-terminal-prompt-hang/api-e2e-coverage-investigation.md`.
-- Execution coverage artifact: `tickets/intel-mac-terminal-prompt-hang/api-e2e-execution-coverage-report.md`.
+- Coverage investigation artifact: `api-e2e-coverage-investigation.md`.
+- Execution coverage artifact: `api-e2e-execution-coverage-report.md`.
 - No repository-resident durable API/E2E coverage was added, updated, or removed by API/E2E; no coverage-code re-review was required.
 
 Acceptance-criteria closure summary:
@@ -71,11 +93,11 @@ Acceptance-criteria closure summary:
 Residual risk:
 
 - ARM64 package execution was not run locally on the Intel host. The implementation should remain ARM64-safe because helper repair uses `node-pty` selected native module for the running architecture, packaging chmod normalizes all `spawn-helper` files found, and release workflow includes ARM64 package-validator steps.
-- The currently built local package artifacts are `1.3.58` outputs produced before delivery integrated `origin/personal` at `7e507be0` (which includes the `1.3.59` release bump from another ticket). Targeted post-integration Terminal tests passed, but a new full package build was not run after delivery docs sync.
+- The local x64 package artifacts under `autobyteus-web/electron-dist/` were built during API/E2E before the final `origin/personal` merge. Targeted post-merge tests and a root package-validator spawn probe passed, and release workflow will build fresh packages from the release tag.
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `tickets/intel-mac-terminal-prompt-hang/docs-sync-report.md`
+- Docs sync artifact: `docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `README.md`
@@ -84,25 +106,31 @@ Residual risk:
   - `autobyteus-web/docs/terminal.md`
   - `autobyteus-server-ts/docs/modules/terminal.md`
   - `autobyteus-ts/docs/terminal_tools.md`
+- Finalization refresh addendum confirms docs remain valid against `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72`.
 
 ## Release Notes Status
 
 - Release notes required: `Yes`
-- Release notes artifact: `tickets/intel-mac-terminal-prompt-hang/release-notes.md`
+- Release notes artifact: `release-notes.md`
 - Notes: User-facing functional notes created for the Intel macOS packaged Terminal fix.
 
 ## User Verification Hold
 
 - Prior package manual verification received: `Yes` — upstream API/E2E report relayed user confirmation on 2026-06-18: "it works, i tested."
-- Delivery-stage finalization instruction received: `No`
-- Waiting for explicit user finalization/release instruction: `Yes`
-- Notes: Per delivery workflow, ticket archival, final commit, push/merge to `personal`, release/tagging, and cleanup have not been performed yet.
+- Finalization/release instruction received: `Yes` — user requested finalization and new version release.
+- Waiting for explicit user finalization/release instruction: `No`
+- Notes: Finalization and release are proceeding under the documented delivery workflow.
 
 ## Finalization Record
 
-- Ticket archived to `tickets/done/intel-mac-terminal-prompt-hang/`: `No`
-- Ticket branch pushed: `No`
-- Merge into `personal`: `No`
-- Release/publication/deployment: `Not run`
-- Cleanup: `Not run`
-- Blockers / notes: No technical blocker. Holding for explicit user decision.
+- Ticket archived to: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang/tickets/done/intel-mac-terminal-prompt-hang/` before final ticket-branch commit.
+- Ticket worktree path: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`
+- Ticket branch: `codex/intel-mac-terminal-prompt-hang`
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Commit status: In progress — final archival commit pending from this handoff state.
+- Push status: Pending.
+- Merge status: Pending.
+- Release/publication/deployment status: Pending.
+- Worktree cleanup status: Pending after repository finalization and release dispatch.
+- Blockers / notes: None at this stage.

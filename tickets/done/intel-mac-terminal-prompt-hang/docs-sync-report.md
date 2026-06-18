@@ -69,3 +69,11 @@
 - Classification: N/A
 - Recommended recipient: N/A
 - Why docs could not be finalized truthfully: N/A
+
+## Finalization Refresh Addendum
+
+- User finalization/release instruction received on 2026-06-18.
+- Latest tracked remote base rechecked before finalization: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72`.
+- The ticket branch was merged cleanly with that latest base in merge commit `ab9891c3ff6348ae0f5cd9be26db5ee882514586`; no docs conflicts or effective docs changes from the latest base were observed for the Terminal packaging/runtime docs updated by this ticket.
+- Post-refresh checks were rerun and passed per implementation handback: 47 terminal/runtime/backend/frontend tests, 41 additional latest-base home-nodes-menu frontend tests, packaged Terminal runtime validator with x64 spawn probe, and `git diff --check`.
+- Docs sync remains valid against the final integrated state.
