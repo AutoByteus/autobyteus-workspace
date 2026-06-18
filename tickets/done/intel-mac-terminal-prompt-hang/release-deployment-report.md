@@ -166,5 +166,15 @@ Repository finalization: `Completed`; release `v1.3.60` tag pushed and release w
   - iOS App Store Connect Release: run `27758829347`, in progress at report update time.
   - Release Messaging Gateway: run `27758829379`, in progress at report update time.
   - Server Docker Release: run `27758829439`, queued at report update time.
-- Post-finalization cleanup: pending at the time of this addendum; cleanup will remove the dedicated ticket worktree/local ticket branch when safe. Remote ticket branch is not required to be deleted.
+- Post-finalization cleanup: `Completed` — dedicated ticket worktree removed, worktrees pruned, and local ticket branch deleted. Remote ticket branch left intact.
 - Notes: This post-release delivery-record update is after the `v1.3.60` tag and does not alter the tagged release contents.
+
+
+## Cleanup Completion Addendum
+
+- Dedicated ticket worktree path: `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang`.
+- Worktree cleanup result: `Completed`.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` — local `codex/intel-mac-terminal-prompt-hang` deleted after merge.
+- Remote branch cleanup result: `Not required` — `origin/codex/intel-mac-terminal-prompt-hang` left intact.
+- Local pre-existing untracked `.codex/` metadata in the main worktree was stashed before release-helper execution and restored after cleanup; it is not part of repository finalization.

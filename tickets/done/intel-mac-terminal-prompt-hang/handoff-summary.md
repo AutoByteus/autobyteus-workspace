@@ -132,7 +132,7 @@ Residual risk:
 - Push status: Pending.
 - Merge status: Pending.
 - Release/publication/deployment status: Pending.
-- Worktree cleanup status: Pending after repository finalization and release dispatch.
+- Worktree cleanup status: Completed — dedicated ticket worktree removed, worktrees pruned, and local ticket branch deleted; remote ticket branch left intact.
 - Blockers / notes: None at this stage.
 
 
@@ -147,3 +147,11 @@ Residual risk:
 - Remote tag verification: `git ls-remote --tags origin v1.3.60` returned `refs/tags/v1.3.60`.
 - Initial workflow trigger check for tag `v1.3.60`: Desktop Release `27758829333`, Android APK Release `27758829375`, iOS App Store Connect Release `27758829347`, Release Messaging Gateway `27758829379`, and Server Docker Release `27758829439` were queued or in progress at report update time.
 - Notes: This post-release record update is after the `v1.3.60` tag and does not alter the tagged release contents.
+
+
+## Cleanup Completion Summary
+
+- Dedicated ticket worktree cleanup: `Completed` — `/Users/ryan-zheng/autobyteus-org/autobyteus-workspace-intel-terminal-prompt-hang` removed after merge/release.
+- Worktree prune: `Completed`.
+- Local ticket branch cleanup: `Completed` — local `codex/intel-mac-terminal-prompt-hang` deleted after merge.
+- Remote ticket branch cleanup: `Not required` — remote branch `origin/codex/intel-mac-terminal-prompt-hang` left intact.
