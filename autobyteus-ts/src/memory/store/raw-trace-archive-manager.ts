@@ -2,14 +2,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  buildRawTraceSegmentFileName,
   createEmptyRawTraceArchiveManifest,
+  RAW_TRACES_ARCHIVE_DIR_NAME,
+  RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME,
+  RAW_TRACES_MANIFEST_FILE_NAME,
   type RawTraceArchiveBoundaryType,
   type RawTraceArchiveManifest,
   type RawTraceArchiveSegmentEntry,
 } from './raw-trace-archive-manifest.js';
-
-const RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME = 'raw_traces_archive_manifest.json';
-const RAW_TRACES_ARCHIVE_DIR_NAME = 'raw_traces_archive';
 
 const readJsonl = (filePath: string): Record<string, unknown>[] => {
   if (!fs.existsSync(filePath)) {
@@ -42,9 +43,6 @@ const traceId = (item: Record<string, unknown>): string | null =>
 const traceTs = (item: Record<string, unknown>): number | null =>
   typeof item.ts === 'number' && Number.isFinite(item.ts) ? item.ts : null;
 
-const utcStamp = (date: Date): string =>
-  date.toISOString().replace(/[-:.]/g, '');
-
 export type RawTraceArchiveBoundaryInput = {
   boundaryType: RawTraceArchiveBoundaryType;
   boundaryKey: string;
@@ -68,11 +66,15 @@ export class RawTraceArchiveManager {
   }
 
   getManifestPath(): string {
+    return path.join(this.runDir, RAW_TRACES_MANIFEST_FILE_NAME);
+  }
+
+  getOldArchiveManifestPath(): string {
     return path.join(this.runDir, RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME);
   }
 
   getRevisionInfo(): { exists: true; mtime: number } | null {
-    const manifestPath = this.getManifestPath();
+    const manifestPath = this.getReadableManifestPath();
     if (!fs.existsSync(manifestPath)) {
       return null;
     }
@@ -80,7 +82,7 @@ export class RawTraceArchiveManager {
   }
 
   readManifest(): RawTraceArchiveManifest {
-    const filePath = this.getManifestPath();
+    const filePath = this.getReadableManifestPath();
     if (!fs.existsSync(filePath)) {
       return createEmptyRawTraceArchiveManifest();
     }
@@ -132,13 +134,13 @@ export class RawTraceArchiveManager {
     const manifest = this.removePendingSegmentsForBoundary(this.readManifest(), boundary.boundaryKey);
     const index = manifest.next_segment_index;
     const archivedAt = Date.now() / 1000;
-    const fileName = this.buildArchiveSegmentFileName(index, new Date(archivedAt * 1000));
+    const fileName = buildRawTraceSegmentFileName(index);
     const entry = this.buildSegmentEntry(index, fileName, archivedAt, records, boundary, 'pending');
     manifest.next_segment_index = index + 1;
     manifest.segments.push(entry);
     this.writeManifest(manifest);
 
-    writeJsonl(path.join(this.getArchiveDirPath(), fileName), records);
+    writeJsonl(this.resolveNewSegmentPath(fileName), records);
     const completed = { ...entry, status: 'complete' as const };
     this.writeManifest({
       ...manifest,
@@ -154,7 +156,7 @@ export class RawTraceArchiveManager {
   }
 
   private readSegmentRawTraceDicts(entry: RawTraceArchiveSegmentEntry): Record<string, unknown>[] {
-    return readJsonl(path.join(this.getArchiveDirPath(), entry.file_name));
+    return readJsonl(this.resolveSegmentPath(entry.file_name));
   }
 
   private removePendingSegmentsForBoundary(
@@ -173,8 +175,39 @@ export class RawTraceArchiveManager {
     writeJson(this.getManifestPath(), manifest as unknown as Record<string, unknown>);
   }
 
-  private buildArchiveSegmentFileName(index: number, date: Date): string {
-    return `${String(index).padStart(6, '0')}_${utcStamp(date)}.jsonl`;
+  private getReadableManifestPath(): string {
+    const newManifestPath = this.getManifestPath();
+    if (fs.existsSync(newManifestPath)) {
+      return newManifestPath;
+    }
+    return this.getOldArchiveManifestPath();
+  }
+
+  private resolveNewSegmentPath(fileName: string): string {
+    return this.resolveSafeRunRelativePath(fileName);
+  }
+
+  private resolveSegmentPath(fileName: string): string {
+    const normalized = fileName.trim();
+    if (normalized.includes('/') || normalized.includes('\\')) {
+      return this.resolveSafeRunRelativePath(normalized);
+    }
+    if (/^raw_traces_\d{6}\.jsonl$/.test(normalized)) {
+      return this.resolveSafeRunRelativePath(normalized);
+    }
+    return this.resolveSafeRunRelativePath(path.join(RAW_TRACES_ARCHIVE_DIR_NAME, normalized));
+  }
+
+  private resolveSafeRunRelativePath(relativePath: string): string {
+    if (!relativePath || path.isAbsolute(relativePath) || path.posix.isAbsolute(relativePath) || path.win32.isAbsolute(relativePath)) {
+      throw new Error(`Invalid raw trace segment path: ${relativePath}`);
+    }
+    const runRoot = path.resolve(this.runDir);
+    const resolved = path.resolve(runRoot, relativePath);
+    if (resolved !== runRoot && !resolved.startsWith(`${runRoot}${path.sep}`)) {
+      throw new Error(`Invalid raw trace segment path outside run directory: ${relativePath}`);
+    }
+    return resolved;
   }
 
   private buildSegmentEntry(

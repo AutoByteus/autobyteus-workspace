@@ -35,15 +35,15 @@ Common files/directories:
 
 - `raw_traces.jsonl` — active ordered raw trace records.
 - `working_context_snapshot.json` — generic working-context snapshot state.
-- `raw_traces_archive_manifest.json` — segmented raw-trace archive manifest owned internally by `RawTraceArchiveManager`.
-- `raw_traces_archive/` — immutable JSONL archive segment files, one complete segment per native compaction or provider-boundary rotation.
+- `raw_traces_manifest.json` — rotated raw-trace manifest owned internally by `RawTraceArchiveManager`.
+- `raw_traces_<zero-padded-index>.jsonl` — immutable rotated raw-trace segment files in the same run memory directory, one complete segment per native compaction or provider-boundary rotation.
 - `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction still owns semantic/episodic/snapshot compaction, but it now archives compacted raw traces through shared segmented archive segments with `boundary_type = "native_compaction"`.
+Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction still owns semantic/episodic/snapshot compaction, but it now rotates compacted raw traces through shared direct raw-trace segments with `boundary_type = "native_compaction"`.
 
 Codex and Claude runs are recorded by the server as **storage-only** memory:
 
@@ -125,21 +125,23 @@ GraphQL memory-view queries:
 
 Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab or changes the trace limit.
 
-`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete archived raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending archive manifest entries and merge complete archive segments with active records when archive inclusion is requested, deduping by raw trace `id` with active records preferred.
+`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending raw-trace manifest entries and merge complete rotated segments with active records when archive inclusion is requested, deduping by raw trace `id` with active records preferred.
 
 ## Archive, Rotation, And Retention Boundaries
 
-`RunMemoryFileStore` is the facade for active raw traces plus complete segmented archive reads. `RawTraceArchiveManager` is the only owner of archive manifest/segment filenames and archive-internal policy.
+`RunMemoryFileStore` is the facade for active raw traces plus complete rotated-segment reads. `RawTraceArchiveManager` is the only owner of raw-trace rotation manifest/segment filenames and rotation-internal policy.
 
 Current archive/rotation behavior:
 
-- Native AutoByteus compaction archives compacted raw traces into `native_compaction` segments.
-- Codex/Claude provider-boundary rotation archives settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
-- New archive segment file names use only the zero-padded segment index plus UTC timestamp, for example `000001_20260430T103015123Z.jsonl`; boundary identity remains in the manifest `boundary_key` rather than in a filename hash suffix.
-- Archive readers open each manifest `file_name` exactly as recorded, so manifest-listed historical hash-suffixed files remain readable without reintroducing hash parsing, migration, or dual write paths.
-- Complete-corpus reads include complete archive segments plus active records, ordered by timestamp, turn id, sequence, then id.
-- Pending archive manifest entries are retry state only and are not exposed to readers.
-- Sequence initialization for restored external runs reads active records plus complete archive segments so per-turn `seq` values continue without reuse.
+- Native AutoByteus compaction rotates compacted raw traces into `native_compaction` segments.
+- Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- New rotated segment files live directly beside `raw_traces.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
+- New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
+- Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
+- Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete archive segments to direct rotated files, excludes pending entries from the new manifest, and decommissions old authoritative manifest/archive files after verification.
+- Complete-corpus reads include complete rotated segments plus active records, ordered by timestamp, turn id, sequence, then id.
+- Pending manifest entries are retry state only and are not exposed to readers.
+- Sequence initialization for restored external runs reads active records plus complete rotated segments so per-turn `seq` values continue without reuse.
 
 Current non-goals:
 
@@ -158,7 +160,7 @@ Normalized provider-boundary handling is storage-only:
 - Claude `status: "compacting"` normalizes to non-rotating provenance.
 - Claude `compact_boundary` normalizes to a rotation-eligible `provider_compaction_boundary` marker.
 - `ProviderCompactionBoundaryRecorder` writes the marker as a raw trace with `semantic_compaction:false` metadata.
-- If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete segmented archive entry. The marker remains active, and active plus complete archive segments remain the complete raw-trace corpus.
+- If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete direct raw-trace segment. The marker remains active, and active plus complete rotated segments remain the complete raw-trace corpus.
 
 Provider-boundary handling must not create Codex/Claude semantic or episodic memory, rewrite trace content, drop trace history, inject memory into external runtimes, or retrieve memory from external runtimes. It is safe active-file rotation plus provenance only.
 

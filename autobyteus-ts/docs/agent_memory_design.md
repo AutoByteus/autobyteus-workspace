@@ -109,29 +109,31 @@ The memory system is defined by its implemented operations:
 - `list(type, limit)`
 
 **Default backend**: file-backed store (JSONL). The file store also provides
-segmented raw-trace archive helpers plus compacted-memory manifest helpers
+raw-trace rotation helpers plus compacted-memory manifest helpers
 (`readCompactedMemoryManifest`, `writeCompactedMemoryManifest`) used by
 compaction and startup/restore schema-gate reset behavior.
 
 `RunMemoryFileStore` is the shared low-level direct-run-directory facade. It owns
 canonical active file paths, raw-trace appends, complete-corpus reads (complete
-archive segments plus active records), semantic replacement, manifest IO, native
+rotated segments plus active records), semantic replacement, manifest IO, native
 compaction prune/archive entrypoints, provider-boundary rotation entrypoints, and
 working-context snapshot serialization without requiring callers to instantiate
 `MemoryManager`. Native `FileMemoryStore` delegates its common file operations to
 this facade, and `autobyteus-server-ts` uses the same facade for storage-only
 Codex/Claude run and team-member memory recording.
 
-`RawTraceArchiveManager` is the only owner of segmented archive internals:
-`raw_traces_archive_manifest.json`, immutable files under `raw_traces_archive/`,
-pending/complete segment state, deterministic segment filenames using the
-zero-padded segment index plus UTC timestamp only (for example
-`000001_20260430T103015123Z.jsonl`), and idempotent same-boundary retry
-behavior. Boundary identity stays in the manifest `boundary_key`; readers open
-manifest `file_name` values verbatim, so manifest-listed historical
-hash-suffixed files remain readable without hash parsing, migration, or dual
-write paths. The old monolithic `raw_traces_archive.jsonl` file is intentionally
-not a current compatibility read/write target.
+`RawTraceArchiveManager` is the only owner of raw-trace rotation internals:
+`raw_traces_manifest.json`, immutable direct run-directory segment files named
+`raw_traces_<zero-padded-index>.jsonl` (for example
+`raw_traces_000001.jsonl`), pending/complete segment state, and idempotent
+same-boundary retry behavior. Boundary identity stays in the manifest
+`boundary_key`; readers prefer the new manifest and open manifest `file_name`
+values verbatim. The prior `raw_traces_archive_manifest.json` plus
+`raw_traces_archive/` layout is data-read/migration fallback only when no new
+manifest exists, and startup migration `20260617_raw_trace_rotation_layout`
+converts old complete entries to the direct layout before decommissioning old
+authoritative files. The old monolithic `raw_traces_archive.jsonl` file is
+intentionally not a current compatibility read/write target.
 
 ### 7.1 File-Backed Store Layout (Default)
 
@@ -148,8 +150,8 @@ memory/
   agents/
     <agent_id_or_run_id>/
       raw_traces.jsonl
-      raw_traces_archive_manifest.json  # segmented archive manifest
-      raw_traces_archive/               # immutable complete/pending segment files
+      raw_traces_manifest.json          # rotated raw-trace manifest
+      raw_traces_000001.jsonl           # immutable complete/pending rotated segment files
       episodic.jsonl
       semantic.jsonl
       compacted_memory_manifest.json
