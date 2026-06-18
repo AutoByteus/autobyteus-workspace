@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` Round 2; targeted Vitest passed; live Nuxt frontend against Electron-started backend passed for JSON View Preview/Save; temporary saved server deleted |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded and mandatory checks satisfied for `Pass` | `code-review.md` Round 2 passed after expanded live validation evidence; source edits locked |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` refreshed; long-lived docs already match final behavior and need no additional changes after live validation |
-| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization/cleanup complete when applicable | Ticket archived to `tickets/done`; ticket branch commit `962f3c09` pushed; `origin/personal` fast-forwarded and pushed; release/version publication skipped per user instruction; dedicated worktree removed; local ticket branch deleted |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization/cleanup complete when applicable | Ticket archived to `tickets/done`; ticket branch commit `962f3c09` pushed; `origin/personal` fast-forwarded, finalization record updated, and pushed; release/version publication skipped per user instruction; dedicated worktree removed; local ticket branch deleted |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -105,7 +105,7 @@ See software-engineering-workflow-skill for the canonical transition matrix. Nor
 | T-013 | 2026-06-18 08:25:45 CEST | 8 | 9 | Code review Round 2 passed after live validation evidence; moving to docs sync re-check | Validation Gap | Locked | `code-review.md` Round 2 |
 | T-014 | 2026-06-18 08:26:45 CEST | 9 | 10 | Docs sync re-check passed; moving to handoff refresh and user-verification hold | N/A | Locked | `docs-sync.md` refresh |
 | T-015 | 2026-06-18 08:58:10 CEST | 10 | 10 | User explicitly confirmed finalization and requested no new version release; starting archive/commit/push/merge/cleanup | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
-| T-016 | 2026-06-18 09:00:35 CEST | 10 | Complete | Repository finalization and cleanup completed; no release/version publication run by user instruction | N/A | Locked | archived ticket, commit `962f3c09`, pushed `codex/mcp-json-view-preview-save`, fast-forwarded/pushed `origin/personal`, removed worktree, pruned worktrees, deleted local ticket branch |
+| T-016 | 2026-06-18 09:00:35 CEST | 10 | Complete | Repository finalization and cleanup completed; no release/version publication run by user instruction | N/A | Locked | archived ticket, commit `962f3c09`, pushed `codex/mcp-json-view-preview-save`, fast-forwarded/pushed `origin/personal`, then updated/pushed finalization record, removed worktree, pruned worktrees, deleted local ticket branch |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -128,6 +128,7 @@ See software-engineering-workflow-skill for the canonical transition matrix. Nor
 | 2026-06-18 08:25:55 CEST | Transition | Stage 9 docs sync is active. Code review Round 2 passed after the live validation evidence, and source edits remain locked while docs and handoff are refreshed. | Success | N/A |
 | 2026-06-18 08:26:54 CEST | Transition | Stage 10 handoff is active again. Docs sync is refreshed, source edits remain locked, and handoff is being updated with live test results before waiting for verification. | Failed | Text fallback recorded; Speak command produced no valid WAV output. |
 | 2026-06-18 08:28:33 CEST | Gate | Stage 10 handoff is refreshed. The live frontend and backend test passed, source edits remain locked, and the ticket is waiting for verification before commit, merge, or cleanup. | Failed | Text fallback recorded; Speak command produced no valid WAV output. |
+| 2026-06-18 09:01:21 CEST | Gate | Stage 10 finalization completed. Ticket is archived, merged to personal, no release/version was run, and the dedicated worktree plus local ticket branch were cleaned up. | Failed | Text fallback recorded; Speak command produced no valid WAV output. |
 
 ## Process Violation Log
 
