@@ -38,8 +38,9 @@ CI build behavior:
   - bundled managed messaging release manifest matches the pushed tag
 - macOS builds run with `--arm64` and `--x64` explicitly.
 - macOS builds validate the packaged Terminal runtime for both architectures. The validator checks staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server` `node-pty` helpers, and runs a real spawn probe when the runner architecture matches the target.
+- macOS builds run `scripts/verify-macos-signing-policy.mjs` for both ARM64 and x64 before artifact upload. The verifier requires Squirrel, ShipIt, frameworks, `.dylib` files, `.node` native modules, and bundled server native binaries to carry no entitlement keys, while the root app and Electron helper app executables keep their role-specific entitlements.
 - `NO_TIMESTAMP=1` is enabled for macOS build stability.
-- Apple signing/notarization is enabled when required secrets are configured.
+- Apple signing/notarization secrets are required for release-grade macOS artifacts and for the signing-policy verifier to pass in the release workflow.
 
 ## Publish Behavior
 
@@ -47,10 +48,11 @@ On each matching tag, the workflow:
 
 1. Resolves release metadata and validates release-tag/package consistency
 2. Builds desktop files into `autobyteus-web/electron-dist`
-3. Uploads per-platform artifacts with `actions/upload-artifact`
-4. Downloads artifacts in `publish-release`
-5. Merges ARM64 + x64 `latest-mac.yml` files into one canonical updater manifest
-6. Publishes final assets to the tag release using `softprops/action-gh-release`
+3. Verifies macOS signing policy before macOS artifact upload
+4. Uploads per-platform artifacts with `actions/upload-artifact`
+5. Downloads artifacts in `publish-release`
+6. Merges ARM64 + x64 `latest-mac.yml` files into one canonical updater manifest
+7. Publishes final assets to the tag release using `softprops/action-gh-release`
 
 Published file patterns:
 
@@ -68,6 +70,27 @@ Linux AppImage blockmaps are embedded in the AppImage and validated through
 numeric `blockMapSize` entries in `latest-linux.yml` and
 `latest-linux-arm64.yml`; standalone `*.AppImage.blockmap` files are not
 published. macOS DMG/ZIP blockmap assets remain standalone release files.
+
+### macOS Signing Gate
+
+The macOS release jobs use AutoByteus' custom signing adapter from
+`autobyteus-web/build/scripts/macSign.ts` instead of broad inherited child
+entitlements. The gate is intentionally run after the signed app is produced and
+before upload so a bad signing layout cannot become a downloadable updater source
+app.
+
+Expected release invariant:
+
+- `AutoByteus.app/Contents/MacOS/AutoByteus` retains the root app entitlements.
+- Electron helper app main executables retain only their helper entitlement
+  profile.
+- Non-app nested Mach-O code, including Squirrel, ShipIt, framework libraries,
+  `.dylib` files, `.node` native modules, and bundled server native binaries, has
+  no entitlement keys.
+
+A manual `workflow_dispatch` with `publish_release=false` can be used to validate
+a branch in the same signed macOS build environment without publishing a GitHub
+Release.
 
 ### Cross-Workflow Release Timing
 
@@ -128,3 +151,17 @@ node scripts/verify-packaged-terminal-runtime.mjs \
 ```
 
 Use `--arch arm64` for an Apple Silicon package. The spawn probe is meaningful only when the local host matches the target architecture; otherwise rely on the static packaged-runtime checks and the matching GitHub Actions job.
+
+For signed macOS packages, also validate the signing policy before handing the package to a tester or publishing it:
+
+```bash
+cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+pnpm transpile-build
+APP_BUNDLE="$(find electron-dist -path '*/AutoByteus.app' -type d -print -quit)"
+node scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"
+```
+
+This verifier requires macOS `codesign` and a signed app. For already-installed
+apps whose updater helper was signed incorrectly, the operational recovery is a
+one-time install of a fixed DMG; once the installed source app has Squirrel and
+ShipIt without entitlement keys, future auto-updates can run normally.

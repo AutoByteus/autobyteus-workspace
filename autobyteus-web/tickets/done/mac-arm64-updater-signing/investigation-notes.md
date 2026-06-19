@@ -23,7 +23,7 @@ The user reported that AutoByteus macOS arm64 auto-update downloaded `1.3.63` bu
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing`
 - Current Branch: `codex/mac-arm64-updater-signing`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing`
 - Bootstrap Base Branch: `origin/personal`

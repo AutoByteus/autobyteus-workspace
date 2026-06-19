@@ -75,9 +75,12 @@ autobyteus-web/
 │       └── __tests__/          # Utils tests
 ├── build/
 │   ├── scripts/
-│   │   ├── build.ts            # electron-builder script
-│   │   └── generateIcons.ts    # Icon generation
-│   └── icons/                  # Platform-specific icons
+│   │   ├── build.ts                # electron-builder script
+│   │   ├── macSign.ts              # macOS signing adapter
+│   │   ├── macSigningPolicy.ts     # macOS entitlement classifier
+│   │   ├── macSigningDiscovery.ts  # macOS signing subject discovery
+│   │   └── generateIcons.ts        # Icon generation
+│   └── icons/                      # Platform-specific icons
 └── resources/
     └── server/                 # Bundled Node.js server
 ```
@@ -253,6 +256,11 @@ const options: Configuration = {
   files: ["dist/**/*", "package.json"],
   extraMetadata: { main: "dist/electron/main.js" },
   asar: true,
+  mac: {
+    hardenedRuntime: true,
+    entitlements: "build/entitlements.mac.plist",
+    sign: "./build/dist/macSign.js",
+  },
   extraResources: [
     { from: "resources/server", to: "server" },
     { from: "build/icons", to: "icons" },
@@ -302,6 +310,46 @@ The web project only calls the server packaging boundary; any shared server-side
 For macOS terminal packaging, every `node-pty` `spawn-helper` found under the staged server `node_modules` must be executable before the app is packed. The packaging hooks normalize all matching helper files rather than only one architecture-specific path, because `node-pty` may select `prebuilds/darwin-x64`, `prebuilds/darwin-arm64`, or a build directory depending on the packaged runtime. The runtime guard in `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` still repairs the selected helper at startup, but packaging should ship the selected helper already executable.
 
 `scripts/verify-packaged-terminal-runtime.mjs` is the release-time validator for this invariant. It checks the staged `resources/server` tree and the final `.app/Contents/Resources/server` tree for the target Darwin architecture, verifies that the selected and target `node-pty` helpers are executable, checks Darwin architecture tokens when the `file` tool is available, and runs a real `node-pty` spawn probe when the build host matches the target architecture.
+
+### macOS Signing Policy
+
+macOS release artifacts use an explicit least-privilege signing policy instead of
+letting every nested binary inherit the top-level app entitlements.
+`build/scripts/macSign.ts` is the `electron-builder` signing adapter, and
+`build/scripts/macSigningPolicy.ts` classifies each signing subject:
+
+- the top-level `AutoByteus.app/Contents/MacOS/AutoByteus` executable uses the
+  root app entitlement profile in `build/entitlements.mac.plist`;
+- Electron helper app executables use narrow helper entitlement plists
+  (`build/entitlements.mac.helper*.plist`);
+- non-app nested Mach-O code is signed with the hardened runtime but without an
+  entitlement payload. This includes Squirrel/ShipIt, framework executables and
+  libraries, `.dylib` files, `.node` native modules, and bundled server native
+  binaries.
+
+`build/scripts/afterPack.ts` must stay limited to pre-signing resource
+normalization such as `node-pty` `spawn-helper` execute bits. Do not reintroduce
+server-native codesigning with `build/entitlements.mac.plist` from `afterPack`,
+and do not restore `mac.entitlementsInherit` for child code; both patterns can
+put app-only entitlements on updater-critical nested binaries.
+
+`scripts/verify-macos-signing-policy.mjs` is the release-time guard for this
+invariant. It verifies the signed `.app`, fails if any non-app nested signing
+subject carries entitlement keys, explicitly checks Squirrel and ShipIt, and
+confirms the root app executable still has the expected root app entitlement
+keys. The `Desktop Release` GitHub Actions workflow runs this verifier for both
+macOS ARM64 and macOS x64 before uploading artifacts.
+
+For a local signed macOS package, compile the build scripts and run:
+
+```bash
+pnpm transpile-build
+APP_BUNDLE="$(find electron-dist -path '*/AutoByteus.app' -type d -print -quit)"
+node scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"
+```
+
+The verifier requires macOS `codesign` and a signed app bundle. Unsigned local
+builds are useful for packaging iteration, but they are not release-policy proof.
 
 On Linux packaging, the script validates that server resources match the native Linux target architecture. Linux x64 packages require the Debian OpenSSL engine targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`); Linux ARM64 packages require `linux-arm64-openssl-3.0.x`. Unsupported Linux cross-architecture packaging fails before Electron artifacts are emitted. Validation covers:
 
@@ -400,6 +448,20 @@ Release workflow orchestration that prevents public/latest GitHub Releases from
 appearing before desktop updater assets are ready is a separate release-process
 follow-up. Do not work around the deployment window by exposing raw updater
 diagnostics in renderer state or UI.
+
+### Fixed-DMG Recovery After Broken macOS Updaters
+
+If an already-installed macOS app has Squirrel or ShipIt signed with app-level
+entitlement keys, macOS can block that installed source app before it can apply a
+future update. The durable recovery path is to install a fixed DMG once, replacing
+the source app with a corrected signing layout. After that manual fixed-DMG
+install, future auto-updates can run from a source app whose updater helpers are
+signed without entitlement keys.
+
+Do not try to repair this class of failure in renderer UI or updater runtime code:
+`electron/updater/appUpdater.ts` should continue to classify install failures and
+log diagnostics, while release engineering provides a fixed signed DMG and the
+manual-install recovery instruction.
 
 ---
 

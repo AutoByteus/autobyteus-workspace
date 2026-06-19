@@ -331,6 +331,10 @@ pnpm android:server:stop
 - Desktop macOS terminal runtime validation is mandatory:
   - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64, and validates Linux x64/ARM64 AppImage architecture, Prisma engines, updater metadata, and packaged server startup.
   - Matching-architecture runners also execute a real `node-pty` spawn probe so a non-executable packaged `spawn-helper` cannot silently ship.
+- Desktop macOS signing policy validation is mandatory:
+  - `.github/workflows/release-desktop.yml` runs `scripts/verify-macos-signing-policy.mjs` for both macOS ARM64 and Intel x64 before artifact upload.
+  - The verifier requires Squirrel, ShipIt, frameworks, `.dylib` files, `.node` native modules, and bundled server native binaries to have no entitlement keys while the root app and Electron helper app executables retain role-specific entitlements.
+  - If an installed macOS app already has a broken updater helper signature, users may need one manual fixed-DMG install before future auto-updates can apply from the corrected source app.
 - Android APK release:
   - public Android publishing uses `.github/workflows/release-android.yml`
   - release tags and publish-enabled manual runs require signing secrets and build `AutoByteus_personal_android-X.Y.Z-release.apk`

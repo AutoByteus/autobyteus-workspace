@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: Code-review pass for macOS updater signing policy fix; user requested GitHub workflow validation plus local ARM64 artifact download/install/smoke.
 - Prior Round Reviewed: `N/A`
@@ -32,7 +32,7 @@ Validation executed the coverage plan recorded in the coverage investigation:
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -45,7 +45,7 @@ Validation executed the coverage plan recorded in the coverage investigation:
 
 | Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
 | --- | --- | --- | --- |
-| `scripts/__tests__/macSigningPolicy.spec.ts` | Still Valid | Executed locally | 4 tests passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/evidence/api-e2e-macSigningPolicy-vitest.log`. |
+| `scripts/__tests__/macSigningPolicy.spec.ts` | Still Valid | Executed locally | 4 tests passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/evidence/api-e2e-macSigningPolicy-vitest.log`. |
 | `scripts/verify-macos-signing-policy.mjs` | Still Valid | Executed `--help`, diagnostic known-broken app failure, GitHub workflow verifier runs, and installed ARM64 app verifier | Help passed; known-broken app reported 38 violations; workflow ARM64 verified 48 subjects, x64 verified 50 subjects; installed ARM64 verified 48 subjects. |
 | `.github/workflows/release-desktop.yml` macOS jobs | Still Valid | Manual `workflow_dispatch` run with `publish_release=false` | Run `27832647557` completed success; Publish GitHub Release skipped. |
 | `scripts/verify-packaged-terminal-runtime.mjs` workflow/installed ARM64 terminal runtime scenario | Still Valid | Executed in GitHub macOS jobs and locally against installed ARM64 app | Installed app node-pty helper checks and spawn probe passed. |
@@ -117,8 +117,8 @@ Out of scope / not attempted:
 - Validated workflow commit: `7b8e23be7082c56885abfd88a7a843be692c1170`
 - Workflow run: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27832647557`
 - Dispatch: manual `workflow_dispatch` with `publish_release=false` and `prerelease=true`; no release was published.
-- Downloaded ARM64 artifact directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64`
-- Installed DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64/AutoByteus_personal_macos-arm64-1.3.63.dmg`
+- Downloaded ARM64 artifact directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64`
+- Installed DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64/AutoByteus_personal_macos-arm64-1.3.63.dmg`
 - Installed app: `/Applications/AutoByteus.app`
 
 ## Tests Implemented Or Updated
@@ -141,7 +141,7 @@ None during API/E2E. Existing implementation-added durable coverage was retained
 
 ## Other Execution Artifacts
 
-Evidence logs retained locally under `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/evidence/`:
+Evidence logs retained locally under `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/evidence/`:
 
 - `api-e2e-pnpm-transpile-build.log`
 - `api-e2e-macSigningPolicy-vitest.log`
@@ -156,7 +156,7 @@ Evidence logs retained locally under `/Users/normy/autobyteus_org/autobyteus-wor
 
 Downloaded GitHub artifact directory retained locally:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64/`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/github-run-27832647557-artifacts/macos-arm64/`
 
 ## Temporary Execution Methods / Scaffolding
 

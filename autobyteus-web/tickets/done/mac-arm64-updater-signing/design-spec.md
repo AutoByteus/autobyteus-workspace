@@ -337,7 +337,7 @@ Rule:
 | `autobyteus-web/build/entitlements.mac.helper*.plist` | Files | Helper entitlement profiles | Narrow Electron helper entitlements by role | Same build resource location as app entitlements | App network/audio/server entitlements unless justified |
 | `autobyteus-web/scripts/verify-macos-signing-policy.mjs` | File | `MacSigningVerifier` CLI | Validate final signed app | Existing script location for executable repo checks | Independent policy allowlist |
 | `.github/workflows/release-desktop.yml` | File | Desktop release workflow | Run verifier before mac artifact upload; allow manual branch validation | Existing CI owner | Inline path-specific entitlement policy |
-| `autobyteus-web/tickets/in-progress/mac-arm64-updater-signing/` | Folder | Solution-designer artifacts | Requirements, investigation, design | Task documentation | Workflow-state/downstream artifacts |
+| `autobyteus-web/tickets/done/mac-arm64-updater-signing/` | Folder | Solution-designer artifacts | Requirements, investigation, design | Task documentation | Workflow-state/downstream artifacts |
 
 ## Folder Boundary Check
 
