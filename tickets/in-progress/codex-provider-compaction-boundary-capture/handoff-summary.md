@@ -149,3 +149,24 @@ Latest artifacts for user testing:
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.61.zip`
 
 This is still a local ad-hoc/no-notarization build. Push, target-branch finalization merge, archival, cleanup, release, and deployment remain held pending explicit user verification.
+
+
+## User Test Build Addendum — Latest `origin/personal` Rebase (2026-06-19, v1.3.62)
+
+Per user request, delivery fetched latest `origin/personal` and rebased the ticket branch onto it. The latest tracked base `origin/personal` was `caa99530`; merge-base after rebase is `caa99530`; rebased branch HEAD before this evidence-only commit was `b30cf74d`. The rebase completed without conflicts. `git diff --check` passed after the rebase.
+
+A fresh macOS Electron app was rebuilt from that rebased state with:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build result: passed.
+
+Latest artifacts for user testing:
+
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.62.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.62.zip`
+
+This is still a local ad-hoc/no-notarization build. Push, target-branch finalization merge, archival, cleanup, release, and deployment remain held pending explicit user verification.
