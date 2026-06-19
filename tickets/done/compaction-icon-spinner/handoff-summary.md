@@ -4,7 +4,7 @@
 
 - Ticket: `compaction-icon-spinner`
 - Date: `2026-06-19`
-- Current Status: `Verified / Repository Finalization In Progress`
+- Current Status: `Verified / Finalized`
 - Workflow State Source: `tickets/done/compaction-icon-spinner/workflow-state.md`
 
 ## Delivery Summary
@@ -70,12 +70,13 @@
 - Ticket branch: `codex/compaction-icon-spinner`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending finalization commit`
-- Push status: `Pending ticket branch push`
-- Merge status: `Pending merge to origin/personal`
+- Commit status: `Complete — f5698fb7 fix(frontend): animate active compaction icon`
+- Push status: `Complete — pushed `origin/codex/compaction-icon-spinner` and `origin/personal`
+- Merge status: `Complete — fast-forward merged into `personal` and pushed to `origin/personal`
 - Release/publication/deployment status: `Not required — user requested no new version/release`
-- Worktree cleanup status: `No separate dedicated worktree to remove; current checkout will remain as the main repository worktree`
-- Local branch cleanup status: `Pending after merge to personal`
+- Worktree cleanup status: `Complete — no separate dedicated worktree existed; ran `git worktree prune`; retained main repository worktree`
+- Local branch cleanup status: `Complete — deleted local `codex/compaction-icon-spinner`; remote branch retained per policy`
 - Blockers / notes:
-  - Repository finalization in progress.
-  - Out-of-scope pre-existing untracked paths remain in the worktree and are intentionally not staged: `.article-work/`, `docs/articles/`.
+  - Repository finalization completed.
+  - Release/publication/deployment not required because the user explicitly requested no new version.
+  - Out-of-scope pre-existing untracked paths remain in the worktree and were intentionally not staged: `.article-work/`, `docs/articles/`.
