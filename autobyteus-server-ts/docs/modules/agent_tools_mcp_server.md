@@ -142,12 +142,24 @@ this surface.
 
 The server-side session is the security boundary. `AgentToolMcpCatalog` derives
 the enabled MCP tool list from the agent's configured AutoByteus tool exposure,
-the server-supported MCP adapters, and the shared tool registry. Registry
-definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are eligible only
-when the registered tool name is selected by the agent definition and does not
-collide with a built-in Agent Tools MCP adapter. A client-side `enabled_tools`
-field in a runtime config is only a narrowing/materialization convenience;
-editing it cannot grant access to tools that the session did not enable.
+the server-supported MCP adapters, and the shared tool registry. It snapshots one
+source-aware route per enabled wire tool name into the session, either a
+`static_adapter` route for a server-owned adapter or a `configured_mcp_tool`
+route for a selected registry tool.
+
+Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
+eligible only when the registered tool name is selected by the agent definition.
+Name-overlap behavior is adapter-policy driven: protected first-party
+platform/control adapters such as `send_message_to` reserve their names and
+block configured MCP collisions, while browser static adapters prefer the
+selected configured MCP-origin route. That lets a Docker/remote BrowserServer
+MCP tool such as `open_tab` route through its configured MCP source even though
+an embedded Electron browser adapter with the same name exists in code. The
+session route table also prevents duplicate `tools/list` definitions and makes
+`tools/call` use the same source selected during exposure. A client-side
+`enabled_tools` field in a runtime config is only a narrowing/materialization
+convenience; editing it cannot grant access to tools that the session did not
+enable.
 
 `tools/list` returns only tools enabled for the resolved session, and
 `tools/call` rejects unknown or unconfigured tools before reaching any executor.
@@ -201,9 +213,14 @@ manifests:
 - `send_message_to` delegates to the shared `SendMessageToDispatcher`.
   `recipient_name` requires an active `MemberTeamContext`; `target_agent_run_id`
   is a live-only exact active-run selector.
-- Browser tools reuse the browser manifest, parameter schemas, serialization,
-  and `BrowserToolService`. They are available only when
-  `BrowserToolService.isBrowserSupported()` is true.
+- Embedded Electron browser static adapters reuse the browser manifest,
+  parameter schemas, serialization, and `BrowserToolService`. They are available
+  only when `BrowserToolService.isBrowserSupported()` is true, which currently
+  means the desktop-started server received Browser bridge environment
+  variables at startup. Configured MCP-origin browser tools, such as
+  BrowserServer MCP tools on Docker/remote nodes, are not gated by
+  `BrowserToolService`; they route as configured MCP tools through the registry
+  and MCP proxy path.
 - Media tools reuse the media manifest, parsers, media-local path policy, and
   `MediaGenerationService`. The MCP session execution context supplies the run
   workspace root, run id, and sender identity used by media execution.

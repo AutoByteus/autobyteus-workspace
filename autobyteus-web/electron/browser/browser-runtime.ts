@@ -12,7 +12,6 @@ type BrowserRuntimeOptions = {
   artifactsDir: string
   setRuntimeEnvOverrides: (overrides: Record<string, string>) => void
   authRegistry: BrowserBridgeAuthRegistry
-  listenerHost: string
 }
 
 type StartBrowserRuntimeOptions = BrowserRuntimeOptions & {
@@ -37,7 +36,6 @@ export class BrowserRuntime {
     this.browserBridgeServer = new BrowserBridgeServer(
       this.browserSessionManager,
       this.options.authRegistry,
-      this.options.listenerHost,
     )
     const browserRuntimeEnv = await this.browserBridgeServer.start()
     this.options.setRuntimeEnvOverrides(browserRuntimeEnv)
@@ -56,17 +54,6 @@ export class BrowserRuntime {
       throw new Error('Browser shell controller is not started.')
     }
     return this.browserShellController
-  }
-
-  getRemoteBridgeBaseUrl(advertisedHost: string): string {
-    if (!this.browserBridgeServer) {
-      throw new Error('Browser bridge server is not started.')
-    }
-    return this.browserBridgeServer.getRemoteBridgeBaseUrl(advertisedHost)
-  }
-
-  isRemoteSharingActive(): boolean {
-    return this.browserBridgeServer?.isRemoteSharingActive() ?? false
   }
 
   async stop(): Promise<void> {

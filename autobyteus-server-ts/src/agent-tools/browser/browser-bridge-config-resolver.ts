@@ -3,16 +3,10 @@ import {
   readBrowserBridgeConfigFromEnvironment,
   type BrowserBridgeClientConfig,
 } from "./browser-bridge-client.js";
-import { getRuntimeBrowserBridgeRegistrationService } from "./runtime-browser-bridge-registration-service.js";
 
 export class BrowserBridgeConfigResolver {
   resolve(env: NodeJS.ProcessEnv = process.env): BrowserBridgeClientConfig | null {
-    const envConfig = readBrowserBridgeConfigFromEnvironment(env);
-    if (envConfig) {
-      return envConfig;
-    }
-
-    return getRuntimeBrowserBridgeRegistrationService().getCurrentBinding();
+    return readBrowserBridgeConfigFromEnvironment(env);
   }
 
   resolveOrThrow(env: NodeJS.ProcessEnv = process.env): BrowserBridgeClientConfig {

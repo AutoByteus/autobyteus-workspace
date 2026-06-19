@@ -414,6 +414,7 @@ describe("AgentRunManager", () => {
       sender,
       configuredExposure: buildConfiguredAgentToolExposure([]),
       enabledTools: [],
+      toolRoutes: {},
     });
     const nonMatching = registry.createSession({
       owner: { runId: "other-run" },
@@ -424,6 +425,7 @@ describe("AgentRunManager", () => {
       }),
       configuredExposure: buildConfiguredAgentToolExposure([]),
       enabledTools: [],
+      toolRoutes: {},
     });
 
     await manager.createAgentRun(

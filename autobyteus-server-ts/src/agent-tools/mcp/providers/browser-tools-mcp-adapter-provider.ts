@@ -34,6 +34,7 @@ export class BrowserToolsMcpAdapterProvider implements AgentToolMcpAdapterProvid
         description: entry.description,
         inputSchema: buildBrowserToolParameterSchema(entry.name),
       },
+      configuredMcpCollisionPolicy: "prefer_configured_mcp",
       isAvailable: () => this.browserToolService.isBrowserSupported(),
       execute: async ({ rawArguments }) => {
         try {

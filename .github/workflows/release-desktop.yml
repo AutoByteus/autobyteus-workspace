@@ -364,7 +364,7 @@ jobs:
             autobyteus-web/electron-dist/latest-mac.yml
           if-no-files-found: error
 
-  build-linux:
+  build-linux-x64:
     name: Build Linux x64
     needs: prepare-release
     runs-on: ubuntu-22.04
@@ -399,16 +399,134 @@ jobs:
         working-directory: autobyteus-web
         env:
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
-        run: pnpm build:electron:linux
+        run: pnpm build:electron:linux:x64
 
-      - name: Upload Linux artifacts
+      - name: Verify Linux x64 AppImage and updater metadata
+        run: |
+          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          file "$APPIMAGE"
+          file "$APPIMAGE" | grep -Eq 'x86-64|x86_64'
+          test -f autobyteus-web/electron-dist/latest-linux.yml
+          python3 scripts/validate_linux_updater_metadata.py \
+            --metadata autobyteus-web/electron-dist/latest-linux.yml \
+            --arch-token linux-x64
+
+      - name: Verify Linux x64 Prisma engines
+        run: |
+          ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+          test -n "$ENGINES_DIR"
+          echo "Prisma engines dir: $ENGINES_DIR"
+          test -f "$ENGINES_DIR/schema-engine-debian-openssl-1.1.x"
+          test -f "$ENGINES_DIR/libquery_engine-debian-openssl-1.1.x.so.node"
+          test -f "$ENGINES_DIR/schema-engine-debian-openssl-3.0.x"
+          test -f "$ENGINES_DIR/libquery_engine-debian-openssl-3.0.x.so.node"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-debian-openssl-1.1.x.so.node"
+          test -f "$CLIENT_DIR/libquery_engine-debian-openssl-3.0.x.so.node"
+
+      - name: Verify Linux x64 packaged server startup
+        run: |
+          APP_UNPACKED_DIR="autobyteus-web/electron-dist/linux-unpacked"
+          APP_SERVER_ROOT="$(find "$APP_UNPACKED_DIR" -path '*/resources/server' -type d -print -quit)"
+          test -n "$APP_SERVER_ROOT"
+          APP_EXECUTABLE="$(node -e "const fs=require('fs'); const path=require('path'); const dir=process.argv[1]; const entry=fs.readdirSync(dir).find((name)=>name.toLowerCase()==='autobyteus' && fs.statSync(path.join(dir,name)).isFile() && (fs.statSync(path.join(dir,name)).mode & 0o111)); if (!entry) process.exit(1); console.log(path.join(dir, entry));" "$APP_UNPACKED_DIR")"
+          test -x "$APP_EXECUTABLE"
+          echo "Using Linux x64 runtime executable: $APP_EXECUTABLE"
+          node autobyteus-web/scripts/verify-packaged-server-startup.mjs \
+            --server-root "$APP_SERVER_ROOT" \
+            --runtime-executable "$APP_EXECUTABLE"
+
+      - name: Upload Linux x64 artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-x64
           path: |
-            autobyteus-web/electron-dist/*.AppImage
-            autobyteus-web/electron-dist/*.AppImage.blockmap
+            autobyteus-web/electron-dist/*linux-x64*.AppImage
             autobyteus-web/electron-dist/latest-linux.yml
+          if-no-files-found: error
+
+  build-linux-arm64:
+    name: Build Linux ARM64
+    needs: prepare-release
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout workspace + submodules
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Linux build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
+
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Electron Linux ARM64
+        working-directory: autobyteus-web
+        env:
+          AUTOBYTEUS_BUILD_FLAVOR: "personal"
+        run: pnpm build:electron:linux:arm64
+
+      - name: Verify Linux ARM64 AppImage and updater metadata
+        run: |
+          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          file "$APPIMAGE"
+          file "$APPIMAGE" | grep -Eq 'ARM aarch64|aarch64|ARM64'
+          test -f autobyteus-web/electron-dist/latest-linux-arm64.yml
+          python3 scripts/validate_linux_updater_metadata.py \
+            --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \
+            --arch-token linux-arm64
+
+      - name: Verify Linux ARM64 Prisma engines
+        run: |
+          ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+          test -n "$ENGINES_DIR"
+          echo "Prisma engines dir: $ENGINES_DIR"
+          test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x"
+          test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+
+      - name: Verify Linux ARM64 packaged server startup
+        run: |
+          APP_UNPACKED_DIR="autobyteus-web/electron-dist/linux-arm64-unpacked"
+          APP_SERVER_ROOT="$(find "$APP_UNPACKED_DIR" -path '*/resources/server' -type d -print -quit)"
+          test -n "$APP_SERVER_ROOT"
+          APP_EXECUTABLE="$(node -e "const fs=require('fs'); const path=require('path'); const dir=process.argv[1]; const entry=fs.readdirSync(dir).find((name)=>name.toLowerCase()==='autobyteus' && fs.statSync(path.join(dir,name)).isFile() && (fs.statSync(path.join(dir,name)).mode & 0o111)); if (!entry) process.exit(1); console.log(path.join(dir, entry));" "$APP_UNPACKED_DIR")"
+          test -x "$APP_EXECUTABLE"
+          echo "Using Linux ARM64 runtime executable: $APP_EXECUTABLE"
+          node autobyteus-web/scripts/verify-packaged-server-startup.mjs \
+            --server-root "$APP_SERVER_ROOT" \
+            --runtime-executable "$APP_EXECUTABLE"
+
+      - name: Upload Linux ARM64 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64
+          path: |
+            autobyteus-web/electron-dist/*linux-arm64*.AppImage
+            autobyteus-web/electron-dist/latest-linux-arm64.yml
           if-no-files-found: error
 
   build-windows:
@@ -466,7 +584,8 @@ jobs:
       - prepare-release
       - build-macos-arm64
       - build-macos-x64
-      - build-linux
+      - build-linux-x64
+      - build-linux-arm64
       - build-windows
     runs-on: ubuntu-latest
     steps:
@@ -494,6 +613,17 @@ jobs:
           test -f release-artifacts/latest-mac.yml
           grep -Eq 'macos-arm64.*\.zip' release-artifacts/latest-mac.yml
           grep -Eq 'macos-x64.*\.zip' release-artifacts/latest-mac.yml
+
+      - name: Validate Linux updater metadata
+        run: |
+          test -f release-artifacts/linux-x64/latest-linux.yml
+          python3 scripts/validate_linux_updater_metadata.py \
+            --metadata release-artifacts/linux-x64/latest-linux.yml \
+            --arch-token linux-x64
+          test -f release-artifacts/linux-arm64/latest-linux-arm64.yml
+          python3 scripts/validate_linux_updater_metadata.py \
+            --metadata release-artifacts/linux-arm64/latest-linux-arm64.yml \
+            --arch-token linux-arm64
 
       - name: Resolve release notes mode
         id: release_notes
@@ -532,8 +662,7 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
-            release-artifacts/**/*.AppImage.blockmap
-            release-artifacts/**/latest-linux.yml
+            release-artifacts/**/latest-linux*.yml
             release-artifacts/latest-mac.yml
             release-artifacts/**/latest.yml
 
@@ -553,7 +682,6 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
-            release-artifacts/**/*.AppImage.blockmap
-            release-artifacts/**/latest-linux.yml
+            release-artifacts/**/latest-linux*.yml
             release-artifacts/latest-mac.yml
             release-artifacts/**/latest.yml

@@ -1,0 +1,1734 @@
+﻿2026-06-19T07:04:42.6831510Z Current runner version: '2.335.1'
+2026-06-19T07:04:42.6851720Z ##[group]Runner Image Provisioner
+2026-06-19T07:04:42.6852340Z Hosted Compute Agent
+2026-06-19T07:04:42.6852750Z Version: 20260527.539
+2026-06-19T07:04:42.6853210Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+2026-06-19T07:04:42.6853720Z Build Date: 2026-05-27T21:39:57Z
+2026-06-19T07:04:42.6854210Z Worker ID: {f6d6ee12-5c45-4613-b2ec-9f4af66db448}
+2026-06-19T07:04:42.6854710Z Azure Region: westus
+2026-06-19T07:04:42.6855110Z ##[endgroup]
+2026-06-19T07:04:42.6856010Z ##[group]Operating System
+2026-06-19T07:04:42.6856440Z macOS
+2026-06-19T07:04:42.6856810Z 14.8.7
+2026-06-19T07:04:42.6857160Z 23J520
+2026-06-19T07:04:42.6857530Z ##[endgroup]
+2026-06-19T07:04:42.6857920Z ##[group]Runner Image
+2026-06-19T07:04:42.6858330Z Image: macos-14-arm64
+2026-06-19T07:04:42.6858740Z Version: 20260608.0118.1
+2026-06-19T07:04:42.6859650Z Included Software: https://github.com/actions/runner-images/blob/macos-14-arm64/20260608.0118/images/macos/macos-14-arm64-Readme.md
+2026-06-19T07:04:42.6860720Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-14-arm64%2F20260608.0118
+2026-06-19T07:04:42.6861410Z ##[endgroup]
+2026-06-19T07:04:42.6862200Z ##[group]GITHUB_TOKEN Permissions
+2026-06-19T07:04:42.6863610Z Contents: write
+2026-06-19T07:04:42.6864010Z Metadata: read
+2026-06-19T07:04:42.6864390Z ##[endgroup]
+2026-06-19T07:04:42.6865870Z Secret source: Actions
+2026-06-19T07:04:42.6866360Z Prepare workflow directory
+2026-06-19T07:04:42.7241340Z Prepare all required actions
+2026-06-19T07:04:42.7301130Z Getting action download info
+2026-06-19T07:04:43.1832460Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-06-19T07:04:43.7997480Z Download action repository 'pnpm/action-setup@v4' (SHA:b906affcce14559ad1aafd4ab0e942779e9f58b1)
+2026-06-19T07:04:44.3512410Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-06-19T07:04:44.5386330Z Download action repository 'apple-actions/import-codesign-certs@v3' (SHA:63fff01cd422d4b7b855d40ca1e9d34d2de9427d)
+2026-06-19T07:04:44.9592940Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-06-19T07:04:45.3103260Z Complete job name: Build macOS Intel x64
+2026-06-19T07:04:45.4483420Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:04:45.4494000Z ##[group]Run actions/checkout@v4
+2026-06-19T07:04:45.4494900Z with:
+2026-06-19T07:04:45.4495550Z   ref: codex/mcp-tool-exposure-docker
+2026-06-19T07:04:45.4496330Z   fetch-depth: 0
+2026-06-19T07:04:45.4496970Z   submodules: recursive
+2026-06-19T07:04:45.4497710Z   repository: AutoByteus/autobyteus-workspace
+2026-06-19T07:04:45.4505740Z   token: ***
+2026-06-19T07:04:45.4506590Z   ssh-strict: true
+2026-06-19T07:04:45.4507230Z   ssh-user: git
+2026-06-19T07:04:45.4507890Z   persist-credentials: true
+2026-06-19T07:04:45.4508620Z   clean: true
+2026-06-19T07:04:45.4509310Z   sparse-checkout-cone-mode: true
+2026-06-19T07:04:45.4511190Z   fetch-tags: false
+2026-06-19T07:04:45.4514140Z   show-progress: true
+2026-06-19T07:04:45.4515530Z   lfs: false
+2026-06-19T07:04:45.4516270Z   set-safe-directory: true
+2026-06-19T07:04:45.4518590Z ##[endgroup]
+2026-06-19T07:04:46.5160990Z Syncing repository: AutoByteus/autobyteus-workspace
+2026-06-19T07:04:46.5163480Z ##[group]Getting Git version info
+2026-06-19T07:04:46.5164780Z Working directory is '/Users/runner/work/autobyteus-workspace/autobyteus-workspace'
+2026-06-19T07:04:46.5181000Z [command]/opt/homebrew/bin/git version
+2026-06-19T07:04:46.5563670Z git version 2.54.0
+2026-06-19T07:04:46.5602990Z ##[endgroup]
+2026-06-19T07:04:46.5617940Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/057ad891-77d0-4888-b1ee-254cf29cfa61/.gitconfig'
+2026-06-19T07:04:46.5647250Z Temporarily overriding HOME='/Users/runner/work/_temp/057ad891-77d0-4888-b1ee-254cf29cfa61' before making global git config changes
+2026-06-19T07:04:46.5655070Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-19T07:04:46.5682570Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/autobyteus-workspace/autobyteus-workspace
+2026-06-19T07:04:46.5790780Z Deleting the contents of '/Users/runner/work/autobyteus-workspace/autobyteus-workspace'
+2026-06-19T07:04:46.5795600Z ##[group]Initializing the repository
+2026-06-19T07:04:46.5799180Z [command]/opt/homebrew/bin/git init /Users/runner/work/autobyteus-workspace/autobyteus-workspace
+2026-06-19T07:04:46.6135450Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-19T07:04:46.6142170Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-19T07:04:46.6143670Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-19T07:04:46.6144920Z hint: call:
+2026-06-19T07:04:46.6145690Z hint:
+2026-06-19T07:04:46.6146580Z hint: 	git config --global init.defaultBranch <name>
+2026-06-19T07:04:46.6147580Z hint:
+2026-06-19T07:04:46.6148510Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-19T07:04:46.6149840Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-19T07:04:46.6150950Z hint:
+2026-06-19T07:04:46.6151660Z hint: 	git branch -m <name>
+2026-06-19T07:04:46.6152460Z hint:
+2026-06-19T07:04:46.6153420Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-19T07:04:46.6155330Z Initialized empty Git repository in /Users/runner/work/autobyteus-workspace/autobyteus-workspace/.git/
+2026-06-19T07:04:46.6173870Z [command]/opt/homebrew/bin/git remote add origin https://github.com/AutoByteus/autobyteus-workspace
+2026-06-19T07:04:46.6245460Z ##[endgroup]
+2026-06-19T07:04:46.6249870Z ##[group]Disabling automatic garbage collection
+2026-06-19T07:04:46.6251130Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-06-19T07:04:46.6314200Z ##[endgroup]
+2026-06-19T07:04:46.6315440Z ##[group]Setting up auth
+2026-06-19T07:04:46.6317630Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-19T07:04:46.6379120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-19T07:04:46.7393470Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-19T07:04:46.7454340Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-19T07:04:46.9934010Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-19T07:04:47.0068430Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-19T07:04:47.2044120Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-19T07:04:47.2164990Z ##[endgroup]
+2026-06-19T07:04:47.2168470Z ##[group]Fetching the repository
+2026-06-19T07:04:47.2182050Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-06-19T07:04:53.2799550Z From https://github.com/AutoByteus/autobyteus-workspace
+2026-06-19T07:04:53.2801970Z  * [new branch]        codex/agent-based-compaction -> origin/codex/agent-based-compaction
+2026-06-19T07:04:53.2802740Z  * [new branch]        codex/agent-package-multiple-skills-analysis -> origin/codex/agent-package-multiple-skills-analysis
+2026-06-19T07:04:53.2832790Z  * [new branch]        codex/agent-run-id-global-allocation-refactor -> origin/codex/agent-run-id-global-allocation-refactor
+2026-06-19T07:04:53.2833510Z  * [new branch]        codex/agent-run-id-sanitization -> origin/codex/agent-run-id-sanitization
+2026-06-19T07:04:53.2834140Z  * [new branch]        codex/agent-status-event-analysis -> origin/codex/agent-status-event-analysis
+2026-06-19T07:04:53.2834810Z  * [new branch]        codex/agent-team-chevron-affordance -> origin/codex/agent-team-chevron-affordance
+2026-06-19T07:04:53.2835530Z  * [new branch]        codex/agent-team-local-member-import-analysis -> origin/codex/agent-team-local-member-import-analysis
+2026-06-19T07:04:53.2836300Z  * [new branch]        codex/agent-turn-model-refactor -> origin/codex/agent-turn-model-refactor
+2026-06-19T07:04:53.2836970Z  * [new branch]        codex/analyse-memory-layout-duplication -> origin/codex/analyse-memory-layout-duplication
+2026-06-19T07:04:53.2837690Z  * [new branch]        codex/application-communication-api-clarity -> origin/codex/application-communication-api-clarity
+2026-06-19T07:04:53.2838530Z  * [new branch]        codex/application-execution-resource-naming -> origin/codex/application-execution-resource-naming
+2026-06-19T07:04:53.2839240Z  * [new branch]        codex/archive-run-history -> origin/codex/archive-run-history
+2026-06-19T07:04:53.2839870Z  * [new branch]        codex/artifact-edit-file-content-view-bug -> origin/codex/artifact-edit-file-content-view-bug
+2026-06-19T07:04:53.2840770Z  * [new branch]        codex/artifact-edit-file-external-path-view-bug -> origin/codex/artifact-edit-file-external-path-view-bug
+2026-06-19T07:04:53.2841670Z  * [new branch]        codex/artifact-maximize-button -> origin/codex/artifact-maximize-button
+2026-06-19T07:04:53.2842390Z  * [new branch]        codex/artifact-touched-files-redesign -> origin/codex/artifact-touched-files-redesign
+2026-06-19T07:04:53.2843280Z  * [new branch]        codex/autobyteus-tool-result-continuation-regression -> origin/codex/autobyteus-tool-result-continuation-regression
+2026-06-19T07:04:53.2844160Z  * [new branch]        codex/autobyteus-ts-bash-html-corruption -> origin/codex/autobyteus-ts-bash-html-corruption
+2026-06-19T07:04:53.2845620Z  * [new branch]        codex/autobyteus-ts-custom-openai-compatible-endpoint-support -> origin/codex/autobyteus-ts-custom-openai-compatible-endpoint-support
+2026-06-19T07:04:53.2846550Z  * [new branch]        codex/browser-empty-tabstrip-cleanup -> origin/codex/browser-empty-tabstrip-cleanup
+2026-06-19T07:04:53.2847330Z  * [new branch]        codex/browser-mobile-view-support -> origin/codex/browser-mobile-view-support
+2026-06-19T07:04:53.2848030Z  * [new branch]        codex/browser-navigate-load-hang -> origin/codex/browser-navigate-load-hang
+2026-06-19T07:04:53.2848840Z  * [new branch]        codex/clarify-agent-definition-id-vs-run-id -> origin/codex/clarify-agent-definition-id-vs-run-id
+2026-06-19T07:04:53.2849690Z  * [new branch]        codex/claude-agent-sdk-runtime-support -> origin/codex/claude-agent-sdk-runtime-support
+2026-06-19T07:04:53.2850350Z  * [new branch]        codex/claude-read-artifacts -> origin/codex/claude-read-artifacts
+2026-06-19T07:04:53.2851000Z  * [new branch]        codex/claude-sdk-interrupt-followup-ebadf -> origin/codex/claude-sdk-interrupt-followup-ebadf
+2026-06-19T07:04:53.2851880Z  * [new branch]        codex/claude-sdk-interrupt-resume-session -> origin/codex/claude-sdk-interrupt-resume-session
+2026-06-19T07:04:53.2852640Z  * [new branch]        codex/claude-sdk-tool-arguments-activity -> origin/codex/claude-sdk-tool-arguments-activity
+2026-06-19T07:04:53.2853410Z  * [new branch]        codex/codex-history-reload-toolcalls -> origin/codex/codex-history-reload-toolcalls
+2026-06-19T07:04:53.2854130Z  * [new branch]        codex/codex-installed-skill-dedup -> origin/codex/codex-installed-skill-dedup
+2026-06-19T07:04:53.2854780Z  * [new branch]        codex/codex-installed-skill-dedup-redo -> origin/codex/codex-installed-skill-dedup-redo
+2026-06-19T07:04:53.2855750Z  * [new branch]        codex/codex-runtime-image-input-support -> origin/codex/codex-runtime-image-input-support
+2026-06-19T07:04:53.2856340Z  * [new branch]        codex/codex-stream-stall -> origin/codex/codex-stream-stall
+2026-06-19T07:04:53.2856970Z  * [new branch]        codex/codex-team-member-runtime-communication -> origin/codex/codex-team-member-runtime-communication
+2026-06-19T07:04:53.2857660Z  * [new branch]        codex/compact-skill-details-header -> origin/codex/compact-skill-details-header
+2026-06-19T07:04:53.2858280Z  * [new branch]        codex/compaction-config-save-button -> origin/codex/compaction-config-save-button
+2026-06-19T07:04:53.2858950Z  * [new branch]        codex/compaction-frontier-llm-rendering -> origin/codex/compaction-frontier-llm-rendering
+2026-06-19T07:04:53.2859700Z  * [new branch]        codex/context-attachment-draft-transfer-refactor -> origin/codex/context-attachment-draft-transfer-refactor
+2026-06-19T07:04:53.2860480Z  * [new branch]        codex/context-file-reference-paths -> origin/codex/context-file-reference-paths
+2026-06-19T07:04:53.2861210Z  * [new branch]        codex/default-temp-workspace-run-config -> origin/codex/default-temp-workspace-run-config
+2026-06-19T07:04:53.2861970Z  * [new branch]        codex/desktop-auto-update-restart-errors -> origin/codex/desktop-auto-update-restart-errors
+2026-06-19T07:04:53.2862770Z  * [new branch]        codex/desktop-invalid-package-agent-definitions -> origin/codex/desktop-invalid-package-agent-definitions
+2026-06-19T07:04:53.2863570Z  * [new branch]        codex/desktop-release-linux-macos-arm64 -> origin/codex/desktop-release-linux-macos-arm64
+2026-06-19T07:04:53.2864250Z  * [new branch]        codex/disable-artifact-auto-focus -> origin/codex/disable-artifact-auto-focus
+2026-06-19T07:04:53.2864860Z  * [new branch]        codex/docker-cli-latest-install -> origin/codex/docker-cli-latest-install
+2026-06-19T07:04:53.2865480Z  * [new branch]        codex/docker-guide-command-hotfix -> origin/codex/docker-guide-command-hotfix
+2026-06-19T07:04:53.2866160Z  * [new branch]        codex/docker-launcher-container-lifecycle -> origin/codex/docker-launcher-container-lifecycle
+2026-06-19T07:04:53.2867130Z  * [new branch]        codex/draggable-left-panel-divider -> origin/codex/draggable-left-panel-divider
+2026-06-19T07:04:53.2867890Z  * [new branch]        codex/electron-agent-prompt-file-resolution -> origin/codex/electron-agent-prompt-file-resolution
+2026-06-19T07:04:53.2868540Z  * [new branch]        codex/electron-auto-update -> origin/codex/electron-auto-update
+2026-06-19T07:04:53.2869230Z  * [new branch]        codex/electron-embedded-server-config-consistency -> origin/codex/electron-embedded-server-config-consistency
+2026-06-19T07:04:53.2869960Z  * [new branch]        codex/event-monitor-tool-text-ux -> origin/codex/event-monitor-tool-text-ux
+2026-06-19T07:04:53.2870680Z  * [new branch]        codex/external-channel-receipt-state-machine -> origin/codex/external-channel-receipt-state-machine
+2026-06-19T07:04:53.2871400Z  * [new branch]        codex/external-channel-sql-removal -> origin/codex/external-channel-sql-removal
+2026-06-19T07:04:53.2872080Z  * [new branch]        codex/external-turn-reply-aggregation -> origin/codex/external-turn-reply-aggregation
+2026-06-19T07:04:53.2872720Z  * [new branch]        codex/featured-default-assistant -> origin/codex/featured-default-assistant
+2026-06-19T07:04:53.2873330Z  * [new branch]        codex/file-based-agent-refactor -> origin/codex/file-based-agent-refactor
+2026-06-19T07:04:53.2873930Z  * [new branch]        codex/fix-server-docker-build -> origin/codex/fix-server-docker-build
+2026-06-19T07:04:53.2874560Z  * [new branch]        codex/focused-agent-interrupt-routing -> origin/codex/focused-agent-interrupt-routing
+2026-06-19T07:04:53.2875280Z  * [new branch]        codex/frontend-agent-team-memory-visibility -> origin/codex/frontend-agent-team-memory-visibility
+2026-06-19T07:04:53.2876040Z  * [new branch]        codex/frontend-file-explorer-context-menu -> origin/codex/frontend-file-explorer-context-menu
+2026-06-19T07:04:53.2876980Z  * [new branch]        codex/gateway-dead-code-investigation -> origin/codex/gateway-dead-code-investigation
+2026-06-19T07:04:53.2877690Z  * [new branch]        codex/gemini-latest-image-model-support -> origin/codex/gemini-latest-image-model-support
+2026-06-19T07:04:53.2878380Z  * [new branch]        codex/gemini-rpa-thinking-config-ts -> origin/codex/gemini-rpa-thinking-config-ts
+2026-06-19T07:04:53.2879060Z  * [new branch]        codex/github-agent-package-import -> origin/codex/github-agent-package-import
+2026-06-19T07:04:53.2879820Z  * [new branch]        codex/hide-middle-success-tool-label -> origin/codex/hide-middle-success-tool-label
+2026-06-19T07:04:53.2880510Z  * [new branch]        codex/historical-run-config-readonly-ux -> origin/codex/historical-run-config-readonly-ux
+2026-06-19T07:04:53.2881310Z  * [new branch]        codex/imported-definition-editability-skill-import -> origin/codex/imported-definition-editability-skill-import
+2026-06-19T07:04:53.2882120Z  * [new branch]        codex/incomplete-tool-call-resume-recovery -> origin/codex/incomplete-tool-call-resume-recovery
+2026-06-19T07:04:53.2882850Z  * [new branch]        codex/instruction-panel-expand-collapse -> origin/codex/instruction-panel-expand-collapse
+2026-06-19T07:04:53.2883560Z  * [new branch]        codex/intel-mac-terminal-prompt-hang -> origin/codex/intel-mac-terminal-prompt-hang
+2026-06-19T07:04:53.2886340Z  * [new branch]        codex/intel-mac-zip-release -> origin/codex/intel-mac-zip-release
+2026-06-19T07:04:53.2888260Z  * [new branch]        codex/investigate-ios-build-pipeline-failure -> origin/codex/investigate-ios-build-pipeline-failure
+2026-06-19T07:04:53.2890110Z  * [new branch]        codex/kimi-tool-stream-visibility -> origin/codex/kimi-tool-stream-visibility
+2026-06-19T07:04:53.2891980Z  * [new branch]        codex/linux-appimage-memory-dir-startup -> origin/codex/linux-appimage-memory-dir-startup
+2026-06-19T07:04:53.2893880Z  * [new branch]        codex/linux-appimage-prisma-erofs -> origin/codex/linux-appimage-prisma-erofs
+2026-06-19T07:04:53.2895900Z  * [new branch]        codex/live-run-stream-reconnect-after-reload -> origin/codex/live-run-stream-reconnect-after-reload
+2026-06-19T07:04:53.2898660Z  * [new branch]        codex/llm-runtime-real-compaction -> origin/codex/llm-runtime-real-compaction
+2026-06-19T07:04:53.2900610Z  * [new branch]        codex/lmstudio-thinking-investigation -> origin/codex/lmstudio-thinking-investigation
+2026-06-19T07:04:53.2902470Z  * [new branch]        codex/logging-best-practice-refactor -> origin/codex/logging-best-practice-refactor
+2026-06-19T07:04:53.2904360Z  * [new branch]        codex/mac-intel-desktop-release-pipeline -> origin/codex/mac-intel-desktop-release-pipeline
+2026-06-19T07:04:53.2906560Z  * [new branch]        codex/mac-intel-prisma-engine-arch-mismatch -> origin/codex/mac-intel-prisma-engine-arch-mismatch
+2026-06-19T07:04:53.2908560Z  * [new branch]        codex/managed-gateway-runtime-versioning -> origin/codex/managed-gateway-runtime-versioning
+2026-06-19T07:04:53.2910840Z  * [new branch]        codex/mcp-json-view-preview-save -> origin/codex/mcp-json-view-preview-save
+2026-06-19T07:04:53.2912700Z  * [new branch]        codex/mcp-tool-exposure-docker -> origin/codex/mcp-tool-exposure-docker
+2026-06-19T07:04:53.2914640Z  * [new branch]        codex/message-delivery-robustness -> origin/codex/message-delivery-robustness
+2026-06-19T07:04:53.2917190Z  * [new branch]        codex/messaging-gateway-404-install-start -> origin/codex/messaging-gateway-404-install-start
+2026-06-19T07:04:53.2919020Z  * [new branch]        codex/messaging-gateway-distribution-analysis -> origin/codex/messaging-gateway-distribution-analysis
+2026-06-19T07:04:53.2919930Z  * [new branch]        codex/messaging-gateway-release-hotfix -> origin/codex/messaging-gateway-release-hotfix
+2026-06-19T07:04:53.2920640Z  * [new branch]        codex/messaging-runtime-visibility -> origin/codex/messaging-runtime-visibility
+2026-06-19T07:04:53.2922160Z  * [new branch]        codex/mixed-team-manager-simplification-analysis -> origin/codex/mixed-team-manager-simplification-analysis
+2026-06-19T07:04:53.2951330Z  * [new branch]        codex/mobile-run-config-chat-flow -> origin/codex/mobile-run-config-chat-flow
+2026-06-19T07:04:53.2953270Z  * [new branch]        codex/mobile-ux-simplification -> origin/codex/mobile-ux-simplification
+2026-06-19T07:04:53.2954760Z  * [new branch]        codex/model-context-metadata -> origin/codex/model-context-metadata
+2026-06-19T07:04:53.2956500Z  * [new branch]        codex/new-team-focused-member-message-routing -> origin/codex/new-team-focused-member-message-routing
+2026-06-19T07:04:53.2958140Z  * [new branch]        codex/node-manager-tabs -> origin/codex/node-manager-tabs
+2026-06-19T07:04:53.2959500Z  * [new branch]        codex/node-manager-ui-cleanup -> origin/codex/node-manager-ui-cleanup
+2026-06-19T07:04:53.2960910Z  * [new branch]        codex/personal-docker-setup -> origin/codex/personal-docker-setup
+2026-06-19T07:04:53.2962620Z  * [new branch]        codex/port-team-memory-layout-to-superrepo -> origin/codex/port-team-memory-layout-to-superrepo
+2026-06-19T07:04:53.2964610Z  * [new branch]        codex/preview-session-multi-runtime-design -> origin/codex/preview-session-multi-runtime-design
+2026-06-19T07:04:53.2966590Z  * [new branch]        codex/provider-native-tool-history-rendering -> origin/codex/provider-native-tool-history-rendering
+2026-06-19T07:04:53.2968520Z  * [new branch]        codex/publish-artifacts-plural-refactor -> origin/codex/publish-artifacts-plural-refactor
+2026-06-19T07:04:53.2970360Z  * [new branch]        codex/read-media-file-tool-continuation -> origin/codex/read-media-file-tool-continuation
+2026-06-19T07:04:53.2972630Z  * [new branch]        codex/release-server-dockerhub-publish -> origin/codex/release-server-dockerhub-publish
+2026-06-19T07:04:53.2974530Z  * [new branch]        codex/remote-node-telegram-agent-delivery -> origin/codex/remote-node-telegram-agent-delivery
+2026-06-19T07:04:53.2976450Z  * [new branch]        codex/remove-assistant-chunk-legacy-path -> origin/codex/remove-assistant-chunk-legacy-path
+2026-06-19T07:04:53.2978400Z  * [new branch]        codex/remove-deprecated-deepseek-kimi-models -> origin/codex/remove-deprecated-deepseek-kimi-models
+2026-06-19T07:04:53.2982200Z  * [new branch]        codex/remove-file-persistence-provider -> origin/codex/remove-file-persistence-provider
+2026-06-19T07:04:53.2983270Z  * [new branch]        codex/remove-media-output-path-restriction -> origin/codex/remove-media-output-path-restriction
+2026-06-19T07:04:53.2984020Z  * [new branch]        codex/remove-native-autobyteus-agent-team -> origin/codex/remove-native-autobyteus-agent-team
+2026-06-19T07:04:53.2984710Z  * [new branch]        codex/right-panel-resizer-visibility -> origin/codex/right-panel-resizer-visibility
+2026-06-19T07:04:53.2985390Z  * [new branch]        codex/rpa-gemini-include-thoughts-removal -> origin/codex/rpa-gemini-include-thoughts-removal
+2026-06-19T07:04:53.2986040Z  * [new branch]        codex/rpa-llm-session-resume -> origin/codex/rpa-llm-session-resume
+2026-06-19T07:04:53.2986660Z  * [new branch]        codex/rpa-visible-resume-prompt-cleanup -> origin/codex/rpa-visible-resume-prompt-cleanup
+2026-06-19T07:04:53.2987310Z  * [new branch]        codex/run-bash-posix-spawn-failure -> origin/codex/run-bash-posix-spawn-failure
+2026-06-19T07:04:53.2987900Z  * [new branch]        codex/run-bash-tool-benchmarks -> origin/codex/run-bash-tool-benchmarks
+2026-06-19T07:04:53.2988490Z  * [new branch]        codex/run-history-index-consistency -> origin/codex/run-history-index-consistency
+2026-06-19T07:04:53.2989170Z  * [new branch]        codex/run-history-worktree-live-stream-loss -> origin/codex/run-history-worktree-live-stream-loss
+2026-06-19T07:04:53.2989840Z  * [new branch]        codex/run-service-layering-refactor -> origin/codex/run-service-layering-refactor
+2026-06-19T07:04:53.2990500Z  * [new branch]        codex/runtime-agent-tools-mcp-unification -> origin/codex/runtime-agent-tools-mcp-unification
+2026-06-19T07:04:53.2991650Z  * [new branch]        codex/runtime-decoupling-refactor -> origin/codex/runtime-decoupling-refactor
+2026-06-19T07:04:53.2992300Z  * [new branch]        codex/runtime-interrupt-functionality -> origin/codex/runtime-interrupt-functionality
+2026-06-19T07:04:53.2992980Z  * [new branch]        codex/runtime-model-identifier-dropdown -> origin/codex/runtime-model-identifier-dropdown
+2026-06-19T07:04:53.2993730Z  * [new branch]        codex/runtime-termination-separation-of-concerns -> origin/codex/runtime-termination-separation-of-concerns
+2026-06-19T07:04:53.2994480Z  * [new branch]        codex/self-evolving-harness-feasibility -> origin/codex/self-evolving-harness-feasibility
+2026-06-19T07:04:53.2995150Z  * [new branch]        codex/send-message-global-run-routing -> origin/codex/send-message-global-run-routing
+2026-06-19T07:04:53.2995790Z  * [new branch]        codex/server-docker-codex-claude-cli -> origin/codex/server-docker-codex-claude-cli
+2026-06-19T07:04:53.2996460Z  * [new branch]        codex/server-docker-desktop-only-analysis -> origin/codex/server-docker-desktop-only-analysis
+2026-06-19T07:04:53.2997200Z  * [new branch]        codex/server-settings-applications-toggle-card -> origin/codex/server-settings-applications-toggle-card
+2026-06-19T07:04:53.2997950Z  * [new branch]        codex/server-settings-basics-loading-fix -> origin/codex/server-settings-basics-loading-fix
+2026-06-19T07:04:53.2998690Z  * [new branch]        codex/simplify-agent-workspace-to-path-string -> origin/codex/simplify-agent-workspace-to-path-string
+2026-06-19T07:04:53.2999390Z  * [new branch]        codex/simplify-server-settings-cards -> origin/codex/simplify-server-settings-cards
+2026-06-19T07:04:53.3000040Z  * [new branch]        codex/skill-load-guidance-global-only -> origin/codex/skill-load-guidance-global-only
+2026-06-19T07:04:53.3000670Z  * [new branch]        codex/skill-prompt-absolute-paths -> origin/codex/skill-prompt-absolute-paths
+2026-06-19T07:04:53.3001230Z  * [new branch]        codex/skill-source-reload -> origin/codex/skill-source-reload
+2026-06-19T07:04:53.3001790Z  * [new branch]        codex/skill-source-removal-refresh -> origin/codex/skill-source-removal-refresh
+2026-06-19T07:04:53.3002650Z  * [new branch]        codex/status-lifecycle-hardening -> origin/codex/status-lifecycle-hardening
+2026-06-19T07:04:53.3003290Z  * [new branch]        codex/streamable-mcp-runtime-tools -> origin/codex/streamable-mcp-runtime-tools
+2026-06-19T07:04:53.3003980Z  * [new branch]        codex/task-agent-identity-projection-refactor -> origin/codex/task-agent-identity-projection-refactor
+2026-06-19T07:04:53.3004710Z  * [new branch]        codex/team-agent-instruction-composition -> origin/codex/team-agent-instruction-composition
+2026-06-19T07:04:53.3005370Z  * [new branch]        codex/team-communication-white-gap -> origin/codex/team-communication-white-gap
+2026-06-19T07:04:53.3006000Z  * [new branch]        codex/team-context-files-ui-disappear -> origin/codex/team-context-files-ui-disappear
+2026-06-19T07:04:53.3006620Z  * [new branch]        codex/team-history-grouped-runs -> origin/codex/team-history-grouped-runs
+2026-06-19T07:04:53.3007300Z  * [new branch]        codex/telegram-external-channel-outbound-reply -> origin/codex/telegram-external-channel-outbound-reply
+2026-06-19T07:04:53.3008030Z  * [new branch]        codex/temp-team-selection-metadata-error -> origin/codex/temp-team-selection-metadata-error
+2026-06-19T07:04:53.3009140Z  * [new branch]        codex/terminal-unicode-mojibake -> origin/codex/terminal-unicode-mojibake
+2026-06-19T07:04:53.3009750Z  * [new branch]        codex/v1-3-46-release-artifact-hygiene -> origin/codex/v1-3-46-release-artifact-hygiene
+2026-06-19T07:04:53.3010320Z  * [new branch]        codex/video-url-size-crash -> origin/codex/video-url-size-crash
+2026-06-19T07:04:53.3010920Z  * [new branch]        codex/voice-input-audio-source-selection -> origin/codex/voice-input-audio-source-selection
+2026-06-19T07:04:53.3011580Z  * [new branch]        codex/voice-input-bilingual-runtime -> origin/codex/voice-input-bilingual-runtime
+2026-06-19T07:04:53.3012460Z  * [new branch]        codex/voice-input-extension-flow -> origin/codex/voice-input-extension-flow
+2026-06-19T07:04:53.3013080Z  * [new branch]        codex/voice-input-mac-recording -> origin/codex/voice-input-mac-recording
+2026-06-19T07:04:53.3013730Z  * [new branch]        codex/whole-skill-symlink-materialization -> origin/codex/whole-skill-symlink-materialization
+2026-06-19T07:04:53.3014390Z  * [new branch]        codex/windows-prisma-sqlite-url -> origin/codex/windows-prisma-sqlite-url
+2026-06-19T07:04:53.3014960Z  * [new branch]        codex/xml-tool-array-parser-fix -> origin/codex/xml-tool-array-parser-fix
+2026-06-19T07:04:53.3015430Z  * [new branch]        enterprise              -> origin/enterprise
+2026-06-19T07:04:53.3015820Z  * [new branch]        personal                -> origin/personal
+2026-06-19T07:04:53.3016190Z  * [new tag]           v1.1.10                 -> v1.1.10
+2026-06-19T07:04:53.3016510Z  * [new tag]           v1.1.11                 -> v1.1.11
+2026-06-19T07:04:53.3016830Z  * [new tag]           v1.1.11-rc1             -> v1.1.11-rc1
+2026-06-19T07:04:53.3017180Z  * [new tag]           v1.1.12                 -> v1.1.12
+2026-06-19T07:04:53.3017520Z  * [new tag]           v1.1.13                 -> v1.1.13
+2026-06-19T07:04:53.3017860Z  * [new tag]           v1.1.14                 -> v1.1.14
+2026-06-19T07:04:53.3018170Z  * [new tag]           v1.1.15                 -> v1.1.15
+2026-06-19T07:04:53.3018490Z  * [new tag]           v1.1.16                 -> v1.1.16
+2026-06-19T07:04:53.3018800Z  * [new tag]           v1.1.17                 -> v1.1.17
+2026-06-19T07:04:53.3019110Z  * [new tag]           v1.1.18                 -> v1.1.18
+2026-06-19T07:04:53.3019420Z  * [new tag]           v1.1.19                 -> v1.1.19
+2026-06-19T07:04:53.3020130Z  * [new tag]           v1.1.9                  -> v1.1.9
+2026-06-19T07:04:53.3020480Z  * [new tag]           v1.2.0                  -> v1.2.0
+2026-06-19T07:04:53.3020820Z  * [new tag]           v1.2.1                  -> v1.2.1
+2026-06-19T07:04:53.3021240Z  * [new tag]           v1.2.10                 -> v1.2.10
+2026-06-19T07:04:53.3021990Z  * [new tag]           v1.2.100                -> v1.2.100
+2026-06-19T07:04:53.3022570Z  * [new tag]           v1.2.11                 -> v1.2.11
+2026-06-19T07:04:53.3022900Z  * [new tag]           v1.2.12                 -> v1.2.12
+2026-06-19T07:04:53.3023230Z  * [new tag]           v1.2.13                 -> v1.2.13
+2026-06-19T07:04:53.3023550Z  * [new tag]           v1.2.14                 -> v1.2.14
+2026-06-19T07:04:53.3023860Z  * [new tag]           v1.2.15                 -> v1.2.15
+2026-06-19T07:04:53.3024160Z  * [new tag]           v1.2.16                 -> v1.2.16
+2026-06-19T07:04:53.3024470Z  * [new tag]           v1.2.17                 -> v1.2.17
+2026-06-19T07:04:53.3024790Z  * [new tag]           v1.2.18                 -> v1.2.18
+2026-06-19T07:04:53.3025100Z  * [new tag]           v1.2.19                 -> v1.2.19
+2026-06-19T07:04:53.3025430Z  * [new tag]           v1.2.2                  -> v1.2.2
+2026-06-19T07:04:53.3025740Z  * [new tag]           v1.2.20                 -> v1.2.20
+2026-06-19T07:04:53.3026060Z  * [new tag]           v1.2.21                 -> v1.2.21
+2026-06-19T07:04:53.3026370Z  * [new tag]           v1.2.22                 -> v1.2.22
+2026-06-19T07:04:53.3026690Z  * [new tag]           v1.2.23                 -> v1.2.23
+2026-06-19T07:04:53.3026990Z  * [new tag]           v1.2.24                 -> v1.2.24
+2026-06-19T07:04:53.3027300Z  * [new tag]           v1.2.25                 -> v1.2.25
+2026-06-19T07:04:53.3027620Z  * [new tag]           v1.2.26                 -> v1.2.26
+2026-06-19T07:04:53.3027940Z  * [new tag]           v1.2.26-rc1             -> v1.2.26-rc1
+2026-06-19T07:04:53.3028270Z  * [new tag]           v1.2.26-rc2             -> v1.2.26-rc2
+2026-06-19T07:04:53.3028670Z  * [new tag]           v1.2.26-rc3             -> v1.2.26-rc3
+2026-06-19T07:04:53.3029180Z  * [new tag]           v1.2.27                 -> v1.2.27
+2026-06-19T07:04:53.3029890Z  * [new tag]           v1.2.28                 -> v1.2.28
+2026-06-19T07:04:53.3030220Z  * [new tag]           v1.2.29                 -> v1.2.29
+2026-06-19T07:04:53.3030550Z  * [new tag]           v1.2.3                  -> v1.2.3
+2026-06-19T07:04:53.3030880Z  * [new tag]           v1.2.30                 -> v1.2.30
+2026-06-19T07:04:53.3031190Z  * [new tag]           v1.2.31                 -> v1.2.31
+2026-06-19T07:04:53.3031510Z  * [new tag]           v1.2.32                 -> v1.2.32
+2026-06-19T07:04:53.3031830Z  * [new tag]           v1.2.33                 -> v1.2.33
+2026-06-19T07:04:53.3032140Z  * [new tag]           v1.2.34                 -> v1.2.34
+2026-06-19T07:04:53.3032450Z  * [new tag]           v1.2.35                 -> v1.2.35
+2026-06-19T07:04:53.3032760Z  * [new tag]           v1.2.36                 -> v1.2.36
+2026-06-19T07:04:53.3033100Z  * [new tag]           v1.2.37                 -> v1.2.37
+2026-06-19T07:04:53.3033410Z  * [new tag]           v1.2.38                 -> v1.2.38
+2026-06-19T07:04:53.3033730Z  * [new tag]           v1.2.39                 -> v1.2.39
+2026-06-19T07:04:53.3034060Z  * [new tag]           v1.2.4                  -> v1.2.4
+2026-06-19T07:04:53.3034390Z  * [new tag]           v1.2.40                 -> v1.2.40
+2026-06-19T07:04:53.3034700Z  * [new tag]           v1.2.41                 -> v1.2.41
+2026-06-19T07:04:53.3035010Z  * [new tag]           v1.2.42                 -> v1.2.42
+2026-06-19T07:04:53.3035320Z  * [new tag]           v1.2.43                 -> v1.2.43
+2026-06-19T07:04:53.3035640Z  * [new tag]           v1.2.44                 -> v1.2.44
+2026-06-19T07:04:53.3035950Z  * [new tag]           v1.2.45                 -> v1.2.45
+2026-06-19T07:04:53.3036260Z  * [new tag]           v1.2.46                 -> v1.2.46
+2026-06-19T07:04:53.3036560Z  * [new tag]           v1.2.47                 -> v1.2.47
+2026-06-19T07:04:53.3037230Z  * [new tag]           v1.2.48                 -> v1.2.48
+2026-06-19T07:04:53.3037560Z  * [new tag]           v1.2.49                 -> v1.2.49
+2026-06-19T07:04:53.3037910Z  * [new tag]           v1.2.5                  -> v1.2.5
+2026-06-19T07:04:53.3038220Z  * [new tag]           v1.2.50                 -> v1.2.50
+2026-06-19T07:04:53.3038820Z  * [new tag]           v1.2.52                 -> v1.2.52
+2026-06-19T07:04:53.3039160Z  * [new tag]           v1.2.53                 -> v1.2.53
+2026-06-19T07:04:53.3039500Z  * [new tag]           v1.2.54                 -> v1.2.54
+2026-06-19T07:04:53.3039840Z  * [new tag]           v1.2.55                 -> v1.2.55
+2026-06-19T07:04:53.3040170Z  * [new tag]           v1.2.56                 -> v1.2.56
+2026-06-19T07:04:53.3040470Z  * [new tag]           v1.2.57                 -> v1.2.57
+2026-06-19T07:04:53.3040790Z  * [new tag]           v1.2.58                 -> v1.2.58
+2026-06-19T07:04:53.3041100Z  * [new tag]           v1.2.59                 -> v1.2.59
+2026-06-19T07:04:53.3041420Z  * [new tag]           v1.2.6                  -> v1.2.6
+2026-06-19T07:04:53.3041740Z  * [new tag]           v1.2.60                 -> v1.2.60
+2026-06-19T07:04:53.3042040Z  * [new tag]           v1.2.61                 -> v1.2.61
+2026-06-19T07:04:53.3042350Z  * [new tag]           v1.2.62                 -> v1.2.62
+2026-06-19T07:04:53.3043020Z  * [new tag]           v1.2.63                 -> v1.2.63
+2026-06-19T07:04:53.3043330Z  * [new tag]           v1.2.64                 -> v1.2.64
+2026-06-19T07:04:53.3043640Z  * [new tag]           v1.2.65                 -> v1.2.65
+2026-06-19T07:04:53.3043950Z  * [new tag]           v1.2.66                 -> v1.2.66
+2026-06-19T07:04:53.3044260Z  * [new tag]           v1.2.67                 -> v1.2.67
+2026-06-19T07:04:53.3044580Z  * [new tag]           v1.2.68                 -> v1.2.68
+2026-06-19T07:04:53.3044900Z  * [new tag]           v1.2.69                 -> v1.2.69
+2026-06-19T07:04:53.3045200Z  * [new tag]           v1.2.7                  -> v1.2.7
+2026-06-19T07:04:53.3045890Z  * [new tag]           v1.2.70                 -> v1.2.70
+2026-06-19T07:04:53.3046200Z  * [new tag]           v1.2.71                 -> v1.2.71
+2026-06-19T07:04:53.3046510Z  * [new tag]           v1.2.72                 -> v1.2.72
+2026-06-19T07:04:53.3046820Z  * [new tag]           v1.2.73                 -> v1.2.73
+2026-06-19T07:04:53.3047140Z  * [new tag]           v1.2.74                 -> v1.2.74
+2026-06-19T07:04:53.3047440Z  * [new tag]           v1.2.75                 -> v1.2.75
+2026-06-19T07:04:53.3047750Z  * [new tag]           v1.2.76                 -> v1.2.76
+2026-06-19T07:04:53.3048060Z  * [new tag]           v1.2.77                 -> v1.2.77
+2026-06-19T07:04:53.3048710Z  * [new tag]           v1.2.78                 -> v1.2.78
+2026-06-19T07:04:53.3049040Z  * [new tag]           v1.2.79                 -> v1.2.79
+2026-06-19T07:04:53.3049360Z  * [new tag]           v1.2.8                  -> v1.2.8
+2026-06-19T07:04:53.3049670Z  * [new tag]           v1.2.80                 -> v1.2.80
+2026-06-19T07:04:53.3049990Z  * [new tag]           v1.2.81                 -> v1.2.81
+2026-06-19T07:04:53.3050300Z  * [new tag]           v1.2.82                 -> v1.2.82
+2026-06-19T07:04:53.3050610Z  * [new tag]           v1.2.83                 -> v1.2.83
+2026-06-19T07:04:53.3050920Z  * [new tag]           v1.2.84                 -> v1.2.84
+2026-06-19T07:04:53.3051220Z  * [new tag]           v1.2.85                 -> v1.2.85
+2026-06-19T07:04:53.3051530Z  * [new tag]           v1.2.86                 -> v1.2.86
+2026-06-19T07:04:53.3051830Z  * [new tag]           v1.2.87                 -> v1.2.87
+2026-06-19T07:04:53.3052140Z  * [new tag]           v1.2.88                 -> v1.2.88
+2026-06-19T07:04:53.3052450Z  * [new tag]           v1.2.89                 -> v1.2.89
+2026-06-19T07:04:53.3052760Z  * [new tag]           v1.2.9                  -> v1.2.9
+2026-06-19T07:04:53.3053070Z  * [new tag]           v1.2.90                 -> v1.2.90
+2026-06-19T07:04:53.3053380Z  * [new tag]           v1.2.91                 -> v1.2.91
+2026-06-19T07:04:53.3053690Z  * [new tag]           v1.2.92                 -> v1.2.92
+2026-06-19T07:04:53.3054000Z  * [new tag]           v1.2.93                 -> v1.2.93
+2026-06-19T07:04:53.3054310Z  * [new tag]           v1.2.94                 -> v1.2.94
+2026-06-19T07:04:53.3054890Z  * [new tag]           v1.2.95                 -> v1.2.95
+2026-06-19T07:04:53.3055210Z  * [new tag]           v1.2.96                 -> v1.2.96
+2026-06-19T07:04:53.3055520Z  * [new tag]           v1.2.97                 -> v1.2.97
+2026-06-19T07:04:53.3055840Z  * [new tag]           v1.2.98                 -> v1.2.98
+2026-06-19T07:04:53.3056150Z  * [new tag]           v1.2.99                 -> v1.2.99
+2026-06-19T07:04:53.3056840Z  * [new tag]           v1.3.0                  -> v1.3.0
+2026-06-19T07:04:53.3057160Z  * [new tag]           v1.3.1                  -> v1.3.1
+2026-06-19T07:04:53.3057460Z  * [new tag]           v1.3.10                 -> v1.3.10
+2026-06-19T07:04:53.3057770Z  * [new tag]           v1.3.11                 -> v1.3.11
+2026-06-19T07:04:53.3058090Z  * [new tag]           v1.3.12                 -> v1.3.12
+2026-06-19T07:04:53.3058400Z  * [new tag]           v1.3.13                 -> v1.3.13
+2026-06-19T07:04:53.3058720Z  * [new tag]           v1.3.14                 -> v1.3.14
+2026-06-19T07:04:53.3059030Z  * [new tag]           v1.3.15                 -> v1.3.15
+2026-06-19T07:04:53.3059330Z  * [new tag]           v1.3.16                 -> v1.3.16
+2026-06-19T07:04:53.3059650Z  * [new tag]           v1.3.17                 -> v1.3.17
+2026-06-19T07:04:53.3059970Z  * [new tag]           v1.3.18                 -> v1.3.18
+2026-06-19T07:04:53.3060280Z  * [new tag]           v1.3.19                 -> v1.3.19
+2026-06-19T07:04:53.3060600Z  * [new tag]           v1.3.2                  -> v1.3.2
+2026-06-19T07:04:53.3060910Z  * [new tag]           v1.3.20                 -> v1.3.20
+2026-06-19T07:04:53.3061310Z  * [new tag]           v1.3.21                 -> v1.3.21
+2026-06-19T07:04:53.3061620Z  * [new tag]           v1.3.22                 -> v1.3.22
+2026-06-19T07:04:53.3062120Z  * [new tag]           v1.3.23                 -> v1.3.23
+2026-06-19T07:04:53.3062430Z  * [new tag]           v1.3.24                 -> v1.3.24
+2026-06-19T07:04:53.3062750Z  * [new tag]           v1.3.25                 -> v1.3.25
+2026-06-19T07:04:53.3063300Z  * [new tag]           v1.3.26                 -> v1.3.26
+2026-06-19T07:04:53.3063870Z  * [new tag]           v1.3.27                 -> v1.3.27
+2026-06-19T07:04:53.3064360Z  * [new tag]           v1.3.28                 -> v1.3.28
+2026-06-19T07:04:53.3064680Z  * [new tag]           v1.3.29                 -> v1.3.29
+2026-06-19T07:04:53.3065100Z  * [new tag]           v1.3.3                  -> v1.3.3
+2026-06-19T07:04:53.3065810Z  * [new tag]           v1.3.30                 -> v1.3.30
+2026-06-19T07:04:53.3066170Z  * [new tag]           v1.3.31                 -> v1.3.31
+2026-06-19T07:04:53.3066510Z  * [new tag]           v1.3.32                 -> v1.3.32
+2026-06-19T07:04:53.3066860Z  * [new tag]           v1.3.33                 -> v1.3.33
+2026-06-19T07:04:53.3068970Z  * [new tag]           v1.3.34                 -> v1.3.34
+2026-06-19T07:04:53.3070560Z  * [new tag]           v1.3.35                 -> v1.3.35
+2026-06-19T07:04:53.3071630Z  * [new tag]           v1.3.36                 -> v1.3.36
+2026-06-19T07:04:53.3089290Z  * [new tag]           v1.3.37                 -> v1.3.37
+2026-06-19T07:04:53.3089960Z  * [new tag]           v1.3.38                 -> v1.3.38
+2026-06-19T07:04:53.3090350Z  * [new tag]           v1.3.39                 -> v1.3.39
+2026-06-19T07:04:53.3090680Z  * [new tag]           v1.3.4                  -> v1.3.4
+2026-06-19T07:04:53.3091050Z  * [new tag]           v1.3.40                 -> v1.3.40
+2026-06-19T07:04:53.3091360Z  * [new tag]           v1.3.41                 -> v1.3.41
+2026-06-19T07:04:53.3091680Z  * [new tag]           v1.3.42                 -> v1.3.42
+2026-06-19T07:04:53.3092000Z  * [new tag]           v1.3.43                 -> v1.3.43
+2026-06-19T07:04:53.3092360Z  * [new tag]           v1.3.44                 -> v1.3.44
+2026-06-19T07:04:53.3092670Z  * [new tag]           v1.3.45                 -> v1.3.45
+2026-06-19T07:04:53.3092980Z  * [new tag]           v1.3.46                 -> v1.3.46
+2026-06-19T07:04:53.3093620Z  * [new tag]           v1.3.47                 -> v1.3.47
+2026-06-19T07:04:53.3093950Z  * [new tag]           v1.3.48                 -> v1.3.48
+2026-06-19T07:04:53.3094260Z  * [new tag]           v1.3.49                 -> v1.3.49
+2026-06-19T07:04:53.3094570Z  * [new tag]           v1.3.5                  -> v1.3.5
+2026-06-19T07:04:53.3094880Z  * [new tag]           v1.3.50                 -> v1.3.50
+2026-06-19T07:04:53.3095190Z  * [new tag]           v1.3.51                 -> v1.3.51
+2026-06-19T07:04:53.3095510Z  * [new tag]           v1.3.52                 -> v1.3.52
+2026-06-19T07:04:53.3095810Z  * [new tag]           v1.3.53                 -> v1.3.53
+2026-06-19T07:04:53.3096160Z  * [new tag]           v1.3.54                 -> v1.3.54
+2026-06-19T07:04:53.3096480Z  * [new tag]           v1.3.55                 -> v1.3.55
+2026-06-19T07:04:53.3096790Z  * [new tag]           v1.3.56                 -> v1.3.56
+2026-06-19T07:04:53.3097100Z  * [new tag]           v1.3.57                 -> v1.3.57
+2026-06-19T07:04:53.3097410Z  * [new tag]           v1.3.58                 -> v1.3.58
+2026-06-19T07:04:53.3097720Z  * [new tag]           v1.3.59                 -> v1.3.59
+2026-06-19T07:04:53.3098020Z  * [new tag]           v1.3.6                  -> v1.3.6
+2026-06-19T07:04:53.3098330Z  * [new tag]           v1.3.60                 -> v1.3.60
+2026-06-19T07:04:53.3098640Z  * [new tag]           v1.3.7                  -> v1.3.7
+2026-06-19T07:04:53.3098950Z  * [new tag]           v1.3.8                  -> v1.3.8
+2026-06-19T07:04:53.3099250Z  * [new tag]           v1.3.9                  -> v1.3.9
+2026-06-19T07:04:53.3099700Z  * [new tag]           v2026.02.26-personal-desktop-e2e.1 -> v2026.02.26-personal-desktop-e2e.1
+2026-06-19T07:04:53.3100480Z  * [new tag]           v2026.02.26-personal-desktop-e2e.2 -> v2026.02.26-personal-desktop-e2e.2
+2026-06-19T07:04:53.3101000Z  * [new tag]           v2026.02.26-personal-desktop-e2e.3 -> v2026.02.26-personal-desktop-e2e.3
+2026-06-19T07:04:53.3101470Z  * [new tag]           voice-runtime-v0.1.0    -> voice-runtime-v0.1.0
+2026-06-19T07:04:53.3101870Z  * [new tag]           voice-runtime-v0.1.1    -> voice-runtime-v0.1.1
+2026-06-19T07:04:53.3876830Z ##[endgroup]
+2026-06-19T07:04:53.3877400Z ##[group]Determining the checkout info
+2026-06-19T07:04:53.3881820Z [command]/opt/homebrew/bin/git branch --list --remote origin/codex/mcp-tool-exposure-docker
+2026-06-19T07:04:53.3966720Z   origin/codex/mcp-tool-exposure-docker
+2026-06-19T07:04:53.3975590Z ##[endgroup]
+2026-06-19T07:04:53.3976730Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-06-19T07:04:53.4062350Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-19T07:04:53.4129600Z ##[group]Checking out the ref
+2026-06-19T07:04:53.4137480Z [command]/opt/homebrew/bin/git checkout --progress --force -B codex/mcp-tool-exposure-docker refs/remotes/origin/codex/mcp-tool-exposure-docker
+2026-06-19T07:04:54.5852200Z Updating files:  44% (5355/12015)
+2026-06-19T07:04:54.6259900Z Updating files:  45% (5407/12015)
+2026-06-19T07:04:54.6568620Z Updating files:  46% (5527/12015)
+2026-06-19T07:04:54.6973260Z Updating files:  47% (5648/12015)
+2026-06-19T07:04:54.7375770Z Updating files:  48% (5768/12015)
+2026-06-19T07:04:54.7678260Z Updating files:  49% (5888/12015)
+2026-06-19T07:04:54.8286750Z Updating files:  50% (6008/12015)
+2026-06-19T07:04:54.8587100Z Updating files:  51% (6128/12015)
+2026-06-19T07:04:54.8723260Z Updating files:  52% (6248/12015)
+2026-06-19T07:04:54.9451260Z Updating files:  53% (6368/12015)
+2026-06-19T07:04:54.9572140Z Updating files:  54% (6489/12015)
+2026-06-19T07:04:54.9779230Z Updating files:  55% (6609/12015)
+2026-06-19T07:04:54.9966350Z Updating files:  56% (6729/12015)
+2026-06-19T07:04:55.0186930Z Updating files:  57% (6849/12015)
+2026-06-19T07:04:55.0347280Z Updating files:  58% (6969/12015)
+2026-06-19T07:04:55.4412570Z Updating files:  59% (7089/12015)
+2026-06-19T07:04:55.5374110Z Updating files:  59% (7187/12015)
+2026-06-19T07:04:55.5586300Z Updating files:  60% (7209/12015)
+2026-06-19T07:04:55.5884170Z Updating files:  61% (7330/12015)
+2026-06-19T07:04:55.6086700Z Updating files:  62% (7450/12015)
+2026-06-19T07:04:55.6536890Z Updating files:  63% (7570/12015)
+2026-06-19T07:04:55.8036190Z Updating files:  64% (7690/12015)
+2026-06-19T07:04:55.8450840Z Updating files:  65% (7810/12015)
+2026-06-19T07:04:55.8886970Z Updating files:  66% (7930/12015)
+2026-06-19T07:04:55.9104490Z Updating files:  67% (8051/12015)
+2026-06-19T07:04:55.9537320Z Updating files:  68% (8171/12015)
+2026-06-19T07:04:56.0486940Z Updating files:  69% (8291/12015)
+2026-06-19T07:04:56.1100480Z Updating files:  70% (8411/12015)
+2026-06-19T07:04:56.1623970Z Updating files:  71% (8531/12015)
+2026-06-19T07:04:56.2146750Z Updating files:  72% (8651/12015)
+2026-06-19T07:04:56.2457270Z Updating files:  73% (8771/12015)
+2026-06-19T07:04:56.2802650Z Updating files:  74% (8892/12015)
+2026-06-19T07:04:56.3157560Z Updating files:  75% (9012/12015)
+2026-06-19T07:04:56.3484740Z Updating files:  76% (9132/12015)
+2026-06-19T07:04:56.3869900Z Updating files:  77% (9252/12015)
+2026-06-19T07:04:56.4459480Z Updating files:  78% (9372/12015)
+2026-06-19T07:04:56.5168750Z Updating files:  78% (9416/12015)
+2026-06-19T07:04:56.5375730Z Updating files:  79% (9492/12015)
+2026-06-19T07:04:56.5575290Z Updating files:  80% (9612/12015)
+2026-06-19T07:04:56.6712810Z Updating files:  81% (9733/12015)
+2026-06-19T07:04:56.7391290Z Updating files:  82% (9853/12015)
+2026-06-19T07:04:56.7609730Z Updating files:  83% (9973/12015)
+2026-06-19T07:04:56.8093560Z Updating files:  84% (10093/12015)
+2026-06-19T07:04:56.8335150Z Updating files:  85% (10213/12015)
+2026-06-19T07:04:56.8746740Z Updating files:  86% (10333/12015)
+2026-06-19T07:04:56.9100440Z Updating files:  87% (10454/12015)
+2026-06-19T07:04:56.9291440Z Updating files:  88% (10574/12015)
+2026-06-19T07:04:56.9499740Z Updating files:  89% (10694/12015)
+2026-06-19T07:04:57.0468060Z Updating files:  90% (10814/12015)
+2026-06-19T07:04:57.1995500Z Updating files:  91% (10934/12015)
+2026-06-19T07:04:57.2367230Z Updating files:  92% (11054/12015)
+2026-06-19T07:04:57.2629020Z Updating files:  93% (11174/12015)
+2026-06-19T07:04:57.2867580Z Updating files:  94% (11295/12015)
+2026-06-19T07:04:57.3804060Z Updating files:  95% (11415/12015)
+2026-06-19T07:04:57.4401120Z Updating files:  96% (11535/12015)
+2026-06-19T07:04:57.4489120Z Updating files:  96% (11641/12015)
+2026-06-19T07:04:57.4743670Z Updating files:  97% (11655/12015)
+2026-06-19T07:04:57.4934150Z Updating files:  98% (11775/12015)
+2026-06-19T07:04:57.5144770Z Updating files:  99% (11895/12015)
+2026-06-19T07:04:57.5146170Z Updating files: 100% (12015/12015)
+2026-06-19T07:04:57.5147530Z Updating files: 100% (12015/12015), done.
+2026-06-19T07:04:57.5464530Z Switched to a new branch 'codex/mcp-tool-exposure-docker'
+2026-06-19T07:04:57.5474060Z branch 'codex/mcp-tool-exposure-docker' set up to track 'origin/codex/mcp-tool-exposure-docker'.
+2026-06-19T07:04:57.5549910Z ##[endgroup]
+2026-06-19T07:04:57.5562470Z ##[group]Setting up auth for fetching submodules
+2026-06-19T07:04:57.5572550Z [command]/opt/homebrew/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-19T07:04:57.5655060Z [command]/opt/homebrew/bin/git config --global --unset-all url.https://github.com/.insteadOf
+2026-06-19T07:04:57.5723750Z [command]/opt/homebrew/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+2026-06-19T07:04:57.5795530Z [command]/opt/homebrew/bin/git config --global --add url.https://github.com/.insteadOf org-132748500@github.com:
+2026-06-19T07:04:57.5862780Z ##[endgroup]
+2026-06-19T07:04:57.5863960Z ##[group]Fetching submodules
+2026-06-19T07:04:57.5865140Z [command]/opt/homebrew/bin/git submodule sync --recursive
+2026-06-19T07:04:57.6810370Z [command]/opt/homebrew/bin/git -c protocol.version=2 submodule update --init --force --recursive
+2026-06-19T07:04:57.8034230Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local gc.auto 0
+2026-06-19T07:04:57.9544610Z ##[endgroup]
+2026-06-19T07:04:57.9647380Z ##[group]Persisting credentials for submodules
+2026-06-19T07:04:57.9747540Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+2026-06-19T07:04:58.0827230Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-06-19T07:04:58.1717100Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+2026-06-19T07:04:58.3329760Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-132748500@github.com:'
+2026-06-19T07:04:58.4750500Z ##[endgroup]
+2026-06-19T07:04:58.4921550Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-06-19T07:04:58.4961150Z c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53
+2026-06-19T07:04:58.5395300Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:04:58.5396630Z ##[group]Run pnpm/action-setup@v4
+2026-06-19T07:04:58.5396860Z with:
+2026-06-19T07:04:58.5397020Z   version: 10.28.2
+2026-06-19T07:04:58.5397200Z   dest: ~/setup-pnpm
+2026-06-19T07:04:58.5397390Z   run_install: null
+2026-06-19T07:04:58.5397570Z   cache: false
+2026-06-19T07:04:58.5398010Z   cache_dependency_path: pnpm-lock.yaml
+2026-06-19T07:04:58.5399520Z   package_json_file: package.json
+2026-06-19T07:04:58.5399770Z   standalone: false
+2026-06-19T07:04:58.5400010Z ##[endgroup]
+2026-06-19T07:04:58.7465290Z ##[group]Running self-installer...
+2026-06-19T07:04:59.2255540Z (node:18301) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-19T07:04:59.2257890Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-19T07:04:59.4594230Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-06-19T07:04:59.4696120Z Packages: +1
+2026-06-19T07:04:59.4736280Z +
+2026-06-19T07:05:00.4682800Z Progress: resolved 1, reused 0, downloaded 1, added 0
+2026-06-19T07:05:00.5486820Z Progress: resolved 1, reused 0, downloaded 1, added 1, done
+2026-06-19T07:05:00.6346880Z
+2026-06-19T07:05:00.6350470Z dependencies:
+2026-06-19T07:05:00.6353750Z + pnpm 10.28.2 (11.8.0 is available)
+2026-06-19T07:05:00.6354810Z
+2026-06-19T07:05:00.6462090Z Done in 1.7s
+2026-06-19T07:05:00.6593320Z ##[endgroup]
+2026-06-19T07:05:00.6602690Z Installation Completed!
+2026-06-19T07:05:00.6780070Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:05:00.6783770Z ##[group]Run actions/setup-node@v4
+2026-06-19T07:05:00.6784030Z with:
+2026-06-19T07:05:00.6784230Z   node-version: 22
+2026-06-19T07:05:00.6784440Z   cache: pnpm
+2026-06-19T07:05:00.6784620Z   always-auth: false
+2026-06-19T07:05:00.6784840Z   check-latest: false
+2026-06-19T07:05:00.6787350Z   token: ***
+2026-06-19T07:05:00.6787530Z env:
+2026-06-19T07:05:00.6787760Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:05:00.6788100Z ##[endgroup]
+2026-06-19T07:05:01.1840700Z (node:18485) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-19T07:05:01.1841960Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-19T07:05:01.2459490Z Found in cache @ /Users/runner/hostedtoolcache/node/22.22.3/arm64
+2026-06-19T07:05:01.2562240Z ##[group]Environment details
+2026-06-19T07:05:01.9991640Z node: v22.22.3
+2026-06-19T07:05:02.0093660Z npm: 10.9.8
+2026-06-19T07:05:02.0127670Z yarn: 1.22.22
+2026-06-19T07:05:02.0135000Z ##[endgroup]
+2026-06-19T07:05:02.0140840Z [command]/Users/runner/setup-pnpm/node_modules/.bin/pnpm store path --silent
+2026-06-19T07:05:02.3798060Z /Users/runner/setup-pnpm/node_modules/.bin/store/v10
+2026-06-19T07:05:02.7209380Z (node:18485) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-19T07:05:02.7618790Z Cache hit for: node-cache-macOS-arm64-pnpm-15e26cf473170b3fb90c2631485d12d43a787a6230f72a02f7cdf1a5771b0161
+2026-06-19T07:05:04.0204230Z Received 0 of 445888485 (0.0%), 0.0 MBs/sec
+2026-06-19T07:05:05.0151190Z Received 41943040 of 445888485 (9.4%), 20.0 MBs/sec
+2026-06-19T07:05:06.0168890Z Received 96468992 of 445888485 (21.6%), 30.6 MBs/sec
+2026-06-19T07:05:07.0203040Z Received 125829120 of 445888485 (28.2%), 29.9 MBs/sec
+2026-06-19T07:05:08.0236160Z Received 146800640 of 445888485 (32.9%), 27.9 MBs/sec
+2026-06-19T07:05:09.0366080Z Received 209715200 of 445888485 (47.0%), 33.3 MBs/sec
+2026-06-19T07:05:10.0251290Z Received 251658240 of 445888485 (56.4%), 34.2 MBs/sec
+2026-06-19T07:05:11.0283960Z Received 264241152 of 445888485 (59.3%), 31.4 MBs/sec
+2026-06-19T07:05:12.0296360Z Received 293601280 of 445888485 (65.8%), 31.1 MBs/sec
+2026-06-19T07:05:13.0317820Z Received 339738624 of 445888485 (76.2%), 32.3 MBs/sec
+2026-06-19T07:05:14.0324340Z Received 394264576 of 445888485 (88.4%), 34.1 MBs/sec
+2026-06-19T07:05:15.1726550Z Received 402653184 of 445888485 (90.3%), 31.6 MBs/sec
+2026-06-19T07:05:16.1699020Z Received 437499877 of 445888485 (98.1%), 31.7 MBs/sec
+2026-06-19T07:05:16.7564060Z Received 445888485 of 445888485 (100.0%), 31.0 MBs/sec
+2026-06-19T07:05:16.7664950Z Cache Size: ~425 MB (445888485 B)
+2026-06-19T07:05:16.7700660Z [command]/opt/homebrew/bin/gtar -xf /Users/runner/work/_temp/618e7dbc-174e-40d9-95e7-f33bed8719b4/cache.tzst -P -C /Users/runner/work/autobyteus-workspace/autobyteus-workspace --delay-directory-restore --use-compress-program unzstd
+2026-06-19T07:05:35.1213310Z Cache restored successfully
+2026-06-19T07:05:35.1374080Z Cache restored from key: node-cache-macOS-arm64-pnpm-15e26cf473170b3fb90c2631485d12d43a787a6230f72a02f7cdf1a5771b0161
+2026-06-19T07:05:35.1860440Z ##[group]Run pnpm install --no-frozen-lockfile
+2026-06-19T07:05:35.1860940Z [36;1mpnpm install --no-frozen-lockfile[0m
+2026-06-19T07:05:35.2036810Z shell: /bin/bash -e {0}
+2026-06-19T07:05:35.2037270Z env:
+2026-06-19T07:05:35.2037680Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:05:35.2038090Z ##[endgroup]
+2026-06-19T07:05:35.7655840Z Scope: all 11 workspace projects
+2026-06-19T07:05:35.8813430Z Lockfile is up to date, resolution step is skipped
+2026-06-19T07:05:35.9707370Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-06-19T07:05:36.1725860Z Packages: +1731
+2026-06-19T07:05:36.1742380Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-06-19T07:05:36.9737890Z Progress: resolved 1731, reused 1059, downloaded 0, added 0
+2026-06-19T07:05:37.9863220Z Progress: resolved 1731, reused 1729, downloaded 0, added 109
+2026-06-19T07:05:38.9897440Z Progress: resolved 1731, reused 1729, downloaded 0, added 266
+2026-06-19T07:05:39.9987390Z Progress: resolved 1731, reused 1729, downloaded 0, added 353
+2026-06-19T07:05:40.9888370Z Progress: resolved 1731, reused 1729, downloaded 0, added 440
+2026-06-19T07:05:41.9902990Z Progress: resolved 1731, reused 1729, downloaded 0, added 509
+2026-06-19T07:05:43.0103760Z Progress: resolved 1731, reused 1729, downloaded 0, added 553
+2026-06-19T07:05:44.0130500Z Progress: resolved 1731, reused 1729, downloaded 0, added 696
+2026-06-19T07:05:45.0034330Z Progress: resolved 1731, reused 1729, downloaded 0, added 801
+2026-06-19T07:05:46.0040630Z Progress: resolved 1731, reused 1729, downloaded 0, added 986
+2026-06-19T07:05:47.0051170Z Progress: resolved 1731, reused 1729, downloaded 0, added 1105
+2026-06-19T07:05:48.0066680Z Progress: resolved 1731, reused 1729, downloaded 0, added 1248
+2026-06-19T07:05:49.0106130Z Progress: resolved 1731, reused 1729, downloaded 0, added 1371
+2026-06-19T07:05:50.0152330Z Progress: resolved 1731, reused 1729, downloaded 0, added 1555
+2026-06-19T07:05:50.6301460Z Progress: resolved 1731, reused 1729, downloaded 0, added 1731, done
+2026-06-19T07:05:52.1317770Z
+2026-06-19T07:05:52.1463550Z autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+2026-06-19T07:05:52.2193910Z autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+2026-06-19T07:05:52.2231250Z autobyteus-ts postinstall: Done
+2026-06-19T07:05:52.3543490Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-06-19T07:05:52.3545260Z │                                                                              │
+2026-06-19T07:05:52.3546850Z │   Ignored build scripts: lzma-native@8.0.6.                                  │
+2026-06-19T07:05:52.3549270Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-06-19T07:05:52.3561150Z │   to run scripts.                                                            │
+2026-06-19T07:05:52.3562870Z │                                                                              │
+2026-06-19T07:05:52.3583860Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-06-19T07:05:52.3700300Z Done in 16.9s using pnpm v10.28.2
+2026-06-19T07:05:52.3867020Z ##[group]Run python3 -m pip install --user --break-system-packages --upgrade setuptools
+2026-06-19T07:05:52.3867740Z [36;1mpython3 -m pip install --user --break-system-packages --upgrade setuptools[0m
+2026-06-19T07:05:52.6984220Z shell: /bin/bash -e {0}
+2026-06-19T07:05:52.6985090Z env:
+2026-06-19T07:05:52.6985900Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:05:52.6987060Z ##[endgroup]
+2026-06-19T07:05:55.4936050Z Collecting setuptools
+2026-06-19T07:05:55.5542410Z   Downloading setuptools-82.0.1-py3-none-any.whl.metadata (6.5 kB)
+2026-06-19T07:05:55.7970640Z Downloading setuptools-82.0.1-py3-none-any.whl (1.0 MB)
+2026-06-19T07:05:55.8944520Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 8.9 MB/s  0:00:00
+2026-06-19T07:05:56.2089140Z Installing collected packages: setuptools
+2026-06-19T07:05:57.1944410Z Successfully installed setuptools-82.0.1
+2026-06-19T07:05:57.2662570Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:05:57.2663660Z ##[group]Run apple-actions/import-codesign-certs@v3
+2026-06-19T07:05:57.2663930Z with:
+2026-06-19T07:05:57.2699410Z   p12-file-base64: ***
+2026-06-19T07:05:57.2699740Z   p12-password: ***
+2026-06-19T07:05:57.2699960Z   keychain: signing_temp
+2026-06-19T07:05:57.2700170Z   create-keychain: true
+2026-06-19T07:05:57.2700380Z env:
+2026-06-19T07:05:57.2700620Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:05:57.2700920Z ##[endgroup]
+2026-06-19T07:06:04.4917270Z [command]/usr/bin/security create-keychain -p *** signing_temp.keychain
+2026-06-19T07:06:04.5331600Z [command]/usr/bin/security set-keychain-settings -lut 21600 signing_temp.keychain
+2026-06-19T07:06:04.5502840Z [command]/usr/bin/security unlock-keychain -p *** signing_temp.keychain
+2026-06-19T07:06:04.5663820Z [command]/usr/bin/security import /var/folders/dq/2t71w9pd3jx50vh3kp15_dt40000gn/T/tmp-19591-OaBM3iWj4EPv -k signing_temp.keychain -f pkcs12 -A -T /usr/bin/codesign -T /usr/bin/security -P ***
+2026-06-19T07:06:04.7266750Z 2 identities imported.
+2026-06-19T07:06:04.7300060Z [command]/usr/bin/security set-key-partition-list -S apple-tool:,apple: -k *** signing_temp.keychain
+2026-06-19T07:06:04.7815410Z keychain: "/Users/runner/Library/Keychains/signing_temp.keychain-db"
+2026-06-19T07:06:04.7818100Z version: 512
+2026-06-19T07:06:04.7820170Z class: 0x00000010
+2026-06-19T07:06:04.7820520Z attributes:
+2026-06-19T07:06:04.7821040Z     0x00000000 <uint32>=0x00000010
+2026-06-19T07:06:04.7823280Z     0x00000001 <blob>="Yu Zheng Developer ID"
+2026-06-19T07:06:04.7824220Z     0x00000002 <blob>=<NULL>
+2026-06-19T07:06:04.7825270Z     0x00000003 <uint32>=0x00000001
+2026-06-19T07:06:04.7825970Z     0x00000004 <uint32>=0x00000000
+2026-06-19T07:06:04.7828010Z     0x00000005 <uint32>=0x00000000
+2026-06-19T07:06:04.7829700Z     0x00000006 <blob>=0xA88D157C53AEE5360C37CC13EBD6A890ACD191B3  "\250\215\025|S\256\3456\0147\314\023\353\326\250\220\254\321\221\263"
+2026-06-19T07:06:04.7831150Z     0x00000007 <blob>=<NULL>
+2026-06-19T07:06:04.7832910Z     0x00000008 <blob>=0x7B38373139316361322D306663392D313164342D383439612D3030303530326235323132327D00  "{87191ca2-0fc9-11d4-849a-000502b52122}\000"
+2026-06-19T07:06:04.7834670Z     0x00000009 <uint32>=0x0000002A  "\000\000\000*"
+2026-06-19T07:06:04.7835630Z     0x0000000A <uint32>=0x00000800
+2026-06-19T07:06:04.7836560Z     0x0000000B <uint32>=0x00000800
+2026-06-19T07:06:04.7837650Z     0x0000000C <blob>=0x0000000000000000
+2026-06-19T07:06:04.7837990Z     0x0000000D <blob>=0x0000000000000000
+2026-06-19T07:06:04.7838330Z     0x0000000E <uint32>=0x00000001
+2026-06-19T07:06:04.7838750Z     0x0000000F <uint32>=0x00000001
+2026-06-19T07:06:04.7839920Z     0x00000010 <uint32>=0x00000001
+2026-06-19T07:06:04.7842040Z     0x00000011 <uint32>=0x00000000
+2026-06-19T07:06:04.7842980Z     0x00000012 <uint32>=0x00000001
+2026-06-19T07:06:04.7843870Z     0x00000013 <uint32>=0x00000001
+2026-06-19T07:06:04.7844710Z     0x00000014 <uint32>=0x00000001
+2026-06-19T07:06:04.7845590Z     0x00000015 <uint32>=0x00000001
+2026-06-19T07:06:04.7846280Z     0x00000016 <uint32>=0x00000001
+2026-06-19T07:06:04.7846680Z     0x00000017 <uint32>=0x00000001
+2026-06-19T07:06:04.7847080Z     0x00000018 <uint32>=0x00000001
+2026-06-19T07:06:04.7847470Z     0x00000019 <uint32>=0x00000001
+2026-06-19T07:06:04.7847890Z     0x0000001A <uint32>=0x00000001
+2026-06-19T07:06:04.7848460Z keychain: "/Users/runner/Library/Keychains/signing_temp.keychain-db"
+2026-06-19T07:06:04.7848890Z version: 512
+2026-06-19T07:06:04.7849180Z class: 0x00000010
+2026-06-19T07:06:04.7849450Z attributes:
+2026-06-19T07:06:04.7849680Z     0x00000000 <uint32>=0x00000010
+2026-06-19T07:06:04.7851040Z     0x00000001 <blob>="Apple Development: YU ZHENG (YU ZHENG)"
+2026-06-19T07:06:04.7851500Z     0x00000002 <blob>=<NULL>
+2026-06-19T07:06:04.7851780Z     0x00000003 <uint32>=0x00000001
+2026-06-19T07:06:04.7852170Z     0x00000004 <uint32>=0x00000000
+2026-06-19T07:06:04.7852440Z     0x00000005 <uint32>=0x00000000
+2026-06-19T07:06:04.7853080Z     0x00000006 <blob>=0x1ED1B4F96BD1147C1533020F1413B0CFC7F4F0A9  "\036\321\264\371k\321\024|\0253\002\017\024\023\260\317\307\364\360\251"
+2026-06-19T07:06:04.7853600Z     0x00000007 <blob>=<NULL>
+2026-06-19T07:06:04.7854220Z     0x00000008 <blob>=0x7B38373139316361322D306663392D313164342D383439612D3030303530326235323132327D00  "{87191ca2-0fc9-11d4-849a-000502b52122}\000"
+2026-06-19T07:06:04.7854810Z     0x00000009 <uint32>=0x0000002A  "\000\000\000*"
+2026-06-19T07:06:04.7855190Z     0x0000000A <uint32>=0x00000800
+2026-06-19T07:06:04.7855490Z     0x0000000B <uint32>=0x00000800
+2026-06-19T07:06:04.7855880Z     0x0000000C <blob>=0x0000000000000000
+2026-06-19T07:06:04.7856200Z     0x0000000D <blob>=0x0000000000000000
+2026-06-19T07:06:04.7856590Z     0x0000000E <uint32>=0x00000001
+2026-06-19T07:06:04.7856970Z     0x0000000F <uint32>=0x00000001
+2026-06-19T07:06:04.7857330Z     0x00000010 <uint32>=0x00000001
+2026-06-19T07:06:04.7857650Z     0x00000011 <uint32>=0x00000000
+2026-06-19T07:06:04.7858040Z     0x00000012 <uint32>=0x00000001
+2026-06-19T07:06:04.7858430Z     0x00000013 <uint32>=0x00000001
+2026-06-19T07:06:04.7858780Z     0x00000014 <uint32>=0x00000001
+2026-06-19T07:06:04.7859080Z     0x00000015 <uint32>=0x00000001
+2026-06-19T07:06:04.7859460Z     0x00000016 <uint32>=0x00000001
+2026-06-19T07:06:04.7859840Z     0x00000017 <uint32>=0x00000001
+2026-06-19T07:06:04.7860240Z     0x00000018 <uint32>=0x00000001
+2026-06-19T07:06:04.7860590Z     0x00000019 <uint32>=0x00000001
+2026-06-19T07:06:04.7860950Z     0x0000001A <uint32>=0x00000001
+2026-06-19T07:06:04.7861750Z [command]/usr/bin/security list-keychains -d user -s signing_temp.keychain login.keychain
+2026-06-19T07:06:04.8428600Z ##[group]Run sudo launchctl limit maxfiles 65536 200000 || true
+2026-06-19T07:06:04.8430190Z [36;1msudo launchctl limit maxfiles 65536 200000 || true[0m
+2026-06-19T07:06:04.8431280Z [36;1mulimit -n 65536 || ulimit -n 10240 || true[0m
+2026-06-19T07:06:04.8432360Z [36;1mulimit -Sn[0m
+2026-06-19T07:06:04.8433110Z [36;1mulimit -Hn[0m
+2026-06-19T07:06:04.8434140Z [36;1mmax_attempts=3[0m
+2026-06-19T07:06:04.8434580Z [36;1mattempt=1[0m
+2026-06-19T07:06:04.8434920Z [36;1mwhile true; do[0m
+2026-06-19T07:06:04.8435280Z [36;1m  log_file="$(mktemp)"[0m
+2026-06-19T07:06:04.8435640Z [36;1m  set +e[0m
+2026-06-19T07:06:04.8436770Z [36;1m  pnpm build:electron:mac -- --x64 2>&1 | tee "$log_file"[0m
+2026-06-19T07:06:04.8437860Z [36;1m  status="${PIPESTATUS[0]}"[0m
+2026-06-19T07:06:04.8438200Z [36;1m  set -e[0m
+2026-06-19T07:06:04.8438490Z [36;1m[0m
+2026-06-19T07:06:04.8438750Z [36;1m  if [[ "$status" -eq 0 ]]; then[0m
+2026-06-19T07:06:04.8439910Z [36;1m    rm -f "$log_file"[0m
+2026-06-19T07:06:04.8440370Z [36;1m    break[0m
+2026-06-19T07:06:04.8440680Z [36;1m  fi[0m
+2026-06-19T07:06:04.8440940Z [36;1m[0m
+2026-06-19T07:06:04.8441670Z [36;1m  if grep -Eq 'Failed to notarize via notarytool|The Internet connection appears to be offline|NSURLErrorDomain Code=-1009|No network route|timed out' "$log_file" && [[ "$attempt" -lt "$max_attempts" ]]; then[0m
+2026-06-19T07:06:04.8442660Z [36;1m    echo "Transient Apple notarization/network failure detected on attempt $attempt/$max_attempts. Retrying..."[0m
+2026-06-19T07:06:04.8443240Z [36;1m    rm -f "$log_file"[0m
+2026-06-19T07:06:04.8443940Z [36;1m    rm -rf electron-dist[0m
+2026-06-19T07:06:04.8444530Z [36;1m    sleep $((attempt * 30))[0m
+2026-06-19T07:06:04.8444880Z [36;1m    attempt=$((attempt + 1))[0m
+2026-06-19T07:06:04.8445210Z [36;1m    continue[0m
+2026-06-19T07:06:04.8445470Z [36;1m  fi[0m
+2026-06-19T07:06:04.8445700Z [36;1m[0m
+2026-06-19T07:06:04.8446000Z [36;1m  rm -f "$log_file"[0m
+2026-06-19T07:06:04.8446370Z [36;1m  exit "$status"[0m
+2026-06-19T07:06:04.8446690Z [36;1mdone[0m
+2026-06-19T07:06:04.8652090Z shell: /bin/bash -e {0}
+2026-06-19T07:06:04.8652480Z env:
+2026-06-19T07:06:04.8652870Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:06:04.8653330Z   NO_TIMESTAMP: 1
+2026-06-19T07:06:04.8655510Z   APPLE_SIGNING_IDENTITY: ***
+2026-06-19T07:06:04.8656210Z   APPLE_ID: ***
+2026-06-19T07:06:04.8656580Z   APPLE_APP_SPECIFIC_PASSWORD: ***
+2026-06-19T07:06:04.8656980Z   APPLE_TEAM_ID: ***
+2026-06-19T07:06:04.8657320Z   AUTOBYTEUS_BUILD_FLAVOR: personal
+2026-06-19T07:06:04.8657780Z   PRISMA_CLI_BINARY_TARGETS: darwin,debian-openssl-1.1.x,debian-openssl-3.0.x
+2026-06-19T07:06:04.8658240Z ##[endgroup]
+2026-06-19T07:06:04.9841080Z 65536
+2026-06-19T07:06:04.9842270Z 65536
+2026-06-19T07:06:05.4016010Z
+2026-06-19T07:06:05.4016990Z > autobyteus@1.3.60 build:electron:mac /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:05.4018890Z > cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --x64
+2026-06-19T07:06:05.4019820Z
+2026-06-19T07:06:05.8552580Z
+2026-06-19T07:06:05.8568120Z > autobyteus@1.3.60 guard:web-boundary /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:05.8569930Z > node ./scripts/guard-web-boundary.mjs
+2026-06-19T07:06:05.8570140Z
+2026-06-19T07:06:06.5945840Z [guard:web-boundary] Passed.
+2026-06-19T07:06:07.0019800Z
+2026-06-19T07:06:07.0022240Z > autobyteus@1.3.60 guard:localization-boundary /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:07.0024260Z > node ./scripts/guard-localization-boundary.mjs
+2026-06-19T07:06:07.0024870Z
+2026-06-19T07:06:07.1942330Z [guard:localization-boundary] Passed.
+2026-06-19T07:06:07.6207720Z
+2026-06-19T07:06:07.6312210Z > autobyteus@1.3.60 audit:localization-literals /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:07.6414000Z > node ./scripts/audit-localization-literals.mjs
+2026-06-19T07:06:07.6514800Z
+2026-06-19T07:06:08.2163210Z [audit:localization-literals] Passed with zero unresolved findings.
+2026-06-19T07:06:08.2268530Z (node:19936) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+2026-06-19T07:06:08.2373900Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-06-19T07:06:08.2478100Z To eliminate this warning, add "type": "module" to /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/package.json.
+2026-06-19T07:06:08.2579640Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-06-19T07:06:08.6847700Z
+2026-06-19T07:06:08.6949430Z > autobyteus@1.3.60 prepare-server /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:08.7051130Z > node ./scripts/prepare-server-dispatch.mjs
+2026-06-19T07:06:08.7152090Z
+2026-06-19T07:06:08.8363960Z [0;32m=======================================[0m
+2026-06-19T07:06:08.8364600Z [0;32m   Preparing AutoByteus Server Files   [0m
+2026-06-19T07:06:08.8465860Z [0;32m=======================================[0m
+2026-06-19T07:06:08.8571680Z [0;32m✓[0m Created target directory: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+2026-06-19T07:06:08.8673840Z
+2026-06-19T07:06:08.8775190Z [0;33mBuilding server and dependencies...[0m
+2026-06-19T07:06:09.2737510Z Scope: all 11 workspace projects
+2026-06-19T07:06:10.9424900Z
+2026-06-19T07:06:10.9629060Z ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+2026-06-19T07:06:11.0108090Z ../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+2026-06-19T07:06:11.0139950Z ../autobyteus-ts postinstall: Done
+2026-06-19T07:06:11.1465640Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-06-19T07:06:11.1467230Z │                                                                              │
+2026-06-19T07:06:11.1469070Z │   Ignored build scripts: lzma-native@8.0.6.                                  │
+2026-06-19T07:06:11.1471250Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-06-19T07:06:11.1473200Z │   to run scripts.                                                            │
+2026-06-19T07:06:11.1474910Z │                                                                              │
+2026-06-19T07:06:11.1476380Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-06-19T07:06:11.1517270Z Done in 2.2s using pnpm v10.28.2
+2026-06-19T07:06:13.1608650Z Prisma schema loaded from prisma/schema.prisma
+2026-06-19T07:06:14.1996080Z
+2026-06-19T07:06:14.1997980Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 185ms
+2026-06-19T07:06:14.1998700Z
+2026-06-19T07:06:14.1999730Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-06-19T07:06:14.2000230Z
+2026-06-19T07:06:14.2001440Z Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+2026-06-19T07:06:14.2001920Z
+2026-06-19T07:06:14.7737230Z
+2026-06-19T07:06:14.7852070Z > autobyteus-server-ts@0.1.1 prebuild /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+2026-06-19T07:06:14.7954650Z > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+2026-06-19T07:06:14.8053990Z
+2026-06-19T07:06:15.1598210Z
+2026-06-19T07:06:15.1601930Z > autobyteus-server-ts@0.1.1 prepare:shared /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+2026-06-19T07:06:15.1605450Z > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+2026-06-19T07:06:15.1607060Z
+2026-06-19T07:06:15.5646840Z Scope: 3 of 11 workspace projects
+2026-06-19T07:06:15.5699370Z autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+2026-06-19T07:06:15.5700620Z autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+2026-06-19T07:06:17.0090310Z autobyteus-application-sdk-contracts build: Done
+2026-06-19T07:06:24.2265200Z autobyteus-ts build: [verify:runtime-deps] OK
+2026-06-19T07:06:24.2295320Z autobyteus-ts build: Done
+2026-06-19T07:06:24.2302020Z autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+2026-06-19T07:06:24.9670980Z autobyteus-application-backend-sdk build: Done
+2026-06-19T07:06:25.7949670Z Prisma schema loaded from prisma/schema.prisma
+2026-06-19T07:06:26.1799550Z
+2026-06-19T07:06:26.1802890Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 101ms
+2026-06-19T07:06:26.1803510Z
+2026-06-19T07:06:26.1803980Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-06-19T07:06:26.1804380Z
+2026-06-19T07:06:26.1804950Z Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+2026-06-19T07:06:26.1805470Z
+2026-06-19T07:06:26.2017130Z ┌─────────────────────────────────────────────────────────┐
+2026-06-19T07:06:26.2018010Z │  Update available 5.22.0 -> 7.8.0                       │
+2026-06-19T07:06:26.2018630Z │                                                         │
+2026-06-19T07:06:26.2019240Z │  This is a major update - please follow the guide at    │
+2026-06-19T07:06:26.2019930Z │  https://pris.ly/d/major-version-upgrade                │
+2026-06-19T07:06:26.2020530Z │                                                         │
+2026-06-19T07:06:26.2021140Z │  Run the following to update                            │
+2026-06-19T07:06:26.2021730Z │    npm i --save-dev prisma@latest                       │
+2026-06-19T07:06:26.2022350Z │    npm i @prisma/client@latest                          │
+2026-06-19T07:06:26.2022970Z └─────────────────────────────────────────────────────────┘
+2026-06-19T07:06:26.4021480Z
+2026-06-19T07:06:26.4079120Z > autobyteus-server-ts@0.1.1 build /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+2026-06-19T07:06:26.4128600Z > pnpm run build:full
+2026-06-19T07:06:26.4161770Z
+2026-06-19T07:06:26.7314950Z
+2026-06-19T07:06:26.7317150Z > autobyteus-server-ts@0.1.1 build:full /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+2026-06-19T07:06:26.7320630Z > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+2026-06-19T07:06:26.7322360Z
+2026-06-19T07:06:39.1359420Z Successfully registered tool definition: 'read_file'
+2026-06-19T07:06:39.1363170Z Successfully registered tool definition: 'write_file'
+2026-06-19T07:06:39.1364590Z Successfully registered tool definition: 'edit_file'
+2026-06-19T07:06:39.1365520Z Successfully registered tool definition: 'replace_in_file'
+2026-06-19T07:06:39.1366900Z Successfully registered tool definition: 'insert_in_file'
+2026-06-19T07:06:39.1368120Z Successfully registered tool definition: 'load_skill'
+2026-06-19T07:06:39.1369110Z Successfully registered tool definition: 'run_bash'
+2026-06-19T07:06:39.1369960Z Successfully registered tool definition: 'start_background_process'
+2026-06-19T07:06:39.1371110Z Successfully registered tool definition: 'get_background_processes'
+2026-06-19T07:06:39.1375370Z Successfully registered tool definition: 'get_process_output'
+2026-06-19T07:06:39.1376930Z Successfully registered tool definition: 'stop_background_process'
+2026-06-19T07:06:39.1384660Z Successfully registered tool definition: 'search_web'
+2026-06-19T07:06:39.1386630Z Successfully registered tool definition: 'read_media_file'
+2026-06-19T07:06:39.1388430Z Successfully registered tool definition: 'download_media'
+2026-06-19T07:06:39.1390320Z Successfully registered tool definition: 'read_url'
+2026-06-19T07:06:39.1391900Z Successfully registered tool definition: 'add_todo'
+2026-06-19T07:06:39.1393630Z Successfully registered tool definition: 'create_todo_list'
+2026-06-19T07:06:39.1395330Z Successfully registered tool definition: 'get_todo_list'
+2026-06-19T07:06:39.1396820Z Successfully registered tool definition: 'update_todo_status'
+2026-06-19T07:06:39.1397580Z AgentFactory (Singleton) initialized.
+2026-06-19T07:06:39.1447760Z (node:20974) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+2026-06-19T07:06:39.1455610Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-06-19T07:06:39.1796120Z Built-in agents bootstrap smoke check passed.
+2026-06-19T07:06:39.2027030Z
+2026-06-19T07:06:39.2028620Z [0;33mBuilding mobile web assets...[0m
+2026-06-19T07:06:39.5500980Z
+2026-06-19T07:06:39.5611630Z > autobyteus@1.3.60 build:mobile-web /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:39.5715680Z > node ./scripts/build-mobile-web.mjs
+2026-06-19T07:06:39.5816940Z
+2026-06-19T07:06:40.0107930Z
+2026-06-19T07:06:40.0222370Z > autobyteus@1.3.60 generate /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:06:40.0324430Z > nuxt generate
+2026-06-19T07:06:40.0426510Z
+2026-06-19T07:06:42.1382350Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+2026-06-19T07:06:43.1567360Z [90m│[39m
+2026-06-19T07:06:43.1569310Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+2026-06-19T07:06:46.0898000Z [log] isElectronBuild false
+2026-06-19T07:06:46.1247220Z [log] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+2026-06-19T07:06:47.3509880Z [90m│[39m
+2026-06-19T07:06:47.3511130Z [34m●[39m  Nitro preset: [36mstatic[39m
+2026-06-19T07:06:50.0621700Z [info] Building client...
+2026-06-19T07:06:50.0752020Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+2026-06-19T07:06:50.2425580Z [info] transforming...
+2026-06-19T07:07:18.6474680Z [info] [32m✓[39m 3499 modules transformed.
+2026-06-19T07:07:20.1096230Z [info] rendering chunks...
+2026-06-19T07:07:22.0546630Z [info] computing gzip size...
+2026-06-19T07:07:22.2347920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff          [39m[1m[2m    4.42 kB[22m[1m[22m
+2026-06-19T07:07:22.2449790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2         [39m[1m[2m    4.93 kB[22m[1m[22m
+2026-06-19T07:07:22.2474280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2         [39m[1m[2m    5.21 kB[22m[1m[22m
+2026-06-19T07:07:22.2577150Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2         [39m[1m[2m    5.47 kB[22m[1m[22m
+2026-06-19T07:07:22.2747500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff          [39m[1m[2m    5.98 kB[22m[1m[22m
+2026-06-19T07:07:22.2764300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff          [39m[1m[2m    6.19 kB[22m[1m[22m
+2026-06-19T07:07:22.2768100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff          [39m[1m[2m    6.50 kB[22m[1m[22m
+2026-06-19T07:07:22.2772940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2   [39m[1m[2m    6.91 kB[22m[1m[22m
+2026-06-19T07:07:22.2785630Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2      [39m[1m[2m    6.91 kB[22m[1m[22m
+2026-06-19T07:07:22.2787300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf           [39m[1m[2m    7.59 kB[22m[1m[22m
+2026-06-19T07:07:22.2788570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff    [39m[1m[2m    7.66 kB[22m[1m[22m
+2026-06-19T07:07:22.2789650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff       [39m[1m[2m    7.72 kB[22m[1m[22m
+2026-06-19T07:07:22.2790760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2        [39m[1m[2m    9.64 kB[22m[1m[22m
+2026-06-19T07:07:22.2791910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2     [39m[1m[2m   10.34 kB[22m[1m[22m
+2026-06-19T07:07:22.2793530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf           [39m[1m[2m   10.36 kB[22m[1m[22m
+2026-06-19T07:07:22.2794590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff         [39m[1m[2m   10.59 kB[22m[1m[22m
+2026-06-19T07:07:22.2795680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2       [39m[1m[2m   11.32 kB[22m[1m[22m
+2026-06-19T07:07:22.2796760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2          [39m[1m[2m   11.35 kB[22m[1m[22m
+2026-06-19T07:07:22.2797920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf           [39m[1m[2m   11.51 kB[22m[1m[22m
+2026-06-19T07:07:22.2799030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2      [39m[1m[2m   12.03 kB[22m[1m[22m
+2026-06-19T07:07:22.2800130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2        [39m[1m[2m   12.22 kB[22m[1m[22m
+2026-06-19T07:07:22.2801220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf           [39m[1m[2m   12.23 kB[22m[1m[22m
+2026-06-19T07:07:22.2802320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff      [39m[1m[2m   12.32 kB[22m[1m[22m
+2026-06-19T07:07:22.2803480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf     [39m[1m[2m   12.34 kB[22m[1m[22m
+2026-06-19T07:07:22.2804610Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf        [39m[1m[2m   12.37 kB[22m[1m[22m
+2026-06-19T07:07:22.2805680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff        [39m[1m[2m   13.21 kB[22m[1m[22m
+2026-06-19T07:07:22.2806710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff           [39m[1m[2m   13.30 kB[22m[1m[22m
+2026-06-19T07:07:22.2810180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2    [39m[1m[2m   13.57 kB[22m[1m[22m
+2026-06-19T07:07:22.2813640Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff       [39m[1m[2m   14.11 kB[22m[1m[22m
+2026-06-19T07:07:22.2817190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff         [39m[1m[2m   14.41 kB[22m[1m[22m
+2026-06-19T07:07:22.2820790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff     [39m[1m[2m   16.03 kB[22m[1m[22m
+2026-06-19T07:07:22.2823590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2       [39m[1m[2m   16.40 kB[22m[1m[22m
+2026-06-19T07:07:22.2826680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2           [39m[1m[2m   16.44 kB[22m[1m[22m
+2026-06-19T07:07:22.2827730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf          [39m[1m[2m   16.65 kB[22m[1m[22m
+2026-06-19T07:07:22.2828810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2       [39m[1m[2m   16.78 kB[22m[1m[22m
+2026-06-19T07:07:22.2829850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2           [39m[1m[2m   16.99 kB[22m[1m[22m
+2026-06-19T07:07:22.2830940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff        [39m[1m[2m   18.67 kB[22m[1m[22m
+2026-06-19T07:07:22.2832060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff            [39m[1m[2m   18.75 kB[22m[1m[22m
+2026-06-19T07:07:22.2833130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff        [39m[1m[2m   19.41 kB[22m[1m[22m
+2026-06-19T07:07:22.2834430Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf       [39m[1m[2m   19.44 kB[22m[1m[22m
+2026-06-19T07:07:22.2835460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf         [39m[1m[2m   19.57 kB[22m[1m[22m
+2026-06-19T07:07:22.2836480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf            [39m[1m[2m   19.58 kB[22m[1m[22m
+2026-06-19T07:07:22.2837520Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff            [39m[1m[2m   19.68 kB[22m[1m[22m
+2026-06-19T07:07:22.2838570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf        [39m[1m[2m   22.36 kB[22m[1m[22m
+2026-06-19T07:07:22.2839610Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf          [39m[1m[2m   24.50 kB[22m[1m[22m
+2026-06-19T07:07:22.2840660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2             [39m[1m[2m   25.32 kB[22m[1m[22m
+2026-06-19T07:07:22.2841780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2          [39m[1m[2m   26.27 kB[22m[1m[22m
+2026-06-19T07:07:22.2842930Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf      [39m[1m[2m   27.56 kB[22m[1m[22m
+2026-06-19T07:07:22.2844120Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2           [39m[1m[2m   28.08 kB[22m[1m[22m
+2026-06-19T07:07:22.2845330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff              [39m[1m[2m   29.91 kB[22m[1m[22m
+2026-06-19T07:07:22.2846360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff           [39m[1m[2m   30.77 kB[22m[1m[22m
+2026-06-19T07:07:22.2870870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf         [39m[1m[2m   31.20 kB[22m[1m[22m
+2026-06-19T07:07:22.2872010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf             [39m[1m[2m   31.31 kB[22m[1m[22m
+2026-06-19T07:07:22.2873110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf         [39m[1m[2m   32.97 kB[22m[1m[22m
+2026-06-19T07:07:22.2874160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff            [39m[1m[2m   33.52 kB[22m[1m[22m
+2026-06-19T07:07:22.2875280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf             [39m[1m[2m   33.58 kB[22m[1m[22m
+2026-06-19T07:07:22.2876320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf               [39m[1m[2m   51.34 kB[22m[1m[22m
+2026-06-19T07:07:22.2878030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf            [39m[1m[2m   53.58 kB[22m[1m[22m
+2026-06-19T07:07:22.2879210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf             [39m[1m[2m   63.63 kB[22m[1m[22m
+2026-06-19T07:07:22.2880320Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                    [39m[1m[2m   63.78 kB[22m[1m[22m[2m │ gzip:     6.08 kB[22m
+2026-06-19T07:07:22.2881490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.CJV_gWfn.css             [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+2026-06-19T07:07:22.2884410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                         [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+2026-06-19T07:07:22.2887880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.CxTZU0Nv.css                      [39m[1m[2m    0.27 kB[22m[1m[22m[2m │ gzip:     0.21 kB[22m
+2026-06-19T07:07:22.2890760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mAgentDefinitionForm.B4uhkLvJ.css           [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+2026-06-19T07:07:22.2892190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css          [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+2026-06-19T07:07:22.2893400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.hH3oHwcH.css                       [39m[1m[2m    0.86 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+2026-06-19T07:07:22.2894660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.BrK5oVEn.css              [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+2026-06-19T07:07:22.2898460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museTeamRunRuntimeCatalogSync.BVYYuVIi.css  [39m[1m[2m    3.51 kB[22m[1m[22m[2m │ gzip:     1.19 kB[22m
+2026-06-19T07:07:22.2902110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mworkspace.BRhO3Yws.css                     [39m[1m[2m    6.93 kB[22m[1m[22m[2m │ gzip:     1.89 kB[22m
+2026-06-19T07:07:22.2905540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.D_7dP6AQ.css                        [39m[1m[2m   23.43 kB[22m[1m[22m[2m │ gzip:     4.59 kB[22m
+2026-06-19T07:07:22.2908820Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.C_z0J9Y2.css      [39m[1m[2m   46.65 kB[22m[1m[22m[2m │ gzip:    12.11 kB[22m
+2026-06-19T07:07:22.2910890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.Pm_VECQy.css                         [39m[1m[2m  113.11 kB[22m[1m[22m[2m │ gzip:    17.71 kB[22m
+2026-06-19T07:07:22.2912060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDaxdD_Ml.js                                [39m[1m[2m    0.09 kB[22m[1m[22m[2m │ gzip:     0.10 kB[22m
+2026-06-19T07:07:22.2913570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBZ2wk6cz.js                                [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+2026-06-19T07:07:22.2914720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mGi6I4Gst.js                                [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+2026-06-19T07:07:22.2915900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDBBmMqQV.js                                [39m[1m[2m    0.18 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+2026-06-19T07:07:22.2917050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC04M_eaG.js                                [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.16 kB[22m
+2026-06-19T07:07:22.2918140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC2lM8kHf.js                                [39m[1m[2m    0.22 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+2026-06-19T07:07:22.2919270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC_j_9X3K.js                                [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+2026-06-19T07:07:22.2921250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD0W2WYzJ.js                                [39m[1m[2m    0.26 kB[22m[1m[22m[2m │ gzip:     0.21 kB[22m
+2026-06-19T07:07:22.2922450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCljzWvRk.js                                [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.25 kB[22m
+2026-06-19T07:07:22.2923590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD8N4HWiy.js                                [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+2026-06-19T07:07:22.2924740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdLXYbSvl.js                                [39m[1m[2m    0.36 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+2026-06-19T07:07:22.2925980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCcdReBjR.js                                [39m[1m[2m    0.39 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+2026-06-19T07:07:22.2927720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnBr56oly.js                                [39m[1m[2m    0.39 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+2026-06-19T07:07:22.2928900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC8GzXhN_.js                                [39m[1m[2m    0.48 kB[22m[1m[22m[2m │ gzip:     0.23 kB[22m
+2026-06-19T07:07:22.2930190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD98FE2Oh.js                                [39m[1m[2m    0.49 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+2026-06-19T07:07:22.2931390Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mA2RDPwkl.js                                [39m[1m[2m    0.66 kB[22m[1m[22m[2m │ gzip:     0.42 kB[22m
+2026-06-19T07:07:22.2933060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCE1G-McA.js                                [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+2026-06-19T07:07:22.2934280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDVwSmDoW.js                                [39m[1m[2m    0.92 kB[22m[1m[22m[2m │ gzip:     0.56 kB[22m
+2026-06-19T07:07:22.2935520Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mvX0vfb3P.js                                [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+2026-06-19T07:07:22.2936730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDqeiUyPD.js                                [39m[1m[2m    1.06 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+2026-06-19T07:07:22.2938020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCmKTTxBW.js                                [39m[1m[2m    1.18 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+2026-06-19T07:07:22.2939310Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mwJzc8BnG.js                                [39m[1m[2m    1.42 kB[22m[1m[22m[2m │ gzip:     0.63 kB[22m
+2026-06-19T07:07:22.2940540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBfckMJqq.js                                [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+2026-06-19T07:07:22.2941730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBPYkaYx8.js                                [39m[1m[2m    2.03 kB[22m[1m[22m[2m │ gzip:     0.97 kB[22m
+2026-06-19T07:07:22.2942990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBv4L8bhO.js                                [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+2026-06-19T07:07:22.2944250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD6gtjc5w.js                                [39m[1m[2m    2.56 kB[22m[1m[22m[2m │ gzip:     1.27 kB[22m
+2026-06-19T07:07:22.2945410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBAQGjU9z.js                                [39m[1m[2m    3.43 kB[22m[1m[22m[2m │ gzip:     1.48 kB[22m
+2026-06-19T07:07:22.2946600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBuBm4Pe2.js                                [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+2026-06-19T07:07:22.2948780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m8oFoMyT4.js                                [39m[1m[2m    4.27 kB[22m[1m[22m[2m │ gzip:     1.84 kB[22m
+2026-06-19T07:07:22.2950060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCZIbErux.js                                [39m[1m[2m    4.36 kB[22m[1m[22m[2m │ gzip:     1.70 kB[22m
+2026-06-19T07:07:22.2951230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDX6XiGOO.js                                [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+2026-06-19T07:07:22.2952430Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBNSPchGD.js                                [39m[1m[2m    4.71 kB[22m[1m[22m[2m │ gzip:     1.45 kB[22m
+2026-06-19T07:07:22.2953650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBvxrWROu.js                                [39m[1m[2m    4.74 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+2026-06-19T07:07:22.2954900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBMjaER1V.js                                [39m[1m[2m    4.95 kB[22m[1m[22m[2m │ gzip:     2.03 kB[22m
+2026-06-19T07:07:22.2956200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDddR-ox-.js                                [39m[1m[2m    5.05 kB[22m[1m[22m[2m │ gzip:     2.08 kB[22m
+2026-06-19T07:07:22.2957460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mHv5_hLU9.js                                [39m[1m[2m    5.19 kB[22m[1m[22m[2m │ gzip:     2.27 kB[22m
+2026-06-19T07:07:22.2958690Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBTHf-iG-.js                                [39m[1m[2m    5.55 kB[22m[1m[22m[2m │ gzip:     2.22 kB[22m
+2026-06-19T07:07:22.2960000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCtWaaJ8s.js                                [39m[1m[2m    5.63 kB[22m[1m[22m[2m │ gzip:     2.29 kB[22m
+2026-06-19T07:07:22.2961190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDtlMj4Vh.js                                [39m[1m[2m    5.87 kB[22m[1m[22m[2m │ gzip:     2.45 kB[22m
+2026-06-19T07:07:22.2962290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCptKtFUO.js                                [39m[1m[2m    5.90 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+2026-06-19T07:07:22.2963510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBR6aczPR.js                                [39m[1m[2m    6.38 kB[22m[1m[22m[2m │ gzip:     1.62 kB[22m
+2026-06-19T07:07:22.2964680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCZpWXXKM.js                                [39m[1m[2m    8.71 kB[22m[1m[22m[2m │ gzip:     1.83 kB[22m
+2026-06-19T07:07:22.2965810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB4T8vkkg.js                                [39m[1m[2m   10.32 kB[22m[1m[22m[2m │ gzip:     3.58 kB[22m
+2026-06-19T07:07:22.2967280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBf1mvugk.js                                [39m[1m[2m   10.98 kB[22m[1m[22m[2m │ gzip:     4.08 kB[22m
+2026-06-19T07:07:22.2968470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB3J0lFpB.js                                [39m[1m[2m   11.52 kB[22m[1m[22m[2m │ gzip:     2.19 kB[22m
+2026-06-19T07:07:22.2970580Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBEW6iwNo.js                                [39m[1m[2m   11.88 kB[22m[1m[22m[2m │ gzip:     4.64 kB[22m
+2026-06-19T07:07:22.2973950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCWJIMn5I.js                                [39m[1m[2m   13.14 kB[22m[1m[22m[2m │ gzip:     4.16 kB[22m
+2026-06-19T07:07:22.2976940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDe9VoR8X.js                                [39m[1m[2m   13.22 kB[22m[1m[22m[2m │ gzip:     4.45 kB[22m
+2026-06-19T07:07:22.2979980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mNGaCAVfT.js                                [39m[1m[2m   15.79 kB[22m[1m[22m[2m │ gzip:     5.60 kB[22m
+2026-06-19T07:07:22.2983190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mwZzbVkQx.js                                [39m[1m[2m   17.43 kB[22m[1m[22m[2m │ gzip:     4.51 kB[22m
+2026-06-19T07:07:22.2984420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB7OykbEP.js                                [39m[1m[2m   18.47 kB[22m[1m[22m[2m │ gzip:     7.20 kB[22m
+2026-06-19T07:07:22.2985530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBgv6TMqO.js                                [39m[1m[2m   20.03 kB[22m[1m[22m[2m │ gzip:     6.88 kB[22m
+2026-06-19T07:07:22.2986670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36moZeIzJLS.js                                [39m[1m[2m   20.20 kB[22m[1m[22m[2m │ gzip:     7.16 kB[22m
+2026-06-19T07:07:22.2987810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDcyDAZ2E.js                                [39m[1m[2m   21.57 kB[22m[1m[22m[2m │ gzip:     6.31 kB[22m
+2026-06-19T07:07:22.2988950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDCGVACKS.js                                [39m[1m[2m   22.12 kB[22m[1m[22m[2m │ gzip:     8.12 kB[22m
+2026-06-19T07:07:22.2995490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCTtYTChY.js                                [39m[1m[2m   23.53 kB[22m[1m[22m[2m │ gzip:     8.30 kB[22m
+2026-06-19T07:07:22.2997350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBPOZ5vdN.js                                [39m[1m[2m   23.60 kB[22m[1m[22m[2m │ gzip:     8.23 kB[22m
+2026-06-19T07:07:22.2998950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBWQvKeKQ.js                                [39m[1m[2m   24.08 kB[22m[1m[22m[2m │ gzip:     7.38 kB[22m
+2026-06-19T07:07:22.3000240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBf_Hf9s-.js                                [39m[1m[2m   25.22 kB[22m[1m[22m[2m │ gzip:     8.81 kB[22m
+2026-06-19T07:07:22.3001450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDgsB4xDJ.js                                [39m[1m[2m   25.61 kB[22m[1m[22m[2m │ gzip:    10.06 kB[22m
+2026-06-19T07:07:22.3002890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBWAei7_I.js                                [39m[1m[2m   27.35 kB[22m[1m[22m[2m │ gzip:     9.70 kB[22m
+2026-06-19T07:07:22.3004220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCYmwkIsU.js                                [39m[1m[2m   28.19 kB[22m[1m[22m[2m │ gzip:     8.21 kB[22m
+2026-06-19T07:07:22.3005620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnmJhN5s1.js                                [39m[1m[2m   30.07 kB[22m[1m[22m[2m │ gzip:     9.40 kB[22m
+2026-06-19T07:07:22.3006710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBF0oq7nm.js                                [39m[1m[2m   31.20 kB[22m[1m[22m[2m │ gzip:     9.84 kB[22m
+2026-06-19T07:07:22.3008020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBeiRHpOH.js                                [39m[1m[2m   33.25 kB[22m[1m[22m[2m │ gzip:     8.75 kB[22m
+2026-06-19T07:07:22.3009400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_6tOQAWP.js                                [39m[1m[2m   33.83 kB[22m[1m[22m[2m │ gzip:     9.92 kB[22m
+2026-06-19T07:07:22.3010700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36miJAgefCC.js                                [39m[1m[2m   36.30 kB[22m[1m[22m[2m │ gzip:    11.79 kB[22m
+2026-06-19T07:07:22.3012250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m6eEooUgS.js                                [39m[1m[2m   36.41 kB[22m[1m[22m[2m │ gzip:     9.18 kB[22m
+2026-06-19T07:07:22.3013620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCMV807w3.js                                [39m[1m[2m   40.17 kB[22m[1m[22m[2m │ gzip:    11.33 kB[22m
+2026-06-19T07:07:22.3014720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m-wsgf55v.js                                [39m[1m[2m   40.27 kB[22m[1m[22m[2m │ gzip:     8.97 kB[22m
+2026-06-19T07:07:22.3016470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mzcjliBN5.js                                [39m[1m[2m   42.81 kB[22m[1m[22m[2m │ gzip:    11.15 kB[22m
+2026-06-19T07:07:22.3018160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDfNGYkVY.js                                [39m[1m[2m   45.25 kB[22m[1m[22m[2m │ gzip:    14.64 kB[22m
+2026-06-19T07:07:22.3019790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDacQQn-9.js                                [39m[1m[2m   46.60 kB[22m[1m[22m[2m │ gzip:    11.95 kB[22m
+2026-06-19T07:07:22.3021020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDO-hG_DT.js                                [39m[1m[2m   48.03 kB[22m[1m[22m[2m │ gzip:    11.60 kB[22m
+2026-06-19T07:07:22.3022760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB_Y6UJ_9.js                                [39m[1m[2m   60.41 kB[22m[1m[22m[2m │ gzip:    19.39 kB[22m
+2026-06-19T07:07:22.3023790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDlZUHSEJ.js                                [39m[1m[2m   67.26 kB[22m[1m[22m[2m │ gzip:    15.75 kB[22m
+2026-06-19T07:07:22.3025220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDiIYuFQv.js                                [39m[1m[2m   68.30 kB[22m[1m[22m[2m │ gzip:    23.14 kB[22m
+2026-06-19T07:07:22.3026480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBBsF4n7a.js                                [39m[1m[2m   70.14 kB[22m[1m[22m[2m │ gzip:    19.67 kB[22m
+2026-06-19T07:07:22.3027990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBJfvnT80.js                                [39m[1m[2m   71.22 kB[22m[1m[22m[2m │ gzip:    20.98 kB[22m
+2026-06-19T07:07:22.3029490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD4ExYhGx.js                                [39m[1m[2m   71.76 kB[22m[1m[22m[2m │ gzip:    20.47 kB[22m
+2026-06-19T07:07:22.3030610Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCWAuq5Ng.js                                [39m[1m[2m   73.90 kB[22m[1m[22m[2m │ gzip:    16.98 kB[22m
+2026-06-19T07:07:22.3031980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBtt1Kh4H.js                                [39m[1m[2m   81.71 kB[22m[1m[22m[2m │ gzip:    22.47 kB[22m
+2026-06-19T07:07:22.3033330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBD-KIlym.js                                [39m[1m[2m   97.79 kB[22m[1m[22m[2m │ gzip:    26.84 kB[22m
+2026-06-19T07:07:22.3034810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBbmPpTvN.js                                [39m[1m[2m  102.51 kB[22m[1m[22m[2m │ gzip:    26.72 kB[22m
+2026-06-19T07:07:22.3036170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCdg2etNa.js                                [39m[1m[2m  110.74 kB[22m[1m[22m[2m │ gzip:    29.72 kB[22m
+2026-06-19T07:07:22.3037360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD-zy_rAE.js                                [39m[1m[2m  125.26 kB[22m[1m[22m[2m │ gzip:    33.05 kB[22m
+2026-06-19T07:07:22.3038610Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD0li9W3g.js                                [39m[1m[2m  148.58 kB[22m[1m[22m[2m │ gzip:    41.99 kB[22m
+2026-06-19T07:07:22.3040020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m5J0xJHOV.js                                [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+2026-06-19T07:07:22.3041210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mhEPXU-yA.js                                [39m[1m[2m  444.62 kB[22m[1m[22m[2m │ gzip:   118.23 kB[22m
+2026-06-19T07:07:22.3042450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB-elXQDm.js                                [39m[1m[2m  452.84 kB[22m[1m[22m[2m │ gzip:   107.01 kB[22m
+2026-06-19T07:07:22.3043590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mAkKsCd06.js                                [39m[1m[33m  639.52 kB[39m[22m[2m │ gzip:   170.22 kB[22m
+2026-06-19T07:07:22.3045340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBxPKo-_R.js                                [39m[1m[33m  922.98 kB[39m[22m[2m │ gzip:   254.49 kB[22m
+2026-06-19T07:07:22.3046720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mNx3-qxIY.js                                [39m[1m[33m3,743.00 kB[39m[22m[2m │ gzip: 1,204.76 kB[22m
+2026-06-19T07:07:22.3047680Z [warn] [33m
+2026-06-19T07:07:22.3048340Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-06-19T07:07:22.3048980Z - Using dynamic import() to code-split the application
+2026-06-19T07:07:22.3050050Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-06-19T07:07:22.3051000Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-06-19T07:07:22.3052940Z [info] [32m✓ built in 32.16s[39m
+2026-06-19T07:07:22.3053460Z [success] Client built in 32176ms
+2026-06-19T07:07:22.3053810Z [info] Building server...
+2026-06-19T07:07:22.3054440Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+2026-06-19T07:07:22.3054920Z [info] transforming...
+2026-06-19T07:07:22.3055350Z [info] [32m✓[39m 1 modules transformed.
+2026-06-19T07:07:22.3056460Z [info] rendering chunks...
+2026-06-19T07:07:22.3056900Z [info] [32m✓ built in 18ms[39m
+2026-06-19T07:07:22.3333960Z [success] Server built in 90ms
+2026-06-19T07:07:22.3377790Z [info] [nitro] Initializing prerenderer
+2026-06-19T07:07:23.6140110Z [info] [nitro] Prerendering 15 initial routes with crawler
+2026-06-19T07:07:23.6700330Z [log] [nitro] [90m  ├─ /nodes (45ms)[39m
+2026-06-19T07:07:23.6743460Z [log] [nitro] [90m  ├─ /media (43ms)[39m
+2026-06-19T07:07:23.6754390Z [log] [nitro] [90m  ├─ /tools (46ms)[39m
+2026-06-19T07:07:23.6763080Z [log] [nitro] [90m  ├─ /settings (49ms)[39m
+2026-06-19T07:07:23.6777550Z [log] [nitro] [90m  ├─ /skills (48ms)[39m
+2026-06-19T07:07:23.6805390Z [log] [nitro] [90m  ├─ / (42ms)[39m
+2026-06-19T07:07:23.6806000Z [log] [nitro] [90m  ├─ /agents (47ms)[39m
+2026-06-19T07:07:23.6806540Z [log] [nitro] [90m  ├─ /workspace (49ms)[39m
+2026-06-19T07:07:23.6807160Z [log] [nitro] [90m  ├─ /agent-teams (49ms)[39m
+2026-06-19T07:07:23.6807630Z [log] [nitro] [90m  ├─ /memory (47ms)[39m
+2026-06-19T07:07:23.6808100Z [log] [nitro] [90m  ├─ /mobile (48ms)[39m
+2026-06-19T07:07:23.6808600Z [log] [nitro] [90m  ├─ /applications (49ms)[39m
+2026-06-19T07:07:23.6809080Z [log] [nitro] [90m  ├─ /index.html (1ms)[39m
+2026-06-19T07:07:23.6809540Z [log] [nitro] [90m  ├─ /404.html (2ms)[39m
+2026-06-19T07:07:23.6809990Z [log] [nitro] [90m  ├─ /200.html (7ms)[39m
+2026-06-19T07:07:23.6810450Z [info] [nitro] Prerendered 15 routes in 1.295 seconds
+2026-06-19T07:07:23.8729050Z [success] [nitro] Generated public [36mdist/public[39m
+2026-06-19T07:07:23.9033290Z [success] [nitro] You can preview this build using `npx serve dist/public`
+2026-06-19T07:07:23.9135260Z [log] [90m│[39m
+2026-06-19T07:07:23.9195520Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+2026-06-19T07:07:23.9196170Z [log] [90m│[39m
+2026-06-19T07:07:23.9197180Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+2026-06-19T07:07:23.9198460Z [log] [90m│[39m
+2026-06-19T07:07:23.9199000Z [90m└[39m  ✨ You can now deploy [36mdist/public[39m to any static hosting!
+2026-06-19T07:07:24.9922460Z Mobile web assets written to /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/dist-mobile/public
+2026-06-19T07:07:25.0079140Z
+2026-06-19T07:07:25.0080300Z [0;33mDeploying server package into Electron resources...[0m
+2026-06-19T07:07:26.7384770Z  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+2026-06-19T07:07:26.8186550Z Packages are cloned from the content-addressable store to the virtual store.
+2026-06-19T07:07:26.8187190Z   Content-addressable store is at: /Users/runner/setup-pnpm/node_modules/.bin/store/v10
+2026-06-19T07:07:26.8188190Z   Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+2026-06-19T07:07:26.9013000Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-06-19T07:07:27.9033280Z Progress: resolved 34, reused 0, downloaded 0, added 0
+2026-06-19T07:07:28.5291190Z autobyteus-web                           |  WARN  deprecated electron-rebuild@3.2.9
+2026-06-19T07:07:28.9065780Z Progress: resolved 80, reused 0, downloaded 0, added 0
+2026-06-19T07:07:29.9071440Z Progress: resolved 360, reused 0, downloaded 0, added 0
+2026-06-19T07:07:30.9136270Z Progress: resolved 727, reused 0, downloaded 0, added 0
+2026-06-19T07:07:31.9139540Z Progress: resolved 1344, reused 0, downloaded 0, added 0
+2026-06-19T07:07:32.9165640Z Progress: resolved 1885, reused 1, downloaded 0, added 0
+2026-06-19T07:07:33.9199510Z Progress: resolved 1896, reused 1, downloaded 0, added 0
+2026-06-19T07:07:35.7339050Z  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, boolean@3.2.0, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+2026-06-19T07:07:35.7437100Z Progress: resolved 1896, reused 1, downloaded 0, added 0, done
+2026-06-19T07:07:35.7538980Z  WARN  Issues with peer dependencies found
+2026-06-19T07:07:35.7639700Z autobyteus-web
+2026-06-19T07:07:35.7743590Z └─┬ nuxt 3.21.1
+2026-06-19T07:07:35.7845030Z   └─┬ @nuxt/cli 3.33.1
+2026-06-19T07:07:35.7952870Z     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+2026-06-19T07:07:35.8070380Z     └─┬ @bomb.sh/tab 0.0.12
+2026-06-19T07:07:35.8174060Z       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+2026-06-19T07:07:35.8648530Z .                                        | +415 ++++++++++++++++++++++++++++++++
+2026-06-19T07:07:41.6234010Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-06-19T07:07:41.6336630Z │                                                                              │
+2026-06-19T07:07:41.6343010Z │   Ignored build scripts: autobyteus-ts@file:autobyteus-ts.                   │
+2026-06-19T07:07:41.6353590Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-06-19T07:07:41.6355310Z │   to run scripts.                                                            │
+2026-06-19T07:07:41.6356590Z │                                                                              │
+2026-06-19T07:07:41.6366080Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-06-19T07:07:41.6659610Z
+2026-06-19T07:07:41.6762540Z [0;33mCleaning workspace symlinks in deployment...[0m
+2026-06-19T07:07:41.9180330Z Removed 1 external symlinks from /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+2026-06-19T07:07:41.9251760Z
+2026-06-19T07:07:41.9253820Z [0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+2026-06-19T07:07:42.3200550Z
+2026-06-19T07:07:42.3305760Z [0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+2026-06-19T07:07:42.3406970Z [0;32m✓[0m Using PRISMA_CLI_BINARY_TARGETS=darwin,debian-openssl-1.1.x,debian-openssl-3.0.x
+2026-06-19T07:07:43.2304930Z Environment variables loaded from .env
+2026-06-19T07:07:43.2325500Z Prisma schema loaded from resources/server/prisma/schema.prisma
+2026-06-19T07:07:43.7480340Z
+2026-06-19T07:07:43.7483830Z ✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 131ms
+2026-06-19T07:07:43.7485080Z
+2026-06-19T07:07:43.7485640Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-06-19T07:07:43.7486060Z
+2026-06-19T07:07:43.7486600Z Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+2026-06-19T07:07:43.7492510Z
+2026-06-19T07:07:43.9673630Z
+2026-06-19T07:07:43.9676030Z [0;33mPruning native prebuilds for host platform...[0m
+2026-06-19T07:07:44.0457850Z
+2026-06-19T07:07:44.0459210Z [0;33mRebuilding native modules for Electron...[0m
+2026-06-19T07:07:45.4153090Z - Searching dependency tree
+2026-06-19T07:07:45.8554210Z (node:22713) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+2026-06-19T07:07:45.8555190Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-19T07:07:51.8848520Z   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+2026-06-19T07:07:51.9044080Z   CXX(target) Release/obj.target/pty/src/unix/pty.o
+2026-06-19T07:07:54.5794210Z ../src/unix/pty.cc:139:30: warning: missing field 'filter' initializer [-Wmissing-field-initializers]
+2026-06-19T07:07:54.5796010Z     struct kevent change = {0};
+2026-06-19T07:07:54.5797250Z                              ^
+2026-06-19T07:07:54.5799050Z ../src/unix/pty.cc:159:31: warning: missing field 'filter' initializer [-Wmissing-field-initializers]
+2026-06-19T07:07:54.5800870Z       struct kevent event = {0};
+2026-06-19T07:07:54.5861440Z                               ^
+2026-06-19T07:07:55.0441390Z 2 warnings generated.
+2026-06-19T07:07:55.0926400Z   SOLINK_MODULE(target) Release/pty.node
+2026-06-19T07:07:55.3358240Z   CXX(target) Release/obj.target/spawn-helper/src/unix/spawn-helper.o
+2026-06-19T07:07:55.4420070Z   LINK(target) Release/spawn-helper
+2026-06-19T07:07:55.5013060Z ✔ Rebuild Complete
+2026-06-19T07:07:55.5110240Z
+2026-06-19T07:07:55.5112390Z [0;33mNormalizing node-pty spawn-helper execute bits...[0m
+2026-06-19T07:07:55.7341360Z [0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+2026-06-19T07:07:55.7342140Z
+2026-06-19T07:07:55.7342880Z [0;33mRemoving symlinks that point outside the bundle...[0m
+2026-06-19T07:07:56.1767480Z Removed 1 external symlinks from /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+2026-06-19T07:07:56.1849330Z
+2026-06-19T07:07:56.1957650Z [0;32m=======================================[0m
+2026-06-19T07:07:56.2060810Z [0;32m   Server files prepared successfully!   [0m
+2026-06-19T07:07:56.2154370Z [0;32m=======================================[0m
+2026-06-19T07:07:56.2155690Z Target directory: [0;33m/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server[0m
+2026-06-19T07:07:56.2156580Z You can now build the Electron app with the server included
+2026-06-19T07:07:56.4655820Z
+2026-06-19T07:07:56.4665220Z > autobyteus@1.3.60 generate:electron /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:07:56.4667370Z > cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+2026-06-19T07:07:56.4668140Z
+2026-06-19T07:07:57.3125290Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+2026-06-19T07:07:57.4843000Z [90m│[39m
+2026-06-19T07:07:57.4848400Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+2026-06-19T07:07:58.7084330Z [log] isElectronBuild true
+2026-06-19T07:07:58.7419020Z [log] [Electron Module] Initializing electron module
+2026-06-19T07:07:58.7422680Z [log] [Electron Module] Applying default Electron configurations
+2026-06-19T07:07:58.7423380Z [log] [Electron Module] Configuring for Electron build target
+2026-06-19T07:07:58.7424190Z [log] [Electron Module] Configuring production settings
+2026-06-19T07:07:58.7424810Z [log] [Electron Module] Electron module initialization completed
+2026-06-19T07:08:00.1434840Z [90m│[39m
+2026-06-19T07:08:00.1435970Z [34m●[39m  Nitro preset: [36mstatic[39m
+2026-06-19T07:08:02.8687430Z [log] [Electron Module] Extending Vite config
+2026-06-19T07:08:02.8697120Z [info] Building client...
+2026-06-19T07:08:02.8849100Z [Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+2026-06-19T07:08:02.8880430Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+2026-06-19T07:08:03.0195740Z [info] transforming...
+2026-06-19T07:08:29.9479050Z [info] [32m✓[39m 3499 modules transformed.
+2026-06-19T07:08:31.4898960Z [info] rendering chunks...
+2026-06-19T07:08:33.2910800Z [info] computing gzip size...
+2026-06-19T07:08:33.4313730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff           [39m[1m[2m    4.42 kB[22m[1m[22m
+2026-06-19T07:08:33.4413890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2          [39m[1m[2m    4.93 kB[22m[1m[22m
+2026-06-19T07:08:33.4447180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2          [39m[1m[2m    5.21 kB[22m[1m[22m
+2026-06-19T07:08:33.4485060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2          [39m[1m[2m    5.47 kB[22m[1m[22m
+2026-06-19T07:08:33.4486940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff           [39m[1m[2m    5.98 kB[22m[1m[22m
+2026-06-19T07:08:33.4488200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff           [39m[1m[2m    6.19 kB[22m[1m[22m
+2026-06-19T07:08:33.4490120Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff           [39m[1m[2m    6.50 kB[22m[1m[22m
+2026-06-19T07:08:33.4493750Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2    [39m[1m[2m    6.91 kB[22m[1m[22m
+2026-06-19T07:08:33.4496780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2       [39m[1m[2m    6.91 kB[22m[1m[22m
+2026-06-19T07:08:33.4499700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf            [39m[1m[2m    7.59 kB[22m[1m[22m
+2026-06-19T07:08:33.4500980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff     [39m[1m[2m    7.66 kB[22m[1m[22m
+2026-06-19T07:08:33.4502140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff        [39m[1m[2m    7.72 kB[22m[1m[22m
+2026-06-19T07:08:33.4503240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2         [39m[1m[2m    9.64 kB[22m[1m[22m
+2026-06-19T07:08:33.4504360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2      [39m[1m[2m   10.34 kB[22m[1m[22m
+2026-06-19T07:08:33.4505510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf            [39m[1m[2m   10.36 kB[22m[1m[22m
+2026-06-19T07:08:33.4514830Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff          [39m[1m[2m   10.59 kB[22m[1m[22m
+2026-06-19T07:08:33.4516390Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2        [39m[1m[2m   11.32 kB[22m[1m[22m
+2026-06-19T07:08:33.4517500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2           [39m[1m[2m   11.35 kB[22m[1m[22m
+2026-06-19T07:08:33.4518590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf            [39m[1m[2m   11.51 kB[22m[1m[22m
+2026-06-19T07:08:33.4519660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2       [39m[1m[2m   12.03 kB[22m[1m[22m
+2026-06-19T07:08:33.4520830Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2         [39m[1m[2m   12.22 kB[22m[1m[22m
+2026-06-19T07:08:33.4521900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf            [39m[1m[2m   12.23 kB[22m[1m[22m
+2026-06-19T07:08:33.4543110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff       [39m[1m[2m   12.32 kB[22m[1m[22m
+2026-06-19T07:08:33.4545800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf      [39m[1m[2m   12.34 kB[22m[1m[22m
+2026-06-19T07:08:33.4548700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf         [39m[1m[2m   12.37 kB[22m[1m[22m
+2026-06-19T07:08:33.4551530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff         [39m[1m[2m   13.21 kB[22m[1m[22m
+2026-06-19T07:08:33.4554970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff            [39m[1m[2m   13.30 kB[22m[1m[22m
+2026-06-19T07:08:33.4557660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2     [39m[1m[2m   13.57 kB[22m[1m[22m
+2026-06-19T07:08:33.4560400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff        [39m[1m[2m   14.11 kB[22m[1m[22m
+2026-06-19T07:08:33.4563070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff          [39m[1m[2m   14.41 kB[22m[1m[22m
+2026-06-19T07:08:33.4565730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff      [39m[1m[2m   16.03 kB[22m[1m[22m
+2026-06-19T07:08:33.4568340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2        [39m[1m[2m   16.40 kB[22m[1m[22m
+2026-06-19T07:08:33.4571010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2            [39m[1m[2m   16.44 kB[22m[1m[22m
+2026-06-19T07:08:33.4573750Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf           [39m[1m[2m   16.65 kB[22m[1m[22m
+2026-06-19T07:08:33.4576410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2        [39m[1m[2m   16.78 kB[22m[1m[22m
+2026-06-19T07:08:33.4578990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2            [39m[1m[2m   16.99 kB[22m[1m[22m
+2026-06-19T07:08:33.4581620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff         [39m[1m[2m   18.67 kB[22m[1m[22m
+2026-06-19T07:08:33.4584160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff             [39m[1m[2m   18.75 kB[22m[1m[22m
+2026-06-19T07:08:33.4586720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff         [39m[1m[2m   19.41 kB[22m[1m[22m
+2026-06-19T07:08:33.4589370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf        [39m[1m[2m   19.44 kB[22m[1m[22m
+2026-06-19T07:08:33.4592710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf          [39m[1m[2m   19.57 kB[22m[1m[22m
+2026-06-19T07:08:33.4594060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf             [39m[1m[2m   19.58 kB[22m[1m[22m
+2026-06-19T07:08:33.4596070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff             [39m[1m[2m   19.68 kB[22m[1m[22m
+2026-06-19T07:08:33.4597400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf         [39m[1m[2m   22.36 kB[22m[1m[22m
+2026-06-19T07:08:33.4598460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf           [39m[1m[2m   24.50 kB[22m[1m[22m
+2026-06-19T07:08:33.4599480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2              [39m[1m[2m   25.32 kB[22m[1m[22m
+2026-06-19T07:08:33.4600540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2           [39m[1m[2m   26.27 kB[22m[1m[22m
+2026-06-19T07:08:33.4602100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf       [39m[1m[2m   27.56 kB[22m[1m[22m
+2026-06-19T07:08:33.4603200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2            [39m[1m[2m   28.08 kB[22m[1m[22m
+2026-06-19T07:08:33.4604230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff               [39m[1m[2m   29.91 kB[22m[1m[22m
+2026-06-19T07:08:33.4605170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff            [39m[1m[2m   30.77 kB[22m[1m[22m
+2026-06-19T07:08:33.4606180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf          [39m[1m[2m   31.20 kB[22m[1m[22m
+2026-06-19T07:08:33.4607210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf              [39m[1m[2m   31.31 kB[22m[1m[22m
+2026-06-19T07:08:33.4608240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf          [39m[1m[2m   32.97 kB[22m[1m[22m
+2026-06-19T07:08:33.4609280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff             [39m[1m[2m   33.52 kB[22m[1m[22m
+2026-06-19T07:08:33.4610370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf              [39m[1m[2m   33.58 kB[22m[1m[22m
+2026-06-19T07:08:33.4611370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf                [39m[1m[2m   51.34 kB[22m[1m[22m
+2026-06-19T07:08:33.4612410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf             [39m[1m[2m   53.58 kB[22m[1m[22m
+2026-06-19T07:08:33.4613450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf              [39m[1m[2m   63.63 kB[22m[1m[22m
+2026-06-19T07:08:33.4614550Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                     [39m[1m[2m   72.35 kB[22m[1m[22m[2m │ gzip:     6.42 kB[22m
+2026-06-19T07:08:33.4615730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.CJV_gWfn.css              [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+2026-06-19T07:08:33.4616850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                          [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+2026-06-19T07:08:33.4618130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.CxTZU0Nv.css                       [39m[1m[2m    0.27 kB[22m[1m[22m[2m │ gzip:     0.21 kB[22m
+2026-06-19T07:08:33.4619510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mAgentDefinitionForm.B4uhkLvJ.css            [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+2026-06-19T07:08:33.4621190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css           [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+2026-06-19T07:08:33.4622420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.hH3oHwcH.css                        [39m[1m[2m    0.86 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+2026-06-19T07:08:33.4623560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.BrK5oVEn.css               [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+2026-06-19T07:08:33.4624790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museTeamRunRuntimeCatalogSync.BVYYuVIi.css   [39m[1m[2m    3.51 kB[22m[1m[22m[2m │ gzip:     1.19 kB[22m
+2026-06-19T07:08:33.4625900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mworkspace.BRhO3Yws.css                      [39m[1m[2m    6.93 kB[22m[1m[22m[2m │ gzip:     1.89 kB[22m
+2026-06-19T07:08:33.4627050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.D_7dP6AQ.css                         [39m[1m[2m   23.43 kB[22m[1m[22m[2m │ gzip:     4.59 kB[22m
+2026-06-19T07:08:33.4628390Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.C_z0J9Y2.css       [39m[1m[2m   46.65 kB[22m[1m[22m[2m │ gzip:    12.11 kB[22m
+2026-06-19T07:08:33.4629530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.Pm_VECQy.css                          [39m[1m[2m  113.11 kB[22m[1m[22m[2m │ gzip:    17.71 kB[22m
+2026-06-19T07:08:33.4630680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclone.CoR0N1E5.js                           [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+2026-06-19T07:08:33.4631860Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchannel.Cv2HOsuv.js                         [39m[1m[2m    0.13 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+2026-06-19T07:08:33.4633090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minit.Gi6I4Gst.js                            [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+2026-06-19T07:08:33.4634230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QZHKN3VN.C1YY_jUm.js                  [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+2026-06-19T07:08:33.4635360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.C_j_9X3K.js                        [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+2026-06-19T07:08:33.4636460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-4BX2VUAB.BVSgwwJZ.js                  [39m[1m[2m    0.24 kB[22m[1m[22m[2m │ gzip:     0.18 kB[22m
+2026-06-19T07:08:33.4637620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-55IACEB6.Dfd85nr3.js                  [39m[1m[2m    0.25 kB[22m[1m[22m[2m │ gzip:     0.22 kB[22m
+2026-06-19T07:08:33.4638760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtools.LBxzMjvb.js                           [39m[1m[2m    0.31 kB[22m[1m[22m[2m │ gzip:     0.24 kB[22m
+2026-06-19T07:08:33.4639970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museNativeFolderDialog.CljzWvRk.js           [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.25 kB[22m
+2026-06-19T07:08:33.4641160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-FMBD7UC4.Bw5MWmJI.js                  [39m[1m[2m    0.38 kB[22m[1m[22m[2m │ gzip:     0.28 kB[22m
+2026-06-19T07:08:33.4642360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-v2-4FDKWEC3.Ph_loB2m.js        [39m[1m[2m    0.46 kB[22m[1m[22m[2m │ gzip:     0.32 kB[22m
+2026-06-19T07:08:33.4643460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mappLayoutStore.C8GzXhN_.js                  [39m[1m[2m    0.48 kB[22m[1m[22m[2m │ gzip:     0.23 kB[22m
+2026-06-19T07:08:33.4644630Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-2ON5EDUG.CvfDzksr.js           [39m[1m[2m    0.50 kB[22m[1m[22m[2m │ gzip:     0.34 kB[22m
+2026-06-19T07:08:33.4646110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-v2-WZHVMYZB.CvfDzksr.js        [39m[1m[2m    0.50 kB[22m[1m[22m[2m │ gzip:     0.34 kB[22m
+2026-06-19T07:08:33.4647330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QN33PNHL.BKw8eeYL.js                  [39m[1m[2m    0.52 kB[22m[1m[22m[2m │ gzip:     0.37 kB[22m
+2026-06-19T07:08:33.4648460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_commonjsHelpers.CE1G-McA.js                [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+2026-06-19T07:08:33.4649620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minfoDiagram-HS3SLOUP.pDXoIG_B.js            [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.50 kB[22m
+2026-06-19T07:08:33.4650780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapi.vX0vfb3P.js                             [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+2026-06-19T07:08:33.4651910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mordinal.BYWQX77i.js                         [39m[1m[2m    1.19 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+2026-06-19T07:08:33.4653170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.DzXom949.js                           [39m[1m[2m    1.20 kB[22m[1m[22m[2m │ gzip:     0.73 kB[22m
+2026-06-19T07:08:33.4654320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmobile.CxJ8LzFx.js                          [39m[1m[2m    1.34 kB[22m[1m[22m[2m │ gzip:     0.75 kB[22m
+2026-06-19T07:08:33.4655430Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-TZMSLE5B.Bn3BhBM0.js                  [39m[1m[2m    1.45 kB[22m[1m[22m[2m │ gzip:     0.64 kB[22m
+2026-06-19T07:08:33.4656640Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationAssetUrl.BfckMJqq.js             [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+2026-06-19T07:08:33.4657820Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mConfirmationModal.BPYkaYx8.js               [39m[1m[2m    2.03 kB[22m[1m[22m[2m │ gzip:     0.97 kB[22m
+2026-06-19T07:08:33.4658980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mfeaturedCatalogItems.Bv4L8bhO.js            [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+2026-06-19T07:08:33.4660160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_basePickBy.BGaFKFam.js                     [39m[1m[2m    2.60 kB[22m[1m[22m[2m │ gzip:     1.30 kB[22m
+2026-06-19T07:08:33.4661270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marc.BlJ_CPVK.js                             [39m[1m[2m    3.45 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+2026-06-19T07:08:33.4662390Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationStore.BuBm4Pe2.js                [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+2026-06-19T07:08:33.4663540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-S2PKOQOG.C7aSbdL-.js                [39m[1m[2m    4.38 kB[22m[1m[22m[2m │ gzip:     1.93 kB[22m
+2026-06-19T07:08:33.4665800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mRuntimeModelConfigFields.vue.qAV_6zYV.js    [39m[1m[2m    4.45 kB[22m[1m[22m[2m │ gzip:     1.75 kB[22m
+2026-06-19T07:08:33.4667040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefaultLocale.DX6XiGOO.js                   [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+2026-06-19T07:08:33.4705230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mselfEvolutionCapabilityStore.BNSPchGD.js    [39m[1m[2m    4.71 kB[22m[1m[22m[2m │ gzip:     1.45 kB[22m
+2026-06-19T07:08:33.4708420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex._6gbc9B_.js                           [39m[1m[2m    4.78 kB[22m[1m[22m[2m │ gzip:     1.89 kB[22m
+2026-06-19T07:08:33.4711510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFullScreenImageModal.CBiaCMFD.js            [39m[1m[2m    4.96 kB[22m[1m[22m[2m │ gzip:     2.03 kB[22m
+2026-06-19T07:08:33.4715660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSearchableGroupedSelect.vue.DddR-ox-.js     [39m[1m[2m    5.05 kB[22m[1m[22m[2m │ gzip:     2.08 kB[22m
+2026-06-19T07:08:33.4718890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mpieDiagram-ADFJNKIX.rYMyv_FH.js             [39m[1m[2m    5.31 kB[22m[1m[22m[2m │ gzip:     2.37 kB[22m
+2026-06-19T07:08:33.4721970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSearchableSelect.vue.BTHf-iG-.js            [39m[1m[2m    5.55 kB[22m[1m[22m[2m │ gzip:     2.22 kB[22m
+2026-06-19T07:08:33.4725070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlinear.D6-S9FE3.js                          [39m[1m[2m    5.67 kB[22m[1m[22m[2m │ gzip:     2.32 kB[22m
+2026-06-19T07:08:33.4726340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgraph.RFv-1Fjm.js                           [39m[1m[2m    5.93 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+2026-06-19T07:08:33.4727460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-QEK2KX5R.CNyMjFjo.js                [39m[1m[2m    5.98 kB[22m[1m[22m[2m │ gzip:     2.54 kB[22m
+2026-06-19T07:08:33.4728950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mserverSettings.BR6aczPR.js                  [39m[1m[2m    6.38 kB[22m[1m[22m[2m │ gzip:     1.62 kB[22m
+2026-06-19T07:08:33.4730090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtoolManagementStore.CZpWXXKM.js             [39m[1m[2m    8.71 kB[22m[1m[22m[2m │ gzip:     1.83 kB[22m
+2026-06-19T07:08:33.4731230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-FKZM4ZOC.jcDXCZU3.js           [39m[1m[2m   10.46 kB[22m[1m[22m[2m │ gzip:     3.68 kB[22m
+2026-06-19T07:08:33.4732380Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdagre-6UL2VRFP.5jo6F9UG.js                  [39m[1m[2m   11.08 kB[22m[1m[22m[2m │ gzip:     4.14 kB[22m
+2026-06-19T07:08:33.4733500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskillStore.B3J0lFpB.js                      [39m[1m[2m   11.52 kB[22m[1m[22m[2m │ gzip:     2.19 kB[22m
+2026-06-19T07:08:33.4734600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_baseUniq.DXguE60w.js                       [39m[1m[2m   11.90 kB[22m[1m[22m[2m │ gzip:     4.66 kB[22m
+2026-06-19T07:08:33.4735730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mModelConfigSection.vue.Gc9398aT.js          [39m[1m[2m   13.18 kB[22m[1m[22m[2m │ gzip:     4.19 kB[22m
+2026-06-19T07:08:33.4736820Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmedia.BiGZM2gx.js                           [39m[1m[2m   13.27 kB[22m[1m[22m[2m │ gzip:     4.48 kB[22m
+2026-06-19T07:08:33.4737870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-PSM6KHXK.c1xkLT5r.js                [39m[1m[2m   15.94 kB[22m[1m[22m[2m │ gzip:     5.72 kB[22m
+2026-06-19T07:08:33.4739050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRuntimeScopedModelSelection.k3uauTLh.js  [39m[1m[2m   17.44 kB[22m[1m[22m[2m │ gzip:     4.52 kB[22m
+2026-06-19T07:08:33.4740210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36miconify.B7OykbEP.js                         [39m[1m[2m   18.47 kB[22m[1m[22m[2m │ gzip:     7.20 kB[22m
+2026-06-19T07:08:33.4741350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmindmap-definition-VGOIOE7T.psVEO9GB.js     [39m[1m[2m   20.11 kB[22m[1m[22m[2m │ gzip:     6.95 kB[22m
+2026-06-19T07:08:33.4742510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mkanban-definition-3W4ZIXB7.D4PstuDh.js      [39m[1m[2m   20.27 kB[22m[1m[22m[2m │ gzip:     7.21 kB[22m
+2026-06-19T07:08:33.4743710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mvoiceInputStore.CM0G3yR3.js                 [39m[1m[2m   21.60 kB[22m[1m[22m[2m │ gzip:     6.32 kB[22m
+2026-06-19T07:08:33.4744850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msankeyDiagram-TZEHDZUN.C7Vy3HID.js          [39m[1m[2m   22.19 kB[22m[1m[22m[2m │ gzip:     8.17 kB[22m
+2026-06-19T07:08:33.4746210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mjourneyDiagram-XKPGCS4Q.DGVQuZ-S.js         [39m[1m[2m   23.61 kB[22m[1m[22m[2m │ gzip:     8.37 kB[22m
+2026-06-19T07:08:33.4747450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtimeline-definition-IT6M3QCI.C8PfrC8b.js    [39m[1m[2m   23.66 kB[22m[1m[22m[2m │ gzip:     8.27 kB[22m
+2026-06-19T07:08:33.4748650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgitGraphDiagram-V2S2FVAM.CNiESosk.js        [39m[1m[2m   24.21 kB[22m[1m[22m[2m │ gzip:     7.48 kB[22m
+2026-06-19T07:08:33.4749780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36merDiagram-Q2GNP2WA.BDBpRvQA.js              [39m[1m[2m   25.31 kB[22m[1m[22m[2m │ gzip:     8.87 kB[22m
+2026-06-19T07:08:33.4750880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mqrCodeDataUrlService.BInqJ4D7.js            [39m[1m[2m   25.63 kB[22m[1m[22m[2m │ gzip:    10.07 kB[22m
+2026-06-19T07:08:33.4752030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlayout.D1QHyRF6.js                          [39m[1m[2m   27.40 kB[22m[1m[22m[2m │ gzip:     9.73 kB[22m
+2026-06-19T07:08:33.4755590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magents.CrtBt6b_.js                          [39m[1m[2m   28.43 kB[22m[1m[22m[2m │ gzip:     8.34 kB[22m
+2026-06-19T07:08:33.4758670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mrequirementDiagram-UZGBJVZJ.C_1X7RtM.js     [39m[1m[2m   30.15 kB[22m[1m[22m[2m │ gzip:     9.47 kB[22m
+2026-06-19T07:08:33.4761950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFileExplorerTabs.vue.B0DvI4_u.js            [39m[1m[2m   31.25 kB[22m[1m[22m[2m │ gzip:     9.85 kB[22m
+2026-06-19T07:08:33.4763260Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskills.CPjA5xlA.js                          [39m[1m[2m   33.36 kB[22m[1m[22m[2m │ gzip:     8.81 kB[22m
+2026-06-19T07:08:33.4764470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mquadrantDiagram-AYHSOK5B.CzjLDw_r.js        [39m[1m[2m   33.91 kB[22m[1m[22m[2m │ gzip:     9.98 kB[22m
+2026-06-19T07:08:33.4765660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-DI55MBZ5.BCd316KE.js                  [39m[1m[2m   36.36 kB[22m[1m[22m[2m │ gzip:    11.84 kB[22m
+2026-06-19T07:08:33.4766860Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mAgentDefinitionForm.vue.DbFpx6fu.js         [39m[1m[2m   36.49 kB[22m[1m[22m[2m │ gzip:     9.22 kB[22m
+2026-06-19T07:08:33.4768040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mxychartDiagram-PRI3JC2R.D56xeiff.js         [39m[1m[2m   40.25 kB[22m[1m[22m[2m │ gzip:    11.39 kB[22m
+2026-06-19T07:08:33.4769170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmemory.-wsgf55v.js                          [39m[1m[2m   40.27 kB[22m[1m[22m[2m │ gzip:     8.97 kB[22m
+2026-06-19T07:08:33.4770300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mToolsManagementWorkspace.vue.Bl609t76.js    [39m[1m[2m   42.83 kB[22m[1m[22m[2m │ gzip:    11.16 kB[22m
+2026-06-19T07:08:33.4771430Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-B4BG7PRW.Bx9YtlKR.js                  [39m[1m[2m   45.32 kB[22m[1m[22m[2m │ gzip:    14.69 kB[22m
+2026-06-19T07:08:33.4772770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefault.BKvWNB6g.js                         [39m[1m[2m   46.74 kB[22m[1m[22m[2m │ gzip:    12.03 kB[22m
+2026-06-19T07:08:33.4773870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnodes.CxBkIMF6.js                           [39m[1m[2m   48.07 kB[22m[1m[22m[2m │ gzip:    11.63 kB[22m
+2026-06-19T07:08:33.4775000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mflowDiagram-NV44I4VS.GhG7lkni.js            [39m[1m[2m   60.52 kB[22m[1m[22m[2m │ gzip:    19.46 kB[22m
+2026-06-19T07:08:33.4776140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magent-teams.DhylFwmV.js                     [39m[1m[2m   67.50 kB[22m[1m[22m[2m │ gzip:    15.88 kB[22m
+2026-06-19T07:08:33.4777900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mganttDiagram-JELNMOA3.Cs-6p6Mg.js           [39m[1m[2m   68.38 kB[22m[1m[22m[2m │ gzip:    23.19 kB[22m
+2026-06-19T07:08:33.4779120Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mc4Diagram-YG6GDRKO.C4TbBBJV.js              [39m[1m[2m   70.20 kB[22m[1m[22m[2m │ gzip:    19.72 kB[22m
+2026-06-19T07:08:33.4780290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museTeamRunRuntimeCatalogSync.B5IHOOba.js    [39m[1m[2m   71.34 kB[22m[1m[22m[2m │ gzip:    21.05 kB[22m
+2026-06-19T07:08:33.4781470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mblockDiagram-VD42YOAC.Cw-g46G2.js           [39m[1m[2m   71.85 kB[22m[1m[22m[2m │ gzip:    20.54 kB[22m
+2026-06-19T07:08:33.4782580Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_id_.BT0Xni1w.js                            [39m[1m[2m   74.08 kB[22m[1m[22m[2m │ gzip:    17.06 kB[22m
+2026-06-19T07:08:33.4783690Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcose-bilkent-S5V4N54A.BUbmhaeb.js           [39m[1m[2m   81.77 kB[22m[1m[22m[2m │ gzip:    22.52 kB[22m
+2026-06-19T07:08:33.4785040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msequenceDiagram-WL72ISMW.CTsGE8RI.js        [39m[1m[2m   97.87 kB[22m[1m[22m[2m │ gzip:    26.89 kB[22m
+2026-06-19T07:08:33.4786220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magentRunStore.BFx2u66f.js                   [39m[1m[2m  102.56 kB[22m[1m[22m[2m │ gzip:    26.75 kB[22m
+2026-06-19T07:08:33.4787410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mMobileRemoteAccessShell.vue.Djo67a26.js     [39m[1m[2m  110.87 kB[22m[1m[22m[2m │ gzip:    29.81 kB[22m
+2026-06-19T07:08:33.4788560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.BK9ZMwC_.js                       [39m[1m[2m  125.28 kB[22m[1m[22m[2m │ gzip:    33.05 kB[22m
+2026-06-19T07:08:33.4789720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marchitectureDiagram-VXUJARFQ.CjSdydhh.js    [39m[1m[2m  148.71 kB[22m[1m[22m[2m │ gzip:    42.10 kB[22m
+2026-06-19T07:08:33.4790880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcytoscape.esm.5J0xJHOV.js                   [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+2026-06-19T07:08:33.4791980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.D01TzsbK.js                        [39m[1m[2m  444.92 kB[22m[1m[22m[2m │ gzip:   118.41 kB[22m
+2026-06-19T07:08:33.4793210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtreemap-GDKQZRPO.C_b7pBc-.js                [39m[1m[2m  452.91 kB[22m[1m[22m[2m │ gzip:   107.07 kB[22m
+2026-06-19T07:08:33.4794330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.BNeueZhy.js                       [39m[1m[33m  639.88 kB[39m[22m[2m │ gzip:   170.43 kB[22m
+2026-06-19T07:08:33.4795680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mentry.gZxgCPEy.js                           [39m[1m[33m  923.76 kB[39m[22m[2m │ gzip:   254.89 kB[22m
+2026-06-19T07:08:33.4796940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museWorkspaceFileExplorer.vmklXlqX.js        [39m[1m[33m3,744.56 kB[39m[22m[2m │ gzip: 1,205.72 kB[22m
+2026-06-19T07:08:33.4797570Z [warn] [33m
+2026-06-19T07:08:33.4797980Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-06-19T07:08:33.4798520Z - Using dynamic import() to code-split the application
+2026-06-19T07:08:33.4799350Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-06-19T07:08:33.4800220Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-06-19T07:08:33.4800900Z [info] [32m✓ built in 30.55s[39m
+2026-06-19T07:08:33.4801260Z [success] Client built in 30564ms
+2026-06-19T07:08:33.4801660Z [log] [Electron Module] Extending Vite config
+2026-06-19T07:08:33.4802020Z [info] Building server...
+2026-06-19T07:08:33.4802850Z [Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+2026-06-19T07:08:33.4803570Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+2026-06-19T07:08:33.4804000Z [info] transforming...
+2026-06-19T07:08:33.4804390Z [info] [32m✓[39m 1 modules transformed.
+2026-06-19T07:08:33.4804720Z [info] rendering chunks...
+2026-06-19T07:08:33.4805120Z [info] [32m✓ built in 19ms[39m
+2026-06-19T07:08:33.4805510Z [log] [Electron Module] Processing build manifest
+2026-06-19T07:08:33.5021950Z [success] Server built in 66ms
+2026-06-19T07:08:33.5053350Z [log] [Electron Module] Build process completed
+2026-06-19T07:08:33.5055120Z [log] [Electron Module] Running production build steps
+2026-06-19T07:08:33.5056430Z [log] [Electron Module] Building entry: electron/main.ts
+2026-06-19T07:08:33.5119320Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+2026-06-19T07:08:33.5294440Z [log] transforming...
+2026-06-19T07:08:35.7541630Z [log] [32m✓[39m 402 modules transformed.
+2026-06-19T07:08:36.0216820Z [log] rendering chunks...
+2026-06-19T07:08:36.0265530Z [log] computing gzip size...
+2026-06-19T07:08:36.0437040Z [log] [2mdist/electron/[22m[36mmain.js  [39m[1m[33m650.33 kB[39m[22m[2m │ gzip: 186.19 kB[22m
+2026-06-19T07:08:36.0440980Z [log] [32m✓ built in 2.53s[39m
+2026-06-19T07:08:36.0443300Z [log] [Electron Module] Building entry: electron/preload.ts
+2026-06-19T07:08:36.0471430Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+2026-06-19T07:08:36.0530080Z [log] transforming...
+2026-06-19T07:08:36.0590900Z [log] [32m✓[39m 1 modules transformed.
+2026-06-19T07:08:36.0650980Z [log] rendering chunks...
+2026-06-19T07:08:36.0651880Z [log] computing gzip size...
+2026-06-19T07:08:36.0652950Z [log] [2mdist/electron/[22m[36mpreload.js  [39m[1m[2m3.46 kB[22m[1m[22m[2m │ gzip: 0.96 kB[22m
+2026-06-19T07:08:36.0653600Z [log] [32m✓ built in 14ms[39m
+2026-06-19T07:08:36.0654410Z [log] [Electron Module] Production build completed successfully
+2026-06-19T07:08:36.0957510Z [info] [nitro] Initializing prerenderer
+2026-06-19T07:08:37.8218550Z [info] [nitro] Prerendering 3 initial routes with crawler
+2026-06-19T07:08:37.8961400Z [log] [nitro] [90m  ├─ /index.html (68ms)[39m
+2026-06-19T07:08:37.8965400Z [log] [nitro] [90m  ├─ /404.html (68ms)[39m
+2026-06-19T07:08:37.8967790Z [log] [nitro] [90m  ├─ /200.html (70ms)[39m
+2026-06-19T07:08:37.8968950Z [info] [nitro] Prerendered 3 routes in 1.771 seconds
+2026-06-19T07:08:38.0435000Z [success] [nitro] Generated public [36mdist/renderer[39m
+2026-06-19T07:08:38.0864140Z [success] [nitro] You can preview this build using `npx serve dist/renderer`
+2026-06-19T07:08:38.0879100Z [log] [90m│[39m
+2026-06-19T07:08:38.0881350Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+2026-06-19T07:08:38.0882700Z [log] [90m│[39m
+2026-06-19T07:08:38.0886060Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+2026-06-19T07:08:38.0887710Z [log] [90m│[39m
+2026-06-19T07:08:38.0889440Z [90m└[39m  ✨ You can now deploy [36mdist/renderer[39m to any static hosting!
+2026-06-19T07:08:38.6852800Z
+2026-06-19T07:08:38.6883410Z > autobyteus@1.3.60 transpile-electron /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+2026-06-19T07:08:38.6884480Z > tsc -p electron/tsconfig.json
+2026-06-19T07:08:38.6884810Z
+2026-06-19T07:08:44.8793180Z Building with environment: production
+2026-06-19T07:08:44.8795160Z Using environment file: .env.production
+2026-06-19T07:08:44.8797670Z Resolved build flavor: personal
+2026-06-19T07:08:44.8800040Z Artifact base name: AutoByteus_personal
+2026-06-19T07:08:44.8801490Z Requested architecture: X64
+2026-06-19T07:08:44.8803320Z Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+2026-06-19T07:08:44.8805140Z Generating application icons...
+2026-06-19T07:08:44.8806100Z Generating 16x16 PNG icon...
+2026-06-19T07:08:44.9389440Z Generating 32x32 PNG icon...
+2026-06-19T07:08:44.9437150Z Generating 48x48 PNG icon...
+2026-06-19T07:08:44.9470100Z Generating 64x64 PNG icon...
+2026-06-19T07:08:44.9497750Z Generating 128x128 PNG icon...
+2026-06-19T07:08:44.9519710Z Generating 256x256 PNG icon...
+2026-06-19T07:08:44.9573010Z Generating 512x512 PNG icon...
+2026-06-19T07:08:44.9661000Z Generating 1024x1024 PNG icon...
+2026-06-19T07:08:44.9839700Z Generating Windows ICO icon...
+2026-06-19T07:08:45.0771130Z Generating macOS ICNS icon...
+2026-06-19T07:08:45.0941800Z Icon generation completed successfully
+2026-06-19T07:08:45.0942700Z Starting electron-builder...
+2026-06-19T07:08:45.0950350Z   • electron-builder  version=25.1.8 os=23.6.0
+2026-06-19T07:08:45.1018520Z   • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+2026-06-19T07:08:45.1019720Z
+2026-06-19T07:08:45.1021610Z To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+2026-06-19T07:08:45.6935980Z   • executing @electron/rebuild  electronVersion=38.8.2 arch=x64 buildFromSource=false appDir=./
+2026-06-19T07:08:45.6956030Z   • installing native dependencies  arch=x64
+2026-06-19T07:08:46.0651430Z   • completed installing native dependencies
+2026-06-19T07:08:46.0752550Z   • packaging       platform=darwin arch=x64 electron=38.8.2 appOutDir=electron-dist/mac
+2026-06-19T07:08:46.4751520Z   • downloading     url=https://github.com/electron/electron/releases/download/v38.8.2/electron-v38.8.2-darwin-x64.zip size=116 MB parts=6
+2026-06-19T07:08:47.5726740Z   • downloaded      url=https://github.com/electron/electron/releases/download/v38.8.2/electron-v38.8.2-darwin-x64.zip duration=1.463s
+2026-06-19T07:09:18.0827970Z
+2026-06-19T07:09:18.0931750Z Normalizing packaged terminal native resources...
+2026-06-19T07:09:18.3615630Z   Normalized execute bits on 3 node-pty spawn-helper file(s)
+2026-06-19T07:09:18.3716120Z
+2026-06-19T07:09:18.3820460Z Signing extra resources (server binaries)...
+2026-06-19T07:09:20.1203460Z   Found 23 binaries to sign
+2026-06-19T07:09:20.1306190Z   Signing: rg
+2026-06-19T07:09:21.2728510Z   Signing: rg
+2026-06-19T07:09:21.3875730Z   Signing: esbuild
+2026-06-19T07:09:21.5297560Z   Signing: sharp-darwin-arm64.node
+2026-06-19T07:09:21.6084470Z   Signing: libvips-cpp.8.17.3.dylib
+2026-06-19T07:09:21.8007550Z   Signing: node-pty.node
+2026-06-19T07:09:21.8865420Z   Signing: pty.node
+2026-06-19T07:09:21.9717950Z   Signing: spawn-helper
+2026-06-19T07:09:22.0557050Z   Signing: pty.node
+2026-06-19T07:09:22.1517690Z   Signing: spawn-helper
+2026-06-19T07:09:22.2267920Z   Signing: pty.node
+2026-06-19T07:09:22.3025600Z   Signing: spawn-helper
+2026-06-19T07:09:22.3933010Z   Signing: libquery_engine-darwin-arm64.dylib.node
+2026-06-19T07:09:22.5644530Z   Signing: libquery_engine-darwin.dylib.node
+2026-06-19T07:09:22.7404330Z   Signing: libquery_engine-darwin-arm64.dylib.node
+2026-06-19T07:09:22.9096800Z   Signing: libquery_engine-darwin.dylib.node
+2026-06-19T07:09:23.1159930Z   Signing: schema-engine-darwin
+2026-06-19T07:09:23.3788430Z   Signing: schema-engine-darwin-arm64
+2026-06-19T07:09:23.5880070Z   Signing: rollup.darwin-arm64.node
+2026-06-19T07:09:23.6893300Z   Signing: esbuild
+2026-06-19T07:09:23.9425720Z   Signing: fsevents.node
+2026-06-19T07:09:24.0727980Z   Signing: libquery_engine-darwin-arm64.dylib.node
+2026-06-19T07:09:24.2434310Z   Signing: libquery_engine-darwin.dylib.node
+2026-06-19T07:09:24.4294380Z [OK] Signed 23 server binaries
+2026-06-19T07:09:24.4299400Z
+2026-06-19T07:09:24.5903750Z   • signing         file=electron-dist/mac/AutoByteus.app platform=darwin type=distribution identity=37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA provisioningProfile=none
+2026-06-19T07:17:00.2603170Z   • notarization successful
+2026-06-19T07:17:00.2608940Z   • building        target=DMG arch=x64 file=electron-dist/AutoByteus_personal_macos-x64-1.3.60.dmg
+2026-06-19T07:17:00.2622420Z   • building        target=macOS zip arch=x64 file=electron-dist/AutoByteus_personal_macos-x64-1.3.60.zip
+2026-06-19T07:17:00.2900710Z   • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+2026-06-19T07:19:08.9893090Z   • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-x64-1.3.60.dmg.blockmap
+2026-06-19T07:21:16.0250450Z   • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-x64-1.3.60.zip.blockmap
+2026-06-19T07:21:19.8836650Z Build completed: [
+2026-06-19T07:21:19.8837760Z   '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.3.60.dmg.blockmap',
+2026-06-19T07:21:19.8840120Z   '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.3.60.dmg',
+2026-06-19T07:21:19.8841340Z   '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.3.60.zip.blockmap',
+2026-06-19T07:21:19.8851740Z   '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.3.60.zip'
+2026-06-19T07:21:19.8852780Z ]
+2026-06-19T07:21:19.9995240Z ##[group]Run ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+2026-06-19T07:21:19.9996330Z [36;1mENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"[0m
+2026-06-19T07:21:19.9996860Z [36;1mtest -n "$ENGINES_DIR"[0m
+2026-06-19T07:21:19.9997210Z [36;1mecho "Prisma engines dir: $ENGINES_DIR"[0m
+2026-06-19T07:21:19.9997560Z [36;1mtest -f "$ENGINES_DIR/schema-engine-darwin"[0m
+2026-06-19T07:21:19.9998200Z [36;1mCLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"[0m
+2026-06-19T07:21:19.9998810Z [36;1mtest -n "$CLIENT_DIR"[0m
+2026-06-19T07:21:19.9999100Z [36;1mecho "Prisma client dir: $CLIENT_DIR"[0m
+2026-06-19T07:21:19.9999550Z [36;1mtest -f "$CLIENT_DIR/libquery_engine-darwin.dylib.node"[0m
+2026-06-19T07:21:20.3275640Z shell: /bin/bash -e {0}
+2026-06-19T07:21:20.3276060Z env:
+2026-06-19T07:21:20.3276400Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:21:20.3276800Z ##[endgroup]
+2026-06-19T07:21:20.9148130Z Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+2026-06-19T07:21:21.3475750Z Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+2026-06-19T07:21:21.3572060Z ##[group]Run node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \
+2026-06-19T07:21:21.3572950Z [36;1mnode autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \[0m
+2026-06-19T07:21:21.3573590Z [36;1m  --server-root autobyteus-web/resources/server \[0m
+2026-06-19T07:21:21.3574010Z [36;1m  --platform darwin \[0m
+2026-06-19T07:21:21.3574430Z [36;1m  --arch x64[0m
+2026-06-19T07:21:21.3575050Z [36;1mAPP_SERVER_ROOT="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"[0m
+2026-06-19T07:21:21.3575650Z [36;1mtest -n "$APP_SERVER_ROOT"[0m
+2026-06-19T07:21:21.3576060Z [36;1mnode autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \[0m
+2026-06-19T07:21:21.3576580Z [36;1m  --server-root "$APP_SERVER_ROOT" \[0m
+2026-06-19T07:21:21.3576960Z [36;1m  --platform darwin \[0m
+2026-06-19T07:21:21.3577320Z [36;1m  --arch x64[0m
+2026-06-19T07:21:21.3577920Z [36;1mif [ "$(node -p 'process.platform')" = "darwin" ] && [ "$(node -p 'process.arch')" = "x64" ]; then[0m
+2026-06-19T07:21:21.3578440Z [36;1m  APP_BUNDLE="${APP_SERVER_ROOT%/Contents/Resources/server}"[0m
+2026-06-19T07:21:21.3578950Z [36;1m  ELECTRON_RUN_AS_NODE=1 "$APP_BUNDLE/Contents/MacOS/AutoByteus" \[0m
+2026-06-19T07:21:21.3579510Z [36;1m    autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs \[0m
+2026-06-19T07:21:21.3580010Z [36;1m    --server-root "$APP_SERVER_ROOT" \[0m
+2026-06-19T07:21:21.3580410Z [36;1m    --platform darwin \[0m
+2026-06-19T07:21:21.3580710Z [36;1m    --arch x64 \[0m
+2026-06-19T07:21:21.3581120Z [36;1m    --spawn-probe[0m
+2026-06-19T07:21:21.3581380Z [36;1melse[0m
+2026-06-19T07:21:21.3582000Z [36;1m  echo "Skipping x64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"[0m
+2026-06-19T07:21:21.3582600Z [36;1mfi[0m
+2026-06-19T07:21:21.3693540Z shell: /bin/bash -e {0}
+2026-06-19T07:21:21.3693840Z env:
+2026-06-19T07:21:21.3695260Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:21:21.3696750Z ##[endgroup]
+2026-06-19T07:21:21.6591500Z [terminal-runtime] node-pty root: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+2026-06-19T07:21:21.6876090Z [terminal-runtime] ok target helper: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+2026-06-19T07:21:21.6959310Z [terminal-runtime] skipping /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node; architecture does not match x64
+2026-06-19T07:21:21.7085040Z [terminal-runtime] ok selected helper: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+2026-06-19T07:21:21.9064120Z [terminal-runtime] node-pty root: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+2026-06-19T07:21:21.9158010Z [terminal-runtime] ok target helper: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+2026-06-19T07:21:21.9231120Z [terminal-runtime] skipping /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node; architecture does not match x64
+2026-06-19T07:21:21.9302270Z [terminal-runtime] ok selected helper: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+2026-06-19T07:21:22.0772620Z [eval]:1
+2026-06-19T07:21:22.0773060Z process.platform + \"/\" + process.arch
+2026-06-19T07:21:22.0773360Z                    ^
+2026-06-19T07:21:22.0773600Z Expression expected
+2026-06-19T07:21:22.0773770Z
+2026-06-19T07:21:22.0773960Z SyntaxError: Invalid or unexpected token
+2026-06-19T07:21:22.0774350Z     at makeContextifyScript (node:internal/vm:185:14)
+2026-06-19T07:21:22.0774780Z     at compileScript (node:internal/process/execution:383:10)
+2026-06-19T07:21:22.0775230Z     at evalTypeScript (node:internal/process/execution:256:22)
+2026-06-19T07:21:22.0775630Z     at node:internal/main/eval_string:74:3
+2026-06-19T07:21:22.0775850Z
+2026-06-19T07:21:22.0775930Z Node.js v22.22.3
+2026-06-19T07:21:22.0787030Z Skipping x64 Electron Node terminal spawn probe on host
+2026-06-19T07:21:22.0913130Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:21:22.0914250Z ##[group]Run actions/upload-artifact@v4
+2026-06-19T07:21:22.0914510Z with:
+2026-06-19T07:21:22.0914710Z   name: macos-x64
+2026-06-19T07:21:22.0915490Z   path: autobyteus-web/electron-dist/*macos-x64*.dmg
+autobyteus-web/electron-dist/*macos-x64*.dmg.blockmap
+autobyteus-web/electron-dist/*macos-x64*.zip
+autobyteus-web/electron-dist/*macos-x64*.zip.blockmap
+autobyteus-web/electron-dist/latest-mac.yml
+
+2026-06-19T07:21:22.0916310Z   if-no-files-found: error
+2026-06-19T07:21:22.0916510Z   compression-level: 6
+2026-06-19T07:21:22.0916720Z   overwrite: false
+2026-06-19T07:21:22.0916920Z   include-hidden-files: false
+2026-06-19T07:21:22.0917180Z env:
+2026-06-19T07:21:22.0917400Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+2026-06-19T07:21:22.0917810Z ##[endgroup]
+2026-06-19T07:21:22.8847940Z (node:57627) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-19T07:21:22.8848710Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-19T07:21:22.8915570Z With the provided path, there will be 5 files uploaded
+2026-06-19T07:21:22.8918520Z Artifact name is valid!
+2026-06-19T07:21:22.8919970Z Root directory input is valid!
+2026-06-19T07:21:23.3272480Z Beginning upload of artifact content to blob storage
+2026-06-19T07:21:23.6626330Z (node:57627) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-19T07:21:24.6767540Z Uploaded bytes 8388608
+2026-06-19T07:21:24.8626830Z Uploaded bytes 16777216
+2026-06-19T07:21:25.2941400Z Uploaded bytes 25165824
+2026-06-19T07:21:25.5910660Z Uploaded bytes 33554432
+2026-06-19T07:21:25.6077100Z Uploaded bytes 41943040
+2026-06-19T07:21:25.8329280Z Uploaded bytes 50331648
+2026-06-19T07:21:25.8361800Z Uploaded bytes 58720256
+2026-06-19T07:21:26.5143570Z Uploaded bytes 67108864
+2026-06-19T07:21:26.7192600Z Uploaded bytes 75497472
+2026-06-19T07:21:26.7690570Z Uploaded bytes 83886080
+2026-06-19T07:21:27.0360000Z Uploaded bytes 92274688
+2026-06-19T07:21:27.2603690Z Uploaded bytes 100663296
+2026-06-19T07:21:27.5105630Z Uploaded bytes 109051904
+2026-06-19T07:21:27.8052770Z Uploaded bytes 117440512
+2026-06-19T07:21:27.9887070Z Uploaded bytes 125829120
+2026-06-19T07:21:28.2475850Z Uploaded bytes 134217728
+2026-06-19T07:21:28.5186870Z Uploaded bytes 142606336
+2026-06-19T07:21:28.6865920Z Uploaded bytes 150994944
+2026-06-19T07:21:28.9490340Z Uploaded bytes 159383552
+2026-06-19T07:21:29.2159280Z Uploaded bytes 167772160
+2026-06-19T07:21:29.3900550Z Uploaded bytes 176160768
+2026-06-19T07:21:29.5858990Z Uploaded bytes 184549376
+2026-06-19T07:21:29.7897480Z Uploaded bytes 192937984
+2026-06-19T07:21:30.0418100Z Uploaded bytes 201326592
+2026-06-19T07:21:30.2137570Z Uploaded bytes 209715200
+2026-06-19T07:21:30.4001730Z Uploaded bytes 218103808
+2026-06-19T07:21:30.6239670Z Uploaded bytes 226492416
+2026-06-19T07:21:30.8345330Z Uploaded bytes 234881024
+2026-06-19T07:21:31.0840910Z Uploaded bytes 243269632
+2026-06-19T07:21:31.2982690Z Uploaded bytes 251658240
+2026-06-19T07:21:31.5175560Z Uploaded bytes 260046848
+2026-06-19T07:21:31.7517870Z Uploaded bytes 268435456
+2026-06-19T07:21:31.9487630Z Uploaded bytes 276824064
+2026-06-19T07:21:32.1631070Z Uploaded bytes 285212672
+2026-06-19T07:21:32.4331900Z Uploaded bytes 293601280
+2026-06-19T07:21:32.6250220Z Uploaded bytes 301989888
+2026-06-19T07:21:32.8995110Z Uploaded bytes 310378496
+2026-06-19T07:21:33.1418140Z Uploaded bytes 318767104
+2026-06-19T07:21:33.3126270Z Uploaded bytes 327155712
+2026-06-19T07:21:33.5709680Z Uploaded bytes 335544320
+2026-06-19T07:21:33.7489350Z Uploaded bytes 343932928
+2026-06-19T07:21:33.9897980Z Uploaded bytes 352321536
+2026-06-19T07:21:34.1475070Z Uploaded bytes 360710144
+2026-06-19T07:21:34.3680140Z Uploaded bytes 369098752
+2026-06-19T07:21:34.5445160Z Uploaded bytes 377487360
+2026-06-19T07:21:34.7265610Z Uploaded bytes 385875968
+2026-06-19T07:21:35.0939020Z Uploaded bytes 394264576
+2026-06-19T07:21:35.2946750Z Uploaded bytes 402653184
+2026-06-19T07:21:35.6587120Z Uploaded bytes 411041792
+2026-06-19T07:21:36.0330450Z Uploaded bytes 419430400
+2026-06-19T07:21:36.3627080Z Uploaded bytes 427819008
+2026-06-19T07:21:36.6195160Z Uploaded bytes 436207616
+2026-06-19T07:21:36.8879470Z Uploaded bytes 444596224
+2026-06-19T07:21:37.1594460Z Uploaded bytes 452984832
+2026-06-19T07:21:37.3594180Z Uploaded bytes 461373440
+2026-06-19T07:21:37.6123420Z Uploaded bytes 469762048
+2026-06-19T07:21:37.7604800Z Uploaded bytes 478150656
+2026-06-19T07:21:38.0871310Z Uploaded bytes 486539264
+2026-06-19T07:21:38.2972760Z Uploaded bytes 494927872
+2026-06-19T07:21:38.4835560Z Uploaded bytes 503316480
+2026-06-19T07:21:38.7010240Z Uploaded bytes 511705088
+2026-06-19T07:21:38.8899100Z Uploaded bytes 520093696
+2026-06-19T07:21:39.1348750Z Uploaded bytes 528482304
+2026-06-19T07:21:39.3168340Z Uploaded bytes 536870912
+2026-06-19T07:21:39.5755490Z Uploaded bytes 545259520
+2026-06-19T07:21:39.7970740Z Uploaded bytes 553648128
+2026-06-19T07:21:40.0892670Z Uploaded bytes 562036736
+2026-06-19T07:21:40.2887250Z Uploaded bytes 570425344
+2026-06-19T07:21:40.4984910Z Uploaded bytes 578813952
+2026-06-19T07:21:40.7488170Z Uploaded bytes 587202560
+2026-06-19T07:21:40.9990540Z Uploaded bytes 595591168
+2026-06-19T07:21:41.1699550Z Uploaded bytes 603979776
+2026-06-19T07:21:41.3714430Z Uploaded bytes 612368384
+2026-06-19T07:21:41.6147300Z Uploaded bytes 620756992
+2026-06-19T07:21:41.8285490Z Uploaded bytes 629145600
+2026-06-19T07:21:42.0157180Z Uploaded bytes 637534208
+2026-06-19T07:21:42.2979370Z Uploaded bytes 645922816
+2026-06-19T07:21:42.6245880Z Uploaded bytes 654311424
+2026-06-19T07:21:42.6498030Z Uploaded bytes 662700032
+2026-06-19T07:21:43.1478560Z Uploaded bytes 671088640
+2026-06-19T07:21:43.3174190Z Uploaded bytes 679477248
+2026-06-19T07:21:43.4346130Z Uploaded bytes 687865856
+2026-06-19T07:21:43.7722790Z Uploaded bytes 696254464
+2026-06-19T07:21:43.9870340Z Uploaded bytes 704643072
+2026-06-19T07:21:44.1692340Z Uploaded bytes 713031680
+2026-06-19T07:21:44.2669170Z Uploaded bytes 721420288
+2026-06-19T07:21:44.4902700Z Uploaded bytes 729808896
+2026-06-19T07:21:44.6107570Z Uploaded bytes 738197504
+2026-06-19T07:21:44.8818150Z Uploaded bytes 746586112
+2026-06-19T07:21:45.3838830Z Uploaded bytes 754974720
+2026-06-19T07:21:45.4014040Z Uploaded bytes 763363328
+2026-06-19T07:21:45.5622660Z Uploaded bytes 771751936
+2026-06-19T07:21:45.6966460Z Uploaded bytes 780140544
+2026-06-19T07:21:45.8865610Z Uploaded bytes 788529152
+2026-06-19T07:21:46.0992560Z Uploaded bytes 796917760
+2026-06-19T07:21:46.4140210Z Uploaded bytes 805306368
+2026-06-19T07:21:46.5590610Z Uploaded bytes 813694976
+2026-06-19T07:21:46.7543660Z Uploaded bytes 822083584
+2026-06-19T07:21:47.0411900Z Uploaded bytes 830472192
+2026-06-19T07:21:47.2534680Z Uploaded bytes 838860800
+2026-06-19T07:21:47.4739370Z Uploaded bytes 847249408
+2026-06-19T07:21:47.7271910Z Uploaded bytes 855638016
+2026-06-19T07:21:47.9333810Z Uploaded bytes 864026624
+2026-06-19T07:21:48.1936140Z Uploaded bytes 872415232
+2026-06-19T07:21:48.4435360Z Uploaded bytes 880803840
+2026-06-19T07:21:48.5796210Z Uploaded bytes 882598614
+2026-06-19T07:21:48.6643110Z Finished uploading artifact content to blob storage!
+2026-06-19T07:21:48.6673340Z SHA256 digest of uploaded artifact zip is 2e5ae026f58f757fe044c240173b78256a8c2704ff0552ecbf9cb0ca1270f418
+2026-06-19T07:21:48.6678200Z Finalizing artifact upload
+2026-06-19T07:21:49.0626540Z Artifact macos-x64.zip successfully finalized. Artifact ID 7743948372
+2026-06-19T07:21:49.0627530Z Artifact macos-x64 has been successfully uploaded! Final size is 882598614 bytes. Artifact ID is 7743948372
+2026-06-19T07:21:49.0670810Z Artifact download URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27810921946/artifacts/7743948372
+2026-06-19T07:21:49.1388860Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:21:49.1392520Z Post job cleanup.
+2026-06-19T07:21:49.3256710Z (node:58162) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-19T07:21:49.3257780Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-19T07:21:49.3258840Z Cache hit occurred on the primary key node-cache-macOS-arm64-pnpm-15e26cf473170b3fb90c2631485d12d43a787a6230f72a02f7cdf1a5771b0161, not saving cache.
+2026-06-19T07:21:49.3343520Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:21:49.3344580Z Post job cleanup.
+2026-06-19T07:21:49.4737070Z Pruning is unnecessary.
+2026-06-19T07:21:49.4858220Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-19T07:21:49.4859490Z Post job cleanup.
+2026-06-19T07:21:49.5805850Z [command]/opt/homebrew/bin/git version
+2026-06-19T07:21:49.6157020Z git version 2.54.0
+2026-06-19T07:21:49.6247050Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/e5e2e293-dc63-4c07-893c-70097de41a5b/.gitconfig'
+2026-06-19T07:21:49.6250780Z Temporarily overriding HOME='/Users/runner/work/_temp/e5e2e293-dc63-4c07-893c-70097de41a5b' before making global git config changes
+2026-06-19T07:21:49.6251740Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-19T07:21:49.6252780Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/autobyteus-workspace/autobyteus-workspace
+2026-06-19T07:21:49.6342440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-19T07:21:49.6469440Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-19T07:21:49.7368020Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-19T07:21:49.7406570Z http.https://github.com/.extraheader
+2026-06-19T07:21:49.7414480Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-06-19T07:21:49.7479460Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-19T07:21:49.8053400Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-19T07:21:49.8097530Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-19T07:21:49.8882610Z Cleaning up orphan processes
+2026-06-19T07:21:50.2253010Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

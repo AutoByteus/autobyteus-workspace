@@ -1,0 +1,64 @@
+# API/E2E Round 3 LF-002 blockmap evidence
+# 2026-06-19T05:20:14Z
+
+## Fresh ARM64 build outputs after `pnpm -C autobyteus-web build:electron:linux:arm64`
+AutoByteus_enterprise_linux-1.3.60.AppImage
+AutoByteus_enterprise_linux-arm64-1.3.60.AppImage
+builder-debug.yml
+latest-linux-arm64.yml
+latest-linux.yml
+
+## Linux ARM64 AppImage/blockmap exact checks
+AppImage exists exit=0
+AppImage.blockmap exists exit=1
+latest-linux-arm64.yml exists exit=0
+
+## Workflow upload paths that require AppImage.blockmap with if-no-files-found:error
+11:      - name: Upload Linux x64 artifacts
+14:          name: linux-x64
+16:            autobyteus-web/electron-dist/*linux-x64*.AppImage
+17:            autobyteus-web/electron-dist/*linux-x64*.AppImage.blockmap
+19:          if-no-files-found: error
+21:  build-linux-arm64:
+60:          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+64:          test -f autobyteus-web/electron-dist/latest-linux-arm64.yml
+65:          grep -Eq 'linux-arm64.*\.AppImage' autobyteus-web/electron-dist/latest-linux-arm64.yml
+72:          test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x"
+73:          test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+77:          test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+81:          APP_UNPACKED_DIR="autobyteus-web/electron-dist/linux-arm64-unpacked"
+91:      - name: Upload Linux ARM64 artifacts
+94:          name: linux-arm64
+96:            autobyteus-web/electron-dist/*linux-arm64*.AppImage
+
+## Docs/requirements references to Linux AppImage + blockmap
+README.md:314:  - Linux x64 AppImage + blockmap
+README.md:315:  - Linux ARM64 AppImage + blockmap
+docs/tasks/mcp-tool-exposure-docker/requirements.md:52:- UC-011: GitHub desktop release workflow builds Linux ARM64 on an ARM64 runner, publishes the ARM64 AppImage/blockmap and `latest-linux-arm64.yml`, and keeps Linux x64 metadata as `latest-linux.yml`.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:88:- REQ-023: GitHub desktop release workflow must build Linux ARM64 on an ARM64 Linux runner and upload `linux-arm64` AppImage/blockmap artifacts.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:114:- AC-020: In GitHub release CI, the Linux ARM64 job runs on an ARM64 Linux runner, produces an ARM64 AppImage with `linux-arm64` in the artifact name, and uploads/publishes `latest-linux-arm64.yml` referencing that ARM64 artifact.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:115:- AC-021: GitHub release publishing includes both Linux x64 and Linux ARM64 AppImage/blockmap assets plus `latest-linux.yml` and `latest-linux-arm64.yml`, without duplicate metadata asset names or architecture ambiguity.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:199:| AC-020 | Proves Linux ARM64 CI release artifact and metadata generation. |
+docs/tasks/mcp-tool-exposure-docker/requirements.md:200:| AC-021 | Proves release publishing handles both Linux updater metadata names without collisions. |
+
+## Corrected workflow line references for required blockmap upload paths
+   440	      - name: Upload Linux x64 artifacts
+   443	          name: linux-x64
+   445	            autobyteus-web/electron-dist/*linux-x64*.AppImage
+   446	            autobyteus-web/electron-dist/*linux-x64*.AppImage.blockmap
+   447	            autobyteus-web/electron-dist/latest-linux.yml
+   448	          if-no-files-found: error
+   450	  build-linux-arm64:
+   489	          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+   493	          test -f autobyteus-web/electron-dist/latest-linux-arm64.yml
+   494	          grep -Eq 'linux-arm64.*\.AppImage' autobyteus-web/electron-dist/latest-linux-arm64.yml
+   501	          test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x"
+   502	          test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+   506	          test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+   510	          APP_UNPACKED_DIR="autobyteus-web/electron-dist/linux-arm64-unpacked"
+   520	      - name: Upload Linux ARM64 artifacts
+   523	          name: linux-arm64
+   525	            autobyteus-web/electron-dist/*linux-arm64*.AppImage
+   526	            autobyteus-web/electron-dist/*linux-arm64*.AppImage.blockmap
+   527	            autobyteus-web/electron-dist/latest-linux-arm64.yml
+   528	          if-no-files-found: error

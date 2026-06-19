@@ -34,6 +34,7 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         description: entry.description,
         inputSchema: entry.parameterSchema,
       },
+      configuredMcpCollisionPolicy: "protect_static_adapter",
       isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext),
       execute: async ({ session, rawArguments }) => {
         const memberTeamContext = session.sender.memberTeamContext;

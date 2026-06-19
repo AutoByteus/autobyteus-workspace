@@ -14,9 +14,6 @@
         data-testid="node-manager-panel-manage"
       >
         <CurrentWindowNodeCard :node-name="currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown')" :node-type-label="currentNodeTypeLabel" :base-url="currentNode?.baseUrl" />
-
-        <RemoteBrowserSharingPanel />
-
         <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
           <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_remote_node_description') }}</p>
@@ -96,7 +93,6 @@
               </div>
 
               <div class="flex items-center gap-2">
-                <RemoteNodePairingControls :node="node" />
                 <button
                   class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
                   @click="onFocusNode(node.id)"
@@ -162,11 +158,8 @@ import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuide
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
 import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
-import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
-import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useNodeStore } from '~/stores/nodeStore';
-import { useRemoteBrowserSharingStore } from '~/stores/remoteBrowserSharingStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { probeNodeCapabilities } from '~/utils/nodeCapabilityProbe';
 import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
@@ -176,7 +169,6 @@ const { t } = useLocalization();
 type NodeManagerTabId = 'manage' | 'phoneSetup' | 'dockerGuide';
 
 const nodeStore = useNodeStore();
-const remoteBrowserSharingStore = useRemoteBrowserSharingStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const route = useRoute();
 
@@ -278,7 +270,7 @@ async function onFocusNode(nodeId: string): Promise<void> {
 }
 
 function isNodeBusy(nodeId: string): boolean {
-  return busyNodeId.value === nodeId || remoteBrowserSharingStore.busyNodeId === nodeId;
+  return busyNodeId.value === nodeId;
 }
 
 async function onRenameNode(nodeId: string): Promise<void> {
@@ -323,30 +315,9 @@ async function onRemoveRemoteNode(nodeId: string): Promise<void> {
   }
 
   busyNodeId.value = nodeId;
-  const shouldRevokeLocalPairingOnFailure = node.browserPairing?.state === 'pairing' || node.browserPairing?.state === 'paired';
-  let remoteCleanupConfirmed = false;
   try {
-    const remoteClearError = await remoteBrowserSharingStore.prepareNodeRemoval(nodeId);
-    remoteCleanupConfirmed = shouldRevokeLocalPairingOnFailure && remoteClearError === null;
     await nodeStore.removeRemoteNode(nodeId);
-    if (remoteClearError) {
-      addInfo.value = t(
-        'settings.components.settings.NodeManager.remoteBrowserSharing.info.removeRemoteCleanupUnconfirmed',
-        { error: remoteClearError },
-      );
-    }
   } catch (error) {
-    if (remoteCleanupConfirmed) {
-      try {
-        await remoteBrowserSharingStore.revokeLocalPairing(
-          nodeId,
-          'revoked',
-          'Node removal failed after remote browser cleanup completed.',
-        );
-      } catch {
-        // Best-effort local cleanup only.
-      }
-    }
     addError.value = error instanceof Error ? error.message : String(error);
   } finally {
     busyNodeId.value = null;
@@ -371,7 +342,6 @@ watch(
 onMounted(async () => {
   syncActiveTabFromRouteQuery();
   await nodeStore.initializeRegistry();
-  await remoteBrowserSharingStore.initialize();
   syncRenameDrafts();
 });
 </script>

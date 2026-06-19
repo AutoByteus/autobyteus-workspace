@@ -14,16 +14,26 @@ Registers and exposes tool groups for agent runtime and APIs.
 
 Tool groups are loaded dynamically and logged per group at startup.
 
-Browser-tool support is runtime-gated:
+Browser-tool support has two explicit source families:
 
-- embedded Electron runtimes resolve the Browser bridge from environment variables injected at desktop startup
-- remote nodes can resolve the same Browser bridge through an in-memory runtime registration when a desktop client explicitly pairs that node with its local browser
-- browser tool exposure still stays subject to the active runtime/tool projection and the configured agent tool names
-- Codex App Server and Claude Agent SDK receive configured browser tools
-  through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor when
-  browser support is available; the old Codex browser `dynamicTools` path and
-  old Claude `autobyteus_browser` MCP server path are not retained for these
-  migrated tools
+- embedded Electron runtimes resolve the Browser bridge only from environment
+  variables injected at desktop startup; there is no remote runtime browser
+  bridge registration or host-browser pairing source
+- Docker and remote nodes get browser automation from configured MCP-origin
+  tools inside that node/container, such as BrowserServer MCP; if no browser
+  MCP tool is configured and selected, those nodes expose no browser tools
+- browser tool exposure still stays subject to active source availability, the
+  configured agent tool names, and the active runtime/tool projection
+- Agent Tools MCP snapshots a source-aware route table per session. Inactive
+  embedded browser adapters do not reserve names, browser-tool name overlaps
+  prefer the selected configured MCP-origin route, and protected first-party
+  platform/control adapters such as `send_message_to` still block configured
+  MCP name collisions
+- Codex App Server and Claude Agent SDK receive selected embedded-browser or
+  configured MCP-origin browser tools through the unified
+  `autobyteus_agent_tools` Agent Tools MCP descriptor; the old Codex browser
+  `dynamicTools` path and old Claude `autobyteus_browser` MCP server path are
+  not retained for these migrated tools
 
 ## Server-Owned Agent Communication Tool
 

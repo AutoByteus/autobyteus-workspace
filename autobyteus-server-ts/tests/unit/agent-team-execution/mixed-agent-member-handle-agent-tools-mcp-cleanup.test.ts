@@ -90,6 +90,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       sender,
       configuredExposure: buildConfiguredAgentToolExposure([]),
       enabledTools: [],
+      toolRoutes: {},
     });
     const otherMember = registry.createSession({
       owner: {
@@ -106,6 +107,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       }),
       configuredExposure: buildConfiguredAgentToolExposure([]),
       enabledTools: [],
+      toolRoutes: {},
     });
     const handle = new MixedAgentMemberHandle({
       teamContext,

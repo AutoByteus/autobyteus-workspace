@@ -12,6 +12,8 @@ import { MediaToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/pr
 import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
+import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
+import type { AgentToolMcpToolRouteTable } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-route.js";
 
 const sender = buildAgentRunMessageSenderContext({
   senderRunId: "run-1",
@@ -120,8 +122,28 @@ class FakeToolRegistry {
   }
 }
 
+const buildStaticAdapter = (input: {
+  name: string;
+  available: boolean;
+  collisionPolicy?: AgentToolMcpToolAdapter["configuredMcpCollisionPolicy"];
+  text?: string;
+}): AgentToolMcpToolAdapter => ({
+  definition: {
+    name: input.name,
+    description: `Static ${input.name}`,
+    inputSchema: {},
+  },
+  configuredMcpCollisionPolicy: input.collisionPolicy,
+  isAvailable: () => input.available,
+  execute: async () => ({
+    kind: "mcp_tool_result",
+    result: { content: [{ type: "text", text: input.text ?? `static:${input.name}` }] },
+  }),
+});
+
 const buildSession = (input: {
   enabledTools: string[];
+  toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: any[];
   owner?: { runId: string; memberRunId?: string };
 }) => ({
@@ -133,6 +155,7 @@ const buildSession = (input: {
   configuredExposure: buildConfiguredAgentToolExposure(input.enabledTools),
   executionContext: {},
   enabledTools: input.enabledTools,
+  toolRoutes: input.toolRoutes,
   configuredMcpToolSources: input.configuredMcpToolSources,
   createdAt: new Date(),
   revokedAt: null,
@@ -160,6 +183,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
 
     const tools = catalog.listMcpToolsForSession(buildSession({
       enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     }) as any);
 
@@ -195,6 +219,111 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
     })]);
   });
 
+  it("routes a configured MCP browser tool when the embedded browser adapter is inactive", async () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("open_tab", "browser-server", {
+      content: [{ type: "text", text: "mcp-open-tab" }],
+    }));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "open_tab",
+        available: false,
+        collisionPolicy: "prefer_configured_mcp",
+      })],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(
+      buildConfiguredAgentToolExposure(["open_tab"]),
+    );
+
+    expect(exposure.enabledTools).toEqual(["open_tab"]);
+    expect(exposure.toolRoutes.open_tab).toEqual({
+      kind: "configured_mcp_tool",
+      registeredToolName: "open_tab",
+      mcpServerId: "browser-server",
+    });
+    expect(catalog.listMcpToolsForSession(buildSession({
+      enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any)).toHaveLength(1);
+
+    const session = buildSession({
+      enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any;
+    const availability = catalog.resolveToolCallAvailability(session, "open_tab");
+    expect(availability.ok).toBe(true);
+    if (!availability.ok) {
+      throw new Error("Expected open_tab to route to configured MCP.");
+    }
+    await expect(availability.adapter.execute({ session, rawArguments: {} })).resolves.toMatchObject({
+      kind: "mcp_tool_result",
+      result: { content: [{ type: "text", text: "mcp-open-tab" }] },
+    });
+  });
+
+  it("prefers a selected configured MCP browser tool over an active embedded browser adapter without duplicates", async () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("open_tab", "browser-server", {
+      content: [{ type: "text", text: "mcp-open-tab" }],
+    }));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "open_tab",
+        available: true,
+        collisionPolicy: "prefer_configured_mcp",
+        text: "static-open-tab",
+      })],
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(
+      buildConfiguredAgentToolExposure(["open_tab"]),
+    );
+    const session = buildSession({
+      enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any;
+
+    expect(exposure.enabledTools).toEqual(["open_tab"]);
+    expect(exposure.toolRoutes.open_tab?.kind).toBe("configured_mcp_tool");
+    expect(catalog.listMcpToolsForSession(session).map((tool) => tool.name)).toEqual(["open_tab"]);
+
+    const availability = catalog.resolveToolCallAvailability(session, "open_tab");
+    expect(availability.ok).toBe(true);
+    if (!availability.ok) {
+      throw new Error("Expected open_tab to route to configured MCP.");
+    }
+    await expect(availability.adapter.execute({ session, rawArguments: {} })).resolves.toMatchObject({
+      result: { content: [{ type: "text", text: "mcp-open-tab" }] },
+    });
+  });
+
+  it("uses the embedded browser adapter when it is active and no configured MCP duplicate exists", () => {
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "open_tab",
+        available: true,
+        collisionPolicy: "prefer_configured_mcp",
+      })],
+      registry: new FakeToolRegistry() as any,
+    });
+
+    const exposure = catalog.resolveConfiguredSessionToolExposure(
+      buildConfiguredAgentToolExposure(["open_tab"]),
+    );
+
+    expect(exposure.enabledTools).toEqual(["open_tab"]);
+    expect(exposure.toolRoutes.open_tab).toEqual({
+      kind: "static_adapter",
+      toolName: "open_tab",
+    });
+  });
+
   it("resolves configured MCP calls through a registry-backed adapter", async () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("db_query", "sqlite", {
@@ -207,6 +336,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
     );
     const session = buildSession({
       enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
       owner: { runId: "run", memberRunId: "member-run" },
     }) as any;
@@ -235,6 +365,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
 
     expect(catalog.resolveToolCallAvailability(buildSession({
       enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     }) as any, "db_query")).toEqual({ ok: false, reason: "unknown_tool" });
   });

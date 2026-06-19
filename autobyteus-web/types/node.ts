@@ -9,36 +9,6 @@ export interface NodeCapabilities {
 }
 
 export type CapabilityProbeState = 'unknown' | 'ready' | 'degraded';
-export type NodeBrowserPairingState =
-  | 'pairing'
-  | 'paired'
-  | 'revoked'
-  | 'expired'
-  | 'rejected';
-
-export interface NodeBrowserPairingStatus {
-  state: NodeBrowserPairingState;
-  advertisedBaseUrl: string | null;
-  expiresAt: string | null;
-  updatedAt: string;
-  errorMessage: string | null;
-}
-
-export interface RemoteBrowserSharingSettings {
-  enabled: boolean;
-  advertisedHost: string;
-}
-
-export interface RemoteBrowserSharingSettingsResult {
-  settings: RemoteBrowserSharingSettings;
-  requiresRestart: boolean;
-}
-
-export interface RemoteBrowserBridgeDescriptor {
-  baseUrl: string;
-  authToken: string;
-  expiresAt: string;
-}
 
 export interface NodeProfile {
   id: string;
@@ -47,7 +17,6 @@ export interface NodeProfile {
   nodeType: NodeType;
   capabilities?: NodeCapabilities;
   capabilityProbeState?: CapabilityProbeState;
-  browserPairing?: NodeBrowserPairingStatus;
   isSystem: boolean;
   createdAt: string;
   updatedAt: string;

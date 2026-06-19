@@ -34,6 +34,7 @@ export class MediaToolsMcpAdapterProvider implements AgentToolMcpAdapterProvider
         description: entry.getDescription(),
         inputSchema: entry.buildArgumentSchema(),
       },
+      configuredMcpCollisionPolicy: "protect_static_adapter",
       isAvailable: () => true,
       execute: async ({ session, rawArguments }) => {
         const context: MediaToolExecutionContext = {
