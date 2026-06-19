@@ -1,0 +1,482 @@
+[17128:0619/060933.102002:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[2026-06-19T06:09:33.238Z] [INFO] [electron] Application started
+[2026-06-19T06:09:33.299Z] [INFO] [electron] Creating server manager for platform: linux
+[17128:0619/060933.448149:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[17128:0619/060933.448553:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[17128:0619/060933.452687:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[2026-06-19T06:09:33.474Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:45181
+[17128:0619/060933.576684:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[17158:0619/060933.585552:WARNING:ui/gfx/linux/gpu_memory_buffer_support_x11.cc:49] dri3 extension not supported.
+[17158:0619/060933.587400:WARNING:sandbox/policy/linux/sandbox_linux.cc:414] InitializeSandbox() called with multiple threads in process gpu-process.
+[2026-06-19T06:09:33.603Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/index.html
+[2026-06-19T06:09:33.605Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-06-19T06:09:33.605Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-06-19T06:09:33.606Z] [INFO] [electron.server.base-server-manager] Server installation directory: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-06-19T06:09:33.606Z] [INFO] [electron.server.base-server-manager] App data directory: /root/.autobyteus/server-data
+[2026-06-19T06:09:33.609Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-06-19T06:09:33.619Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-06-19T06:09:33.620Z] [INFO] [electron] Login shell PATH: /usr/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/root/.codex/tmp/arg0/codex-arg0lMem1Q:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[2026-06-19T06:09:33.620Z] [INFO] [electron] Using PATH from login shell
+[2026-06-19T06:09:33.620Z] [INFO] [electron] Starting server with port: 29695
+[2026-06-19T06:09:33.621Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:29695
+[2026-06-19T06:09:33.621Z] [INFO] [electron] Working directory: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-06-19T06:09:33.621Z] [INFO] [electron] App data directory: /root/.autobyteus/server-data
+[2026-06-19T06:09:33.621Z] [INFO] [electron] Executing: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+[17128:0619/060933.674238:WARNING:device/bluetooth/dbus/bluez_dbus_manager.cc:228] Floss manager service not available, cannot set Floss enable/disable.
+[17128:0619/060933.675559:ERROR:dbus/object_proxy.cc:573] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[17128:0619/060933.676866:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[17128:0619/060933.677213:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[17128:0619/060933.677618:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[17128:0619/060933.678003:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+[17128:0619/060933.678165:ERROR:dbus/object_proxy.cc:573] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2026-06-19T06:09:33.833Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-06-19T06:09:33.834Z] [INFO] [electron.embedded-server.stdout] App root directory: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-06-19T06:09:33.834Z] [INFO] [electron.embedded-server.stdout] App data directory: /root/.autobyteus/server-data
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] Config file path: /root/.autobyteus/server-data/.env
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /root/.autobyteus/server-data/.env
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (0) from ../../../../../../../../../../../root/.autobyteus/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-06-19T06:09:33.835Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:29695
+[2026-06-19T06:09:33.836Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-06-19T06:09:33.836Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /root/.autobyteus/server-data
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /root/.autobyteus/server-data/db
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /root/.autobyteus/server-data/logs
+[2026-06-19T06:09:33.837Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /root/.autobyteus/server-data/download
+[2026-06-19T06:09:33.838Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /root/.autobyteus/server-data/memory
+[2026-06-19T06:09:33.838Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-06-19T06:09:33.838Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[17128:0619/060933.986117:INFO:CONSOLE:651] "serverStore: Initializing server config", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060933.986759:INFO:CONSOLE:651] "serverStore: Log file path: /root/.autobyteus/logs/app.log", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060933.988298:INFO:CONSOLE:651] "serverStore: Received server status: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060933.988479:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060933.998177:INFO:CONSOLE:659] "ServerLoading: Component mounted with status: starting", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (659)
+[2026-06-19T06:09:35.990Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:36.015Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:37.988Z] [INFO] [electron] ServerStatusManager: Checking server health
+[17128:0619/060939.011344:INFO:CONSOLE:659] "ServerLoading: Still starting, checking health again", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (659)
+[2026-06-19T06:09:39.012Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:39.326Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-06-19T06:09:39.326Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-06-19T06:09:39.326Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-06-19T06:09:39.326Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'replace_in_file'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'insert_in_file'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'load_skill'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'add_todo'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_todo_list'
+[2026-06-19T06:09:39.327Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_todo_list'
+[2026-06-19T06:09:39.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_todo_status'
+[2026-06-19T06:09:39.328Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-06-19T06:09:39.572Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-06-19T06:09:39.573Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from existing-env: process.env (query=libquery-engine, schema=schema-engine)
+[2026-06-19T06:09:39.996Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:39.997Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-06-19T06:09:40.001Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/root/.autobyteus/server-data/db/production.db"
+[2026-06-19T06:09:40.049Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/root/.autobyteus/server-data/db/production.db
+[2026-06-19T06:09:40.083Z] [INFO] [electron.embedded-server.stdout] 13 migrations found in prisma/migrations
+[2026-06-19T06:09:40.108Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-06-19T06:09:40.228Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-06-19T06:09:40.328Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-06-19T06:09:40.349Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-06-19T06:09:40.381Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-06-19T06:09:40.392Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-06-19T06:09:40.407Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-06-19T06:09:40.492Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-06-19T06:09:40.502Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-06-19T06:09:40.535Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-06-19T06:09:40.552Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-06-19T06:09:40.568Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-06-19T06:09:40.624Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-06-19T06:09:40.635Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-06-19T06:09:40.636Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-06-19T06:09:40.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-06-19T06:09:40.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-06-19T06:09:40.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-06-19T06:09:40.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-06-19T06:09:40.638Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-06-19T06:09:40.639Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-06-19T06:09:40.699Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-06-19T06:09:40.702Z] [WARN] [electron.embedded-server.stderr] (node:17207) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[2026-06-19T06:09:40.702Z] [ERROR] [electron.embedded-server.stderr] (Use `autobyteus --trace-warnings ...` to show where the warning was created)
+[2026-06-19T06:09:40.797Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-06-19T06:09:40.798Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 18 predefined settings
+[2026-06-19T06:09:40.800Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-06-19T06:09:40.870Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 47 items.
+[2026-06-19T06:09:40.875Z] [INFO] [electron.embedded-server.stdout] No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+[2026-06-19T06:09:40.875Z] [INFO] [electron.embedded-server.stdout] No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+[2026-06-19T06:09:40.889Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-06-19T06:09:40.890Z] [INFO] [electron.embedded-server.stdout] AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-06-19T06:09:40.891Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:09:40.891Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-06-19T06:09:40.962Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1781849380962,"pid":17207,"hostname":"abab63ac05a2","msg":"Server listening at http://0.0.0.0:29695"}
+[2026-06-19T06:09:40.963Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-06-19T06:09:40.963Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-06-19T06:09:40.964Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:09:40.962Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-06-19T06:09:40.966Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:09:40.966Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:29695
+[17128:0619/060940.972044:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060940.972538:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060940.977015:INFO:CONSOLE:659] "ServerLoading: Status changed from starting to running", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (659)
+[2026-06-19T06:09:40.981Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /home/autobyteus/workspace
+[2026-06-19T06:09:40.982Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+[2026-06-19T06:09:40.982Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+[2026-06-19T06:09:40.982Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-06-19T06:09:40.985Z] [INFO] [electron.embedded-server.stdout] Scheduling non-critical startup tasks to run in the background...
+[2026-06-19T06:09:41.012Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-06-19T06:09:41.013Z] [INFO] [electron.embedded-server.stdout] CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+[2026-06-19T06:09:41.013Z] [INFO] [electron.embedded-server.stdout] AutobyteusModelCatalog initialized.
+[2026-06-19T06:09:41.013Z] [INFO] [electron.embedded-server.stdout] CachedAudioModelProvider initialized.
+[2026-06-19T06:09:41.013Z] [INFO] [electron.embedded-server.stdout] AudioModelService initialized.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] CachedImageModelProvider initialized.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] ImageModelService initialized.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-06-19T06:09:41.014Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-06-19T06:09:41.015Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-06-19T06:09:41.015Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-06-19T06:09:41.015Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-06-19T06:09:41.015Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-06-19T06:09:41.015Z] [INFO] [electron.embedded-server.stdout] Loading agent tool definitions...
+[2026-06-19T06:09:41.016Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-06-19T06:09:41.016Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-06-19T06:09:41.016Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-06-19T06:09:41.016Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-06-19T06:09:41.016Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Customizations' completed successfully.
+[2026-06-19T06:09:41.031Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 47 agent definitions into cache.
+[2026-06-19T06:09:41.032Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:09:41.024Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-06-19T06:09:41.048Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:41.090Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-06-19T06:09:41.091Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-06-19T06:09:41.092Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-06-19T06:09:41.092Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Media Tools
+[2026-06-19T06:09:41.097Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-06-19T06:09:41.098Z] [INFO] [electron.embedded-server.stdout] Background task 'Workspaces' completed successfully.
+[2026-06-19T06:09:41.099Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-06-19T06:09:41.100Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Published Artifact Tools
+[2026-06-19T06:09:41.100Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_tools'
+[2026-06-19T06:09:41.100Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_input_processors'
+[2026-06-19T06:09:41.101Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_llm_response_processors'
+[2026-06-19T06:09:41.101Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_lifecycle_processors'
+[2026-06-19T06:09:41.101Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tool_result_processors'
+[2026-06-19T06:09:41.102Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Tool Management Tools
+[2026-06-19T06:09:41.103Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_available_skills'
+[2026-06-19T06:09:41.103Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_skill_content'
+[2026-06-19T06:09:41.103Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_skill_version'
+[2026-06-19T06:09:41.104Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Skills Tools
+[2026-06-19T06:09:41.104Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-06-19T06:09:41.104Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-06-19T06:09:41.104Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-06-19T06:09:41.104Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-06-19T06:09:41.105Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-06-19T06:09:41.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-06-19T06:09:41.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Browser Tools
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Agent Communication Tools
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_tasks'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-06-19T06:09:41.107Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Task Delegation Tools
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Tools' completed successfully.
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-06-19T06:09:41.108Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-06-19T06:09:41.110Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/060941.110795:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060941.110928:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:09:41.151Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:09:41.151Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+[2026-06-19T06:09:41.151Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 21 agent team definitions into cache.
+[2026-06-19T06:09:41.152Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-06-19T06:09:41.152Z] [INFO] [electron.embedded-server.stdout] Populating LLM models cache for the first time...
+[2026-06-19T06:09:41.152Z] [INFO] [electron.embedded-server.stdout] Fetching list of available LLM models from LLMFactory...
+[2026-06-19T06:09:41.157Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://localhost:11434
+[2026-06-19T06:09:41.166Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-06-19T06:09:41.167Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://localhost:1234
+[2026-06-19T06:09:41.168Z] [ERROR] [electron.embedded-server.stderr] Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+[2026-06-19T06:09:41.168Z] [INFO] [electron.embedded-server.stdout] No Autobyteus LLM server hosts configured. Skipping discovery.
+[2026-06-19T06:09:41.181Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 21 models from LLMFactory.
+[2026-06-19T06:09:41.181Z] [INFO] [electron.embedded-server.stdout] LLM models cache populated with 21 items.
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 21 LLM models into cache.
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Populating Image models cache for the first time...
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Image models from ImageClientFactory...
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Awaiting Autobyteus image model discovery before listing models...
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 6 image models from ImageClientFactory.
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Image models by provider: OPENAI=2, GEMINI=4
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Image models by runtime: api=6
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Image models cache populated with 6 items.
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 6 image models into cache.
+[2026-06-19T06:09:41.182Z] [INFO] [electron.embedded-server.stdout] Populating Audio models cache for the first time...
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Audio models from AudioClientFactory...
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Awaiting Autobyteus audio model discovery before listing models...
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 4 audio models from AudioClientFactory.
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Audio models by provider: OPENAI=1, GEMINI=3
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Audio models by runtime: api=4
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Audio models cache populated with 4 items.
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-06-19T06:09:41.183Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-06-19T06:09:41.385Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:41.389Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/060941.459342:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060941.459990:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:09:41.606Z] [WARN] [electron] [updater] APPIMAGE env is not defined, current application is not an AppImage
+[2026-06-19T06:09:46.505Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:46.517Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/060946.525663:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060946.525839:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:09:51.503Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:51.506Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/060951.507575:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060951.507713:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:09:56.503Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:09:56.504Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/060956.505488:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/060956.505601:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:01.505Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:01.508Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061001.509321:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061001.509602:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:06.502Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:06.504Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061006.505407:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061006.505542:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:11.503Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:11.504Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061011.505344:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061011.505511:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:16.501Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:16.503Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061016.504195:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061016.504282:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:21.501Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:21.503Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061021.503963:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061021.504098:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:26.508Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:26.510Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061026.510862:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061026.510966:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:31.501Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:31.503Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061031.504377:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061031.504469:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:36.508Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:36.510Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061036.510843:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061036.510933:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:41.501Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:41.503Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061041.504823:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061041.505027:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:46.504Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:46.507Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061046.509046:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061046.509194:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:51.500Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:51.501Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061051.502640:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061051.502802:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:10:56.500Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:10:56.502Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061056.503587:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061056.503965:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:01.502Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:01.504Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061101.505657:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061101.505919:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:06.502Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:06.506Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061106.507501:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061106.507705:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061115.895706:INFO:CONSOLE:17] "Workspace.vue: Mounted. Fetching server settings and loading profiles...", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (17)
+[2026-06-19T06:11:15.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:15.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061115.899157:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061115.899237:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061115.913781:INFO:CONSOLE:13] "[useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/0660e813-2696-47f8-9bbb-dd59831803fd", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[17128:0619/061115.931549:INFO:CONSOLE:13] "[useTerminalSession] Connected", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[2026-06-19T06:11:16.035Z] [INFO] [electron.embedded-server.stdout] Created terminal session 0660e813-2696-47f8-9bbb-dd59831803fd using backend PtySession for target /root
+[2026-06-19T06:11:16.036Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 0660e813-2696-47f8-9bbb-dd59831803fd
+[2026-06-19T06:11:16.036Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /root
+[2026-06-19T06:11:17.456Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 0660e813-2696-47f8-9bbb-dd59831803fd
+[2026-06-19T06:11:17.465Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 0660e813-2696-47f8-9bbb-dd59831803fd
+[17128:0619/061117.466453:INFO:CONSOLE:13] "[useTerminalSession] Disconnected: 1005 ", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[17128:0619/061118.588623:INFO:CONSOLE:13] "[useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/575874f8-0ff8-470d-9a10-3975f69e850a", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[17128:0619/061118.591590:INFO:CONSOLE:13] "[useTerminalSession] Connected", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[2026-06-19T06:11:18.694Z] [INFO] [electron.embedded-server.stdout] Created terminal session 575874f8-0ff8-470d-9a10-3975f69e850a using backend PtySession for target /root
+[2026-06-19T06:11:18.694Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 575874f8-0ff8-470d-9a10-3975f69e850a
+[2026-06-19T06:11:18.695Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /root
+[2026-06-19T06:11:20.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:20.939Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061120.940241:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061120.940390:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:25.933Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:25.936Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061125.937721:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061125.937845:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:30.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:30.940Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061130.940787:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061130.940906:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:35.934Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:35.937Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061135.938317:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061135.938585:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:40.934Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:40.937Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061140.937998:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061140.938203:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:45.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:45.938Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061145.939403:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061145.939532:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:50.934Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:50.938Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061150.939228:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061150.939315:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:11:55.934Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:11:55.939Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061155.941291:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061155.941547:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:00.934Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:00.938Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061200.939879:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061200.940114:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:05.933Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:05.936Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061205.937870:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061205.938160:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:10.935Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:10.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061210.943611:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061210.944112:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:15.942Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:15.946Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061215.948330:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061215.948565:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:20.937Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:20.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061220.943622:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061220.943910:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:25.935Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:25.940Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061225.941769:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061225.942111:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:30.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:30.938Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061230.939890:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061230.940110:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:35.938Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:35.942Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061235.943967:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061235.944289:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:40.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:40.939Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061240.940876:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061240.941047:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:45.941Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:45.945Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061245.946640:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061245.947059:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:50.935Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:50.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061250.943260:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061250.943648:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:12:55.933Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:12:55.935Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061255.936186:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061255.936325:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:00.938Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:13:00.942Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061300.943689:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061300.944515:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:05.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:13:05.939Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061305.940688:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061305.940802:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:10.933Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:13:10.935Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061310.936066:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061310.936213:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:15.936Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:13:15.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061315.943510:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061315.943945:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:20.935Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:13:20.937Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061320.938090:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061320.938225:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:13:22.799Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 575874f8-0ff8-470d-9a10-3975f69e850a
+[17128:0619/061322.804326:INFO:CONSOLE:13] "[useTerminalSession] Disconnected: 1005 ", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[2026-06-19T06:13:22.809Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 575874f8-0ff8-470d-9a10-3975f69e850a
+XDG_RUNTIME_DIR (/run/user/1000) is not owned by us (uid 0), but by uid 1000! (This could e.g. happen if you try to connect to a non-root PulseAudio as a root user, over the native protocol. Don't do that.)
+[17458:0619/061325.948014:WARNING:media/audio/linux/audio_manager_linux.cc:54] Falling back to ALSA for audio output. PulseAudio is not available or could not be initialized.
+[2026-06-19T06:14:03.032Z] [INFO] [electron.embedded-server.stdout] Attempting to download file from: https://codeload.github.com/AutoByteus/autobyteus-agents/tar.gz/refs/heads/main
+[2026-06-19T06:14:03.273Z] [ERROR] [electron.embedded-server.stderr] URL has no extension. Defaulting to .bin for https://codeload.github.com/AutoByteus/autobyteus-agents/tar.gz/refs/heads/main
+[2026-06-19T06:14:03.356Z] [INFO] [electron.embedded-server.stdout] Successfully downloaded file to: /root/.autobyteus/server-data/application-packages/.staging/autobyteus__autobyteus-agents-41dbb275-900f-460a-a806-1659a3548bc2-PNO00v/download/autobyteus__autobyteus-agents/97f106fb-1718-49ff-941a-31d7291491fd.bin
+[2026-06-19T06:14:03.399Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1781849643399,"pid":17207,"hostname":"abab63ac05a2","reqId":"req-37","err":{"type":"GraphQLError","message":"Application package must contain an 'applications' directory.","stack":"Error: Application package must contain an 'applications' directory.\n    at validateApplicationPackageRoot (file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/application-packages/utils/application-package-root-summary.js:39:15)\n    at GitHubApplicationPackageInstaller.installPackage (file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/application-packages/installers/github-application-package-installer.js:34:13)\n    at async ApplicationPackageRegistryService.importGitHubPackage (file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/application-packages/services/application-package-registry-service.js:268:34)\n    at async ApplicationPackageResolver.importApplicationPackage (file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/api/graphql/types/application-packages.js:189:26)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importApplicationPackage"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Application package must contain an 'applications' directory."}
+[17128:0619/061416.235344:INFO:CONSOLE:17] "Workspace.vue: Mounted. Fetching server settings and loading profiles...", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (17)
+[2026-06-19T06:14:16.238Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-06-19T06:14:16.241Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[17128:0619/061416.249793:INFO:CONSOLE:13] "[useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/af9f00dd-3d13-457b-bbda-7d1a35d049e5", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[17128:0619/061416.254945:INFO:CONSOLE:651] "serverStore: Server status update received: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061416.255053:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[17128:0619/061416.260376:INFO:CONSOLE:13] "[useTerminalSession] Connected", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[2026-06-19T06:14:16.356Z] [INFO] [electron.embedded-server.stdout] Created terminal session af9f00dd-3d13-457b-bbda-7d1a35d049e5 using backend PtySession for target /root
+[2026-06-19T06:14:16.356Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: af9f00dd-3d13-457b-bbda-7d1a35d049e5
+[2026-06-19T06:14:16.357Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /root
+[2026-06-19T06:14:18.113Z] [INFO] [electron.embedded-server.stdout] Closed PTY session af9f00dd-3d13-457b-bbda-7d1a35d049e5
+[17128:0619/061418.114741:INFO:CONSOLE:13] "[useTerminalSession] Disconnected: 1005 ", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/workspace.BNeueZhy.js (13)
+[2026-06-19T06:14:18.124Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: af9f00dd-3d13-457b-bbda-7d1a35d049e5
+[17128:0619/061537.601910:INFO:CONSOLE:651] "serverStore: App is quitting, updating status.", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (651)
+[2026-06-19T06:15:37.602Z] [INFO] [electron] Received start-shutdown signal from renderer. Quitting app.
+[17128:0619/061537.602963:INFO:CONSOLE:659] "ServerLoading: Status changed from running to shutting-down", source: file:///home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar/dist/renderer/_nuxt/entry.gZxgCPEy.js (659)
+[2026-06-19T06:15:37.607Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-06-19T06:15:37.607Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-06-19T06:15:37.609Z] [INFO] [electron.embedded-server.stdout] [2026-06-19T06:15:37.607Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
