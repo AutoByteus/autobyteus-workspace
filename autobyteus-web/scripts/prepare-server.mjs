@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process'
-import { chmod, cp, mkdir, readFile, readdir, rm, stat, writeFile, lstat } from 'node:fs/promises'
+import { chmod, copyFile, cp, mkdir, readFile, readdir, rm, stat, writeFile, lstat } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveWorkspacePackageRoot } from '../../scripts/workspace-package-roots.mjs'
 
-const LINUX_PRISMA_BINARY_TARGETS = 'debian-openssl-1.1.x,debian-openssl-3.0.x'
 const COLORS = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
@@ -21,6 +20,56 @@ const serverSourceRoot = path.resolve(workspaceRoot, 'autobyteus-server-ts')
 const targetDir = path.resolve(webRoot, 'resources', 'server')
 const stageDir = path.resolve(webRoot, '.server-packaging-stage')
 const localPackageDir = path.resolve(stageDir, '_local-packages')
+
+function normalizeLinuxArch(value) {
+  const normalized = String(value ?? '').trim().toLowerCase()
+  if (normalized === 'x64' || normalized === 'amd64' || normalized === 'x86_64') {
+    return 'x64'
+  }
+  if (normalized === 'arm64' || normalized === 'aarch64') {
+    return 'arm64'
+  }
+  return null
+}
+
+function resolveLinuxPackageTargetArch() {
+  if (process.platform !== 'linux') {
+    return null
+  }
+
+  const hostArch = normalizeLinuxArch(process.arch)
+  if (!hostArch) {
+    throw new Error(`Unsupported Linux host architecture for Electron server preparation: ${process.arch}`)
+  }
+
+  const requestedArch = normalizeLinuxArch(process.env.AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH ?? hostArch)
+  if (!requestedArch) {
+    throw new Error(
+      `Unsupported AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH='${process.env.AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH}'. Use x64 or arm64.`
+    )
+  }
+
+  if (requestedArch !== hostArch) {
+    throw new Error(
+      `Unsupported Linux cross-architecture server preparation: host is ${hostArch}, requested ${requestedArch}. Use a native ${requestedArch} Linux host/runner.`
+    )
+  }
+
+  return requestedArch
+}
+
+function getLinuxPrismaBinaryTargets(targetArch) {
+  if (targetArch === 'arm64') {
+    return 'linux-arm64-openssl-3.0.x'
+  }
+  if (targetArch === 'x64') {
+    return 'debian-openssl-1.1.x,debian-openssl-3.0.x'
+  }
+  return ''
+}
+
+const linuxPackageTargetArch = resolveLinuxPackageTargetArch()
+const linuxPrismaBinaryTargets = getLinuxPrismaBinaryTargets(linuxPackageTargetArch)
 
 function color(text, value) {
   return `${value}${text}${COLORS.reset}`
@@ -204,7 +253,7 @@ async function installPortableRuntimeDependencies() {
   warn('\nGenerating Prisma client in staging...')
   const prismaEnv = {}
   if (process.platform === 'linux' && !process.env.PRISMA_CLI_BINARY_TARGETS) {
-    prismaEnv.PRISMA_CLI_BINARY_TARGETS = LINUX_PRISMA_BINARY_TARGETS
+    prismaEnv.PRISMA_CLI_BINARY_TARGETS = linuxPrismaBinaryTargets
   }
   await runCommand('npx', ['prisma', 'generate', '--schema', 'prisma/schema.prisma'], {
     cwd: stageDir,
@@ -356,12 +405,17 @@ async function validateLinuxPrismaEngines(nodeModulesRoot) {
     throw new Error(`Prisma engines directory not found: ${enginesDir}`)
   }
 
-  const requiredEngines = [
-    'libquery_engine-debian-openssl-1.1.x.so.node',
-    'libquery_engine-debian-openssl-3.0.x.so.node',
-    'schema-engine-debian-openssl-1.1.x',
-    'schema-engine-debian-openssl-3.0.x',
-  ]
+  const requiredEngines = linuxPackageTargetArch === 'arm64'
+    ? [
+        'libquery_engine-linux-arm64-openssl-3.0.x.so.node',
+        'schema-engine-linux-arm64-openssl-3.0.x',
+      ]
+    : [
+        'libquery_engine-debian-openssl-1.1.x.so.node',
+        'libquery_engine-debian-openssl-3.0.x.so.node',
+        'schema-engine-debian-openssl-1.1.x',
+        'schema-engine-debian-openssl-3.0.x',
+      ]
   for (const engineName of requiredEngines) {
     const enginePath = path.join(enginesDir, engineName)
     if (!(await exists(enginePath))) {
@@ -374,11 +428,57 @@ async function validateLinuxPrismaEngines(nodeModulesRoot) {
     throw new Error(`Prisma client runtime directory not found: ${prismaClientEnginesDir}`)
   }
 
-  for (const engineName of ['libquery_engine-debian-openssl-1.1.x.so.node', 'libquery_engine-debian-openssl-3.0.x.so.node']) {
-    const clientEnginePath = path.join(prismaClientEnginesDir, engineName)
-    if (!(await exists(clientEnginePath))) {
-      throw new Error(`Missing required Prisma client engine: ${clientEnginePath}`)
-    }
+  const requiredClientEngines = linuxPackageTargetArch === 'arm64'
+    ? ['libquery_engine-linux-arm64-openssl-3.0.x.so.node']
+    : ['libquery_engine-debian-openssl-1.1.x.so.node', 'libquery_engine-debian-openssl-3.0.x.so.node']
+
+  for (const engineName of requiredClientEngines) {
+    await validatePrismaClientEngineFile(
+      prismaClientEnginesDir,
+      engineName,
+      linuxPackageTargetArch === 'arm64'
+    )
+  }
+
+  warn(`Validated Linux ${linuxPackageTargetArch} Prisma engine targets`)
+}
+
+async function validatePrismaClientEngineFile(prismaClientEnginesDir, expectedName, allowGenericAlias) {
+  const clientEnginePath = path.join(prismaClientEnginesDir, expectedName)
+  if (await exists(clientEnginePath)) {
+    return
+  }
+
+  if (!allowGenericAlias) {
+    throw new Error(`Missing required Prisma client engine: ${clientEnginePath}`)
+  }
+
+  const genericEnginePath = path.join(prismaClientEnginesDir, 'libquery-engine')
+  if (!(await exists(genericEnginePath))) {
+    throw new Error(`Missing required Prisma client engine: ${clientEnginePath}`)
+  }
+
+  await validateGenericLinuxEngineArchitecture(genericEnginePath)
+  await copyFile(genericEnginePath, clientEnginePath)
+  warn(
+    `Prisma client generic engine matches Linux ${linuxPackageTargetArch}; ` +
+      `copied ${genericEnginePath} to expected runtime filename ${clientEnginePath}`
+  )
+}
+
+async function validateGenericLinuxEngineArchitecture(enginePath) {
+  const header = await readFile(enginePath)
+  if (header.length < 20 || header[0] !== 0x7f || header[1] !== 0x45 || header[2] !== 0x4c || header[3] !== 0x46) {
+    throw new Error(`Prisma client generic engine is not an ELF binary: ${enginePath}`)
+  }
+
+  const littleEndian = header[5] === 1
+  const machine = littleEndian ? header.readUInt16LE(18) : header.readUInt16BE(18)
+  const expectedMachine = linuxPackageTargetArch === 'arm64' ? 183 : 62
+  if (machine !== expectedMachine) {
+    throw new Error(
+      `Prisma client generic engine architecture mismatch for Linux ${linuxPackageTargetArch}: e_machine=${machine} at ${enginePath}`
+    )
   }
 }
 
@@ -452,6 +552,9 @@ async function run() {
   info('=======================================')
   info('   Preparing AutoByteus Server Files   ')
   info('=======================================')
+  if (linuxPackageTargetArch) {
+    info(`Linux server preparation target architecture: ${linuxPackageTargetArch}`)
+  }
 
   if (!(await exists(serverSourceRoot))) {
     throw new Error(`Server repository not found at ${serverSourceRoot}`)

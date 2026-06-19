@@ -311,7 +311,8 @@ pnpm android:server:stop
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - macOS Intel x64 DMG + blockmap
-  - Linux x64 AppImage + blockmap
+  - Linux x64 AppImage + `latest-linux.yml` metadata with embedded AppImage `blockMapSize`
+  - Linux ARM64 AppImage + `latest-linux-arm64.yml` metadata with embedded AppImage `blockMapSize`
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - managed messaging runtime package assets on the same GitHub Release
@@ -328,7 +329,7 @@ pnpm android:server:stop
   - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, and checkout-risk path lengths.
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
 - Desktop macOS terminal runtime validation is mandatory:
-  - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64.
+  - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64, and validates Linux x64/ARM64 AppImage architecture, Prisma engines, updater metadata, and packaged server startup.
   - Matching-architecture runners also execute a real `node-pty` spawn probe so a non-executable packaged `spawn-helper` cannot silently ship.
 - Android APK release:
   - public Android publishing uses `.github/workflows/release-android.yml`

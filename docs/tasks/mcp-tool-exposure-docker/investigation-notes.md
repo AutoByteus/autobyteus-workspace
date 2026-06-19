@@ -3,17 +3,19 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Root cause identified; scope refined and approved by user to include remote “Pair local browser” removal in the same ticket.
-- Investigation Goal: Determine why configured BrowserServer MCP tools are unavailable in Docker-hosted runtime, understand current host Electron vs remote-pairing browser support, and define the simplified browser-source design.
+- Current Status: Root cause identified; scope refined and approved by user to include remote “Pair local browser” removal in the same ticket. Delivery reroute on 2026-06-18 added Linux ARM64 Electron local-build/startup support as a verification-blocking requirement. User follow-up on 2026-06-18 added GitHub desktop release workflow support for Linux ARM64 artifacts/metadata.
+- Investigation Goal: Determine why configured BrowserServer MCP tools are unavailable in Docker-hosted runtime, understand current host Electron vs remote-pairing browser support, define the simplified browser-source design, address Linux ARM64 Electron packaging/startup required for user verification, and integrate Linux ARM64 into the GitHub desktop release workflow.
 - Scope Classification (`Small`/`Medium`/`Large`): Large
-- Scope Classification Rationale: The final scope crosses backend Agent Tools MCP routing, backend browser bridge support resolution, GraphQL schema removal, Electron runtime/pairing code removal, frontend Nodes UI cleanup, generated types, tests, and docs.
-- Scope Summary: Remove remote host-browser pairing and fix Agent Tools MCP exposure so inactive embedded browser providers contribute no tools and reserve no names. Docker/remote browser automation should use configured BrowserServer MCP inside the node/container.
+- Scope Classification Rationale: The final scope crosses backend Agent Tools MCP routing, backend browser bridge support resolution, GraphQL schema removal, Electron runtime/pairing code removal, frontend Nodes UI cleanup, Linux Electron packaging/runtime startup, GitHub release workflow publication, generated types, tests, and docs.
+- Scope Summary: Remove remote host-browser pairing and fix Agent Tools MCP exposure so inactive embedded browser providers contribute no tools and reserve no names. Docker/remote browser automation should use configured BrowserServer MCP inside the node/container. Add official Linux ARM64 host-architecture Electron build/startup support for local verification and GitHub desktop release workflow support for Linux ARM64 artifacts/metadata alongside Linux x64.
 - Primary Questions Resolved:
   - Frontend displayed tool list comes from configured agent `toolNames`, not effective runtime manifest.
   - Codex/Claude runtime tool exposure comes from server-created Agent Tools MCP sessions.
   - BrowserServer MCP is configured and registered; the missing tools are dropped during Agent Tools MCP collision resolution.
   - Host Electron browser support is env-injected at bundled-server startup and should remain.
   - Remote “Pair local browser” uses an Electron-issued descriptor plus remote GraphQL runtime binding and should now be removed.
+  - Linux Electron build currently hardcodes x64; ARM64 package startup currently selects x64 Prisma engines before ARM64 engines.
+  - GitHub desktop release workflow currently builds Linux x64 only; electron-updater expects `latest-linux-arm64.yml` for Linux ARM64 update metadata.
 
 ## Request Context
 
@@ -185,3 +187,77 @@ This updated scope supersedes the earlier design review package. Review should f
 2. Whether backend browser support can simplify to env-only without hidden runtime binding consumers.
 3. Whether route-backed session ownership remains necessary after removal. Investigation says yes, because static adapter names can still exist in code and same-name configured MCP routes need deterministic list/call behavior.
 4. Whether frontend/Electron/backend removal boundaries are complete enough to avoid dead pair-local-browser surfaces.
+
+
+## Delivery Reroute Investigation: Linux ARM64 Electron Packaging / Startup
+
+### Trigger and Classification
+
+Delivery rerouted the ticket on 2026-06-18 after the user asked to build the Linux Electron app on the current Linux host and start it for manual verification. The current host is Linux `arm64`/aarch64. The normal package script completed but produced a Linux x64 AppImage, while an ad-hoc ARM64 electron-builder package launched and then failed during embedded-server Prisma migration.
+
+Classification: requirement gap with design impact in the Electron packaging/startup path. This is in scope because user verification of the MCP/browser-tool cleanup depends on launching the Linux desktop app on this ARM64 host.
+
+### Additional Source Log
+
+| Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-06-18 | Delivery artifact | `docs/tasks/mcp-tool-exposure-docker/delivery-linux-arm64-reroute.md` | Read downstream blocker and evidence | Official `pnpm -C autobyteus-web build:electron:linux` emitted x64 AppImage; ad-hoc ARM64 AppImage/unpacked app launched but embedded server failed at Prisma migration. | Yes |
+| 2026-06-18 | Runtime log | `docs/tasks/mcp-tool-exposure-docker/validation-artifacts/linux-electron-app-run.log` | Confirm ARM64 app startup failure mode | Electron launched, Browser bridge started, embedded server spawned, Prisma migration selected bundled engine overrides, then failed with `Could not parse schema engine response: SyntaxError: Unexpected end of JSON input`. | Yes |
+| 2026-06-18 | Code | `sed -n '1,520p' autobyteus-web/build/scripts/build.ts` | Inspect Electron build target resolution and artifact naming | `RequestedArch` already parses `--arm64`/`--x64`, but `resolvePlatformTargets('LINUX', ...)` always returns `Arch.x64`; Linux artifact name is `AutoByteus_<flavor>_linux-${version}.AppImage` with no arch token. | Yes |
+| 2026-06-18 | Code | `cat autobyteus-web/package.json | jq '.scripts | with_entries(select(.key|test("electron|build")))'` | Inspect official package scripts | `build:electron:linux` chains `pnpm prepare-server` before `node build/dist/build.js --linux`; there are no Linux x64/ARM64-specific scripts. | Yes |
+| 2026-06-18 | Code | `sed -n '1,340p' autobyteus-server-ts/src/startup/migrations.ts` | Inspect Prisma migration engine resolution | `getRuntimeTargetPreference()` returns Debian OpenSSL targets first for all Linux architectures, so ARM64 runtimes can pick x64 Debian engine filenames when both x64 and ARM64 engines exist. | Yes |
+| 2026-06-18 | Code | `sed -n '1,360p' autobyteus-web/scripts/prepare-server.sh`; `sed -n '1,430p' autobyteus-web/scripts/prepare-server.mjs`; `cat autobyteus-web/scripts/prepare-server-dispatch.mjs` | Inspect server resource preparation | Linux dispatch currently runs the bash script. Both bash and mjs preparation paths force/validate Debian Linux Prisma targets but do not validate ARM64 target engines. Native module rebuild happens before electron-builder and is host/target sensitive. | Yes |
+| 2026-06-18 | Code | `sed -n '1,30p' autobyteus-server-ts/prisma/schema.prisma` | Confirm Prisma schema binary targets | Schema includes `native`, Darwin targets, and Debian OpenSSL targets. On ARM64 Linux, `native` resolves to `linux-arm64-openssl-3.0.x`. | Yes |
+| 2026-06-18 | Probe | `node -p "process.platform + ' ' + process.arch + ' openssl ' + process.versions.openssl" && pnpm -C autobyteus-server-ts exec prisma -v` | Identify runtime architecture and Prisma computed target | Host is `linux arm64`; Prisma 5.22 computed binary target is `linux-arm64-openssl-3.0.x`. | Yes |
+| 2026-06-18 | Probe | `find autobyteus-web/resources/server/node_modules -path '*@prisma/engines*' ...`; `file ...schema-engine-debian-openssl-3.0.x ...schema-engine-linux-arm64-openssl-3.0.x ...AppImage` | Confirm bundled engine/artifact architectures | Bundle contains both x64 Debian and ARM64 Prisma engines. `schema-engine-debian-openssl-3.0.x` is x86-64; `schema-engine-linux-arm64-openssl-3.0.x` is ARM aarch64. Official AppImage is x86-64; ad-hoc ARM64 AppImage is ARM aarch64. | Yes |
+| 2026-06-18 | Code/tests | `rg -n "resolvePrismaEnginePair|getRuntimeTargetPreference|buildPrismaCommandEnv|migrations" autobyteus-server-ts/src autobyteus-server-ts/tests` | Locate existing coverage | Unit coverage exists in `tests/unit/startup/migrations-prisma-engine-env.test.ts` but current helper expectations use Debian targets on Linux and do not simulate ARM64 preference with mixed engine files. | Yes |
+| 2026-06-18 | Workflow/docs | `.github/workflows/release-desktop.yml`, `autobyteus-web/docs/electron_packaging.md`, `autobyteus-web/README.md`, `README.md` | Determine release/docs behavior | Release desktop workflow has only `build-linux` on `ubuntu-22.04` x64. Docs say Linux artifact pattern is generic `linux-{version}` and release bullets list only Linux x64 AppImage. | Yes |
+| 2026-06-18 | Code | `.github/workflows/release-desktop.yml` lines 367-570 | Inspect desktop release jobs and publish assets | Current workflow has one `build-linux` job on `ubuntu-22.04`, uploads artifact `linux-x64`, publishes `*.AppImage`, `*.AppImage.blockmap`, and `**/latest-linux.yml`. `publish-release` needs only `build-linux`, not ARM64. | Yes |
+| 2026-06-18 | Code | `autobyteus-web/node_modules/electron-updater/out/providers/Provider.js` | Verify Linux updater metadata naming | Provider channel prefix is `-linux` for x64 and `-linux-${arch}` for non-x64. ARM64 clients request `latest-linux-arm64.yml`, while x64 clients request `latest-linux.yml`. `findFile` also prefers files whose URL includes `process.arch`. | Yes |
+| 2026-06-18 | Local artifact | `autobyteus-web/electron-dist/latest-linux-arm64.yml`; `autobyteus-web/electron-dist/latest-linux.yml` | Confirm electron-builder generated metadata names during delivery probe | Ad-hoc ARM64 build generated `latest-linux-arm64.yml` referencing `AutoByteus_enterprise_linux-arm64-1.3.60.AppImage`; x64 build generated `latest-linux.yml` referencing the generic x64 artifact. | Yes |
+| 2026-06-19 | Implementation reroute | Message from `implementation_engineer` for API/E2E Round 3 `LF-002`; `docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round3-lf002-blockmap-evidence.log` | Investigate missing Linux `*.AppImage.blockmap` artifact after fresh ARM64 build | Fresh `pnpm -C autobyteus-web build:electron:linux:arm64` produced the ARM64 AppImage, `latest-linux-arm64.yml`, and `linux-arm64-unpacked`, but no standalone `.AppImage.blockmap`; workflow/docs/requirements still expected one. | Yes |
+| 2026-06-19 | Local package source | `node_modules/.pnpm/app-builder-lib@25.1.8*/node_modules/app-builder-lib/out/targets/AppImageTarget.js`; `node_modules/.pnpm/app-builder-lib@25.1.8*/node_modules/app-builder-lib/out/targets/differentialUpdateInfoBuilder.js` | Verify electron-builder AppImage blockmap output behavior for installed version | `AppImageTarget` sends `updateInfo` returned by `executeAppBuilderAsJson(args)` to artifact completion and does not call `createBlockmap`; `differentialUpdateInfoBuilder` has separate `appendBlockmap` (embedded) and `createBlockmap` (standalone) paths, but AppImage uses the embedded update-info path. | Yes |
+| 2026-06-19 | Local package source | `node_modules/.pnpm/electron-updater@6.8.3/node_modules/electron-updater/out/AppImageUpdater.js`; `node_modules/.pnpm/electron-updater@6.8.3/node_modules/electron-updater/out/differentialDownloader/FileWithEmbeddedBlockMapDifferentialDownloader.js` | Verify updater consumption path | `AppImageUpdater` uses `FileWithEmbeddedBlockMapDifferentialDownloader`; the downloader reads `packageInfo.blockMapSize`, fetches bytes from the end of the new AppImage, and reads the old blockmap from the old AppImage tail. It does not download a standalone `.AppImage.blockmap`. | Yes |
+| 2026-06-19 | Local artifact/probe | `cat autobyteus-web/electron-dist/latest-linux-arm64.yml`; `find autobyteus-web/electron-dist -maxdepth 1 ...` | Confirm actual ARM64 artifact contract | Metadata file contains `blockMapSize: 335143` for `AutoByteus_enterprise_linux-arm64-1.3.60.AppImage`; no matching `*.AppImage.blockmap` file exists. | Yes |
+| 2026-06-18 | External docs | GitHub-hosted runners reference: `https://docs.github.com/en/actions/reference/runners/github-hosted-runners` | Check current official Linux ARM64 runner labels | GitHub docs list Linux ARM64 hosted labels including `ubuntu-24.04-arm`, `ubuntu-22.04-arm`, and `ubuntu-26.04-arm` in public preview. | Yes |
+| 2026-06-18 | External docs | electron-builder architecture docs: `https://www.electron.build/docs/architecture/`; auto-update docs: `https://www.electron.build/docs/features/auto-update/` | Check architecture and updater support | electron-builder documents Linux `--arm64`; native modules are architecture-specific; auto-update docs list Linux AppImage as an auto-updatable target and CI as the intended release provisioning path. | Yes |
+
+### Current-State Findings
+
+1. **Build target owner is partially designed but incomplete.** `autobyteus-web/build/scripts/build.ts` already has a `RequestedArch` parser and uses requested architecture for macOS, but Linux ignores it and always builds `Arch.x64`. This explains why the official Linux command generated an x86-64 AppImage on the ARM64 host.
+2. **Linux artifact naming hides architecture.** Current Linux artifact names omit an architecture token, so a generic `AutoByteus_<flavor>_linux-<version>.AppImage` can be x64 or ARM64 depending on how electron-builder was invoked. This is unsafe once ARM64 support exists.
+3. **Server packaging is target-sensitive.** The Electron app bundles `resources/server`, Prisma engines, Prisma Client native engines, and native modules such as `node-pty`. Preparing these resources on one architecture and packaging for a different Linux architecture risks invalid runtime binaries. The supported design should prefer host-architecture Linux builds and fail clearly for unsupported cross-arch requests unless a target-aware native rebuild path is implemented.
+4. **ARM64 Prisma engines are present but not selected.** On the ARM64 host, the packaged server bundle contains `schema-engine-linux-arm64-openssl-3.0.x` and `libquery_engine-linux-arm64-openssl-3.0.x.so.node`. The runtime resolver still picks Debian engine filenames first. The x64 schema engine cannot emit valid JSON on ARM64, producing the observed Prisma parse failure.
+5. **Preparation validation is incomplete for ARM64.** Linux preparation scripts currently validate Debian OpenSSL engine files only. They do not assert that the host/target ARM64 Prisma engine pair exists when building on ARM64.
+6. **Release publication is x64-only today and must be extended.** `.github/workflows/release-desktop.yml` originally built Linux only on x64 Ubuntu and uploaded/published x64 artifacts. User follow-up makes this an in-scope pipeline requirement: add a Linux ARM64 build job on an ARM64 Linux runner, upload/publish ARM64 AppImage artifacts, and publish ARM64 updater metadata as `latest-linux-arm64.yml` alongside x64 `latest-linux.yml`.
+7. **Linux updater metadata is already architecture-suffixed by electron-updater.** The installed `electron-updater` provider computes channel names as `latest-linux.yml` for x64 and `latest-linux-arm64.yml` for ARM64. The release workflow should publish both metadata files, not merge them into one Linux file and not upload duplicate basenames.
+8. **Pipeline validation should cover runtime, not only artifact existence.** Existing macOS jobs validate Prisma engines and packaged terminal runtime. Linux x64/ARM64 jobs should similarly validate AppImage architecture, required Prisma engine files, and packaged server startup/migrations using the unpacked app or Electron-as-Node server spawn.
+9. **Linux AppImage blockmaps are embedded, not standalone release assets.** `app-builder-lib@25.1.8` AppImage output produces AppImage update info with `blockMapSize`, and `electron-updater@6.8.3` reads embedded blockmap data from the AppImage tail through `FileWithEmbeddedBlockMapDifferentialDownloader`. Requiring `*.AppImage.blockmap` in Linux upload/publish globs is a requirements/design/docs error; the release asset set should be AppImage + `latest-linux*.yml` metadata for Linux, while macOS DMG/ZIP standalone blockmaps remain separate assets.
+
+### Root Cause for ARM64 Startup Failure
+
+The ARM64 packaged app failed because runtime Prisma engine selection used a platform-only Linux preference list:
+
+`debian-openssl-3.0.x -> debian-openssl-1.1.x -> linux-musl`
+
+On ARM64 Linux this list is wrong. It chooses x86-64 Debian engine files before `linux-arm64-openssl-3.0.x`, even when the correct ARM64 files are bundled. The target invariant should be architecture-first:
+
+- Linux ARM64: prefer `linux-arm64-openssl-3.0.x`, then other ARM64-compatible Linux targets if supported; do not fall back to x64 Debian engines.
+- Linux x64: prefer `debian-openssl-3.0.x`, then `debian-openssl-1.1.x`, then other x64-compatible targets.
+
+### Design Implications
+
+- Add Linux architecture resolution as a packaging invariant, not only an electron-builder target flag.
+- Make the default Linux build host-architecture aware (`process.arch` -> `x64` or `arm64`) and add explicit x64/ARM64 entrypoints or flags.
+- Keep release Linux x64 explicit in workflow/docs and add an explicit Linux ARM64 release job; do not rely on host-architecture defaults in either job.
+- Include architecture in Linux artifact names (`linux-x64`, `linux-arm64`).
+- Update server startup Prisma engine selection and tests so ARM64-compatible engines win over incompatible x64 Debian names.
+- Update Linux preparation validation in both maintained preparation paths or retire one path so there is no split behavior.
+- Add packaged/unpacked ARM64 startup validation evidence: build ARM64 on ARM64, launch unpacked app or AppImage, confirm Prisma migration success and embedded server health.
+- Add CI/release validation gates for Linux x64 and ARM64: architecture inspection, metadata naming, `blockMapSize` in updater metadata, required Prisma engine files, and packaged server startup/migration health.
+- Remove Linux `*.AppImage.blockmap` upload/publish/documentation requirements; AppImage blockmaps are embedded and only macOS DMG/ZIP targets should keep separate `.blockmap` artifacts.
+
+### Open Unknowns / Scope Boundaries
+
+- Linux ARM64 release publication is now in scope. The workflow must use a distinct ARM64 metadata asset (`latest-linux-arm64.yml`) rather than publishing two `latest-linux.yml` files. Linux AppImage release publication should not include standalone `.AppImage.blockmap` files; updater metadata `blockMapSize` validates the embedded blockmap.
+- Full Linux cross-architecture packaging remains out of scope unless implementation deliberately adds target-aware native module rebuilding and Prisma target preparation. The safe default is to use native x64 and native ARM64 CI runners and fail unsupported cross-arch requests early and clearly.

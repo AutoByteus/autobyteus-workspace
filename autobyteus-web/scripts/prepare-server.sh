@@ -11,13 +11,68 @@ WORKSPACE_ROOT="$(cd "${WEB_ROOT}/.." && pwd)"
 SERVER_REPO_DIR="${WORKSPACE_ROOT}/autobyteus-server-ts"
 TARGET_DIR="${WEB_ROOT}/resources/server"
 export TMPDIR="${TMPDIR:-/tmp}"
-LINUX_PRISMA_BINARY_TARGETS="debian-openssl-1.1.x,debian-openssl-3.0.x"
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+
+normalize_linux_arch() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    x64|amd64|x86_64)
+      echo "x64"
+      ;;
+    arm64|aarch64)
+      echo "arm64"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+resolve_linux_package_target_arch() {
+  if [ "$(uname -s)" != "Linux" ]; then
+    return 0
+  fi
+
+  local host_arch
+  host_arch="$(normalize_linux_arch "$(uname -m)")" || {
+    echo -e "${RED}Error: Unsupported Linux host architecture for Electron server preparation: $(uname -m)${NC}" >&2
+    exit 1
+  }
+
+  local requested_arch="${AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH:-$host_arch}"
+  requested_arch="$(normalize_linux_arch "$requested_arch")" || {
+    echo -e "${RED}Error: Unsupported AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH='${AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH}'. Use x64 or arm64.${NC}" >&2
+    exit 1
+  }
+
+  if [ "$requested_arch" != "$host_arch" ]; then
+    echo -e "${RED}Error: Unsupported Linux cross-architecture server preparation: host is ${host_arch}, requested ${requested_arch}. Use a native ${requested_arch} Linux host/runner.${NC}" >&2
+    exit 1
+  fi
+
+  echo "$requested_arch"
+}
+
+linux_prisma_binary_targets() {
+  case "$1" in
+    x64)
+      echo "debian-openssl-1.1.x,debian-openssl-3.0.x"
+      ;;
+    arm64)
+      echo "linux-arm64-openssl-3.0.x"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+LINUX_PACKAGE_TARGET_ARCH="$(resolve_linux_package_target_arch)"
+LINUX_PRISMA_BINARY_TARGETS="$(linux_prisma_binary_targets "$LINUX_PACKAGE_TARGET_ARCH")"
 
 normalize_node_pty_spawn_helpers() {
   if [ ! -d "${TARGET_DIR}/node_modules" ]; then
@@ -38,10 +93,57 @@ normalize_node_pty_spawn_helpers() {
   fi
 }
 
+validate_prisma_client_engine_file() {
+  local client_dir="$1"
+  local expected_name="$2"
+  local allow_generic_alias="${3:-false}"
+  local expected_engine="${client_dir}/${expected_name}"
+  local generic_engine="${client_dir}/libquery-engine"
+
+  if [ -f "${expected_engine}" ]; then
+    return 0
+  fi
+
+  if [ "${allow_generic_alias}" != "true" ]; then
+    echo -e "${RED}Error: Missing required Prisma client engine in bundle: ${expected_name}${NC}"
+    return 1
+  fi
+
+  if [ ! -f "${generic_engine}" ]; then
+    echo -e "${RED}Error: Missing required Prisma client engine in bundle: ${expected_name}${NC}"
+    return 1
+  fi
+
+  if command -v file >/dev/null 2>&1; then
+    local file_output
+    file_output="$(file "${generic_engine}")"
+    case "$LINUX_PACKAGE_TARGET_ARCH" in
+      arm64)
+        echo "$file_output" | grep -Eq 'ARM aarch64|aarch64|ARM64' || {
+          echo -e "${RED}Error: Prisma client generic engine is not ARM64: ${file_output}${NC}"
+          return 1
+        }
+        ;;
+      x64)
+        echo "$file_output" | grep -Eq 'x86-64|x86_64' || {
+          echo -e "${RED}Error: Prisma client generic engine is not x64: ${file_output}${NC}"
+          return 1
+        }
+        ;;
+    esac
+  fi
+
+  cp -p "${generic_engine}" "${expected_engine}"
+  echo -e "${GREEN}✓${NC} Prisma client generic engine matches Linux ${LINUX_PACKAGE_TARGET_ARCH}; copied ${generic_engine} to expected runtime filename ${expected_engine}"
+}
+
 # Banner
 echo -e "${GREEN}=======================================${NC}"
 echo -e "${GREEN}   Preparing AutoByteus Server Files   ${NC}"
 echo -e "${GREEN}=======================================${NC}"
+if [ "$(uname -s)" = "Linux" ]; then
+  echo -e "${GREEN}✓${NC} Linux server preparation target architecture: ${LINUX_PACKAGE_TARGET_ARCH}"
+fi
 
 # Check if server repository exists
 if [ ! -d "$SERVER_REPO_DIR" ]; then
@@ -142,19 +244,26 @@ if [ "$(uname -s)" = "Linux" ]; then
     exit 1
   fi
 
-  REQUIRED_ENGINES=(
-    "libquery_engine-debian-openssl-1.1.x.so.node"
-    "libquery_engine-debian-openssl-3.0.x.so.node"
-    "schema-engine-debian-openssl-1.1.x"
-    "schema-engine-debian-openssl-3.0.x"
-  )
+  if [ "$LINUX_PACKAGE_TARGET_ARCH" = "arm64" ]; then
+    REQUIRED_ENGINES=(
+      "libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+      "schema-engine-linux-arm64-openssl-3.0.x"
+    )
+  else
+    REQUIRED_ENGINES=(
+      "libquery_engine-debian-openssl-1.1.x.so.node"
+      "libquery_engine-debian-openssl-3.0.x.so.node"
+      "schema-engine-debian-openssl-1.1.x"
+      "schema-engine-debian-openssl-3.0.x"
+    )
+  fi
   for engine in "${REQUIRED_ENGINES[@]}"; do
     if [ ! -f "${ENGINES_DIR}/${engine}" ]; then
       echo -e "${RED}Error: Missing required Prisma engine in bundle: ${engine}${NC}"
       exit 1
     fi
   done
-  echo -e "${GREEN}✓${NC} Prisma Linux engine targets verified in ${ENGINES_DIR}"
+  echo -e "${GREEN}✓${NC} Prisma Linux ${LINUX_PACKAGE_TARGET_ARCH} engine targets verified in ${ENGINES_DIR}"
 
   CLIENT_DIR="$(find "${TARGET_DIR}/node_modules/.pnpm" -maxdepth 6 -type d -path "*/@prisma+client@*/node_modules/.prisma/client" | head -n1 || true)"
   if [ -z "${CLIENT_DIR}" ] || [ ! -d "${CLIENT_DIR}" ]; then
@@ -162,17 +271,24 @@ if [ "$(uname -s)" = "Linux" ]; then
     exit 1
   fi
 
-  REQUIRED_CLIENT_ENGINES=(
-    "libquery_engine-debian-openssl-1.1.x.so.node"
-    "libquery_engine-debian-openssl-3.0.x.so.node"
-  )
+  if [ "$LINUX_PACKAGE_TARGET_ARCH" = "arm64" ]; then
+    REQUIRED_CLIENT_ENGINES=(
+      "libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+    )
+  else
+    REQUIRED_CLIENT_ENGINES=(
+      "libquery_engine-debian-openssl-1.1.x.so.node"
+      "libquery_engine-debian-openssl-3.0.x.so.node"
+    )
+  fi
   for engine in "${REQUIRED_CLIENT_ENGINES[@]}"; do
-    if [ ! -f "${CLIENT_DIR}/${engine}" ]; then
-      echo -e "${RED}Error: Missing required Prisma client engine in bundle: ${engine}${NC}"
-      exit 1
+    ALLOW_GENERIC_ALIAS="false"
+    if [ "$LINUX_PACKAGE_TARGET_ARCH" = "arm64" ]; then
+      ALLOW_GENERIC_ALIAS="true"
     fi
+    validate_prisma_client_engine_file "${CLIENT_DIR}" "${engine}" "${ALLOW_GENERIC_ALIAS}" || exit 1
   done
-  echo -e "${GREEN}✓${NC} Prisma client Linux runtime engines verified in ${CLIENT_DIR}"
+  echo -e "${GREEN}✓${NC} Prisma client Linux ${LINUX_PACKAGE_TARGET_ARCH} runtime engines verified in ${CLIENT_DIR}"
 fi
 
 echo -e "\n${YELLOW}Pruning native prebuilds for host platform...${NC}"

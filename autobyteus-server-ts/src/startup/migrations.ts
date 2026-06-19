@@ -59,33 +59,28 @@ function getRuntimeSchemaEngineExtension(): string {
   return process.platform === "win32" ? ".exe" : "";
 }
 
-function getRuntimeTargetPreference(): string[] {
-  if (process.platform === "win32") {
+export function getPrismaRuntimeTargetPreference(
+  runtimePlatform: NodeJS.Platform = process.platform,
+  runtimeArch: NodeJS.Architecture = process.arch,
+): string[] {
+  if (runtimePlatform === "win32") {
     return ["windows"];
   }
-  if (process.platform === "darwin") {
-    if (process.arch === "arm64") {
+  if (runtimePlatform === "darwin") {
+    if (runtimeArch === "arm64") {
       return ["darwin-arm64", "darwin"];
     }
     return ["darwin", "darwin-arm64"];
   }
-  return ["debian-openssl-3.0.x", "debian-openssl-1.1.x", "linux-musl"];
-}
-
-function pickPreferredEngineFile(candidates: string[]): string | null {
-  if (candidates.length === 0) {
-    return null;
-  }
-
-  const preferences = getRuntimeTargetPreference();
-  for (const token of preferences) {
-    const matched = candidates.find((name) => name.includes(token));
-    if (matched) {
-      return matched;
+  if (runtimePlatform === "linux") {
+    if (runtimeArch === "arm64") {
+      return ["linux-arm64-openssl-3.0.x", "linux-arm64-openssl-1.1.x"];
+    }
+    if (runtimeArch === "x64") {
+      return ["debian-openssl-3.0.x", "debian-openssl-1.1.x", "linux-musl"];
     }
   }
-
-  return candidates.sort((a, b) => a.localeCompare(b))[0] ?? null;
+  return [];
 }
 
 function listBundledPrismaEngineDirs(appRoot: string): string[] {
@@ -124,29 +119,32 @@ function resolveBundledPrismaEnginePair(appRoot: string): PrismaEnginePair | nul
       continue;
     }
 
-    const queryCandidateName = pickPreferredEngineFile(
-      entries.filter((name) => name.startsWith("libquery_engine-") && name.endsWith(querySuffix)),
-    );
-    const schemaCandidateName = pickPreferredEngineFile(
-      entries.filter((name) => {
-        if (!name.startsWith("schema-engine-")) return false;
+    const sortedEntries = entries.sort((a, b) => a.localeCompare(b));
+    for (const targetToken of getPrismaRuntimeTargetPreference()) {
+      const queryCandidateName = sortedEntries.find(
+        (name) => name.startsWith("libquery_engine-") &&
+          name.endsWith(querySuffix) &&
+          name.includes(targetToken),
+      );
+      const schemaCandidateName = sortedEntries.find((name) => {
+        if (!name.startsWith("schema-engine-") || !name.includes(targetToken)) return false;
         if (name.endsWith(".sha256")) return false;
         return schemaExtension.length === 0 ? !name.endsWith(".exe") : name.endsWith(schemaExtension);
-      }),
-    );
+      });
 
-    if (!queryCandidateName || !schemaCandidateName) continue;
+      if (!queryCandidateName || !schemaCandidateName) continue;
 
-    const queryEngineLibrary = path.join(engineDir, queryCandidateName);
-    const schemaEngineBinary = path.join(engineDir, schemaCandidateName);
-    if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
+      const queryEngineLibrary = path.join(engineDir, queryCandidateName);
+      const schemaEngineBinary = path.join(engineDir, schemaCandidateName);
+      if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
 
-    return {
-      queryEngineLibrary,
-      schemaEngineBinary,
-      source: "bundled",
-      sourcePath: engineDir,
-    };
+      return {
+        queryEngineLibrary,
+        schemaEngineBinary,
+        source: "bundled",
+        sourcePath: engineDir,
+      };
+    }
   }
 
   return null;
@@ -162,9 +160,11 @@ function resolveCachedPrismaEnginePair(cacheRoot: string): PrismaEnginePair | nu
         queryEngineLibrary: string;
         schemaEngineBinary: string;
         sourcePath: string;
+        preferenceIndex: number;
         mtimeMs: number;
       }
     | null = null;
+  const targetPreferences = getPrismaRuntimeTargetPreference();
 
   let cacheVersions: fs.Dirent[];
   try {
@@ -187,6 +187,9 @@ function resolveCachedPrismaEnginePair(cacheRoot: string): PrismaEnginePair | nu
     for (const targetEntry of targetEntries) {
       if (!targetEntry.isDirectory()) continue;
       const sourcePath = path.join(versionDir, targetEntry.name);
+      const preferenceIndex = targetPreferences.findIndex((token) => targetEntry.name.includes(token));
+      if (preferenceIndex === -1) continue;
+
       const queryEngineLibrary = path.join(sourcePath, "libquery-engine");
       const schemaEngineBinary = path.join(sourcePath, "schema-engine");
       if (!isReadableFile(queryEngineLibrary) || !isReadableFile(schemaEngineBinary)) continue;
@@ -194,8 +197,12 @@ function resolveCachedPrismaEnginePair(cacheRoot: string): PrismaEnginePair | nu
       const queryMtime = fs.statSync(queryEngineLibrary).mtimeMs;
       const schemaMtime = fs.statSync(schemaEngineBinary).mtimeMs;
       const mtimeMs = Math.max(queryMtime, schemaMtime);
-      if (!bestMatch || mtimeMs > bestMatch.mtimeMs) {
-        bestMatch = { queryEngineLibrary, schemaEngineBinary, sourcePath, mtimeMs };
+      if (
+        !bestMatch ||
+        preferenceIndex < bestMatch.preferenceIndex ||
+        (preferenceIndex === bestMatch.preferenceIndex && mtimeMs > bestMatch.mtimeMs)
+      ) {
+        bestMatch = { queryEngineLibrary, schemaEngineBinary, sourcePath, preferenceIndex, mtimeMs };
       }
     }
   }
@@ -260,7 +267,10 @@ function runPrismaCommand(appRoot: string, args: string[]): void {
       }
     : { ...process.env };
   if (enginePair) {
-    logger.info(`Using Prisma engine overrides from ${enginePair.source}: ${enginePair.sourcePath}`);
+    logger.info(
+      `Using Prisma engine overrides from ${enginePair.source}: ${enginePair.sourcePath} ` +
+        `(query=${path.basename(enginePair.queryEngineLibrary)}, schema=${path.basename(enginePair.schemaEngineBinary)})`,
+    );
   } else {
     logger.warn("Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.");
   }

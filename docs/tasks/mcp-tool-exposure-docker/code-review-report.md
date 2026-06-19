@@ -4,128 +4,119 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/requirements.md`
-- Current Review Round: 1
-- Trigger: Implementation handoff from `implementation_engineer` for MCP/browser tool exposure cleanup.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Review Round: 4
+- Trigger: Implementation rework for API/E2E Round 3 `LF-002` after architecture review Round 4 passed the superseding Linux AppImage embedded-blockmap design.
+- Prior Review Round Reviewed: Round 3 in this file; it passed `LF-001` before API/E2E found `LF-002`.
+- Latest Authoritative Round: 4
 - Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/investigation-notes.md`
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/design-spec.md`
 - Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: N/A
-- API / E2E Execution Started Yet: `No`
-- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`
+- Execution Coverage Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/api-e2e-execution-coverage-report.md` (Round 3 blocked on `LF-002` before final delivery handoff)
+- API / E2E Execution Started Yet: `Yes` — Round 3 API/E2E ran final validation, found `LF-002`, and routed to implementation/design rework before completion.
+- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No` — this implementation pass changed release workflow, release metadata validation tooling, docs, and task artifacts; no API/E2E durable coverage code was changed.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff for route-backed Agent Tools MCP and remote browser pairing removal. | N/A | 0 | Pass | Yes | Implementation matches the reviewed route/source ownership model and clean-cut removal scope. |
+| 1 | Implementation handoff for route-backed Agent Tools MCP and remote browser pairing removal. | N/A | 0 | Pass | No | Implementation matched the reviewed route/source ownership model and clean-cut removal scope. |
+| 2 | Resumed implementation for Linux ARM64 Electron packaging/release support after delivery reroute. | Round 1 had no unresolved findings. | 0 | Pass | No | Packaging/release implementation enforced native Linux target architecture, compatible Prisma engine selection, and ARM64 packaged startup validation. |
+| 3 | Implementation local fix for API/E2E `LF-001` case-sensitive Linux unpacked executable path risk. | Round 2 code review had no findings; API/E2E `LF-001` rechecked. | 0 | Pass | No | Workflow resolves the actual executable entry under each Linux unpacked directory before invoking the packaged startup verifier. |
+| 4 | Implementation rework for `LF-002`: Linux AppImage blockmaps are embedded and validated through updater metadata `blockMapSize`, not standalone `*.AppImage.blockmap` assets. | Round 3 had no code-review findings; API/E2E `LF-002` rechecked against superseding design. | 0 | Pass | Yes | Workflow/docs no longer require Linux standalone AppImage blockmaps; metadata validator enforces arch-specific AppImage URLs and positive `blockMapSize`. |
 
 ## Review Scope
 
-Reviewed the working tree at `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker` against the requirements, investigation notes, design spec, architecture review report, implementation handoff, and the shared design principles.
+Reviewed the LF-002 implementation delta in `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker` on branch `codex/mcp-tool-exposure-docker` against the refreshed requirements, investigation notes, design spec, design review report Round 4, `solution-linux-appimage-blockmap-rework.md`, API/E2E Round 3 evidence, implementation handoff, prior code-review report, and shared design principles.
 
-Primary review focus:
+Primary Round 4 review focus:
 
-- Agent Tools MCP route-backed exposure/list/call source ownership.
-- Static collision policy: browser static adapters prefer configured MCP duplicates; platform/control adapters protect their names.
-- Removal of remote “Pair local browser” across backend GraphQL/runtime, Electron IPC/state/runtime, frontend NodeManager/store/client/types/localization, tests, and docs.
-- Preservation of host Electron embedded-browser env-injection path.
-- Test quality, cleanup completeness, file-size/structure pressure, and API/E2E readiness.
+- Linux release workflow upload and publish paths no longer include standalone `*.AppImage.blockmap` assets.
+- macOS `.dmg.blockmap` and `.zip.blockmap` upload/publish paths remain intact.
+- New `scripts/validate_linux_updater_metadata.py` validates `latest-linux.yml` and `latest-linux-arm64.yml` using stdlib-only parsing: matching `linux-x64`/`linux-arm64` AppImage file entries, positive numeric `blockMapSize`, matching top-level path when present, and no `.AppImage.blockmap` metadata references.
+- Linux x64 build job, Linux ARM64 build job, and publish job call the validator for the correct metadata files.
+- Durable docs now describe Linux AppImage + updater metadata with embedded blockmaps via `blockMapSize`, while preserving macOS standalone blockmap guidance.
+- No API/E2E durable coverage code was added, updated, or removed.
 
 Code-review validation rerun:
 
-- Passed: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts tests/unit/agent-tools/browser/browser-bridge-config-resolver.test.ts tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` — 4 files / 28 tests.
-- Passed: `pnpm -C autobyteus-web exec vitest run components/settings/__tests__/NodeManager.spec.ts --config vitest.config.mts` — 1 file / 9 tests.
-- Passed: `pnpm -C autobyteus-web exec vitest run electron/browser/__tests__/browser-runtime.spec.ts electron/__tests__/nodeRegistryStore.spec.ts --config electron/vitest.config.ts` — 2 files / 5 tests.
+- Passed: `python3 -m py_compile scripts/validate_linux_updater_metadata.py`.
+- Passed: `python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64` against actual local ARM64 metadata with `blockMapSize`.
+- Passed: synthetic x64 metadata validation with `--arch-token linux-x64`.
+- Passed negative validator check: metadata missing `blockMapSize` is rejected.
+- Passed negative validator check: metadata referencing `.AppImage.blockmap` is rejected.
 - Passed: `git diff --check`.
-- Passed: `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
-- Passed: `pnpm -C autobyteus-web transpile-electron`.
-- Passed: `pnpm -C autobyteus-web guard:localization-boundary`.
-- Passed cleanup search for removed pairing identifiers across current source/test/docs areas, with only intentional legacy `browserPairing` drop assertions remaining in `nodeRegistryStore.spec.ts`.
+- Passed workflow static check: `.github/workflows/release-desktop.yml` has no `AppImage.blockmap` references.
+- Passed workflow preservation check: macOS `.dmg.blockmap` / `.zip.blockmap` references remain.
+- Passed workflow static check: four `scripts/validate_linux_updater_metadata.py` invocations are present (x64 build, ARM64 build, publish x64 metadata, publish ARM64 metadata).
+- Passed workflow YAML parse with `python3` + `yaml.safe_load`; expected Linux/publish jobs exist.
+- Passed durable-doc stale positive wording check for Linux standalone AppImage blockmap expectations in `README.md`, `autobyteus-web/docs/electron_packaging.md`, and `autobyteus-web/docs/github-actions-tag-build.md`.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | First code review round. | No prior unresolved code-review findings. |
+| 3 | N/A | N/A | Still no unresolved prior code-review findings. | Round 3 findings section was `None`. | No carried code-review finding IDs. |
+| API/E2E Round 2 | `LF-001` | Local Fix / API&E2E blocked | Still resolved. | Workflow still discovers the actual Linux unpacked executable before startup validation. | Rechecked as preserved prior local fix. |
+| API/E2E Round 3 | `LF-002` | Local Fix with design rework / API&E2E blocked | Resolved by implementation against superseding design. | Workflow no longer uploads/publishes Linux `.AppImage.blockmap`; validator enforces `latest-linux*.yml` AppImage URL + `blockMapSize`; docs no longer claim standalone Linux blockmap assets. | This was not a prior code-review finding, but it is the local-fix trigger rechecked in this review. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Generated GraphQL output and localization data files were reviewed for stale API/string removal but are not treated as source implementation files for the source-file hard-limit check.
+Changed application source from LF-002 is limited to a release validation script. Workflow/docs are reviewed structurally but are not application source hard-limit targets.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts` | 293 | Pass | Pass; over 220 but cohesive and route model extracted. | Pass; owns exposure policy, route selection, list/call. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-tool-route.ts` | 35 | Pass | Pass | Pass; tight route union and clone helpers. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts` | 135 | Pass | Pass | Pass; session contract stores frozen route table. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts` | 167 | Pass | Pass | Pass; clones/stores session state only. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | 114 | Pass | Pass | Pass; delegates route computation to catalog. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/configured-mcp/configured-mcp-agent-tool-source-resolver.ts` | 60 | Pass | Pass | Pass; MCP metadata resolver only. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-adapter.ts` | 53 | Pass | Pass | Pass; adapter contract owns collision-policy metadata. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/mcp/providers/*-mcp-adapter-provider.ts` | 38-64 each | Pass | Pass | Pass; provider policy is explicit and local to static adapter definitions. | Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-tools/browser/browser-bridge-config-resolver.ts` | 30 | Pass | Pass | Pass; env-only support resolver. | Pass | Pass | None |
-| `autobyteus-server-ts/src/api/graphql/schema.ts` | 67 | Pass | Pass | Pass; removed obsolete resolver registration. | Pass | Pass | None |
-| `autobyteus-web/components/settings/NodeManager.vue` | 310 | Pass | Pass; existing component remains under hard limit and got simpler. | Pass; node management only, no pairing state/client. | Pass | Pass | None |
-| `autobyteus-web/electron/browser/browser-bridge-auth-registry.ts` | 18 | Pass | Pass | Pass; embedded token only. | Pass | Pass | None |
-| `autobyteus-web/electron/browser/browser-bridge-server.ts` | 234 | Pass | Pass; over 220 but cohesive HTTP bridge owner and remote branches removed. | Pass | Pass | Pass | None |
-| `autobyteus-web/electron/browser/browser-runtime.ts` | 85 | Pass | Pass | Pass; local bridge/env startup only. | Pass | Pass | None |
-| `autobyteus-web/electron/main.ts` | 457 | Pass | Pass; large existing Electron main but this change deletes remote-pairing responsibilities. | Pass for changed scope. | Pass | Pass | None |
-| `autobyteus-web/electron/nodeRegistryStore.ts` | 168 | Pass | Pass | Pass; node profile normalization drops legacy pairing fields with no behavior. | Pass | Pass | None |
-| `autobyteus-web/electron/nodeRegistryTypes.ts` | 13 | Pass | Pass | Pass | Pass | Pass | None |
-| `autobyteus-web/electron/preload.ts` | 120 | Pass | Pass | Pass; no removed pairing IPC API exposed. | Pass | Pass | None |
-| `autobyteus-web/electron/types.d.ts` | 66 | Pass | Pass | Pass | Pass | Pass | None |
-| `autobyteus-web/types/electron.d.ts` | 100 | Pass | Pass | Pass | Pass | Pass | None |
-| `autobyteus-web/types/node.ts` | 57 | Pass | Pass | Pass; no `browserPairing` model. | Pass | Pass | None |
+| `scripts/validate_linux_updater_metadata.py` | 118 | Pass | Pass | Pass; owns only Linux updater metadata validation for release workflow. | Pass; root `scripts/` matches existing release metadata helper location. | Pass | None. |
+
+Configuration structure note: `.github/workflows/release-desktop.yml` is 616 effective non-empty lines and remains large. LF-002 removes invalid Linux blockmap globs and adds bounded metadata validator calls in the existing release workflow owner. Future broad release workflow additions should consider reusable scripts/actions, but this LF-002 delta is structurally acceptable.
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design classify boundary/ownership plus legacy pressure; implementation removes pairing and adds route-backed source ownership. | None |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Host Electron path, Docker MCP path, and removed pairing path are reflected in changed source and tests. | None |
-| Ownership boundary preservation and clarity | Pass | Catalog owns route decisions; Configured MCP resolver owns MCP metadata; Electron browser runtime owns local bridge only. | None |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Generated types, localization, docs, and tests were updated as supporting cleanup without taking runtime policy. | None |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Remote browser automation uses configured MCP/registry path; no BrowserServer-specific special case was added. | None |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `agent-tool-mcp-tool-route.ts` is a tight shared route model reused by catalog/session/registry. | None |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `AgentToolMcpToolRoute` has one source branch per wire name; `NodeProfile` no longer carries obsolete `browserPairing`. | None |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | `enabledTools`, `tools/list`, and `tools/call` derive from the catalog-produced session route table. | None |
-| Empty indirection check (no pass-through-only boundary) | Pass | Session service remains a creation facade; route policy is not duplicated there. | None |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Backend, Electron, UI, generated types, docs, and tests each change under their existing owners. | None |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No caller bypasses catalog route ownership to recompute static-vs-MCP dispatch. | None |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Runtime materializers consume descriptors; list/call consume session routes through catalog, not static adapter internals. | None |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Route model is under Agent Tools MCP; browser env resolver under browser tools; NodeManager cleanup under settings. | None |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One new route model file is justified; no broad new module tree or catch-all helper added. | None |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | GraphQL remote bridge mutations/types are removed; route methods use explicit source branches. | None |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Route, policy, and resolver names describe their responsibilities. | None |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared route clone/model avoids parallel source representations; removed pairing state avoids duplicated browser support source. | None |
-| Patch-on-patch complexity control | Pass | Broad deletion is clean-cut; route addition is localized and tested. | None |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Deleted backend runtime binding/GraphQL resolver, Electron pairing/sharing state and IPC, frontend store/client/components/tests. Searches found no current refs except intentional legacy-drop test assertions. | None |
-| Test quality is acceptable for the changed behavior | Pass | Focused unit/integration tests cover route selection, configured MCP calls, protected collisions, env-only browser support, UI removal, Electron runtime, and node legacy field drop. | None |
-| Test maintainability is acceptable for the changed behavior | Pass | Tests assert behavior through catalog/session/UI boundaries rather than private implementation details. | None |
-| Validation or delivery readiness for the next workflow stage | Pass | Targeted checks and build/transpile/localization/diff checks pass; API/E2E should now validate live/runtime coverage and result-shape behavior. | None |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No hidden pairing GraphQL/IPCs/runtime binding remains. | None |
-| No legacy code retention for old behavior | Pass | Legacy persisted `browserPairing` is dropped during normalization without retaining remote pairing behavior. | None |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design/rework identify the Linux standalone blockmap expectation as an artifact-contract error; implementation aligns workflow/docs with AppImage embedded `blockMapSize`. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Release spine remains native Linux build -> AppImage + metadata -> metadata validation -> artifact upload/download -> publish validation -> release assets. | None. |
+| Ownership boundary preservation and clarity | Pass | Release workflow owns artifact selection and CI validation; validator owns metadata contract checks; electron-builder/updater remain the artifact/update contract authority. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Validator is an off-spine release check serving workflow validation; it does not become runtime updater logic. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Root `scripts/` already contains release metadata helpers; adding a small stdlib validator there is consistent. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Metadata validation is extracted into one script and reused by both Linux build jobs plus publish job validation. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Validator checks only Linux AppImage metadata fields needed by the release contract: URL/path arch token, `.AppImage` suffix, and positive `blockMapSize`. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Linux metadata validation policy is centralized in `scripts/validate_linux_updater_metadata.py`; workflow only invokes it. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | Validator parses and enforces concrete metadata invariants; it is not a pass-through wrapper. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Linux blockmap contract validation is separate from workflow glue and from runtime update behavior. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Workflow validates release artifacts without reaching into electron-updater internals at runtime; the design evidence justifies the metadata contract. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Workflow depends on generated metadata and validator entrypoint, not on lower-level AppImage blockmap internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Release workflow stays in `.github/workflows`; metadata validator belongs under root `scripts`; docs updates are in README and packaging docs. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One small script is enough; no new module tree or artificial abstraction was introduced. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | CLI is explicit: `--metadata` path and `--arch-token` limited to `linux-x64` or `linux-arm64`. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `validate_linux_updater_metadata.py`, `blockMapSize`, and `arch-token` names map directly to the release contract. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Validation logic is centralized; workflow invocations are repeated only where separate jobs need to validate their own artifacts. | None. |
+| Patch-on-patch complexity control | Pass | LF-002 is scoped to release artifact contract correction and does not disturb prior browser/MCP, ARM64 startup, or LF-001 changes. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Linux `.AppImage.blockmap` upload/publish globs are gone from workflow; stale positive durable-doc wording is gone; macOS blockmaps remain. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Positive ARM64/synthetic x64 validations plus negative missing-blockMapSize/standalone-blockmap checks cover the new validator; workflow/docs static checks cover cleanup. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Validator checks observable metadata files with stdlib parsing and workflow integration remains simple. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | LF-002 is resolved sufficiently for API/E2E to rerun final release/workflow validation. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Invalid standalone Linux blockmap asset requirement is removed, not retained as an optional fallback. | None. |
+| No legacy code retention for old behavior | Pass | Linux release path no longer expects standalone `.AppImage.blockmap` assets; macOS standalone blockmaps are preserved because they remain valid. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.4
-- Overall score (`/100`): 94
+- Overall score (`/10`): 9.5
+- Overall score (`/100`): 95
 - Score calculation note: Simple average across the ten required categories; decision is based on findings/checks, not the average.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | Implementation preserves the three key spines: host env-injected browser, Docker configured-MCP browser, and removed remote pairing. | API/E2E still needs live evidence for actual Docker BrowserServer behavior. | Downstream coverage should prove the Docker/browser MCP spine end-to-end. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Catalog is authoritative for source routes; Electron owns local bridge only; NodeManager no longer owns pairing cleanup. | `main.ts` remains a broad Electron entry file, though this patch removes responsibilities from it. | Future unrelated work can continue trimming Electron main if new responsibilities accumulate. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Remote bridge GraphQL surface is removed; route table makes static vs MCP source explicit. | Broad generated GraphQL typecheck remains a known repo baseline issue per handoff. | API/E2E should include schema/introspection absence checks. |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | New route model is placed under Agent Tools MCP; browser env support remains under browser tools; UI cleanup stays in NodeManager. | A few existing large files remain large, but this patch reduces rather than adds mixed concerns. | Keep future feature work out of `main.ts` and `NodeManager.vue` unless it belongs to those owners. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | `AgentToolMcpToolRoute` is tight; `NodeProfile` drops obsolete pairing state; no kitchen-sink structures introduced. | Route definitions currently store source identity only; definitions still resolve dynamically from registry. | If future persisted source selection is added, keep it source-aware instead of widening current structures. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Policy names (`protect_static_adapter`, `prefer_configured_mcp`) and route kinds are readable and explicit. | Some existing generated/localization files are necessarily noisy. | None for this patch. |
-| `7` | `API/E2E Readiness` | 9.1 | Unit/integration/build checks pass and downstream scenarios are clear. | BrowserServer MCP result-shape/UI activity normalization remains intentionally deferred to API/E2E. | API/E2E engineer should investigate and execute durable runtime coverage. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Tests cover inactive static browser, active duplicate browser preferring MCP, protected static collisions, missing/changed MCP definitions, and old descriptors. | Full live Docker runtime behavior has not been executed in this review stage. | Exercise live/near-live tools/list and tools/call for BrowserServer MCP. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | Remote pairing is deleted rather than hidden; legacy persisted fields are dropped only. | Old historical ticket docs still mention prior feature, but current product/source docs are clean. | No action for current code; historical docs can remain archival. |
-| `10` | `Cleanup Completeness` | 9.4 | Repo-current searches show removed pairing identifiers gone except intentional legacy-drop assertions; tests/docs/localization generated types updated. | Generated/broad typecheck baselines are still noisy outside this task. | Delivery should document baseline typecheck caveat if still present after integration. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | Linux release artifact path is now clear: AppImage + `latest-linux*.yml` with embedded `blockMapSize`. | Full GitHub release workflow execution is still not available locally. | API/E2E should rerun final workflow/static and package validation. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Workflow owns release artifact handling; validator owns metadata contract; docs own user-facing artifact contract. | Workflow remains large overall. | Consider reusable actions/scripts only for future broad release expansion. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.6 | Validator CLI has explicit metadata path and architecture token. | Parser intentionally supports the known electron-builder metadata shape, not arbitrary YAML. | Keep it focused unless metadata shape expands. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | The validation script is small and placed with release scripts; workflow uses it rather than duplicating parsing. | Workflow size remains a readability drag. | Extract more workflow glue if additional release checks accumulate. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | No loose shared model; the script validates only required metadata fields. | It is a targeted parser, not a full YAML parser. | Continue keeping validation contract narrow and evidence-backed. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | Script/function/argument names describe Linux updater metadata and blockmap contract directly. | Manual metadata parsing requires careful maintenance if electron-builder output changes. | API/E2E/CI should catch future metadata-shape drift. |
+| `7` | `API/E2E Readiness` | 9.5 | LF-002 blocker is directly addressed and review ran positive/negative checks. | Native x64 package metadata is synthetic locally because this review host is ARM64. | API/E2E should validate native x64 output or equivalent CI evidence. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.4 | Validator rejects missing `blockMapSize` and standalone `.AppImage.blockmap` references. | It does not validate every YAML field, checksum, or downloaded asset size because design did not require that. | If release integrity scope expands, add checksum/size checks explicitly. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Invalid Linux standalone blockmap requirement is removed cleanly while valid macOS blockmaps remain. | None material for LF-002. | None. |
+| `10` | `Cleanup Completeness` | 9.5 | Workflow and durable docs no longer contain stale positive Linux standalone blockmap expectations; macOS blockmaps remain. | Prior API/E2E reports still record LF-002 as blocked until API/E2E reruns and updates them. | API/E2E should update execution result after final rerun. |
 
 ## Findings
 
@@ -135,30 +126,30 @@ None.
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E coverage investigation and execution. |
-| Tests | Test quality is acceptable | Pass | Focused server/web/electron tests cover the implementation-owned behavior. |
-| Tests | Test maintainability is acceptable | Pass | Tests are boundary-level and do not reintroduce removed pairing abstractions. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No blocking findings; downstream coverage hints are present in the implementation handoff and residual risks. |
+| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E to resume final execution after LF-002. |
+| Tests | Test quality is acceptable | Pass | Positive ARM64/synthetic x64 metadata validation, negative validator checks, workflow static checks, and docs stale-wording checks cover the local fix. |
+| Tests | Test maintainability is acceptable | Pass | Checks target release artifacts and metadata contract directly. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No blocking findings; LF-002 is resolved. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No remote pairing compatibility GraphQL, IPC, frontend client/store, or runtime binding remains. |
-| No legacy old-behavior retention in changed scope | Pass | `browserPairing` is ignored/dropped, not modeled as active capability state. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Deleted files and current-source searches support cleanup completeness. |
+| No backward-compatibility mechanisms in changed scope | Pass | No optional Linux standalone blockmap fallback was retained. |
+| No legacy old-behavior retention in changed scope | Pass | Workflow no longer uploads/publishes Linux `.AppImage.blockmap` assets. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Stale Linux AppImage blockmap workflow globs and positive docs wording are removed; valid macOS blockmaps remain. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None remaining in reviewed current source scope. | N/A | Searches for removed pairing identifiers only find intentional legacy `browserPairing` drop assertions in `autobyteus-web/electron/__tests__/nodeRegistryStore.spec.ts`. | N/A | None |
+| None in reviewed LF-002 scope. | N/A | Workflow/doc static checks found no stale positive Linux standalone AppImage blockmap expectation in reviewed release paths. | N/A | None. |
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: User-facing guidance must no longer instruct remote/Docker users to pair the host Electron browser; it should direct browser automation to configured MCP/BrowserServer or no browser tools.
-- Files or areas likely affected: `autobyteus-web/docs/browser_sessions.md`, `docs/future-tickets/mobile-backend-authorization-hardening.md`, task artifacts.
+- Why: LF-002 changes the documented Linux release artifact contract from AppImage + standalone blockmap to AppImage + updater metadata with embedded `blockMapSize`; implementation updated the durable docs reviewed here.
+- Files or areas likely affected: `README.md`, `autobyteus-web/docs/electron_packaging.md`, `autobyteus-web/docs/github-actions-tag-build.md`, and downstream final release notes/handoff artifacts.
 
 ## Classification
 
@@ -170,13 +161,14 @@ N/A — review passed; no failure classification applies.
 
 ## Residual Risks
 
-- API/E2E should validate live or representative Docker/remote `tools/list` and `tools/call` for BrowserServer MCP names such as `open_tab`.
-- API/E2E should validate BrowserServer MCP result-shape/UI event normalization for browser activity cards after configured MCP browser tools become visible.
-- Broad `pnpm -C autobyteus-server-ts typecheck` and `pnpm -C autobyteus-web exec nuxi typecheck` failures are recorded in the implementation handoff as apparent baseline issues; delivery should preserve that context if they remain after integration.
-- Future persisted source-aware tool selection remains explicitly deferred; current same-name host embedded browser vs configured BrowserServer MCP preference is deterministic configured-MCP precedence for browser static overlaps.
+- Full GitHub Actions release execution is not available locally; API/E2E should resume planned workflow/static validation and native-runner reasoning.
+- Linux x64 metadata validation was synthetic in this review because the local host is ARM64 and the current stale local `latest-linux.yml` predates the `linux-x64` artifact naming; a fresh native x64 job should validate real x64 metadata.
+- The validator intentionally parses the known electron-builder `latest-linux*.yml` shape with stdlib-only logic rather than depending on PyYAML; if electron-builder changes metadata shape, CI/API-E2E should catch it.
+- The release workflow remains large; future unrelated workflow expansion should consider reusable scripts/actions, but LF-002 itself is bounded.
+- API/E2E reports currently record Round 3 as blocked by LF-002; API/E2E should update them after final rerun.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Score Summary: 9.4/10 overall, 94/100; all categories are at or above the clean-pass threshold.
-- Notes: Implementation is structurally sound, cleans up the removed remote-pairing behavior, preserves host Electron env-injected browser support, and is ready for API/E2E coverage investigation and execution.
+- Score Summary: 9.5/10 overall, 95/100; all categories are at or above the clean-pass threshold.
+- Notes: LF-002 is resolved. Linux release workflow/docs now follow the approved AppImage embedded-blockmap contract, with metadata validation through `blockMapSize` and no standalone Linux `.AppImage.blockmap` upload/publish expectation. API/E2E can resume final execution.

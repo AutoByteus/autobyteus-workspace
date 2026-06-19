@@ -26,6 +26,7 @@ This workflow currently builds and publishes:
 - macOS Apple Silicon (ARM64) on `macos-14`
 - macOS Intel x64 on `macos-14`
 - Linux x64 AppImage on `ubuntu-22.04`
+- Linux ARM64 AppImage on `ubuntu-24.04-arm`
 - Windows x64 installer on `windows-2022`
 
 CI build behavior:
@@ -59,10 +60,14 @@ Published file patterns:
 - `**/*.zip.blockmap`
 - `**/*.exe`
 - `**/*.AppImage`
-- `**/*.AppImage.blockmap`
 - `release-artifacts/latest-mac.yml`
-- `**/latest-linux.yml`
+- `**/latest-linux*.yml`
 - `**/latest.yml`
+
+Linux AppImage blockmaps are embedded in the AppImage and validated through
+numeric `blockMapSize` entries in `latest-linux.yml` and
+`latest-linux-arm64.yml`; standalone `*.AppImage.blockmap` files are not
+published. macOS DMG/ZIP blockmap assets remain standalone release files.
 
 ### Cross-Workflow Release Timing
 
@@ -72,7 +77,7 @@ families, so another publish job can make the release visible before
 `release-desktop.yml` has uploaded the desktop updater metadata and binaries.
 
 Until the Desktop Release workflow completes, updater checks can legitimately
-encounter missing `latest-mac.yml`, `latest-linux.yml`, `latest.yml`, missing
+encounter missing `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, missing
 ZIP/AppImage/installer assets, or other provider metadata gaps. The desktop app
 classifies those failures as `release-preparing` and shows safe retry copy while
 keeping raw provider diagnostics in Electron logs.
@@ -100,7 +105,9 @@ If omitted, macOS build still runs but output is unsigned and not notarized.
 cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
 pnpm build:electron:mac -- --arm64
 pnpm build:electron:mac -- --x64
-pnpm build:electron:linux
+pnpm build:electron:linux       # native Linux host architecture
+pnpm build:electron:linux:x64   # native Linux x64 host/runner
+pnpm build:electron:linux:arm64 # native Linux ARM64 host/runner
 pnpm build:electron:windows
 ```
 
