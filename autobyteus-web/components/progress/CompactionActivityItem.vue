@@ -2,7 +2,12 @@
   <div class="mb-3 rounded-lg border bg-white shadow-sm" :class="containerClasses" data-testid="compaction-activity-item">
     <div class="flex items-center justify-between gap-3 px-4 py-3">
       <div class="flex min-w-0 items-center gap-3">
-        <Icon :icon="presentation.icon" class="h-5 w-5 shrink-0" :class="iconColorClass" />
+        <Icon
+          :icon="presentation.icon"
+          class="h-5 w-5 shrink-0"
+          :class="iconClasses"
+          data-testid="compaction-activity-icon"
+        />
         <div class="min-w-0">
           <div class="flex items-center gap-2">
             <span class="truncate text-sm font-bold text-gray-800">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
@@ -69,7 +74,11 @@ const toneClasses = {
 };
 
 const currentTone = computed(() => toneClasses[presentation.value.tone]);
-const iconColorClass = computed(() => currentTone.value.icon);
+const isCompacting = computed(() => props.activity.phase === 'started');
+const iconClasses = computed(() => [
+  currentTone.value.icon,
+  isCompacting.value ? 'motion-safe:animate-spin' : '',
+]);
 const statusChipClasses = computed(() => currentTone.value.chip);
 const containerClasses = computed(() => props.isHighlighted ? currentTone.value.highlight : `hover:shadow-md ${currentTone.value.border}`);
 

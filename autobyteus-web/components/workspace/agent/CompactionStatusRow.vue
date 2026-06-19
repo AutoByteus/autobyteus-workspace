@@ -2,7 +2,12 @@
   <div class="flex justify-center px-2 py-3" data-testid="compaction-status-row">
     <div class="w-full max-w-2xl rounded-2xl border px-4 py-3 text-sm shadow-sm" :class="rowClasses">
       <div class="flex items-start gap-3">
-        <Icon :icon="presentation.icon" class="mt-0.5 h-5 w-5 shrink-0" :class="iconClasses" />
+        <Icon
+          :icon="presentation.icon"
+          class="mt-0.5 h-5 w-5 shrink-0"
+          :class="iconClasses"
+          data-testid="compaction-status-icon"
+        />
         <div class="min-w-0 flex-1">
           <div class="flex flex-wrap items-center gap-2">
             <span class="font-semibold">{{ activity.message }}</span>
@@ -54,7 +59,11 @@ const toneClasses = {
 
 const currentTone = computed(() => toneClasses[presentation.value.tone]);
 const rowClasses = computed(() => currentTone.value.row);
-const iconClasses = computed(() => currentTone.value.icon);
+const isCompacting = computed(() => props.activity.phase === 'started');
+const iconClasses = computed(() => [
+  currentTone.value.icon,
+  isCompacting.value ? 'motion-safe:animate-spin' : '',
+]);
 const chipClasses = computed(() => currentTone.value.chip);
 
 const secondaryText = computed(() => {
