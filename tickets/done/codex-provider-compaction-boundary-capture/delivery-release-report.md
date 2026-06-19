@@ -175,3 +175,16 @@ Ready for user verification. Repository finalization, ticket archival, push/merg
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.62.dmg`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.62.zip`
 - Repository finalization status: still held pending explicit user verification; no push, target-branch merge, archival, cleanup, release, or deployment was run.
+
+
+## Finalization Addendum — User Verified Release Request (2026-06-19)
+
+- User verification: completed; user reported the rebuilt Electron app works.
+- User requested release: yes, new workspace release.
+- Final target refresh after verification: `git fetch origin personal --tags` — passed.
+- Final tracked target before merge: `origin/personal` at `caa99530`.
+- Target advanced beyond verified handoff: `No`.
+- Additional rebuild required before finalization: `No`; verified branch already had merge-base `caa99530` and no newer target commits were present.
+- Ticket archival: moved to `tickets/done/codex-provider-compaction-boundary-capture/` before finalization commit.
+- Release notes: `tickets/done/codex-provider-compaction-boundary-capture/release-notes.md`.
+- Planned release command after target merge: `pnpm release 1.3.63 -- --release-notes tickets/done/codex-provider-compaction-boundary-capture/release-notes.md`.

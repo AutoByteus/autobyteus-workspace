@@ -170,3 +170,17 @@ Latest artifacts for user testing:
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-provider-compaction-boundary-capture/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.62.zip`
 
 This is still a local ad-hoc/no-notarization build. Push, target-branch finalization merge, archival, cleanup, release, and deployment remain held pending explicit user verification.
+
+
+## Finalization Addendum — User Verified Release Request (2026-06-19)
+
+User verified the rebuilt macOS Electron app from the latest rebased `origin/personal` state and requested finalization plus a new release.
+
+Finalization actions prepared:
+
+- Final target refresh after verification: `git fetch origin personal --tags` — passed.
+- Final tracked target: `origin/personal` at `caa99530`.
+- Verified ticket branch was already based on that target (`merge-base: caa99530`), so no additional base integration or rebuild was required before repository finalization.
+- Ticket archive move: `tickets/in-progress/codex-provider-compaction-boundary-capture/` moved to `tickets/done/codex-provider-compaction-boundary-capture/`.
+- Curated release notes created: `tickets/done/codex-provider-compaction-boundary-capture/release-notes.md`.
+- Planned release version after target merge: `1.3.63`.
