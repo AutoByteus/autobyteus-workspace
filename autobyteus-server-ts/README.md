@@ -61,6 +61,7 @@ DISABLE_HTTP_REQUEST_LOGS=true
 
 Notes:
 - `AUTOBYTEUS_SERVER_HOST` is required (used for URL generation).
+- Optional `AUTOBYTEUS_MCP_GATEWAY_TOKEN` protects the general `/mcp/gateway` Streamable HTTP MCP endpoint. When unset, that endpoint is restricted to local loopback requests only.
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
 - Persistence is subsystem-owned. Token usage is stored in SQL, while file-backed subsystems such as agent definitions, team definitions, and MCP config keep using their native file storage.

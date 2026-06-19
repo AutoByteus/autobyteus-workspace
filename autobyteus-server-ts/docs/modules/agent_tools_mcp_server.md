@@ -11,12 +11,15 @@ materializers: configured Claude runs consume this endpoint through the SDK
 `mcpServers` query option, and configured Codex runs consume it through
 thread-scoped app-server `config.mcp_servers`.
 
-This module is distinct from [MCP Server Management](./mcp_server_management.md):
-MCP Server Management consumes and registers external MCP servers as AutoByteus
-tools. The Agent Tools MCP Server then exposes the agent-definition-selected
-registered tool names outward to an MCP client through one runtime-scoped
-`autobyteus_agent_tools` descriptor. It does not directly materialize raw
-external MCP server configs into Codex or Claude provider-specific config.
+This module is distinct from both [MCP Server Management](./mcp_server_management.md)
+and the [General MCP Gateway](./mcp_gateway.md): MCP Server Management consumes
+and registers external MCP servers as AutoByteus tools. The Agent Tools MCP
+Server then exposes the agent-definition-selected registered tool names outward
+to an MCP client through one runtime-scoped `autobyteus_agent_tools` descriptor.
+It does not directly materialize raw external MCP server configs into Codex or
+Claude provider-specific config. The General MCP Gateway, by contrast, is the
+stable `/mcp/gateway` endpoint for external MCP clients and exposes only current
+registered `ToolOrigin.MCP` tools, not AutoByteus internal run tools.
 
 ## TS Source
 
@@ -241,6 +244,7 @@ gates explicitly, and add durable route/session/executor coverage.
 - stale bearer-token config cleanup;
 - complex long-lived or resumable SSE server push;
 - exposing every local registry tool through Agent Tools MCP;
+- using Agent Tools MCP as the general external `/mcp/gateway`;
 - direct provider-native external MCP config materialization for configured MCP
   servers; and
 - moving native AutoByteus in-process tools to this HTTP MCP route.

@@ -59,19 +59,37 @@
         </div>
       </div>
 
-      <div v-else-if="activeView === 'mcp-servers'" class="flex h-full flex-col">
-        <ToolsFilter v-model:searchQuery="searchQuery" :show-category-filter="false" />
-        <McpServerList
-          class="flex-1"
-          :servers="filteredMcpServers"
-          :loading="store.getLoading && activeView.startsWith('mcp-')"
-          @add="showAddServerForm"
-          @edit="showEditServerForm"
-          @delete="requestDeleteServer"
-          @bulk-import="showBulkImportView"
-          @discover-tools="discoverTools"
-          @view-tools="viewToolsForServer"
-        />
+      <div v-else-if="activeView === 'mcp-servers'" class="flex h-full flex-col gap-4">
+        <McpManagementTabs v-model="activeMcpTab" />
+        <div
+          v-show="activeMcpTab === 'servers'"
+          id="mcp-management-panel-servers"
+          role="tabpanel"
+          aria-labelledby="mcp-management-tab-servers"
+          class="flex min-h-0 flex-1 flex-col"
+        >
+          <ToolsFilter v-model:searchQuery="searchQuery" :show-category-filter="false" />
+          <McpServerList
+            class="flex-1"
+            :servers="filteredMcpServers"
+            :loading="store.getLoading && activeView.startsWith('mcp-')"
+            @add="showAddServerForm"
+            @edit="showEditServerForm"
+            @delete="requestDeleteServer"
+            @bulk-import="showBulkImportView"
+            @discover-tools="discoverTools"
+            @view-tools="viewToolsForServer"
+          />
+        </div>
+        <div
+          v-show="activeMcpTab === 'gateway'"
+          id="mcp-management-panel-gateway"
+          role="tabpanel"
+          aria-labelledby="mcp-management-tab-gateway"
+          class="min-h-0 flex-1"
+        >
+          <McpGatewayPanel />
+        </div>
       </div>
 
       <div v-else-if="activeView === 'mcp-form'">
@@ -131,6 +149,8 @@ import { useToasts, type ToastType } from '~/composables/useToasts';
 import ToolList from '~/components/tools/ToolList.vue';
 import ToolDetailsModal from '~/components/tools/ToolDetailsModal.vue';
 import McpServerList from '~/components/tools/McpServerList.vue';
+import McpManagementTabs from '~/components/tools/McpManagementTabs.vue';
+import McpGatewayPanel from '~/components/tools/McpGatewayPanel.vue';
 import McpServerFormModal from '~/components/tools/McpServerFormModal.vue';
 import McpBulkImportView from '~/components/tools/McpBulkImportView.vue';
 import ToolsFilter from '~/components/tools/ToolsFilter.vue';
@@ -160,6 +180,7 @@ const selectedServer = ref<McpServer | null>(null);
 const serverToDeleteId = ref<string | null>(null);
 const searchQuery = ref('');
 const selectedCategory = ref('All Categories');
+const activeMcpTab = ref<'servers' | 'gateway'>('servers');
 
 const currentServerId = computed(() => {
   if (activeView.value.startsWith('mcp-tools-')) {
@@ -217,7 +238,9 @@ const handleNavigation = (view: string) => {
   if (view === 'local-tools') {
     store.fetchLocalToolsGroupedByCategory();
   } else if (view === 'mcp-servers') {
+    activeMcpTab.value = 'servers';
     store.fetchMcpServers();
+    store.fetchMcpGatewayTools();
   }
 };
 

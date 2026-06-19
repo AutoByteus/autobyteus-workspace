@@ -13,6 +13,8 @@ The Tools and MCP module enables users to:
   selection flow; native AutoByteus, Codex App Server, and Claude Agent SDK
   runtimes consume the same registered names, with Codex/Claude receiving them
   through the server-hosted `autobyteus_agent_tools` runtime MCP bridge
+- View the stable general `/mcp/gateway` Streamable HTTP endpoint and the
+  current MCP-origin tool count/list for external MCP clients
 - Preview MCP server connections before saving
 - Bulk import MCP server configurations from JSON
 - View tool parameters and schemas
@@ -30,6 +32,8 @@ autobyteus-web/
 │   ├── ToolCard.vue                    # Individual tool display
 │   ├── ToolDetailsModal.vue            # Tool schema modal
 │   ├── ToolsConfirmationModal.vue      # Delete confirmation dialog
+│   ├── McpManagementTabs.vue           # MCP Servers / MCP Gateway tab switcher
+│   ├── McpGatewayPanel.vue             # General MCP gateway endpoint and tool list
 │   ├── McpServerList.vue               # MCP servers listing
 │   ├── McpServerCard.vue               # Individual server display
 │   ├── McpServerFormModal.vue          # Add/edit MCP server form
@@ -53,7 +57,9 @@ flowchart TD
 
     subgraph "View Components"
         LocalTools[Local Tools View]
+        McpTabs[MCP Management Tabs]
         McpServers[MCP Servers View]
+        McpGateway[MCP Gateway Panel]
         McpForm[MCP Server Form]
         McpBulk[Bulk Import View]
         McpTools[Server Tools View]
@@ -69,13 +75,16 @@ flowchart TD
     end
 
     ToolsPage --> LocalTools
-    ToolsPage --> McpServers
+    ToolsPage --> McpTabs
+    McpTabs --> McpServers
+    McpTabs --> McpGateway
     ToolsPage --> McpForm
     ToolsPage --> McpBulk
     ToolsPage --> McpTools
 
     LocalTools --> Store
     McpServers --> Store
+    McpGateway --> Store
     McpForm --> Store
 
     Store --> GraphQL
@@ -86,13 +95,13 @@ flowchart TD
 
 The module uses a state-driven view system with the following views:
 
-| View              | Component          | Description                        |
-| ----------------- | ------------------ | ---------------------------------- |
-| `local-tools`     | ToolList           | Browse local tools by category     |
-| `mcp-servers`     | McpServerList      | List configured MCP servers        |
-| `mcp-form`        | McpServerFormModal | Add/edit MCP server config         |
-| `mcp-bulk-import` | McpBulkImportView  | Import servers from JSON           |
-| `mcp-tools-{id}`  | ToolList           | View tools for specific MCP server |
+| View              | Component                                         | Description                                                       |
+| ----------------- | ------------------------------------------------- | ----------------------------------------------------------------- |
+| `local-tools`     | ToolList                                          | Browse local tools by category                                    |
+| `mcp-servers`     | McpManagementTabs + McpServerList / McpGatewayPanel | List configured MCP servers or show the general MCP Gateway panel |
+| `mcp-form`        | McpServerFormModal                                | Add/edit MCP server config                                        |
+| `mcp-bulk-import` | McpBulkImportView                                 | Import servers from JSON                                          |
+| `mcp-tools-{id}`  | ToolList                                          | View tools for specific MCP server                                |
 
 ## Data Models
 
@@ -149,7 +158,11 @@ tools. When an agent definition selects those registered tool names, the native
 AutoByteus runtime executes them through the configured MCP proxy path. Codex
 App Server and Claude Agent SDK do not receive raw provider-specific copies of
 the MCP server config; they see the selected registered tool names through the
-run-scoped `autobyteus_agent_tools` MCP descriptor.
+run-scoped `autobyteus_agent_tools` MCP descriptor. External MCP clients
+that are not tied to an AutoByteus AgentRun can instead use the backend's stable `/mcp/gateway`
+Streamable HTTP endpoint. That gateway exposes only currently registered
+MCP-origin tools and should be protected with `AUTOBYTEUS_MCP_GATEWAY_TOKEN` for
+non-local access.
 
 ## State Management (toolManagementStore.ts)
 
@@ -159,6 +172,7 @@ interface ToolManagementState {
   localToolsByCategory: ToolCategoryGroup[];
   mcpServers: McpServer[];
   toolsByServerId: Record<string, Tool[]>;
+  mcpGatewayTools: Tool[];
   loading: boolean;
   error: any;
   previewResult: PreviewResult | null;
@@ -172,6 +186,7 @@ interface ToolManagementState {
 | `fetchLocalToolsGroupedByCategory()`          | Load local tools grouped by category |
 | `fetchMcpServers()`                           | Load all configured MCP servers      |
 | `fetchToolsForServer(serverId)`               | Load tools registered for a server   |
+| `fetchMcpGatewayTools()`                       | Load registered MCP-origin tools for the MCP Gateway panel with `tools(origin: MCP)` |
 | `previewMcpServer(input)`                     | Test connection and preview tools    |
 | `configureMcpServer(input)`                   | Save MCP server configuration        |
 | `deleteMcpServer(serverId)`                   | Remove MCP server                    |
@@ -180,6 +195,30 @@ interface ToolManagementState {
 | `reloadToolSchema(toolName)`                  | Refresh tool schema from backend     |
 
 ## Core Components
+
+### McpManagementTabs.vue
+
+Provides the internal tab switcher used inside the MCP Servers area:
+
+- **MCP Servers** keeps the existing server list, add/edit/delete, bulk import,
+  discovery, and per-server tools flows.
+- **MCP Gateway** shows the general gateway endpoint and exposed MCP-origin
+  tools without adding a second sidebar entry.
+
+### McpGatewayPanel.vue
+
+Shows external-client guidance for the backend general MCP gateway:
+
+- endpoint: `${serverBaseUrl}/mcp/gateway`
+- example Streamable HTTP client JSON config
+- bearer-token guidance for `AUTOBYTEUS_MCP_GATEWAY_TOKEN`
+- current MCP-origin tool count/list from the store
+- refresh action that calls `fetchMcpGatewayTools()`
+
+The panel is informational only. Gateway access control is backend-owned: when
+`AUTOBYTEUS_MCP_GATEWAY_TOKEN` is set, clients must send `Authorization: Bearer
+<token>`; when it is unset, the backend accepts only local loopback requests.
+The frontend does not display or manage the token.
 
 ### ToolList.vue
 
@@ -258,7 +297,9 @@ Import multiple MCP servers from JSON:
 ### Tool Queries
 
 ```graphql
-# Get tools (optionally filtered by origin/server)
+# Get tools (optionally filtered by origin/server). The MCP Gateway panel uses
+# variables: { origin: MCP } to show the same MCP-origin registry slice exposed
+# by /mcp/gateway.
 query GetTools($origin: ToolOriginEnum, $sourceServerId: String) {
   tools(origin: $origin, sourceServerId: $sourceServerId) {
     name, description, origin, category
@@ -418,5 +459,8 @@ For MCP servers accessed over HTTP:
 
 ## Related Documentation
 
+- **[General MCP Gateway](../../autobyteus-server-ts/docs/modules/mcp_gateway.md)**: Backend `/mcp/gateway` endpoint, token access model, and MCP-origin-only execution boundary.
+- **[MCP Server Management](../../autobyteus-server-ts/docs/modules/mcp_server_management.md)**: Backend external MCP server import and registration owner.
+- **[Agent Tools MCP Server](../../autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md)**: Run-scoped `autobyteus_agent_tools` endpoint distinct from the general gateway.
 - **[Agent Management](./agent_management.md)**: Tools are assigned to agents to extend their capabilities.
 - **[Agent Execution Architecture](./agent_execution_architecture.md)**: Describes how tool calls are streamed, parsed, and executed during an agent run.

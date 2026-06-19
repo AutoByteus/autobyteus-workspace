@@ -75,6 +75,7 @@ interface ToolManagementState {
   localToolsByCategory: ToolCategoryGroup[];
   mcpServers: McpServer[];
   toolsByServerId: Record<string, Tool[]>;
+  mcpGatewayTools: Tool[];
   loading: boolean;
   error: any;
   previewResult: PreviewResult | null;
@@ -86,6 +87,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
     localToolsByCategory: [],
     mcpServers: [],
     toolsByServerId: {},
+    mcpGatewayTools: [],
     loading: false,
     error: null,
     previewResult: null,
@@ -95,6 +97,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
     getLocalTools: (state): Tool[] => state.localTools,
     getLocalToolsByCategory: (state): ToolCategoryGroup[] => state.localToolsByCategory,
     getMcpServers: (state): McpServer[] => state.mcpServers,
+    getMcpGatewayTools: (state): Tool[] => state.mcpGatewayTools,
     getLoading: (state): boolean => state.loading,
     getError: (state): any => state.error,
     getPreviewResult: (state): PreviewResult | null => state.previewResult,
@@ -186,6 +189,31 @@ export const useToolManagementStore = defineStore('toolManagement', {
       } catch (e) {
         this.error = e;
         console.error(`Failed to fetch tools for server ${serverId}:`, e);
+        throw e;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchMcpGatewayTools() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const client = getApolloClient()
+        const { data, errors } = await client.query<GetToolsQuery, GetToolsQueryVariables>({
+          query: GET_TOOLS,
+          variables: { origin: 'MCP' },
+          fetchPolicy: 'network-only',
+        });
+
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+        }
+
+        this.mcpGatewayTools = (data?.tools ?? []) as Tool[];
+      } catch (e) {
+        this.error = e;
+        console.error('Failed to fetch MCP gateway tools:', e);
         throw e;
       } finally {
         this.loading = false;
