@@ -70,8 +70,8 @@ const currentTeamDefinitionId = computed(() => queryValue('teamDefinitionId') ??
 const inspectorBackLabel = computed(() => {
   const target = inspectorStore.target;
   if (!target) return 'Back to Memory';
-  if (target.kind === 'agent_run') return `Back to ${target.agentDisplayName || target.agentDefinitionId || 'Agent'} Memory`;
-  return `Back to ${target.teamDefinitionName || target.teamDefinitionId || 'Agent Team'} Memory`;
+  if (target.kind === 'agent_run') return `Back to ${target.agentDisplayName || target.agentDefinitionId || 'Agent'}`;
+  return `Back to ${target.teamDefinitionName || target.teamDefinitionId || 'Agent Team'}`;
 });
 
 watch(() => route.fullPath, () => { void syncRouteState(); }, { immediate: true });

@@ -3,8 +3,7 @@
     <button class="mb-4 text-sm font-semibold text-blue-600 hover:underline" @click="$emit('back')">← {{ backLabel }}</button>
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
       <header class="border-b border-gray-100 p-5">
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</p>
-        <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h1>
         <p class="mt-2 text-sm text-gray-600">{{ breadcrumb }}</p>
         <p v-if="metadataLine" class="mt-1 text-xs text-gray-500">{{ metadataLine }}</p>
       </header>

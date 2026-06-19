@@ -9,11 +9,11 @@
       <div class="border-b border-gray-100 p-4">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div class="flex gap-2">
-            <button class="rounded-lg px-4 py-2 text-sm font-semibold" :class="tabClass('agents')" @click="selectTab('agents')">{{ $t('memory.components.memory.MemoryHome.agents_with_memory') }}</button>
-            <button class="rounded-lg px-4 py-2 text-sm font-semibold" :class="tabClass('teams')" @click="selectTab('teams')">{{ $t('memory.components.memory.MemoryHome.agent_teams_with_memory') }}</button>
+            <button class="rounded-lg px-4 py-2 text-sm font-semibold" :class="tabClass('agents')" @click="selectTab('agents')">{{ $t('memory.components.memory.MemoryHome.agents') }}</button>
+            <button class="rounded-lg px-4 py-2 text-sm font-semibold" :class="tabClass('teams')" @click="selectTab('teams')">{{ $t('memory.components.memory.MemoryHome.agent_teams') }}</button>
           </div>
           <div class="flex gap-2">
-            <input v-model="searchInput" type="text" :placeholder="store.homeTab === 'agents' ? $t('memory.components.memory.MemoryHome.search_agents_with_memory') : $t('memory.components.memory.MemoryHome.search_teams_with_memory')" class="w-full min-w-[260px] rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" @keyup.enter="applySearch" />
+            <input v-model="searchInput" type="text" :placeholder="store.homeTab === 'agents' ? $t('memory.components.memory.MemoryHome.search_agents') : $t('memory.components.memory.MemoryHome.search_agent_teams')" class="w-full min-w-[260px] rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" @keyup.enter="applySearch" />
             <button class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800" @click="applySearch">Search</button>
           </div>
         </div>
@@ -39,7 +39,7 @@
               </div>
               <span class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{{ agent.runCount }} runs</span>
             </div>
-            <p class="mt-3 text-xs text-gray-500">Latest memory: {{ formatTimestamp(agent.latestMemoryAt) }}</p>
+            <p v-if="agent.latestMemoryAt" class="mt-3 text-xs text-gray-500">{{ $t('memory.components.memory.MemoryHome.updated') }} {{ formatTimestamp(agent.latestMemoryAt) }}</p>
             <MemoryBadges class="mt-3" :memory="agent.memory" />
           </button>
           </template>
@@ -51,9 +51,9 @@
                 <h2 class="font-semibold text-gray-900">{{ team.teamDefinitionName }}</h2>
                 <p class="mt-1 font-mono text-xs text-gray-500">{{ team.teamDefinitionId }}</p>
               </div>
-              <span class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{{ team.teamRunCount }} team runs</span>
+              <span class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{{ team.teamRunCount }} runs</span>
             </div>
-            <p class="mt-3 text-xs text-gray-500">{{ team.memberMemoryCount }} members with memory · Latest memory: {{ formatTimestamp(team.latestMemoryAt) }}</p>
+            <p class="mt-3 text-xs text-gray-500">{{ team.memberMemoryCount }} {{ $t('memory.components.memory.MemoryHome.members') }}<span v-if="team.latestMemoryAt"> · {{ $t('memory.components.memory.MemoryHome.updated') }} {{ formatTimestamp(team.latestMemoryAt) }}</span></p>
             <MemoryBadges class="mt-3" :memory="team.memory" />
           </button>
           </template>

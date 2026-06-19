@@ -11,6 +11,12 @@ describe('MemoryInspector', () => {
     expect(wrapper.text()).toContain('Select a memory entry');
   });
 
+  it('renders the Memory Inspector header once', () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
+    expect(wrapper.text().match(/memory inspector/ig)).toHaveLength(1);
+  });
+
   it('calls setActiveTab when opening Raw Traces', async () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryInspectorStore();

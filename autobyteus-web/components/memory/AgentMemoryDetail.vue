@@ -2,22 +2,22 @@
   <div class="mx-auto max-w-5xl p-6">
     <button class="mb-4 text-sm font-semibold text-blue-600 hover:underline" @click="$emit('back')">← {{ $t('memory.components.memory.AgentMemoryDetail.back_to_memory') }}</button>
     <header class="mb-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('memory.components.memory.AgentMemoryDetail.agent_memory_detail') }}</p>
-      <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ agentName }} Memory</h1>
-      <p class="mt-2 text-sm text-gray-500">{{ store.agentRuns.total }} agent runs · Stable ID: <span class="font-mono">{{ agentStableId }}</span></p>
+      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('memory.components.memory.AgentMemoryDetail.agent') }}</p>
+      <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ agentName }}</h1>
+      <p class="mt-2 text-sm text-gray-500">{{ store.agentRuns.total }} runs · ID: <span class="font-mono">{{ agentStableId }}</span></p>
     </header>
 
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div class="flex flex-col gap-3 border-b border-gray-100 p-4 md:flex-row md:items-center md:justify-between">
-        <h2 class="font-semibold text-gray-900">{{ $t('memory.components.memory.AgentMemoryDetail.agent_runs') }}</h2>
+        <h2 class="font-semibold text-gray-900">{{ $t('memory.components.memory.AgentMemoryDetail.runs') }}</h2>
         <div class="flex gap-2">
-          <input v-model="searchInput" type="text" :placeholder="$t('memory.components.memory.AgentMemoryDetail.search_agent_runs')" class="min-w-[260px] rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" @keyup.enter="applySearch" />
+          <input v-model="searchInput" type="text" :placeholder="$t('memory.components.memory.AgentMemoryDetail.search_runs')" class="min-w-[260px] rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" @keyup.enter="applySearch" />
           <button class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800" @click="applySearch">Search</button>
         </div>
       </div>
 
       <div class="p-4">
-        <div v-if="store.agentRuns.loading && store.agentRuns.entries.length === 0" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.AgentMemoryDetail.loading_agent_runs') }}</div>
+        <div v-if="store.agentRuns.loading && store.agentRuns.entries.length === 0" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.AgentMemoryDetail.loading_runs') }}</div>
         <div v-else-if="store.agentRuns.error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {{ store.agentRuns.error }}
           <button class="ml-2 font-semibold underline" @click="retry">Retry</button>
@@ -29,9 +29,9 @@
               <div>
                 <h3 class="font-semibold text-gray-900">{{ run.summary || run.runId }}</h3>
                 <p class="mt-1 font-mono text-xs text-gray-500">{{ run.runId }}</p>
-                <p v-if="run.workspaceRootPath" class="mt-1 text-xs text-gray-500">Workspace: {{ run.workspaceRootPath }}</p>
+                <p v-if="run.workspaceRootPath" class="mt-1 text-xs text-gray-500">{{ run.workspaceRootPath }}</p>
               </div>
-              <span class="text-xs text-gray-500">Updated: {{ formatTimestamp(run.lastUpdatedAt) }}</span>
+              <span v-if="run.lastUpdatedAt" class="text-xs text-gray-500">{{ formatTimestamp(run.lastUpdatedAt) }}</span>
             </div>
             <MemoryBadges class="mt-3" :memory="run.memory" />
           </button>
