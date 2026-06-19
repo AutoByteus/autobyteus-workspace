@@ -265,7 +265,7 @@ const options: Configuration = {
 
 | Platform | Target         | Artifact Pattern                        |
 | -------- | -------------- | --------------------------------------- |
-| Linux    | AppImage       | `AutoByteus_<flavor>_linux-{arch}-{version}.AppImage` |
+| Linux    | AppImage       | `AutoByteus_<flavor>_linux-x64-{version}.AppImage` / `AutoByteus_<flavor>_linux-arm64-{version}.AppImage` |
 | Windows  | NSIS installer | `AutoByteus_<flavor>_windows-{version}.exe`      |
 | macOS    | DMG + ZIP      | `AutoByteus_<flavor>_macos-{arch}-{version}.dmg/.zip` |
 

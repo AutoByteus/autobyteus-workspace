@@ -70,6 +70,12 @@ function getLinuxPrismaBinaryTargets(targetArch) {
 
 const linuxPackageTargetArch = resolveLinuxPackageTargetArch()
 const linuxPrismaBinaryTargets = getLinuxPrismaBinaryTargets(linuxPackageTargetArch)
+const npmNetworkRetryEnv = {
+  npm_config_fetch_retries: process.env.npm_config_fetch_retries ?? '5',
+  npm_config_fetch_retry_factor: process.env.npm_config_fetch_retry_factor ?? '2',
+  npm_config_fetch_retry_mintimeout: process.env.npm_config_fetch_retry_mintimeout ?? '20000',
+  npm_config_fetch_retry_maxtimeout: process.env.npm_config_fetch_retry_maxtimeout ?? '120000',
+}
 
 function color(text, value) {
   return `${value}${text}${COLORS.reset}`
@@ -248,7 +254,7 @@ async function rewriteStagePackageManifest(localDependencySpecs) {
 
 async function installPortableRuntimeDependencies() {
   warn('\nInstalling portable runtime dependencies...')
-  await runCommand('npm', ['install', '--no-audit', '--no-fund'], { cwd: stageDir })
+  await runCommand('npm', ['install', '--no-audit', '--no-fund'], { cwd: stageDir, env: npmNetworkRetryEnv })
 
   warn('\nGenerating Prisma client in staging...')
   const prismaEnv = {}
@@ -261,7 +267,7 @@ async function installPortableRuntimeDependencies() {
   })
 
   warn('\nPruning development dependencies from staging...')
-  await runCommand('npm', ['prune', '--omit=dev', '--no-audit', '--no-fund'], { cwd: stageDir })
+  await runCommand('npm', ['prune', '--omit=dev', '--no-audit', '--no-fund'], { cwd: stageDir, env: npmNetworkRetryEnv })
 
   await rm(path.join(stageDir, 'package-lock.json'), { force: true })
 }

@@ -15,6 +15,10 @@
 - API/E2E Round 2 pre-execution reroute evidence: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round2-preexecution-reroute-evidence.log`
 - API/E2E Round 3 final execution log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round3-final-execution.log`
 - API/E2E Round 3 LF-002 blockmap evidence: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round3-lf002-blockmap-evidence.log`
+- API/E2E Round 4 final execution log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round4-final-execution.log`
+- Delivery GitHub workflow reroute: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/delivery-github-workflow-reroute.md`
+- Delivery GitHub Linux x64 job log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27809155072-job-82295399169.log`
+- Delivery GitHub Windows x64 job log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27809155072-job-82295399178.log`
 
 ## What Changed
 
@@ -63,9 +67,16 @@
   - Kept macOS `.dmg.blockmap` and `.zip.blockmap` upload/publish expectations unchanged.
   - Added `scripts/validate_linux_updater_metadata.py` to validate `latest-linux.yml` and `latest-linux-arm64.yml` reference matching architecture AppImages and include positive numeric `blockMapSize` entries.
   - Workflow build jobs and publish job now call the validator for both Linux metadata files instead of grepping only for an AppImage filename.
+- Resolved Delivery GitHub workflow Local Fix for Linux x64 artifact naming.
+  - `autobyteus-web/build/scripts/build.ts` no longer relies on electron-builder's AppImage `${arch}` artifact macro for Linux, because it expands x64 to `x86_64`.
+  - Linux artifact naming now derives the release token from `resolveLinuxTargetArch()` and sets `linux-x64` or `linux-arm64` explicitly for both single Linux builds and the Linux leg of `ALL`.
+  - Linux x64 metadata validation remains aligned with `latest-linux.yml` + `linux-x64` AppImage + embedded `blockMapSize`; Linux ARM64 remains `latest-linux-arm64.yml` + `linux-arm64`.
+- Hardened Windows staged runtime dependency installation against transient npm registry failures.
+  - `autobyteus-web/scripts/prepare-server.mjs` now supplies bounded npm fetch retry settings to staged `npm install` and `npm prune`.
+  - This targets the delivery-observed Windows `ECONNRESET` without changing packaged dependency semantics.
 - Added a reusable packaged server startup validation script.
   - `autobyteus-web/scripts/verify-packaged-server-startup.mjs` starts the packaged server with a temp SQLite data dir, clears inherited Prisma engine override env vars, waits for `/rest/health`, and requires migration success output.
-- Updated durable docs for Linux host-architecture defaults, explicit architecture scripts, artifact names, release assets/metadata, Linux embedded AppImage blockmap behavior, and ARM64 startup validation.
+- Updated durable docs for Linux host-architecture defaults, explicit architecture scripts, explicit `linux-x64`/`linux-arm64` artifact names, release assets/metadata, Linux embedded AppImage blockmap behavior, and ARM64 startup validation.
 
 ## Key Files Or Areas
 
@@ -126,7 +137,7 @@
 
 - BrowserServer MCP result-shape/UI event normalization still needs API/E2E coverage validation downstream.
 - Linux x64 full package build was not run locally because this implementation host is Linux ARM64; the release workflow now uses a native x64 job and includes x64 validation gates.
-- API/E2E Round 3 final execution was intentionally stopped for LF-002. This handoff routes the LF-002 implementation rework back through code review before API/E2E resumes, per team workflow.
+- Delivery GitHub-side validation was intentionally stopped for a Desktop Release workflow Local Fix. This handoff routes the implementation rework back through code review before API/E2E/delivery resumes, per team workflow.
 - The repo has pre-existing broad typecheck failures outside this scope from the earlier implementation round:
   - `pnpm -C autobyteus-server-ts typecheck` fails on `TS6059` because the root tsconfig includes `tests/**` outside `rootDir`.
   - `pnpm -C autobyteus-web exec nuxi typecheck` fails on existing unrelated web/test/generated-type issues; no removed remote-browser API issue was identified in that attempted run.
@@ -135,11 +146,11 @@
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: Bug Fix + Behavior Change + Removal/Cleanup + Packaging/Startup Support.
-- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy Or Compatibility Pressure; for Linux ARM64, Missing Invariant / Duplicated Policy Or Coordination in packaging-startup architecture selection; for LF-002, release artifact contract correction for Linux AppImage embedded blockmaps.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now for browser/MCP cleanup, Linux architecture invariant, and Linux release blockmap contract cleanup.
+- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy Or Compatibility Pressure; for Linux ARM64, Missing Invariant / Duplicated Policy Or Coordination in packaging-startup architecture selection; for LF-002, release artifact contract correction for Linux AppImage embedded blockmaps; for delivery GitHub workflow, Local Implementation Defect in Linux x64 artifact naming plus transient Windows npm network hardening.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now for browser/MCP cleanup, Linux architecture invariant, Linux release blockmap contract cleanup, and deterministic Linux x64 artifact token handling.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
-- Evidence / notes: Implementation removed the legacy remote pairing path instead of hiding it, moved Agent Tools MCP source ownership into a per-session route table, preserved the host Electron env-injected browser boundary, extended the Linux architecture invariant across package scripts, build target resolution, prepare-server validation, release workflow metadata, Prisma engine selection, and startup validation, and cleaned the Linux AppImage artifact contract to AppImage + metadata with `blockMapSize`.
+- Evidence / notes: Implementation removed the legacy remote pairing path instead of hiding it, moved Agent Tools MCP source ownership into a per-session route table, preserved the host Electron env-injected browser boundary, extended the Linux architecture invariant across package scripts, build target resolution, prepare-server validation, release workflow metadata, Prisma engine selection, startup validation, explicit Linux release artifact tokens, and cleaned the Linux AppImage artifact contract to AppImage + metadata with `blockMapSize`.
 
 ## Legacy / Compatibility Removal Check
 
@@ -149,13 +160,14 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: Current changed source implementation files remain under 500 effective non-empty lines: `prepare-server.mjs` 486, `build.ts` 419, `prepare-server.sh` 317, `migrations.ts` 279, `verify-packaged-server-startup.mjs` 159, and `validate_linux_updater_metadata.py` 118. The largest files existed as packaging owner scripts; changes kept the Linux architecture policy and release metadata validation inside the existing packaging/release owners rather than adding parallel bypass paths.
+- Notes: Current changed source implementation files remain under 500 effective non-empty lines: `prepare-server.mjs` 492, `build.ts` 440, `prepare-server.sh` 317, `migrations.ts` 279, `verify-packaged-server-startup.mjs` 159, and `validate_linux_updater_metadata.py` 118. The largest files existed as packaging owner scripts; changes kept the Linux architecture policy, release artifact naming, release metadata validation, and npm fetch retry hardening inside the existing packaging/release owners rather than adding parallel bypass paths.
 
 ## Environment Or Dependency Notes
 
 - Current implementation host used for resumed validation: `linux arm64`, Node `v22.22.2`, pnpm `10.28.2`.
 - Dependencies were installed in the worktree with pnpm during earlier implementation and refreshed by `prepare-server`/build commands.
 - The Linux ARM64 package validation intentionally clears inherited `PRISMA_QUERY_ENGINE_LIBRARY`, `PRISMA_SCHEMA_ENGINE_BINARY`, and `PRISMA_CLI_BINARY_TARGETS` so packaged startup proves bundled engine selection rather than environment leakage.
+- Windows staged runtime dependency installation now passes npm fetch retry settings (`fetch-retries=5`, retry factor `2`, min timeout `20000`, max timeout `120000`) to `npm install` and `npm prune` unless the caller overrides those npm config env vars.
 
 ## Local Implementation Checks Run
 
@@ -220,6 +232,24 @@ Implementation-scoped checks only:
 - Passed durable-doc stale wording check for positive Linux `AppImage + blockmap` expectations in `README.md` and `autobyteus-web/docs/*`.
 - Passed: `git diff --check`.
 
+### Delivery GitHub workflow Local Fix checks
+
+- Passed: `pnpm -C autobyteus-web transpile-build`.
+- Passed: `node --check autobyteus-web/scripts/prepare-server.mjs`.
+- Passed mocked `node build/dist/build.js --linux --x64` on simulated Linux x64 with mocked electron-builder.
+  - Verified Linux x64 config uses `AutoByteus_enterprise_linux-x64-${version}.${ext}`.
+- Passed mocked `node build/dist/build.js --linux --arm64` on simulated Linux ARM64 with mocked electron-builder.
+  - Verified Linux ARM64 config uses `AutoByteus_enterprise_linux-arm64-${version}.${ext}`.
+- Passed mocked `node build/dist/build.js` (`ALL`) on simulated Linux x64 with mocked electron-builder.
+  - Verified the `ALL` Linux leg also uses `AutoByteus_enterprise_linux-x64-${version}.${ext}`.
+- Passed actual local Linux ARM64 package command: `AUTOBYTEUS_UPDATER_REPOSITORY=AutoByteus/autobyteus-workspace node build/dist/build.js --linux --arm64` from `autobyteus-web`.
+  - Produced `electron-dist/AutoByteus_enterprise_linux-arm64-1.3.60.AppImage` after the explicit-token artifact-name change.
+- Passed: `python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64` against the rebuilt ARM64 metadata.
+- Passed synthetic x64 metadata validation with `scripts/validate_linux_updater_metadata.py --arch-token linux-x64`.
+- Passed static checks that source and generated `build/dist/build.js` no longer use electron-builder's Linux `${arch}` artifact macro and do use the explicit release-token helper.
+- Passed static checks that staged `npm install` and `npm prune` receive `npmNetworkRetryEnv`.
+- Passed: `git diff --check`.
+
 ### Known baseline check attempts from the earlier implementation round
 
 - Attempted, not passed due apparent baseline issues: `pnpm -C autobyteus-server-ts typecheck` (`TS6059` tests outside `rootDir`).
@@ -234,9 +264,10 @@ Implementation-scoped checks only:
 - Protected static collision such as `send_message_to`: configured MCP duplicate is blocked and static route stays protected.
 - UI/Electron/GraphQL absence checks: no Remote Browser Sharing panel, no Pair local browser controls, no preload IPC APIs, no GraphQL remote bridge mutations.
 - Node removal flow: removes remote node without remote browser cleanup calls.
+- Re-run the Desktop Release workflow on GitHub with `publish_release=false` to prove native Linux x64 now emits `linux-x64` instead of `linux-x86_64` and that the Windows npm network failure does not recur after retry hardening.
 - Linux x64 release job should validate x64 AppImage architecture, `latest-linux.yml`, x64 Prisma engine files, and packaged startup on a native x64 runner.
 - Linux ARM64 release job should validate ARM64 AppImage architecture, `latest-linux-arm64.yml`, ARM64 Prisma engine files, and packaged startup on the native ARM64 runner.
-- Linux release metadata validation should verify each `latest-linux*.yml` file references the matching architecture AppImage and has numeric `blockMapSize`, with no standalone Linux `*.AppImage.blockmap` upload/publish expectation.
+- Linux release metadata validation should verify each `latest-linux*.yml` file references the matching architecture AppImage (`linux-x64` / `linux-arm64`) and has numeric `blockMapSize`, with no standalone Linux `*.AppImage.blockmap` upload/publish expectation.
 - macOS release asset checks should continue to expect standalone `.dmg.blockmap` and `.zip.blockmap` assets.
 - Release workflow packaged startup validation should continue using the discovered unpacked executable path and must not reintroduce case-mismatched `AutoByteus` Linux runtime paths.
 - Durable docs: Docker/remote browser automation points users to BrowserServer MCP, not host-browser pairing; Linux docs describe host architecture defaults, separate updater metadata, and embedded AppImage blockmaps via `blockMapSize`.

@@ -295,7 +295,6 @@ const options: Configuration = {
   linux: {
     target: ['AppImage'],
     icon: 'build/icons', // Linux will use the icons directory containing multiple sizes
-    artifactName: `${artifactBaseName}_linux-\${arch}-\${version}.\${ext}`
   }
 }
 
@@ -330,6 +329,20 @@ function normalizeLinuxArch(value: string): LinuxTargetArch | null {
 
 function linuxTargetArchToBuilderArch(arch: LinuxTargetArch): Arch {
   return arch === 'arm64' ? Arch.arm64 : Arch.x64
+}
+
+function linuxArtifactNameForTargetArch(arch: LinuxTargetArch): string {
+  return `${artifactBaseName}_linux-${arch}-\${version}.\${ext}`
+}
+
+function configWithLinuxArtifactName(arch: LinuxTargetArch): Configuration {
+  return {
+    ...options,
+    linux: {
+      ...options.linux,
+      artifactName: linuxArtifactNameForTargetArch(arch),
+    },
+  }
 }
 
 function resolveLinuxTargetArch(archPreference: RequestedArch): LinuxTargetArch {
@@ -433,10 +446,11 @@ async function main(): Promise<void> {
       console.log('Building for all platforms with custom naming...')
 
       // Build for Linux
-      const linuxArch = linuxTargetArchToBuilderArch(resolveLinuxTargetArch(requestedArch))
-      console.log(`Building for Linux (${linuxArch === Arch.arm64 ? 'arm64' : 'x64'})...`)
+      const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
+      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
+      console.log(`Building for Linux (${linuxTargetArch})...`)
       await build({
-        config: sanitizeConfig(options),
+        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
         publish: 'never',
         targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
       })
@@ -471,6 +485,15 @@ async function main(): Promise<void> {
       }
 
       console.log('All platform builds completed successfully')
+    } else if (platform === 'LINUX') {
+      const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
+      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
+      const result = await build({
+        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
+        publish: 'never',
+        targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
+      })
+      console.log('Build completed:', result)
     } else {
       // For single platform builds, use the standard configuration
       const result = await build(buildConfig)
