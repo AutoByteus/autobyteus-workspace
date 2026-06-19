@@ -7,8 +7,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: ui-mcp-gateway-polish
-- Current Stage: `10`
-- Next Stage: `Ticket Archival + Repository Finalization + Release`
+- Current Stage: `Complete`
+- Next Stage: `N/A`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` Round 3 passed; SCN-001 updated with custom SVG and live selected-state screenshot evidence. |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `code-review.md` Round 3 passed; AppLeftPanel custom SVG render path reviewed and source files remain within size/delta gates. |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` records no long-lived docs impact for Round 3 icon implementation detail; handoff/release notes updated. |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | User verification received on 2026-06-19; target refresh integrated `origin/personal` advanced commits; finalization and release in progress. |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Finalized and released `v1.3.62`; release-deployment report records repository finalization, tag push, and cleanup completion. |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -118,7 +118,7 @@ This records the checklist state at the moment Stage 6 source edits were unlocke
 - Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
 - Required Return Path: `N/A`
 - Required Upstream Artifacts To Update Before Code Edits: `N/A`
-- Resume Condition: No active re-entry; user verification received; proceeding with archival, repository finalization, release, and cleanup.
+- Resume Condition: N/A; workflow complete.
 
 Note:
 - Transition/Re-entry completion rule: recording the path is not enough; resume work immediately and treat re-entry as incomplete until work has actually resumed in the returned stage.
@@ -152,6 +152,7 @@ Note:
 | T-018 | 2026-06-19 | 7 | 8 | Executable validation Round 3 passed; locking code edits and moving to code review. | N/A | Locked | `api-e2e-testing.md` Round 3 |
 | T-019 | 2026-06-19 | 8 | 9 | Code review Round 3 passed; moving to docs sync. | N/A | Locked | `code-review.md` Round 3 |
 | T-020 | 2026-06-19 | 9 | 10 | Docs sync/no-impact decision and handoff artifacts updated after Round 3; returning to final handoff and user verification hold. | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `release-notes.md` |
+| T-021 | 2026-06-19 | 10 | Complete | User verification received; ticket archived, branch finalized into `personal`, release `v1.3.62` pushed, and cleanup completed. | N/A | Locked | `release-deployment-report.md`, `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -163,6 +164,7 @@ Note:
 | 2026-06-19 | Transition/Gate/LockChange | Stage 10 active again; Gateway page local fixes complete, code editing locked, awaiting user verification. | Success | N/A |
 | 2026-06-19 | Transition/Gate/LockChange | Stage 10 active again; final custom Nodes icon validation and review passed, code editing locked, awaiting user verification. | Success | N/A |
 | 2026-06-19 | Gate | User verification received; target base refreshed and finalization/release started. | Success | N/A |
+| 2026-06-19 | Transition/Gate | Stage 10 completed; release `v1.3.62` pushed and ticket-worktree cleanup completed. | Success | N/A |
 
 ## Process Violation Log
 

@@ -4,7 +4,7 @@
 
 - Ticket: `ui-mcp-gateway-polish`
 - Date: 2026-06-19
-- Current Status: `Verified; Finalization In Progress`
+- Current Status: `Finalized and Released`
 - Workflow State Source: `tickets/done/ui-mcp-gateway-polish/workflow-state.md`
 
 ## Delivery Summary
@@ -74,15 +74,21 @@
 
 ## Finalization Record
 
-- Ticket archived to: Pending move to `tickets/done/ui-mcp-gateway-polish/`.
+- Ticket archived to: `tickets/done/ui-mcp-gateway-polish/`.
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/ui-mcp-gateway-polish`
 - Ticket branch: `codex/ui-mcp-gateway-polish`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: Pending finalization commit.
-- Push status: Pending ticket branch push and target branch push.
-- Merge status: Pending merge into `personal`.
-- Release/publication/deployment status: Applicable; documented command is `pnpm release 1.3.62 -- --release-notes tickets/done/ui-mcp-gateway-polish/release-notes.md` after repository finalization.
-- Worktree cleanup status: Pending repository finalization and release.
-- Local branch cleanup status: Pending repository finalization and release.
-- Blockers / notes: None at user-verification handoff; finalization in progress.
+- Commit status: Completed — ticket commit `026b6e6866ee36e07d4bc3d43773f0c686f79015`; release commit `cc341ee27239ab3aae02cb67b096d5b06fa7fc73`.
+- Push status: Completed — pushed `origin/codex/ui-mcp-gateway-polish`, `origin/personal`, and tag `v1.3.62`.
+- Merge status: Completed — `personal` fast-forwarded through the ticket commit.
+- Release/publication/deployment status: Completed — `pnpm release 1.3.62 -- --release-notes tickets/done/ui-mcp-gateway-polish/release-notes.md` pushed release tag `v1.3.62`.
+- Worktree cleanup status: Completed — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/ui-mcp-gateway-polish` and pruned worktrees.
+- Local branch cleanup status: Completed — deleted local `codex/ui-mcp-gateway-polish`; remote branch left intact.
+- Blockers / notes: None.
+
+
+## Release / Deployment Report
+
+- Artifact: `tickets/done/ui-mcp-gateway-polish/release-deployment-report.md`
+- Final status: Completed.
