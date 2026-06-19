@@ -153,3 +153,19 @@ Pre-verification delivery handoff complete. Latest tracked `origin/personal` was
 - Release notes: `tickets/done/memory-page-ui-cleanup/release-notes.md`.
 - Planned release/version: `1.3.64 -> 1.3.65` / `v1.3.65`.
 - Planned release command after target merge: `pnpm release 1.3.65 -- --release-notes tickets/done/memory-page-ui-cleanup/release-notes.md`.
+
+
+## Finalization Completion Addendum — Release v1.3.65 (2026-06-19)
+
+- GitHub CLI status: installed during finalization because the configured credential helper referenced `/usr/bin/gh`; `gh auth status` confirmed login as `ryan-zheng-teki` before release/push operations.
+- Ticket branch final commit: `290599e5d2d1e1aa56bdd6ffb2bc494cc5ea007f` (`fix(frontend): simplify memory page UI copy`).
+- Ticket branch push result: completed; `origin/codex/memory-page-ui-cleanup` was created for the finalized ticket branch before merge, then deleted during post-finalization cleanup.
+- Finalization target update: local `personal` was fast-forwarded to `origin/personal@f5c2694ebd8097279afb6469b9df434b39ec8284`, then fast-forwarded to the ticket branch commit `290599e5d2d1e1aa56bdd6ffb2bc494cc5ea007f` and pushed to `origin/personal`.
+- Release command: `pnpm release 1.3.65 -- --release-notes tickets/done/memory-page-ui-cleanup/release-notes.md`.
+- Release command result: completed and pushed. The helper updated `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` from `1.3.64` to `1.3.65`, synced `.github/release-notes/release-notes.md`, synced the managed messaging release manifest to `v1.3.65`, committed `3152aaf7f9e6aaff5718c9b9f2c800ee807ce5bf`, created annotated tag `v1.3.65`, pushed `origin/personal`, and pushed the tag.
+- Release tag object: `cc65381327e007f71a9a5d5cced0ee61017d01f1`.
+- Release tag target: `3152aaf7f9e6aaff5718c9b9f2c800ee807ce5bf`.
+- Release log artifact: `tickets/done/memory-page-ui-cleanup/release-v1.3.65.log`.
+- Initial tag-triggered workflow observation with `gh run list --limit 10`: Desktop Release `27839996103`, Android APK Release `27839996136`, iOS App Store Connect Release `27839996101`, Release Messaging Gateway `27839996123`, and Server Docker Release `27839996116` were triggered for `v1.3.65` and were in progress at the delivery-record update time.
+- Post-finalization cleanup result: dedicated worktree `/home/autobyteus/workspace/.codex/worktrees/memory-page-ui-cleanup` removed, worktrees pruned, local ticket branch deleted, and remote ticket branch deleted.
+- Final delivery-record note: this metadata update is intentionally after the `v1.3.65` tag and does not alter release tag contents.
