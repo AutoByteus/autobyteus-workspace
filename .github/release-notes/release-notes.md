@@ -1,10 +1,6 @@
-## What's New
-- Added a macOS release signing gate that verifies signed ARM64 and Intel builds before release artifacts are uploaded.
-
 ## Improvements
-- macOS desktop builds now use least-privilege signing for nested updater, framework, and native runtime components while keeping the main app and Electron helpers properly entitled.
-- Release documentation now explains the one-time fixed-DMG recovery path for users whose installed app cannot apply updates because its existing updater helper is blocked by macOS.
+- Cleaned up the Memory page with concise `Agents` and `Agent Teams` tabs, shorter search placeholders, compact card metadata, and streamlined agent/team detail headings.
+- Simplified Memory detail and inspector navigation labels while preserving search, pagination, route restoration, memory badges, timestamps, workspace context, and raw-trace access.
 
-## Fixes
-- Fixed macOS auto-update failures caused by Squirrel and ShipIt carrying the top-level app entitlement payload.
-- Prevented bundled server native modules and other non-app nested Mach-O binaries from inheriting app-only entitlement keys.
+## Documentation
+- Updated the Memory page documentation to describe the final concise labels, compact metadata, and single-title inspector behavior.
