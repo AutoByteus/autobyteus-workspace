@@ -5,7 +5,7 @@
 - Ticket: `mcp-tool-exposure-docker`
 - Date: 2026-06-19
 - Current Status: `Ready for user verification; GitHub workflow E2E passed; repository finalization on hold`
-- Workflow State Source: cumulative delivery artifact chain under `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/`.
+- Workflow State Source: cumulative delivery artifact chain under `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/`.
 - Worktree: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker`
 - Ticket branch: `codex/mcp-tool-exposure-docker`
 - Finalization target: `origin/personal` / `personal`
@@ -121,15 +121,15 @@ Residual risks / delivery notes:
 
 ## Finalization Record
 
-- Ticket archived to: `Not yet`.
-- Current ticket artifact path: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/`.
+- Ticket archived to: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker`.
+- Current ticket artifact path: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/`.
 - Ticket worktree path: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker`.
 - Ticket branch: `codex/mcp-tool-exposure-docker`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
 - Commit status: `Validation branch committed` — source/workflow fix checkpoint `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` is committed and was pushed for validation-only GitHub workflow execution; final target-branch merge commit remains pending user verification/finalization.
 - Push status: `Validation branch pushed only` — `codex/mcp-tool-exposure-docker` was pushed for workflow validation; `personal` was not updated.
-- Merge status: `Pending user verification`.
-- Release/publication/deployment status: `Not started`.
+- Merge status: `Pending final target-branch merge`.
+- Release/publication/deployment status: `Pending repository finalization`; next planned version is `v1.3.61`.
 - Worktree cleanup status: `Not started`.
-- Blockers / notes: No product blocker. The only hold is the required explicit user verification/finalization signal.
+- Blockers / notes: No product blocker. User finalization/release instruction has been received; final merge/release evidence will be recorded after execution.

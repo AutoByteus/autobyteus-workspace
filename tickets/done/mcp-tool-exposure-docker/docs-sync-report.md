@@ -4,9 +4,9 @@
 
 - Ticket: `mcp-tool-exposure-docker`
 - Trigger: Resumed delivery-stage docs sync after API/E2E Round 5 pass and successful validation-only GitHub Desktop Release workflow rerun for MCP/browser cleanup plus Linux x64/ARM64 packaging/release and Linux AppImage metadata scope.
-- Bootstrap base reference: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72` from `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/investigation-notes.md`; first delivery refresh integrated `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` in merge commit `a3791dc947f8e81f7e47fceca35b55abf0946772`.
+- Bootstrap base reference: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72` from `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/investigation-notes.md`; first delivery refresh integrated `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` in merge commit `a3791dc947f8e81f7e47fceca35b55abf0946772`.
 - Integrated base reference used for docs sync: `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` after `git fetch --prune origin` on 2026-06-19; no additional base commits were available beyond the prior delivery merge.
-- Post-integration verification reference: API/E2E Round 5 pass in `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/api-e2e-execution-coverage-report.md`; validation-only GitHub Desktop Release workflow run `27810921946` passed at `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` with `publish_release=false` and blank `release_tag`; resumed delivery sanity checks and `git diff --check` passed on the integrated branch state.
+- Post-integration verification reference: API/E2E Round 5 pass in `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/api-e2e-execution-coverage-report.md`; validation-only GitHub Desktop Release workflow run `27810921946` passed at `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` with `publish_release=false` and blank `release_tag`; resumed delivery sanity checks and `git diff --check` passed on the integrated branch state.
 
 ## Why Docs Were Updated
 

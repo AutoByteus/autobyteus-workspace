@@ -2,17 +2,17 @@
 
 ## Release / Publication / Deployment Scope
 
-Pre-verification delivery handoff plus validation-only GitHub workflow execution. Delivery refreshed the resumed MCP/browser cleanup + Linux x64/ARM64 packaging/release candidate against the latest tracked `origin/personal`, found the branch already current with the previously integrated base, accepted API/E2E Round 5, pushed the ticket branch only for validation, reran the real GitHub `Desktop Release` workflow with `publish_release=false` and blank `release_tag`, captured the passing run evidence, refreshed long-lived docs/delivery artifacts, prepared release notes, and is now holding for explicit user verification/finalization. No target-branch merge, release publication, deployment, ticket archival, or cleanup has been performed.
+Finalization/release execution after user verification plus prior validation-only GitHub workflow execution. Delivery refreshed the resumed MCP/browser cleanup + Linux x64/ARM64 packaging/release candidate against the latest tracked `origin/personal`, found the branch already current with the previously integrated base, accepted API/E2E Round 5, pushed the ticket branch only for validation, reran the real GitHub `Desktop Release` workflow with `publish_release=false` and blank `release_tag`, captured the passing run evidence, refreshed long-lived docs/delivery artifacts, prepared release notes, and received explicit user verification/finalization on 2026-06-19. Ticket archival is complete; target-branch merge and release execution are in progress.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/handoff-summary.md`
+- Handoff summary artifact: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Summary records the original latest-base merge, resumed current-base refresh, API/E2E Round 5 pass, successful GitHub Desktop Release validation-only run `27810921946`, Linux x64/ARM64 packaging/release/blockmap scope, docs sync, release-notes readiness, residual risks, and user-verification hold.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72` (`39449cfb`) from `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/investigation-notes.md`.
+- Bootstrap base reference: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72` (`39449cfb`) from `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/investigation-notes.md`.
 - Latest tracked remote base reference checked: first delivery refresh integrated `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` in merge commit `a3791dc947f8e81f7e47fceca35b55abf0946772`; resumed delivery refresh on 2026-06-19 rechecked `origin/personal` and it remained `79857c513dd6d6e25c4b7761cb5aa0d3a805c227`.
 - Base advanced since bootstrap or previous refresh: `No` for the resumed refresh; `Yes` for the first delivery refresh from `39449cfb` to `79857c51`.
 - New base commits integrated into the ticket branch: `No` during the resumed refresh; `Yes` during the first delivery refresh.
@@ -35,15 +35,15 @@ Delivery sanity checks after resumed refresh:
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: N/A — waiting for user verification of the integrated handoff state.
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification reference: User message on 2026-06-19: “now i think we could finalize the ticket, and release a new version”.
 - Renewed verification required after later re-integration: `No` at this stage because no later base re-integration occurred after API/E2E Round 5 and GitHub workflow validation.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/docs-sync-report.md`
+- Docs sync artifact: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `README.md`
@@ -57,38 +57,38 @@ Delivery sanity checks after resumed refresh:
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: N/A — pending explicit user verification/finalization.
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker`
 
 ## Version / Tag / Release Commit
 
-Not started. Current repository base already contains release tag `v1.3.60`; any next release version/tag decision is pending explicit user finalization/release instruction.
+Current repository base already contains release tag `v1.3.60`; delivery selected the next patch release `v1.3.61` for the requested new version. Release helper execution is pending repository finalization.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/investigation-notes.md`
+- Bootstrap context source: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/investigation-notes.md`
 - Ticket branch: `codex/mcp-tool-exposure-docker`
 - Ticket branch commit result: `Completed for validation branch` — latest source/workflow fix commit `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` was committed and pushed for validation-only GitHub workflow execution; delivery evidence artifacts are committed separately after the successful run. Final target-branch merge remains pending user verification.
 - Ticket branch push result: `Completed for validation-only workflow execution` — `codex/mcp-tool-exposure-docker` was pushed to GitHub; no target branch was updated.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `No user verification yet`
+- Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed` at this stage; will protect before any later finalization refresh if required.
 - Re-integration before final merge result: `Not needed` at this stage; required after user verification before final merge.
-- Target branch update result: `Pending user verification`
-- Merge into target result: `Pending user verification`
-- Push target branch result: `Pending user verification`
-- Repository finalization status: `Blocked` pending explicit user verification/finalization instruction; validation-only ticket-branch push/workflow dispatch is complete.
-- Blocker (if applicable): Required user verification/finalization signal has not been received.
+- Target branch update result: `Pending execution`
+- Merge into target result: `Pending execution`
+- Push target branch result: `Pending execution`
+- Repository finalization status: `In progress` after user verification; validation-only ticket-branch push/workflow dispatch is complete.
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` for release publication in this pre-verification handoff; validation-only workflow execution was applicable and completed with `publish_release=false`.
-- Method: `Other`
-- Method reference / command: N/A at this stage. If requested later, use the project release helper from the finalized target branch with the archived release notes.
-- Release/publication/deployment result: `Not required` for publication; validation-only Desktop Release workflow passed and publish job was skipped.
-- Release notes handoff result: `Not required` for publication yet; release notes are prepared at `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/release-notes.md` for a future release path.
-- Blocker (if applicable): Explicit user finalization/release instruction required before any release/deployment work.
+- Applicable: `Yes` — user requested a new release after finalization; validation-only workflow execution already completed with `publish_release=false`.
+- Method: `Release Script`
+- Method reference / command: `pnpm release 1.3.61 -- --release-notes tickets/done/mcp-tool-exposure-docker/release-notes.md` from the finalized `personal` branch.
+- Release/publication/deployment result: `Pending execution`
+- Release notes handoff result: `Prepared` — release notes are archived at `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/release-notes.md`.
+- Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
@@ -105,7 +105,7 @@ N/A — no product/design/local-fix blocker. Final handoff is on the normal user
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/release-notes.md`
+- Release notes artifact created before verification: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/release-notes.md`
 - Archived release notes artifact used for release/publication: N/A
 - Release notes status: `Updated`
 
@@ -140,6 +140,6 @@ Rollback should be considered if Docker/remote BrowserServer MCP tools such as `
 
 ## Final Status
 
-Delivery readiness: `Ready for user verification`.
+Delivery readiness: `User verified; finalization/release in progress`.
 
-Repository finalization: `On hold` pending explicit user verification/finalization. No target-branch merge, release publication, deployment, ticket archival, or cleanup has been performed; validation-only ticket-branch pushes and workflow dispatch have been performed.
+Repository finalization: ticket archival is complete; target branch merge, release helper execution, release workflow monitoring, final report refresh, and cleanup remain pending.

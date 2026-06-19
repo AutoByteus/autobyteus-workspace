@@ -51,7 +51,7 @@
 - Prisma x64 engine and Prisma client runtime engine checks passed.
 - Packaged server startup validation passed after migrations and health probing.
 - Upload artifact `linux-x64` completed and used path `autobyteus-web/electron-dist/*linux-x64*.AppImage` plus `latest-linux.yml`.
-- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861389-build-linux-x64.log`
+- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861389-build-linux-x64.log`
 
 Key log lines:
 
@@ -72,14 +72,14 @@ Artifact linux-x64 has been successfully uploaded
 - ARM64 metadata validation passed with embedded `blockMapSize`.
 - ARM64 Prisma engine checks and packaged startup/migration/health validation passed.
 - Upload artifact `linux-arm64` completed.
-- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861420-build-linux-arm64.log`
+- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861420-build-linux-arm64.log`
 
 ## Windows x64 Evidence
 
 - Job `Build Windows x64` ran on `windows-2022` and completed successfully.
 - The prior `npm install` / `ECONNRESET` path did not recur in this run.
 - Server preparation completed successfully, Windows build completed, and artifact `windows-x64` uploaded.
-- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861385-build-windows-x64.log`
+- Log: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861385-build-windows-x64.log`
 
 Key log lines:
 
@@ -96,33 +96,33 @@ Artifact windows-x64 has been successfully uploaded
 - `Build macOS Intel x64` completed successfully and uploaded `macos-x64`.
 - macOS blockmap handling remains intact through existing workflow artifact paths and successful macOS jobs.
 - Logs:
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861395-build-macos-arm64.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861408-build-macos-intel-x64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861395-build-macos-arm64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861408-build-macos-intel-x64.log`
 
 ## Publish / Release Guardrail Evidence
 
 - `Publish GitHub Release` job was `skipped`.
 - No remote tag points at validated SHA `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53`.
 - Recent release list still shows latest release `v1.3.60` from 2026-06-18, before this validation run.
-- Release/tag publication check: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-release-publication-check.log`
+- Release/tag publication check: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-release-publication-check.log`
 
 ## Saved Evidence Artifacts
 
-- Run metadata JSON: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946.json`
+- Run metadata JSON: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946.json`
 - Jobs JSON/TSV:
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-jobs.json`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-jobs.tsv`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-jobs.json`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-jobs.tsv`
 - Artifact JSON/TSV:
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-artifacts.json`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-artifacts.tsv`
-- Failed-step log command output: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-failed.log` (no failed steps; header only)
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-artifacts.json`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-artifacts.tsv`
+- Failed-step log command output: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-failed.log` (no failed steps; header only)
 - Job logs:
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300833385-resolve-release-metadata.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861389-build-linux-x64.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861420-build-linux-arm64.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861385-build-windows-x64.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861395-build-macos-arm64.log`
-  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861408-build-macos-intel-x64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300833385-resolve-release-metadata.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861389-build-linux-x64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861420-build-linux-arm64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861385-build-windows-x64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861395-build-macos-arm64.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/tickets/done/mcp-tool-exposure-docker/validation-artifacts/github-desktop-release-workflow-run-27810921946-job-82300861408-build-macos-intel-x64.log`
 
 ## Conclusion
 
