@@ -23,7 +23,7 @@ User explains that the backend has Streamable HTTP MCP, which supports different
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis`
 - Current Branch: `codex/general-mcp-gateway-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis`
 - Bootstrap Base Branch: `origin/personal`

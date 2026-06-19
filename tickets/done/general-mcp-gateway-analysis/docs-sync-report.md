@@ -5,8 +5,8 @@
 - Ticket: `general-mcp-gateway-analysis`
 - Trigger: Delivery-stage docs sync after post-API/E2E durable coverage-code re-review passed.
 - Bootstrap base reference: `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227`, recorded in `investigation-notes.md` as the task base/finalization target.
-- Integrated base reference used for docs sync: `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` after `git fetch origin` on 2026-06-19.
-- Post-integration verification reference: Branch `codex/general-mcp-gateway-analysis`, `HEAD`/`origin/personal`/merge-base all `79857c513dd6d6e25c4b7761cb5aa0d3a805c227`, ahead/behind `0 / 0` before delivery-owned docs/artifact edits; `git diff --check` passed after docs edits.
+- Integrated base reference used for docs sync: Docs were initially synced after `git fetch origin` at `origin/personal` `79857c513dd6d6e25c4b7761cb5aa0d3a805c227`; after the remote advanced, the ticket branch was checkpointed and latest `origin/personal` `9637ec7130df52841a89f786210ba147c4439b0a` (`v1.3.61`) was merged without conflicts before the latest Electron verification build.
+- Post-integration verification reference: Branch `codex/general-mcp-gateway-analysis` integrated HEAD `e6a0d6e02be7d61274858e46b4b5a0d1513f63bf`; `merge-base(HEAD, origin/personal)` equals `origin/personal` `9637ec7130df52841a89f786210ba147c4439b0a`, branch ahead/behind `2 / 0`; `git diff --check` passed before the integrated Electron rebuild, and `NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac` passed.
 
 ## Why Docs Were Updated
 
@@ -61,7 +61,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against the latest tracked `origin/personal` state. No base commits were integrated, so no extra post-merge executable rerun was required; delivery ran `git diff --check` and recorded upstream review/API-E2E results in the handoff artifacts.
+- Notes: Docs sync completed and was then carried through a later user-requested latest-base merge from `origin/personal` `9637ec7130df52841a89f786210ba147c4439b0a`. The merge completed without conflicts; delivery ran `git diff --check`, rebuilt the macOS arm64 Electron app successfully, and recorded upstream review/API-E2E plus integrated-build results in the handoff artifacts.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

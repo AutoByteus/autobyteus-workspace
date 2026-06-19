@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-spec.md`
 - Current Review Round: 1
 - Trigger: Revised architecture review request from `solution_designer`; supersedes the earlier interrupted review request.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

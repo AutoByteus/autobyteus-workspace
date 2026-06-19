@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: API/E2E coverage investigation and execution after source code review passed.
 - Prior Round Reviewed: N/A
@@ -31,7 +31,7 @@ Execution followed the coverage investigation decision to add narrow durable bac
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`

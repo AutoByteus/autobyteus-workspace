@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review-passed handoff to API/E2E for the general `/mcp/gateway` slice.
 - Prior Investigation Reviewed: N/A

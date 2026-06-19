@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/requirements.md`
 - Current Review Round: 6
 - Trigger: CR-GW-002 localization placeholder Local Fix re-review before delivery resumes Electron build retry.
 - Prior Review Round Reviewed: Round 5 in this same report path
 - Latest Authoritative Round: 6
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/api-e2e-execution-coverage-report.md`
-- Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/api-e2e-execution-coverage-report.md`
+- Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/api-e2e-coverage-investigation.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -49,7 +49,7 @@ Round 3 local checks run by code review:
 
 Round 4 evidence-update review:
 
-- Reviewed appended section `Post-Handoff Additional Live Runtime Check` in `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/api-e2e-execution-coverage-report.md`.
+- Reviewed appended section `Post-Handoff Additional Live Runtime Check` in `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/api-e2e-execution-coverage-report.md`.
 - The appended evidence reports `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` passed (`1` file, `5` tests, 80.83s).
 - Covered live Codex scenarios include inter-agent `send_message_to` roundtrip, nested team routing, streamed recipient answers, workspace mapping across create/send/terminate/continue, and team member projection after restore/continue.
 - This evidence strengthens preserved-surface validation for REQ-GW-009 / AC-GW-007 and does not introduce additional repository-resident durable coverage code requiring new source review.
@@ -57,7 +57,7 @@ Round 4 evidence-update review:
 
 Round 5 delivery-localization re-review:
 
-- Reviewed delivery build blocker report `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/in-progress/general-mcp-gateway-analysis/electron-test-build-report.md`.
+- Reviewed delivery build blocker report `/Users/normy/autobyteus_org/autobyteus-worktrees/general-mcp-gateway-analysis/tickets/done/general-mcp-gateway-analysis/electron-test-build-report.md`.
 - Reviewed localized MCP Gateway UI changes in `autobyteus-web/components/tools/McpGatewayPanel.vue`, `autobyteus-web/components/tools/McpManagementTabs.vue`, `autobyteus-web/localization/messages/en/tools.generated.ts`, and `autobyteus-web/localization/messages/zh-CN/tools.generated.ts`.
 - `pnpm -C autobyteus-web guard:web-boundary` — passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
