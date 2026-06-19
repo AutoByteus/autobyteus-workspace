@@ -3,7 +3,7 @@
 - Ticket: `mac-arm64-updater-signing`
 - Last Updated: `2026-06-19`
 - Stage: Delivery/user-verification hold
-- User Verification Status: `Pending explicit user verification`
+- User Verification Status: `Verified on 2026-06-19; repository finalized, release in progress`
 
 ## Outcome
 
@@ -78,13 +78,13 @@ The installed `/Applications/AutoByteus.app` from the successful GitHub ARM64 ar
 
 Please inspect the installed `/Applications/AutoByteus.app` if desired and confirm the delivery state is acceptable. A sufficient verification signal is an explicit reply such as: `verified; finalize`.
 
-Until that signal is received, delivery will not move the ticket to `tickets/done`, commit/push delivery-owned docs/artifacts, merge into `personal`, create tags, publish releases, or run deployment work.
+User verification was received on 2026-06-19. The ticket was archived to `tickets/done`, the ticket branch was committed/pushed at `08eb3dd2`, and `personal` was fast-forwarded/pushed to that commit. Release `v1.3.64` is in progress via the documented root release helper.
 
 ## Release / Deployment Notes
 
 - Release notes candidate: `/Users/normy/autobyteus_org/autobyteus-worktrees/mac-arm64-updater-signing/autobyteus-web/tickets/done/mac-arm64-updater-signing/release-notes.md`
-- No release, version bump, tag, or deployment has been run in delivery.
-- If release/publication is desired after verification, explicitly authorize that scope; otherwise delivery finalization will be repository-only.
+- User authorized a new version release on 2026-06-19.
+- Target release: `v1.3.64` using the documented `pnpm release 1.3.64 -- --release-notes autobyteus-web/tickets/done/mac-arm64-updater-signing/release-notes.md` flow.
 
 ## Residual Risk / Follow-Up
 
