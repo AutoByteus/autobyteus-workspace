@@ -228,6 +228,12 @@ jobs:
             echo "Skipping ARM64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
           fi
 
+      - name: Verify macOS signing policy ARM64
+        run: |
+          APP_BUNDLE="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app' -type d -print -quit)"
+          test -n "$APP_BUNDLE"
+          node autobyteus-web/scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"
+
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -351,6 +357,12 @@ jobs:
           else
             echo "Skipping x64 Electron Node terminal spawn probe on host $(node -p 'process.platform + \"/\" + process.arch')"
           fi
+
+      - name: Verify macOS signing policy x64
+        run: |
+          APP_BUNDLE="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app' -type d -print -quit)"
+          test -n "$APP_BUNDLE"
+          node autobyteus-web/scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"
 
       - name: Upload macOS Intel artifacts
         uses: actions/upload-artifact@v4

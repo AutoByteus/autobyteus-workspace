@@ -214,7 +214,7 @@ const options: Configuration = {
   directories: {
     output: 'electron-dist'
   },
-  // Hook to sign extra resources (server binaries) on macOS
+  // Hook to normalize packaged native resources before signing on macOS.
   afterPack: './build/dist/afterPack.js',
   files: [
     "dist/**/*",
@@ -271,13 +271,11 @@ const options: Configuration = {
     hardenedRuntime: true,
     gatekeeperAssess: false,
     entitlements: 'build/entitlements.mac.plist',
-    entitlementsInherit: 'build/entitlements.mac.plist',
+    // AutoByteus owns macOS entitlement selection in the custom signing adapter.
+    // Do not use electron-builder's broad inherited entitlement path for children.
+    sign: './build/dist/macSign.js',
     signIgnore: [
-      'node-pty/prebuilds/win32-.*',
-      // Skip deep traversal of bundled server JS deps to avoid EMFILE in CI.
-      // Native Mach-O binaries in this tree are still signed explicitly in afterPack.
-      'Contents/Resources/server/node_modules/.*',
-      'server/node_modules/.*'
+      'node-pty/prebuilds/win32-.*'
     ],
     // Notarize only when full Apple credentials are present.
     notarize: !!(
