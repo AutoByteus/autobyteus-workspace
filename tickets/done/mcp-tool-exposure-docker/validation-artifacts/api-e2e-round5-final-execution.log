@@ -1,0 +1,75 @@
+API/E2E Round 5 local validation started: 2026-06-19T06:57:57Z
+Working tree: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker
+Branch/status before checks:
+## codex/mcp-tool-exposure-docker...origin/personal [ahead 5]
+ M autobyteus-web/build/scripts/build.ts
+ M autobyteus-web/docs/electron_packaging.md
+ M autobyteus-web/scripts/prepare-server.mjs
+ M docs/tasks/mcp-tool-exposure-docker/api-e2e-coverage-investigation.md
+ M docs/tasks/mcp-tool-exposure-docker/code-review-report.md
+ M docs/tasks/mcp-tool-exposure-docker/implementation-handoff.md
+?? docs/tasks/mcp-tool-exposure-docker/validation-artifacts/api-e2e-round5-final-execution.log
+
+## Environment
+Linux abab63ac05a2 6.12.54-linuxkit #1 SMP Tue Nov  4 21:21:47 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+v22.22.2
+10.28.2
+Python 3.11.15
+
+## TEP-015 transpile build
+
+> autobyteus@1.3.60 transpile-build /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web
+> tsc -p build/tsconfig.json
+
+
+## TEP-017 prepare-server syntax
+
+## TEP-018 metadata validator positive checks
+Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+Validated /tmp/api-e2e-round5-x64-yqlmJ3.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+
+## TEP-016/017/019 static source, workflow, docs checks
+PASS: source has linuxArtifactNameForTargetArch helper
+PASS: source has configWithLinuxArtifactName helper
+PASS: dist has linuxArtifactNameForTargetArch helper
+PASS: dist has configWithLinuxArtifactName helper
+PASS: source uses explicit token helper in single Linux/all Linux paths — count=2
+PASS: dist uses explicit token helper in single Linux/all Linux paths — count=2
+PASS: source removed electron-builder linux ${arch} artifact macro
+PASS: dist removed electron-builder linux ${arch} artifact macro
+PASS: source still emits linux token before version/ext
+PASS: dist still emits linux token before version/ext
+PASS: prepare-server defines npm_config_fetch_retries
+PASS: prepare-server defines npm_config_fetch_retry_factor
+PASS: prepare-server defines npm_config_fetch_retry_mintimeout
+PASS: prepare-server defines npm_config_fetch_retry_maxtimeout
+PASS: npm install receives npmNetworkRetryEnv
+PASS: npm prune receives npmNetworkRetryEnv
+PASS: workflow YAML parses
+PASS: workflow contains Desktop Release dispatch
+PASS: workflow has Linux x64 AppImage glob
+PASS: workflow has Linux ARM64 AppImage glob
+PASS: workflow validates latest-linux.yml as linux-x64
+PASS: workflow validates latest-linux-arm64.yml as linux-arm64
+PASS: workflow publish validates both Linux metadata files
+PASS: workflow has four Linux metadata validator invocations — count=4
+PASS: workflow has no Linux AppImage.blockmap contract
+PASS: workflow preserves macOS dmg blockmaps
+PASS: workflow preserves macOS zip blockmaps
+PASS: workflow does not hard-code x64 unpacked AutoByteus path
+PASS: workflow does not hard-code ARM64 unpacked AutoByteus path
+PASS: workflow does not expect linux-x86_64 artifacts
+PASS: electron packaging docs mention linux-x64
+PASS: electron packaging docs mention linux-arm64
+PASS: electron packaging docs do not document linux-x86_64
+PASS: electron packaging docs mention blockMapSize
+PASS: electron packaging docs state no standalone Linux AppImage blockmaps
+PASS: GitHub actions docs mention latest-linux metadata
+PASS: GitHub actions docs state standalone AppImage blockmaps are not uploaded for Linux
+All static checks passed.
+
+API/E2E Round 5 local validation completed before final report update: 2026-06-19T06:58:00Z
+
+## TEP-020 final diff hygiene after report updates
+git diff --check passed after Round 5 report/log updates.
+API/E2E Round 5 final validation completed: 2026-06-19T07:00:38Z

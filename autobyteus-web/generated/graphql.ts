@@ -897,7 +897,6 @@ export type Mutation = {
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
   checkAgentPackageUpdates: Array<AgentPackage>;
-  clearRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   configureMcpServer: ConfigureMcpServerResult;
   createAgentDefinition: AgentDefinition;
   createAgentRun: CreateAgentRunResult;
@@ -932,7 +931,6 @@ export type Mutation = {
   probeCustomLlmProvider: CustomLlmProviderProbeResultObject;
   refreshAgentDefinitionCatalog: Scalars['Boolean']['output'];
   refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
-  registerRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   reloadAgentPackage: Array<AgentPackage>;
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
@@ -1157,11 +1155,6 @@ export type MutationPrepareAgentRunArgs = {
 
 export type MutationProbeCustomLlmProviderArgs = {
   input: CustomLlmProviderInputObject;
-};
-
-
-export type MutationRegisterRemoteBrowserBridgeArgs = {
-  input: RemoteBrowserBridgeInput;
 };
 
 
@@ -1654,18 +1647,6 @@ export type ReloadToolSchemaResult = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   tool?: Maybe<ToolDefinitionDetail>;
-};
-
-export type RemoteBrowserBridgeInput = {
-  authToken: Scalars['String']['input'];
-  baseUrl: Scalars['String']['input'];
-  expiresAt: Scalars['String']['input'];
-};
-
-export type RemoteBrowserBridgeMutationResult = {
-  __typename?: 'RemoteBrowserBridgeMutationResult';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
 };
 
 export type RestoreAgentRunResult = {

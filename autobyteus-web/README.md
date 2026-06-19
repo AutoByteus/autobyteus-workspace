@@ -229,8 +229,11 @@ pnpm preview  # To preview the build
 To build the desktop application, use the appropriate command for your operating system:
 
 ```bash
-# For Linux
+# For Linux (host architecture: x64 on x64 hosts, arm64 on arm64 hosts)
 pnpm build:electron:linux
+# Explicit Linux targets require a matching native Linux host/runner
+pnpm build:electron:linux:x64
+pnpm build:electron:linux:arm64
 # For Windows
 pnpm build:electron:windows
 # For macOS
@@ -271,8 +274,11 @@ This script copies the built backend server and its configurations to the `resou
 The standard build commands for Electron automatically include the backend server:
 
 ```bash
-# For Linux with integrated server
+# For Linux with integrated server (host architecture)
 pnpm build:electron:linux
+# Explicit Linux x64/ARM64 targets require matching native hosts/runners
+pnpm build:electron:linux:x64
+pnpm build:electron:linux:arm64
 # For Windows with integrated server
 pnpm build:electron:windows
 # For macOS with integrated server
@@ -376,7 +382,9 @@ pnpm codegen
 - `pnpm test`: Run tests
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
-- `pnpm build:electron:linux`: Build desktop application for Linux
+- `pnpm build:electron:linux`: Build desktop application for Linux host architecture
+- `pnpm build:electron:linux:x64`: Build desktop application for Linux x64 on a native x64 Linux host
+- `pnpm build:electron:linux:arm64`: Build desktop application for Linux ARM64 on a native ARM64 Linux host
 - `pnpm build:electron:windows`: Build desktop application for Windows
 - `pnpm build:electron:mac`: Build desktop application for macOS
 - `pnpm codegen`: Generate GraphQL types

@@ -9,6 +9,7 @@ import {
   type AgentToolMcpSessionResolveResult,
 } from "./agent-tool-mcp-session.js";
 import { cloneConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
+import { cloneAgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 
 const SESSION_ID_RANDOM_BYTES = 18;
 const TOKEN_RANDOM_BYTES = 32;
@@ -58,6 +59,7 @@ export class AgentToolMcpSessionRegistry {
       configuredExposure: cloneConfiguredExposure(input.configuredExposure),
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
       enabledTools: [...input.enabledTools],
+      toolRoutes: cloneAgentToolMcpToolRouteTable(input.toolRoutes),
       configuredMcpToolSources: (input.configuredMcpToolSources ?? []).map(cloneConfiguredMcpAgentToolSource),
       createdAt,
       revokedAt: null,

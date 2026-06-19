@@ -1,0 +1,346 @@
+# API/E2E Round 4 final execution log
+# 2026-06-19T05:56:19Z
+
+## Environment
+Linux abab63ac05a2 6.12.54-linuxkit #1 SMP Tue Nov  4 21:21:47 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+linux arm64 node v22.22.2
+10.28.2
+Python 3.11.15
+
+## LF-002 Linux updater metadata validator checks
+$ python3 -m py_compile scripts/validate_linux_updater_metadata.py
+$ python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64
+Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+$ synthetic x64 metadata validation
+Validated /tmp/api-e2e-round4-latest-linux-x64.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+$ negative metadata missing blockMapSize (expected failure)
+Linux updater metadata validation failed: /tmp/api-e2e-round4-missing-blockmapsize.yml has no linux-arm64 AppImage file entry with numeric blockMapSize
+exit=1
+$ negative metadata referencing standalone .AppImage.blockmap (expected failure)
+Linux updater metadata validation failed: /tmp/api-e2e-round4-standalone-blockmap.yml references a standalone Linux .AppImage.blockmap asset; Linux AppImage blockmaps must be embedded and represented by blockMapSize
+exit=1
+
+## Workflow static validation
+$ python3 workflow validation
+workflow LF-002 static validation passed
+$ workflow grep summary
+237:            autobyteus-web/electron-dist/*.dmg.blockmap
+239:            autobyteus-web/electron-dist/*.zip.blockmap
+361:            autobyteus-web/electron-dist/*macos-x64*.dmg.blockmap
+363:            autobyteus-web/electron-dist/*macos-x64*.zip.blockmap
+367:  build-linux-x64:
+406:          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+410:          test -f autobyteus-web/electron-dist/latest-linux.yml
+411:          python3 scripts/validate_linux_updater_metadata.py \
+412:            --metadata autobyteus-web/electron-dist/latest-linux.yml \
+413:            --arch-token linux-x64
+445:          name: linux-x64
+447:            autobyteus-web/electron-dist/*linux-x64*.AppImage
+448:            autobyteus-web/electron-dist/latest-linux.yml
+451:  build-linux-arm64:
+490:          APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+494:          test -f autobyteus-web/electron-dist/latest-linux-arm64.yml
+495:          python3 scripts/validate_linux_updater_metadata.py \
+496:            --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \
+497:            --arch-token linux-arm64
+504:          test -f "$ENGINES_DIR/schema-engine-linux-arm64-openssl-3.0.x"
+505:          test -f "$ENGINES_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+509:          test -f "$CLIENT_DIR/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+513:          APP_UNPACKED_DIR="autobyteus-web/electron-dist/linux-arm64-unpacked"
+526:          name: linux-arm64
+528:            autobyteus-web/electron-dist/*linux-arm64*.AppImage
+529:            autobyteus-web/electron-dist/latest-linux-arm64.yml
+587:      - build-linux-x64
+588:      - build-linux-arm64
+619:          test -f release-artifacts/linux-x64/latest-linux.yml
+620:          python3 scripts/validate_linux_updater_metadata.py \
+621:            --metadata release-artifacts/linux-x64/latest-linux.yml \
+622:            --arch-token linux-x64
+623:          test -f release-artifacts/linux-arm64/latest-linux-arm64.yml
+624:          python3 scripts/validate_linux_updater_metadata.py \
+625:            --metadata release-artifacts/linux-arm64/latest-linux-arm64.yml \
+626:            --arch-token linux-arm64
+660:            release-artifacts/**/*.dmg.blockmap
+662:            release-artifacts/**/*.zip.blockmap
+665:            release-artifacts/**/latest-linux*.yml
+680:            release-artifacts/**/*.dmg.blockmap
+682:            release-artifacts/**/*.zip.blockmap
+685:            release-artifacts/**/latest-linux*.yml
+
+## Docs stale wording and positive embedded-blockmap checks
+docs LF-002 stale/positive wording validation passed
+README.md:314:  - Linux x64 AppImage + `latest-linux.yml` metadata with embedded AppImage `blockMapSize`
+README.md:315:  - Linux ARM64 AppImage + `latest-linux-arm64.yml` metadata with embedded AppImage `blockMapSize`
+README.md:332:  - `.github/workflows/release-desktop.yml` validates staged and final packaged `node-pty` helpers for both Darwin ARM64 and Intel x64, and validates Linux x64/ARM64 AppImage architecture, Prisma engines, updater metadata, and packaged server startup.
+autobyteus-web/docs/electron_packaging.md:371:  - x64: `*linux-x64*.AppImage`, `latest-linux.yml`
+autobyteus-web/docs/electron_packaging.md:372:  - ARM64: `*linux-arm64*.AppImage`, `latest-linux-arm64.yml`
+autobyteus-web/docs/electron_packaging.md:374:    `blockMapSize` entries in `latest-linux*.yml`; standalone Linux
+autobyteus-web/docs/electron_packaging.md:390:`latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, or asset-not-found provider
+autobyteus-web/docs/github-actions-tag-build.md:68:numeric `blockMapSize` entries in `latest-linux.yml` and
+autobyteus-web/docs/github-actions-tag-build.md:69:`latest-linux-arm64.yml`; standalone `*.AppImage.blockmap` files are not
+autobyteus-web/docs/github-actions-tag-build.md:80:encounter missing `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, missing
+docs/tasks/mcp-tool-exposure-docker/requirements.md:4:Refined after downstream delivery reroute and user follow-up on 2026-06-18, then corrected after implementation/API-E2E `LF-002` blockmap reroute on 2026-06-19. Scope includes removing remote “Pair local browser” functionality, preserving host Electron embedded browser support, preserving container-local BrowserServer MCP support, adding Linux ARM64 Electron local-build/startup support required for user verification, adding GitHub desktop release pipeline support for Linux ARM64 artifacts/metadata, and using the correct Linux AppImage update contract: AppImage files carry embedded blockmaps referenced by `blockMapSize` in `latest-linux*.yml`; standalone `*.AppImage.blockmap` release assets are not required for Linux.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:17:During delivery verification, the user also needed to build and launch the Linux desktop app on the current Linux ARM64 host. The existing `build:electron:linux` path emits only a Linux x64 AppImage and the ad-hoc ARM64 package starts but fails embedded-server Prisma migration because runtime engine selection chooses x64 Debian engines before the ARM64 Prisma engines. The user then clarified that the GitHub pipeline should also be considered. The ticket must therefore include both an official Linux ARM64 local build/startup path and a GitHub desktop release workflow path for Linux ARM64 artifacts/metadata, so the corrected MCP/browser behavior can be verified locally and delivered through CI. A later implementation/API-E2E reroute showed the original Linux release artifact contract incorrectly required separate `*.AppImage.blockmap` files; the installed electron-builder/electron-updater AppImage path uses embedded AppImage blockmaps and records `blockMapSize` in `latest-linux*.yml`, so Linux release upload/publish requirements must use AppImage + metadata assets only.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:30:- Fresh Linux ARM64 AppImage builds emit the AppImage and `latest-linux-arm64.yml` with `blockMapSize`, but no standalone `*.AppImage.blockmap`; local `electron-updater@6.8.3` uses `FileWithEmbeddedBlockMapDifferentialDownloader` for AppImage updates, so separate Linux AppImage blockmap upload globs are an invalid artifact expectation.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:38:- Evidence basis: Agent Tools MCP reserves inactive embedded browser names; remote pairing adds a second browser implementation path for Docker nodes even though the intended path is container-local BrowserServer MCP; delivery verification exposed that Linux desktop packaging is x64-only and that ARM64 packaged startup selects the wrong Prisma schema engine; API/E2E Round 3 exposed that Linux AppImage builds do not emit standalone blockmap files and instead rely on `blockMapSize` metadata for embedded blockmaps.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:39:- Requirement or scope impact: Remove remote pairing, route effective runtime tools from active sources only, make Linux host-architecture Electron builds/startup verifiable on ARM64, and correct Linux release artifact publishing/docs to AppImage + metadata with embedded blockmaps.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:53:- UC-011: GitHub desktop release workflow builds Linux ARM64 on an ARM64 runner, publishes the ARM64 AppImage and `latest-linux-arm64.yml` with embedded-blockmap metadata, and keeps Linux x64 AppImage metadata as `latest-linux.yml`.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:89:- REQ-023: GitHub desktop release workflow must build Linux ARM64 on an ARM64 Linux runner and upload the `linux-arm64` AppImage plus `latest-linux-arm64.yml`; it must not require or publish standalone `*.AppImage.blockmap` files for Linux AppImage targets.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:90:- REQ-024: GitHub desktop release workflow must publish Linux ARM64 updater metadata under `latest-linux-arm64.yml` while preserving Linux x64 updater metadata under `latest-linux.yml`.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:91:- REQ-025: GitHub desktop release workflow must validate Linux x64 and ARM64 artifact architecture, required Prisma engine files, packaged server startup/migration health, and updater metadata `blockMapSize` for each Linux AppImage architecture it builds.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:92:- REQ-026: Linux build/test documentation must describe host-architecture defaults, explicit architecture entrypoints, artifact naming, GitHub release pipeline x64/ARM64 behavior, updater metadata names, Linux AppImage embedded-blockmap behavior, absence of standalone Linux `*.AppImage.blockmap` assets, and ARM64 packaged startup validation.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:110:- AC-015: In GitHub release CI, the Linux x64 job produces an x64 AppImage with `linux-x64` in the artifact name and `latest-linux.yml` referencing that x64 artifact.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:115:- AC-020: In GitHub release CI, the Linux ARM64 job runs on an ARM64 Linux runner, produces an ARM64 AppImage with `linux-arm64` in the artifact name, and uploads/publishes `latest-linux-arm64.yml` referencing that ARM64 artifact with `blockMapSize` metadata.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:116:- AC-021: GitHub release publishing includes both Linux x64 and Linux ARM64 AppImage assets plus `latest-linux.yml` and `latest-linux-arm64.yml`, without standalone Linux `*.AppImage.blockmap` asset requirements, duplicate metadata asset names, or architecture ambiguity.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:117:- AC-022: GitHub release CI fails if Linux x64/ARM64 AppImage architecture inspection, Prisma engine validation, updater metadata `blockMapSize` validation, or packaged server startup/migration health fails for either Linux architecture.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:118:- AC-023: Durable docs/README entries show Linux host-architecture default builds, explicit x64/ARM64 build commands, `linux-{arch}` artifact naming, GitHub release pipeline x64/ARM64 behavior, updater metadata names, Linux AppImage embedded blockmaps/no standalone `.AppImage.blockmap` assets, and the Linux ARM64 startup validation procedure.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:127:- Current release workflow runs Linux only on `ubuntu-22.04` x64; this ticket must add a Linux ARM64 job using a supported ARM64 Linux runner label such as `ubuntu-24.04-arm` or an equivalent self-hosted ARM64 runner if hosted ARM64 is unavailable for the repository. Linux AppImage upload/publish paths must target AppImage + updater metadata assets only; macOS blockmap asset requirements must not be copied to Linux AppImage targets.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:143:- Linux updater metadata must avoid duplicate `latest-linux.yml` asset names: x64 keeps `latest-linux.yml`; ARM64 uses `latest-linux-arm64.yml`, matching electron-updater's Linux channel naming for non-x64 architectures. The metadata must carry `blockMapSize` for the embedded AppImage blockmap rather than relying on a separate `.AppImage.blockmap` file.
+docs/tasks/mcp-tool-exposure-docker/requirements.md:200:| AC-020 | Proves Linux ARM64 CI release artifact and metadata generation. |
+docs/tasks/mcp-tool-exposure-docker/requirements.md:201:| AC-021 | Proves release publishing handles both Linux updater metadata names and embedded AppImage blockmaps without collisions or standalone Linux blockmap assets. |
+docs/tasks/mcp-tool-exposure-docker/requirements.md:207:Approved by user on 2026-06-18 for same-ticket removal of remote “Pair local browser” functionality and simplification toward container-local BrowserServer MCP for Docker/remote browser automation. Delivery reroute on 2026-06-18 adds Linux ARM64 Electron local-build/startup support as a user-verification blocking requirement. User follow-up on 2026-06-18 adds GitHub desktop release workflow support for Linux ARM64 artifacts/metadata. Implementation/API-E2E `LF-002` reroute on 2026-06-19 corrects the Linux AppImage artifact contract to embedded blockmaps plus updater metadata instead of standalone `*.AppImage.blockmap`; this contract change requires architecture re-review before implementation resumes.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:14:Delivery verification exposed a second in-scope architecture/startup issue: Linux Electron packaging is not host-architecture aware. `autobyteus-web/build/scripts/build.ts` parses `--arm64`/`--x64` but hardcodes Linux to `Arch.x64`, and Linux artifact names omit architecture. An ad-hoc Linux ARM64 package launched, but embedded server startup failed because `autobyteus-server-ts/src/startup/migrations.ts` prefers x64 Debian Prisma engine filenames for every Linux runtime before checking ARM64-compatible engines. User follow-up clarified that the GitHub desktop release pipeline should support this too. The target design must add a host-architecture Linux build path, architecture-aware Prisma engine selection, and Linux ARM64 release workflow support so verification and release artifacts cover ARM64. A subsequent `LF-002` reroute corrected one release-contract detail: Linux AppImage differential update data is embedded in the AppImage and referenced by `blockMapSize` in `latest-linux*.yml`; the workflow and docs must not require standalone `*.AppImage.blockmap` assets for Linux.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:42:9. Extend `.github/workflows/release-desktop.yml` with explicit Linux x64 and Linux ARM64 build jobs, architecture-specific updater metadata (`latest-linux.yml` for x64, `latest-linux-arm64.yml` for ARM64), release publishing, and CI validation for both Linux architectures; Linux AppImage upload/publish paths include AppImage + metadata assets only and validate embedded blockmap metadata (`blockMapSize`) instead of standalone `.AppImage.blockmap` files.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:50:- Evidence: Runtime Docker server has BrowserServer MCP registered and no Electron bridge env. Catalog still reserves embedded browser names, and remote pairing code adds a second unsupported browser source for remote nodes. Delivery verification shows the official Linux build emits x64 on ARM64, while an ad-hoc ARM64 package fails Prisma migration after selecting x64 Debian engine files. API/E2E Round 3 shows Linux ARM64 AppImage builds emit metadata with `blockMapSize` but no standalone `.AppImage.blockmap`, matching installed AppImage updater behavior.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:51:- Design response: Remove the remote pairing source entirely, make Agent Tools MCP source ownership explicit through route-backed sessions, add a Linux packaging/startup invariant that ties build target, artifact naming, server resource preparation, and Prisma engine selection to the runtime architecture, and correct Linux release publication to AppImage + metadata with embedded blockmap validation.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:64:- Linux AppImage embedded blockmap: electron-builder/electron-updater's Linux AppImage differential update contract where compressed blockmap data is appended to the AppImage and its size is stored as `blockMapSize` in `latest-linux*.yml`; no separate Linux `*.AppImage.blockmap` asset is produced or consumed.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:92:| DS-007 | Primary End-to-End | GitHub desktop release workflow | Published x64 + ARM64 Linux AppImages and updater metadata with embedded blockmap sizes | Desktop release workflow owner | Ensures CI/release delivers the architecture support, not only local builds. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:101:- GitHub Linux release pipeline: `prepare-release -> build-linux-x64 on x64 runner -> build-linux-arm64 on ARM64 runner -> validate AppImage/Prisma/startup/updater metadata -> publish-release uploads both AppImages and latest-linux*.yml metadata`.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:113:| DS-007 | The desktop release workflow builds Linux x64 and Linux ARM64 on native runners, validates both, uploads architecture-named AppImage artifacts, and publishes `latest-linux.yml` plus `latest-linux-arm64.yml` with `blockMapSize`. It does not upload standalone Linux `.AppImage.blockmap` files. | Release jobs, upload/download artifacts, publish-release | `.github/workflows/release-desktop.yml` | GitHub runner availability, updater metadata validation |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:127:- `Desktop release workflow`: owns CI orchestration, artifact upload/download, architecture-specific Linux updater metadata publication, and release gating for Linux x64/ARM64.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:142:| Desktop release workflow | Native x64 and ARM64 Linux build jobs, validation, artifact upload, and updater metadata publication. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:192:| Linux build docs | DS-005, DS-006, DS-007 | Electron packaging/release workflow | Document host-arch default, explicit x64/ARM64 commands, release x64+ARM64 behavior, metadata names, and ARM64 startup validation. | Enables user verification and release operation. | Users build wrong architecture or trust shell-only launch. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:221:| Desktop release workflow | Native Linux x64 + ARM64 builds, validations, metadata publication. | DS-007 | Release pipeline | Extend | Add `build-linux-arm64` and release publishing validation. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:278:| `.github/workflows/release-desktop.yml` | Release workflow | Linux release builds | Split into explicit `build-linux-x64` and `build-linux-arm64`, validate both, upload/publish both AppImage artifacts and `latest-linux*.yml` metadata with `blockMapSize`; remove Linux `*.AppImage.blockmap` upload/publish globs. | Existing release owner. | N/A |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:281:| `scripts` release metadata validation helpers, if needed | Release tooling | Linux metadata validation | Validate `latest-linux.yml` and `latest-linux-arm64.yml` reference matching architecture artifacts and include numeric `blockMapSize`. | Existing script/test area already contains macOS metadata helper. | N/A |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:317:- Release publishing must not upload two files with the same `latest-linux.yml` asset name; Linux ARM64 metadata must remain `latest-linux-arm64.yml`.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:318:- Release workflow and durable docs must not require standalone Linux `*.AppImage.blockmap` files; macOS `.dmg.blockmap`/`.zip.blockmap` assets remain separate and unaffected.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:332:| `latest-linux.yml` / `latest-linux-arm64.yml` | Linux updater metadata | Keep updater channel metadata architecture-specific and carry embedded AppImage blockmap size. | release artifact path, process arch, `blockMapSize` | x64 uses `latest-linux.yml`; ARM64 uses `latest-linux-arm64.yml`; no separate Linux `.AppImage.blockmap` asset. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:373:| `.github/workflows/release-desktop.yml` | File | Release workflow | Build and publish Linux x64 and ARM64 artifacts/metadata through separate native jobs. | Existing desktop release workflow. | Cross-arch emulation without native resource validation. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:398:| Linux release x64 | release workflow x64 runner -> explicit x64 command -> `linux-x64` artifact + `latest-linux.yml`. | Release accidentally relies on host-arch default. | Prevents release drift. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:399:| Linux release ARM64 | release workflow ARM64 runner -> explicit ARM64 command -> `linux-arm64` artifact + `latest-linux-arm64.yml`. | Only local ARM64 build, no CI release artifact. | Ensures pipeline support. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:413:| Publish both Linux architectures through one `latest-linux.yml` | One metadata file looks simpler. | Rejected | electron-updater uses `latest-linux.yml` for x64 and `latest-linux-arm64.yml` for ARM64; publish distinct metadata files. |
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:466:   - upload `linux-x64` artifacts with `latest-linux.yml`;
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:467:   - upload `linux-arm64` artifacts with `latest-linux-arm64.yml`;
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:477:11. Update Linux build/release docs and README entries for host-architecture defaults, explicit architecture commands, artifact names, GitHub release x64+ARM64 behavior, updater metadata names, and ARM64 startup validation.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:517:- `.github/workflows/release-desktop.yml` has explicit `build-linux-x64` and `build-linux-arm64` jobs. The x64 job publishes `latest-linux.yml`; the ARM64 job publishes `latest-linux-arm64.yml`.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:540:5. Linux updater metadata validation proving `latest-linux.yml` and `latest-linux-arm64.yml` reference the matching architecture AppImage and include numeric `blockMapSize`; the workflow must fail if it still expects standalone Linux `*.AppImage.blockmap` files.
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:551:  uploads: '*linux-x64*.AppImage', 'latest-linux.yml'  # no standalone Linux .AppImage.blockmap
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:556:  uploads: '*linux-arm64*.AppImage', 'latest-linux-arm64.yml'  # no standalone Linux .AppImage.blockmap
+docs/tasks/mcp-tool-exposure-docker/design-spec.md:563:The implementation should avoid a Linux metadata merge step. The installed `electron-updater` provider already requests `latest-linux.yml` on x64 and `latest-linux-arm64.yml` on ARM64. The workflow should validate both metadata files and ensure each references an artifact whose filename contains the matching architecture token and whose file entry includes numeric `blockMapSize`. The standalone `.blockmap` artifact requirement remains valid for macOS DMG/ZIP assets only; it must not be copied to Linux AppImage upload or release-publish globs.
+
+## Targeted ARM64 packaged startup verifier rerun
+APP_EXECUTABLE=autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+App data directory: /tmp/autobyteus-packaged-server-lVZS5I
+AppConfig instance created.
+Config file path: /tmp/autobyteus-packaged-server-lVZS5I/.env
+Loading environment from: /tmp/autobyteus-packaged-server-lVZS5I/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../../../../../tmp/autobyteus-packaged-server-lVZS5I/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:35295
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:35295
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+APP DATA DIRECTORY: /tmp/autobyteus-packaged-server-lVZS5I
+DB DIRECTORY: /tmp/autobyteus-packaged-server-lVZS5I/db
+LOGS DIRECTORY: /tmp/autobyteus-packaged-server-lVZS5I/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-packaged-server-lVZS5I/download
+MEMORY DIRECTORY: /tmp/autobyteus-packaged-server-lVZS5I/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-packaged-server-lVZS5I/db/production.db"
+
+SQLite database production.db created at file:/tmp/autobyteus-packaged-server-lVZS5I/db/production.db
+
+13 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:15381) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `autobyteus --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 18 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 47 items.
+No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-06-19T05:56:22.528Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1781848582588,"pid":15381,"hostname":"abab63ac05a2","msg":"Server listening at http://127.0.0.1:35295"}
+[2026-06-19T05:56:22.588Z] [INFO] [server.runtime] Server listening on 127.0.0.1:35295
+[2026-06-19T05:56:22.590Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:35295
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 47 agent definitions into cache.
+[2026-06-19T05:56:22.630Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_tasks'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-06-19T05:56:22.690Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Pre-loaded 21 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://localhost:1234
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+No Autobyteus LLM server hosts configured. Skipping discovery.
+Successfully fetched 21 models from LLMFactory.
+LLM models cache populated with 21 items.
+Pre-loaded 21 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 6 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4
+Image models by runtime: api=6
+Image models cache populated with 6 items.
+Pre-loaded 6 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Packaged server startup validation passed for /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+[2026-06-19T05:56:22.954Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-06-19T05:56:23.185Z] [INFO] [server.runtime] Server closed cleanly.
+
+## git diff check

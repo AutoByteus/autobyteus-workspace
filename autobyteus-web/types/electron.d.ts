@@ -2,9 +2,6 @@ import type { AppUpdateState } from '../shared/appUpdateTypes';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
-  RemoteBrowserBridgeDescriptor,
-  RemoteBrowserSharingSettings,
-  RemoteBrowserSharingSettingsResult,
   WindowNodeContext,
 } from './node';
 import type {
@@ -60,17 +57,6 @@ declare global {
       upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
       getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
       onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
-      getRemoteBrowserSharingSettings: () => Promise<RemoteBrowserSharingSettings>;
-      updateRemoteBrowserSharingSettings: (
-        settings: RemoteBrowserSharingSettings,
-      ) => Promise<RemoteBrowserSharingSettingsResult>;
-      issueRemoteBrowserBridgeDescriptor: (nodeId: string) => Promise<RemoteBrowserBridgeDescriptor>;
-      confirmRemoteBrowserBridgeDescriptor: (nodeId: string) => Promise<{ ok: true }>;
-      revokeRemoteBrowserBridgeDescriptor: (
-        nodeId: string,
-        state: 'revoked' | 'expired' | 'rejected',
-        errorMessage?: string | null,
-      ) => Promise<{ ok: true }>;
       getBrowserShellSnapshot: () => Promise<BrowserShellSnapshot>;
       openBrowserTab: (request: BrowserShellOpenTabRequest) => Promise<BrowserShellSnapshot>;
       navigateBrowserTab: (request: BrowserShellNavigateTabRequest) => Promise<BrowserShellSnapshot>;

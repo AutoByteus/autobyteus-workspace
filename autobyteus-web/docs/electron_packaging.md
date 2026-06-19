@@ -265,7 +265,7 @@ const options: Configuration = {
 
 | Platform | Target         | Artifact Pattern                        |
 | -------- | -------------- | --------------------------------------- |
-| Linux    | AppImage       | `AutoByteus_<flavor>_linux-{version}.AppImage`   |
+| Linux    | AppImage       | `AutoByteus_<flavor>_linux-x64-{version}.AppImage` / `AutoByteus_<flavor>_linux-arm64-{version}.AppImage` |
 | Windows  | NSIS installer | `AutoByteus_<flavor>_windows-{version}.exe`      |
 | macOS    | DMG + ZIP      | `AutoByteus_<flavor>_macos-{arch}-{version}.dmg/.zip` |
 
@@ -286,10 +286,13 @@ npx ts-node build/scripts/build.ts
 
 # Build for specific platform
 npx ts-node build/scripts/build.ts --linux
+npx ts-node build/scripts/build.ts --linux --x64
+npx ts-node build/scripts/build.ts --linux --arm64
 npx ts-node build/scripts/build.ts --windows
 npx ts-node build/scripts/build.ts --mac
 
-# Build for all platforms
+# Build for all platforms. The Linux target uses the native Linux host architecture
+# and fails if a Linux package is requested from a non-Linux host.
 npx ts-node build/scripts/build.ts
 ```
 
@@ -300,7 +303,7 @@ For macOS terminal packaging, every `node-pty` `spawn-helper` found under the st
 
 `scripts/verify-packaged-terminal-runtime.mjs` is the release-time validator for this invariant. It checks the staged `resources/server` tree and the final `.app/Contents/Resources/server` tree for the target Darwin architecture, verifies that the selected and target `node-pty` helpers are executable, checks Darwin architecture tokens when the `file` tool is available, and runs a real `node-pty` spawn probe when the build host matches the target architecture.
 
-On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from:
+On Linux packaging, the script validates that server resources match the native Linux target architecture. Linux x64 packages require the Debian OpenSSL engine targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`); Linux ARM64 packages require `linux-arm64-openssl-3.0.x`. Unsupported Linux cross-architecture packaging fails before Electron artifacts are emitted. Validation covers:
 
 - packaged CLI engines directory (`@prisma/engines`)
 - packaged Prisma Client runtime directory (`.prisma/client`)
@@ -365,8 +368,11 @@ Current safe error categories are:
 For updater compatibility, published release assets must include:
 
 - Linux:
-  - `*.AppImage`
-  - `latest-linux.yml`
+  - x64: `*linux-x64*.AppImage`, `latest-linux.yml`
+  - ARM64: `*linux-arm64*.AppImage`, `latest-linux-arm64.yml`
+  - AppImage blockmaps are embedded in the AppImage and represented by numeric
+    `blockMapSize` entries in `latest-linux*.yml`; standalone Linux
+    `*.AppImage.blockmap` files are not release assets.
 - macOS:
   - `*.dmg`, `*.dmg.blockmap`
   - `*.zip`, `*.zip.blockmap`
@@ -381,7 +387,7 @@ different asset families to the same GitHub Release. During a release, the
 GitHub Release can become visible before the Desktop Release workflow has
 uploaded every desktop updater asset and metadata file listed above. A packaged
 app that checks for updates during that window can receive missing
-`latest-mac.yml`, `latest-linux.yml`, `latest.yml`, or asset-not-found provider
+`latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, or asset-not-found provider
 errors even though the final release will become complete after the desktop
 workflow finishes.
 

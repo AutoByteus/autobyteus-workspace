@@ -22,6 +22,13 @@ import type {
   ConfiguredMcpAgentToolSourceDiagnostic,
 } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import { ConfiguredMcpRegistryToolAdapter } from "./configured-mcp/configured-mcp-registry-tool-adapter.js";
+import {
+  AGENT_TOOL_MCP_CONFIGURED_MCP_ROUTE_KIND,
+  AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND,
+  toConfiguredMcpToolRoute,
+  toStaticAdapterToolRoute,
+  type AgentToolMcpToolRouteTable,
+} from "./agent-tool-mcp-tool-route.js";
 
 export type AgentToolsMcpToolDefinition = {
   name: string;
@@ -31,6 +38,7 @@ export type AgentToolsMcpToolDefinition = {
 
 export type AgentToolMcpSessionToolExposure = {
   enabledTools: string[];
+  toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
   diagnostics: ConfiguredMcpAgentToolSourceDiagnostic[];
 };
@@ -95,68 +103,101 @@ export class AgentToolMcpCatalog {
     input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
   ): AgentToolMcpSessionToolExposure {
     const context = this.normalizeAvailabilityContext(input);
-    const configuredToolNames = new Set(context.configuredExposure.configuredToolNames);
-    const enabledTools: string[] = [];
-    for (const toolName of this.listSupportedToolNames()) {
-      const adapter = this.adaptersByName.get(toolName);
-      if (adapter && configuredToolNames.has(toolName) && adapter.isAvailable(context)) {
-        enabledTools.push(toolName);
+    const configuredToolNames = normalizeToolNames(context.configuredExposure.configuredToolNames);
+    const activeStaticAdapters = this.resolveActiveStaticAdapters(configuredToolNames, context);
+    const protectedStaticAdapters = this.resolveProtectedStaticAdapters(configuredToolNames);
+    const configuredMcpResolution = this.configuredMcpSourceResolver.resolve({
+      configuredToolNames,
+    });
+    const configuredMcpSourcesByName = new Map(
+      configuredMcpResolution.sources.map((source) => [source.registeredToolName, source]),
+    );
+
+    const toolRoutes: AgentToolMcpToolRouteTable = {};
+    const configuredMcpToolSources: ConfiguredMcpAgentToolSource[] = [];
+    const diagnostics: ConfiguredMcpAgentToolSourceDiagnostic[] = [
+      ...configuredMcpResolution.diagnostics,
+    ];
+
+    for (const toolName of configuredToolNames) {
+      const mcpSource = configuredMcpSourcesByName.get(toolName) ?? null;
+      const activeStaticAdapter = activeStaticAdapters.get(toolName) ?? null;
+      const protectedStaticAdapter = protectedStaticAdapters.get(toolName) ?? null;
+
+      if (mcpSource) {
+        if (protectedStaticAdapter) {
+          if (activeStaticAdapter) {
+            toolRoutes[toolName] = toStaticAdapterToolRoute(toolName);
+          }
+          diagnostics.push(this.buildProtectedStaticCollisionDiagnostic(toolName));
+          continue;
+        }
+
+        toolRoutes[toolName] = toConfiguredMcpToolRoute(mcpSource);
+        configuredMcpToolSources.push(mcpSource);
+        continue;
+      }
+
+      if (activeStaticAdapter) {
+        toolRoutes[toolName] = toStaticAdapterToolRoute(toolName);
       }
     }
 
-    const configuredMcpResolution = this.configuredMcpSourceResolver.resolve({
-      configuredToolNames,
-      reservedToolNames: this.listSupportedToolNames(),
-    });
-    for (const diagnostic of configuredMcpResolution.diagnostics) {
+    for (const diagnostic of diagnostics) {
       if (diagnostic.code === "configured_mcp_tool_collision") {
         console.warn(diagnostic.message);
       }
     }
-    enabledTools.push(...configuredMcpResolution.sources.map((source) => source.registeredToolName));
 
     return {
-      enabledTools: [...new Set(enabledTools)],
-      configuredMcpToolSources: configuredMcpResolution.sources,
-      diagnostics: configuredMcpResolution.diagnostics,
+      enabledTools: Object.keys(toolRoutes),
+      toolRoutes,
+      configuredMcpToolSources,
+      diagnostics,
     };
   }
 
   listMcpToolsForSession(session: AgentToolMcpSession): AgentToolsMcpToolDefinition[] {
-    const enabledTools = new Set(session.enabledTools);
-    const staticDefinitions = this.listSupportedToolNames()
-      .filter((toolName) => enabledTools.has(toolName))
-      .map((toolName) => this.buildStaticMcpToolDefinition(toolName));
-    const configuredDefinitions = session.configuredMcpToolSources
-      .filter((source) => enabledTools.has(source.registeredToolName))
-      .map((source) => this.buildConfiguredMcpToolDefinition(source))
+    return session.enabledTools
+      .map((toolName) => {
+        const route = session.toolRoutes[toolName];
+        if (!route) {
+          return null;
+        }
+        if (route.kind === AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND) {
+          return this.buildStaticMcpToolDefinition(route.toolName);
+        }
+        return this.buildConfiguredMcpToolDefinition(route);
+      })
       .filter((definition): definition is AgentToolsMcpToolDefinition => Boolean(definition));
-    return [...staticDefinitions, ...configuredDefinitions];
   }
 
   resolveToolCallAvailability(
     session: AgentToolMcpSession,
     toolName: string,
   ): AgentToolMcpCallAvailability {
-    const enabled = session.enabledTools.includes(toolName);
-    const staticAdapter = this.adaptersByName.get(toolName) ?? null;
-    if (staticAdapter) {
-      if (!enabled) {
-        return { ok: false, reason: "tool_not_enabled" };
-      }
-      return { ok: true, definition: staticAdapter.definition, adapter: staticAdapter };
+    const route = session.toolRoutes[toolName] ?? null;
+    if (!route) {
+      return this.adaptersByName.has(toolName)
+        ? { ok: false, reason: "tool_not_enabled" }
+        : { ok: false, reason: "unknown_tool" };
     }
-
-    const configuredSource = session.configuredMcpToolSources.find(
-      (source) => source.registeredToolName === toolName,
-    ) ?? null;
-    if (!configuredSource) {
-      return { ok: false, reason: "unknown_tool" };
-    }
-    if (!enabled) {
+    if (!session.enabledTools.includes(toolName)) {
       return { ok: false, reason: "tool_not_enabled" };
     }
-    const definition = this.buildConfiguredMcpSupportedDefinition(configuredSource);
+
+    if (route.kind === AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND) {
+      const adapter = this.adaptersByName.get(route.toolName) ?? null;
+      if (!adapter) {
+        return { ok: false, reason: "unknown_tool" };
+      }
+      return { ok: true, definition: adapter.definition, adapter };
+    }
+
+    if (route.kind !== AGENT_TOOL_MCP_CONFIGURED_MCP_ROUTE_KIND) {
+      return { ok: false, reason: "unknown_tool" };
+    }
+    const definition = this.buildConfiguredMcpSupportedDefinition(route);
     if (!definition) {
       return { ok: false, reason: "unknown_tool" };
     }
@@ -164,7 +205,7 @@ export class AgentToolMcpCatalog {
       ok: true,
       definition,
       adapter: new ConfiguredMcpRegistryToolAdapter({
-        source: configuredSource,
+        source: route,
         definition,
         registry: this.registry,
       }),
@@ -181,6 +222,47 @@ export class AgentToolMcpCatalog {
       configuredExposure: input,
       sender: null,
       executionContext: {},
+    };
+  }
+
+  private resolveActiveStaticAdapters(
+    configuredToolNames: string[],
+    context: AgentToolMcpAvailabilityContext,
+  ): Map<string, AgentToolMcpToolAdapter> {
+    const activeAdapters = new Map<string, AgentToolMcpToolAdapter>();
+    for (const toolName of configuredToolNames) {
+      const adapter = this.adaptersByName.get(toolName);
+      if (adapter?.isAvailable(context)) {
+        activeAdapters.set(toolName, adapter);
+      }
+    }
+    return activeAdapters;
+  }
+
+  private resolveProtectedStaticAdapters(
+    configuredToolNames: string[],
+  ): Map<string, AgentToolMcpToolAdapter> {
+    const protectedAdapters = new Map<string, AgentToolMcpToolAdapter>();
+    for (const toolName of configuredToolNames) {
+      const adapter = this.adaptersByName.get(toolName);
+      if (adapter && this.isStaticAdapterProtected(adapter)) {
+        protectedAdapters.set(toolName, adapter);
+      }
+    }
+    return protectedAdapters;
+  }
+
+  private isStaticAdapterProtected(adapter: AgentToolMcpToolAdapter): boolean {
+    return (adapter.configuredMcpCollisionPolicy ?? "protect_static_adapter") === "protect_static_adapter";
+  }
+
+  private buildProtectedStaticCollisionDiagnostic(
+    registeredToolName: string,
+  ): ConfiguredMcpAgentToolSourceDiagnostic {
+    return {
+      code: "configured_mcp_tool_collision",
+      registeredToolName,
+      message: `Configured MCP tool '${registeredToolName}' was not exposed because it collides with a protected Agent Tools MCP adapter.`,
     };
   }
 
@@ -234,3 +316,11 @@ export const getAgentToolMcpCatalog = (): AgentToolMcpCatalog =>
 export const resetAgentToolMcpCatalogForTests = (): void => {
   AgentToolMcpCatalog.resetInstance();
 };
+
+const normalizeToolNames = (toolNames: Iterable<string>): string[] => [
+  ...new Set(
+    Array.from(toolNames)
+      .map((toolName) => toolName.trim())
+      .filter(Boolean),
+  ),
+];

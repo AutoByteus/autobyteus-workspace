@@ -26,6 +26,7 @@ export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvi
           description: SEND_MESSAGE_TO_TOOL_DESCRIPTION,
           inputSchema: buildSendMessageToParameterSchema(),
         },
+        configuredMcpCollisionPolicy: "protect_static_adapter",
         isAvailable: () => true,
         execute: async ({ session, rawArguments }) =>
           toAgentToolMcpOperationResult(await this.sendMessageDispatcher.dispatch({

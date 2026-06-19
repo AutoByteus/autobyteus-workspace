@@ -139,13 +139,24 @@ describe("AgentToolMcpSessionService", () => {
     });
 
     expect(result.descriptor.enabledTools).toEqual([
-      SEND_MESSAGE_TO_TOOL_NAME,
       "db_query",
+      SEND_MESSAGE_TO_TOOL_NAME,
     ]);
     expect(result.session.enabledTools).toEqual(result.descriptor.enabledTools);
     expect(result.session.configuredMcpToolSources).toEqual([
       { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
     ]);
+    expect(result.session.toolRoutes).toEqual({
+      [SEND_MESSAGE_TO_TOOL_NAME]: {
+        kind: "static_adapter",
+        toolName: SEND_MESSAGE_TO_TOOL_NAME,
+      },
+      db_query: {
+        kind: "configured_mcp_tool",
+        registeredToolName: "db_query",
+        mcpServerId: "sqlite",
+      },
+    });
     expect(result.redactedDescriptor.enabledTools).toEqual(result.descriptor.enabledTools);
 
     const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
@@ -252,6 +263,12 @@ describe("AgentToolMcpToolExecutor", () => {
       sender: buildSender(),
       configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
+      toolRoutes: {
+        [SEND_MESSAGE_TO_TOOL_NAME]: {
+          kind: "static_adapter",
+          toolName: SEND_MESSAGE_TO_TOOL_NAME,
+        },
+      },
       toolExecutionObserver: {
         onToolStart: starts,
         onToolComplete: completes,
@@ -304,6 +321,12 @@ describe("AgentToolMcpToolExecutor", () => {
       sender: buildSender(),
       configuredExposure: buildConfiguredAgentToolExposure(["db_query"]),
       enabledTools: ["db_query"],
+      toolRoutes: {
+        db_query: {
+          kind: "static_adapter",
+          toolName: "db_query",
+        },
+      },
       toolExecutionObserver: { onToolComplete: completes },
     });
     const executor = new AgentToolMcpToolExecutor({

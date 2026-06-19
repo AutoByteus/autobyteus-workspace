@@ -21,7 +21,7 @@ A stolen mobile credential/session must not be enough to:
 - access terminal endpoints,
 - mutate arbitrary files,
 - create arbitrary workspaces,
-- register remote browser bridges,
+- configure browser automation bridges,
 - keep indefinite access after revocation or expiry.
 
 ## Why This Is Not In Phase One
@@ -75,7 +75,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 - R-P2-AUTH-008: File mutation operations must reject standard mobile auth contexts: write/delete/move/rename/create.
 - R-P2-AUTH-009: Mobile file viewing must be read-only and limited to allowed run artifacts or allowed workspace files.
 - R-P2-AUTH-010: Arbitrary `createWorkspace(rootPath)` must be denied for standard mobile auth contexts.
-- R-P2-AUTH-011: Remote browser bridge registration/clearing must require admin/browser-bridge authority and must not be available to default mobile sessions.
+- R-P2-AUTH-011: Browser automation bridge configuration must require admin/browser-bridge authority and must not be available to default mobile sessions.
 - R-P2-AUTH-012: Tool approval from mobile must be either denied by default or limited to explicitly safe/reviewable actions.
 
 ### Token / Session Hardening Requirements
@@ -116,7 +116,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 
 ## Acceptance Criteria
 
-- AC-P2-001: A default mobile session cannot call representative admin GraphQL mutations such as server settings updates, LLM API key updates, MCP server configuration, app-data migrations, package/skill management, or remote-browser-bridge registration.
+- AC-P2-001: A default mobile session cannot call representative admin GraphQL mutations such as server settings updates, LLM API key updates, MCP server configuration, app-data migrations, package/skill management, or managed messaging gateway configuration.
 - AC-P2-002: A direct mobile call to `/ws/terminal/...` is rejected by the backend.
 - AC-P2-003: Mobile file write/delete/move/rename/create mutations are rejected by the backend.
 - AC-P2-004: Allowed read-only mobile file/artifact viewing still works.

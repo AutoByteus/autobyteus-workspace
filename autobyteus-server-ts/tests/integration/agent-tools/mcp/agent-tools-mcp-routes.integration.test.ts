@@ -162,6 +162,12 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       configuredExposure: buildConfiguredAgentToolExposure([PUBLISH_ARTIFACTS_TOOL_NAME]),
       enabledTools: [PUBLISH_ARTIFACTS_TOOL_NAME],
+      toolRoutes: {
+        [PUBLISH_ARTIFACTS_TOOL_NAME]: {
+          kind: "static_adapter",
+          toolName: PUBLISH_ARTIFACTS_TOOL_NAME,
+        },
+      },
       executionContext: {
         workingDirectory: workspaceRoot,
         memoryDir,
@@ -792,6 +798,10 @@ describe("Agent Tools MCP route", () => {
       sender,
       configuredExposure: buildConfiguredAgentToolExposure(enabledTools),
       enabledTools,
+      toolRoutes: Object.fromEntries(enabledTools.map((toolName) => [
+        toolName,
+        { kind: "static_adapter", toolName },
+      ])) as any,
     });
     return { sessionId: session.sessionId, token: capabilityToken };
   };

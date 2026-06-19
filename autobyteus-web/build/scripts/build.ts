@@ -16,6 +16,7 @@ if (process.env.NO_TIMESTAMP) {
 type PlatformType = 'LINUX' | 'WINDOWS' | 'MAC' | 'ALL'
 type BuildFlavor = 'personal' | 'enterprise'
 type RequestedArch = 'AUTO' | 'ARM64' | 'X64'
+type LinuxTargetArch = 'x64' | 'arm64'
 
 interface BuildConfig {
   config: Configuration,
@@ -294,7 +295,6 @@ const options: Configuration = {
   linux: {
     target: ['AppImage'],
     icon: 'build/icons', // Linux will use the icons directory containing multiple sizes
-    artifactName: `${artifactBaseName}_linux-\${version}.\${ext}`
   }
 }
 
@@ -316,20 +316,78 @@ const buildConfig: BuildConfig = {
   publish: 'never'
 }
 
+function normalizeLinuxArch(value: string): LinuxTargetArch | null {
+  const normalized = value.trim().toLowerCase()
+  if (normalized === 'x64' || normalized === 'amd64' || normalized === 'x86_64') {
+    return 'x64'
+  }
+  if (normalized === 'arm64' || normalized === 'aarch64') {
+    return 'arm64'
+  }
+  return null
+}
+
+function linuxTargetArchToBuilderArch(arch: LinuxTargetArch): Arch {
+  return arch === 'arm64' ? Arch.arm64 : Arch.x64
+}
+
+function linuxArtifactNameForTargetArch(arch: LinuxTargetArch): string {
+  return `${artifactBaseName}_linux-${arch}-\${version}.\${ext}`
+}
+
+function configWithLinuxArtifactName(arch: LinuxTargetArch): Configuration {
+  return {
+    ...options,
+    linux: {
+      ...options.linux,
+      artifactName: linuxArtifactNameForTargetArch(arch),
+    },
+  }
+}
+
+function resolveLinuxTargetArch(archPreference: RequestedArch): LinuxTargetArch {
+  if (process.platform !== 'linux') {
+    throw new Error(
+      `Linux Electron packaging requires a native Linux host so bundled native server resources match the package target. Current host: ${process.platform}/${process.arch}.`
+    )
+  }
+
+  const hostArch = normalizeLinuxArch(process.arch)
+  if (!hostArch) {
+    throw new Error(`Unsupported Linux host architecture for Electron packaging: ${process.arch}`)
+  }
+
+  const requested = archPreference === 'ARM64'
+    ? 'arm64'
+    : archPreference === 'X64'
+      ? 'x64'
+      : hostArch
+
+  if (requested !== hostArch) {
+    throw new Error(
+      `Unsupported Linux cross-architecture Electron packaging request: host is ${hostArch}, requested ${requested}. Use a native ${requested} Linux runner/host.`
+    )
+  }
+
+  return requested
+}
+
 function resolvePlatformTargets(
   buildPlatform: PlatformType,
   archPreference: RequestedArch
 ): Map<Platform, Map<Arch, string[]>> {
   if (buildPlatform === 'ALL') {
+    const linuxArch = linuxTargetArchToBuilderArch(resolveLinuxTargetArch(archPreference))
     return new Map([
-      [Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])],
+      [Platform.LINUX, new Map([[linuxArch, ['AppImage']]])],
       [Platform.WINDOWS, new Map([[Arch.x64, ['nsis']]])],
       [Platform.MAC, new Map([[Arch.x64, ['dmg', 'zip']], [Arch.arm64, ['dmg', 'zip']]])]
     ])
   }
 
   if (buildPlatform === 'LINUX') {
-    return new Map([[Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])]])
+    const linuxArch = linuxTargetArchToBuilderArch(resolveLinuxTargetArch(archPreference))
+    return new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
   }
 
   if (buildPlatform === 'WINDOWS') {
@@ -346,8 +404,6 @@ function resolvePlatformTargets(
   throw new Error(`Unsupported build platform: ${buildPlatform}`)
 }
 
-buildConfig.targets = resolvePlatformTargets(platform, requestedArch)
-
 // Function to convert electron-builder arch to our naming convention
 function getArchName(arch: Arch): string {
   if (arch === Arch.arm64) return 'arm64';
@@ -357,6 +413,8 @@ function getArchName(arch: Arch): string {
 
 async function main(): Promise<void> {
   try {
+    buildConfig.targets = resolvePlatformTargets(platform, requestedArch)
+
     // Generate icons first
     await generateIcons()
 
@@ -388,11 +446,13 @@ async function main(): Promise<void> {
       console.log('Building for all platforms with custom naming...')
 
       // Build for Linux
-      console.log('Building for Linux...')
+      const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
+      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
+      console.log(`Building for Linux (${linuxTargetArch})...`)
       await build({
-        config: sanitizeConfig(options),
+        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
         publish: 'never',
-        targets: new Map([[Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])]])
+        targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
       })
 
       // Build for Windows
@@ -425,6 +485,15 @@ async function main(): Promise<void> {
       }
 
       console.log('All platform builds completed successfully')
+    } else if (platform === 'LINUX') {
+      const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
+      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
+      const result = await build({
+        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
+        publish: 'never',
+        targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
+      })
+      console.log('Build completed:', result)
     } else {
       // For single platform builds, use the standard configuration
       const result = await build(buildConfig)

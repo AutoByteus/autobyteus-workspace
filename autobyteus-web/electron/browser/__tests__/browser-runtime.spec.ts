@@ -10,7 +10,7 @@ const {
   browserViewFactorySessionProfiles,
 } = vi.hoisted(() => {
   const browserBridgeServerState = {
-    bindHost: null as string | null,
+    constructorArgsCount: 0,
     start: vi.fn().mockResolvedValue({
       AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:30123',
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'embedded-token',
@@ -29,24 +29,12 @@ const {
 
 vi.mock('../browser-bridge-server', () => ({
   BrowserBridgeServer: class MockBrowserBridgeServer {
-    constructor(
-      _browserSessionManager: unknown,
-      _authRegistry: unknown,
-      bindHost: string,
-    ) {
-      browserBridgeServerState.bindHost = bindHost
+    constructor(...args: unknown[]) {
+      browserBridgeServerState.constructorArgsCount = args.length
     }
 
     start = browserBridgeServerState.start
     stop = browserBridgeServerState.stop
-
-    getRemoteBridgeBaseUrl(advertisedHost: string): string {
-      return `http://${advertisedHost}:30123`
-    }
-
-    isRemoteSharingActive(): boolean {
-      return browserBridgeServerState.bindHost !== '127.0.0.1'
-    }
   },
 }))
 
@@ -95,12 +83,12 @@ vi.mock('../browser-view-factory', () => ({
 describe('BrowserRuntime', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    browserBridgeServerState.bindHost = null
+    browserBridgeServerState.constructorArgsCount = 0
     browserSessionProfiles.length = 0
     browserViewFactorySessionProfiles.length = 0
   })
 
-  it('passes the authoritative listener host into the browser bridge server at startup', async () => {
+  it('starts the local browser bridge and injects env overrides for the bundled server', async () => {
     const setRuntimeEnvOverrides = vi.fn()
 
     const runtime = await startBrowserRuntime({
@@ -108,11 +96,10 @@ describe('BrowserRuntime', () => {
       artifactsDir: '/tmp/browser-artifacts',
       setRuntimeEnvOverrides,
       authRegistry: new BrowserBridgeAuthRegistry(),
-      listenerHost: '0.0.0.0',
     })
 
     expect(runtime).not.toBeNull()
-    expect(browserBridgeServerState.bindHost).toBe('0.0.0.0')
+    expect(browserBridgeServerState.constructorArgsCount).toBe(2)
     expect(browserSessionProfiles).toHaveLength(1)
     expect(browserViewFactorySessionProfiles).toEqual([browserSessionProfiles[0]])
     expect(setRuntimeEnvOverrides).toHaveBeenCalledWith({

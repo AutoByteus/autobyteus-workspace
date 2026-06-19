@@ -38,6 +38,7 @@ export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterPr
           description: PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
           inputSchema: buildPublishArtifactsParameterSchema(),
         },
+        configuredMcpCollisionPolicy: "protect_static_adapter",
         isAvailable: () => true,
         execute: async ({ session, rawArguments }) => {
           try {

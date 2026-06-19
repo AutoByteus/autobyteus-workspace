@@ -1,10 +1,7 @@
 // electron/preload.ts
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
-import type {
-  NodeRegistryChange,
-  RemoteBrowserSharingSettings,
-} from './nodeRegistryTypes'
+import type { NodeRegistryChange } from './nodeRegistryTypes'
 import type {
   BrowserHostBounds,
   BrowserShellNavigateTabRequest,
@@ -53,19 +50,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNodeRegistryUpdated: (callback: (snapshot: any) => void) => {
     return registerIpcListener('node-registry-updated', callback)
   },
-  getRemoteBrowserSharingSettings: () =>
-    ipcRenderer.invoke('browser-pairing:get-settings') as Promise<RemoteBrowserSharingSettings>,
-  updateRemoteBrowserSharingSettings: (settings: RemoteBrowserSharingSettings) =>
-    ipcRenderer.invoke('browser-pairing:update-settings', settings),
-  issueRemoteBrowserBridgeDescriptor: (nodeId: string) =>
-    ipcRenderer.invoke('browser-pairing:issue-descriptor', nodeId),
-  confirmRemoteBrowserBridgeDescriptor: (nodeId: string) =>
-    ipcRenderer.invoke('browser-pairing:confirm-descriptor', nodeId),
-  revokeRemoteBrowserBridgeDescriptor: (
-    nodeId: string,
-    state: 'revoked' | 'expired' | 'rejected',
-    errorMessage?: string | null,
-  ) => ipcRenderer.invoke('browser-pairing:revoke-descriptor', nodeId, state, errorMessage ?? null),
 
   getBrowserShellSnapshot: () =>
     ipcRenderer.invoke('browser-shell:get-snapshot') as Promise<BrowserShellSnapshot>,

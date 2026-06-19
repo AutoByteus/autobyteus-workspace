@@ -1,0 +1,20 @@
+# API/E2E Round 2 pre-execution reroute evidence
+# 2026-06-19T04:58:43Z
+
+## Host/runtime
+Linux abab63ac05a2 6.12.54-linuxkit #1 SMP Tue Nov  4 21:21:47 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+linux arm64 node v22.22.2
+
+## Workflow hard-coded Linux packaged startup executable paths
+432:          APP_EXECUTABLE="autobyteus-web/electron-dist/linux-unpacked/AutoByteus"
+434:          node autobyteus-web/scripts/verify-packaged-server-startup.mjs \
+510:          APP_EXECUTABLE="autobyteus-web/electron-dist/linux-arm64-unpacked/AutoByteus"
+512:          node autobyteus-web/scripts/verify-packaged-server-startup.mjs \
+
+## Canonical entries in local generated ARM64 unpacked app
+autobyteus
+
+## Exact case-sensitive directory-entry check for the workflow path basename
+["autobyteus"]
+Missing exact AutoByteus directory entry; workflow hard-coded path is unsafe on case-sensitive Linux CI.
+node exact-check exit=1

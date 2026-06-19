@@ -13,7 +13,6 @@ type ConfiguredMcpAgentToolSourceResolverDeps = {
 
 export type ResolveConfiguredMcpAgentToolSourcesInput = {
   configuredToolNames: Iterable<string>;
-  reservedToolNames: Iterable<string>;
 };
 
 export class ConfiguredMcpAgentToolSourceResolver {
@@ -24,7 +23,6 @@ export class ConfiguredMcpAgentToolSourceResolver {
   }
 
   resolve(input: ResolveConfiguredMcpAgentToolSourcesInput): ConfiguredMcpAgentToolSourceResolution {
-    const reservedToolNames = new Set(normalizeNames(input.reservedToolNames));
     const sources: ConfiguredMcpAgentToolSource[] = [];
     const diagnostics: ConfiguredMcpAgentToolSourceDiagnostic[] = [];
 
@@ -39,14 +37,6 @@ export class ConfiguredMcpAgentToolSourceResolver {
         continue;
       }
       if (definition.origin !== ToolOrigin.MCP) {
-        continue;
-      }
-      if (reservedToolNames.has(registeredToolName)) {
-        diagnostics.push({
-          code: "configured_mcp_tool_collision",
-          registeredToolName,
-          message: `Configured MCP tool '${registeredToolName}' was not exposed because it collides with a built-in Agent Tools MCP adapter.`,
-        });
         continue;
       }
       const mcpServerId = definition.metadata?.["mcp_server_id"];

@@ -1,0 +1,7 @@
+82300833385	Resolve Release Metadata	completed	success	GitHub Actions 1000002370	GitHub Actions	2026-06-19T07:04:21Z	2026-06-19T07:04:32Z
+82300861385	Build Windows x64	completed	success	GitHub Actions 1000002373	GitHub Actions	2026-06-19T07:04:34Z	2026-06-19T07:15:22Z
+82300861389	Build Linux x64	completed	success	GitHub Actions 1000002374	GitHub Actions	2026-06-19T07:04:35Z	2026-06-19T07:08:34Z
+82300861395	Build macOS ARM64	completed	success	GitHub Actions 1000002372	GitHub Actions	2026-06-19T07:04:36Z	2026-06-19T07:19:57Z
+82300861408	Build macOS Intel x64	completed	success	GitHub Actions 1000002371	GitHub Actions	2026-06-19T07:04:41Z	2026-06-19T07:21:55Z
+82300861420	Build Linux ARM64	completed	success	GitHub Actions 1000002375	GitHub Actions	2026-06-19T07:04:37Z	2026-06-19T07:07:52Z
+82303205979	Publish GitHub Release	completed	skipped			2026-06-19T07:21:56Z	2026-06-19T07:21:55Z

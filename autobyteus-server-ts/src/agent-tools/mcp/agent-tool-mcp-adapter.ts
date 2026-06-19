@@ -33,8 +33,13 @@ export type AgentToolMcpToolAdapterExecuteInput = {
   rawArguments: Record<string, unknown>;
 };
 
+export type AgentToolMcpConfiguredMcpCollisionPolicy =
+  | "protect_static_adapter"
+  | "prefer_configured_mcp";
+
 export type AgentToolMcpToolAdapter = {
   definition: AgentToolMcpSupportedToolDefinition;
+  configuredMcpCollisionPolicy?: AgentToolMcpConfiguredMcpCollisionPolicy;
   isAvailable: (context: AgentToolMcpAvailabilityContext) => boolean;
   execute: (input: AgentToolMcpToolAdapterExecuteInput) => Promise<AgentToolMcpExecutionResult>;
 };
