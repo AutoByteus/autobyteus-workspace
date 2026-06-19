@@ -4,7 +4,7 @@
 
 - Ticket: `mcp-tool-exposure-docker`
 - Date: 2026-06-19
-- Current Status: `Ready for user verification; repository finalization on hold`
+- Current Status: `Ready for user verification; GitHub workflow E2E passed; repository finalization on hold`
 - Workflow State Source: cumulative delivery artifact chain under `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/`.
 - Worktree: `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker`
 - Ticket branch: `codex/mcp-tool-exposure-docker`
@@ -21,9 +21,9 @@
 - Delivered Linux ARM64/package/release scope:
   - `build:electron:linux` now builds for the current Linux host architecture instead of always x64.
   - Added explicit native Linux architecture scripts: `build:electron:linux:x64` and `build:electron:linux:arm64`.
-  - Linux artifacts are architecture named: `linux-x64` and `linux-arm64`.
+  - Linux artifacts are architecture named with explicit release tokens: `linux-x64` and `linux-arm64`; Round 5 fixed the prior electron-builder x64 macro expansion that emitted `linux-x86_64`.
   - Linux ARM64 packaged startup selects bundled `linux-arm64-openssl-3.0.x` Prisma engines and reaches healthy embedded-server startup after migrations.
-  - GitHub desktop release workflow has native Linux x64 and Linux ARM64 jobs and validates AppImage architecture, Prisma engine files, updater metadata, and packaged server startup for both Linux architectures.
+  - GitHub desktop release workflow has native Linux x64 and Linux ARM64 jobs and now passed validation-only run `27810921946`, validating AppImage architecture, Prisma engine files, updater metadata, and packaged server startup for both Linux architectures.
   - Linux AppImage updater metadata is corrected to AppImage + `latest-linux*.yml` with embedded `blockMapSize`; standalone Linux `*.AppImage.blockmap` assets are intentionally not uploaded/published.
 - Planned scope reference: `requirements.md`, `design-spec.md`, `solution-linux-arm64-rework.md`, `solution-linux-appimage-blockmap-rework.md`, `implementation-handoff.md`.
 - Deferred / not delivered:
@@ -31,8 +31,8 @@
   - No provider-level MCP namespacing redesign.
   - No persisted source-aware user selection for host embedded browser vs configured MCP browser duplicates; current policy deterministically prefers configured MCP for browser overlaps.
   - No Linux cross-architecture desktop packaging support; Linux package architecture must match the native host/runner used to prepare server resources.
-  - Native Linux x64 packaged startup was not run on this ARM64 host; the release workflow now owns native x64 package/startup validation on its x64 runner.
-  - Actual GitHub Actions release execution was not run locally.
+  - Native Linux x64 packaged startup was not run on this ARM64 host, but it passed on the GitHub `ubuntu-22.04` x64 runner in validation-only run `27810921946`.
+  - Validation-only GitHub Actions Desktop Release execution passed; actual release publication was intentionally not run (`publish_release=false`, blank `release_tag`, publish job skipped).
 - Key architectural or ownership changes: `AgentToolMcpToolRoute` and session route tables own Agent Tools MCP source selection; `BrowserBridgeConfigResolver` is env-only; Docker/remote browser automation belongs to configured MCP-origin tools; Linux packaging now treats native architecture as a package/server-resource invariant; Linux updater metadata validation is encoded in `scripts/validate_linux_updater_metadata.py`.
 - Removed / decommissioned items: remote runtime browser bridge registration, remote browser bridge GraphQL mutations/types, Electron remote browser sharing/pairing IPC/settings/state, Node Manager remote pairing controls, remote pairing store/client, stale remote pairing tests, generic/ambiguous Linux AppImage naming, and standalone Linux AppImage blockmap release expectations.
 
@@ -57,7 +57,7 @@ Authoritative API/E2E validation before resumed delivery:
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`.
 - Execution coverage report: `api-e2e-execution-coverage-report.md`.
-- Latest authoritative result: Round 4 `Pass`.
+- Latest authoritative local API/E2E result: Round 5 `Pass`.
 - No repository-resident durable coverage code was added, updated, or removed after the latest code review; no post-API/E2E code-review reroute was required.
 
 Key API/E2E evidence:
@@ -66,12 +66,15 @@ Key API/E2E evidence:
 - Round 3 fresh Linux ARM64 build produced ARM64 AppImage/metadata/unpacked app, validated ARM64 Prisma engines, passed cross-arch guard checks, and reran focused browser/MCP regressions.
 - Round 4 verified LF-002: Linux release contract uses architecture-named AppImages plus `latest-linux*.yml` metadata with embedded AppImage `blockMapSize`; standalone Linux `.AppImage.blockmap` assets are not required.
 - Round 4 packaged ARM64 startup verifier passed with discovered `linux-arm64-unpacked/autobyteus`; bundled ARM64 Prisma engines were selected, migrations completed, `/rest/health` passed, and shutdown was clean.
+- Round 5 local validation passed after the delivery-rerouted workflow Local Fix: Linux x64 naming uses explicit `linux-x64`, staged npm install/prune received bounded fetch retry hardening, static workflow/docs checks passed, and `git diff --check` passed.
+- Delivery GitHub workflow E2E rerun passed: `Desktop Release` run `27810921946` at `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` completed successfully; Linux x64/ARM64, Windows x64, and macOS jobs passed; `Publish GitHub Release` was skipped because `publish_release=false`. Evidence report: `github-desktop-release-workflow-e2e-report.md`.
 
-Resumed delivery sanity checks on the integrated branch:
+Resumed delivery and GitHub workflow checks on the integrated branch:
 
 - `python3 -m py_compile scripts/validate_linux_updater_metadata.py` — passed.
 - `python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64` — passed.
 - `git diff --check` — passed after delivery artifact refresh.
+- `gh workflow run release-desktop.yml --ref codex/mcp-tool-exposure-docker -f publish_release=false -f release_tag=` — dispatched validation-only run `27810921946`, which completed successfully.
 
 Acceptance-criteria closure summary:
 
@@ -81,13 +84,13 @@ Acceptance-criteria closure summary:
 - `enabledTools`, `tools/list`, and `tools/call` share one route decision and avoid duplicate same-name browser definitions.
 - Remote browser bridge GraphQL mutations/types, Electron IPC APIs, Nodes settings pairing controls, and stale remote pairing tests are removed.
 - Linux ARM64 local build/startup support is implemented and validated.
-- Linux x64/ARM64 release workflow paths and metadata contracts are implemented and statically/API-E2E validated; x64 native startup remains owned by the x64 CI runner.
+- Linux x64/ARM64 release workflow paths and metadata contracts are implemented, statically/API-E2E validated, and GitHub-hosted workflow validated; x64 native startup passed on the x64 CI runner.
 - Durable docs now direct Docker/remote browser automation to configured BrowserServer MCP or no browser tools, and document Linux architecture-specific packaging/release behavior.
 
 Residual risks / delivery notes:
 
 - Native Linux x64 packaged startup cannot be run on this ARM64 host; the workflow has a native x64 job that validates AppImage architecture, Prisma engines, updater metadata, and packaged startup on the x64 runner.
-- Actual GitHub Actions release execution was not run locally.
+- Validation-only GitHub Actions Desktop Release execution passed; actual release publication was intentionally not run (`publish_release=false`, blank `release_tag`, publish job skipped).
 - Broad `pnpm -C autobyteus-server-ts typecheck` and `pnpm -C autobyteus-web exec nuxi typecheck` remain known noisy baseline checks per implementation handoff; focused server build tsc and web Electron transpile passed upstream.
 
 ## Documentation Sync Summary
@@ -124,8 +127,8 @@ Residual risks / delivery notes:
 - Ticket branch: `codex/mcp-tool-exposure-docker`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
-- Commit status: `Pending user verification` — delivery checkpoint `0c40c56b47047a5dab29b83fc417a2e7addbd760` is committed; refreshed delivery docs/report edits are intentionally uncommitted pending finalization.
-- Push status: `Pending user verification`.
+- Commit status: `Validation branch committed` — source/workflow fix checkpoint `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` is committed and was pushed for validation-only GitHub workflow execution; final target-branch merge commit remains pending user verification/finalization.
+- Push status: `Validation branch pushed only` — `codex/mcp-tool-exposure-docker` was pushed for workflow validation; `personal` was not updated.
 - Merge status: `Pending user verification`.
 - Release/publication/deployment status: `Not started`.
 - Worktree cleanup status: `Not started`.

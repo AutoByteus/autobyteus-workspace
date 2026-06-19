@@ -3,14 +3,14 @@
 ## Scope
 
 - Ticket: `mcp-tool-exposure-docker`
-- Trigger: Resumed delivery-stage docs sync after API/E2E Round 4 pass for MCP/browser cleanup plus Linux ARM64 packaging/release and Linux AppImage metadata scope.
+- Trigger: Resumed delivery-stage docs sync after API/E2E Round 5 pass and successful validation-only GitHub Desktop Release workflow rerun for MCP/browser cleanup plus Linux x64/ARM64 packaging/release and Linux AppImage metadata scope.
 - Bootstrap base reference: `origin/personal` at `39449cfb9307c5dddcf24bc4c9710ccc8d8baf72` from `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/investigation-notes.md`; first delivery refresh integrated `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` in merge commit `a3791dc947f8e81f7e47fceca35b55abf0946772`.
 - Integrated base reference used for docs sync: `origin/personal` at `79857c513dd6d6e25c4b7761cb5aa0d3a805c227` after `git fetch --prune origin` on 2026-06-19; no additional base commits were available beyond the prior delivery merge.
-- Post-integration verification reference: API/E2E Round 4 pass in `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/api-e2e-execution-coverage-report.md`; resumed delivery sanity checks `python3 -m py_compile scripts/validate_linux_updater_metadata.py`, `python3 scripts/validate_linux_updater_metadata.py --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml --arch-token linux-arm64`, and `git diff --check` passed on the integrated branch state.
+- Post-integration verification reference: API/E2E Round 5 pass in `/home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker/docs/tasks/mcp-tool-exposure-docker/api-e2e-execution-coverage-report.md`; validation-only GitHub Desktop Release workflow run `27810921946` passed at `c45ed6fc31614a22f53a0e0d2773d3c6ba52bf53` with `publish_release=false` and blank `release_tag`; resumed delivery sanity checks and `git diff --check` passed on the integrated branch state.
 
 ## Why Docs Were Updated
 
-- Summary: Long-lived docs were refreshed for the final integrated behavior: Docker/remote browser automation is MCP-origin rather than host-browser-pairing-based; Agent Tools MCP sessions use source-aware routes; Linux desktop packaging now supports native host-architecture Linux builds plus explicit x64/ARM64 entrypoints; Linux release CI builds x64 and ARM64 AppImages with architecture-specific metadata; Linux AppImage update metadata uses embedded blockmaps represented by `blockMapSize` in `latest-linux*.yml`, not standalone Linux `*.AppImage.blockmap` assets.
+- Summary: Long-lived docs were refreshed for the final integrated behavior: Docker/remote browser automation is MCP-origin rather than host-browser-pairing-based; Agent Tools MCP sessions use source-aware routes; Linux desktop packaging now supports native host-architecture Linux builds plus explicit x64/ARM64 entrypoints; Linux release CI builds x64 and ARM64 AppImages with explicit `linux-x64`/`linux-arm64` artifact names and architecture-specific metadata; Linux AppImage update metadata uses embedded blockmaps represented by `blockMapSize` in `latest-linux*.yml`, not standalone Linux `*.AppImage.blockmap` assets.
 - Why this should live in long-lived project docs: These are durable runtime, packaging, release, and update-contract invariants. Future browser/MCP work must not reintroduce remote host-browser pairing or inactive static-name reservation, and future release work must not regress Linux ARM64 packaging or publish invalid Linux standalone AppImage blockmap expectations.
 
 ## Long-Lived Docs Reviewed
@@ -19,7 +19,7 @@
 | --- | --- | --- | --- |
 | `README.md` | Root release artifact and workflow overview. | `Updated` | Describes Linux x64 and Linux ARM64 release artifacts/metadata and validation scope. |
 | `autobyteus-web/README.md` | Developer Electron build instructions. | `Updated` | Documents host-architecture Linux builds and explicit `build:electron:linux:x64` / `build:electron:linux:arm64` scripts. |
-| `autobyteus-web/docs/electron_packaging.md` | Canonical Electron packaging/runtime doc. | `Updated` | Documents Linux architecture-specific AppImage names, native-architecture validation, Prisma engine requirements, packaged startup checks, and embedded AppImage blockmap metadata. |
+| `autobyteus-web/docs/electron_packaging.md` | Canonical Electron packaging/runtime doc. | `Updated` | Documents explicit Linux x64/ARM64 AppImage names, native-architecture validation, Prisma engine requirements, packaged startup checks, and embedded AppImage blockmap metadata. |
 | `autobyteus-web/docs/github-actions-tag-build.md` | Canonical tag-triggered desktop release workflow doc. | `Updated` | Documents Linux x64 and ARM64 jobs, artifact/metadata names, validation, and no standalone Linux AppImage blockmap assets. |
 | `autobyteus-server-ts/docs/modules/agent_tools.md` | Canonical server module overview for browser tool and Agent Tools MCP ownership. | `Updated` | Documents env-injected embedded Electron bridge vs configured MCP-origin Docker/remote browser tools and source-aware route/collision policy. |
 | `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md` | Canonical Agent Tools MCP server lifecycle/source-boundary doc. | `Updated` | Documents per-session source-aware route table and protected-vs-browser collision policy. |
@@ -67,7 +67,7 @@ N/A — long-lived docs were updated and reviewed.
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Long-lived docs now match the integrated, reviewed, and API/E2E-validated implementation state. Delivery can proceed to user-verification handoff. Repository finalization, push/merge, release, deployment, ticket archival, and cleanup remain blocked until explicit user verification/finalization instruction.
+- Notes: Long-lived docs now match the integrated, reviewed, API/E2E Round 5 validated, and GitHub workflow validated implementation state. Delivery can proceed to user-verification handoff. The ticket branch was pushed only for validation-only workflow execution; target-branch merge, release publication, ticket archival, and cleanup remain blocked until explicit user verification/finalization instruction.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
