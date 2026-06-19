@@ -1,99 +1,83 @@
 <template>
-  <section class="flex h-full flex-col gap-6" data-testid="mcp-gateway-panel">
-    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <div class="flex flex-col gap-2">
-        <p class="text-sm font-semibold uppercase tracking-wide text-indigo-600">{{ t('tools.components.tools.McpGatewayPanel.external_mcp_gateway') }}</p>
-        <h2 class="text-xl font-semibold text-gray-900">{{ t('tools.components.tools.McpGatewayPanel.connect_external_mcp_clients') }}</h2>
-        <p class="max-w-3xl text-sm text-gray-600">
+  <section class="flex h-full flex-col" data-testid="mcp-gateway-panel">
+    <div class="mx-auto w-full max-w-5xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <header class="flex flex-col gap-2">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600">{{ t('tools.components.tools.McpGatewayPanel.external_mcp_gateway') }}</p>
+        <h2 class="text-2xl font-semibold tracking-tight text-gray-900">{{ t('tools.components.tools.McpGatewayPanel.connect_external_mcp_clients') }}</h2>
+        <p class="max-w-2xl text-sm leading-6 text-gray-600">
           {{ t('tools.components.tools.McpGatewayPanel.configure_external_clients') }}
         </p>
-      </div>
+      </header>
 
-      <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-        <div>
-          <label class="text-sm font-medium text-gray-700" for="mcp-gateway-endpoint">{{ t('tools.components.tools.McpGatewayPanel.endpoint') }}</label>
-          <div class="mt-2 flex overflow-hidden rounded-md border border-gray-200 bg-gray-50">
-            <input
-              id="mcp-gateway-endpoint"
-              class="min-w-0 flex-1 bg-transparent px-3 py-2 font-mono text-sm text-gray-800 outline-none"
-              readonly
-              :value="gatewayUrl"
-            />
+      <div class="mt-6 grid gap-4 lg:grid-cols-5">
+        <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-4 lg:col-span-3">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <label class="text-sm font-medium text-gray-700" for="mcp-gateway-endpoint">{{ t('tools.components.tools.McpGatewayPanel.endpoint') }}</label>
             <button
               type="button"
-              class="border-l border-gray-200 px-3 text-sm font-medium text-indigo-600 hover:bg-gray-100"
-              @click="copyText(gatewayUrl)"
-            >{{ t('tools.components.tools.McpGatewayPanel.copy') }}</button>
+              class="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors"
+              :class="endpointCopied
+                ? 'border-green-200 bg-green-50 text-green-700'
+                : 'border-indigo-100 text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50'"
+              data-testid="mcp-gateway-copy-endpoint"
+              @click="copyEndpoint"
+            >
+              <span v-if="endpointCopied" class="i-heroicons-check-20-solid h-4 w-4" aria-hidden="true" />
+              <span v-else class="i-heroicons-document-duplicate-20-solid h-4 w-4" aria-hidden="true" />
+              <span>{{ endpointCopyLabel }}</span>
+            </button>
+          </div>
+          <div
+            id="mcp-gateway-endpoint"
+            class="rounded-lg border border-gray-200 bg-white px-3 py-3 font-mono text-sm leading-6 text-gray-900 shadow-inner"
+            data-testid="mcp-gateway-endpoint"
+          >
+            <span class="break-all">{{ gatewayUrl }}</span>
           </div>
         </div>
-        <div class="rounded-md bg-blue-50 px-4 py-3 text-sm text-blue-800">
+
+        <div class="rounded-xl border border-blue-100 bg-blue-50/80 p-4 text-sm text-blue-800 lg:col-span-2">
           <p class="font-semibold">{{ t('tools.components.tools.McpGatewayPanel.access_mode') }}</p>
-          <p>{{ t('tools.components.tools.McpGatewayPanel.bearer_token_guidance') }}</p>
+          <p class="mt-1 leading-6">{{ t('tools.components.tools.McpGatewayPanel.bearer_token_guidance') }}</p>
         </div>
       </div>
 
-      <div class="mt-5">
-        <div class="mb-2 flex items-center justify-between">
+      <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+        <div class="mb-3 flex items-center justify-between gap-3">
           <h3 class="text-sm font-medium text-gray-700">{{ t('tools.components.tools.McpGatewayPanel.example_client_config') }}</h3>
           <button
             type="button"
-            class="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-            @click="copyText(configSnippet)"
-          >{{ t('tools.components.tools.McpGatewayPanel.copy_json') }}</button>
+            class="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors"
+            :class="configCopied
+              ? 'border-green-200 bg-green-50 text-green-700'
+              : 'border-indigo-100 text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50'"
+            data-testid="mcp-gateway-copy-json"
+            @click="copyConfigSnippet"
+          >
+            <span v-if="configCopied" class="i-heroicons-check-20-solid h-4 w-4" aria-hidden="true" />
+            <span v-else class="i-heroicons-document-duplicate-20-solid h-4 w-4" aria-hidden="true" />
+            <span>{{ configCopyLabel }}</span>
+          </button>
         </div>
-        <pre class="overflow-auto rounded-lg bg-gray-950 p-4 text-xs text-gray-100"><code>{{ configSnippet }}</code></pre>
+        <pre class="max-h-72 overflow-auto rounded-lg bg-gray-950 p-4 text-xs leading-5 text-gray-100"><code>{{ configSnippet }}</code></pre>
       </div>
-    </div>
-
-    <div class="flex min-h-0 flex-1 flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <div class="mb-4 flex items-start justify-between gap-4">
-        <div>
-          <h3 class="text-lg font-medium text-gray-900">{{ t('tools.components.tools.McpGatewayPanel.exposed_mcp_origin_tools') }}</h3>
-          <p class="text-sm text-gray-500">{{ exposedToolCountLabel }}</p>
-        </div>
-        <button
-          type="button"
-          class="inline-flex items-center rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          @click="refreshTools"
-        >{{ t('tools.components.tools.McpGatewayPanel.refresh') }}</button>
-      </div>
-
-      <div v-if="loading" class="py-8 text-center text-gray-500">
-        <span class="i-heroicons-arrow-path-20-solid mx-auto h-8 w-8 animate-spin text-gray-400"></span>
-        <p class="mt-2">{{ t('tools.components.tools.McpGatewayPanel.loading_mcp_origin_tools') }}</p>
-      </div>
-      <div v-else-if="mcpTools.length === 0" class="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 p-8 text-center">
-        <span class="i-heroicons-puzzle-piece-20-solid mx-auto mb-3 h-10 w-10 text-gray-400"></span>
-        <p class="font-medium text-gray-700">{{ t('tools.components.tools.McpGatewayPanel.no_mcp_origin_tools_registered') }}</p>
-        <p class="mt-1 text-sm text-gray-500">{{ t('tools.components.tools.McpGatewayPanel.add_or_sync_mcp_servers') }}</p>
-      </div>
-      <ul v-else class="min-h-0 flex-1 overflow-auto divide-y divide-gray-100 rounded-md border border-gray-100">
-        <li v-for="tool in mcpTools" :key="tool.name" class="p-4">
-          <p class="font-mono text-sm font-semibold text-gray-900">{{ tool.name }}</p>
-          <p class="mt-1 text-sm text-gray-600">{{ tool.description }}</p>
-          <p v-if="tool.category" class="mt-2 text-xs uppercase tracking-wide text-gray-400">{{ tool.category }}</p>
-        </li>
-      </ul>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { getServerBaseUrl } from '~/utils/serverConfig';
-import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { useLocalization } from '~/composables/useLocalization';
 
-const store = useToolManagementStore();
+type CopyTarget = 'endpoint' | 'config';
+
 const { t } = useLocalization();
 
+const copiedTarget = ref<CopyTarget | null>(null);
+let copyResetTimer: ReturnType<typeof setTimeout> | null = null;
+
 const gatewayUrl = computed(() => `${getServerBaseUrl().replace(/\/+$/, '')}/mcp/gateway`);
-const mcpTools = computed(() => store.getMcpGatewayTools);
-const loading = computed(() => store.getLoading);
-const exposedToolCountLabel = computed(() => t('tools.components.tools.McpGatewayPanel.exposed_tool_count', {
-  count: mcpTools.value.length,
-  pluralSuffix: mcpTools.value.length === 1 ? '' : 's',
-}));
 
 const configSnippet = computed(() => JSON.stringify({
   mcpServers: {
@@ -107,19 +91,53 @@ const configSnippet = computed(() => JSON.stringify({
   },
 }, null, 2));
 
-const refreshTools = () => {
-  void store.fetchMcpGatewayTools();
+const endpointCopied = computed(() => copiedTarget.value === 'endpoint');
+const configCopied = computed(() => copiedTarget.value === 'config');
+const endpointCopyLabel = computed(() => endpointCopied.value
+  ? t('tools.components.tools.McpGatewayPanel.copied')
+  : t('tools.components.tools.McpGatewayPanel.copy'));
+const configCopyLabel = computed(() => configCopied.value
+  ? t('tools.components.tools.McpGatewayPanel.copied')
+  : t('tools.components.tools.McpGatewayPanel.copy_json'));
+
+const markCopied = (target: CopyTarget) => {
+  copiedTarget.value = target;
+
+  if (copyResetTimer) {
+    clearTimeout(copyResetTimer);
+  }
+
+  copyResetTimer = setTimeout(() => {
+    if (copiedTarget.value === target) {
+      copiedTarget.value = null;
+    }
+    copyResetTimer = null;
+  }, 2000);
 };
 
-const copyText = async (value: string) => {
+const copyText = async (value: string, target: CopyTarget) => {
   try {
-    await navigator.clipboard?.writeText(value);
+    if (!navigator.clipboard?.writeText) {
+      throw new Error('Clipboard API is unavailable.');
+    }
+    await navigator.clipboard.writeText(value);
+    markCopied(target);
   } catch (error) {
     console.warn('Failed to copy MCP gateway text:', error);
   }
 };
 
-onMounted(() => {
-  refreshTools();
+const copyEndpoint = () => {
+  void copyText(gatewayUrl.value, 'endpoint');
+};
+
+const copyConfigSnippet = () => {
+  void copyText(configSnippet.value, 'config');
+};
+
+onBeforeUnmount(() => {
+  if (copyResetTimer) {
+    clearTimeout(copyResetTimer);
+  }
 });
 </script>

@@ -17,7 +17,10 @@ describe('AppLeftPanel', () => {
   it('keeps the target Nodes/Media policy in the shared shell primary navigation owner', () => {
     const filePath = resolve(process.cwd(), 'composables/useShellPrimaryNavigation.ts');
     const content = readFileSync(filePath, 'utf-8');
-    expect(content).toContain("{ key: 'nodes', labelKey: 'shell.navigation.nodes'");
+    expect(content).toContain("SHELL_NODES_NETWORK_ICON = 'autobyteus:nodes-network'");
+    expect(content).toContain("{ key: 'nodes', labelKey: 'shell.navigation.nodes', icon: SHELL_NODES_NETWORK_ICON }");
+    expect(content).not.toContain("icon: 'heroicons:cpu-chip'");
+    expect(content).not.toContain("icon: 'heroicons:circle-stack'");
     expect(content).toContain("return '/nodes';");
     expect(content).toContain("path.startsWith('/nodes')");
     expect(content).toContain("{ path: '/agents', query: { view: 'list' } }");
@@ -29,6 +32,7 @@ describe('AppLeftPanel', () => {
   it('renders running-panel event hooks in host component', () => {
     const filePath = resolve(process.cwd(), 'components/AppLeftPanel.vue');
     const content = readFileSync(filePath, 'utf-8');
+    expect(content).toContain('data-testid="nodes-network-icon"');
     expect(content).toContain('@run-selected="onRunningRunSelected"');
     expect(content).toContain('@run-created="onRunningRunCreated"');
   });

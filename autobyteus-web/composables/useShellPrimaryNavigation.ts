@@ -17,13 +17,15 @@ export interface ShellPrimaryNavItem {
   icon: string;
 }
 
+export const SHELL_NODES_NETWORK_ICON = 'autobyteus:nodes-network';
+
 const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
   { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
   { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
   { key: 'applications', labelKey: 'shell.navigation.applications', icon: 'heroicons:squares-2x2' },
   { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
   { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
-  { key: 'nodes', labelKey: 'shell.navigation.nodes', icon: 'heroicons:circle-stack' },
+  { key: 'nodes', labelKey: 'shell.navigation.nodes', icon: SHELL_NODES_NETWORK_ICON },
 ];
 
 export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocationRaw {

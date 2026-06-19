@@ -16,7 +16,7 @@ const flushPromises = async () => {
 }
 
 describe('McpGatewayPanel', () => {
-  it('renders gateway endpoint/config guidance and MCP-origin tool count/list from store data', async () => {
+  it('renders concise gateway endpoint/config guidance without fetching duplicate tool list data', async () => {
     const pinia = createTestingPinia({
       createSpy: vi.fn,
       stubActions: true,
@@ -48,39 +48,49 @@ describe('McpGatewayPanel', () => {
     await flushPromises()
     const store = useToolManagementStore()
 
-    const endpoint = wrapper.get('#mcp-gateway-endpoint').element as HTMLInputElement
-    expect(endpoint.value).toBe('http://127.0.0.1:8000/mcp/gateway')
-    expect(wrapper.text()).toContain('2 tools currently available through /mcp/gateway.')
-    expect(wrapper.text()).toContain('db_query')
-    expect(wrapper.text()).toContain('Query the configured database')
-    expect(wrapper.text()).toContain('browser_search')
+    const endpoint = wrapper.get('[data-testid="mcp-gateway-endpoint"]')
+    expect(endpoint.text()).toContain('http://127.0.0.1:8000/mcp/gateway')
+    expect(wrapper.text()).toContain('Copy this Streamable HTTP endpoint or use the JSON snippet below.')
+    expect(wrapper.text()).not.toContain('Configure Cursor, Antigravity, Claude Code')
+    expect(wrapper.text()).not.toContain('Manage and inspect exposed tools in the MCP Servers tab.')
+    expect(wrapper.text()).not.toContain('Exposed MCP-origin tools')
+    expect(wrapper.text()).not.toContain('db_query')
+    expect(wrapper.text()).not.toContain('Query the configured database')
+    expect(wrapper.text()).not.toContain('browser_search')
     expect(wrapper.text()).toContain('Authorization')
     expect(wrapper.text()).toContain('Bearer <optional configured gateway token>')
-    expect(store.fetchMcpGatewayTools).toHaveBeenCalledTimes(1)
-
-    const refreshButton = wrapper.findAll('button').find(button => button.text() === 'Refresh')
-    expect(refreshButton).toBeTruthy()
-    await refreshButton!.trigger('click')
-    expect(store.fetchMcpGatewayTools).toHaveBeenCalledTimes(2)
+    expect(store.fetchMcpGatewayTools).not.toHaveBeenCalled()
   })
 
-  it('renders the empty state when no MCP-origin tools are registered', async () => {
+  it('shows visible copied feedback for endpoint and JSON copy actions', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    })
+
     const pinia = createTestingPinia({
       createSpy: vi.fn,
       stubActions: true,
-      initialState: {
-        toolManagement: {
-          loading: false,
-          mcpGatewayTools: [],
-        },
-      },
     })
     setActivePinia(pinia)
 
     const wrapper = mount(McpGatewayPanel, { global: { plugins: [pinia] } })
     await flushPromises()
 
-    expect(wrapper.text()).toContain('0 tools currently available through /mcp/gateway.')
-    expect(wrapper.text()).toContain('No MCP-origin tools are currently registered.')
+    const endpointCopyButton = wrapper.get('[data-testid="mcp-gateway-copy-endpoint"]')
+    await endpointCopyButton.trigger('click')
+    await flushPromises()
+
+    expect(writeText).toHaveBeenCalledWith('http://127.0.0.1:8000/mcp/gateway')
+    expect(endpointCopyButton.text()).toBe('Copied')
+
+    const jsonCopyButton = wrapper.get('[data-testid="mcp-gateway-copy-json"]')
+    await jsonCopyButton.trigger('click')
+    await flushPromises()
+
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('"type": "streamable-http"'))
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('"url": "http://127.0.0.1:8000/mcp/gateway"'))
+    expect(jsonCopyButton.text()).toBe('Copied')
   })
 })

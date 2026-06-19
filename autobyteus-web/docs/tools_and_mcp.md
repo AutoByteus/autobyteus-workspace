@@ -33,7 +33,7 @@ autobyteus-web/
 │   ├── ToolDetailsModal.vue            # Tool schema modal
 │   ├── ToolsConfirmationModal.vue      # Delete confirmation dialog
 │   ├── McpManagementTabs.vue           # MCP Servers / MCP Gateway tab switcher
-│   ├── McpGatewayPanel.vue             # General MCP gateway endpoint and tool list
+│   ├── McpGatewayPanel.vue             # General MCP gateway endpoint and client config
 │   ├── McpServerList.vue               # MCP servers listing
 │   ├── McpServerCard.vue               # Individual server display
 │   ├── McpServerFormModal.vue          # Add/edit MCP server form
@@ -202,8 +202,9 @@ Provides the internal tab switcher used inside the MCP Servers area:
 
 - **MCP Servers** keeps the existing server list, add/edit/delete, bulk import,
   discovery, and per-server tools flows.
-- **MCP Gateway** shows the general gateway endpoint and exposed MCP-origin
-  tools without adding a second sidebar entry.
+- **MCP Gateway** shows the general gateway endpoint and copy-ready client
+  configuration without adding a second sidebar entry or duplicating the MCP
+  Servers tool browser.
 
 ### McpGatewayPanel.vue
 
@@ -212,8 +213,7 @@ Shows external-client guidance for the backend general MCP gateway:
 - endpoint: `${serverBaseUrl}/mcp/gateway`
 - example Streamable HTTP client JSON config
 - bearer-token guidance for `AUTOBYTEUS_MCP_GATEWAY_TOKEN`
-- current MCP-origin tool count/list from the store
-- refresh action that calls `fetchMcpGatewayTools()`
+- copy feedback for endpoint/config copy actions
 
 The panel is informational only. Gateway access control is backend-owned: when
 `AUTOBYTEUS_MCP_GATEWAY_TOKEN` is set, clients must send `Authorization: Bearer

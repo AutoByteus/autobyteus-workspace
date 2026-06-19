@@ -8,6 +8,7 @@ import {
   INTERNAL_SERVER_PORT,
   INTERNAL_SERVER_WS_BASE_URL,
 } from '~/shared/embeddedServerConfig';
+import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 
 export { INTERNAL_SERVER_PORT };
 
@@ -20,9 +21,22 @@ export function getServerBaseUrl(): string {
     return INTERNAL_SERVER_BASE_URL;
   }
   
-  // For browser builds, derive from runtime config.
+  // For browser builds, derive from runtime config. In local development, REST
+  // calls use the relative `/rest` Vite proxy, but externally copied gateway
+  // endpoints must point at the real node server address.
   const config = useRuntimeConfig();
-  return config.public.restBaseUrl.replace('/rest', '');
+  const restBaseUrl = config.public.restBaseUrl.trim();
+
+  if (restBaseUrl && !restBaseUrl.startsWith('/')) {
+    return normalizeNodeBaseUrl(restBaseUrl);
+  }
+
+  const defaultNodeBaseUrl = config.public.defaultNodeBaseUrl;
+  if (typeof defaultNodeBaseUrl === 'string' && defaultNodeBaseUrl.trim()) {
+    return normalizeNodeBaseUrl(defaultNodeBaseUrl);
+  }
+
+  return restBaseUrl.replace(/\/rest\/?$/, '');
 }
 
 /**
