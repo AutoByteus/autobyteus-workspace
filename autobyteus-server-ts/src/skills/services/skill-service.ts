@@ -8,8 +8,6 @@ import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { Skill, SkillSourceInfo } from "../domain/models.js";
 import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
-import { SkillVersioningService } from "./skill-versioning-service.js";
-import type { SkillVersion } from "../domain/skill-version.js";
 import {
   getAllDefinitionRoots,
   getAllSkillDirectories,
@@ -38,7 +36,6 @@ type SkillServiceOptions = {
   config?: AppConfigLike;
   loader?: SkillLoader;
   disabledStore?: DisabledSkillsStore;
-  versioningService?: SkillVersioningService;
 };
 
 export type SkillCatalogReloadResult = {
@@ -64,13 +61,11 @@ export class SkillService {
   readonly skillsDir: string;
   private loader: SkillLoader;
   private disabledStore: DisabledSkillsStore;
-  private versioningService: SkillVersioningService;
 
   constructor(options: SkillServiceOptions = {}) {
     this.config = options.config ?? appConfigProvider.config;
     this.skillsDir = this.config.getSkillsDir();
     this.loader = options.loader ?? new SkillLoader();
-    this.versioningService = options.versioningService ?? SkillVersioningService.getInstance();
 
     const disabledSkillsPath = path.join(this.config.getAppDataDir(), "disabled_skills.json");
     this.disabledStore = options.disabledStore ?? new DisabledSkillsStore(disabledSkillsPath);
@@ -237,29 +232,7 @@ export class SkillService {
     const skillMd = `---\nname: ${name}\ndescription: ${description}\n---\n\n${content}\n`;
     fs.writeFileSync(path.join(skillPath, "SKILL.md"), skillMd, "utf-8");
 
-    try {
-      this.versioningService.initializeVersioning(skillPath);
-    } catch (error) {
-      fs.rmSync(skillPath, { recursive: true, force: true });
-      throw error;
-    }
-
     return this.loader.loadSkill(skillPath, this.isReadonlyPath(skillPath));
-  }
-
-  enableSkillVersioning(name: string): SkillVersion {
-    const skill = this.getSkill(name);
-    if (!skill) {
-      throw new Error(`Skill '${name}' not found`);
-    }
-
-    if (skill.isReadonly) {
-      throw new Error(
-        `Cannot enable versioning for skill '${name}': it is read-only`,
-      );
-    }
-
-    return this.versioningService.initializeVersioning(skill.rootPath);
   }
 
   updateSkill(name: string, description?: string | null, content?: string | null): Skill {

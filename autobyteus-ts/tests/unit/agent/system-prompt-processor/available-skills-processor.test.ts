@@ -6,11 +6,15 @@ import { AvailableSkillsProcessor } from '../../../../src/agent/system-prompt-pr
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { Skill } from '../../../../src/skills/model.js';
 import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
+import type { BaseTool } from '../../../../src/tools/base-tool.js';
 
 const makeContext = () => ({
   agentId: 'agent-1',
   config: { skills: [] as string[], skillAccessMode: undefined as SkillAccessMode | undefined }
 });
+
+const removedSkillToolName = ['load', 'skill'].join('_');
+const loadSkillGuidance = 'To load a skill not shown in detail below, use the `load_skill` tool.';
 
 const tempDirs: string[] = [];
 
@@ -61,8 +65,24 @@ describe('AvailableSkillsProcessor', () => {
     expect(result).toContain('## Agent Skills');
     expect(result).toContain('Skill Catalog');
     expect(result).toContain('- **test_skill**: desc');
-    expect(result).toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+    expect(result).not.toContain(removedSkillToolName);
     expect(result).not.toContain('body');
+  });
+
+  it('mentions load_skill in global discovery only when the tool is actually available', () => {
+    const registry = new SkillRegistry();
+    const skill = new Skill('test_skill', 'desc', 'body', '/path');
+    (registry as any).skills.set('test_skill', skill);
+
+    const processor = new AvailableSkillsProcessor();
+    const toolInstances = {
+      [removedSkillToolName]: {
+        getName: () => removedSkillToolName
+      } as BaseTool
+    };
+    const result = processor.process('Original', toolInstances, 'test_agent', makeContext());
+
+    expect(result).toContain(loadSkillGuidance);
   });
 
   it('uses preloaded-only catalog mode when configured', () => {
@@ -83,7 +103,7 @@ describe('AvailableSkillsProcessor', () => {
     expect(result).not.toContain('- **other**: other desc');
     expect(result).toContain('PRELOADED_BODY');
     expect(result).not.toContain('OTHER_BODY');
-    expect(result).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+    expect(result).not.toContain(loadSkillGuidance);
   });
 
   it('skips skills section when mode is NONE', () => {
@@ -129,7 +149,7 @@ describe('AvailableSkillsProcessor', () => {
       'plain-text relative references or unresolved targets may still appear in skill instructions.'
     );
     expect(result).toContain('`Skill Base Path` + `Relative Path` = `Absolute Path`');
-    expect(result).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+    expect(result).not.toContain(loadSkillGuidance);
     expect(result).toContain('Relative: `./scripts/run.sh`');
     expect(result).toContain('Relative: `scripts/run.sh`');
     expect(result).toContain(

@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillService } from "../../../../src/skills/services/skill-service.js";
-import { SkillVersion } from "../../../../src/skills/domain/skill-version.js";
 import { getServerSettingsService } from "../../../../src/services/server-settings-service.js";
 const serverSettingsService = getServerSettingsService();
 const createTempRoot = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-skill-src-"));
@@ -33,16 +32,7 @@ describe("SkillService skill source management", () => {
             getAppDataDir: () => tempRoot,
             get: (_key, defaultValue = "") => defaultValue,
         };
-        const versioningService = {
-            initializeVersioning: vi.fn(() => new SkillVersion({
-                tag: "0.1.0",
-                commitHash: "abc1234",
-                message: "init",
-                createdAt: new Date(),
-                isActive: true,
-            })),
-        };
-        service = new SkillService({ config, versioningService: versioningService });
+        service = new SkillService({ config });
     });
     afterEach(() => {
         fs.rmSync(tempRoot, { recursive: true, force: true });

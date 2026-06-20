@@ -51,6 +51,8 @@ const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
 
+const removedSkillToolName = ['load', 'skill'].join('_');
+
 describe('AgentFactory skill integration', () => {
   beforeEach(() => {
     SkillRegistry.getInstance().clear();
@@ -108,7 +110,7 @@ describe('AgentFactory skill integration', () => {
       expect(systemPrompt).toContain(
         'Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.'
       );
-      expect(systemPrompt).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+      expect(systemPrompt).not.toContain(removedSkillToolName);
       expect(systemPrompt).toContain(`[reference.md](${path.join(skillPath, 'reference.md')})`);
       expect(systemPrompt).toContain(
         `[deep](${path.join(skillPath, 'references', 'deep.md')})`
@@ -160,7 +162,7 @@ describe('AgentFactory skill integration', () => {
 
       expect(systemPrompt).toContain('### Skill Catalog');
       expect(systemPrompt).toContain('**java_expert**: Java expert');
-      expect(systemPrompt).toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+      expect(systemPrompt).not.toContain(removedSkillToolName);
       expect(systemPrompt).not.toContain('Java Map Body');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

@@ -2,7 +2,7 @@
 
 ## Scope
 
-Skill catalog, retrieval, CRUD/version workflows, and configured runtime skill
+Skill catalog, retrieval, CRUD/file workflows, and configured runtime skill
 resolution for agent definitions.
 
 ## TS Source
@@ -46,9 +46,29 @@ skipped in the catalog.
 
 Catalog skills remain the source for normal Skills-page browsing, Skill Detail
 loading, File Explorer workspaces, and UI selection during agent authoring.
-Create/edit/versioning behavior still depends on the existing Skills and File
-Explorer operations plus the underlying filesystem permissions of each resolved
-skill root.
+Create/edit behavior still depends on the existing Skills and File Explorer
+operations plus the underlying filesystem permissions of each resolved skill
+root. Repository-backed history, tags, and rollbacks are external to AutoByteus.
+
+## Agent-Facing Skill Tools
+
+Server-owned skill tools are registered from `src/agent-tools/skills` under the
+`Skills` category:
+
+- `get_available_skills` lists available skill names and descriptions.
+- `get_skill_content` retrieves `SKILL.md` content plus a readable file tree for
+  inspection.
+- `load_skill` loads one server-managed skill for runtime use and returns the
+  skill base path, path-resolution guidance, and formatted `SKILL.md` content
+  with resolvable relative Markdown links rewritten to absolute filesystem
+  paths.
+
+`load_skill` is intentionally part of the server Skills tool group rather than
+the core `General` tool group. It resolves skills through normal
+server-managed skill sources and CRUD/file-workspace flows. It does not
+register arbitrary model-supplied filesystem paths as skills; unmanaged skill
+directories must be added through normal skill-source or skill-creation
+workflows first.
 
 ### Catalog Reload
 

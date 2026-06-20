@@ -2,7 +2,6 @@ import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { beforeAll, beforeEach, afterEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
@@ -10,18 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 
-const hasGit = (() => {
-  try {
-    execFileSync("git", ["--version"], { stdio: "ignore" });
-    return true;
-  } catch {
-    return false;
-  }
-})();
-
-const describeGit = hasGit ? describe : describe.skip;
-
-describeGit("Skills GraphQL e2e", () => {
+describe("Skills GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let tempDir: string;
@@ -87,6 +75,7 @@ describeGit("Skills GraphQL e2e", () => {
     expect(created.createSkill.description).toBe("Skill for e2e");
     expect(created.createSkill.content).toBe("# Test Skill\n\nE2E content");
     expect(created.createSkill.fileCount).toBe(1);
+    expect(fs.existsSync(path.join(tempDir, "skills", "test_skill", ".git"))).toBe(false);
 
     const listQuery = `
       query {
@@ -115,6 +104,84 @@ describeGit("Skills GraphQL e2e", () => {
     expect(getResult.skill?.name).toBe("test_skill");
     expect(getResult.skill?.description).toBe("Skill for e2e");
     expect(getResult.skill?.fileCount).toBe(1);
+  });
+
+  it("does not expose removed skill history fields, operations, or types", async () => {
+    const introspectionQuery = `
+      query SkillApiRemovalAbsence {
+        __schema {
+          queryType {
+            fields {
+              name
+            }
+          }
+          mutationType {
+            fields {
+              name
+            }
+          }
+          types {
+            name
+            fields {
+              name
+            }
+            inputFields {
+              name
+            }
+          }
+        }
+      }
+    `;
+
+    const result = await execGraphql<{
+      __schema: {
+        queryType: { fields: Array<{ name: string }> };
+        mutationType: { fields: Array<{ name: string }> };
+        types: Array<{
+          name: string;
+          fields?: Array<{ name: string }> | null;
+          inputFields?: Array<{ name: string }> | null;
+        }>;
+      };
+    }>(introspectionQuery);
+
+    const queryNames = result.__schema.queryType.fields.map((field) => field.name);
+    const mutationNames = result.__schema.mutationType.fields.map((field) => field.name);
+    const typeNames = result.__schema.types.map((type) => type.name);
+    const skillType = result.__schema.types.find((type) => type.name === "Skill");
+    const skillFieldNames = skillType?.fields?.map((field) => field.name) ?? [];
+
+    const removedQueryNames = [
+      `skill${"Versions"}`,
+      `skill${"Version"}Diff`,
+    ];
+    const removedMutationNames = [
+      `enableSkill${"Versioning"}`,
+      `activateSkill${"Version"}`,
+    ];
+    const removedTypeNames = [
+      `Skill${"Version"}`,
+      `Skill${"Diff"}`,
+      `EnableSkill${"Versioning"}Input`,
+      `ActivateSkill${"Version"}Input`,
+    ];
+    const removedSkillFieldNames = [
+      `is${"Versioned"}`,
+      `active${"Version"}`,
+    ];
+
+    for (const fieldName of removedQueryNames) {
+      expect(queryNames).not.toContain(fieldName);
+    }
+    for (const fieldName of removedMutationNames) {
+      expect(mutationNames).not.toContain(fieldName);
+    }
+    for (const typeName of removedTypeNames) {
+      expect(typeNames).not.toContain(typeName);
+    }
+    for (const fieldName of removedSkillFieldNames) {
+      expect(skillFieldNames).not.toContain(fieldName);
+    }
   });
 
   it("uploads a file and reads content/tree", async () => {

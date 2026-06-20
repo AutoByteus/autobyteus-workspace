@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillService } from "../../../../src/skills/services/skill-service.js";
-import { SkillVersion } from "../../../../src/skills/domain/skill-version.js";
 const createTempRoot = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-skill-service-"));
 const writeSkill = (root, name, description, content) => {
     const skillDir = path.join(root, name);
@@ -17,28 +16,18 @@ describe("SkillService", () => {
     let skillsDir;
     let service;
     let additionalDirs;
-    let versioningService;
     beforeEach(() => {
         tempRoot = createTempRoot();
         skillsDir = path.join(tempRoot, "skills");
         fs.mkdirSync(skillsDir, { recursive: true });
         additionalDirs = [];
-        versioningService = {
-            initializeVersioning: vi.fn(() => new SkillVersion({
-                tag: "0.1.0",
-                commitHash: "abc1234",
-                message: "init",
-                createdAt: new Date(),
-                isActive: true,
-            })),
-        };
         const config = {
             getSkillsDir: () => skillsDir,
             getAdditionalSkillsDirs: () => additionalDirs,
             getAppDataDir: () => tempRoot,
             get: (_key, defaultValue = "") => defaultValue,
         };
-        service = new SkillService({ config, versioningService: versioningService });
+        service = new SkillService({ config });
     });
     afterEach(() => {
         fs.rmSync(tempRoot, { recursive: true, force: true });
@@ -52,7 +41,7 @@ describe("SkillService", () => {
         expect(skill.description).toBe("A test skill");
         expect(skill.content).toBe("# Test Skill\n\nThis is a test.");
         expect(skill.fileCount).toBe(1);
-        expect(versioningService.initializeVersioning).toHaveBeenCalledWith(path.join(skillsDir, "test_skill"));
+        expect(fs.existsSync(path.join(skillsDir, "test_skill", ".git"))).toBe(false);
         const retrieved = service.getSkill("test_skill");
         expect(retrieved?.name).toBe("test_skill");
     });
@@ -73,25 +62,6 @@ describe("SkillService", () => {
     });
     it("returns null for missing skills", () => {
         expect(service.getSkill("nonexistent")).toBeNull();
-    });
-    it("enables versioning for existing skills", () => {
-        writeSkill(skillsDir, "legacy_skill", "Legacy skill", "Legacy content");
-        const version = service.enableSkillVersioning("legacy_skill");
-        expect(version.tag).toBe("0.1.0");
-        expect(versioningService.initializeVersioning).toHaveBeenCalledWith(path.join(skillsDir, "legacy_skill"));
-    });
-    it("rejects versioning for read-only skills", () => {
-        const skillDir = writeSkill(skillsDir, "readonly_skill", "Readonly skill", "Content");
-        const skillMd = path.join(skillDir, "SKILL.md");
-        fs.chmodSync(skillDir, 0o555);
-        fs.chmodSync(skillMd, 0o444);
-        try {
-            expect(() => service.enableSkillVersioning("readonly_skill")).toThrow("read-only");
-        }
-        finally {
-            fs.chmodSync(skillMd, 0o644);
-            fs.chmodSync(skillDir, 0o755);
-        }
     });
     it("updates skill description", () => {
         service.createSkill("updatable", "Original desc", "Original content");

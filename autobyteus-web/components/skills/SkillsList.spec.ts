@@ -25,8 +25,6 @@ const mountComponent = async (skillStateOverrides = {}) => {
             fileCount: 1,
             isReadonly: false,
             isDisabled: false,
-            isVersioned: false,
-            activeVersion: null,
           },
         ],
         loading: false,

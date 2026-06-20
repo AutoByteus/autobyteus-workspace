@@ -12,11 +12,6 @@ type LoaderSpec = {
 
 const loaderSpecs: LoaderSpec[] = [
   {
-    name: "Tool Management Tools",
-    modulePath: "../agent-tools/tool-management/register-tool-management-tools.js",
-    exportName: "registerToolManagementTools",
-  },
-  {
     name: "Skills Tools",
     modulePath: "../agent-tools/skills/register-skills-tools.js",
     exportName: "registerSkillsTools",

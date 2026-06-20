@@ -41,8 +41,6 @@ export const RELOAD_SKILL_CATALOG = gql`
         fileCount
         isReadonly
         isDisabled
-        isVersioned
-        activeVersion
       }
       skillSources {
         path

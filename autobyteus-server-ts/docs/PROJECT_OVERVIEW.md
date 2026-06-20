@@ -32,7 +32,7 @@ Major domains under `src/`:
 - Server-hosted Agent Tools MCP sessions for configured server-owned tools
 - External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
-- Skills and skill versioning
+- Skills
 - Manual skill self-evolution orchestration
 - MCP server management
 - LLM and multimedia model management
