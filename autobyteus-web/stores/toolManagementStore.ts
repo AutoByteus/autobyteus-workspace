@@ -30,6 +30,7 @@ export interface ToolParameter {
   required: boolean;
   defaultValue: string | null;
   enumValues: string[] | null;
+  jsonSchema: Record<string, unknown> | null;
 }
 
 export interface Tool {

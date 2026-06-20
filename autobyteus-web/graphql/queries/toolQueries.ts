@@ -18,6 +18,7 @@ export const GET_TOOLS = gql`
           required
           defaultValue
           enumValues
+          jsonSchema
         }
       }
     }
@@ -45,6 +46,7 @@ export const GET_TOOLS_GROUPED_BY_CATEGORY = gql`
             required
             defaultValue
             enumValues
+            jsonSchema
           }
         }
       }

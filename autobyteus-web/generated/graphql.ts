@@ -2026,6 +2026,7 @@ export type ToolParameterDefinition = {
   defaultValue?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   enumValues?: Maybe<Array<Scalars['String']['output']>>;
+  jsonSchema?: Maybe<Scalars['JSON']['output']>;
   name: Scalars['String']['output'];
   paramType: ToolParameterTypeEnum;
   required: Scalars['Boolean']['output'];
@@ -2496,7 +2497,7 @@ export type DiscoverAndRegisterMcpServerToolsMutationVariables = Exact<{
 }>;
 
 
-export type DiscoverAndRegisterMcpServerToolsMutation = { __typename?: 'Mutation', discoverAndRegisterMcpServerTools: { __typename: 'DiscoverAndRegisterMcpServerToolsResult', success: boolean, message: string, discoveredTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null }> } | null }> } };
+export type DiscoverAndRegisterMcpServerToolsMutation = { __typename?: 'Mutation', discoverAndRegisterMcpServerTools: { __typename: 'DiscoverAndRegisterMcpServerToolsResult', success: boolean, message: string, discoveredTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null }> } };
 
 export type ImportMcpServerConfigsMutationVariables = Exact<{
   jsonString: Scalars['String']['input'];
@@ -2587,7 +2588,7 @@ export type ReloadToolSchemaMutationVariables = Exact<{
 }>;
 
 
-export type ReloadToolSchemaMutation = { __typename?: 'Mutation', reloadToolSchema: { __typename?: 'ReloadToolSchemaResult', success: boolean, message: string, tool?: { __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null }> } | null } | null } };
+export type ReloadToolSchemaMutation = { __typename?: 'Mutation', reloadToolSchema: { __typename?: 'ReloadToolSchemaResult', success: boolean, message: string, tool?: { __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null } | null } };
 
 export type CreateWorkspaceMutationVariables = Exact<{
   input: CreateWorkspaceInput;
@@ -2911,14 +2912,14 @@ export type GetToolsQueryVariables = Exact<{
 }>;
 
 
-export type GetToolsQuery = { __typename?: 'Query', tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null }> } | null }> };
+export type GetToolsQuery = { __typename?: 'Query', tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null }> };
 
 export type GetToolsGroupedByCategoryQueryVariables = Exact<{
   origin: ToolOriginEnum;
 }>;
 
 
-export type GetToolsGroupedByCategoryQuery = { __typename?: 'Query', toolsGroupedByCategory: Array<{ __typename: 'ToolCategoryGroup', categoryName: string, tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null }> } | null }> }> };
+export type GetToolsGroupedByCategoryQuery = { __typename?: 'Query', toolsGroupedByCategory: Array<{ __typename: 'ToolCategoryGroup', categoryName: string, tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null }> }> };
 
 export type GetAllWorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4700,6 +4701,7 @@ export const DiscoverAndRegisterMcpServerToolsDocument = gql`
           required
           defaultValue
           enumValues
+          jsonSchema
         }
       }
     }
@@ -5093,6 +5095,7 @@ export const ReloadToolSchemaDocument = gql`
           required
           defaultValue
           enumValues
+          jsonSchema
         }
       }
     }
@@ -6974,6 +6977,7 @@ export const GetToolsDocument = gql`
         required
         defaultValue
         enumValues
+        jsonSchema
       }
     }
   }
@@ -7024,6 +7028,7 @@ export const GetToolsGroupedByCategoryDocument = gql`
           required
           defaultValue
           enumValues
+          jsonSchema
         }
       }
     }

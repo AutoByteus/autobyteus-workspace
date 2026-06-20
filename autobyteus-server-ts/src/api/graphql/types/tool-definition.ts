@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 
 export enum ToolOriginEnum {
   LOCAL = "local",
@@ -42,6 +43,9 @@ export class ToolParameterDefinition {
 
   @Field(() => [String], { nullable: true })
   enumValues?: string[] | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  jsonSchema?: Record<string, unknown> | null;
 }
 
 @ObjectType()

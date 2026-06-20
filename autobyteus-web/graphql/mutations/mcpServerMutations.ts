@@ -61,6 +61,7 @@ export const DISCOVER_AND_REGISTER_MCP_SERVER_TOOLS = gql`
             required
             defaultValue
             enumValues
+            jsonSchema
           }
         }
       }

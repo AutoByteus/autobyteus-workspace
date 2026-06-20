@@ -127,7 +127,12 @@
 
     <ToastContainer />
 
-    <ToolDetailsModal :show="isToolDetailVisible" :tool="selectedTool" @close="isToolDetailVisible = false" />
+    <ToolDetailsModal
+      :show="isToolDetailVisible"
+      :tool="selectedTool"
+      @close="isToolDetailVisible = false"
+      @schema-reloaded="handleToolSchemaReloaded"
+    />
 
     <ToolsConfirmationModal
       :show="isDeleteConfirmVisible"
@@ -255,6 +260,14 @@ const handleShowToast = (payload: { message: string; type: ToastType }) => {
 const showToolDetails = (tool: Tool) => {
   selectedTool.value = tool;
   isToolDetailVisible.value = true;
+};
+
+const handleToolSchemaReloaded = (updatedTool: Tool) => {
+  if (selectedTool.value?.name !== updatedTool.name) {
+    return;
+  }
+
+  selectedTool.value = updatedTool;
 };
 
 const showAddServerForm = () => {

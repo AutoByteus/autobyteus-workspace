@@ -69,6 +69,7 @@ export class ToolDefinitionConverter {
       required: coreParam.required,
       defaultValue,
       enumValues: coreParam.enumValues ?? null,
+      jsonSchema: coreParam.toJsonSchemaProperty(),
     };
   }
 }

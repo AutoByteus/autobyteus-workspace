@@ -21,6 +21,7 @@ export const RELOAD_TOOL_SCHEMA = gql`
             required
             defaultValue
             enumValues
+            jsonSchema
           }
         }
       }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" @click.self="close">
+  <div v-if="show && tool" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" @click.self="close">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
       <!-- Header -->
       <div class="p-6 border-b">
@@ -17,7 +17,7 @@
       <!-- Content -->
       <div class="p-6 overflow-y-auto">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Parameters</h3>
-        <div v-if="parameters && parameters.length > 0" class="border rounded-lg overflow-hidden">
+        <div v-if="displayRows.length > 0" class="border rounded-lg overflow-hidden">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -28,9 +28,14 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="param in parameters" :key="param.name">
+              <tr v-for="param in displayRows" :key="param.id" :class="param.depth > 0 ? 'bg-gray-50/60' : 'bg-white'">
                 <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                  <code>{{ param.name }}</code>
+                  <div :style="parameterNameIndentStyle(param.depth)">
+                    <code>{{ param.name }}</code>
+                    <div v-if="param.depth > 0" class="mt-1 text-xs font-normal text-gray-500">
+                      {{ param.path }}
+                    </div>
+                  </div>
                 </td>
                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                   <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -47,7 +52,7 @@
                 </td>
                 <td class="px-4 py-4 text-sm text-gray-600">
                   <p>{{ param.description }}</p>
-                  <p v-if="param.defaultValue" class="text-xs text-gray-500 mt-1">{{ $t('tools.components.tools.ToolDetailsModal.default') }}<code>{{ param.defaultValue }}</code>
+                  <p v-if="param.defaultValue !== null" class="text-xs text-gray-500 mt-1">{{ $t('tools.components.tools.ToolDetailsModal.default') }}<code>{{ param.defaultValue }}</code>
                   </p>
                 </td>
               </tr>
@@ -81,15 +86,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
-import { useToasts, type ToastType } from '~/composables/useToasts';
+import { useToasts } from '~/composables/useToasts';
 import type { Tool } from '~/stores/toolManagementStore';
+import { buildToolParameterDisplayRows } from './toolParameterDisplayRows';
 
 const props = defineProps<{
   show: boolean;
   tool: Tool | null;
 }>();
 
-const emit = defineEmits(['close']);
+const emit = defineEmits<{
+  close: [];
+  'schema-reloaded': [tool: Tool];
+}>();
 const store = useToolManagementStore();
 const { addToast } = useToasts();
 const isReloading = ref(false);
@@ -98,8 +107,12 @@ const close = () => {
   emit('close');
 };
 
-const parameters = computed(() => {
-  return props.tool?.argumentSchema?.parameters || [];
+const displayRows = computed(() =>
+  buildToolParameterDisplayRows(props.tool?.argumentSchema?.parameters || []),
+);
+
+const parameterNameIndentStyle = (depth: number) => ({
+  paddingLeft: `${depth * 1.25}rem`,
 });
 
 const reloadSchema = async () => {
@@ -109,9 +122,7 @@ const reloadSchema = async () => {
     const result = await store.reloadToolSchema(props.tool.name);
     addToast(result.message, result.success ? 'success' : 'error');
     if (result.success && result.tool) {
-      // The store has updated the tool object, and since `props.tool` is reactive,
-      // the `parameters` computed property will automatically update.
-      // We can emit an event if the parent needs to know, but for now, it's self-contained.
+      emit('schema-reloaded', result.tool);
     }
   } catch (e: any) {
     addToast(`Failed to reload schema: ${e.message}`, 'error');

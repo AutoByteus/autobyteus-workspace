@@ -1,8 +1,11 @@
+import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 
 const mockConfig = vi.hoisted(() => ({
   get: vi.fn(),
@@ -51,6 +54,7 @@ import {
   reloadMediaToolSchemas,
   unregisterMediaTools,
 } from "../../../src/agent-tools/media/register-media-tools.js";
+import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
@@ -92,6 +96,8 @@ let imageGenerateCalls: ImageGenerateCall[];
 let imageEditCalls: ImageEditCall[];
 let speechCalls: SpeechCall[];
 let tempDirs: string[];
+let schema: GraphQLSchema;
+let graphql: typeof graphqlFn;
 
 const createModelSchema = (parameterName: string): ParameterSchema => {
   const schema = new ParameterSchema();
@@ -103,6 +109,29 @@ const createModelSchema = (parameterName: string): ParameterSchema => {
   }));
   return schema;
 };
+
+const createOpenAiTtsSchema = (): ParameterSchema =>
+  new ParameterSchema([
+    new ParameterDefinition({
+      name: "voice",
+      type: ParameterType.ENUM,
+      description: "The OpenAI TTS voice to use for generation.",
+      enumValues: ["alloy", "coral"],
+      defaultValue: "alloy",
+    }),
+    new ParameterDefinition({
+      name: "format",
+      type: ParameterType.ENUM,
+      description: "The audio format to generate.",
+      enumValues: ["mp3", "wav"],
+      defaultValue: "mp3",
+    }),
+    new ParameterDefinition({
+      name: "instructions",
+      type: ParameterType.STRING,
+      description: "Optional delivery instructions.",
+    }),
+  ]);
 
 const configureMediaFactories = (): void => {
   mockConfig.get.mockImplementation((key: string) => configValues[key]);
@@ -167,6 +196,15 @@ const configureMediaFactories = (): void => {
     cleanup: vi.fn(async () => undefined),
   }));
 };
+
+beforeAll(async () => {
+  schema = await buildGraphqlSchema();
+  const require = createRequire(import.meta.url);
+  const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+  const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+  const graphqlModule = await import(graphqlPath);
+  graphql = graphqlModule.graphql as typeof graphqlFn;
+});
 
 const mkTempDir = (): string => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "server-owned-media-tools-e2e-"));
@@ -318,6 +356,82 @@ describe("server-owned media tools API/E2E boundary", () => {
     expect(imageGenerateCalls.at(-1)).toMatchObject({
       modelIdentifier: "image-gen-b",
       prompt: "paint the new configured model",
+    });
+  });
+
+  it("exposes nested generate_speech generation_config schema through the GraphQL tools query", async () => {
+    configValues[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY] = "gpt-4o-mini-tts";
+    mockAudioClientFactory.listModels.mockReturnValue([
+      {
+        modelIdentifier: "gpt-4o-mini-tts",
+        name: "gpt-4o-mini-tts",
+        description: "OpenAI speech generation model.",
+        parameterSchema: createOpenAiTtsSchema(),
+      },
+    ]);
+    registerMediaTools();
+
+    const result = await graphql({
+      schema,
+      source: `
+        query Tools {
+          tools(origin: LOCAL) {
+            name
+            argumentSchema {
+              parameters {
+                name
+                paramType
+                jsonSchema
+              }
+            }
+          }
+        }
+      `,
+    });
+
+    if (result.errors?.length) {
+      throw result.errors[0];
+    }
+
+    const data = result.data as {
+      tools: Array<{
+        name: string;
+        argumentSchema?: {
+          parameters: Array<{
+            name: string;
+            paramType: string;
+            jsonSchema?: Record<string, any> | null;
+          }>;
+        } | null;
+      }>;
+    };
+    const speechTool = data.tools.find((tool) => tool.name === GENERATE_SPEECH_TOOL_NAME);
+    const parameters = speechTool?.argumentSchema?.parameters ?? [];
+    const generationConfig = parameters.find((parameter) => parameter.name === "generation_config");
+
+    expect(speechTool).toBeDefined();
+    expect(parameters.map((parameter) => parameter.name)).not.toContain("voice");
+    expect(generationConfig?.paramType).toBe("OBJECT");
+    expect(generationConfig?.jsonSchema).toMatchObject({
+      type: "object",
+      properties: {
+        voice: {
+          type: "string",
+          description: "The OpenAI TTS voice to use for generation.",
+          default: "alloy",
+          enum: ["alloy", "coral"],
+        },
+        format: {
+          type: "string",
+          description: "The audio format to generate.",
+          default: "mp3",
+          enum: ["mp3", "wav"],
+        },
+        instructions: {
+          type: "string",
+          description: "Optional delivery instructions.",
+        },
+      },
     });
   });
 
