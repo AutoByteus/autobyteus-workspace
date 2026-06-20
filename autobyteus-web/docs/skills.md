@@ -31,9 +31,7 @@ autobyteus-web/
 │   ├── SkillCard.vue                   # Individual skill card
 │   ├── SkillDetail.vue                 # Skill explorer & file viewer
 │   ├── SkillDescriptionSummary.vue     # Compact description summary + inline More/Less disclosure
-│   ├── SkillWorkspaceLoader.vue        # [NEW] Transient workspace lifecycle manager
-│   ├── SkillVersioningPanel.vue        # Versioning actions & status
-│   └── SkillVersionCompareModal.vue    # Per-file version diff viewer
+│   └── SkillWorkspaceLoader.vue        # Transient workspace lifecycle manager
 ├── stores/
 │   ├── skillStore.ts                   # Skills CRUD operations
 │   └── workspace.ts                    # Workspace registration (incl. skill workspaces)
@@ -61,10 +59,9 @@ The skills page uses component-based navigation (not URL query parameters):
 ## Skill Detail Header
 
 `SkillDetail.vue` uses a compact header so the file workspace remains close to
-the top of the page. The first header row owns navigation, skill identity, and
-the compact `SkillVersioningPanel`; the second row owns the skill description
-summary. The description is one line by default with truncation and a localized
-`More` control.
+the top of the page. The header owns navigation, skill identity, and the skill
+description summary. The description is one line by default with truncation and
+a localized `More` control.
 
 `SkillDescriptionSummary.vue` owns the description disclosure state. Clicking
 `More` expands the full description inline in normal document flow and changes
@@ -150,8 +147,6 @@ interface Skill {
   fileCount: number;
   createdAt: string;
   updatedAt: string;
-  isVersioned: boolean;
-  activeVersion?: string | null;
 }
 ```
 
@@ -168,10 +163,6 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 | `fetchSkill(name)`     | Load a specific skill by name.           |
 | `createSkill(payload)` | Create a new skill directory + SKILL.md. |
 | `deleteSkill(name)`    | Delete the entire skill directory.       |
-| `fetchSkillVersions(name)` | Load skill versions for versioned skills. |
-| `fetchSkillVersionDiff(name, from, to)` | Fetch unified diff between two versions. |
-| `enableSkillVersioning(name)` | Initialize git versioning for a skill. |
-| `activateSkillVersion(name, version)` | Activate a specific skill version. |
 
 > **Note:** File operations (view, edit, save) are now handled by the generic `FileExplorerStore` via the skill's transient workspace.
 
@@ -220,17 +211,6 @@ users can browse and open those bundled skill files normally. Duplicate skill
 names use first-seen catalog precedence, so package authors should choose unique
 logical skill names.
 
-## Skill Versioning (Frontend)
-
-The Skill Detail view exposes versioning controls when the backend reports `isVersioned`:
-
-- **Enable Versioning**: Creates the initial tag (e.g., `0.1.0`) for existing skills.
-- **Activate Version**: Switches the checked-out version.
-- **Compare Versions**: Opens a modal with a per-file diff viewer (no summary counts).
-
-The compare modal uses `skillVersionDiff` to fetch a unified diff, parses it into file sections, and renders a focused diff view for the selected file.
-
-
 ## Self-Evolution And Skill Files
 
 Manual self-evolution is a skill-first workflow. When the backend deems a run or
@@ -261,7 +241,8 @@ inspect any Git-backed skill changes directly before treating them as accepted
 improvements.
 
 Git-backed skill packages remain the recommended testing and rollback mode for
-this MVP. The feature is globally disabled by default and direct editing is
+this MVP when a skill source is owned by an external repository. AutoByteus does
+not expose built-in history controls in Skill Detail; direct editing is
 controlled by prompt/tool contract plus manual Git inspection/revert, not by a
 separate proposal/apply UI or product audit service.
 

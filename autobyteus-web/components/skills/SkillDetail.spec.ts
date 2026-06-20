@@ -3,24 +3,13 @@ import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SkillDetail from './SkillDetail.vue'
 
-const { fetchSkillMock, fetchSkillVersionsMock, addToastMock } = vi.hoisted(() => ({
+const { fetchSkillMock } = vi.hoisted(() => ({
   fetchSkillMock: vi.fn(),
-  fetchSkillVersionsMock: vi.fn(),
-  addToastMock: vi.fn(),
 }))
 
 vi.mock('~/stores/skillStore', () => ({
   useSkillStore: () => ({
     fetchSkill: fetchSkillMock,
-    fetchSkillVersions: fetchSkillVersionsMock,
-    enableSkillVersioning: vi.fn(),
-    activateSkillVersion: vi.fn(),
-  }),
-}))
-
-vi.mock('~/composables/useToasts', () => ({
-  useToasts: () => ({
-    addToast: addToastMock,
   }),
 }))
 
@@ -37,8 +26,6 @@ const loadedSkill = {
   fileCount: 12,
   isReadonly: false,
   isDisabled: false,
-  isVersioned: false,
-  activeVersion: null,
 }
 
 const mountSkillDetail = () => mount(SkillDetail, {
@@ -51,8 +38,6 @@ const mountSkillDetail = () => mount(SkillDetail, {
       SkillWorkspaceLoader: true,
       FileExplorer: true,
       FileExplorerTabs: true,
-      SkillVersioningPanel: true,
-      SkillVersionCompareModal: true,
     },
   },
 })
@@ -60,7 +45,6 @@ const mountSkillDetail = () => mount(SkillDetail, {
 describe('SkillDetail', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    fetchSkillVersionsMock.mockResolvedValue([])
   })
 
   it('renders a recoverable state when the skill is missing', async () => {
@@ -76,8 +60,6 @@ describe('SkillDetail', () => {
           SkillWorkspaceLoader: true,
           FileExplorer: true,
           FileExplorerTabs: true,
-          SkillVersioningPanel: true,
-          SkillVersionCompareModal: true,
         },
       },
     })
@@ -101,8 +83,6 @@ describe('SkillDetail', () => {
           SkillWorkspaceLoader: true,
           FileExplorer: true,
           FileExplorerTabs: true,
-          SkillVersioningPanel: true,
-          SkillVersionCompareModal: true,
         },
       },
     })
@@ -126,7 +106,7 @@ describe('SkillDetail', () => {
     expect(wrapper.find('.skill-title').text()).toBe(loadedSkill.name)
     expect(wrapper.find('.description-summary').text()).toContain(loadedSkill.description)
     expect(wrapper.find('.description-more').text()).toBe('More')
-    expect(wrapper.find('skill-versioning-panel-stub').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain(['Enable', 'Versioning'].join(' '))
     expect(wrapper.find('.description-popover').exists()).toBe(false)
     expect(wrapper.find('.description-expanded-text').exists()).toBe(false)
   })

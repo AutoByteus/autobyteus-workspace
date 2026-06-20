@@ -9,9 +9,7 @@ import {
   Resolver,
 } from "type-graphql";
 import { SkillService } from "../../../skills/services/skill-service.js";
-import { SkillVersioningService } from "../../../skills/services/skill-versioning-service.js";
 import type { Skill as SkillModel, SkillSourceInfo } from "../../../skills/domain/models.js";
-import type { SkillVersion as SkillVersionModel } from "../../../skills/domain/skill-version.js";
 
 @ObjectType()
 export class Skill {
@@ -35,12 +33,6 @@ export class Skill {
 
   @Field(() => Boolean)
   isDisabled!: boolean;
-
-  @Field(() => Boolean)
-  isVersioned!: boolean;
-
-  @Field(() => String, { nullable: true })
-  activeVersion?: string | null;
 
   @Field(() => String, { nullable: true })
   createdAt?: string | null;
@@ -103,51 +95,6 @@ export class SkillCatalogReloadResult {
   skillSources!: SkillSource[];
 }
 
-@ObjectType()
-export class SkillVersion {
-  @Field(() => String)
-  tag!: string;
-
-  @Field(() => String)
-  commitHash!: string;
-
-  @Field(() => String)
-  message!: string;
-
-  @Field(() => String)
-  createdAt!: string;
-
-  @Field(() => Boolean)
-  isActive!: boolean;
-}
-
-@ObjectType()
-export class SkillDiff {
-  @Field(() => String)
-  fromVersion!: string;
-
-  @Field(() => String)
-  toVersion!: string;
-
-  @Field(() => String)
-  diffContent!: string;
-}
-
-@InputType()
-export class ActivateSkillVersionInput {
-  @Field(() => String)
-  skillName!: string;
-
-  @Field(() => String)
-  version!: string;
-}
-
-@InputType()
-export class EnableSkillVersioningInput {
-  @Field(() => String)
-  skillName!: string;
-}
-
 const decodeFileContent = (content: Buffer): string => {
   const utf8 = content.toString("utf-8");
   const reencoded = Buffer.from(utf8, "utf-8");
@@ -157,27 +104,17 @@ const decodeFileContent = (content: Buffer): string => {
   return content.toString("latin1");
 };
 
-const mapSkill = (
-  skill: SkillModel,
-  versioningService: SkillVersioningService,
-): Skill => {
-  const isVersioned = versioningService.isVersioned(skill.rootPath);
-  const activeVersion = isVersioned ? versioningService.getActiveVersion(skill.rootPath) : null;
-
-  return {
-    name: skill.name,
-    description: skill.description,
-    content: skill.content,
-    rootPath: skill.rootPath,
-    fileCount: skill.fileCount,
-    isReadonly: skill.isReadonly,
-    isDisabled: skill.isDisabled,
-    isVersioned,
-    activeVersion: activeVersion?.tag ?? null,
-    createdAt: skill.createdAt ? skill.createdAt.toISOString() : null,
-    updatedAt: skill.updatedAt ? skill.updatedAt.toISOString() : null,
-  };
-};
+const mapSkill = (skill: SkillModel): Skill => ({
+  name: skill.name,
+  description: skill.description,
+  content: skill.content,
+  rootPath: skill.rootPath,
+  fileCount: skill.fileCount,
+  isReadonly: skill.isReadonly,
+  isDisabled: skill.isDisabled,
+  createdAt: skill.createdAt ? skill.createdAt.toISOString() : null,
+  updatedAt: skill.updatedAt ? skill.updatedAt.toISOString() : null,
+});
 
 const mapSkillSource = (source: SkillSourceInfo): SkillSource => ({
   path: source.path,
@@ -185,32 +122,22 @@ const mapSkillSource = (source: SkillSourceInfo): SkillSource => ({
   isDefault: source.isDefault,
 });
 
-const mapSkillVersion = (version: SkillVersionModel): SkillVersion => ({
-  tag: version.tag,
-  commitHash: version.commitHash,
-  message: version.message,
-  createdAt: version.createdAt.toISOString(),
-  isActive: version.isActive,
-});
-
 @Resolver()
 export class SkillResolver {
   @Query(() => [Skill])
   skills(): Skill[] {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
-    return service.listSkills().map((skill) => mapSkill(skill, versioningService));
+    return service.listSkills().map(mapSkill);
   }
 
   @Query(() => Skill, { nullable: true })
   skill(@Arg("name", () => String) name: string): Skill | null {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const skill = service.getSkill(name);
     if (!skill) {
       return null;
     }
-    return mapSkill(skill, versioningService);
+    return mapSkill(skill);
   }
 
   @Query(() => String, { nullable: true })
@@ -244,55 +171,18 @@ export class SkillResolver {
     return service.getSkillSources().map(mapSkillSource);
   }
 
-  @Query(() => [SkillVersion])
-  skillVersions(@Arg("skillName", () => String) skillName: string): SkillVersion[] {
-    const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
-    const skill = service.getSkill(skillName);
-    if (!skill) {
-      return [];
-    }
-    return versioningService.listVersions(skill.rootPath).map(mapSkillVersion);
-  }
-
-  @Query(() => SkillDiff, { nullable: true })
-  skillVersionDiff(
-    @Arg("skillName", () => String) skillName: string,
-    @Arg("fromVersion", () => String) fromVersion: string,
-    @Arg("toVersion", () => String) toVersion: string,
-  ): SkillDiff | null {
-    const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
-    const skill = service.getSkill(skillName);
-    if (!skill) {
-      return null;
-    }
-    try {
-      const diff = versioningService.diffVersions(skill.rootPath, fromVersion, toVersion);
-      return {
-        fromVersion,
-        toVersion,
-        diffContent: diff,
-      };
-    } catch {
-      return null;
-    }
-  }
-
   @Mutation(() => Skill)
   createSkill(@Arg("input", () => CreateSkillInput) input: CreateSkillInput): Skill {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const skill = service.createSkill(input.name, input.description, input.content);
-    return mapSkill(skill, versioningService);
+    return mapSkill(skill);
   }
 
   @Mutation(() => Skill)
   updateSkill(@Arg("input", () => UpdateSkillInput) input: UpdateSkillInput): Skill {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const skill = service.updateSkill(input.name, input.description ?? null, input.content ?? null);
-    return mapSkill(skill, versioningService);
+    return mapSkill(skill);
   }
 
   @Mutation(() => DeleteSkillResult)
@@ -335,27 +225,24 @@ export class SkillResolver {
   @Mutation(() => Skill)
   disableSkill(@Arg("name", () => String) name: string): Skill {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const skill = service.disableSkill(name);
-    return mapSkill(skill, versioningService);
+    return mapSkill(skill);
   }
 
   @Mutation(() => Skill)
   enableSkill(@Arg("name", () => String) name: string): Skill {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const skill = service.enableSkill(name);
-    return mapSkill(skill, versioningService);
+    return mapSkill(skill);
   }
 
   @Mutation(() => SkillCatalogReloadResult)
   reloadSkillCatalog(): SkillCatalogReloadResult {
     const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
     const result = service.reloadSkillCatalog();
 
     return {
-      skills: result.skills.map((skill) => mapSkill(skill, versioningService)),
+      skills: result.skills.map(mapSkill),
       skillSources: result.skillSources.map(mapSkillSource),
     };
   }
@@ -370,28 +257,5 @@ export class SkillResolver {
   removeSkillSource(@Arg("path", () => String) pathValue: string): SkillSource[] {
     const service = SkillService.getInstance();
     return service.removeSkillSource(pathValue).map(mapSkillSource);
-  }
-
-  @Mutation(() => SkillVersion)
-  activateSkillVersion(
-    @Arg("input", () => ActivateSkillVersionInput) input: ActivateSkillVersionInput,
-  ): SkillVersion {
-    const service = SkillService.getInstance();
-    const versioningService = SkillVersioningService.getInstance();
-    const skill = service.getSkill(input.skillName);
-    if (!skill) {
-      throw new Error(`Skill '${input.skillName}' not found`);
-    }
-    const version = versioningService.activateVersion(skill.rootPath, input.version);
-    return mapSkillVersion(version);
-  }
-
-  @Mutation(() => SkillVersion)
-  enableSkillVersioning(
-    @Arg("input", () => EnableSkillVersioningInput) input: EnableSkillVersioningInput,
-  ): SkillVersion {
-    const service = SkillService.getInstance();
-    const version = service.enableSkillVersioning(input.skillName);
-    return mapSkillVersion(version);
   }
 }

@@ -21,51 +21,27 @@
             <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
           </div>
         </div>
-
-        <!-- Versioning Controls (Placeholder for integrated panel) -->
-        <div class="header-actions">
-           <SkillVersioningPanel
-            v-if="skill"
-            mode="compact"
-            :skill="skill"
-            :versions="versions"
-            :versions-loading="versionsLoading"
-            :versions-error="versionsError"
-            :action-error="actionError"
-            :action-loading="actionLoading"
-            @enable-versioning="handleEnableVersioning"
-            @activate-version="handleActivateVersion"
-            @compare-versions="showCompareModal = true"
-          />
-        </div>
       </div>
 
       <SkillDescriptionSummary :description="skill.description" />
     </header>
 
     <!-- Main Workspace -->
-    <SkillWorkspaceLoader :key="workspaceKey" :skillId="skill.name">
-        <template #default="{ workspaceId }">
-            <div class="workspace">
-            <!-- Left: File Sidebar -->
-            <div class="sidebar">
-                <FileExplorer :workspaceId="workspaceId" />
-            </div>
+    <SkillWorkspaceLoader :skillId="skill.name">
+      <template #default="{ workspaceId }">
+        <div class="workspace">
+          <!-- Left: File Sidebar -->
+          <div class="sidebar">
+            <FileExplorer :workspaceId="workspaceId" />
+          </div>
 
-            <!-- Right: Editor/Viewer -->
-            <div class="editor-pane">
-                <FileExplorerTabs :workspaceId="workspaceId" />
-            </div>
-            </div>
-        </template>
+          <!-- Right: Editor/Viewer -->
+          <div class="editor-pane">
+            <FileExplorerTabs :workspaceId="workspaceId" />
+          </div>
+        </div>
+      </template>
     </SkillWorkspaceLoader>
-
-    <SkillVersionCompareModal
-      v-if="showCompareModal"
-      :skill-name="skill.name"
-      :versions="versions"
-      @close="showCompareModal = false"
-    />
   </div>
 </template>
 
@@ -77,10 +53,7 @@ import SkillWorkspaceLoader from './SkillWorkspaceLoader.vue'
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue'
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue'
 import SkillDescriptionSummary from './SkillDescriptionSummary.vue'
-import SkillVersioningPanel from './SkillVersioningPanel.vue'
-import SkillVersionCompareModal from './SkillVersionCompareModal.vue'
-import type { Skill, SkillVersion } from '~/types/skill'
-import { useToasts } from '~/composables/useToasts'
+import type { Skill } from '~/types/skill'
 
 const { t } = useLocalization()
 
@@ -88,22 +61,14 @@ const props = defineProps<{
   skillName: string
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   back: []
 }>()
 
 const skillStore = useSkillStore()
-const { addToast } = useToasts()
 const skill = ref<Skill | null>(null)
 const isLoading = ref(true)
 const loadError = ref('')
-const versions = ref<SkillVersion[]>([])
-const versionsLoading = ref(false)
-const versionsError = ref('')
-const actionError = ref('')
-const actionLoading = ref(false)
-const showCompareModal = ref(false)
-const workspaceKey = ref(0)
 
 // Lifecycle and Methods
 onMounted(async () => {
@@ -118,90 +83,19 @@ async function loadSkillDetails() {
   isLoading.value = true
   loadError.value = ''
   skill.value = null
-  showCompareModal.value = false
-  actionError.value = ''
-  actionLoading.value = false
 
   try {
     const loadedSkill = await skillStore.fetchSkill(props.skillName)
     if (!loadedSkill) {
       loadError.value = t('skills.components.skills.SkillDetail.not_found')
-      versions.value = []
-      versionsError.value = ''
       return
     }
 
     skill.value = loadedSkill
-    await loadVersions()
   } catch (e: any) {
     loadError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_load_skill')
-    versions.value = []
-    versionsError.value = ''
   } finally {
     isLoading.value = false
-  }
-}
-
-async function loadVersions() {
-  versions.value = []
-  versionsError.value = ''
-
-  if (!skill.value?.isVersioned) {
-    return
-  }
-
-  versionsLoading.value = true
-  try {
-    versions.value = await skillStore.fetchSkillVersions(skill.value.name)
-  } catch (e: any) {
-    versionsError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_load_versions')
-  } finally {
-    versionsLoading.value = false
-  }
-}
-
-async function handleEnableVersioning() {
-  if (!skill.value) return
-  actionError.value = ''
-  if (skill.value.isReadonly) {
-    actionError.value = t('skills.components.skills.SkillDetail.read_only')
-    addToast(actionError.value, 'error')
-    return
-  }
-
-  actionLoading.value = true
-  try {
-    await skillStore.enableSkillVersioning(skill.value.name)
-    await loadSkillDetails()
-    addToast(t('skills.components.skills.SkillDetail.versioning_enabled'), 'success')
-  } catch (e: any) {
-    actionError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_enable_versioning')
-    addToast(actionError.value, 'error')
-  } finally {
-    actionLoading.value = false
-  }
-}
-
-async function handleActivateVersion(version: string) {
-  if (!skill.value) return
-  actionError.value = ''
-  if (skill.value.isReadonly) {
-    actionError.value = t('skills.components.skills.SkillDetail.read_only')
-    addToast(actionError.value, 'error')
-    return
-  }
-
-  actionLoading.value = true
-  try {
-    await skillStore.activateSkillVersion(skill.value.name, version)
-    await loadSkillDetails()
-    workspaceKey.value += 1
-    addToast(t('skills.components.skills.SkillDetail.activated_version', { version }), 'success')
-  } catch (e: any) {
-    actionError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_activate_version')
-    addToast(actionError.value, 'error')
-  } finally {
-    actionLoading.value = false
   }
 }
 </script>
@@ -330,10 +224,6 @@ async function handleActivateVersion(version: string) {
   text-overflow: ellipsis;
 }
 
-.header-actions {
-  flex-shrink: 0;
-}
-
 .badge-disabled {
   background: #f3f4f6;
   color: #6b7280;
@@ -360,9 +250,6 @@ async function handleActivateVersion(version: string) {
     gap: 0.75rem;
   }
 
-  .header-actions {
-    align-self: stretch;
-  }
 }
 
 /* Workspace */

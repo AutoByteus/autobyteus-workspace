@@ -2,7 +2,7 @@
 
 ## Scope
 
-Skill catalog, retrieval, CRUD/version workflows, and configured runtime skill
+Skill catalog, retrieval, CRUD/file workflows, and configured runtime skill
 resolution for agent definitions.
 
 ## TS Source
@@ -46,9 +46,9 @@ skipped in the catalog.
 
 Catalog skills remain the source for normal Skills-page browsing, Skill Detail
 loading, File Explorer workspaces, and UI selection during agent authoring.
-Create/edit/versioning behavior still depends on the existing Skills and File
-Explorer operations plus the underlying filesystem permissions of each resolved
-skill root.
+Create/edit behavior still depends on the existing Skills and File Explorer
+operations plus the underlying filesystem permissions of each resolved skill
+root. Repository-backed history, tags, and rollbacks are external to AutoByteus.
 
 ### Catalog Reload
 

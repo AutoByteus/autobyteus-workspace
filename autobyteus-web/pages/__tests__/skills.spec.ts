@@ -15,8 +15,6 @@ const skillFixtures = [
     fileCount: 1,
     isReadonly: false,
     isDisabled: false,
-    isVersioned: false,
-    activeVersion: null,
   },
   {
     name: 'beta-skill',
@@ -26,8 +24,6 @@ const skillFixtures = [
     fileCount: 1,
     isReadonly: false,
     isDisabled: false,
-    isVersioned: false,
-    activeVersion: null,
   },
 ]
 

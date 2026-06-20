@@ -24,11 +24,6 @@ export type Scalars = {
   JSONObject: { input: any; output: any; }
 };
 
-export type ActivateSkillVersionInput = {
-  skillName: Scalars['String']['input'];
-  version: Scalars['String']['input'];
-};
-
 export type AgentDefinition = {
   __typename?: 'AgentDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
@@ -549,10 +544,6 @@ export type DiscoverAndRegisterMcpServerToolsResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type EnableSkillVersioningInput = {
-  skillName: Scalars['String']['input'];
-};
-
 export type ExternalChannelBindingGql = {
   __typename?: 'ExternalChannelBindingGql';
   accountId: Scalars['String']['output'];
@@ -890,7 +881,6 @@ export type ModelDetail = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  activateSkillVersion: SkillVersion;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
@@ -922,7 +912,6 @@ export type Mutation = {
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
   enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
-  enableSkillVersioning: SkillVersion;
   importAgentPackage: Array<AgentPackage>;
   importApplicationPackage: Array<ApplicationPackage>;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
@@ -962,11 +951,6 @@ export type Mutation = {
   uploadSkillFile: Scalars['Boolean']['output'];
   upsertExternalChannelBinding: ExternalChannelBindingGql;
   writeFileContent: Scalars['String']['output'];
-};
-
-
-export type MutationActivateSkillVersionArgs = {
-  input: ActivateSkillVersionInput;
 };
 
 
@@ -1118,11 +1102,6 @@ export type MutationDiscoverAndRegisterMcpServerToolsArgs = {
 
 export type MutationEnableSkillArgs = {
   name: Scalars['String']['input'];
-};
-
-
-export type MutationEnableSkillVersioningArgs = {
-  input: EnableSkillVersioningInput;
 };
 
 
@@ -1400,8 +1379,6 @@ export type Query = {
   skillFileContent?: Maybe<Scalars['String']['output']>;
   skillFileTree?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
-  skillVersionDiff?: Maybe<SkillDiff>;
-  skillVersions: Array<SkillVersion>;
   skills: Array<Skill>;
   tools: Array<ToolDefinitionDetail>;
   toolsGroupedByCategory: Array<ToolCategoryGroup>;
@@ -1603,18 +1580,6 @@ export type QuerySkillFileTreeArgs = {
 };
 
 
-export type QuerySkillVersionDiffArgs = {
-  fromVersion: Scalars['String']['input'];
-  skillName: Scalars['String']['input'];
-  toVersion: Scalars['String']['input'];
-};
-
-
-export type QuerySkillVersionsArgs = {
-  skillName: Scalars['String']['input'];
-};
-
-
 export type QueryToolsArgs = {
   origin?: InputMaybe<ToolOriginEnum>;
   sourceServerId?: InputMaybe<Scalars['String']['input']>;
@@ -1780,14 +1745,12 @@ export type ServerSetting = {
 
 export type Skill = {
   __typename?: 'Skill';
-  activeVersion?: Maybe<Scalars['String']['output']>;
   content: Scalars['String']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   fileCount: Scalars['Int']['output'];
   isDisabled: Scalars['Boolean']['output'];
   isReadonly: Scalars['Boolean']['output'];
-  isVersioned: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   rootPath: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -1805,27 +1768,11 @@ export type SkillCatalogReloadResult = {
   skills: Array<Skill>;
 };
 
-export type SkillDiff = {
-  __typename?: 'SkillDiff';
-  diffContent: Scalars['String']['output'];
-  fromVersion: Scalars['String']['output'];
-  toVersion: Scalars['String']['output'];
-};
-
 export type SkillSource = {
   __typename?: 'SkillSource';
   isDefault: Scalars['Boolean']['output'];
   path: Scalars['String']['output'];
   skillCount: Scalars['Int']['output'];
-};
-
-export type SkillVersion = {
-  __typename?: 'SkillVersion';
-  commitHash: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
-  message: Scalars['String']['output'];
-  tag: Scalars['String']['output'];
 };
 
 export type StartAgentRunSelfEvolutionInput = {
@@ -2954,19 +2901,19 @@ export type RemoveSkillSourceMutation = { __typename?: 'Mutation', removeSkillSo
 export type ReloadSkillCatalogMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ReloadSkillCatalogMutation = { __typename?: 'Mutation', reloadSkillCatalog: { __typename?: 'SkillCatalogReloadResult', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null }>, skillSources: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> } };
+export type ReloadSkillCatalogMutation = { __typename?: 'Mutation', reloadSkillCatalog: { __typename?: 'SkillCatalogReloadResult', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean }>, skillSources: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> } };
 
 export type GetSkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillsQuery = { __typename?: 'Query', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null }> };
+export type GetSkillsQuery = { __typename?: 'Query', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean }> };
 
 export type GetSkillQueryVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
 
 
-export type GetSkillQuery = { __typename?: 'Query', skill?: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null } | null };
+export type GetSkillQuery = { __typename?: 'Query', skill?: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean } | null };
 
 export type GetSkillFileTreeQueryVariables = Exact<{
   name: Scalars['String']['input'];
@@ -2988,14 +2935,14 @@ export type CreateSkillMutationVariables = Exact<{
 }>;
 
 
-export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isVersioned: boolean, activeVersion?: string | null } };
+export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number } };
 
 export type UpdateSkillMutationVariables = Exact<{
   input: UpdateSkillInput;
 }>;
 
 
-export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isVersioned: boolean, activeVersion?: string | null } };
+export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number } };
 
 export type DeleteSkillMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -3026,44 +2973,14 @@ export type DisableSkillMutationVariables = Exact<{
 }>;
 
 
-export type DisableSkillMutation = { __typename?: 'Mutation', disableSkill: { __typename?: 'Skill', name: string, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null } };
+export type DisableSkillMutation = { __typename?: 'Mutation', disableSkill: { __typename?: 'Skill', name: string, isDisabled: boolean } };
 
 export type EnableSkillMutationVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
 
 
-export type EnableSkillMutation = { __typename?: 'Mutation', enableSkill: { __typename?: 'Skill', name: string, isDisabled: boolean, isVersioned: boolean, activeVersion?: string | null } };
-
-export type GetSkillVersionsQueryVariables = Exact<{
-  skillName: Scalars['String']['input'];
-}>;
-
-
-export type GetSkillVersionsQuery = { __typename?: 'Query', skillVersions: Array<{ __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean }> };
-
-export type GetSkillVersionDiffQueryVariables = Exact<{
-  skillName: Scalars['String']['input'];
-  fromVersion: Scalars['String']['input'];
-  toVersion: Scalars['String']['input'];
-}>;
-
-
-export type GetSkillVersionDiffQuery = { __typename?: 'Query', skillVersionDiff?: { __typename?: 'SkillDiff', fromVersion: string, toVersion: string, diffContent: string } | null };
-
-export type EnableSkillVersioningMutationVariables = Exact<{
-  input: EnableSkillVersioningInput;
-}>;
-
-
-export type EnableSkillVersioningMutation = { __typename?: 'Mutation', enableSkillVersioning: { __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean } };
-
-export type ActivateSkillVersionMutationVariables = Exact<{
-  input: ActivateSkillVersionInput;
-}>;
-
-
-export type ActivateSkillVersionMutation = { __typename?: 'Mutation', activateSkillVersion: { __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean } };
+export type EnableSkillMutation = { __typename?: 'Mutation', enableSkill: { __typename?: 'Skill', name: string, isDisabled: boolean } };
 
 export const AgentPackageFieldsFragmentDoc = gql`
     fragment AgentPackageFields on AgentPackage {
@@ -7224,8 +7141,6 @@ export const ReloadSkillCatalogDocument = gql`
       fileCount
       isReadonly
       isDisabled
-      isVersioned
-      activeVersion
     }
     skillSources {
       path
@@ -7263,8 +7178,6 @@ export const GetSkillsDocument = gql`
     fileCount
     isReadonly
     isDisabled
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7298,8 +7211,6 @@ export const GetSkillDocument = gql`
     fileCount
     isReadonly
     isDisabled
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7391,8 +7302,6 @@ export const CreateSkillDocument = gql`
     content
     rootPath
     fileCount
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7426,8 +7335,6 @@ export const UpdateSkillDocument = gql`
     content
     rootPath
     fileCount
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7545,8 +7452,6 @@ export const DisableSkillDocument = gql`
   disableSkill(name: $name) {
     name
     isDisabled
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7577,8 +7482,6 @@ export const EnableSkillDocument = gql`
   enableSkill(name: $name) {
     name
     isDisabled
-    isVersioned
-    activeVersion
   }
 }
     `;
@@ -7604,141 +7507,3 @@ export function useEnableSkillMutation(options: VueApolloComposable.UseMutationO
   return VueApolloComposable.useMutation<EnableSkillMutation, EnableSkillMutationVariables>(EnableSkillDocument, options);
 }
 export type EnableSkillMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<EnableSkillMutation, EnableSkillMutationVariables>;
-export const GetSkillVersionsDocument = gql`
-    query GetSkillVersions($skillName: String!) {
-  skillVersions(skillName: $skillName) {
-    tag
-    commitHash
-    message
-    createdAt
-    isActive
-  }
-}
-    `;
-
-/**
- * __useGetSkillVersionsQuery__
- *
- * To run a query within a Vue component, call `useGetSkillVersionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSkillVersionsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetSkillVersionsQuery({
- *   skillName: // value for 'skillName'
- * });
- */
-export function useGetSkillVersionsQuery(variables: GetSkillVersionsQueryVariables | VueCompositionApi.Ref<GetSkillVersionsQueryVariables> | ReactiveFunction<GetSkillVersionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>(GetSkillVersionsDocument, variables, options);
-}
-export function useGetSkillVersionsLazyQuery(variables?: GetSkillVersionsQueryVariables | VueCompositionApi.Ref<GetSkillVersionsQueryVariables> | ReactiveFunction<GetSkillVersionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>(GetSkillVersionsDocument, variables, options);
-}
-export type GetSkillVersionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSkillVersionsQuery, GetSkillVersionsQueryVariables>;
-export const GetSkillVersionDiffDocument = gql`
-    query GetSkillVersionDiff($skillName: String!, $fromVersion: String!, $toVersion: String!) {
-  skillVersionDiff(
-    skillName: $skillName
-    fromVersion: $fromVersion
-    toVersion: $toVersion
-  ) {
-    fromVersion
-    toVersion
-    diffContent
-  }
-}
-    `;
-
-/**
- * __useGetSkillVersionDiffQuery__
- *
- * To run a query within a Vue component, call `useGetSkillVersionDiffQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSkillVersionDiffQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetSkillVersionDiffQuery({
- *   skillName: // value for 'skillName'
- *   fromVersion: // value for 'fromVersion'
- *   toVersion: // value for 'toVersion'
- * });
- */
-export function useGetSkillVersionDiffQuery(variables: GetSkillVersionDiffQueryVariables | VueCompositionApi.Ref<GetSkillVersionDiffQueryVariables> | ReactiveFunction<GetSkillVersionDiffQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>(GetSkillVersionDiffDocument, variables, options);
-}
-export function useGetSkillVersionDiffLazyQuery(variables?: GetSkillVersionDiffQueryVariables | VueCompositionApi.Ref<GetSkillVersionDiffQueryVariables> | ReactiveFunction<GetSkillVersionDiffQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>(GetSkillVersionDiffDocument, variables, options);
-}
-export type GetSkillVersionDiffQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSkillVersionDiffQuery, GetSkillVersionDiffQueryVariables>;
-export const EnableSkillVersioningDocument = gql`
-    mutation EnableSkillVersioning($input: EnableSkillVersioningInput!) {
-  enableSkillVersioning(input: $input) {
-    tag
-    commitHash
-    message
-    createdAt
-    isActive
-  }
-}
-    `;
-
-/**
- * __useEnableSkillVersioningMutation__
- *
- * To run a mutation, you first call `useEnableSkillVersioningMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useEnableSkillVersioningMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useEnableSkillVersioningMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useEnableSkillVersioningMutation(options: VueApolloComposable.UseMutationOptions<EnableSkillVersioningMutation, EnableSkillVersioningMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<EnableSkillVersioningMutation, EnableSkillVersioningMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<EnableSkillVersioningMutation, EnableSkillVersioningMutationVariables>(EnableSkillVersioningDocument, options);
-}
-export type EnableSkillVersioningMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<EnableSkillVersioningMutation, EnableSkillVersioningMutationVariables>;
-export const ActivateSkillVersionDocument = gql`
-    mutation ActivateSkillVersion($input: ActivateSkillVersionInput!) {
-  activateSkillVersion(input: $input) {
-    tag
-    commitHash
-    message
-    createdAt
-    isActive
-  }
-}
-    `;
-
-/**
- * __useActivateSkillVersionMutation__
- *
- * To run a mutation, you first call `useActivateSkillVersionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useActivateSkillVersionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useActivateSkillVersionMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useActivateSkillVersionMutation(options: VueApolloComposable.UseMutationOptions<ActivateSkillVersionMutation, ActivateSkillVersionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ActivateSkillVersionMutation, ActivateSkillVersionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ActivateSkillVersionMutation, ActivateSkillVersionMutationVariables>(ActivateSkillVersionDocument, options);
-}
-export type ActivateSkillVersionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ActivateSkillVersionMutation, ActivateSkillVersionMutationVariables>;

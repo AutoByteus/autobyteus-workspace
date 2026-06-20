@@ -24,7 +24,6 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
-import { SkillVersioningService } from "../../../src/skills/services/skill-versioning-service.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
@@ -385,7 +384,6 @@ const defineRuntimeSuite = (input: {
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
       SkillService.resetInstance();
-      SkillVersioningService.resetInstance();
       schema = await buildGraphqlSchema();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -405,7 +403,6 @@ const defineRuntimeSuite = (input: {
         testDataDir = null;
       }
       SkillService.resetInstance();
-      SkillVersioningService.resetInstance();
     });
 
     afterEach(async () => {

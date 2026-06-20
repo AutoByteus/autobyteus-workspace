@@ -1,13 +1,16 @@
 import "reflect-metadata";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
 
 describe("Tool catalog cleanup GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -16,6 +19,16 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+  });
+
+  beforeEach(async () => {
+    registrySnapshot = defaultToolRegistry.snapshot();
+    defaultToolRegistry.clear();
+    await loadAllAgentTools();
+  });
+
+  afterEach(() => {
+    defaultToolRegistry.restore(registrySnapshot);
   });
 
   it("does not expose MCP wrapper management tools in LOCAL runtime catalog", async () => {
@@ -52,16 +65,35 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     const allToolNames = data.toolsGroupedByCategory.flatMap((group) =>
       group.tools.map((tool) => tool.name),
     );
-    const removedWrapperTools = [
+    const removedToolNames = [
       "apply_mcp_server_configurations",
       "delete_mcp_server_configuration",
       "discover_mcp_server_tools",
       "get_mcp_server_configuration",
       "list_mcp_server_configurations",
       "preview_mcp_server_tools",
+      ["list", "available", "tools"].join("_"),
+      ["list", "input", "processors"].join("_"),
+      ["list", "lifecycle", "processors"].join("_"),
+      ["list", "llm", "response", "processors"].join("_"),
+      ["list", "tool", "result", "processors"].join("_"),
+      ["create", "skill", "version"].join("_"),
     ];
-    for (const toolName of removedWrapperTools) {
+    for (const toolName of removedToolNames) {
       expect(allToolNames).not.toContain(toolName);
+    }
+
+    expect(
+      data.toolsGroupedByCategory.some((group) => group.categoryName === ["Tool", "Management"].join(" ")),
+    ).toBe(false);
+    expect(allToolNames).toContain("get_available_skills");
+    expect(allToolNames).toContain("get_skill_content");
+    expect(defaultToolRegistry.listToolNames()).toEqual(expect.arrayContaining([
+      "get_available_skills",
+      "get_skill_content",
+    ]));
+    for (const toolName of removedToolNames) {
+      expect(defaultToolRegistry.listToolNames()).not.toContain(toolName);
     }
   });
 });

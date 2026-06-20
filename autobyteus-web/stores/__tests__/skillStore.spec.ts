@@ -34,8 +34,6 @@ describe('skillStore', () => {
       fileCount: 1,
       isReadonly: false,
       isDisabled: false,
-      isVersioned: false,
-      activeVersion: null,
     })
 
     const result = await store.fetchSkill('missing-skill')
@@ -58,8 +56,6 @@ describe('skillStore', () => {
               fileCount: 1,
               isReadonly: false,
               isDisabled: false,
-              isVersioned: false,
-              activeVersion: null,
             },
           ],
           skillSources: [
@@ -113,8 +109,6 @@ describe('skillStore', () => {
         fileCount: 1,
         isReadonly: false,
         isDisabled: true,
-        isVersioned: false,
-        activeVersion: null,
       },
     ]
     skillSourcesStore.skillSources = [
