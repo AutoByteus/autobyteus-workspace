@@ -23,6 +23,9 @@ describe('MemoryHome', () => {
 
     const tabLabels = wrapper.findAll('button').slice(0, 2).map((button) => button.text());
     expect(tabLabels).toEqual(['Agents', 'Agent teams']);
+    expect(wrapper.find('h1').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Memory');
+    expect(wrapper.text()).not.toMatch(/inspect stored agent and team memories/i);
     expect(wrapper.text()).not.toMatch(/agents with memory/i);
     expect(wrapper.find('input').attributes('placeholder')).toMatch(/search agents/i);
     expect(wrapper.find('input').attributes('placeholder')).not.toMatch(/with memory/i);

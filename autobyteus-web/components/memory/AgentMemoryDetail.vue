@@ -1,15 +1,10 @@
 <template>
   <div class="mx-auto max-w-5xl p-6">
     <button class="mb-4 text-sm font-semibold text-blue-600 hover:underline" @click="$emit('back')">← {{ $t('memory.components.memory.AgentMemoryDetail.back_to_memory') }}</button>
-    <header class="mb-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('memory.components.memory.AgentMemoryDetail.agent') }}</p>
-      <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ agentName }}</h1>
-      <p class="mt-2 text-sm text-gray-500">{{ store.agentRuns.total }} runs · ID: <span class="font-mono">{{ agentStableId }}</span></p>
-    </header>
 
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div class="flex flex-col gap-3 border-b border-gray-100 p-4 md:flex-row md:items-center md:justify-between">
-        <h2 class="font-semibold text-gray-900">{{ $t('memory.components.memory.AgentMemoryDetail.runs') }}</h2>
+        <h1 class="font-semibold text-gray-900">{{ agentName }}</h1>
         <div class="flex gap-2">
           <input v-model="searchInput" type="text" :placeholder="$t('memory.components.memory.AgentMemoryDetail.search_runs')" class="min-w-[260px] rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" @keyup.enter="applySearch" />
           <button class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800" @click="applySearch">Search</button>
@@ -60,7 +55,6 @@ const store = useMemoryExplorerStore();
 const searchInput = ref(store.agentRuns.search);
 
 const agentName = computed(() => store.selectedAgent?.displayName || (props.selector.attribution === 'UNATTRIBUTED' ? 'Unattributed runs' : props.selector.agentDefinitionId || 'Agent'));
-const agentStableId = computed(() => store.selectedAgent?.stableId || props.selector.agentDefinitionId || 'unattributed');
 
 watch(() => store.agentRuns.search, (value) => { searchInput.value = value; });
 
