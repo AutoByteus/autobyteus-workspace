@@ -1,7 +1,9 @@
+## What's New
+- Memory detail pages now use the selected agent or team name directly as the runs list heading.
+
 ## Improvements
-- Improved desktop update reliability on macOS by moving the app to the latest reviewed stable Electron runtime.
-- Improved desktop packaging validation so native terminal support is rebuilt against the packaged Electron runtime.
-- Improved release-readiness guidance for future desktop runtime upgrades.
+- Removed redundant Memory page and detail-page header blocks so the memory browser starts closer to the useful content.
+- Preserved existing Memory search, pagination, badges, route state, and inspector navigation behavior.
 
 ## Fixes
-- Fixed a stale desktop packaging baseline that could miss upstream Electron updater-helper fixes.
+- Updated Memory documentation, localization, and frontend coverage to match the compact layout.
