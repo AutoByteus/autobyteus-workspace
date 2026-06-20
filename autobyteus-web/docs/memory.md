@@ -15,7 +15,7 @@ Route query state preserves deep links and refreshes for home, agent detail, tea
 
 ## Memory Home
 
-Memory Home has two tabs:
+Memory Home starts directly with the functional browser panel rather than a repeated page title. It has two tabs:
 
 - `Agents`
 - `Agent Teams`
@@ -28,11 +28,11 @@ Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A tea
 
 ## Detail Pages
 
-Agent detail pages use the selected agent name as the primary title and list runs under the concise `Runs` heading. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
+Agent detail pages use the selected agent name as the run-list card heading without a separate subject summary card. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
 
-Team detail pages use the selected team name as the primary title and list team runs under the concise `Runs` heading. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from recursive team metadata and the server memory-location service, so nested member availability comes from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` directory rather than from a flattened root-team/member assumption.
+Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from recursive team metadata and the server memory-location service, so nested member availability comes from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` directory rather than from a flattened root-team/member assumption.
 
-Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or selected team's team runs/member targets. Detail metadata remains visible but avoids repeated per-card metadata prefixes.
+Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or selected team's team runs/member targets. Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
 
 The inspector header renders `Memory Inspector` once. Inspector back links preserve the previous destination while using concise subject labels, for example `Back to Codex` or `Back to <team name>`.
 

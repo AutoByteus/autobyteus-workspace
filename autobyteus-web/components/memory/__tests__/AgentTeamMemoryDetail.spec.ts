@@ -22,16 +22,24 @@ describe('AgentTeamMemoryDetail', () => {
     }];
     const wrapper = mount(AgentTeamMemoryDetail, { props: { teamDefinitionId: 'team' }, global: { plugins: [pinia] } });
 
+    expect(wrapper.find('header').exists()).toBe(false);
+    expect(wrapper.find('section h1').text()).toBe('Software Team');
     expect(wrapper.text()).toContain('Software Team');
+    expect(wrapper.text()).not.toContain('Agent Team');
+    expect(wrapper.text()).not.toContain('ID:');
+    expect(wrapper.text()).not.toMatch(/\bRuns\b/);
+    expect(wrapper.text()).not.toContain('1 runs');
     expect(wrapper.text()).not.toContain('Software Team Memory');
     expect(wrapper.text()).not.toMatch(/agent team memory detail/i);
-    expect(wrapper.text()).toMatch(/\bruns\b/i);
     expect(wrapper.find('input').attributes('placeholder')).toMatch(/search runs/i);
     expect(wrapper.text()).toContain('Members');
     expect(wrapper.text()).not.toContain('Team member memories');
     expect(wrapper.text()).toContain('/tmp/team-project');
     expect(wrapper.text()).not.toContain('Workspace:');
     expect(wrapper.text()).not.toContain('Updated:');
+    await wrapper.find('input').setValue('planning');
+    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    expect(store.setTeamRunsSearch).toHaveBeenCalledWith('team', 'planning');
     await wrapper.findAll('button').find((button) => button.text().includes('Lead'))!.trigger('click');
     expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberRunId: 'member-1' });
   });

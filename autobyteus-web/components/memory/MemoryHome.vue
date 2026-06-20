@@ -1,10 +1,5 @@
 <template>
   <div class="mx-auto max-w-6xl p-6">
-    <header class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Memory</h1>
-      <p class="mt-1 text-sm text-gray-500">{{ $t('memory.components.memory.MemoryHome.inspect_stored_agent_and_team_memories') }}</p>
-    </header>
-
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div class="border-b border-gray-100 p-4">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

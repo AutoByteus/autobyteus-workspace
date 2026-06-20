@@ -98,6 +98,8 @@ describe('memory page', () => {
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
     await nextTick();
 
+    expect(wrapper.find('h1').exists()).toBe(false);
+    expect(wrapper.text()).not.toMatch(/inspect stored agent and team memories/i);
     expect(wrapper.text()).toContain('Codex');
     expect(wrapper.text()).toMatch(/working/i);
     expect(wrapper.text()).toMatch(/raw traces/i);

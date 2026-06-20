@@ -36,7 +36,7 @@ describe('zh-CN glossary consistency', () => {
     expect(zhCnAgentsMessages['agents.pages.agents.go_to_agents']).toBe('前往智能体');
     expect(zhCnAgentTeamsMessages['agentTeams.pages.agent_teams.go_to_agent_teams']).toBe('前往智能体团队');
     expect(zhCnWorkspaceMessages['workspace.components.workspace.common.WorkspaceHeaderActions.new_agent']).toBe('新建智能体');
-    expect(zhCnMemoryMessages['memory.components.memory.AgentTeamMemoryDetail.runs']).toBe('运行');
+    expect(zhCnMemoryMessages['memory.components.memory.AgentTeamMemoryDetail.search_runs']).toBe('搜索运行...');
     expect(zhCnApplicationsMessages['applications.components.applications.ApplicationLaunchConfigModal.default_model_for_all_agents']).toBe('默认模型（适用于所有智能体）');
     expect(zhCnToolsMessages['tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace']).toBe('没有可用的工作区。添加工作区以查看文件。');
   });
