@@ -84,7 +84,7 @@ _Injection Format Example:_
 
 - **java_expert**: Java development expert with access to formatters and templates.
 
-To load a skill not shown in detail below, use the `load_skill` tool.
+If the server-owned `load_skill` tool is available, use it to load a listed skill by name when runtime skill details are needed.
 
 ### Critical Rules for Using Skills
 
@@ -134,15 +134,15 @@ A central registry responsible for:
 2.  **Resolution**: Identifying the `SKILL.md` and the `root_path`.
 3.  **Retrieval**: Providing access to the skill object.
 
-### C. `LoadSkillTool`
+### C. Server-Owned Skill Tools
 
-A standard Agent Tool enabling autonomy.
+Agent-facing skill access is provided by the server-owned `Skills` tool boundary:
 
-- **Name**: `load_skill`
-- **Arguments**: `skill_name` (string)
-- **Behavior**:
-  1.  Validates the skill exists in `SkillRegistry`.
-  2.  Returns a formatted string containing the `SKILL.md` content, the `root_path`, and any resolvable relative Markdown links already rewritten to absolute filesystem paths.
+- `get_available_skills`: lists available skill names and descriptions.
+- `get_skill_content`: retrieves `SKILL.md` content plus a readable file tree for inspection.
+- `load_skill`: loads one server-managed skill for runtime use, returns the skill base path, path-resolution guidance, and skill content with resolvable relative Markdown links rewritten to absolute filesystem paths.
+
+`load_skill` is intentionally server-owned rather than a core `General` tool. It resolves skills through normal server-managed skill sources/CRUD and does not register arbitrary model-supplied filesystem paths as skills.
 
 ## 3. Configuration & Integration
 
@@ -173,7 +173,7 @@ For flexible agents, skills are discovered on demand.
 - **Config**: `AgentConfig(..., skills=[])` (but `SkillRegistry` has many available)
 - **Behavior**: Only metadata (Name/Description) is in the System Prompt.
 - **Trigger**:
-  - The Agent, upon reading the user's natural language request (e.g., "Use the java skill"), decides to call the **`load_skill`** tool to retrieve the map.
+  - The Agent, upon reading the user's natural language request (e.g., "Use the java skill"), can call the server-owned `load_skill` tool by skill name when that tool is available.
   - No "magic shortcuts" (like `$skill`) are required; it follows standard tool usage patterns.
 
 ## 4. Execution Flow: The Universal "Deep Dive"

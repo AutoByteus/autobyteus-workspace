@@ -16,7 +16,7 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
 
   process(
     systemPrompt: string,
-    _toolInstances: Record<string, BaseTool>,
+    toolInstances: Record<string, BaseTool>,
     agentId: string,
     context: AgentContextLike
   ): string {
@@ -72,7 +72,10 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
     let skillsBlock = '\n\n## Agent Skills\n';
     skillsBlock += '### Skill Catalog\n';
     skillsBlock += `${catalogEntries.join('\n')}\n`;
-    if (skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY) {
+    const hasLoadSkillTool =
+      Object.prototype.hasOwnProperty.call(toolInstances, 'load_skill') ||
+      Object.values(toolInstances).some((toolInstance) => toolInstance.definition?.name === 'load_skill');
+    if (skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY && hasLoadSkillTool) {
       skillsBlock += '\nTo load a skill not shown in detail below, use the `load_skill` tool.\n';
     }
 

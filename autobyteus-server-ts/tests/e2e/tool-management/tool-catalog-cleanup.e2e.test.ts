@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { registerTools } from "autobyteus-ts";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
 
@@ -24,6 +25,7 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
   beforeEach(async () => {
     registrySnapshot = defaultToolRegistry.snapshot();
     defaultToolRegistry.clear();
+    registerTools();
     await loadAllAgentTools();
   });
 
@@ -31,7 +33,7 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     defaultToolRegistry.restore(registrySnapshot);
   });
 
-  it("does not expose MCP wrapper management tools in LOCAL runtime catalog", async () => {
+  it("does not expose removed local tools in LOCAL runtime catalog", async () => {
     const result = await graphql({
       schema,
       source: `
@@ -88,9 +90,27 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     ).toBe(false);
     expect(allToolNames).toContain("get_available_skills");
     expect(allToolNames).toContain("get_skill_content");
+    expect(allToolNames).toContain(["load", "skill"].join("_"));
+
+    const skillsGroup = data.toolsGroupedByCategory.find(
+      (group) => group.categoryName === "Skills",
+    );
+    expect(skillsGroup?.tools.map((tool) => tool.name).sort()).toEqual([
+      "get_available_skills",
+      "get_skill_content",
+      ["load", "skill"].join("_"),
+    ].sort());
+
+    const generalGroup = data.toolsGroupedByCategory.find(
+      (group) => group.categoryName === "General",
+    );
+    expect(generalGroup?.tools.map((tool) => tool.name) ?? []).not.toContain(
+      ["load", "skill"].join("_"),
+    );
     expect(defaultToolRegistry.listToolNames()).toEqual(expect.arrayContaining([
       "get_available_skills",
       "get_skill_content",
+      ["load", "skill"].join("_"),
     ]));
     for (const toolName of removedToolNames) {
       expect(defaultToolRegistry.listToolNames()).not.toContain(toolName);
