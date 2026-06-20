@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/requirements.md`
 - Current Review Round: 1
 - Trigger: Initial code review of the Memory UI compact-header cleanup implementation handed off by `implementation_engineer`.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: N/A
 - API / E2E Execution Started Yet: `No`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`

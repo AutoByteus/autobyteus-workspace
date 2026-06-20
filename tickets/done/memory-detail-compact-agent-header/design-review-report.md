@@ -2,14 +2,14 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review of the Memory UI compact-header cleanup design package.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Current-State Evidence Basis: Upstream artifacts plus direct read of `autobyteus-web/components/memory/MemoryHome.vue`, `AgentMemoryDetail.vue`, `AgentTeamMemoryDetail.vue`, `autobyteus-web/stores/memoryExplorerStore.ts`, `autobyteus-web/pages/memory.vue`, targeted component tests, localization catalogs, and `autobyteus-web/docs/memory.md` in `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header`.
+- Current-State Evidence Basis: Upstream artifacts plus direct read of `autobyteus-web/components/memory/MemoryHome.vue`, `AgentMemoryDetail.vue`, `AgentTeamMemoryDetail.vue`, `autobyteus-web/stores/memoryExplorerStore.ts`, `autobyteus-web/pages/memory.vue`, targeted component tests, localization catalogs, and `autobyteus-web/docs/memory.md` in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 
 ## Round History
 

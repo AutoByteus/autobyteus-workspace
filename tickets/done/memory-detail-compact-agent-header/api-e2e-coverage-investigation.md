@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review pass for Memory UI compact-header cleanup; API/E2E coverage investigation requested.
 - Prior Investigation Reviewed: N/A

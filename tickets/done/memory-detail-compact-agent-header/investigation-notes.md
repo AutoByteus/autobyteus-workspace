@@ -28,10 +28,10 @@ Reference screenshots:
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-detail-compact-agent-header`
 - Current Branch: `codex/memory-detail-compact-agent-header`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` completed successfully on 2026-06-20.
 - Task Branch: `codex/memory-detail-compact-agent-header`
@@ -47,7 +47,7 @@ Reference screenshots:
 | 2026-06-20 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v && git branch --show-current` | Bootstrap environment discovery | Current user checkout is git repo on `personal` tracking `origin/personal`, with unrelated untracked files. | No |
 | 2026-06-20 | Command | `git remote show origin` | Resolve default/base branch | Origin HEAD branch is `personal`. | No |
 | 2026-06-20 | Command | `git fetch origin --prune` | Refresh tracked remote state before ticket branch creation | Fetch completed successfully. | No |
-| 2026-06-20 | Command | `git worktree add -b codex/memory-detail-compact-agent-header /Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header origin/personal` | Create dedicated task worktree/branch | Worktree created at latest `origin/personal` (`70f94156`). | No |
+| 2026-06-20 | Command | `git worktree add -b codex/memory-detail-compact-agent-header /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task worktree/branch | Worktree created at latest `origin/personal` (`70f94156`). | No |
 | 2026-06-20 | Other | User detail screenshots listed in Request Context | Understand visual complaint and desired direction | Top agent summary card is oversized relative to displayed content; user suggests replacing `Runs` heading with `Codex` and removing top block. | No |
 | 2026-06-20 | Other | User home screenshot listed in Request Context | Understand follow-up redundancy complaint | Memory Home repeats `Memory` in page content while sidebar already has `Memory` selected. | No |
 | 2026-06-20 | Code | `autobyteus-web/components/memory/AgentMemoryDetail.vue` | Locate agent detail summary/header implementation | Lines 3-15 render back link, large summary card (`Agent`, `agentName`, `total runs`, `ID`) and generic `Runs` list heading. `agentName` and `agentStableId` are computed from store/route. | Implement compact detail layout here. |
