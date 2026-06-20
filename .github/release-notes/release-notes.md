@@ -1,6 +1,7 @@
 ## Improvements
-- Cleaned up the Memory page with concise `Agents` and `Agent Teams` tabs, shorter search placeholders, compact card metadata, and streamlined agent/team detail headings.
-- Simplified Memory detail and inspector navigation labels while preserving search, pagination, route restoration, memory badges, timestamps, workspace context, and raw-trace access.
+- Improved desktop update reliability on macOS by moving the app to the latest reviewed stable Electron runtime.
+- Improved desktop packaging validation so native terminal support is rebuilt against the packaged Electron runtime.
+- Improved release-readiness guidance for future desktop runtime upgrades.
 
-## Documentation
-- Updated the Memory page documentation to describe the final concise labels, compact metadata, and single-title inspector behavior.
+## Fixes
+- Fixed a stale desktop packaging baseline that could miss upstream Electron updater-helper fixes.
