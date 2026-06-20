@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/design-review-report.md`
 
 ## What Changed
 

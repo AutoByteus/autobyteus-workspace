@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/simplify-provided-tools/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-provided-tools/tickets/done/simplify-provided-tools/design-spec.md`
 - Current Review Round: 5
 - Trigger: Superseding user clarification: `load_skill` and `get_skill_content` are different tools; migrate `load_skill` from core/General into server-owned Skills as a distinct `load_skill` tool instead of deleting or folding it.
 - Prior Review Round Reviewed: Round 4 design-review report at the same canonical path.
