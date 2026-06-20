@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/in-progress/memory-detail-compact-agent-header/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/in-progress/memory-detail-compact-agent-header/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/in-progress/memory-detail-compact-agent-header/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review of the Memory UI compact-header cleanup design package.
 - Prior Review Round Reviewed: N/A

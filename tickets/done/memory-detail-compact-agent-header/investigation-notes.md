@@ -29,7 +29,7 @@ Reference screenshots:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/in-progress/memory-detail-compact-agent-header`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header/tickets/done/memory-detail-compact-agent-header`
 - Current Branch: `codex/memory-detail-compact-agent-header`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-detail-compact-agent-header`
 - Bootstrap Base Branch: `origin/personal`
