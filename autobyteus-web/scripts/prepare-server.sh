@@ -325,12 +325,7 @@ fi
 
 echo -e "\n${YELLOW}Rebuilding native modules for Electron...${NC}"
 ELECTRON_VERSION=$(node -p "require('${WEB_ROOT}/package.json').devDependencies.electron.replace(/^\\^/, '')")
-if pnpm -C "$WEB_ROOT" exec electron-rebuild --version >/dev/null 2>&1; then
-  pnpm -C "$WEB_ROOT" exec electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
-else
-  echo -e "${YELLOW}electron-rebuild not found in project dependencies; using pnpm dlx fallback...${NC}"
-  pnpm -C "$WEB_ROOT" dlx electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
-fi
+pnpm -C "$WEB_ROOT" exec electron-rebuild -v "$ELECTRON_VERSION" -m "$TARGET_DIR" -w node-pty
 
 echo -e "\n${YELLOW}Normalizing node-pty spawn-helper execute bits...${NC}"
 normalize_node_pty_spawn_helpers

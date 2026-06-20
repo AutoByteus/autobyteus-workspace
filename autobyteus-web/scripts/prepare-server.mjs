@@ -525,12 +525,7 @@ async function rebuildNativeModulesForElectron() {
   const electronVersion = getElectronVersionSpecifier(webManifest)
   const args = ['-v', electronVersion, '-m', targetDir, '-w', 'node-pty']
 
-  try {
-    await runCommand('pnpm', ['-C', webRoot, 'exec', 'electron-rebuild', ...args])
-  } catch {
-    warn('electron-rebuild not found in project dependencies; using pnpm dlx fallback...')
-    await runCommand('pnpm', ['-C', webRoot, 'dlx', 'electron-rebuild', ...args])
-  }
+  await runCommand('pnpm', ['-C', webRoot, 'exec', 'electron-rebuild', ...args])
 
   warn('\nNormalizing node-pty spawn-helper execute bits...')
   await normalizeNodePtySpawnHelpers(path.join(targetDir, 'node_modules'))

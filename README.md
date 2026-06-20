@@ -325,6 +325,9 @@ pnpm android:server:stop
   - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
   - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
   - The desktop, Android, and messaging-gateway release workflows enforce those checks and fail on mismatch.
+- Desktop Electron runtime baseline validation is mandatory:
+  - `autobyteus-web/package.json` pins the reviewed Electron runtime exactly, and the root `pnpm-lock.yaml` is the canonical workspace lockfile.
+  - Electron baseline changes must be validated with native-module rebuild evidence, focused Electron tests, and a desktop package smoke build because Chromium, Node.js, native-module ABI, packaging, and updater behavior change together.
 - Repository artifact hygiene is mandatory:
   - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, and checkout-risk path lengths.
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.

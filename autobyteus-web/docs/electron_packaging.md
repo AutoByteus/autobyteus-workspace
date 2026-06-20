@@ -286,6 +286,26 @@ Flavor resolution:
   2. Git context inference (`personal` / `enterprise` branch detection)
   3. Safe fallback: `enterprise`
 
+### Electron Runtime Baseline
+
+The desktop runtime is pinned in `autobyteus-web/package.json` as exact
+`electron@42.4.1`. Keep this as an explicit, reviewed runtime baseline instead
+of a semver range or minimum-fixed-version pin because Electron major upgrades
+change Chromium, Node.js, native-module ABI, packaging behavior, and updater
+behavior together.
+
+When the Electron baseline changes:
+
+- update `autobyteus-web/package.json` and the root workspace `pnpm-lock.yaml`
+  together;
+- treat the repository-root `pnpm-lock.yaml` as the canonical lockfile for the
+  workspace and do not reintroduce a package-local `autobyteus-web/pnpm-lock.yaml`;
+- validate the installed Electron package metadata and the packaged app bundle
+  report the intended Electron version;
+- rebuild native modules for the target Electron ABI before packaging;
+- run focused Electron tests plus at least one desktop package smoke build before
+  claiming release readiness.
+
 ### Build Commands
 
 ```bash
@@ -304,7 +324,7 @@ npx ts-node build/scripts/build.ts --mac
 npx ts-node build/scripts/build.ts
 ```
 
-`scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime.
+`scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
 For macOS terminal packaging, every `node-pty` `spawn-helper` found under the staged server `node_modules` must be executable before the app is packed. The packaging hooks normalize all matching helper files rather than only one architecture-specific path, because `node-pty` may select `prebuilds/darwin-x64`, `prebuilds/darwin-arm64`, or a build directory depending on the packaged runtime. The runtime guard in `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` still repairs the selected helper at startup, but packaging should ship the selected helper already executable.
