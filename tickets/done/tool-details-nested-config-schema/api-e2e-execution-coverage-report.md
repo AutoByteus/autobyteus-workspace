@@ -2,38 +2,39 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
-- Current Execution Round: 1
-- Trigger: Coverage investigation authorized focused API/E2E validation plus a durable API boundary coverage update after code review.
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
+- Current Execution Round: 2
+- Trigger: User requested README-based backend/frontend startup and live browser verification after round 1 API/E2E handoff.
+- Prior Round Reviewed: Round 1 in this same report path.
+- Latest Authoritative Round: 2
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial API/E2E coverage execution after code review pass | N/A | Initial added media GraphQL e2e run failed before test collection because the file needed `reflect-metadata` when importing GraphQL schema builders; fixed locally in coverage code and rerun passed. Codegen remained environment-blocked at the configured `localhost:8000` endpoint. | Pass with codegen caveat | Yes | Durable coverage was updated, so delivery must wait for code-review re-review. |
+| 1 | Initial API/E2E coverage execution after code review pass | N/A | Initial added media GraphQL e2e run failed before test collection because the file needed `reflect-metadata` when importing GraphQL schema builders; fixed locally in coverage code and rerun passed. Codegen remained environment-blocked at the configured `localhost:8000` endpoint. | Pass with codegen caveat | No | Durable coverage was updated, so delivery had to wait for code-review re-review. |
+| 2 | User-requested README-based live backend/frontend/browser smoke | Round 1 codegen caveat rechecked against a newly started updated backend on port 8000. | None unresolved. | Pass | Yes | Live browser smoke proved Tool Details displays nested rows and still displays them after Reload Schema; codegen succeeded against the updated backend. |
 
 ## Execution Basis
 
-Execution followed the coverage investigation decisions. The main boundary that lacked API/E2E coverage was the GraphQL `tools(origin: LOCAL)` API projection for nested object parameter schema. Existing converter/unit and frontend component coverage was retained and executed for backend projection and UI rendering/reload behavior.
+Execution followed the coverage investigation decisions. The main boundary that lacked API/E2E coverage was the GraphQL `tools(origin: LOCAL)` API projection for nested object parameter schema. Existing converter/unit and frontend component coverage was retained and executed for backend projection and UI rendering/reload behavior. Round 2 additionally followed the README startup path for a live backend plus Nuxt frontend browser smoke.
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
 - Stale or obsolete coverage found: `No`
 - New durable coverage needed: `Yes`
 - Reroute required from investigation: `No`
-- Notes: The investigation explicitly decided to add API-001 coverage to the existing mocked media e2e file and to route back through code review afterward.
+- Notes: Round 1 explicitly decided to add API-001 coverage to the existing mocked media e2e file and to route back through code review afterward. Round 2 updated the investigation with BROWSER-001 live browser validation and codegen regeneration now that an updated backend endpoint was available.
 
 ## Existing Durable Coverage Decision Summary
 
@@ -83,11 +84,12 @@ No native desktop lifecycle, upgrade, restart, or migration behavior is in scope
 | UI-001 | REQ-002, REQ-003, REQ-004, AC-001 through AC-004 | Frontend mapper/component | `autobyteus-web/components/tools/__tests__/toolParameterDisplayRows.spec.ts`, `ToolDetailsModal.spec.ts` | Pass | Nested `generation_config.voice`, `format`, `instructions`, enum/default/required metadata, and parent path display validated. |
 | UI-002 | REQ-005, REQ-006, AC-005, AC-007 | Frontend parent-wired component | `autobyteus-web/components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts` | Pass | Already-open modal rerenders from returned tool after Reload Schema. |
 | BUILD-001 | Alignment/build confidence | Backend build | N/A | Pass | `pnpm -C autobyteus-server-ts run build` passed. |
-| CODEGEN-001 | Frontend generated artifact regeneration caveat | Codegen endpoint | N/A | Blocked by environment | `pnpm -C autobyteus-web codegen` failed with `ECONNREFUSED` at `http://localhost:8000/graphql`; `localhost:29695` was reachable but stale/unsuitable because introspection lacked `ToolParameterDefinition.jsonSchema`. |
+| CODEGEN-001 | Frontend generated artifact regeneration caveat | Codegen endpoint | `autobyteus-web/generated/graphql.ts` | Pass in round 2 | Round 1 failed because `http://localhost:8000/graphql` was not running. Round 2 started the updated backend on port 8000 and `pnpm -C autobyteus-web codegen` succeeded. |
+| BROWSER-001 | AC-001, AC-002, AC-003, AC-005, AC-007 | Live browser UI against README-started backend/frontend | Temporary browser smoke evidence | Pass | Browser opened `http://127.0.0.1:3000/tools`, searched `generate_speech`, opened Tool Details, observed nested `generation_config.voice`, `generation_config.format`, `generation_config.instructions`, enum/default metadata, clicked Reload Schema, and observed nested rows remained visible. Screenshot artifact: `/Users/normy/.autobyteus/browser-artifacts/dd974f-1781954592644.png`. |
 
 ## Test Scope
 
-Focused validation covered the changed backend GraphQL projection, API query boundary, frontend display-row derivation, Tool Details modal rendering, and parent-owned selected-tool reload synchronization. It intentionally did not cover paid OpenAI execution, runtime MCP schema-cache refresh, broad frontend typecheck failures already recorded as unrelated, or full browser app E2E.
+Focused validation covered the changed backend GraphQL projection, API query boundary, frontend display-row derivation, Tool Details modal rendering, parent-owned selected-tool reload synchronization, regenerated frontend GraphQL types, and a live browser smoke of the actual Tools page. It intentionally did not cover paid OpenAI execution, runtime MCP schema-cache refresh, or broad frontend typecheck failures already recorded as unrelated.
 
 ## Execution Setup / Environment
 
@@ -95,6 +97,10 @@ Focused validation covered the changed backend GraphQL projection, API query bou
 - Used existing installed workspace dependencies from implementation.
 - Backend media API/E2E uses Vitest mocks for `app-config-provider`, `ImageClientFactory`, and `AudioClientFactory`; no paid external provider call is made.
 - The added GraphQL API/E2E test builds the in-process schema with `buildGraphqlSchema()` and executes `tools(origin: LOCAL)` via the same GraphQL package resolution pattern already used by existing GraphQL e2e tests.
+- Round 2 live setup followed README guidance:
+  - Backend: `node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-tool-details-live-data --host 127.0.0.1 --port 8000`.
+  - Frontend: `pnpm -C autobyteus-web dev --host 127.0.0.1 --port 3000`.
+  - Temporary backend data dir contained `.env` with `DEFAULT_SPEECH_GENERATION_MODEL=gpt-4o-mini-tts`; the live GraphQL response confirmed the updated backend exposed `ToolParameterDefinition.jsonSchema`.
 
 ## Tests Implemented Or Updated
 
@@ -102,6 +108,7 @@ Focused validation covered the changed backend GraphQL projection, API query bou
   - Added `reflect-metadata`, in-process GraphQL schema setup, and a mocked OpenAI TTS parameter schema fixture.
   - Added `exposes nested generate_speech generation_config schema through the GraphQL tools query`.
   - The new scenario verifies that `generate_speech` has top-level `generation_config`, that `voice` is not a top-level parameter, and that `generation_config.jsonSchema.properties` contains `voice`, `format`, and `instructions` with enum/default metadata.
+- Regenerated `autobyteus-web/generated/graphql.ts` in round 2 by running `pnpm -C autobyteus-web codegen` against the updated live backend on port 8000.
 
 ## Tests Removed As Stale Or Obsolete
 
@@ -114,18 +121,20 @@ Focused validation covered the changed backend GraphQL projection, API query bou
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`
 - Paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts`
+- Other repository-resident artifact regenerated in round 2:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/generated/graphql.ts`
 - Paths removed: None
-- If `Yes`, returned through `code_reviewer` before delivery: `No (pending; this handoff is being routed to code_reviewer and must pass before delivery)`
+- If `Yes`, returned through `code_reviewer` before delivery: `No (pending; this updated handoff is being routed to code_reviewer and must pass before delivery resumes)`
 - Post-API/E2E coverage code review artifact: Pending `code_reviewer` follow-up.
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
-- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 
-No temporary repository files or harnesses remain. The GraphQL API/E2E harness is durable test code in the updated media e2e file.
+No temporary repository files or harnesses remain. The GraphQL API/E2E harness is durable test code in the updated media e2e file. Round 2 browser automation used temporary local processes and a temporary backend data directory under `/tmp/autobyteus-tool-details-live-data`.
 
 ## Dependencies Mocked Or Emulated
 
@@ -137,7 +146,7 @@ No temporary repository files or harnesses remain. The GraphQL API/E2E harness i
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | First execution round. |
+| 1 | Codegen endpoint unavailable at `http://localhost:8000/graphql` | Environment blocker / caveat | Resolved in round 2 by starting the updated backend on port 8000 and rerunning codegen successfully. | `pnpm -C autobyteus-web codegen` passed in round 2. | The generated artifact is no longer only manually aligned. |
 
 ## Scenarios Checked
 
@@ -153,21 +162,28 @@ No temporary repository files or harnesses remain. The GraphQL API/E2E harness i
   - Result: pass.
 - `git diff --check`
   - Result: pass.
+- `pnpm -C autobyteus-web codegen`
+  - Result: pass in round 2 after starting the updated backend on `http://127.0.0.1:8000`.
+- Live browser smoke with the README-started frontend on `http://127.0.0.1:3000/tools`
+  - Result: pass. DOM evidence showed `generation_config.voice`, `generation_config.format`, `generation_config.instructions`, OpenAI voice enum values, default values, and the rows remained visible after clicking Reload Schema.
+- `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/tools/__tests__/toolParameterDisplayRows.spec.ts components/tools/__tests__/ToolDetailsModal.spec.ts components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts`
+  - Result: pass again after codegen, 3 files / 4 tests.
 
 ### Commands / Probes Blocked Or Failed For Known Reasons
 
 - Initial `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/media/server-owned-media-tools.e2e.test.ts`
   - Result: failed before test collection with TypeGraphQL reflect-metadata polyfill error after adding GraphQL schema building to the e2e file.
   - Resolution: imported `reflect-metadata` in the test file, reran, and the updated media e2e suite passed.
-- `pnpm -C autobyteus-web codegen`
-  - Result: failed because configured `http://localhost:8000/graphql` was not reachable (`ECONNREFUSED`).
-  - Follow-up probe: `http://localhost:29695/graphql` was reachable, but introspection showed `ToolParameterDefinition` did not include `jsonSchema`, so it was a stale/unsuitable schema endpoint and was intentionally not used for codegen.
+- Prior round `pnpm -C autobyteus-web codegen` blocker
+  - Result: resolved in round 2 by starting the updated backend on port 8000; codegen then passed.
 
 ## Passed
 
 - API/E2E GraphQL boundary for nested `generate_speech.generation_config` schema.
 - Backend converter projection coverage.
 - Frontend nested row mapping, modal rendering, and open-modal reload synchronization coverage.
+- Live browser UI smoke against README-started backend and frontend.
+- Frontend GraphQL codegen regeneration against the updated backend.
 - Server build.
 - Diff whitespace check.
 
@@ -177,19 +193,20 @@ None unresolved.
 
 ## Not Tested / Out Of Scope
 
-- Full browser E2E against a running Nuxt app and backend: not required for this read-only modal display fix because API boundary and UI behavior are covered separately by durable executable tests.
+- Full browser smoke against a running Nuxt app and backend: completed in round 2. No broader scripted cross-browser suite was added because durable repeatable assertions already exist in API/component tests.
 - Real OpenAI paid speech-generation call: out of scope.
 - Runtime Agent Tools MCP schema cache behavior: out of scope.
 - Broad frontend `nuxi typecheck`: still blocked by pre-existing unrelated errors per implementation/code-review artifacts; not rerun here.
 
 ## Blocked
 
-- Frontend GraphQL codegen regeneration remains blocked at the configured default endpoint (`http://localhost:8000/graphql`). A reachable alternative endpoint on `localhost:29695` was stale/unsuitable because it lacked the new `jsonSchema` field in introspection.
+- None unresolved. The earlier frontend GraphQL codegen blocker is resolved in round 2.
 
 ## Cleanup Performed
 
-- No temporary files or scaffolding added.
-- No external services were started.
+- Round 2 started temporary local backend/frontend processes for live validation. They were stopped after browser smoke and codegen.
+- Removed temporary backend data directory `/tmp/autobyteus-tool-details-live-data` after validation.
+- Temporary browser artifact captured at `/Users/normy/.autobyteus/browser-artifacts/dd974f-1781954592644.png`.
 - No paid/external provider calls were made.
 
 ## Classification
@@ -201,11 +218,12 @@ None unresolved.
 
 ## Recommended Recipient
 
-`code_reviewer` — repository-resident durable coverage was updated after the prior code review and must be re-reviewed before delivery.
+`code_reviewer` — repository-resident durable coverage was updated after the prior code review, and round 2 regenerated `autobyteus-web/generated/graphql.ts`; these changes must be re-reviewed before delivery resumes.
 
 ## Evidence / Notes
 
 - The added API/E2E scenario directly verifies the approved reported shape at the GraphQL boundary: nested `voice`, `format`, and `instructions` live under `generation_config.jsonSchema.properties` for the configured `gpt-4o-mini-tts` speech model, and `voice` is not exposed as a top-level parameter.
+- The live browser smoke directly verified the user-visible Tools UI: Tool Details for `generate_speech` displayed nested `generation_config.voice`, `generation_config.format`, and `generation_config.instructions`, including enum/default metadata. After clicking Reload Schema, the already-open modal still displayed those nested rows.
 - No stale or obsolete coverage was found or removed.
 - No compatibility wrapper, dual path, legacy fallback, or provider-specific frontend hard-coding was observed.
 
@@ -213,4 +231,4 @@ None unresolved.
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: API/E2E validation passed with a known codegen endpoint caveat. Because durable coverage was updated, route back to `code_reviewer` before delivery.
+- Notes: API/E2E validation passed; round 2 live browser smoke passed and codegen now succeeds against the updated backend. Because durable coverage and a generated repository artifact changed after code review, route back to `code_reviewer` before delivery resumes.

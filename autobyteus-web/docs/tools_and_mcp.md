@@ -31,6 +31,7 @@ autobyteus-web/
 │   ├── ToolList.vue                    # Tool listing by category
 │   ├── ToolCard.vue                    # Individual tool display
 │   ├── ToolDetailsModal.vue            # Tool schema modal
+│   ├── toolParameterDisplayRows.ts     # Flat + nested parameter display rows
 │   ├── ToolsConfirmationModal.vue      # Delete confirmation dialog
 │   ├── McpManagementTabs.vue           # MCP Servers / MCP Gateway tab switcher
 │   ├── McpGatewayPanel.vue             # General MCP gateway endpoint and client config
@@ -125,8 +126,17 @@ interface ToolParameter {
   required: boolean;
   defaultValue: string | null;
   enumValues: string[] | null;
+  jsonSchema: Record<string, unknown> | null;
 }
 ```
+
+`jsonSchema` contains the JSON Schema property for that specific parameter as
+projected by the backend GraphQL tool-definition boundary. Object parameters can
+therefore carry nested `properties` and `required` metadata without flattening
+the invocation contract. For example, `generate_speech.generation_config` stays
+one top-level argument, while the modal can render nested rows such as
+`generation_config.voice`, `generation_config.format`, and
+`generation_config.instructions` beneath it.
 
 ### MCP Server
 
@@ -229,6 +239,25 @@ Displays tools grouped by category:
 - Search filtering by name/description
 - Optional back button for nested views
 
+### ToolDetailsModal.vue
+
+Displays each tool's parameter schema. The modal starts from
+`argumentSchema.parameters` and uses `toolParameterDisplayRows.ts` to derive a
+bounded display list:
+
+- top-level parameters remain top-level rows
+- object-parameter `jsonSchema.properties` are rendered as indented child rows
+  with their full dotted path shown for contract clarity
+- nested rows reuse JSON Schema metadata where available, including type,
+  `required`, description, default, and enum values
+- nested object properties are shown under their owning object parameter and are
+  not promoted to top-level invocation arguments
+
+When Reload Schema succeeds, the modal emits the returned tool to
+`ToolsManagementWorkspace.vue`. The workspace owns the selected tool reference
+and replaces it with the returned tool when the name matches, so an already-open
+modal rerenders from the fresh schema without requiring close/reopen.
+
 ### McpServerFormModal.vue
 
 Full-featured MCP server configuration:
@@ -303,7 +332,11 @@ Import multiple MCP servers from JSON:
 query GetTools($origin: ToolOriginEnum, $sourceServerId: String) {
   tools(origin: $origin, sourceServerId: $sourceServerId) {
     name, description, origin, category
-    argumentSchema { parameters { name, paramType, required, ... } }
+    argumentSchema {
+      parameters {
+        name, paramType, description, required, defaultValue, enumValues, jsonSchema
+      }
+    }
   }
 }
 
@@ -311,7 +344,14 @@ query GetTools($origin: ToolOriginEnum, $sourceServerId: String) {
 query GetToolsGroupedByCategory($origin: ToolOriginEnum!) {
   toolsGroupedByCategory(origin: $origin) {
     categoryName
-    tools { name, description, origin, category, argumentSchema { ... } }
+    tools {
+      name, description, origin, category
+      argumentSchema {
+        parameters {
+          name, paramType, description, required, defaultValue, enumValues, jsonSchema
+        }
+      }
+    }
   }
 }
 ```
@@ -431,8 +471,11 @@ sequenceDiagram
 1. User views a tool in ToolDetailsModal
 2. User clicks "Reload Schema" button
 3. `reloadToolSchema(toolName)` mutation is called
-4. Updated schema is returned and displayed
-5. Toast notification confirms success/failure
+4. Store collections are immutably updated from the returned tool
+5. ToolDetailsModal emits the returned tool to the workspace
+6. The workspace replaces its selected tool reference when the name matches
+7. Updated schema is displayed in-place, including nested object properties
+8. Toast notification confirms success/failure
 
 ## MCP Transport Types
 

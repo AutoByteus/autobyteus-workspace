@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/tool-details-nested-config-schema/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: Code review passed and routed the review-passed implementation to API/E2E coverage investigation and execution.
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/code-review-report.md`
+- Current Investigation Round: 2
+- Trigger: User requested full README-based backend/frontend startup and live browser verification after round 1 API/E2E handoff.
+- Prior Investigation Reviewed: Round 1 in this same report path.
+- Latest Authoritative Investigation: Round 2
 
 ## Current Requirement And Design Basis
 
@@ -77,13 +77,14 @@ The implementation handoff's `Legacy / Compatibility Removal Check` is clean: no
 | TEMP-002 | Execute focused frontend Nuxt/Vitest component tests for mapper, modal rendering, and reload synchronization. | Confirms UI behavior without standing up a browser app. | Component tests are durable; no extra temporary browser harness needed for this read-only display path. |
 | TEMP-003 | Run `pnpm -C autobyteus-web codegen` only if a schema endpoint is reachable; otherwise record endpoint blockage. | Confirms generated types can be regenerated. | Codegen is an environment check; no temporary test artifact should remain. |
 | TEMP-004 | Run `git diff --check`. | Confirms patch formatting and no whitespace errors. | Formatting check evidence only. |
+| BROWSER-001 | Follow README startup: run the built backend on `http://127.0.0.1:8000`, run Nuxt dev frontend on `http://127.0.0.1:3000`, open `/tools`, search `generate_speech`, open Tool Details, verify nested rows and Reload Schema behavior. | Proves the real browser UI consumes the updated backend GraphQL schema and displays `generation_config.voice`, `format`, and `instructions` under `generation_config`; proves reload keeps rows visible in the already-open modal. | This is live smoke evidence for this task; existing durable component/API tests retain the repeatable assertions. |
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Live browser E2E against a running Nuxt UI and backend | Existing durable component tests cover the Tools UI rendering/reload boundary; the API boundary will be covered in-process via GraphQL. Full app E2E setup would add cost without materially increasing confidence for this read-only modal display fix. | Low: split coverage still proves backend API data and frontend rendering/reload behavior. | None unless downstream delivery requires a full manual/browser smoke. |
-| `pnpm -C autobyteus-web codegen` against `http://localhost:8000/graphql` | Implementation handoff and code review state no suitable backend endpoint was reachable. | Medium manual-generated-file drift risk, already reviewed. | Attempt if endpoint becomes available; otherwise delivery should record the caveat. |
+| Live browser E2E against a running Nuxt UI and backend | Round 2 executed this via BROWSER-001. | Closed. | Evidence is recorded in the execution coverage report. |
+| `pnpm -C autobyteus-web codegen` against `http://localhost:8000/graphql` | Round 2 made a suitable updated backend available on port 8000 and codegen succeeded. | Closed. | Evidence is recorded in the execution coverage report. |
 | Broad frontend `nuxi typecheck` | Implementation handoff records unrelated pre-existing app/test type errors. | Low for this change because focused tests compile changed code paths. | No reroute; delivery may preserve residual caveat. |
 | Runtime Agent Tools MCP schema-cache behavior | Explicitly out of scope. | None for approved ticket. | No coverage or reroute. |
 | Real paid OpenAI speech generation call | Explicitly out of scope. | None for approved ticket. | No coverage or reroute. |
@@ -104,8 +105,13 @@ The implementation handoff's `Legacy / Compatibility Removal Check` is clean: no
 3. Run focused frontend checks:
    - `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/tools/__tests__/toolParameterDisplayRows.spec.ts components/tools/__tests__/ToolDetailsModal.spec.ts components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts`
 4. Attempt codegen only if practical; otherwise record the endpoint blockage inherited from implementation.
-5. Run `git diff --check`.
-6. Write the execution coverage report with evidence and route back to `code_reviewer` because repository-resident durable coverage was updated after the prior code review.
+5. Round 2 live browser smoke:
+   - Start backend according to README using `node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-tool-details-live-data --host 127.0.0.1 --port 8000`.
+   - Start frontend according to README using `pnpm -C autobyteus-web dev --host 127.0.0.1 --port 3000`.
+   - Open `http://127.0.0.1:3000/tools`, search `generate_speech`, open Tool Details, verify nested `generation_config.voice`, `generation_config.format`, `generation_config.instructions`, enum/default metadata, and Reload Schema.
+   - Run `pnpm -C autobyteus-web codegen` against the updated backend endpoint.
+6. Run `git diff --check`.
+7. Write the execution coverage report with evidence and route back to `code_reviewer` because repository-resident durable coverage was updated after the prior code review and round 2 regenerated a repository-resident generated artifact.
 
 ## Investigation Decision
 
@@ -113,4 +119,4 @@ The implementation handoff's `Legacy / Compatibility Removal Check` is clean: no
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
-- Notes: Durable API/E2E coverage is required for the GraphQL query boundary. Because this modifies repository-resident coverage after code review, a pass must return to `code_reviewer` before delivery.
+- Notes: Durable API/E2E coverage is required for the GraphQL query boundary. Round 2 adds live browser smoke evidence and resolves the earlier codegen caveat. Because repository-resident coverage was updated after code review and `autobyteus-web/generated/graphql.ts` was regenerated in round 2, a pass must return to `code_reviewer` before delivery resumes.
