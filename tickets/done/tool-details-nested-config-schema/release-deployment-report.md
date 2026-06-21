@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-Pre-verification delivery handoff only. Repository finalization, ticket archival, branch push, merge to `personal`, version bump, release tag, publication, deployment, and cleanup are intentionally held until explicit user verification/completion is received.
+Repository finalization and release completed. The ticket branch was merged to `personal`, release `v1.3.69` was created and pushed, and ticket worktree/branch cleanup completed.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Summary records the integrated latest-base state, API/E2E round-2 browser/codegen evidence, code review round-3 pass, implementation behavior, docs sync, validation evidence, cumulative artifacts, and verification/finalization plan.
 
@@ -36,7 +36,7 @@ Pre-verification delivery handoff only. Repository finalization, ticket archival
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/tools_and_mcp.md`.
 - No-impact rationale (if applicable): N/A — docs impact existed and was addressed.
@@ -44,51 +44,51 @@ Pre-verification delivery handoff only. Repository finalization, ticket archival
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes` for the finalization commit in progress
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema`
 
 ## Version / Tag / Release Commit
 
 - Current upstream version/tag context after integration: latest tracked base includes package version `1.3.68` and tag `v1.3.68` from unrelated prior release work.
-- Candidate next release version if user requests release after verification: next patch after current base, expected `1.3.69` unless `origin/personal` advances again before finalization.
-- Version bump result: Not performed.
-- Release commit: Not performed.
-- Release tag: Not performed.
-- Release notes prepared before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/release-notes.md`.
+- Release version: `1.3.69`
+- Version bump result: `Completed` — `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` updated to `1.3.69`.
+- Release commit: `0d20dd4de08a6158d22767a82b56b9dfbfe38c9c` (`chore(release): bump workspace release version to 1.3.69`)
+- Release tag: `v1.3.69` (tag object `f15aad444363086d659fe1d84a77f921ccf8c39f`, target `0d20dd4de08a6158d22767a82b56b9dfbfe38c9c`)
+- Release notes prepared and used: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-notes.md`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
 - Ticket branch: `codex/tool-details-nested-config-schema`
-- Ticket branch commit result: `In progress` — finalization commit will archive ticket artifacts after user verification. Pre-verification checkpoint and merge commits exist locally (`b8d1130a2085943d37841c0ac81014654de2ab3a`, `8e58c0917699b015eb58f3a59e788f975a4769f9`).
-- Ticket branch push result: Not performed — held for user verification.
+- Ticket branch commit result: `Completed` — archive/finalization commit `34346b37cfd5` after checkpoint `b8d1130a2085` and integration merge `8e58c0917699`.
+- Ticket branch push result: `Completed` — pushed `origin/codex/tool-details-nested-config-schema` before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A — verification not yet received.
-- Delivery-owned edits protected before re-integration: `Not needed` yet; will be required if finalization-time remote refresh advances the target.
-- Re-integration before final merge result: `Not needed` yet.
-- Target branch update result: Not performed.
-- Merge into target result: Not performed.
-- Push target branch result: Not performed.
-- Repository finalization status: `In progress` after user verification.
-- Blocker (if applicable): N/A at finalization-commit stage; release and cleanup still pending.
+- Target advanced after user verification: `No`
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed` — latest `origin/personal` remained unchanged before target merge.
+- Target branch update result: `Completed` — local `personal` was already current with `origin/personal` before fast-forward merge, then advanced through the release commit and final report commit.
+- Merge into target result: `Completed` — fast-forward merge of `codex/tool-details-nested-config-schema` into `personal`.
+- Push target branch result: `Completed` — pushed after ticket merge, pushed by release helper with `v1.3.69`, and pushed again after final delivery report update.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes` if the user asks to finalize and release after verifying; otherwise repository finalization can proceed without release only if directed.
 - Method: `Release Script`
 - Method reference / command: Planned after repository finalization if release is requested: `pnpm release <next-version> -- --release-notes tickets/done/tool-details-nested-config-schema/release-notes.md`.
-- Release/publication/deployment result: `Not required` pre-verification; not run.
-- Release notes handoff result: `Not required` pre-verification; release notes are prepared for later use if release is requested.
-- Blocker (if applicable): N/A at finalization-commit stage; release still pending.
+- Release/publication/deployment result: `Completed` — release helper pushed `personal` and annotated tag `v1.3.69`.
+- Release notes handoff result: `Used`
+- Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema`
-- Worktree cleanup result: `Not required` pre-verification.
-- Worktree prune result: `Not required` pre-verification.
-- Local ticket branch cleanup result: `Not required` pre-verification.
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is unsafe until finalization/release status is known.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -98,8 +98,8 @@ Pre-verification delivery handoff only. Repository finalization, ticket archival
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/release-notes.md`
-- Archived release notes artifact used for release/publication: N/A until ticket is moved to `tickets/done` after user verification.
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-notes.md`
 - Release notes status: `Updated`
 
 ## User-Requested Electron Build
@@ -109,19 +109,19 @@ Pre-verification delivery handoff only. Repository finalization, ticket archival
 - Fresh-output step: removed `autobyteus-web/electron-dist` immediately before running the build.
 - Result: `Completed`
 - Version/flavor: `1.3.68` / `enterprise`
-- Build output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Test DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.dmg`
-- Test ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.zip`
+- Build output directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Test DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.dmg`
+- Test ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.zip`
 - DMG SHA-256: `d38e6464570b962e9b80ebd39a3bddb690c1038061a3e09e572587d7c0ad15b0`
 - ZIP SHA-256: `a9c5d14fc980849381a235f661c8a2a973e436877b3546d4c1e8ad6d1f1cc9df`
 - Signing/notarization: local unsigned build; electron-builder logged `skipped macOS code signing  reason=identity explicitly is set to null`.
-- Notes: This was a pre-verification local build only. No repository finalization, version bump, tag, release workflow, deployment, or cleanup was performed.
+- Notes: This was a pre-verification local build used for user testing. The dedicated ticket worktree containing these local artifacts was removed during post-finalization cleanup after the user confirmed the build worked. The official release artifacts are produced by the tag-triggered release workflows for `v1.3.69`.
 - Non-blocking warnings: existing localization module-type warning, Nuxt/Rollup chunk-size warnings, pnpm deploy peer/deprecated dependency warnings, Prisma update tips, ignored build-script warning for deployed `autobyteus-ts@file:autobyteus-ts`, and unsigned local macOS packaging.
 
 ## Deployment Steps
 
-None run pre-verification. If user requests release after verification, refresh `origin/personal`, protect delivery edits if needed, re-integrate if the target advanced, obtain renewed verification if the handoff state materially changes, then archive ticket artifacts, commit/push the ticket branch, merge into `personal`, push `personal`, run the release helper with archived release notes, push tag/release outputs, and clean up the dedicated ticket worktree/branches after safety is confirmed.
+Pushed `personal` with the finalized ticket merge. Ran `pnpm release 1.3.69 -- --release-notes tickets/done/tool-details-nested-config-schema/release-notes.md`. The release helper bumped package versions, synced curated release notes and managed messaging manifest, committed the release version, created annotated tag `v1.3.69`, and pushed both `personal` and the tag. No manual `release:manual-dispatch` was run.
 
 ## Environment Or Migration Notes
 
@@ -165,6 +165,18 @@ Delivery resume checks after code review round 3:
 
 If user verification shows nested fields are displayed as top-level invocation arguments, or Reload Schema still requires closing/reopening the Tool Details modal, do not finalize. Classify clear implementation defects as `Local Fix` to `implementation_engineer`; classify any request to change runtime Agent Tools MCP schema cache behavior, paid speech generation behavior, or invocation contract shape as a requirement/design change to `solution_designer` because those are outside the approved ticket scope.
 
+## Version / Tag / Release Commit Details
+
+- Previous package/tag version: `1.3.68` / `v1.3.68`
+- New release version: `1.3.69`
+- Release commit: `0d20dd4de08a6158d22767a82b56b9dfbfe38c9c`
+- Annotated tag: `v1.3.69`
+- Tag object: `f15aad444363086d659fe1d84a77f921ccf8c39f`
+- Tag target commit: `0d20dd4de08a6158d22767a82b56b9dfbfe38c9c`
+- Updated versions: `autobyteus-web/package.json` = `1.3.69`; `autobyteus-message-gateway/package.json` = `1.3.69`
+- Curated release notes synced to: `.github/release-notes/release-notes.md`
+- Managed messaging release manifest synced for: `v1.3.69`
+
 ## Final Status
 
-User verification received. Ticket archival/finalization is in progress; release and cleanup results will be recorded after the release helper completes.
+Completed. `tool-details-nested-config-schema` is merged to `personal`, released as `v1.3.69`, and the dedicated ticket worktree plus local/remote ticket branches were cleaned up.

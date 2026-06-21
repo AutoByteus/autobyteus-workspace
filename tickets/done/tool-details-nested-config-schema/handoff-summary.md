@@ -4,9 +4,9 @@
 
 - Ticket: `tool-details-nested-config-schema`
 - Branch: `codex/tool-details-nested-config-schema`
-- Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema`
+- Task worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Finalization target: `personal` / `origin/personal`
-- Current state: User verified on 2026-06-21 (`it works. lets finalize and release a new version`). Ticket archival, repository finalization, and release are in progress.
+- Current state: Finalized. User verified on 2026-06-21 (`it works. lets finalize and release a new version`); ticket artifacts were archived under `tickets/done/tool-details-nested-config-schema/`; `personal` was pushed; release `v1.3.69` was created and pushed; dedicated ticket worktree and local/remote ticket branches were cleaned up.
 
 ## User-Facing Change
 
@@ -64,9 +64,9 @@ Docs/release artifacts prepared by delivery:
 
 ## Documentation Sync
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
 - Result: Pass.
-- Docs updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/docs/tools_and_mcp.md`
+- Docs updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/tools_and_mcp.md`
 - Docs reviewed with no change: `autobyteus-server-ts/docs/modules/multimedia_management.md`, `autobyteus-server-ts/docs/modules/agent_tools.md`, and `autobyteus-server-ts/docs/modules/mcp_gateway.md`.
 - Round-2 codegen/browser-smoke evidence did not require additional long-lived docs changes because the existing Tools/MCP docs update already describes the final validated behavior.
 
@@ -106,13 +106,13 @@ README build guidance reviewed before local build selection:
 
 Selected command for this host: `pnpm -C autobyteus-web build:electron:mac` because the host is `Darwin 25.2.0 arm64`. `autobyteus-web/electron-dist` was cleaned immediately before the build so the listed artifacts are from this fresh run.
 
-Build result: Passed.
+Build result: Passed. The local test artifacts were removed when the dedicated ticket worktree was cleaned up after user verification and release. Checksums are preserved below for traceability.
 
 - Build version/flavor: `1.3.68` / `enterprise`
 - Signing/notarization: local unsigned build; electron-builder logged `skipped macOS code signing  reason=identity explicitly is set to null`.
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Test DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.dmg`
-- Test ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Test DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.dmg`
+- Test ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.68.zip`
 - DMG SHA-256: `d38e6464570b962e9b80ebd39a3bddb690c1038061a3e09e572587d7c0ad15b0`
 - DMG blockmap SHA-256: `f7768a17af11a1748b57d7ae8ad674cd44eeb8512879b487ffda2d5842289014`
 - ZIP SHA-256: `a9c5d14fc980849381a235f661c8a2a973e436877b3546d4c1e8ad6d1f1cc9df`
@@ -130,21 +130,21 @@ Non-blocking build warnings/notes observed: existing localization module-type wa
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/api-e2e-execution-coverage-report.md`
-- Regenerated GraphQL artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-web/generated/graphql.ts`
-- Durable API/E2E coverage file: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/api-e2e-execution-coverage-report.md`
+- Regenerated GraphQL artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/generated/graphql.ts`
+- Durable API/E2E coverage file: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts`
 - Browser smoke screenshot: `/Users/normy/.autobyteus/browser-artifacts/dd974f-1781954592644.png`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/release-deployment-report.md`
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/release-notes.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/handoff-summary.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-deployment-report.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-notes.md`
+- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/handoff-summary.md`
 
 ## User Verification And Finalization Plan
 
@@ -165,5 +165,19 @@ Finalization actions:
 
 ## Release Notes
 
-- Release notes draft prepared for a potential release: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-details-nested-config-schema/tickets/done/tool-details-nested-config-schema/release-notes.md`
+- Release notes draft prepared for a potential release: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-notes.md`
 - No version bump, tag, release, publication, deployment, or cleanup has been performed pre-verification.
+
+## Finalization And Release Result
+
+- Finalization target: `personal` / `origin/personal`
+- Ticket branch archive/finalization commit: `34346b37cfd5` (`chore(ticket): archive tool details nested schema`)
+- Release commit: `0d20dd4de08a` (`chore(release): bump workspace release version to 1.3.69`)
+- Release tag: `v1.3.69`
+- Release tag object: `f15aad444363`
+- Release tag target: `0d20dd4de08a`
+- Release helper command: `pnpm release 1.3.69 -- --release-notes tickets/done/tool-details-nested-config-schema/release-notes.md`
+- Release result: completed and pushed `personal` plus `v1.3.69`. The pushed tag starts the repository's desktop, Android APK, iOS, messaging-gateway, and server Docker release workflows.
+- Post-release final-report commit: this delivery documentation update on `personal`.
+- Cleanup: dedicated ticket worktree removed; local and remote `codex/tool-details-nested-config-schema` branches deleted; `git worktree prune` completed.
+- Final delivery report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-details-nested-config-schema/release-deployment-report.md`
