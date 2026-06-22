@@ -170,7 +170,34 @@ Strict function tools remain intentionally gated off by default. Current
 nullable-required optional-field conversion. The normalizer therefore rejects
 attempts to enable strict mode until that transform exists.
 
-### 4.6 Custom Overrides
+### 4.6 MCP-Origin JSON Schema Mapping
+
+_File_: `src/tools/mcp/schema-mapper.ts`
+
+Configured external MCP tools are imported into the AutoByteus tool registry by
+mapping their MCP JSON Schema input schemas into `ParameterSchema`. The mapper
+preserves direct JSON Schema primitive/object/array types and also unwraps
+nullable single-type forms before choosing the AutoByteus `ParameterType`.
+
+Supported nullable forms include:
+
+- `anyOf` / `oneOf` with exactly one non-null branch, such as
+  `{ anyOf: [{ type: "array", items: { type: "string" } }, { type: "null" }] }`.
+- JSON Schema type-array shorthand with exactly one non-null type, such as
+  `{ type: ["array", "null"], items: { type: "string" } }`.
+
+The mapper keeps outer property metadata such as `description`, `default`, and
+basic constraints while using the non-null branch for type-specific mapping.
+This matters for configured MCP media tools such as `generate_video`, where
+`input_images`, `input_audios`, and `input_videos` are optional nullable arrays
+of strings and must be exposed as arrays, not strings.
+
+True multi-type unions with more than one non-null branch are not guessed into
+one arbitrary `ParameterType`; until `ParameterSchema` has first-class union
+support, those schemas follow the mapper's conservative unsupported-schema
+fallback behavior.
+
+### 4.7 Custom Overrides
 
 For complex requirements (e.g., custom sentinel tag instructions like `write_file`'s `__START_CONTENT__`), specific tools can bypass default generation by registering a **Custom Formatter** in the `ToolFormattingRegistry`.
 

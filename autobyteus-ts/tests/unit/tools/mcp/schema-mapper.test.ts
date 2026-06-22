@@ -67,6 +67,117 @@ describe('McpSchemaMapper', () => {
     expect(tagsParam?.arrayItemSchema).toEqual({ type: 'string' });
   });
 
+  it('maps nullable anyOf arrays to arrays while preserving outer metadata', () => {
+    const mcpSchema = {
+      type: 'object',
+      properties: {
+        input_images: {
+          anyOf: [
+            { type: 'array', items: { type: 'string' } },
+            { type: 'null' }
+          ],
+          default: null,
+          description: 'Optional image references as URLs, data URIs, or safe local paths.'
+        }
+      }
+    };
+
+    const paramSchema = schemaMapper.mapToAutobyteusSchema(mcpSchema);
+    const inputImagesParam = paramSchema.getParameter('input_images');
+    expect(inputImagesParam).toBeDefined();
+    expect(inputImagesParam?.type).toBe(ParameterType.ARRAY);
+    expect(inputImagesParam?.defaultValue).toBeNull();
+    expect(inputImagesParam?.arrayItemSchema).toEqual({ type: 'string' });
+
+    const jsonSchema = paramSchema.toJsonSchema();
+    const inputImagesProperty = (jsonSchema.properties as Record<string, Record<string, unknown>>).input_images;
+    expect(inputImagesProperty).toMatchObject({
+      type: 'array',
+      default: null,
+      description: 'Optional image references as URLs, data URIs, or safe local paths.',
+      items: { type: 'string' }
+    });
+  });
+
+  it('maps nullable anyOf objects to objects instead of strings', () => {
+    const mcpSchema = {
+      type: 'object',
+      properties: {
+        generation_config: {
+          anyOf: [
+            { type: 'object', additionalProperties: true },
+            { type: 'null' }
+          ],
+          default: null,
+          description: 'Optional model-specific video generation settings.'
+        }
+      }
+    };
+
+    const paramSchema = schemaMapper.mapToAutobyteusSchema(mcpSchema);
+    const generationConfigParam = paramSchema.getParameter('generation_config');
+    expect(generationConfigParam).toBeDefined();
+    expect(generationConfigParam?.type).toBe(ParameterType.OBJECT);
+    expect(generationConfigParam?.defaultValue).toBeNull();
+
+    const jsonSchema = paramSchema.toJsonSchema();
+    const generationConfigProperty = (jsonSchema.properties as Record<string, Record<string, unknown>>).generation_config;
+    expect(generationConfigProperty).toMatchObject({
+      type: 'object',
+      default: null,
+      description: 'Optional model-specific video generation settings.'
+    });
+    expect(generationConfigProperty.type).not.toBe('string');
+  });
+
+  it('maps nullable type-array shorthand to the single non-null type', () => {
+    const mcpSchema = {
+      type: 'object',
+      properties: {
+        input_images: {
+          type: ['array', 'null'],
+          items: { type: 'string' },
+          default: null,
+          description: 'Optional image references.'
+        }
+      }
+    };
+
+    const paramSchema = schemaMapper.mapToAutobyteusSchema(mcpSchema);
+    const inputImagesParam = paramSchema.getParameter('input_images');
+    expect(inputImagesParam?.type).toBe(ParameterType.ARRAY);
+    expect(inputImagesParam?.arrayItemSchema).toEqual({ type: 'string' });
+
+    const jsonSchema = paramSchema.toJsonSchema();
+    const inputImagesProperty = (jsonSchema.properties as Record<string, Record<string, unknown>>).input_images;
+    expect(inputImagesProperty).toMatchObject({
+      type: 'array',
+      items: { type: 'string' },
+      default: null
+    });
+  });
+
+  it('does not guess an arbitrary branch for complex multi-type unions', () => {
+    const mcpSchema = {
+      type: 'object',
+      properties: {
+        value: {
+          anyOf: [
+            { type: 'array', items: { type: 'string' } },
+            { type: 'string' },
+            { type: 'null' }
+          ],
+          description: 'A true multi-type union.'
+        }
+      }
+    };
+
+    const paramSchema = schemaMapper.mapToAutobyteusSchema(mcpSchema);
+    const valueParam = paramSchema.getParameter('value');
+    expect(valueParam?.type).toBe(ParameterType.STRING);
+    expect(valueParam?.arrayItemSchema).toBeUndefined();
+  });
+
   it('maps nested objects recursively', () => {
     const mcpSchema = {
       type: 'object',
