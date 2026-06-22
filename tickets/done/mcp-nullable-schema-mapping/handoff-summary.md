@@ -4,7 +4,7 @@
 
 - Ticket: mcp-nullable-schema-mapping
 - Date: 2026-06-22
-- Current Status: User Verified; Finalization/Release Requested
+- Current Status: Finalized; Release v1.3.70 Triggered
 - Workflow State Source: `tickets/done/mcp-nullable-schema-mapping/workflow-state.md`
 
 ## Delivery Summary
@@ -72,7 +72,7 @@
 - Notes:
   - Per workflow rules, the ticket remains under `tickets/done/mcp-nullable-schema-mapping/`.
   - User reported the tested build is working.
-  - Repository finalization and release are now authorized and in progress.
+  - Repository finalization is complete; release v1.3.70 has been pushed and remote release workflows are running.
   - Ticket has been moved to `tickets/done/`; Stage 10 should commit, push the ticket branch, merge into `origin/personal`, run the release helper, and then clean up the ticket worktree/branch.
 
 ## Finalization Record
@@ -82,10 +82,20 @@
 - Ticket branch: `codex/mcp-nullable-schema-mapping`
 - Finalization target remote: origin
 - Finalization target branch: personal
-- Commit status: In progress after user verification
-- Push status: In progress after user verification
-- Merge status: In progress after user verification
-- Release/publication/deployment status: Requested by user; pending repository finalization and release helper execution
-- Worktree cleanup status: Pending repository finalization
-- Local branch cleanup status: Pending repository finalization
-- Blockers / notes: No engineering blockers. User verification received; finalization/release in progress.
+- Commit status: Complete: ticket commit `8bc9d20b`; personal merge commit `7bf0b33d`; release commit `99554d4b`
+- Push status: Complete: ticket branch pushed; `personal` pushed through release commit `99554d4b`; tag `v1.3.70` pushed
+- Merge status: Complete: `codex/mcp-nullable-schema-mapping` merged into `personal`
+- Release/publication/deployment status: Release helper completed for `v1.3.70`; GitHub release workflows triggered and currently running
+- Worktree cleanup status: Complete: dedicated ticket worktree removed
+- Local branch cleanup status: Complete: local `codex/mcp-nullable-schema-mapping` branch deleted; remote ticket branch retained
+- Blockers / notes: No local engineering blockers. Remote workflows for `v1.3.70` were in progress when this record was updated.
+
+## Release Workflow Runs
+
+- Version/tag: `v1.3.70`
+- Release commit: `99554d4b`
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27966242455
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27966243582
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27966244020
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27966241770
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/27966244188

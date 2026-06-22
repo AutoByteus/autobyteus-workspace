@@ -6,7 +6,7 @@ Use this file as the mandatory stage-control artifact for the ticket.
 
 - Ticket: mcp-nullable-schema-mapping
 - Current Stage: `10`
-- Next Stage: Stage 10 Repository Finalization / Release
+- Next Stage: Complete
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
@@ -40,7 +40,7 @@ Use this file as the mandatory stage-control artifact for the ticket.
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/mcp-nullable-schema-mapping/api-e2e-testing.md`; mapper unit tests; package build; post-build schema probe |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded with mandatory scorecard and file-size/delta checks | `tickets/done/mcp-nullable-schema-mapping/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/mcp-nullable-schema-mapping/docs-sync.md`; `autobyteus-ts/docs/tool_schema_and_configuration.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + user verification received + archive/finalize/release path in progress | `tickets/done/mcp-nullable-schema-mapping/handoff-summary.md`; `tickets/done/mcp-nullable-schema-mapping/release-notes.md`; user verification received 2026-06-22 |
+| 10 Handoff / Ticket State | Pass | User verification received + ticket archived + branch committed/pushed/merged + release helper executed + cleanup complete | `tickets/done/mcp-nullable-schema-mapping/handoff-summary.md`; tag `v1.3.70`; release commit `99554d4b`; remote release workflows running |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -74,6 +74,7 @@ Use this file as the mandatory stage-control artifact for the ticket.
 | T-009 | 2026-06-22 | 8 | 9 | Code review passed; moving to docs sync. | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-010 | 2026-06-22 | 9 | 10 | Docs sync completed; moving to final handoff and waiting for explicit user verification. | N/A | Locked | `docs-sync.md`, `tool_schema_and_configuration.md`, `workflow-state.md` |
 | T-011 | 2026-06-22 | 10 | 10 | User verified the local Electron build and requested finalization plus a new release; Stage 10 finalization/release path is active. | N/A | Locked | `release-notes.md`, `handoff-summary.md`, `workflow-state.md` |
+| T-012 | 2026-06-22 | 10 | Complete | Ticket archived, branch committed/pushed/merged, release `v1.3.70` pushed, and local worktree/branch cleanup completed. | N/A | Locked | `handoff-summary.md`; tag `v1.3.70`; release workflow run URLs |
 
 ## Audible Notification Log
 
@@ -91,6 +92,7 @@ Use this file as the mandatory stage-control artifact for the ticket.
 | 2026-06-22 | Transition | Stage 9 docs sync completed; Stage 10 handoff active and awaiting user verification; code edits locked. | Failed | Speech command completed but no valid WAV output was produced. |
 | 2026-06-22 | Gate | Stage 10 handoff summary written; awaiting user verification; code edits locked. | Failed | Speech command completed but no valid WAV output was produced. |
 | 2026-06-22 | Gate | Stage 10 user verification received; repository finalization and release are active; code edits locked. | Success | N/A |
+| 2026-06-22 | Gate | Stage 10 finalized; release v1.3.70 pushed and workflows are running; code edits locked. | Success | N/A |
 
 ## Process Violation Log
 
