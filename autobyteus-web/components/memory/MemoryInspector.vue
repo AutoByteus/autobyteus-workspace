@@ -6,6 +6,7 @@
         <h1 class="text-2xl font-bold text-gray-900">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h1>
         <p class="mt-2 text-sm text-gray-600">{{ breadcrumb }}</p>
         <p v-if="metadataLine" class="mt-1 text-xs text-gray-500">{{ metadataLine }}</p>
+        <span v-if="isImported" class="mt-3 inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Imported memory · read-only corpus</span>
       </header>
 
       <div v-if="store.error" class="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{{ store.error }}</div>
@@ -61,6 +62,8 @@ const breadcrumb = computed(() => {
   const member = target.memberName || target.memberRouteKey || target.memberRunId;
   return `Agent Teams / ${team} / ${target.teamRunId} / ${member}`;
 });
+
+const isImported = computed(() => store.target?.source?.type === 'IMPORTED');
 
 const metadataLine = computed(() => {
   const target = store.target;

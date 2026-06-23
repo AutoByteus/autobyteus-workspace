@@ -106,6 +106,13 @@ vi.mock('~/components/settings/PhoneSetupGuideCard.vue', () => ({
   },
 }));
 
+vi.mock('~/components/settings/MemorySyncCard.vue', () => ({
+  default: {
+    props: ['nodeName', 'nodeTypeLabel', 'baseUrl'],
+    template: '<div data-testid="memory-sync-card">{{ nodeName }} {{ nodeTypeLabel }} {{ baseUrl }}</div>',
+  },
+}));
+
 describe('NodeManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -188,15 +195,33 @@ describe('NodeManager', () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.get('[data-testid="node-manager-tab-memorySync"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.find('h2').exists()).toBe(false);
     expect(wrapper.find('[data-testid="node-manager-panel-manage"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="node-manager-panel-memorySync"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="full-sync-run-button"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(false);
+  });
+
+  it('opens the Memory Sync tab from the route query for the current bound node', async () => {
+    routeMock.query = { nodeTab: 'memorySync' };
+
+    const wrapper = mount(NodeManager);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.get('[data-testid="node-manager-tab-memorySync"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.find('[data-testid="node-manager-panel-memorySync"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="memory-sync-card"]').text()).toContain('Embedded Node');
+    expect(wrapper.get('[data-testid="memory-sync-card"]').text()).toContain('http://127.0.0.1:29695');
+    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
   it('renders the Phone Setup guide and Phone Access controls in the Phone Setup tab for embedded windows', async () => {
@@ -206,6 +231,7 @@ describe('NodeManager', () => {
     await wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').trigger('click');
 
     expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.get('[data-testid="node-manager-tab-memorySync"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('true');
     expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);

@@ -124,6 +124,21 @@
           </div>
         </section>
       </div>
+
+      <div
+        v-else-if="activeTab === 'memorySync'"
+        id="node-manager-panel-memorySync"
+        class="mx-auto w-full max-w-7xl space-y-5"
+        role="tabpanel"
+        aria-labelledby="node-manager-tab-memorySync"
+        data-testid="node-manager-panel-memorySync"
+      >
+        <MemorySyncCard
+          :node-name="currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown')"
+          :node-type-label="currentNodeTypeLabel"
+          :base-url="currentNode?.baseUrl"
+        />
+      </div>
       <div
         v-else-if="activeTab === 'phoneSetup'"
         id="node-manager-panel-phoneSetup"
@@ -156,6 +171,7 @@ import { useRoute } from 'vue-router';
 import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.vue';
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
+import MemorySyncCard from '~/components/settings/MemorySyncCard.vue';
 import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
 import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
 import { useLocalization } from '~/composables/useLocalization';
@@ -166,7 +182,7 @@ import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
 const { t } = useLocalization();
 
-type NodeManagerTabId = 'manage' | 'phoneSetup' | 'dockerGuide';
+type NodeManagerTabId = 'manage' | 'memorySync' | 'phoneSetup' | 'dockerGuide';
 
 const nodeStore = useNodeStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -183,7 +199,7 @@ const busyNodeId = ref<string | null>(null);
 const addError = ref<string | null>(null);
 const addInfo = ref<string | null>(null);
 const addWarnings = ref<string[]>([]);
-const validTabs = new Set<NodeManagerTabId>(['manage', 'phoneSetup', 'dockerGuide']);
+const validTabs = new Set<NodeManagerTabId>(['manage', 'memorySync', 'phoneSetup', 'dockerGuide']);
 const initialActiveTab = (): NodeManagerTabId => {
   const queryTab = typeof route.query.nodeTab === 'string' ? route.query.nodeTab : '';
   return validTabs.has(queryTab as NodeManagerTabId) ? queryTab as NodeManagerTabId : 'manage';

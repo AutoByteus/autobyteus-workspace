@@ -5,6 +5,7 @@ import {
   LIST_AGENT_RUNS_WITH_MEMORY,
   LIST_AGENT_TEAMS_WITH_MEMORY,
   LIST_AGENT_TEAM_RUNS_WITH_MEMORY,
+  LIST_MEMORY_EXPLORER_SOURCES,
 } from '~/graphql/queries/memoryExplorerQueries';
 import type {
   AgentRunMemorySummary,
@@ -13,6 +14,8 @@ import type {
   AgentWithMemorySelector,
   AgentWithMemorySummary,
   MemoryExplorerPage,
+  MemoryExplorerSourceInput,
+  MemoryExplorerSourceOption,
 } from '~/types/memory';
 
 export type MemoryHomeTab = 'agents' | 'teams';
@@ -24,17 +27,22 @@ type ListState<T> = MemoryExplorerPage<T> & {
   requestId: number;
 };
 
+type ListSourcesQuery = { listMemoryExplorerSources?: MemoryExplorerSourceOption[] | null };
 type ListAgentsQuery = { listAgentsWithMemory?: MemoryExplorerPage<AgentWithMemorySummary> | null };
 type ListAgentRunsQuery = { listAgentRunsWithMemory?: MemoryExplorerPage<AgentRunMemorySummary> | null };
 type ListTeamsQuery = { listAgentTeamsWithMemory?: MemoryExplorerPage<AgentTeamWithMemorySummary> | null };
 type ListTeamRunsQuery = { listAgentTeamRunsWithMemory?: MemoryExplorerPage<AgentTeamRunMemorySummary> | null };
 
-type PageVariables = { search?: string | null; page?: number; pageSize?: number };
+type PageVariables = { source?: MemoryExplorerSourceInput | null; search?: string | null; page?: number; pageSize?: number };
 type AgentRunsVariables = PageVariables & { selector: AgentWithMemorySelector };
 type TeamRunsVariables = PageVariables & { teamDefinitionId: string };
 
 interface MemoryExplorerState {
   homeTab: MemoryHomeTab;
+  sources: MemoryExplorerSourceOption[];
+  selectedSource: MemoryExplorerSourceOption;
+  sourceLoading: boolean;
+  sourceError: string | null;
   agents: ListState<AgentWithMemorySummary>;
   agentRuns: ListState<AgentRunMemorySummary>;
   teams: ListState<AgentTeamWithMemorySummary>;
@@ -42,6 +50,17 @@ interface MemoryExplorerState {
   selectedAgent: AgentWithMemorySummary | null;
   selectedTeam: AgentTeamWithMemorySummary | null;
 }
+
+const localSource = (): MemoryExplorerSourceOption => ({
+  key: 'local',
+  type: 'LOCAL',
+  label: 'Local Memory',
+  sourceNodeId: null,
+  displayName: null,
+  readOnly: false,
+  lastImportedAt: null,
+  lastSyncStatus: null,
+});
 
 const createListState = <T>(pageSize: number): ListState<T> => ({
   entries: [],
@@ -69,9 +88,19 @@ const applyPage = <T>(state: ListState<T>, payload: MemoryExplorerPage<T> | null
   state.totalPages = payload.totalPages ?? 1;
 };
 
+const sourceInputFor = (source: MemoryExplorerSourceOption): MemoryExplorerSourceInput => (
+  source.type === 'IMPORTED' && source.sourceNodeId
+    ? { type: 'IMPORTED', sourceNodeId: source.sourceNodeId }
+    : { type: 'LOCAL' }
+);
+
 export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
   state: (): MemoryExplorerState => ({
     homeTab: 'agents',
+    sources: [localSource()],
+    selectedSource: localSource(),
+    sourceLoading: false,
+    sourceError: null,
     agents: createListState<AgentWithMemorySummary>(25),
     agentRuns: createListState<AgentRunMemorySummary>(25),
     teams: createListState<AgentTeamWithMemorySummary>(25),
@@ -80,7 +109,61 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
     selectedTeam: null,
   }),
 
+  getters: {
+    selectedSourceInput(state): MemoryExplorerSourceInput {
+      return sourceInputFor(state.selectedSource);
+    },
+    selectedSourceQueryValue(state): string | undefined {
+      return state.selectedSource.type === 'IMPORTED' && state.selectedSource.sourceNodeId
+        ? `imported:${state.selectedSource.sourceNodeId}`
+        : undefined;
+    },
+    isImportedSource(state): boolean {
+      return state.selectedSource.type === 'IMPORTED';
+    },
+  },
+
   actions: {
+    async loadSources(): Promise<MemoryExplorerSourceOption[]> {
+      this.sourceLoading = true;
+      this.sourceError = null;
+      try {
+        const { data, errors } = await getApolloClient().query<ListSourcesQuery>({
+          query: LIST_MEMORY_EXPLORER_SOURCES,
+          fetchPolicy: 'network-only',
+        });
+        if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+        const sources = data?.listMemoryExplorerSources?.length ? data.listMemoryExplorerSources : [localSource()];
+        this.sources = sources;
+        if (!this.sources.some((source) => source.key === this.selectedSource.key)) {
+          this.selectedSource = this.sources[0] || localSource();
+        }
+        return this.sources;
+      } catch (error: any) {
+        this.sourceError = error?.message || 'Failed to load memory sources.';
+        this.sources = [localSource()];
+        this.selectedSource = this.sources[0];
+        return this.sources;
+      } finally {
+        this.sourceLoading = false;
+      }
+    },
+
+    setSelectedSourceByKey(key?: string | null): boolean {
+      const normalizedKey = key && key.trim() ? key.trim() : 'local';
+      const source = this.sources.find((candidate) => candidate.key === normalizedKey);
+      if (!source) {
+        this.selectedSource = this.sources[0] || localSource();
+        this.resetPagesForSourceChange();
+        return false;
+      }
+      if (this.selectedSource.key !== source.key) {
+        this.selectedSource = source;
+        this.resetPagesForSourceChange();
+      }
+      return true;
+    },
+
     setHomeTab(tab: MemoryHomeTab) {
       this.homeTab = tab;
       this.selectedAgent = null;
@@ -195,6 +278,15 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       else await this.fetchTeams();
     },
 
+    resetPagesForSourceChange() {
+      this.agents.page = 1;
+      this.agentRuns.page = 1;
+      this.teams.page = 1;
+      this.teamRuns.page = 1;
+      this.selectedAgent = null;
+      this.selectedTeam = null;
+    },
+
     clearSelections() {
       this.selectedAgent = null;
       this.selectedTeam = null;
@@ -218,7 +310,13 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       try {
         const { data, errors } = await getApolloClient().query<any, PageVariables | AgentRunsVariables | TeamRunsVariables>({
           query,
-          variables: { ...extraVariables, search: state.search || null, page: state.page, pageSize: state.pageSize },
+          variables: {
+            ...extraVariables,
+            source: this.selectedSourceInput,
+            search: state.search || null,
+            page: state.page,
+            pageSize: state.pageSize,
+          },
           fetchPolicy: 'network-only',
         });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));

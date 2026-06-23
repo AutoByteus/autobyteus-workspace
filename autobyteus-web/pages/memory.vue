@@ -1,6 +1,6 @@
 <template>
   <div class="h-full overflow-auto bg-gray-50">
-    <MemoryHome v-if="currentView === 'home'" @change-tab="changeHomeTab" @select-agent="selectAgent" @select-team="selectTeam" />
+    <MemoryHome v-if="currentView === 'home'" @change-tab="changeHomeTab" @change-source="changeSource" @select-agent="selectAgent" @select-team="selectTeam" />
     <AgentMemoryDetail
       v-else-if="currentView === 'agent-detail' && currentAgentSelector"
       :selector="currentAgentSelector"
@@ -35,7 +35,7 @@ import AgentTeamMemoryDetail from '~/components/memory/AgentTeamMemoryDetail.vue
 import MemoryInspector from '~/components/memory/MemoryInspector.vue';
 import { useMemoryExplorerStore, type MemoryHomeTab } from '~/stores/memoryExplorerStore';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
-import type { AgentRunMemorySummary, AgentTeamRunMemorySummary, AgentTeamWithMemorySummary, AgentWithMemorySelector, AgentWithMemorySummary, MemoryInspectTarget, TeamMemberMemoryTargetSummary } from '~/types/memory';
+import type { AgentRunMemorySummary, AgentTeamRunMemorySummary, AgentTeamWithMemorySummary, AgentWithMemorySelector, AgentWithMemorySummary, MemoryExplorerSourceInput, MemoryInspectTarget, TeamMemberMemoryTargetSummary } from '~/types/memory';
 
 const route = useRoute();
 const router = useRouter();
@@ -76,7 +76,30 @@ const inspectorBackLabel = computed(() => {
 
 watch(() => route.fullPath, () => { void syncRouteState(); }, { immediate: true });
 
+function routeSourceKey(): string {
+  const source = queryValue('source');
+  return source && source.startsWith('imported:') ? source : 'local';
+}
+
+function sourceQuery(): string | undefined {
+  return explorerStore.selectedSourceQueryValue;
+}
+
+function selectedSourceInput(): MemoryExplorerSourceInput {
+  return explorerStore.selectedSourceInput;
+}
+
+async function syncRouteSource(): Promise<void> {
+  await explorerStore.loadSources();
+  const valid = explorerStore.setSelectedSourceByKey(routeSourceKey());
+  if (!valid && queryValue('source')) {
+    const nextQuery = { ...(route.query as Record<string, string | undefined>), source: undefined };
+    await router.replace({ path: '/memory', query: cleanQuery(nextQuery) });
+  }
+}
+
 async function syncRouteState() {
+  await syncRouteSource();
   if (currentView.value === 'home') {
     const tab = queryValue('tab') === 'teams' ? 'teams' : 'agents';
     explorerStore.setHomeTab(tab);
@@ -105,12 +128,14 @@ async function syncRouteState() {
 }
 
 function buildTargetFromRoute(): MemoryInspectTarget | null {
+  const source = selectedSourceInput();
   if (currentView.value === 'agent-inspector') {
     const runId = queryValue('runId');
     if (!runId) return null;
     return {
       kind: 'agent_run',
       runId,
+      source,
       agentAttribution: queryValue('agentAttribution') === 'UNATTRIBUTED' ? 'UNATTRIBUTED' : 'DEFINITION',
       agentDefinitionId: queryValue('agentDefinitionId') ?? null,
       agentDisplayName: queryValue('agentName') ?? null,
@@ -125,6 +150,7 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
     if (!teamRunId || !memberRunId) return null;
     return {
       kind: 'team_member_run',
+      source,
       teamDefinitionId: queryValue('teamDefinitionId') ?? null,
       teamDefinitionName: queryValue('teamName') ?? null,
       teamRunId,
@@ -137,9 +163,14 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
   return null;
 }
 
-const pushHome = (tab: MemoryHomeTab = explorerStore.homeTab) => router.push({ path: '/memory', query: { view: 'home', tab } });
+const pushHome = (tab: MemoryHomeTab = explorerStore.homeTab) => router.push({ path: '/memory', query: cleanQuery({ view: 'home', tab, source: sourceQuery() }) });
 const goHome = pushHome;
 const changeHomeTab = pushHome;
+
+const changeSource = async (sourceKey: string) => {
+  explorerStore.setSelectedSourceByKey(sourceKey);
+  await router.push({ path: '/memory', query: cleanQuery({ view: 'home', tab: explorerStore.homeTab, source: sourceQuery() }) });
+};
 
 const selectAgent = async (agent: AgentWithMemorySummary) => {
   await explorerStore.openAgentMemory(agent);
@@ -147,6 +178,7 @@ const selectAgent = async (agent: AgentWithMemorySummary) => {
     path: '/memory',
     query: cleanQuery({
       view: 'agent-detail',
+      source: sourceQuery(),
       agentAttribution: agent.attribution,
       agentDefinitionId: agent.agentDefinitionId,
       agentName: agent.displayName,
@@ -156,13 +188,14 @@ const selectAgent = async (agent: AgentWithMemorySummary) => {
 
 const selectTeam = async (team: AgentTeamWithMemorySummary) => {
   await explorerStore.openTeamMemory(team);
-  router.push({ path: '/memory', query: { view: 'team-detail', teamDefinitionId: team.teamDefinitionId, teamName: team.teamDefinitionName } });
+  router.push({ path: '/memory', query: cleanQuery({ view: 'team-detail', source: sourceQuery(), teamDefinitionId: team.teamDefinitionId, teamName: team.teamDefinitionName }) });
 };
 
 const inspectAgentRun = async (run: AgentRunMemorySummary) => {
   const agent = explorerStore.selectedAgent;
   const target: MemoryInspectTarget = {
     kind: 'agent_run',
+    source: selectedSourceInput(),
     runId: run.runId,
     agentAttribution: agent?.attribution,
     agentDefinitionId: agent?.agentDefinitionId ?? run.agentDefinitionId ?? null,
@@ -176,6 +209,7 @@ const inspectAgentRun = async (run: AgentRunMemorySummary) => {
     path: '/memory',
     query: cleanQuery({
       view: 'agent-inspector',
+      source: sourceQuery(),
       runId: run.runId,
       agentAttribution: target.agentAttribution,
       agentDefinitionId: target.agentDefinitionId,
@@ -190,6 +224,7 @@ const inspectAgentRun = async (run: AgentRunMemorySummary) => {
 const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMemberMemoryTargetSummary) => {
   const target: MemoryInspectTarget = {
     kind: 'team_member_run',
+    source: selectedSourceInput(),
     teamDefinitionId: run.teamDefinitionId,
     teamDefinitionName: run.teamDefinitionName,
     teamRunId: run.teamRunId,
@@ -203,6 +238,7 @@ const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMem
     path: '/memory',
     query: cleanQuery({
       view: 'team-inspector',
+      source: sourceQuery(),
       teamDefinitionId: run.teamDefinitionId,
       teamName: run.teamDefinitionName,
       teamRunId: run.teamRunId,
@@ -222,6 +258,7 @@ function backFromInspector() {
       path: '/memory',
       query: cleanQuery({
         view: 'agent-detail',
+        source: sourceQuery(),
         agentAttribution: target.agentAttribution,
         agentDefinitionId: target.agentDefinitionId,
         agentName: target.agentDisplayName,
@@ -233,6 +270,7 @@ function backFromInspector() {
     path: '/memory',
     query: cleanQuery({
       view: 'team-detail',
+      source: sourceQuery(),
       teamDefinitionId: target.teamDefinitionId,
       teamName: target.teamDefinitionName,
     }),

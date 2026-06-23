@@ -1,8 +1,23 @@
 import { gql } from 'graphql-tag'
 
+export const LIST_MEMORY_EXPLORER_SOURCES = gql`
+  query ListMemoryExplorerSources {
+    listMemoryExplorerSources {
+      key
+      type
+      label
+      sourceNodeId
+      displayName
+      readOnly
+      lastImportedAt
+      lastSyncStatus
+    }
+  }
+`
+
 export const LIST_AGENTS_WITH_MEMORY = gql`
-  query ListAgentsWithMemory($search: String, $page: Int, $pageSize: Int) {
-    listAgentsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+  query ListAgentsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentsWithMemory(source: $source, search: $search, page: $page, pageSize: $pageSize) {
       total
       page
       pageSize
@@ -28,8 +43,8 @@ export const LIST_AGENTS_WITH_MEMORY = gql`
 `
 
 export const LIST_AGENT_RUNS_WITH_MEMORY = gql`
-  query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $search: String, $page: Int, $pageSize: Int) {
-    listAgentRunsWithMemory(selector: $selector, search: $search, page: $page, pageSize: $pageSize) {
+  query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentRunsWithMemory(selector: $selector, source: $source, search: $search, page: $page, pageSize: $pageSize) {
       total
       page
       pageSize
@@ -56,8 +71,8 @@ export const LIST_AGENT_RUNS_WITH_MEMORY = gql`
 `
 
 export const LIST_AGENT_TEAMS_WITH_MEMORY = gql`
-  query ListAgentTeamsWithMemory($search: String, $page: Int, $pageSize: Int) {
-    listAgentTeamsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+  query ListAgentTeamsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentTeamsWithMemory(source: $source, search: $search, page: $page, pageSize: $pageSize) {
       total
       page
       pageSize
@@ -82,8 +97,8 @@ export const LIST_AGENT_TEAMS_WITH_MEMORY = gql`
 `
 
 export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
-  query ListAgentTeamRunsWithMemory($teamDefinitionId: String!, $search: String, $page: Int, $pageSize: Int) {
-    listAgentTeamRunsWithMemory(teamDefinitionId: $teamDefinitionId, search: $search, page: $page, pageSize: $pageSize) {
+  query ListAgentTeamRunsWithMemory($teamDefinitionId: String!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentTeamRunsWithMemory(teamDefinitionId: $teamDefinitionId, source: $source, search: $search, page: $page, pageSize: $pageSize) {
       total
       page
       pageSize

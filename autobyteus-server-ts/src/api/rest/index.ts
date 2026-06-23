@@ -11,10 +11,12 @@ import { registerTeamCommunicationRoutes } from "./team-communication.js";
 import { registerApplicationBundleRoutes } from "./application-bundles.js";
 import { registerApplicationBackendRoutes } from "./application-backends.js";
 import { registerRemoteAccessRoutes } from "./remote-access.js";
+import { registerMemorySyncRoutes } from "./memory-sync.js";
 
 export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
+  await registerMemorySyncRoutes(app);
   await registerFileRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);

@@ -2,6 +2,22 @@
   <div class="mx-auto max-w-6xl p-6">
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div class="border-b border-gray-100 p-4">
+        <div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="memory-source-select">Memory source</label>
+              <select id="memory-source-select" :value="store.selectedSource.key" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" @change="onSourceChange">
+                <option v-for="source in store.sources" :key="source.key" :value="source.key">{{ source.label }}</option>
+              </select>
+            </div>
+            <div class="text-sm text-slate-600">
+              <span v-if="store.selectedSource.readOnly" class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Imported · read-only</span>
+              <span v-else class="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">Local runnable memory</span>
+              <p v-if="store.selectedSource.lastImportedAt" class="mt-1 text-xs text-slate-500">Last imported {{ formatTimestamp(store.selectedSource.lastImportedAt) }}</p>
+            </div>
+          </div>
+          <p v-if="store.sourceError" class="mt-2 text-xs text-red-600">{{ store.sourceError }}</p>
+        </div>
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div class="flex gap-2">
             <button class="rounded-lg px-4 py-2 text-sm font-semibold" :class="tabClass('agents')" @click="selectTab('agents')">{{ $t('memory.components.memory.MemoryHome.agents') }}</button>
@@ -72,6 +88,7 @@ import MemoryBadges from './MemoryBadges.vue';
 
 const emit = defineEmits<{
   changeTab: [tab: MemoryHomeTab];
+  changeSource: [sourceKey: string];
   selectAgent: [agent: AgentWithMemorySummary];
   selectTeam: [team: AgentTeamWithMemorySummary];
 }>();
@@ -86,6 +103,11 @@ watch(() => [store.homeTab, store.agents.search, store.teams.search], () => {
 }, { immediate: true });
 
 const tabClass = (tab: MemoryHomeTab) => store.homeTab === tab ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+
+const onSourceChange = (event: Event) => {
+  const value = (event.target as HTMLSelectElement).value;
+  emit('changeSource', value);
+};
 
 const selectTab = async (tab: MemoryHomeTab) => {
   if (store.homeTab === tab) return;

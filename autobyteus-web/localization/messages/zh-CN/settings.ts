@@ -317,6 +317,7 @@ const settingsMessages = {
   'settings.components.settings.NodeManager.nodeType.embedded': '内置',
   'settings.components.settings.NodeManager.nodeType.remote': '远程',
   'settings.components.settings.NodeManager.nodeType.unknown': '未知',
+  'settings.components.settings.NodeManager.tabs.memorySync': '记忆同步',
   'settings.components.settings.NodeManager.tabs.manageNodes': '管理节点',
   'settings.components.settings.NodeManager.tabs.phoneSetup': '手机设置',
   'settings.components.settings.NodeManager.tabs.dockerGuide': 'Docker 指南',

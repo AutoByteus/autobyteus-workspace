@@ -1,11 +1,12 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
 import path from "node:path";
 import { GraphQLJSON } from "graphql-scalars";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
 import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
 import { AgentMemoryLocationService } from "../../../agent-memory/services/agent-memory-location-service.js";
+import { getMemoryExplorerSourceService } from "../../../agent-memory/services/memory-explorer-source-service.js";
 import { MemoryViewConverter } from "../converters/memory-view-converter.js";
+import { MemoryExplorerSourceInput } from "./memory-explorer-schema.js";
 
 @ObjectType()
 export class MemoryMessage {
@@ -90,6 +91,7 @@ export class MemoryViewResolver {
   @Query(() => AgentMemoryView)
   async getAgentRunMemoryView(
     @Arg("runId", () => String) runId: string,
+    @Arg("source", () => MemoryExplorerSourceInput, { nullable: true }) source?: MemoryExplorerSourceInput | null,
     @Arg("includeWorkingContext", () => Boolean, { defaultValue: true })
     includeWorkingContext = true,
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
@@ -98,8 +100,8 @@ export class MemoryViewResolver {
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
   ): Promise<AgentMemoryView> {
-    const baseDir = appConfigProvider.config.getMemoryDir();
-    const store = new MemoryFileStore(baseDir);
+    const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
+    const store = new MemoryFileStore(resolvedSource.rootDir, { warnOnMissingFiles: !resolvedSource.readOnly });
     const service = new AgentMemoryService(store);
     const view = service.getRunMemoryView(runId, {
       includeWorkingContext,
@@ -116,6 +118,7 @@ export class MemoryViewResolver {
   async getTeamMemberRunMemoryView(
     @Arg("teamRunId", () => String) teamRunId: string,
     @Arg("memberRunId", () => String) memberRunId: string,
+    @Arg("source", () => MemoryExplorerSourceInput, { nullable: true }) source?: MemoryExplorerSourceInput | null,
     @Arg("includeWorkingContext", () => Boolean, { defaultValue: true })
     includeWorkingContext = true,
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
@@ -124,14 +127,14 @@ export class MemoryViewResolver {
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
   ): Promise<AgentMemoryView> {
-    const baseDir = appConfigProvider.config.getMemoryDir();
-    const location = await new AgentMemoryLocationService({ memoryDir: baseDir })
+    const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
+    const location = await new AgentMemoryLocationService({ memoryDir: resolvedSource.rootDir })
       .resolveTeamMemberLocation({ teamRunId, memberRunId });
     const teamDir = location ? path.dirname(location.memoryDir) : null;
     if (!teamDir) {
       return MemoryViewConverter.toGraphql({ runId: memberRunId });
     }
-    const store = new MemoryFileStore(teamDir, { runRootSubdir: "" });
+    const store = new MemoryFileStore(teamDir, { runRootSubdir: "", warnOnMissingFiles: !resolvedSource.readOnly });
     const service = new AgentMemoryService(store);
     const view = service.getRunMemoryView(memberRunId, {
       includeWorkingContext,

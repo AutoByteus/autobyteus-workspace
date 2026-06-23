@@ -9,6 +9,51 @@ registerEnumType(AgentMemoryAttribution, {
   name: "AgentMemoryAttribution",
 });
 
+export enum MemoryExplorerSourceType {
+  LOCAL = "LOCAL",
+  IMPORTED = "IMPORTED",
+}
+
+registerEnumType(MemoryExplorerSourceType, {
+  name: "MemoryExplorerSourceType",
+});
+
+@InputType()
+export class MemoryExplorerSourceInput {
+  @Field(() => MemoryExplorerSourceType)
+  type!: MemoryExplorerSourceType;
+
+  @Field(() => String, { nullable: true })
+  sourceNodeId?: string | null;
+}
+
+@ObjectType()
+export class MemoryExplorerSourceOption {
+  @Field(() => String)
+  key!: string;
+
+  @Field(() => MemoryExplorerSourceType)
+  type!: MemoryExplorerSourceType;
+
+  @Field(() => String)
+  label!: string;
+
+  @Field(() => String, { nullable: true })
+  sourceNodeId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  displayName?: string | null;
+
+  @Field(() => Boolean)
+  readOnly!: boolean;
+
+  @Field(() => String, { nullable: true })
+  lastImportedAt?: string | null;
+
+  @Field(() => String, { nullable: true })
+  lastSyncStatus?: string | null;
+}
+
 @ObjectType()
 export class MemoryAvailabilitySummary {
   @Field(() => String, { nullable: true })

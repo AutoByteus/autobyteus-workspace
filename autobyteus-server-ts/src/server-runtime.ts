@@ -43,6 +43,7 @@ import {
 } from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
 import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
+import { stopMemorySyncWorker } from "./memory-sync/source/memory-sync-worker.js";
 import type { ServerOptions } from "./app.js";
 
 const logger = createServerLogger("server.runtime");
@@ -83,6 +84,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
+    stopMemorySyncWorker();
     await stopChannelRunOutputDeliveryRuntime();
     await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();

@@ -18,6 +18,7 @@ const taskSpecs: TaskSpec[] = [
   { name: "Workspaces", modulePath: "./workspace-loader.js", exportName: "loadWorkspaces" },
   { name: "Agent Tools", modulePath: "./agent-tool-loader.js", exportName: "loadAllAgentTools" },
   { name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
+  { name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
 ];
 
 async function loadTask(spec: TaskSpec): Promise<Task | null> {

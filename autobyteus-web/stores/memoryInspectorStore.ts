@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GET_AGENT_RUN_MEMORY_VIEW, GET_TEAM_MEMBER_RUN_MEMORY_VIEW } from '~/graphql/queries/memoryViewQueries';
-import type { MemoryInspectTarget, MemoryInspectorTab, RunMemoryView } from '~/types/memory';
+import type { MemoryExplorerSourceInput, MemoryInspectTarget, MemoryInspectorTab, RunMemoryView } from '~/types/memory';
 
 type AgentRunMemoryViewQuery = { getAgentRunMemoryView?: RunMemoryView | null };
 type TeamMemberRunMemoryViewQuery = { getTeamMemberRunMemoryView?: RunMemoryView | null };
@@ -10,6 +10,7 @@ type ViewVariables = {
   runId?: string;
   teamRunId?: string;
   memberRunId?: string;
+  source?: MemoryExplorerSourceInput;
   includeWorkingContext?: boolean;
   includeEpisodic?: boolean;
   includeSemantic?: boolean;
@@ -29,8 +30,12 @@ interface MemoryInspectorState {
   requestId: number;
 }
 
+const sourceKey = (source?: MemoryExplorerSourceInput | null): string => (
+  source?.type === 'IMPORTED' && source.sourceNodeId ? `imported:${source.sourceNodeId}` : 'local'
+);
+
 const sameTarget = (a: MemoryInspectTarget | null, b: MemoryInspectTarget): boolean => {
-  if (!a || a.kind !== b.kind) return false;
+  if (!a || a.kind !== b.kind || sourceKey(a.source) !== sourceKey(b.source)) return false;
   if (a.kind === 'agent_run' && b.kind === 'agent_run') return a.runId === b.runId;
   if (a.kind === 'team_member_run' && b.kind === 'team_member_run') {
     return a.teamRunId === b.teamRunId && a.memberRunId === b.memberRunId;
@@ -104,6 +109,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
 
     buildVariables(target: MemoryInspectTarget): ViewVariables {
       const common = {
+        source: target.source ?? { type: 'LOCAL' as const },
         includeWorkingContext: true,
         includeEpisodic: true,
         includeSemantic: true,

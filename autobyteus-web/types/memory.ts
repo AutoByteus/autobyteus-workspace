@@ -1,4 +1,21 @@
 export type AgentMemoryAttribution = 'DEFINITION' | 'UNATTRIBUTED';
+export type MemoryExplorerSourceType = 'LOCAL' | 'IMPORTED';
+
+export interface MemoryExplorerSourceInput {
+  type: MemoryExplorerSourceType;
+  sourceNodeId?: string | null;
+}
+
+export interface MemoryExplorerSourceOption {
+  key: string;
+  type: MemoryExplorerSourceType;
+  label: string;
+  sourceNodeId?: string | null;
+  displayName?: string | null;
+  readOnly: boolean;
+  lastImportedAt?: string | null;
+  lastSyncStatus?: string | null;
+}
 
 export interface MemoryAvailabilitySummary {
   latestMemoryAt?: string | null;
@@ -115,6 +132,7 @@ export type MemoryInspectTarget =
       runLabel?: string | null;
       workspaceRootPath?: string | null;
       lastUpdatedAt?: string | null;
+      source?: MemoryExplorerSourceInput;
     }
   | {
       kind: 'team_member_run';
@@ -125,4 +143,5 @@ export type MemoryInspectTarget =
       memberRouteKey?: string | null;
       memberName?: string | null;
       lastUpdatedAt?: string | null;
+      source?: MemoryExplorerSourceInput;
     };
