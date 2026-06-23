@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/requirements.md`
+- Requirements Doc Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/requirements.md`
 - Current Review Round: 2
 - Trigger: Revised implementation handoff from `implementation_engineer` after the installer-output clarification requiring nvm/Anaconda-style copy-paste persistent PATH commands when automatic profile update is not applied.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
-- Design Spec Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-spec.md`
-- Design Review Report Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
+- Design Spec Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-spec.md`
+- Design Review Report Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: N/A
 - API / E2E Execution Started Yet: `Yes` — an API/E2E coverage-investigation artifact exists from the earlier pass path, but no execution-coverage report is present and this review entry point is the revised implementation handoff.
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` — implementation-owned script tests were updated after round 1 to assert the copy-paste persistent setup block.
@@ -25,7 +25,7 @@
 
 ## Review Scope
 
-Reviewed the revised implementation diff against `origin/personal` in worktree `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults`.
+Reviewed the revised implementation diff against `origin/personal` in worktree `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo`.
 
 Changed implementation files reviewed:
 - `scripts/public/docker/autobyteus-docker.sh`

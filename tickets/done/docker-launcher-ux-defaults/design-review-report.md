@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/requirements.md`
-- Upstream Investigation Notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
-- Reviewed Design Spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-spec.md`
+- Upstream Requirements Doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/requirements.md`
+- Upstream Investigation Notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
+- Reviewed Design Spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-spec.md`
 - Current Review Round: 2
 - Trigger: Round 2 resubmission from `solution_designer` after round 1 Design Impact findings `AR-DI-001` and `AR-DI-002`, plus subsequent user clarification requiring nvm/Anaconda-style copy-paste persistent shell-profile commands in installer output when automatic profile update is not applied.
 - Prior Review Round Reviewed: 1

@@ -4,13 +4,13 @@ Revision: 2 — updated after the architecture review installer-output clarifica
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/requirements.md`
-- Investigation notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
-- Design spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-spec.md`
-- Future-state runtime call stack: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/future-state-runtime-call-stack.md`
-- Baseline test log: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/current-docker-launcher-tests.log`
-- Design revision notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-revision-notes.md`
-- Design review report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
+- Requirements doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/requirements.md`
+- Investigation notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
+- Design spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-spec.md`
+- Future-state runtime call stack: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/future-state-runtime-call-stack.md`
+- Baseline test log: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/current-docker-launcher-tests.log`
+- Design revision notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-revision-notes.md`
+- Design review report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
 - Artifact correction applied: `workflow-state.md` is intentionally excluded from this cumulative package.
 
 ## What Changed

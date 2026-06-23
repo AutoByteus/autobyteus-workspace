@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/requirements.md`
-- Investigation Notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
-- Design Spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-spec.md`
-- Design Review Report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
-- Implementation Handoff: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/implementation-handoff.md`
-- Code Review Report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/code-review-report.md`
-- Coverage Investigation: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/requirements.md`
+- Investigation Notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/investigation-notes.md`
+- Design Spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-spec.md`
+- Design Review Report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/design-review-report.md`
+- Implementation Handoff: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/implementation-handoff.md`
+- Code Review Report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/code-review-report.md`
+- Coverage Investigation: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: Revised code-review pass round 2; refresh/resume API/E2E execution against current implementation handoff and current code-review report.
 - Prior Round Reviewed: Round 1 canonical execution report existed; no unresolved failures. Round 2 reran final evidence because implementation-owned installer-output code/tests changed after round 1 and were code-reviewed in round 2.
@@ -23,7 +23,7 @@
 
 ## Execution Basis
 
-Execution followed the round 2 coverage investigation decisions in `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`.
+Execution followed the round 2 coverage investigation decisions in `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`.
 
 Current behavior basis:
 
@@ -36,7 +36,7 @@ Current behavior basis:
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -49,7 +49,7 @@ Current behavior basis:
 
 | Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
 | --- | --- | --- | --- |
-| `scripts/tests/test_public_docker_launcher_shared_workspace.py` launcher contract tests | Still Valid | Executed as final durable coverage. | `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-unit-tests.log` — `Ran 22 tests`, `OK (skipped=1)` across both test modules. |
+| `scripts/tests/test_public_docker_launcher_shared_workspace.py` launcher contract tests | Still Valid | Executed as final durable coverage. | `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-unit-tests.log` — `Ran 22 tests`, `OK (skipped=1)` across both test modules. |
 | `scripts/tests/test_server_docker_cli_latest_defaults.py` | Out Of Scope for changed launcher UX, retained as adjacent regression | Executed with upstream test command. | Same unit-test log; no failures. |
 | `autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts` | Out Of Scope | Not executed in API/E2E; command strings remain unchanged, docs/UI copy is delivery-stage scope. | Round 2 coverage investigation inventory. |
 
@@ -76,7 +76,7 @@ Saved-port preservation and random fallback were treated as approved current req
 ## Platform / Runtime Targets
 
 - OS/runtime: Ubuntu 22.04.5 LTS, linux/amd64, Docker Engine Community 29.1.3.
-- Docker availability evidence: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-docker-availability.log`.
+- Docker availability evidence: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-docker-availability.log`.
 - Real Docker image used for probes: `nginx:alpine` (`sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7` as shown in logs).
 - Isolated launcher state/shared workspace roots were created under `/tmp/autobyteus-api-e2e-round2-*` and removed after each probe.
 
@@ -120,7 +120,7 @@ Out of scope:
 
 ## Execution Setup / Environment
 
-- Worktree: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults`
+- Worktree: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo`
 - Branch: `codex/docker-launcher-ux-defaults`
 - Docker preflight confirmed no existing `autobyteus-server-0/1/2` containers, no launcher-labeled containers, and no `autobyteus-server-{0,1,2}-{workspace,data,root-home,chromium-profile}` volumes before destructive real-Docker probes.
 - All real-Docker probes used isolated `AUTOBYTEUS_DOCKER_STATE_DIR`, `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`, and `HOME` under `/tmp`.
@@ -149,25 +149,25 @@ None during API/E2E execution. Round 2 durable test updates were implementation-
 
 Round 2 primary evidence:
 
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-docker-availability.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-bash-syntax.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-py-compile.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-unit-tests.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output-rerun2.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-persistent-block-rerun2.sh.txt`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-profile-after-block-rerun2.txt`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-multinode.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-multinode/`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-port-fallback.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-port-fallback/`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-saved-port-retry.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-saved-port-retry/`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-git-diff-check.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-docker-availability.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-bash-syntax.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-py-compile.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-unit-tests.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output-rerun2.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-persistent-block-rerun2.sh.txt`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-profile-after-block-rerun2.txt`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-multinode.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-multinode/`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-port-fallback.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-port-fallback/`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-saved-port-retry.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-real-docker-saved-port-retry/`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-git-diff-check.log`
 
 Retained lower-confidence install-probe harness logs:
 
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output.log`
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output-rerun.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output.log`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo/tickets/done/docker-launcher-ux-defaults/logs/api-e2e-round2-install-output-rerun.log`
 
 Those two early install-probe attempts failed only because the temporary harness compared shell-equivalent single-quote styles as literal strings. The actual emitted command block executed and produced a shell-safe profile line in both attempts. The final corrected probe is `api-e2e-round2-install-output-rerun2.log` and is authoritative for AE2E-INSTALL-001.
 
