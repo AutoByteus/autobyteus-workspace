@@ -46,6 +46,34 @@ For remote-node Phone Access, create or open the current AutoByteus node in its 
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 
+## Memory Sync / Memory Hub
+
+AutoByteus servers can synchronize persisted agent and agent-team memory into a
+hub node without changing the local runtime memory layout. Configure the current
+node from **Nodes -> Memory Sync**:
+
+- enable **Memory Hub** on the receiving node and confirm the advertised hub URL
+  that sources can reach;
+- copy the backend-generated `mhub_...` source token when it is created or
+  regenerated, because plaintext tokens are shown only once;
+- open each Docker, Kubernetes, or remote source node in its own node-bound
+  window, set a stable `sourceNodeId`, paste the hub URL/token, and run
+  **Test connection** before **Sync now** or background sync.
+
+The hub keeps local runtime memory in `memory/agents` and `memory/agent_teams`
+unchanged. Imported source corpora are stored separately under
+`memory/imports/<sourceNodeId>/` and appear in the Memory page source selector as
+read-only imported memory. Imported memory is for browsing and future analysis;
+it is not local runnable state and does not enable restore/continue/delete
+actions.
+
+For Docker sources on the same host, the hub URL may need a Docker-reachable
+address such as `http://host.docker.internal:<port>` rather than desktop
+loopback. For Kubernetes or remote deployments, use a Service, Ingress, VPN,
+tailnet, or other trusted private route that reaches the hub. Details:
+[`autobyteus-server-ts/docs/features/memory_sync.md`](autobyteus-server-ts/docs/features/memory_sync.md)
+and [`autobyteus-web/docs/memory.md`](autobyteus-web/docs/memory.md).
+
 ## Run The Published Server Docker
 
 If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, prefers friendly sequential host ports for indexed Docker nodes when they are available, falls back to non-conflicting random ports when needed, and prints the Backend URL to add in **Nodes -> Manage Nodes -> Add Remote Node**.

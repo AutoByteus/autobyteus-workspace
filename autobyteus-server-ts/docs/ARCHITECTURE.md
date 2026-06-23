@@ -54,6 +54,7 @@ Current task groups include:
 - Workspace package loading
 - Tool loading
 - MCP tool registration
+- Memory Sync background worker loading when source background sync is enabled
 
 ## Persistence
 
@@ -63,6 +64,10 @@ Persistence is subsystem-owned rather than selected through a global mode.
   - The store is the authoritative token-usage boundary.
   - It writes and reads SQL rows through Prisma-backed repositories.
 - Agent definitions, team definitions, and MCP server config remain file-backed through their own subsystem providers.
+- Memory Sync hub/source config, source-state fingerprints, and hub credential
+  metadata are file-backed under `<appDataDir>/memory-sync/`; imported memory
+  corpus files are kept under the configured memory root at
+  `memory/imports/<sourceNodeId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 
 External-channel persistence has one deliberate exception:

@@ -12,7 +12,7 @@ The goal is to keep architecture and module docs close to the actual Node.js/Typ
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`: media and file-serving pipeline.
 - `modules/`: per-module design docs, including `modules/mcp_gateway.md` for the general external MCP gateway and `modules/self_evolution.md` for the manual skill self-evolution capability.
 - `design/`: focused ADR-style design notes.
-- `features/`: feature-level documents, including Remote Access / Phone Access.
+- `features/`: feature-level documents, including Memory Sync / Memory Hub and Remote Access / Phone Access.
 
 ## Important Runtime Constraint
 

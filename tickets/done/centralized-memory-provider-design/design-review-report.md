@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/investigation.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/investigation.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/design-spec.md`
 - Current Review Round: 1
 - Trigger: Solution designer requested architecture review after user approval of the Memory Sync / embedded Memory Hub design on 2026-06-23.
 - Prior Review Round Reviewed: N/A

@@ -1,0 +1,28 @@
+# Post-integration frontend Memory Sync focused tests
+2026-06-23T14:46:03Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web
+
+stderr | tests/stores/memoryExplorerStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/stores/memoryExplorerStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/memoryExplorerStore.test.ts (4 tests) 5ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 48ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  16:46:05
+   Duration  4.69s (transform 2.46s, setup 7.92s, collect 141ms, tests 53ms, environment 360ms, prepare 362ms)

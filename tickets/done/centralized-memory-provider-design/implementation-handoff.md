@@ -2,15 +2,20 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/requirements.md
-- Investigation notes: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/investigation.md
-- Design spec: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/design-spec.md
-- Design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/design-review-report.md
-- Code review report for local-fix loop: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/code-review-report.md
+- Requirements doc: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/requirements.md
+- Investigation notes: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/investigation.md
+- Design spec: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/design-spec.md
+- Design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/design-review-report.md
+- Code review report for local-fix loop: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/code-review-report.md
+- API/E2E coverage investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/api-e2e-coverage-investigation.md
+- API/E2E execution coverage report: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/api-e2e-execution-coverage-report.md
+- Docs sync report: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/docs-sync-report.md
+- Delivery handoff summary: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/handoff-summary.md
+- Release/deployment report: /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/release-deployment-report.md
 
 ## What Changed
 
-Implemented the reviewed Memory Sync / embedded Memory Hub design across backend and frontend, then applied the code-review local fixes from `code-review-report.md`.
+Implemented the reviewed Memory Sync / embedded Memory Hub design across backend and frontend, applied the code-review local fixes from `code-review-report.md`, and applied the delivery-rerouted localization Local Fix from the macOS Electron build attempt.
 
 Backend feature implementation:
 - Added `autobyteus-server-ts/src/memory-sync` with shared source id/path policy/types/manifests, source scanner/planner/state/client/service/worker, and hub credential/import/ingestion/catalog/connection-info services.
@@ -33,6 +38,12 @@ Code-review local fixes applied:
 - CR-004: Manual and background source sync now share `MemorySyncService.startSync()` as the single run gate; `runOnce()` is private and worker no longer bypasses the gate.
 - Added focused regression tests for the four blocked behaviors plus hub duplicate/conflicting replay cases.
 
+Delivery local fix applied after macOS Electron build attempt:
+- Replaced unresolved product literals in `MemorySyncCard.vue` with localization lookups.
+- Replaced imported-memory/read-only badge and memory source selector literals in Memory UI components with localization lookups.
+- Added English and Simplified Chinese catalog entries for the Memory Sync settings card and imported-memory labels.
+- Added manual Memory localization catalogs and wired them alongside generated Memory catalogs.
+
 ## Key Files Or Areas
 
 - Backend Memory Sync subsystem: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-server-ts/src/memory-sync/`
@@ -46,6 +57,7 @@ Code-review local fixes applied:
 - Source-aware Memory Explorer backend: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-server-ts/src/agent-memory/services/memory-explorer-source-service.ts`, plus modified memory explorer/view GraphQL files.
 - URL candidate owner: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-server-ts/src/server-addressing/`
 - Frontend Memory Sync UI/store: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/components/settings/MemorySyncCard.vue`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/stores/memorySyncStore.ts`
+- Frontend localization catalogs: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/localization/messages/en/memorySyncSettings.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/localization/messages/zh-CN/memorySyncSettings.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/localization/messages/en/memory.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/localization/messages/zh-CN/memory.ts`, and locale index files
 - Frontend memory source propagation: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/pages/memory.vue`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/stores/memoryExplorerStore.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/stores/memoryInspectorStore.ts`
 
 ## Important Assumptions
@@ -66,9 +78,9 @@ Code-review local fixes applied:
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Larger Requirement / Feature, followed by bounded Local Fix bug/security/correctness pass.
-- Reviewed root-cause classification: Original design classified Boundary Or Ownership Issue, Duplicated Policy Or Coordination, and Legacy Or Compatibility Pressure if local memory layout is moved. Code-review findings were Local Fix implementation defects/missing invariants within the reviewed design.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): No runtime memory refactor; additive Memory Sync subsystem and import namespace. Local fix refactor was limited to tightening the source run gate and extracting hub batch identity helpers.
+- Reviewed change posture: Larger Requirement / Feature, followed by bounded Local Fix bug/security/correctness pass and delivery-rerouted localization Local Fix.
+- Reviewed root-cause classification: Original design classified Boundary Or Ownership Issue, Duplicated Policy Or Coordination, and Legacy Or Compatibility Pressure if local memory layout is moved. Code-review findings were Local Fix implementation defects/missing invariants within the reviewed design. The delivery blocker was a Local Implementation Defect in frontend product localization, not a design or requirement gap.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): No runtime memory refactor; additive Memory Sync subsystem and import namespace. Local fix refactor was limited to tightening the source run gate, extracting hub batch identity helpers, and adding localization catalog entries for UI-owned text.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
 - Evidence / notes: Runtime memory writers were not modified for upload behavior; new source and hub owners encapsulate scan/plan/client/credential/import concerns; Memory Explorer resolves explicit Local/Imported source scope before reads; code-review local fixes strengthened identity, secret-boundary, idempotency, and sequencing invariants without changing the approved design.
@@ -86,6 +98,7 @@ Code-review local fixes applied:
 ## Environment Or Dependency Notes
 
 - No new npm dependencies were added.
+- Delivery ran `pnpm install --frozen-lockfile` in the worktree before routing this blocker; dependencies are now installed locally in the worktree.
 - For local checks only, temporary symlinks to the main workspace `node_modules` were used because this worktree did not have dependencies installed; those symlinks were removed and are not part of the working tree.
 - Memory Sync persists config/secrets/state under `{appDataDir}/memory-sync/` and imported corpus files under `memory/imports/<sourceNodeId>/`.
 - Source state files are now under `{appDataDir}/memory-sync/source-state/<hubHash>--<sourceNodeId>.json`.
@@ -102,6 +115,14 @@ Local-fix checks after code review:
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Passed.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-sync/memory-sync-local-fixes.test.ts --config vitest.config.ts` — Passed, 6 tests.
 
+Delivery-rerouted localization fix checks:
+- `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings.
+- `pnpm -C autobyteus-web guard:web-boundary` — Passed.
+- `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
+- `pnpm -C autobyteus-web exec nuxi prepare` — Passed.
+- `pnpm -C autobyteus-web exec nuxi typecheck` — Failed with existing baseline project errors; filtered output showed `0` matches for changed localization/Memory Sync/Memory UI files and `229` total `error TS` lines, matching the known baseline count.
+- The full macOS Electron packaging command was not rerun by implementation because release packaging remains delivery-owned; the build-stage blocker reported by delivery was specifically the localization audit, which now passes.
+
 ## Downstream Coverage Hints / Suggested Scenarios
 
 Focused durable unit coverage now added for:
@@ -112,7 +133,8 @@ Focused durable unit coverage now added for:
 - conflicting `batchId` reuse after falling out of `recentBatches` still rejected via durable `batchDigests`;
 - manual/background source sync entry points coalescing through one run gate.
 
-Additional API/UI scenarios still useful downstream:
+Additional API/UI scenarios still useful downstream / for delivery resume:
+- rerun `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` from delivery after code review passes to confirm packaging proceeds beyond the localization audit;
 - enable hub, create token, test source connection;
 - configure source, run sync now, verify import files appear under `memory/imports/<sourceNodeId>`;
 - retry same batch id with identical content returns duplicate success through the REST API;
@@ -121,4 +143,4 @@ Additional API/UI scenarios still useful downstream:
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. API/E2E coverage investigation and execution remain owned by `api_e2e_engineer` after code review passes.
+No API/E2E execution was performed for this delivery-rerouted localization Local Fix. The current workflow should return through `code_reviewer` before delivery resumes the macOS Electron build.

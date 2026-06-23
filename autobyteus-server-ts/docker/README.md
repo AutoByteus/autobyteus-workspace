@@ -116,6 +116,25 @@ Show the Backend URL again:
 autobyteus-docker urls
 ```
 
+### Memory Sync between Docker nodes and a hub
+
+Launcher-managed Docker nodes can be Memory Sync sources or hubs. Add/open the
+node in **Nodes -> Manage Nodes**, then use that node-bound window's
+**Nodes -> Memory Sync** tab.
+
+When the desktop embedded server is the hub and a Docker container is the
+source, the hub's desktop loopback URL (`http://127.0.0.1:29695`) is usually not
+reachable from inside the container. Use the Memory Hub URL candidates and choose
+a source-reachable advertised URL such as `http://host.docker.internal:29695` on
+Docker Desktop, or a LAN/VPN/tailnet URL if that is the trusted route. Then run
+**Test connection** from the Docker source node before enabling background sync.
+
+When one Docker node is the hub for other Docker nodes, use the hub URL printed
+by `autobyteus-docker urls` only if it is reachable from the source containers.
+Otherwise provide the appropriate Docker network, host alias, LAN, VPN, or
+tailnet route manually. Memory Sync uses hub-generated `mhub_...` source tokens;
+copy them when created/regenerated because plaintext tokens are not shown again.
+
 Stop the default node without removing named volumes:
 
 ```bash

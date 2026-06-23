@@ -156,6 +156,36 @@ termux-volume music 10
   - `--host 127.0.0.1`: local-only on the Android device.
   - `--host 0.0.0.0`: reachable from LAN using device/emulator network IP.
 
+## Memory Sync / Memory Hub
+
+The server includes an embedded Memory Sync feature. A node can act as a Memory
+Hub, a source that pushes its local memory to another hub, or both. Configure it
+from the frontend **Nodes -> Memory Sync** tab for the current node-bound
+window.
+
+Runtime memory stays in the existing local roots:
+
+- `memory/agents/`
+- `memory/agent_teams/`
+
+Hub imports are stored separately as read-only corpus data:
+
+- `memory/imports/<sourceNodeId>/agents/`
+- `memory/imports/<sourceNodeId>/agent_teams/`
+- `memory/imports/<sourceNodeId>/source-node.json`
+- `memory/imports/<sourceNodeId>/sync-manifest.json`
+
+Hub setup uses a user-confirmed advertised hub base URL. Candidate URLs are
+suggestions only; Docker, Kubernetes, LAN, VPN, and tailnet deployments must use
+a URL reachable from the source node and should verify it with **Test
+connection**. Hub source tokens are backend-generated (`mhub_...`), stored hashed
+on the hub, shown only once on create/regenerate, and redacted from public
+config responses. Source nodes store the plaintext token locally so background
+sync can resume after restart.
+
+See `docs/features/memory_sync.md` for API endpoints, storage files, token
+behavior, and current v1 limits.
+
 ## Docker
 
 Recommended for users: start the published Docker Hub image without cloning

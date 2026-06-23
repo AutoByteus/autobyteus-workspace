@@ -31,7 +31,7 @@ The user clarified that future analytics, self-improvement, fine-tuning, and com
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design`
 - Current Branch: `codex/centralized-memory-provider-design`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design`
 - Bootstrap Base Branch: `origin/personal`

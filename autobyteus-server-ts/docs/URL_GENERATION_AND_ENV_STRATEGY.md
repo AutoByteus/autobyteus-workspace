@@ -48,6 +48,8 @@ The TS server uses explicit startup configuration instead of implicit request-ti
 
 Remote Access adds one explicit exception for phone clients: when a paired mobile credential is authorized, the request auth context carries the client-facing base URL selected at pairing time. Resource URL generation may use that paired base URL, or an explicitly supplied/configured external base URL, before falling back to the local server base. This is still explicit configuration, not host-header discovery.
 
+Memory Sync / Memory Hub uses the same explicit-URL principle. A hub stores a user-confirmed `advertisedHubBaseUrl` for source-node ingestion setup. Candidate URLs may be seeded from `AUTOBYTEUS_SERVER_HOST`, the current node URL, Docker host aliases, LAN/tailnet-like interfaces, or manual input, but the chosen advertised URL must be validated from the source node with **Test connection**. Do not assume a loopback or bind address is reachable from Docker containers, Kubernetes pods, or another network.
+
 ## Remote Access Client-Facing URLs
 
 Phone Access must not return loopback-only absolute URLs to a phone on a LAN/VPN/private network. Use `DefaultClientFacingUrlResolver` for REST resource URLs that may be consumed by paired mobile clients.
@@ -75,3 +77,4 @@ Because `.env` and runtime paths are coupled, bootstrap must call `appConfigProv
 4. Do not instantiate path-sensitive singleton services before config initialization.
 5. If a test or harness bypasses `src/app.ts` and imports `src/server-runtime.ts` directly, it must initialize config first and seed `AUTOBYTEUS_INTERNAL_SERVER_BASE_URL` explicitly before enabling managed messaging.
 6. For Remote Access/mobile-facing resource URLs, use the client-facing resolver instead of directly concatenating `AUTOBYTEUS_SERVER_HOST`; paired phones should receive the paired private-network base or a safe relative path, not a desktop loopback URL.
+7. For Memory Hub ingestion, persist the user-confirmed advertised hub base URL and require the source-side Test Connection path before relying on it for Docker/Kubernetes/LAN sync.

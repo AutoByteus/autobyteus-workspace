@@ -5,6 +5,7 @@ This directory contains focused feature-level design docs.
 ## Documents
 
 - `artifact_file_serving_design.md`
+- `memory_sync.md`
 - `remote_access.md`
 - `shared_member_multi_team_membership_future.md`
 - `task_agent_identity_future_improvements.md`

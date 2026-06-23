@@ -290,4 +290,3 @@ export class TestMemoryHubConnectionInput {
   @Field(() => String)
   sourceNodeId!: string;
 }
-

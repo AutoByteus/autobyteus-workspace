@@ -5,15 +5,15 @@
         <div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
           <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="memory-source-select">Memory source</label>
+              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="memory-source-select">{{ $t('memory.components.memory.MemoryHome.memorySource') }}</label>
               <select id="memory-source-select" :value="store.selectedSource.key" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" @change="onSourceChange">
                 <option v-for="source in store.sources" :key="source.key" :value="source.key">{{ source.label }}</option>
               </select>
             </div>
             <div class="text-sm text-slate-600">
-              <span v-if="store.selectedSource.readOnly" class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Imported · read-only</span>
-              <span v-else class="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">Local runnable memory</span>
-              <p v-if="store.selectedSource.lastImportedAt" class="mt-1 text-xs text-slate-500">Last imported {{ formatTimestamp(store.selectedSource.lastImportedAt) }}</p>
+              <span v-if="store.selectedSource.readOnly" class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">{{ $t('memory.components.memory.common.importedReadOnly') }}</span>
+              <span v-else class="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">{{ $t('memory.components.memory.MemoryHome.localRunnableMemory') }}</span>
+              <p v-if="store.selectedSource.lastImportedAt" class="mt-1 text-xs text-slate-500">{{ $t('memory.components.memory.MemoryHome.lastImported', { timestamp: formatTimestamp(store.selectedSource.lastImportedAt) }) }}</p>
             </div>
           </div>
           <p v-if="store.sourceError" class="mt-2 text-xs text-red-600">{{ store.sourceError }}</p>

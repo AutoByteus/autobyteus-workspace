@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/investigation.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/in-progress/centralized-memory-provider-design/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: Code review round 2 passed and requested API/E2E coverage investigation and execution for the Memory Sync / embedded Memory Hub implementation.
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/investigation.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/code-review-report.md`
+- Current Investigation Round: 2
+- Trigger: User requested an additional realistic two-real-server backend E2E because the feature is not Electron/Docker-dependent and is testable as source server -> hub server synchronization.
+- Prior Investigation Reviewed: Round 1 in this same artifact.
+- Latest Authoritative Investigation: Round 2
 
 ## Current Requirement And Design Basis
 
@@ -33,6 +33,7 @@ The reviewed scope adds Memory Sync and embedded Memory Hub behavior to `autobyt
 | Memory Hub REST health and batch ingestion | Added | FR-002, FR-007, FR-016, FR-045, FR-050, FR-051; AC-002, AC-025, AC-030, AC-032, AC-035 | Add durable API/E2E coverage for authenticated health, token/source binding, batch commit, duplicate retry, path rejection, and filesystem import evidence. |
 | GraphQL Memory Sync config/status/credentials/manual sync | Added | FR-012, FR-018, FR-032 through FR-048; AC-011, AC-016 through AC-027 | Add durable GraphQL/API coverage for hub enablement, one-time token creation, source config redaction, connection test, and `startMemorySync`. |
 | Source-to-hub manual sync scan/plan/push | Added | DS-001, FR-010 through FR-016, FR-059; AC-003, AC-005, AC-006, AC-007 | Add durable end-to-end executable coverage using a real Fastify hub route and GraphQL trigger; assert `agents` and `agent_teams` imported files and source state. |
+| Source server process synchronizes to hub server process over real HTTP | Added coverage need | Same DS-001/DS-003/DS-009 basis, plus user confirmation that browser/Electron/Docker are not required for a realistic backend E2E | Add durable multi-process backend E2E that starts two isolated server processes, seeds source memory, configures hub/source via GraphQL HTTP, triggers sync over HTTP, and asserts hub import files. |
 | Source state, secret redaction, hub idempotency locking, run gate fixes | Changed | Implementation handoff local fixes CR-001 through CR-004; code review report round 2 | Existing local-fix regression test remains valid and must run as part of final execution. |
 | Memory Explorer source selector/default/imported scope | Changed | FR-022 through FR-031; AC-010, AC-013 through AC-015, AC-028, AC-029 | Existing local Memory Explorer/View E2E tests remain valid for default local behavior; add durable imported-source GraphQL coverage and frontend store variable/selection coverage. |
 | Nodes page Memory Sync setup tab | Added | FR-038, FR-041; AC-020, AC-022 | Add/update frontend component coverage for the primary `Memory Sync` tab and avoid a separate row-level setup action. |
@@ -57,6 +58,7 @@ The reviewed scope adds Memory Sync and embedded Memory Hub behavior to `autobyt
 | `autobyteus-web/components/settings/MemorySyncCard.vue` | New UI for hub/source config, credentials, connection test, sync now, imported summaries. | FR-032 through FR-048; AC-016 through AC-027 | Replace / Add Coverage Needed | No repository-resident test exists for the new card/store behavior. Full component coverage is larger than necessary for this stage; GraphQL/store tests cover the important boundaries. | Do not add broad component internals now; cover entry via NodeManager and API/store boundaries. |
 | `autobyteus-server-ts/src/api/rest/memory-sync.ts` | New REST route for health/batches. | FR-045/FR-050/FR-051; AC-025, AC-030, AC-032, AC-035 | Add Durable Coverage | No existing REST API test exercises the new public endpoints. | Add backend API/E2E test. |
 | `autobyteus-server-ts/src/api/graphql/types/memory-sync.ts` | New GraphQL resolver for Memory Sync status/config/credentials/test/manual sync. | FR-012, FR-018, FR-032 through FR-048 | Add Durable Coverage | No existing GraphQL API test exercises the new resolver. | Add backend API/E2E test. |
+| Real server process startup and cross-process Memory Sync | Source and hub run as separate backend processes with isolated app-data dirs and communicate only over HTTP. | FR-002, FR-003, FR-007, FR-012, FR-016, FR-034, FR-045, FR-050; AC-002, AC-003, AC-005, AC-016, AC-019, AC-030 | Add Durable Coverage | Existing API/E2E uses in-process GraphQL and one real Fastify REST route; it does not prove two independently started backend processes with separate config/data directories. | Add multi-process backend E2E. |
 | `autobyteus-server-ts/src/agent-memory/services/memory-explorer-source-service.ts` plus modified memory explorer/view resolvers | Local/imported source option listing and source-scoped read root. | FR-022 through FR-031; AC-013 through AC-015, AC-028, AC-029 | Add Durable Coverage | Existing local e2e tests do not prove imported source selection. | Add backend API/E2E imported-source list/detail coverage. |
 | `autobyteus-server-ts/src/server-addressing/` and `remote-access/services/address-candidate-service.ts` | Generic URL candidate owner while preserving remote-access candidate facade. | FR-042/FR-043/FR-048/FR-049; AC-023/AC-027 | Add Durable Coverage (focused) | Existing remote-access tests cover running routes, not Memory Hub URL candidate GraphQL. | Include GraphQL URL candidate assertion in backend API/E2E. |
 
@@ -74,6 +76,7 @@ The reviewed scope adds Memory Sync and embedded Memory Hub behavior to `autobyt
 | MS-API-002 | GraphQL `startMemorySync` scans local `agents` and `agent_teams`, pushes to a running hub REST route, and writes files/manifests under `memory/imports/<sourceNodeId>/`. | FR-007 through FR-016, FR-050/FR-051/FR-059; AC-002 through AC-007, AC-030/AC-035 | `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` | This proves the primary source-to-hub spine through public GraphQL/REST surfaces and real filesystem evidence. |
 | MS-API-003 | REST retry of the same batch id/content is duplicate success; same source token cannot impersonate another source; unsafe relative path is rejected. | FR-016, FR-045, FR-051; AC-025, AC-030, AC-032, AC-035 | `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` | Public endpoint idempotency, credential binding, and path safety need API-level coverage beyond store/unit tests. |
 | MS-API-004 | Memory Explorer GraphQL lists Local plus imported source, default local does not show imported-only run, imported source lists and reads imported-only run detail. | FR-020, FR-022 through FR-031; AC-010, AC-013 through AC-015, AC-028/AC-029 | `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` | Source-aware imported browsing is a new API boundary and must not depend on UI-only assumptions. |
+| MS-MP-001 | Two real backend server processes: hub and source start with isolated app-data dirs; fake source memory is synced over HTTP after GraphQL configuration; hub filesystem imports are asserted. | DS-001/DS-003/DS-009; FR-002, FR-003, FR-007, FR-010, FR-012, FR-016, FR-034, FR-045, FR-050, FR-051; AC-002, AC-003, AC-005, AC-006, AC-016, AC-019, AC-030 | `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` | This proves the realistic no-browser/no-Electron/no-Docker source-server-to-hub-server path using actual server startup, HTTP GraphQL, HTTP REST, and separate filesystem roots. |
 | MS-FE-001 | Frontend memory explorer store loads imported source options, selects imported source, resets source-bound pages, and sends the selected source variable in BFF calls. | FR-022/FR-030; AC-028/AC-029 | `autobyteus-web/tests/stores/memoryExplorerStore.test.ts` | Store source propagation is the durable frontend behavior behind route/detail/back flows. |
 | MS-FE-002 | Node Manager exposes the Memory Sync tab as the setup entry for the current bound node. | FR-038/FR-041; AC-020/AC-022 | `autobyteus-web/components/settings/__tests__/NodeManager.spec.ts` | Ensures the approved setup surface exists without adding a broad new UI test harness. |
 
@@ -102,7 +105,7 @@ The reviewed scope adds Memory Sync and embedded Memory Hub behavior to `autobyt
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Full browser/Electron click-through of Memory Sync tab and Memory page route/back/inspector transitions | Existing task setup does not have a running Nuxt/Electron app and browser fixture; store/component/API coverage exercises the durable boundaries. | Visual regressions could remain despite API/store correctness. | Delivery/docs can note no full browser E2E was run; add future UI E2E harness if the project establishes one. |
+| Full browser/Electron click-through of Memory Sync tab and Memory page route/back/inspector transitions | The added multi-process backend E2E intentionally does not require browser/Electron; store/component/API coverage exercises durable UI boundaries. | Visual regressions could remain despite API/store correctness. | Delivery/docs can note no full browser E2E was run; add future UI E2E harness if the project establishes one. |
 | Background worker repeated interval while runtime actively appends traces | Existing local-fix test covers run gate; API/E2E will cover manual scan/push and REST import. A deterministic long-running append/worker timing test would be brittle here. | Interval/live-file race behavior may need future stress coverage. | No reroute; accepted V1 residual risk. Unit/service coverage can be expanded later if failures appear. |
 | Kubernetes/Docker real network topology (`host.docker.internal`, Service/Ingress) | Not reproducible in this local API/E2E stage. URL candidate and source-side connection test are covered with loopback. | Deployment-specific reachability still depends on user configuration. | Delivery documentation should record advertised URL/test connection guidance. |
 | Native Codex/Claude restore absence | Upstream investigation and design make imported memory non-runnable; implementation exposes imported source through Memory Explorer only. No restore action was found in changed API/UI path. | A future UI could accidentally add runtime actions. | No current test beyond read-only/source scope; delivery docs should retain imported-not-runnable semantics. |
@@ -117,13 +120,14 @@ The reviewed scope adds Memory Sync and embedded Memory Hub behavior to `autobyt
 ## Execution Plan
 
 1. Add backend durable API/E2E test `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` for scenarios MS-API-001 through MS-API-004 using a temp app-data directory, initialized public URL config, in-process GraphQL schema, and a real Fastify REST hub route listening on loopback.
-2. Update `autobyteus-web/tests/stores/memoryExplorerStore.test.ts` for selected source loading/propagation.
-3. Update `autobyteus-web/components/settings/__tests__/NodeManager.spec.ts` for Memory Sync tab entry, mocking `MemorySyncCard` to keep the test focused.
-4. Run focused backend coverage: new memory-sync API/E2E test, existing memory explorer/view e2e tests, and existing memory-sync local-fix regression test.
-5. Run backend source build check `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
-6. Run focused frontend durable coverage tests for memory explorer store and NodeManager.
-7. If any new evidence changes validity decisions, update this investigation before changing/removing coverage or rerouting.
-8. Because repository-resident durable coverage will be added/updated after code review, write the execution coverage report and route the cumulative package back to `code_reviewer` for narrow coverage-code review before delivery.
+2. Add backend durable multi-process E2E test `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` for MS-MP-001 using two actual backend server processes with isolated app-data dirs and HTTP GraphQL/REST calls.
+3. Update `autobyteus-web/tests/stores/memoryExplorerStore.test.ts` for selected source loading/propagation.
+4. Update `autobyteus-web/components/settings/__tests__/NodeManager.spec.ts` for Memory Sync tab entry, mocking `MemorySyncCard` to keep the test focused.
+5. Run focused backend coverage: new memory-sync API/E2E test, new multi-process E2E test, existing memory explorer/view e2e tests, and existing memory-sync local-fix regression test.
+6. Run backend source build check `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
+7. Run focused frontend durable coverage tests for memory explorer store and NodeManager.
+8. If any new evidence changes validity decisions, update this investigation before changing/removing coverage or rerouting.
+9. Because repository-resident durable coverage will be added/updated after code review, write/update the execution coverage report and route the cumulative package back to `code_reviewer` for narrow coverage-code review before delivery.
 
 ## Investigation Decision
 

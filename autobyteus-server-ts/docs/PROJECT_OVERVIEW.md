@@ -14,6 +14,7 @@
 - GraphQL: `/graphql`
 - REST: `/rest/*`
   - Phone Access management and pairing: `/rest/remote-access/*`
+  - Memory Sync hub ingestion: `/rest/memory-sync/v1/*`
 - MCP Streamable HTTP:
   - AutoByteus Agent Tools MCP Server: `/mcp/agent-tools/:sessionId`
 - Mobile web/PWA static shell: `/mobile` and `/mobile/*`
@@ -38,7 +39,7 @@ Major domains under `src/`:
 - LLM and multimedia model management
 - Workspaces and file explorer
 - Token usage and memory-centric conversation state
-- Server-owned agent memory inspection and storage-only external-runtime recording
+- Server-owned agent memory inspection, storage-only external-runtime recording, and Memory Sync / Memory Hub imported-memory corpus support
 - Agent artifacts
 - Remote Access / Phone Access pairing, mobile auth, and mobile static app serving
 
@@ -69,6 +70,7 @@ This keeps startup robust while still warming caches shortly after boot.
 - `ARCHITECTURE.md`
 - `URL_GENERATION_AND_ENV_STRATEGY.md`
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`
+- `features/memory_sync.md`
 - `features/remote_access.md`
 - `modules/README.md`
   - `modules/self_evolution.md`

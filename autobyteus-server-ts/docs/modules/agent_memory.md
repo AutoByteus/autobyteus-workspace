@@ -14,6 +14,9 @@ Memory files live under the configured memory root:
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each child team run id to that root-relative `teamRunPath` before the member id
 - Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...` using the logical member's team memory scope
+- Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
+  `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
+  `source-node.json` and sync state in `sync-manifest.json`.
 
 The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `teamRunPath`
 segments are opaque stored identifiers. Readers must not parse generated id
@@ -40,6 +43,12 @@ Common files/directories:
 - `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
+
+Memory Sync does not move or wrap local runtime memory. `memory/agents` and
+`memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
+content is an explicit read-only corpus under `memory/imports/<sourceNodeId>` and
+must not be treated as runnable local run history, restore state, or a fallback
+runtime memory provider.
 
 ## Runtime Ownership
 
@@ -94,16 +103,34 @@ its topology/readback collaborators must use the same memory root. Do not mix a
 writer rooted in one app memory directory with a reader backed by a global or
 different memory root; raw-trace readback depends on that root consistency.
 
+### Local And Imported Source Resolution
+
+`MemoryExplorerSourceService` owns the Memory UI source boundary. Missing or
+null source input resolves to local memory. Imported source input validates the
+`sourceNodeId`, verifies that `memory/imports/<sourceNodeId>` exists, and roots
+all agent/team explorer and view readers under that import root.
+
+Imported source reads are marked read-only. The backend must not silently fall
+back to local memory for an unknown imported source id; returning an error keeps
+local and imported corpora separated.
+
 ### Explorer GraphQL Queries
 
 The explorer GraphQL surface is:
 
-- `listAgentsWithMemory(search, page, pageSize)`
-- `listAgentRunsWithMemory(selector, search, page, pageSize)`
-- `listAgentTeamsWithMemory(search, page, pageSize)`
-- `listAgentTeamRunsWithMemory(teamDefinitionId, search, page, pageSize)`
+- `listMemoryExplorerSources()`
+- `listAgentsWithMemory(source, search, page, pageSize)`
+- `listAgentRunsWithMemory(selector, source, search, page, pageSize)`
+- `listAgentTeamsWithMemory(source, search, page, pageSize)`
+- `listAgentTeamRunsWithMemory(teamDefinitionId, source, search, page, pageSize)`
 
 All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: agent/team cards on home, selected-agent runs on agent detail, or selected-team runs/member targets on team detail.
+
+The `source` argument is a `MemoryExplorerSourceInput`:
+
+- `{ type: LOCAL }` reads `memory/agents` and `memory/agent_teams`.
+- `{ type: IMPORTED, sourceNodeId }` reads the selected
+  `memory/imports/<sourceNodeId>` corpus.
 
 The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemorySnapshots`) were replaced by these explorer queries for the Memory UI.
 
@@ -120,8 +147,8 @@ Raw traces preserve provenance needed by future analyzers:
 
 GraphQL memory-view queries:
 
-- `getAgentRunMemoryView(runId: String!)`
-- `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!)`
+- `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
+- `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!, source: MemoryExplorerSourceInput)`
 
 Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab or changes the trace limit.
 
@@ -175,6 +202,7 @@ When runtime-native Codex or Claude history cannot be read, the local-memory pro
 ## Key Source Files
 
 - Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
+- Source resolver: `src/agent-memory/services/memory-explorer-source-service.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
@@ -187,3 +215,4 @@ When runtime-native Codex or Claude history cannot be read, the local-memory pro
 - Writer adapter: `src/agent-memory/store/run-memory-writer.ts`
 - Shared file store: `autobyteus-ts/src/memory/store/run-memory-file-store.ts`
 - Shared archive manager: `autobyteus-ts/src/memory/store/raw-trace-archive-manager.ts`
+- Memory Sync feature details: `../features/memory_sync.md`

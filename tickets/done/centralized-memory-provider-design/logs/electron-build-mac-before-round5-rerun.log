@@ -1,0 +1,56 @@
+# macOS Electron build for local testing
+2026-06-23T15:53:24Z
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac
+
+> autobyteus@1.3.71 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.3.71 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.3.71 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.3.71 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Unresolved product literals found.
+M-002	components/settings/MemorySyncCard.vue	Memory Sync target node	unresolved
+M-002	components/settings/MemorySyncCard.vue	Configure this backend as a Memory Hub, a Memory Sync source, or both. Frontend node names are only navigation labels; the source node id below is the stable import identity.	unresolved
+M-002	components/settings/MemorySyncCard.vue	Memory Hub	unresolved
+M-002	components/settings/MemorySyncCard.vue	Receive imported memory under	unresolved
+M-002	components/settings/MemorySyncCard.vue	Enable hub	unresolved
+M-002	components/settings/MemorySyncCard.vue	Advertised hub base URL	unresolved
+M-002	components/settings/MemorySyncCard.vue	Refresh URL candidates	unresolved
+M-002	components/settings/MemorySyncCard.vue	Save hub settings	unresolved
+M-002	components/settings/MemorySyncCard.vue	Generate token	unresolved
+M-002	components/settings/MemorySyncCard.vue	Copy this source token now. It will not be shown again.	unresolved
+M-002	components/settings/MemorySyncCard.vue	Source credentials	unresolved
+M-002	components/settings/MemorySyncCard.vue	No credentials yet.	unresolved
+M-002	components/settings/MemorySyncCard.vue	Imported sources	unresolved
+M-002	components/settings/MemorySyncCard.vue	No imported memory yet.	unresolved
+M-002	components/settings/MemorySyncCard.vue	Memory Sync Source	unresolved
+M-002	components/settings/MemorySyncCard.vue	Push this node's local	unresolved
+M-002	components/settings/MemorySyncCard.vue	memory to a hub.	unresolved
+M-002	components/settings/MemorySyncCard.vue	Enable source	unresolved
+M-002	components/settings/MemorySyncCard.vue	Source node id	unresolved
+M-002	components/settings/MemorySyncCard.vue	Display name	unresolved
+M-002	components/settings/MemorySyncCard.vue	Hub base URL	unresolved
+M-002	components/settings/MemorySyncCard.vue	Hub token	unresolved
+M-002	components/settings/MemorySyncCard.vue	Background sync	unresolved
+M-002	components/settings/MemorySyncCard.vue	Interval ms	unresolved
+M-002	components/settings/MemorySyncCard.vue	Save source settings	unresolved
+M-002	components/settings/MemorySyncCard.vue	Test connection	unresolved
+M-007	components/memory/AgentMemoryDetail.vue	Imported · read-only	unresolved
+M-007	components/memory/AgentTeamMemoryDetail.vue	Imported · read-only	unresolved
+M-007	components/memory/MemoryHome.vue	Memory source	unresolved
+M-007	components/memory/MemoryHome.vue	Imported · read-only	unresolved
+M-007	components/memory/MemoryHome.vue	Local runnable memory	unresolved
+M-007	components/memory/MemoryInspector.vue	Imported memory · read-only corpus	unresolved
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
