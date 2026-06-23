@@ -1,0 +1,6 @@
+# delivery nuxt prepare for Docker guide tests
+2026-06-23T07:29:16+02:00
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.

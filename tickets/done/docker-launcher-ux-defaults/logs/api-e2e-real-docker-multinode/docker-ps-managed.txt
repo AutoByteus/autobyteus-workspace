@@ -1,0 +1,4 @@
+NAMES                 IMAGE          STATUS                  PORTS
+autobyteus-server-2   nginx:alpine   Up Less than a second   80/tcp, 0.0.0.0:5910->5900/tcp, [::]:5910->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:8003->8000/tcp, [::]:8003->8000/tcp, 0.0.0.0:9230->9223/tcp, [::]:9230->9223/tcp
+autobyteus-server-1   nginx:alpine   Up 2 seconds            80/tcp, 0.0.0.0:5909->5900/tcp, [::]:5909->5900/tcp, 0.0.0.0:6081->6080/tcp, [::]:6081->6080/tcp, 0.0.0.0:8002->8000/tcp, [::]:8002->8000/tcp, 0.0.0.0:9229->9223/tcp, [::]:9229->9223/tcp
+autobyteus-server-0   nginx:alpine   Up 4 seconds            80/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp

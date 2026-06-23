@@ -1,0 +1,46 @@
+Scenario: AE2E-INSTALL-001 rerun with corrected expected-line assertion
+UTC start: 2026-06-23T05:29:37Z
+source_url=file:///home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/scripts/public/docker/autobyteus-docker.sh
+--- default install output ---
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/managed install/autobyteus-docker
+[AutoByteus Docker] Install directory is not on this shell's PATH: /tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/managed install
+[AutoByteus Docker] Updated shell profile with an AutoByteus PATH block: /tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/home-default/.bashrc
+Run now:
+  Direct path: '/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/managed install/autobyteus-docker' new-container
+  Or update this shell first: export PATH='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/managed install':"$PATH"
+Current-shell note: this installer process cannot change the PATH of the terminal that launched it.
+After applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:
+  autobyteus-docker new-container
+  autobyteus-docker workspace paths
+  autobyteus-docker storage
+  autobyteus-docker urls
+--- no-update install output ---
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin's/autobyteus-docker
+[AutoByteus Docker] Install directory is not on this shell's PATH: /tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin's
+[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.
+Run now:
+  Direct path: '/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'\''s/autobyteus-docker' new-container
+  Or update this shell first: export PATH='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'\''s':"$PATH"
+Current-shell note: this installer process cannot change the PATH of the terminal that launched it.
+Persistent PATH setup (copy/paste for future shells):
+  autobyteus_docker_profile='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/home-no-update/.zshrc'
+  autobyteus_docker_path_line='export PATH='\''/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'\''\'\'''\''s'\'':"$PATH"'
+  touch "$autobyteus_docker_profile"
+  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf '%s\n' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"
+  source "$autobyteus_docker_profile"
+  unset autobyteus_docker_profile autobyteus_docker_path_line
+After applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:
+  autobyteus-docker new-container
+  autobyteus-docker workspace paths
+  autobyteus-docker storage
+  autobyteus-docker urls
+--- extracted persistent command block ---
+autobyteus_docker_profile='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/home-no-update/.zshrc'
+autobyteus_docker_path_line='export PATH='\''/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'\''\'\'''\''s'\'':"$PATH"'
+touch "$autobyteus_docker_profile"
+grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf '%s\n' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"
+source "$autobyteus_docker_profile"
+unset autobyteus_docker_profile autobyteus_docker_path_line
+expected persistent line: export PATH='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'"'"'s':"$PATH"
+--- profile after executing persistent block twice ---
+export PATH='/tmp/autobyteus-api-e2e-install-round2-rerun-UpgEa3/install bin'\''s':"$PATH"

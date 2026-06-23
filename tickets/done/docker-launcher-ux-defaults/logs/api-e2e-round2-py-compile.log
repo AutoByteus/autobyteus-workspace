@@ -1,0 +1,4 @@
+Command: python3 -m py_compile scripts/tests/test_public_docker_launcher_shared_workspace.py
+UTC start: 2026-06-23T05:27:36Z
+UTC end: 2026-06-23T05:27:36Z
+Exit: 0

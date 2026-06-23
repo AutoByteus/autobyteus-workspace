@@ -1,5 +1,7 @@
 import os
 import shutil
+import shlex
+import socket
 import subprocess
 import tempfile
 import unittest
@@ -161,7 +163,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
     def test_bash_install_writes_entry_and_modules_for_installed_cli(self) -> None:
         with fake_docker_environment() as env:
-            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "install-bin"
+            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "install bin"
             env["AUTOBYTEUS_DOCKER_INSTALL_DIR"] = str(install_dir)
             env["AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL"] = BASH_LAUNCHER.resolve().as_uri()
 
@@ -173,6 +175,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
                 env=env,
             )
             self.assertIn("Installed AutoByteus Docker launcher", install.stdout)
+            self.assertIn(f"Direct path: {shlex.quote(str(install_dir / 'autobyteus-docker'))} new-container", install.stdout)
+            self.assertIn(f"export PATH={shlex.quote(str(install_dir))}:\"$PATH\"", install.stdout)
 
             installed_entry = install_dir / "autobyteus-docker"
             installed_modules = install_dir / "autobyteus-docker.d" / "bash"
@@ -189,6 +193,188 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             )
             self.assertIn("AutoByteus Docker storage: installed-node", result.stdout)
             self.assertIn("installed-node-chromium-profile -> /home/vncuser/.config/chromium", result.stdout)
+
+    def test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance(self) -> None:
+        with fake_docker_environment() as env:
+            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "profile install"
+            env["AUTOBYTEUS_DOCKER_INSTALL_DIR"] = str(install_dir)
+            env["AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL"] = BASH_LAUNCHER.resolve().as_uri()
+            env["SHELL"] = "/bin/bash"
+
+            install = subprocess.run(
+                [str(BASH_LAUNCHER), "install"],
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+
+            installed_entry = install_dir / "autobyteus-docker"
+            profile = Path(env["HOME"]) / ".bashrc"
+            profile_text = profile.read_text(encoding="utf-8")
+            self.assertTrue(installed_entry.is_file())
+            self.assertIn("Install directory is not on this shell's PATH", install.stdout)
+            self.assertIn("Updated shell profile with an AutoByteus PATH block", install.stdout)
+            self.assertIn(f"Direct path: {shlex.quote(str(installed_entry))} new-container", install.stdout)
+            self.assertIn(f"export PATH={shlex.quote(str(install_dir))}:\"$PATH\"", install.stdout)
+            self.assertIn("cannot change the PATH of the terminal", install.stdout)
+            self.assertNotIn("Persistent PATH setup (copy/paste", install.stdout)
+            self.assertEqual(1, profile_text.count("# >>> autobyteus-docker PATH >>>"))
+            self.assertIn(f"autobyteus_docker_bin={shlex.quote(str(install_dir))}", profile_text)
+
+    def test_bash_install_path_profile_update_is_idempotent(self) -> None:
+        with fake_docker_environment() as env:
+            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "install-bin"
+            env["AUTOBYTEUS_DOCKER_INSTALL_DIR"] = str(install_dir)
+            env["AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL"] = BASH_LAUNCHER.resolve().as_uri()
+            env["SHELL"] = "/bin/bash"
+
+            subprocess.run([str(BASH_LAUNCHER), "install"], check=True, text=True, capture_output=True, env=env)
+            second = subprocess.run([str(BASH_LAUNCHER), "install"], check=True, text=True, capture_output=True, env=env)
+
+            profile_text = (Path(env["HOME"]) / ".bashrc").read_text(encoding="utf-8")
+            self.assertIn("Persistent PATH already appears configured", second.stdout)
+            self.assertEqual(1, profile_text.count("# >>> autobyteus-docker PATH >>>"))
+            self.assertEqual(1, profile_text.count("# <<< autobyteus-docker PATH <<<"))
+
+    def test_bash_install_no_update_path_skips_profile_write(self) -> None:
+        with fake_docker_environment() as env:
+            install_dir = Path(env["FAKE_DOCKER_ROOT"]).parent / "install bin's"
+            env["AUTOBYTEUS_DOCKER_INSTALL_DIR"] = str(install_dir)
+            env["AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL"] = BASH_LAUNCHER.resolve().as_uri()
+            env["SHELL"] = "/bin/bash"
+
+            install = subprocess.run(
+                [str(BASH_LAUNCHER), "install", "--no-update-path"],
+                check=True,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+
+            profile = Path(env["HOME"]) / ".bashrc"
+            profile_text = profile.read_text(encoding="utf-8") if profile.exists() else ""
+            export_line = f"export PATH={entry_shell_quote(str(install_dir))}:\"$PATH\""
+            self.assertIn("Persistent PATH update skipped by request", install.stdout)
+            self.assertIn(export_line, install.stdout)
+            self.assertIn("Persistent PATH setup (copy/paste for future shells):", install.stdout)
+            self.assertIn(f"autobyteus_docker_profile={entry_shell_quote(str(profile))}", install.stdout)
+            self.assertIn(f"autobyteus_docker_path_line={entry_shell_quote(export_line)}", install.stdout)
+            self.assertIn('grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile"', install.stdout)
+            self.assertIn('source "$autobyteus_docker_profile"', install.stdout)
+            self.assertNotIn("# >>> autobyteus-docker PATH >>>", profile_text)
+
+    def test_new_containers_prefer_sequential_friendly_ports(self) -> None:
+        with fake_docker_environment() as env:
+            for _ in range(3):
+                run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            records = read_run_arg_records(env)
+            self.assertEqual(3, len(records))
+            expected_mappings = [
+                ("8001:8000", "5908:5900", "6080:6080", "9228:9223"),
+                ("8002:8000", "5909:5900", "6081:6080", "9229:9223"),
+                ("8003:8000", "5910:5900", "6082:6080", "9230:9223"),
+            ]
+            for record, mappings in zip(records, expected_mappings, strict=True):
+                for mapping in mappings:
+                    self.assertIn(mapping, record)
+
+    def test_preferred_port_collision_falls_back_for_that_service(self) -> None:
+        with fake_docker_environment() as env:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as held:
+                try:
+                    held.bind(("127.0.0.1", 8001))
+                except OSError:
+                    self.skipTest("port 8001 is not available for collision test setup")
+                held.listen(1)
+
+                run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            run_args = read_last_run_args(env)
+            state_text = (Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env").read_text(encoding="utf-8")
+            self.assertNotIn("8001:8000", run_args)
+            self.assertNotEqual("8001", read_state_value(state_text, "BACKEND_PORT"))
+            self.assertIn("5908:5900", run_args)
+            self.assertIn("6080:6080", run_args)
+            self.assertIn("9228:9223", run_args)
+
+    def test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt(self) -> None:
+        with fake_docker_environment() as env:
+            env["FAKE_DOCKER_FAIL_FIRST_RUN_BIND"] = "1"
+
+            result = run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            records = read_run_arg_records(env)
+            self.assertEqual(2, len(records))
+            self.assertIn("Port bind failed; retrying with fresh ports", result.stdout)
+            for mapping in ("8001:8000", "5908:5900", "6080:6080", "9228:9223"):
+                self.assertIn(mapping, records[0])
+                self.assertNotIn(mapping, records[1])
+
+    def test_read_only_discovery_commands_default_to_all_nodes(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            for args in (("urls",), ("ports",), ("workspace", "paths"), ("storage",)):
+                with self.subTest(args=args):
+                    output = run_launcher(env, *args).stdout
+                    self.assertIn("autobyteus-server-0", output)
+                    self.assertIn("autobyteus-server-1", output)
+
+    def test_read_only_discovery_commands_keep_explicit_single_node_output(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            urls = run_launcher(env, "urls", "autobyteus-server-1").stdout
+            paths = run_launcher(env, "workspace", "paths", "--name", "autobyteus-server-1").stdout
+            storage = run_launcher(env, "storage", "--name", "autobyteus-server-1").stdout
+
+            for output in (urls, paths, storage):
+                self.assertIn("autobyteus-server-1", output)
+                self.assertNotIn("autobyteus-server-0", output)
+
+    def test_read_only_discovery_commands_reject_all_with_name(self) -> None:
+        with fake_docker_environment() as env:
+            for args in (
+                ("urls", "--all", "--name", "autobyteus-server-1"),
+                ("ports", "--all", "autobyteus-server-1"),
+                ("workspace", "paths", "--all", "--name", "autobyteus-server-1"),
+                ("storage", "--all", "--name", "autobyteus-server-1"),
+            ):
+                with self.subTest(args=args):
+                    result = subprocess.run(
+                        [str(BASH_LAUNCHER), *args],
+                        check=False,
+                        text=True,
+                        capture_output=True,
+                        env=env,
+                    )
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertIn("does not accept --all", result.stderr)
+
+    def test_mutating_commands_do_not_default_to_all_nodes(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+
+            apply = run_launcher(env, "workspace", "apply")
+            self.assertIn("Applying shared workspace bind mounts to autobyteus-server-0", apply.stdout)
+            self.assertNotIn("Applying shared workspace bind mounts to autobyteus-server-1", apply.stdout)
+
+            for args in (("upgrade",), ("destroy",)):
+                with self.subTest(args=args):
+                    result = subprocess.run(
+                        [str(BASH_LAUNCHER), *args],
+                        check=False,
+                        text=True,
+                        capture_output=True,
+                        env=env,
+                    )
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertIn("rerun with --all", result.stderr)
 
     def test_powershell_launcher_matches_the_shared_workspace_cli_contract(self) -> None:
         bash_text = read_combined_text(BASH_LAUNCHER_SOURCES)
@@ -253,6 +439,10 @@ def has_unqualified_port_mapping(args: list[str], container_port: str) -> bool:
     return any(arg.endswith(suffix) and not arg.startswith("127.0.0.1:") for arg in args)
 
 
+def entry_shell_quote(value: str) -> str:
+    return "'" + value.replace("'", "'\\''") + "'"
+
+
 def run_launcher(env: dict[str, str], *args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [str(BASH_LAUNCHER), *args],
@@ -264,12 +454,17 @@ def run_launcher(env: dict[str, str], *args: str) -> subprocess.CompletedProcess
 
 
 def read_last_run_args(env: dict[str, str]) -> list[str]:
+    records = read_run_arg_records(env)
+    if not records:
+        raise AssertionError("fake docker did not record a docker run invocation")
+    return records[-1]
+
+
+def read_run_arg_records(env: dict[str, str]) -> list[list[str]]:
     run_args_path = Path(env["FAKE_DOCKER_ROOT"]) / "run-args.nul"
     payload = run_args_path.read_bytes()
     records = [record for record in payload.split(b"\n--RUN--\n") if record]
-    if not records:
-        raise AssertionError("fake docker did not record a docker run invocation")
-    return [arg.decode("utf-8") for arg in records[-1].split(b"\0") if arg]
+    return [[arg.decode("utf-8") for arg in record.split(b"\0") if arg] for record in records]
 
 
 class fake_docker_environment:
@@ -278,16 +473,20 @@ class fake_docker_environment:
         root = Path(self._tmp.name)
         self.fake_root = root / "fake-docker"
         fake_bin = root / "bin"
+        home = root / "home"
         state_root = root / "state"
         shared_root = root / "shared workspace"
         self.fake_root.mkdir()
         fake_bin.mkdir()
+        home.mkdir()
         write_fake_docker(fake_bin / "docker")
         env = os.environ.copy()
         env.update(
             {
                 "PATH": f"{fake_bin}{os.pathsep}{env.get('PATH', '')}",
                 "FAKE_DOCKER_ROOT": str(self.fake_root),
+                "HOME": str(home),
+                "SHELL": "/bin/bash",
                 "AUTOBYTEUS_DOCKER_STATE_DIR": str(state_root),
                 "AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR": str(shared_root),
             }
@@ -338,8 +537,33 @@ case "${1:-}" in
     fi
     ;;
   ps)
+    filters=()
+    shift
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -a) shift ;;
+        --filter) filters+=("${2:-}"); shift 2 ;;
+        --format) shift 2 ;;
+        *) shift ;;
+      esac
+    done
     shopt -s nullglob
-    for file in "$root"/containers/*; do basename "$file"; done
+    for file in "$root"/containers/*; do
+      name="$(basename "$file")"
+      read_meta "$name" || continue
+      include=1
+      for filter in "${filters[@]}"; do
+        case "$filter" in
+          label=com.autobyteus.launcher=server-docker) ;;
+          label=com.autobyteus.nodeName=*)
+            expected="${filter#label=com.autobyteus.nodeName=}"
+            [[ "${node_name:-$name}" == "$expected" ]] || include=0
+            ;;
+          label=*) ;;
+        esac
+      done
+      [[ "$include" == "1" ]] && printf '%s\n' "$name"
+    done
     exit 0
     ;;
   inspect)
@@ -370,6 +594,11 @@ case "${1:-}" in
   run)
     printf '%s\0' "$@" >> "$root/run-args.nul"
     printf '\n--RUN--\n' >> "$root/run-args.nul"
+    if [[ "${FAKE_DOCKER_FAIL_FIRST_RUN_BIND:-}" == "1" && ! -f "$root/run-bind-failed-once" ]]; then
+      touch "$root/run-bind-failed-once"
+      printf 'Error response from daemon: Ports are not available: bind: address already in use\n' >&2
+      exit 1
+    fi
     name=""
     node_name=""
     config_hash=""

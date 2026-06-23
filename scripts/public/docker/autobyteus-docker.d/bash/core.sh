@@ -29,10 +29,10 @@ Commands:
   upgrade --all      Upgrade all managed Docker nodes to the latest image
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
-  workspace paths    Show host/container paths for node and shared workspaces
+  workspace paths    Show host/container paths for all nodes by default
   workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
-  storage            Show named volumes and host bind mounts for node(s)
-  urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
+  storage            Show named volumes and host bind mounts for all nodes by default
+  urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs for all nodes by default
   status | ps        Show managed Docker nodes
   logs               Show Docker logs for a managed node
   stop [--all]       Stop one or all managed Docker nodes
@@ -41,10 +41,10 @@ Commands:
 Advanced temporary use: curl -fsSL <script-url> | bash -s -- <command> [options]
 
 Options:
-  --name <name>      Friendly node name for status/logs/urls/stop (default: ${DEFAULT_NODE_NAME})
+  --name <name>      Select one node for single-node commands/output (default where applicable: ${DEFAULT_NODE_NAME})
   --tag <tag>        Docker image tag (default: ${DEFAULT_TAG})
   --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE})
-  --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
+  --all              Required for upgrade/destroy; optional for all-node read-only output; applies to stop/workspace apply as documented
   -h, --help         Show this help
 
 State:

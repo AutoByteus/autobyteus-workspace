@@ -1,0 +1,2 @@
+upgrade rc=1
+destroy rc=1
