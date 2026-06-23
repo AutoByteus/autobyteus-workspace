@@ -1,0 +1,2 @@
+server-1 backend before stop/apply: BACKEND_PORT=8002
+server-1 backend after workspace apply: BACKEND_PORT=8002

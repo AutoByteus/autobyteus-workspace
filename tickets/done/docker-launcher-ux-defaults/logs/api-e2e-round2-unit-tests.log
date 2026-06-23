@@ -1,0 +1,9 @@
+Command: python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace scripts.tests.test_server_docker_cli_latest_defaults
+UTC start: 2026-06-23T05:27:42Z
+..........s...........
+----------------------------------------------------------------------
+Ran 22 tests in 4.175s
+
+OK (skipped=1)
+UTC end: 2026-06-23T05:27:46Z
+Exit: 0

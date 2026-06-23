@@ -1,0 +1,5 @@
+# delivery final whitespace checks
+2026-06-23T07:32:09+02:00
+## git diff --check (tracked changes)
+## markdown trailing-space check for delivery artifacts
+No trailing whitespace in delivery markdown artifacts.

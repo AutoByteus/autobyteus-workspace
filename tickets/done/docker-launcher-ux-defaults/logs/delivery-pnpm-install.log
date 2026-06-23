@@ -1,0 +1,25 @@
+# delivery pnpm install for Docker guide test dependencies
+2026-06-23T07:28:43+02:00
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1707
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   ╭─────────────────────────────────────────╮
+   │                                         │
+   │   Update available! 10.28.2 → 11.8.0.   │
+   │   Changelog: https://pnpm.io/v/11.8.0   │
+   │    To update, run: pnpm add -g pnpm     │
+   │                                         │
+   ╰─────────────────────────────────────────╯
+
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: /home/ryan-ai/SSD/.pnpm-store/v10
+  Virtual store is at:             node_modules/.pnpm
+ WARN  The git-hosted package fetched from "https://codeload.github.com/whiskeysockets/libsignal-node/tar.gz/bcea72df9ec34d9d9140ab30619cf479c7c144c7" has to be built but the build scripts were ignored.
+Progress: resolved 1707, reused 1683, downloaded 18, added 108
+Progress: resolved 1707, reused 1683, downloaded 21, added 1706
+Progress: resolved 1707, reused 1683, downloaded 22, added 1707, done
+
+Done in 4s using pnpm v10.28.2

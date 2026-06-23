@@ -1,0 +1,33 @@
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-0.env
+NODE_NAME=autobyteus-server-0
+CONTAINER_NAME=autobyteus-server-0
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=6080
+DEBUG_PORT=9228
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:18:47Z
+CONFIG_HASH=fff3ac6aa41e830fb2559d73c492097e93ba5a368e7b699e00316b371d559bc4
+UPDATED_AT=2026-06-23T05:18:58Z
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-1.env
+NODE_NAME=autobyteus-server-1
+CONTAINER_NAME=autobyteus-server-1
+BACKEND_PORT=8002
+VNC_PORT=5909
+NOVNC_PORT=6081
+DEBUG_PORT=9229
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:18:58Z
+CONFIG_HASH=9a9acbd22cf9b61c32dd04b33117f17617993c1d4ee52f1fa432e01cbf7e8a9c
+UPDATED_AT=2026-06-23T05:18:59Z
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=8003
+VNC_PORT=5910
+NOVNC_PORT=6082
+DEBUG_PORT=9230
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:19:00Z
+CONFIG_HASH=cf9d1d88fa6f0582df6f9fd71aa3df8d37ce4ef84157e9b68ba75b1a1813653b
+UPDATED_AT=2026-06-23T05:19:01Z

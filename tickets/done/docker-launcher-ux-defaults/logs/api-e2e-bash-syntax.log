@@ -1,0 +1,4 @@
+Command: bash -n scripts/public/docker/autobyteus-docker.sh scripts/public/docker/autobyteus-docker.d/bash/core.sh scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh scripts/public/docker/autobyteus-docker.d/bash/commands.sh
+UTC start: 2026-06-23T05:17:38Z
+UTC end: 2026-06-23T05:17:38Z
+Exit: 0

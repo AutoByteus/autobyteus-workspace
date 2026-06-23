@@ -1,0 +1,7 @@
+AutoByteus Docker workspace paths: autobyteus-server-1
+Shared workspace host root: /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace
+Node workspace host path: /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/nodes/autobyteus-server-1
+Node workspace container path: /home/autobyteus/workspace
+Shared folder host path: /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/shared
+Shared folder container path: /home/autobyteus/shared
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace

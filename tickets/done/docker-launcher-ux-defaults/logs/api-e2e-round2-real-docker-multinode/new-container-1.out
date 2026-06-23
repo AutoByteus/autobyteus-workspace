@@ -1,0 +1,18 @@
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-1.
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

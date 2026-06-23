@@ -1,0 +1,44 @@
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+e6f31ffc071e: Pulling fs layer
+ce42635eeddd: Pulling fs layer
+5b429a43b8df: Pulling fs layer
+c75b9c33e8b0: Pulling fs layer
+967885d218c5: Pulling fs layer
+c16defe09b2f: Pulling fs layer
+01bf363d61e6: Pulling fs layer
+ab1fd9049751: Pulling fs layer
+ce42635eeddd: Download complete
+967885d218c5: Download complete
+5b429a43b8df: Download complete
+ab1fd9049751: Download complete
+01bf363d61e6: Download complete
+9e6bf8ac91af: Download complete
+c16defe09b2f: Download complete
+84fd3fc5237f: Download complete
+e6f31ffc071e: Download complete
+e6f31ffc071e: Pull complete
+967885d218c5: Pull complete
+5b429a43b8df: Pull complete
+ab1fd9049751: Pull complete
+c16defe09b2f: Pull complete
+ce42635eeddd: Pull complete
+01bf363d61e6: Pull complete
+c75b9c33e8b0: Download complete
+c75b9c33e8b0: Pull complete
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Downloaded newer image for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

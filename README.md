@@ -48,7 +48,7 @@ User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autob
 
 ## Run The Published Server Docker
 
-If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, picks non-conflicting ports, and prints the Backend URL to add in **Nodes -> Manage Nodes -> Add Remote Node**.
+If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, prefers friendly sequential host ports for indexed Docker nodes when they are available, falls back to non-conflicting random ports when needed, and prints the Backend URL to add in **Nodes -> Manage Nodes -> Add Remote Node**.
 
 Install the local launcher once:
 
@@ -66,7 +66,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 The installer writes the launcher entry and its adjacent support modules into
 the local install directory, so installed `autobyteus-docker` commands do not
-need a repository checkout.
+need a repository checkout. On macOS/Linux it prints the installed executable
+path, a direct-path command that works immediately, current-shell
+`export PATH=...` guidance, and persistent shell-profile setup/update status.
+When automatic profile update is skipped, unavailable, or blocked by an
+existing different managed block, it also prints copy/paste persistent setup
+commands for the detected profile. A child installer process cannot update the
+already-running parent shell, so use the direct path, run the printed export in
+the current shell, or open a new terminal after a successful persistent profile
+update.
 
 Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
@@ -75,7 +83,14 @@ autobyteus-docker new-container
 ```
 
 Repeated `new-container` calls create `autobyteus-server-0`, then
-`autobyteus-server-1`, then `autobyteus-server-2`, and so on.
+`autobyteus-server-1`, then `autobyteus-server-2`, and so on. Fresh indexed
+nodes prefer friendly sequential ports when those ports are free: server-0 uses
+Backend/VNC/noVNC/debug ports `8001`/`5908`/`6080`/`9228`, server-1 uses
+`8002`/`5909`/`6081`/`9229`, server-2 uses
+`8003`/`5910`/`6082`/`9230`, and later nodes continue the same offsets. If a
+preferred port is unavailable, that service uses a safe random fallback port.
+Existing nodes keep their saved ports during normal inspect/start paths unless
+those ports become unavailable and the launcher must recreate with fresh ports.
 
 Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then open
 that Docker node window only over a trusted LAN, VPN, tailnet, or equivalent
@@ -105,11 +120,17 @@ managed Docker node. The launcher sets
 `AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace`, so default
 terminal/agent work appears in the host-visible node workspace.
 
-Inspect the path mapping:
+Inspect path, storage, URL, and port mappings. These read-only commands show
+all managed nodes by default; use `--name autobyteus-server-1` to narrow
+`workspace paths` or `storage`, and use either `--name autobyteus-server-1` or
+`autobyteus-docker urls autobyteus-server-1` /
+`autobyteus-docker ports autobyteus-server-1` for one node:
 
 ```bash
 autobyteus-docker workspace paths
 autobyteus-docker storage
+autobyteus-docker urls
+autobyteus-docker ports
 ```
 
 Existing containers need a one-time safe recreate before they receive the
@@ -160,13 +181,15 @@ Reset to one fresh managed Docker node:
 autobyteus-docker reset
 ```
 
-Show the Backend URL again:
+Show all managed Docker node URLs again:
 
 ```bash
 autobyteus-docker urls
 ```
 
-Stop it without removing named volumes:
+Stop the default node without removing named volumes. Pass a node name to stop
+one explicit node, or use `--all` when you intentionally want to stop every
+managed node:
 
 ```bash
 autobyteus-docker stop
