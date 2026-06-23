@@ -2,7 +2,7 @@
 
 ## Status
 
-User verification/approval was received on 2026-06-23 with the instruction to finalize and release a new version. Delivery archived the ticket and prepared release target `v1.3.72` locally with the repository release helper. The README macOS Electron packaging rerun passed before finalization.
+User verification/approval was received on 2026-06-23 with the instruction to finalize and release a new version. Delivery archived the ticket, updated `origin/personal`, and pushed release tag `v1.3.72` with the repository release helper output. The README macOS Electron packaging rerun passed before finalization.
 
 ## Integrated State
 
@@ -142,4 +142,4 @@ Generated local test artifacts:
 
 Please test the generated macOS Electron artifact, preferably `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.71.dmg` or the unpacked app bundle at `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 
-Finalization/release status at report-amend time: archived ticket commit `66c1f1b0` was pushed and `origin/personal` was fast-forwarded; release helper prepared `v1.3.72` locally from `tickets/done/centralized-memory-provider-design/release-notes.md`; final release branch/tag push is the remaining step.
+Finalization/release status: archived ticket commit `66c1f1b0` and release commit `1ef49ede` were pushed; `origin/personal` was fast-forwarded; tag `v1.3.72` was pushed and release workflows were observed in progress. Cleanup is deferred to preserve the generated local Electron artifact and current session worktree.
