@@ -1,0 +1,3 @@
+[codex/docker-launcher-ux-defaults 5efb9eb3] docs(ticket): record docker launcher commit evidence
+ 1 file changed, 3 insertions(+)
+ create mode 100644 tickets/done/docker-launcher-ux-defaults/logs/finalization-ticket-evidence-commit.log
