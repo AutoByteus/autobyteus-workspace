@@ -1,0 +1,6 @@
+autobyteus_docker_profile='/tmp/autobyteus-api-e2e-install-round2-y0dekW/home-no-update/.zshrc'
+autobyteus_docker_path_line='export PATH='\''/tmp/autobyteus-api-e2e-install-round2-y0dekW/install bin'\''\'\'''\''s'\'':"$PATH"'
+touch "$autobyteus_docker_profile"
+grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf '%s\n' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"
+source "$autobyteus_docker_profile"
+unset autobyteus_docker_profile autobyteus_docker_path_line

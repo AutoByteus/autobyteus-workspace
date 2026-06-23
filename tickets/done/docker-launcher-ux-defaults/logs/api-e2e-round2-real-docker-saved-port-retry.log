@@ -1,0 +1,64 @@
+Scenario: AE2E-REAL-004 round2 real Docker saved-port start bind failure retry with fresh ports
+UTC start: 2026-06-23T05:32:33Z
+State dir: /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/state
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+[AutoByteus Docker] Stopped autobyteus-server-0. Named volumes were kept.
+Held saved backend port 127.0.0.1:8001 with listener pid 106262
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-0. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Saved ports are unavailable; recreating autobyteus-server-0 with fresh ports.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:56455
+GraphQL: http://localhost:56455/graphql
+noVNC: http://localhost:37437
+VNC: localhost:52677
+Chrome debug: localhost:60509
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+NODE_NAME=autobyteus-server-0
+CONTAINER_NAME=autobyteus-server-0
+BACKEND_PORT=56455
+VNC_PORT=52677
+NOVNC_PORT=37437
+DEBUG_PORT=60509
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:32:33Z
+CONFIG_HASH=9b0584d92850533d3ad271a70a5444033dc8be92cc3827a80f22924b4e236fe4
+UPDATED_AT=2026-06-23T05:32:38Z
+5900/tcp -> 0.0.0.0:52677
+5900/tcp -> [::]:52677
+6080/tcp -> 0.0.0.0:37437
+6080/tcp -> [::]:37437
+8000/tcp -> 0.0.0.0:56455
+8000/tcp -> [::]:56455
+9223/tcp -> 0.0.0.0:60509
+9223/tcp -> [::]:60509
+Saved-port retry assertion passed: backend changed from 8001 to 56455
+UTC end before cleanup: 2026-06-23T05:32:38Z
+Scenario AE2E-REAL-004 round2 passed

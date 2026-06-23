@@ -1,0 +1,12 @@
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-api-e2e-install-round2-y0dekW/managed install/autobyteus-docker
+[AutoByteus Docker] Install directory is not on this shell's PATH: /tmp/autobyteus-api-e2e-install-round2-y0dekW/managed install
+[AutoByteus Docker] Updated shell profile with an AutoByteus PATH block: /tmp/autobyteus-api-e2e-install-round2-y0dekW/home-default/.bashrc
+Run now:
+  Direct path: '/tmp/autobyteus-api-e2e-install-round2-y0dekW/managed install/autobyteus-docker' new-container
+  Or update this shell first: export PATH='/tmp/autobyteus-api-e2e-install-round2-y0dekW/managed install':"$PATH"
+Current-shell note: this installer process cannot change the PATH of the terminal that launched it.
+After applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:
+  autobyteus-docker new-container
+  autobyteus-docker workspace paths
+  autobyteus-docker storage
+  autobyteus-docker urls

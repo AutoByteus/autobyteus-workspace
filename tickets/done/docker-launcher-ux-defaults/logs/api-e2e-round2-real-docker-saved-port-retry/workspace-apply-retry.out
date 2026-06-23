@@ -1,0 +1,20 @@
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-0. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Saved ports are unavailable; recreating autobyteus-server-0 with fresh ports.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:56455
+GraphQL: http://localhost:56455/graphql
+noVNC: http://localhost:37437
+VNC: localhost:52677
+Chrome debug: localhost:60509
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-round2-saved-port-retry-q4kDxS/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

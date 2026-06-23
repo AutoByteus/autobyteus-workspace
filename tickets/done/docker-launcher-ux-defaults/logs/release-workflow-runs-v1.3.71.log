@@ -1,0 +1,7 @@
+# release workflow runs for v1.3.71
+2026-06-23T10:20:47+02:00
+28012460314 | Server Docker Release | v1.3.71 | in_progress |  | 20c510b7 | 2026-06-23T08:19:26Z | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28012460314
+28012460261 | iOS App Store Connect Release | v1.3.71 | in_progress |  | 20c510b7 | 2026-06-23T08:19:26Z | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28012460261
+28012460250 | Android APK Release | v1.3.71 | in_progress |  | 20c510b7 | 2026-06-23T08:19:26Z | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28012460250
+28012460244 | Desktop Release | v1.3.71 | in_progress |  | 20c510b7 | 2026-06-23T08:19:26Z | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28012460244
+28012460151 | Release Messaging Gateway | v1.3.71 | in_progress |  | 20c510b7 | 2026-06-23T08:19:26Z | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28012460151

@@ -1,0 +1,4 @@
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:8001 (nginx:alpine)
+autobyteus-server-1      autobyteus-server-1      running        http://localhost:8002 (nginx:alpine)
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:8003 (nginx:alpine)

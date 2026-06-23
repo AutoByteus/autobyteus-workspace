@@ -1,0 +1,42 @@
+Scenario: AE2E-REAL-003 round2 real Docker preferred-port fallback with backend port 8001 held
+UTC start: 2026-06-23T05:31:55Z
+Held 127.0.0.1:8001 with listener pid 104731
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:48731
+GraphQL: http://localhost:48731/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-round2-port-fallback-3IvAkp/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-round2-port-fallback-3IvAkp/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+NODE_NAME=autobyteus-server-0
+CONTAINER_NAME=autobyteus-server-0
+BACKEND_PORT=48731
+VNC_PORT=5908
+NOVNC_PORT=6080
+DEBUG_PORT=9228
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:31:55Z
+CONFIG_HASH=bd691209305c6551cf79152ea75c2aaec5e5c33431a8666f34b8aed71c6457a1
+UPDATED_AT=2026-06-23T05:31:57Z
+5900/tcp -> 0.0.0.0:5908
+5900/tcp -> [::]:5908
+6080/tcp -> 0.0.0.0:6080
+6080/tcp -> [::]:6080
+8000/tcp -> 0.0.0.0:48731
+8000/tcp -> [::]:48731
+9223/tcp -> 0.0.0.0:9228
+9223/tcp -> [::]:9228
+Fallback assertion passed: BACKEND_PORT fell back from 8001 while other friendly ports remained selected
+UTC end before cleanup: 2026-06-23T05:31:57Z
+Scenario AE2E-REAL-003 round2 passed

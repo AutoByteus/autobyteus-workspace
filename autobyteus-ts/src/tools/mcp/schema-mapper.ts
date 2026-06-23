@@ -40,19 +40,21 @@ export class McpSchemaMapper {
       }
 
       const paramSchema = paramMcpSchema as JsonObject;
-      const mcpParamType = typeof paramSchema.type === 'string' ? paramSchema.type : undefined;
+      const effectiveParamSchema = this.resolveEffectivePropertySchema(paramSchema);
+      const mcpParamType =
+        typeof effectiveParamSchema.type === 'string' ? effectiveParamSchema.type : undefined;
       const description =
-        typeof paramSchema.description === 'string' && paramSchema.description.trim()
-          ? paramSchema.description
+        typeof effectiveParamSchema.description === 'string' && effectiveParamSchema.description.trim()
+          ? effectiveParamSchema.description
           : `Parameter '${paramName}'.`;
 
       let nestedObjectSchema: ParameterSchema | undefined;
       let itemSchemaForArray: ParameterType | ParameterSchema | Record<string, unknown> | undefined;
 
-      if (mcpParamType === 'object' && 'properties' in paramSchema) {
-        nestedObjectSchema = this.mapToAutobyteusSchema(paramSchema);
+      if (mcpParamType === 'object' && 'properties' in effectiveParamSchema) {
+        nestedObjectSchema = this.mapToAutobyteusSchema(effectiveParamSchema);
       } else if (mcpParamType === 'array') {
-        const items = paramSchema.items;
+        const items = effectiveParamSchema.items;
         if (items instanceof ParameterSchema) {
           itemSchemaForArray = items;
         } else if (typeof items === 'string' && Object.values(ParameterType).includes(items as ParameterType)) {
@@ -66,7 +68,7 @@ export class McpSchemaMapper {
         (mcpParamType ? McpSchemaMapper.MCP_TYPE_TO_AUTOBYTEUS_TYPE_MAP[mcpParamType] : undefined) ??
         ParameterType.STRING;
 
-      const enumValues = paramSchema.enum;
+      const enumValues = effectiveParamSchema.enum;
       if (autobyteusParamType === ParameterType.STRING && Array.isArray(enumValues)) {
         autobyteusParamType = ParameterType.ENUM;
       }
@@ -77,11 +79,11 @@ export class McpSchemaMapper {
           type: autobyteusParamType,
           description,
           required: requiredParamsAtThisLevel.includes(paramName),
-          defaultValue: paramSchema.default,
+          defaultValue: effectiveParamSchema.default,
           enumValues: autobyteusParamType === ParameterType.ENUM && Array.isArray(enumValues) ? enumValues : undefined,
-          minValue: typeof paramSchema.minimum === 'number' ? paramSchema.minimum : undefined,
-          maxValue: typeof paramSchema.maximum === 'number' ? paramSchema.maximum : undefined,
-          pattern: typeof paramSchema.pattern === 'string' ? paramSchema.pattern : undefined,
+          minValue: typeof effectiveParamSchema.minimum === 'number' ? effectiveParamSchema.minimum : undefined,
+          maxValue: typeof effectiveParamSchema.maximum === 'number' ? effectiveParamSchema.maximum : undefined,
+          pattern: typeof effectiveParamSchema.pattern === 'string' ? effectiveParamSchema.pattern : undefined,
           arrayItemSchema: mcpParamType === 'array' ? itemSchemaForArray : undefined,
           objectSchema: nestedObjectSchema
         });
@@ -92,5 +94,81 @@ export class McpSchemaMapper {
     }
 
     return autobyteusSchema;
+  }
+
+  private resolveEffectivePropertySchema(paramSchema: JsonObject): JsonObject {
+    return (
+      this.resolveNullableUnionSchema(paramSchema, 'anyOf') ??
+      this.resolveNullableUnionSchema(paramSchema, 'oneOf') ??
+      this.resolveNullableTypeArraySchema(paramSchema) ??
+      paramSchema
+    );
+  }
+
+  private resolveNullableUnionSchema(paramSchema: JsonObject, unionKey: 'anyOf' | 'oneOf'): JsonObject | undefined {
+    const unionValue = paramSchema[unionKey];
+    if (!Array.isArray(unionValue)) {
+      return undefined;
+    }
+
+    const branches = unionValue.filter(
+      (branch): branch is JsonObject => Boolean(branch) && typeof branch === 'object' && !Array.isArray(branch)
+    );
+    if (branches.length !== unionValue.length) {
+      return undefined;
+    }
+
+    const nonNullBranches = branches.filter((branch) => !this.isNullSchema(branch));
+    const hasNullBranch = nonNullBranches.length < branches.length;
+    if (!hasNullBranch || nonNullBranches.length !== 1) {
+      return undefined;
+    }
+
+    return this.mergeOuterPropertyMetadata(paramSchema, nonNullBranches[0]);
+  }
+
+  private resolveNullableTypeArraySchema(paramSchema: JsonObject): JsonObject | undefined {
+    const schemaTypes = paramSchema.type;
+    if (!Array.isArray(schemaTypes)) {
+      return undefined;
+    }
+
+    const stringTypes = schemaTypes.filter((schemaType): schemaType is string => typeof schemaType === 'string');
+    if (stringTypes.length !== schemaTypes.length) {
+      return undefined;
+    }
+
+    const nonNullTypes = stringTypes.filter((schemaType) => schemaType !== 'null');
+    const hasNullType = nonNullTypes.length < stringTypes.length;
+    if (!hasNullType || nonNullTypes.length !== 1) {
+      return undefined;
+    }
+
+    return { ...paramSchema, type: nonNullTypes[0] };
+  }
+
+  private isNullSchema(schema: JsonObject): boolean {
+    return schema.type === 'null';
+  }
+
+  private mergeOuterPropertyMetadata(outerSchema: JsonObject, effectiveSchema: JsonObject): JsonObject {
+    const metadataKeys = [
+      'description',
+      'default',
+      'title',
+      'enum',
+      'minimum',
+      'maximum',
+      'pattern',
+      'examples',
+      'deprecated'
+    ];
+    const merged: JsonObject = { ...effectiveSchema };
+    for (const key of metadataKeys) {
+      if (key in outerSchema) {
+        merged[key] = outerSchema[key];
+      }
+    }
+    return merged;
   }
 }

@@ -1,0 +1,28 @@
+# delivery docker guide UI copy regression (after nuxt prepare)
+2026-06-23T07:29:18+02:00
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-docker-launcher-ux-defaults/autobyteus-web
+
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (2 tests) 4ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (2 tests) 39ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  07:29:21
+   Duration  11.29s (transform 4.40s, setup 21.02s, collect 79ms, tests 43ms, environment 451ms, prepare 355ms)

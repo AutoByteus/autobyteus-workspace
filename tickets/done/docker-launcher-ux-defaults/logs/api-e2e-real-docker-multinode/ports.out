@@ -1,0 +1,38 @@
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: nginx:alpine
+Backend: http://localhost:8003
+GraphQL: http://localhost:8003/graphql
+noVNC: http://localhost:6082
+VNC: localhost:5910
+Chrome debug: localhost:9230
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

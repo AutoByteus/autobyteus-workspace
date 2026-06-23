@@ -1,0 +1,371 @@
+Scenario: AE2E-REAL-001/002 real Docker multi-node friendly ports, discovery defaults, saved-port preservation, mutating safety
+UTC start: 2026-06-23T05:18:46Z
+Docker version:
+Client=29.1.3 Server=29.1.3
+State dir: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state
+Shared workspace dir: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace
+--- create node 0 ---
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+e6f31ffc071e: Pulling fs layer
+ce42635eeddd: Pulling fs layer
+5b429a43b8df: Pulling fs layer
+c75b9c33e8b0: Pulling fs layer
+967885d218c5: Pulling fs layer
+c16defe09b2f: Pulling fs layer
+01bf363d61e6: Pulling fs layer
+ab1fd9049751: Pulling fs layer
+ce42635eeddd: Download complete
+967885d218c5: Download complete
+5b429a43b8df: Download complete
+ab1fd9049751: Download complete
+01bf363d61e6: Download complete
+9e6bf8ac91af: Download complete
+c16defe09b2f: Download complete
+84fd3fc5237f: Download complete
+e6f31ffc071e: Download complete
+e6f31ffc071e: Pull complete
+967885d218c5: Pull complete
+5b429a43b8df: Pull complete
+ab1fd9049751: Pull complete
+c16defe09b2f: Pull complete
+ce42635eeddd: Pull complete
+01bf363d61e6: Pull complete
+c75b9c33e8b0: Download complete
+c75b9c33e8b0: Pull complete
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Downloaded newer image for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+--- create node 1 ---
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-1.
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+--- create node 2 ---
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: nginx:alpine
+Backend: http://localhost:8003
+GraphQL: http://localhost:8003/graphql
+noVNC: http://localhost:6082
+VNC: localhost:5910
+Chrome debug: localhost:9230
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+--- state files ---
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-0.env
+NODE_NAME=autobyteus-server-0
+CONTAINER_NAME=autobyteus-server-0
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=6080
+DEBUG_PORT=9228
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:18:47Z
+CONFIG_HASH=fff3ac6aa41e830fb2559d73c492097e93ba5a368e7b699e00316b371d559bc4
+UPDATED_AT=2026-06-23T05:18:58Z
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-1.env
+NODE_NAME=autobyteus-server-1
+CONTAINER_NAME=autobyteus-server-1
+BACKEND_PORT=8002
+VNC_PORT=5909
+NOVNC_PORT=6081
+DEBUG_PORT=9229
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:18:58Z
+CONFIG_HASH=9a9acbd22cf9b61c32dd04b33117f17617993c1d4ee52f1fa432e01cbf7e8a9c
+UPDATED_AT=2026-06-23T05:18:59Z
+### /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=8003
+VNC_PORT=5910
+NOVNC_PORT=6082
+DEBUG_PORT=9230
+IMAGE_REF=nginx:alpine
+CREATED_AT=2026-06-23T05:19:00Z
+CONFIG_HASH=cf9d1d88fa6f0582df6f9fd71aa3df8d37ce4ef84157e9b68ba75b1a1813653b
+UPDATED_AT=2026-06-23T05:19:01Z
+--- docker ps managed ---
+NAMES                 IMAGE          STATUS                  PORTS
+autobyteus-server-2   nginx:alpine   Up Less than a second   80/tcp, 0.0.0.0:5910->5900/tcp, [::]:5910->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:8003->8000/tcp, [::]:8003->8000/tcp, 0.0.0.0:9230->9223/tcp, [::]:9230->9223/tcp
+autobyteus-server-1   nginx:alpine   Up 2 seconds            80/tcp, 0.0.0.0:5909->5900/tcp, [::]:5909->5900/tcp, 0.0.0.0:6081->6080/tcp, [::]:6081->6080/tcp, 0.0.0.0:8002->8000/tcp, [::]:8002->8000/tcp, 0.0.0.0:9229->9223/tcp, [::]:9229->9223/tcp
+autobyteus-server-0   nginx:alpine   Up 4 seconds            80/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp
+--- docker port mappings ---
+### autobyteus-server-0
+5900/tcp -> 0.0.0.0:5908
+5900/tcp -> [::]:5908
+6080/tcp -> 0.0.0.0:6080
+6080/tcp -> [::]:6080
+8000/tcp -> 0.0.0.0:8001
+8000/tcp -> [::]:8001
+9223/tcp -> 0.0.0.0:9228
+9223/tcp -> [::]:9228
+### autobyteus-server-1
+5900/tcp -> 0.0.0.0:5909
+5900/tcp -> [::]:5909
+6080/tcp -> 0.0.0.0:6081
+6080/tcp -> [::]:6081
+8000/tcp -> 0.0.0.0:8002
+8000/tcp -> [::]:8002
+9223/tcp -> 0.0.0.0:9229
+9223/tcp -> [::]:9229
+### autobyteus-server-2
+5900/tcp -> 0.0.0.0:5910
+5900/tcp -> [::]:5910
+6080/tcp -> 0.0.0.0:6082
+6080/tcp -> [::]:6082
+8000/tcp -> 0.0.0.0:8003
+8000/tcp -> [::]:8003
+9223/tcp -> 0.0.0.0:9230
+9223/tcp -> [::]:9230
+--- assert sequential state ports ---
+Sequential state-port assertions passed for server-0/1/2
+--- read-only discovery defaults ---
+### autobyteus-docker urls
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: nginx:alpine
+Backend: http://localhost:8003
+GraphQL: http://localhost:8003/graphql
+noVNC: http://localhost:6082
+VNC: localhost:5910
+Chrome debug: localhost:9230
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+### autobyteus-docker ports
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:6080
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: nginx:alpine
+Backend: http://localhost:8003
+GraphQL: http://localhost:8003/graphql
+noVNC: http://localhost:6082
+VNC: localhost:5910
+Chrome debug: localhost:9230
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+### autobyteus-docker workspace paths
+AutoByteus Docker workspace paths: autobyteus-server-0
+Shared workspace host root: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace
+Node workspace host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0
+Node workspace container path: /home/autobyteus/workspace
+Shared folder host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Shared folder container path: /home/autobyteus/shared
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+
+AutoByteus Docker workspace paths: autobyteus-server-1
+Shared workspace host root: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace
+Node workspace host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Node workspace container path: /home/autobyteus/workspace
+Shared folder host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Shared folder container path: /home/autobyteus/shared
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+
+AutoByteus Docker workspace paths: autobyteus-server-2
+Shared workspace host root: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace
+Node workspace host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2
+Node workspace container path: /home/autobyteus/workspace
+Shared folder host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Shared folder container path: /home/autobyteus/shared
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+### autobyteus-docker storage
+AutoByteus Docker storage: autobyteus-server-0
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-0-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-0-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-0-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-0-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-0 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+
+AutoByteus Docker storage: autobyteus-server-1
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-1-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-1-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-1-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-1-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+
+AutoByteus Docker storage: autobyteus-server-2
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-2-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-2-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-2-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-2-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-2 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+### autobyteus-docker status
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:8001 (nginx:alpine)
+autobyteus-server-1      autobyteus-server-1      running        http://localhost:8002 (nginx:alpine)
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:8003 (nginx:alpine)
+--- explicit single-node forms ---
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+AutoByteus Docker workspace paths: autobyteus-server-1
+Shared workspace host root: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace
+Node workspace host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Node workspace container path: /home/autobyteus/workspace
+Shared folder host path: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Shared folder container path: /home/autobyteus/shared
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+AutoByteus Docker storage: autobyteus-server-1
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-1-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-1-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-1-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-1-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+Discovery default-all and single-node assertions passed
+--- mutating/stream safety probes ---
+2026/06/23 05:18:59 [notice] 1#1: start worker process 33
+2026/06/23 05:18:59 [notice] 1#1: start worker process 34
+2026/06/23 05:18:59 [notice] 1#1: start worker process 35
+2026/06/23 05:18:59 [notice] 1#1: start worker process 36
+2026/06/23 05:18:59 [notice] 1#1: start worker process 37
+upgrade rc=1
+destroy rc=1
+[AutoByteus Docker] Stopped autobyteus-server-1. Named volumes were kept.
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-1. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:1a8724a52d432501548a8d8681bb1554c2d09778f8b9ed0882fc3442549980b7
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-1.
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: nginx:alpine
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+noVNC: http://localhost:6081
+VNC: localhost:5909
+Chrome debug: localhost:9229
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-real-docker-LLEy4Q/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+server-1 backend before stop/apply: BACKEND_PORT=8002
+server-1 backend after workspace apply: BACKEND_PORT=8002
+--- cleanup check before trap ---
+UTC end before cleanup: 2026-06-23T05:19:05Z
+Scenario AE2E-REAL-001/002 passed

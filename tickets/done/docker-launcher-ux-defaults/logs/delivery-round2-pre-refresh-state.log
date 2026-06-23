@@ -1,0 +1,17 @@
+# delivery round 2 git pre-refresh state
+2026-06-23T07:37:29+02:00
+branch=codex/docker-launcher-ux-defaults
+head_before=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+origin_personal_before=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+merge_base_before=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+status_before=
+## codex/docker-launcher-ux-defaults...origin/personal
+ M README.md
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M scripts/public/docker/autobyteus-docker.d/bash/commands.sh
+ M scripts/public/docker/autobyteus-docker.d/bash/core.sh
+ M scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? tickets/in-progress/docker-launcher-ux-defaults/

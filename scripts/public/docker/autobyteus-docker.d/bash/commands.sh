@@ -52,12 +52,11 @@ show_storage() {
 }
 
 apply_workspace_to_node() {
-  local node_name="$1" fallback_image_ref="$2" node_image_ref prefer_defaults=0
+  local node_name="$1" fallback_image_ref="$2" node_image_ref
   node_known_for_apply "$node_name" || fail "No managed Docker node found for ${node_name}. Run new-container first, or use workspace apply --all for existing managed nodes."
   node_image_ref="$(image_ref_for_node_or_default "$node_name" "$fallback_image_ref")"
-  [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
   log "Applying shared workspace bind mounts to ${node_name}. Named volumes will be kept."
-  start_node "$node_name" "$node_image_ref" "$prefer_defaults"
+  start_node "$node_name" "$node_image_ref"
 }
 
 apply_workspace() {
@@ -80,12 +79,27 @@ resolve_target_name() {
   printf '%s\n' "$DEFAULT_NODE_NAME"
 }
 
-show_urls() {
+show_urls_for_node() {
   local node_name="$1" file
   file="$(state_path_for "$node_name")"
   [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
   load_state "$file"
   print_urls "${NODE_NAME:-$node_name}" "${CONTAINER_NAME:-$node_name}" "${IMAGE_REF:-unknown}"
+}
+
+show_urls() {
+  local filter_name="$1" show_all="$2" node any=0
+  if [[ "$show_all" == "1" || -z "$filter_name" ]]; then
+    while IFS= read -r node; do
+      [[ -n "$node" ]] || continue
+      [[ "$any" == "0" ]] || printf '\n'
+      show_urls_for_node "$node"
+      any=1
+    done < <(managed_node_names)
+    [[ "$any" == "1" ]] || log "No managed Docker nodes found."
+    return
+  fi
+  show_urls_for_node "$filter_name"
 }
 
 show_status() {
@@ -208,16 +222,34 @@ main() {
       fi
       [[ "${#extra[@]}" -le 1 ]] || fail "Unknown workspace option(s): ${extra[*]:1}"
       if [[ "$workspace_action" == "paths" ]]; then
-        show_workspace_paths "$node_name" "$stop_all"
+        [[ "$stop_all" != "1" || -z "$name_arg" ]] || fail "workspace paths does not accept --all with --name."
+        if [[ "$stop_all" == "1" || -z "$name_arg" ]]; then
+          show_workspace_paths "" "1"
+        else
+          show_workspace_paths "$node_name" "0"
+        fi
       else
         apply_workspace "$node_name" "$stop_all" "$image_ref"
       fi
       ;;
     storage)
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown storage option(s): ${extra[*]}"
-      show_storage "$node_name" "$stop_all"
+      [[ "$stop_all" != "1" || -z "$name_arg" ]] || fail "storage does not accept --all with --name."
+      if [[ "$stop_all" == "1" || -z "$name_arg" ]]; then
+        show_storage "" "1"
+      else
+        show_storage "$node_name" "0"
+      fi
       ;;
-    urls|ports) show_urls "$node_name" ;;
+    urls|ports)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown ${cmd} option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" || -z "$name_arg" ]] || fail "${cmd} does not accept --all with a node name."
+      if [[ "$stop_all" == "1" || -z "$name_arg" ]]; then
+        show_urls "" "1"
+      else
+        show_urls "$node_name" "0"
+      fi
+      ;;
     status|ps) if [[ -n "$name_arg" ]]; then show_status "$node_name"; else show_status ""; fi ;;
     stop) stop_nodes "$node_name" "$stop_all" ;;
     logs) show_logs "$node_name" "${extra[@]}" ;;

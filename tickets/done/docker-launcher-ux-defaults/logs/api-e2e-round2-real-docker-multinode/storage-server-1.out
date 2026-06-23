@@ -1,0 +1,12 @@
+AutoByteus Docker storage: autobyteus-server-1
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-1-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-1-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-1-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-1-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/nodes/autobyteus-server-1 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-round2-real-docker-s457Xo/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.

@@ -136,20 +136,42 @@ pick_port() {
   done
 }
 
-choose_ports() {
-  local prefer_defaults="$1"
-  collect_used_ports
-  if [[ "$prefer_defaults" == "1" ]]; then
-    BACKEND_PORT="$(pick_port 8001)"
-    VNC_PORT="$(pick_port 5908)"
-    NOVNC_PORT="$(pick_port 6080)"
-    DEBUG_PORT="$(pick_port 9228)"
-  else
-    BACKEND_PORT="$(pick_port)"
-    VNC_PORT="$(pick_port)"
-    NOVNC_PORT="$(pick_port)"
-    DEBUG_PORT="$(pick_port)"
+node_index_for_friendly_ports() {
+  local node_name="$1" suffix
+  case "$node_name" in
+    ${NODE_NAME_PREFIX}-*)
+      suffix="${node_name#${NODE_NAME_PREFIX}-}"
+      [[ "$suffix" =~ ^[0-9]+$ ]] || return 1
+      printf '%s\n' "$suffix"
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+preferred_port_for_node() {
+  local node_name="$1" base="$2" index
+  if index="$(node_index_for_friendly_ports "$node_name")"; then
+    printf '%s\n' $((base + index))
+    return 0
   fi
+  return 1
+}
+
+choose_ports_for_node() {
+  local node_name="$1" allow_friendly_preferences="$2"
+  local preferred_backend="" preferred_vnc="" preferred_novnc="" preferred_debug=""
+  collect_used_ports
+  if [[ "$allow_friendly_preferences" == "1" ]]; then
+    preferred_backend="$(preferred_port_for_node "$node_name" 8001 || true)"
+    preferred_vnc="$(preferred_port_for_node "$node_name" 5908 || true)"
+    preferred_novnc="$(preferred_port_for_node "$node_name" 6080 || true)"
+    preferred_debug="$(preferred_port_for_node "$node_name" 9228 || true)"
+  fi
+  BACKEND_PORT="$(pick_port "$preferred_backend")"
+  VNC_PORT="$(pick_port "$preferred_vnc")"
+  NOVNC_PORT="$(pick_port "$preferred_novnc")"
+  DEBUG_PORT="$(pick_port "$preferred_debug")"
 }
 
 node_name_available() {
@@ -294,8 +316,9 @@ STORAGE
 }
 
 start_node() {
-  local node_name="$1" image_ref="$2" prefer_defaults="$3" state_file container_name created_at attempt output start_check_output
+  local node_name="$1" image_ref="$2" state_file container_name created_at attempt output start_check_output
   local desired_image_id current_image_id current_config_hash config_hash start_output
+  local allow_friendly_preferences=1
   state_file="$(state_path_for "$node_name")"
   load_state "$state_file"
   container_name="${CONTAINER_NAME:-$node_name}"
@@ -337,6 +360,7 @@ start_node() {
         log "Saved ports are unavailable; recreating ${node_name} with fresh ports."
         docker rm -f "$container_name" >/dev/null 2>&1 || true
         BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT=""
+        allow_friendly_preferences=0
       else
         fail "docker start failed: ${start_output}"
       fi
@@ -351,8 +375,7 @@ start_node() {
 
   for attempt in $(seq 1 "$MAX_RUN_ATTEMPTS"); do
     if [[ "$attempt" -gt 1 || -z "${BACKEND_PORT:-}" || -z "${VNC_PORT:-}" || -z "${NOVNC_PORT:-}" || -z "${DEBUG_PORT:-}" ]]; then
-      choose_ports "$prefer_defaults"
-      prefer_defaults=0
+      choose_ports_for_node "$node_name" "$allow_friendly_preferences"
     fi
     config_hash="$(desired_config_hash "$node_name" "$image_ref")"
 
@@ -374,6 +397,7 @@ start_node() {
     if is_bind_failure "$output" && [[ "$attempt" -lt "$MAX_RUN_ATTEMPTS" ]]; then
       log "Port bind failed; retrying with fresh ports (attempt $((attempt + 1))/${MAX_RUN_ATTEMPTS})."
       BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT=""
+      allow_friendly_preferences=0
       continue
     fi
     fail "docker run failed: ${output}"
@@ -451,16 +475,14 @@ destroy_all_nodes() {
 }
 
 upgrade_all_nodes() {
-  local image_ref="$1" node image_id image_ids=() any=0 prefer_defaults
+  local image_ref="$1" node image_id image_ids=() any=0
   while IFS= read -r image_id; do
     [[ -n "$image_id" ]] && image_ids+=("$image_id")
   done < <(managed_container_image_ids)
 
   while IFS= read -r node; do
     [[ -n "$node" ]] || continue
-    prefer_defaults=0
-    [[ "$node" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-    start_node "$node" "$image_ref" "$prefer_defaults"
+    start_node "$node" "$image_ref"
     any=1
   done < <(managed_node_names)
 
@@ -472,14 +494,13 @@ upgrade_all_nodes() {
 }
 
 create_new_container() {
-  local image_ref="$1" node_name prefer_defaults=0
+  local image_ref="$1" node_name
   node_name="$(next_node_name)"
-  [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-  start_node "$node_name" "$image_ref" "$prefer_defaults"
+  start_node "$node_name" "$image_ref"
 }
 
 reset_nodes() {
   local image_ref="$1"
   destroy_all_nodes
-  start_node "$DEFAULT_NODE_NAME" "$image_ref" "1"
+  start_node "$DEFAULT_NODE_NAME" "$image_ref"
 }

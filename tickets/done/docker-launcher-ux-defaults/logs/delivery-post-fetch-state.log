@@ -1,0 +1,15 @@
+# delivery git post-fetch state
+2026-06-23T07:25:43+02:00
+branch=codex/docker-launcher-ux-defaults
+head_after_fetch=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+origin_personal_after_fetch=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+merge_base_after_fetch=02440c9b357c7bf85d2bc7484a571fc0d58a55be
+ahead_behind_head_to_origin_personal=0	0
+status_after_fetch=
+## codex/docker-launcher-ux-defaults...origin/personal
+ M scripts/public/docker/autobyteus-docker.d/bash/commands.sh
+ M scripts/public/docker/autobyteus-docker.d/bash/core.sh
+ M scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? tickets/in-progress/docker-launcher-ux-defaults/
