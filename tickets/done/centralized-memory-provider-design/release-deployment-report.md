@@ -83,27 +83,28 @@ Release target selected: `v1.3.72` (next patch after latest existing semver tag 
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/investigation.md`
 - Ticket branch: `codex/centralized-memory-provider-design`
-- Ticket branch commit result: Local checkpoint commit completed before the first integration; final archived delivery commit in progress.
-- Ticket branch push result: Pending final archived delivery/release commits.
+- Ticket branch commit result: Local checkpoint commit completed before the first integration; final archived delivery commit completed as `66c1f1b0`; release commit prepared locally afterward.
+- Ticket branch push result: Archived delivery commit pushed; release commit/tag push pending at report-amend time.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; finalization refresh found `origin/personal@167584a056b8a81b066e10a435fb81d7e75f7b4b` still at the integrated base.
 - Delivery-owned edits protected before re-integration: `Not needed` before handoff; required again before final merge if remote target advances after verification.
 - Re-integration before final merge result: `Not needed` before verification; finalization will refresh `personal` again after verification.
-- Target branch update result: Pending user verification.
-- Merge into target result: Pending user verification.
-- Push target branch result: Pending user verification.
-- Repository finalization status: `In progress`
-- Blocker (if applicable): None at archival time; final push/release result will be recorded after release commands complete.
+- Target branch update result: `Completed` for archived delivery commit; release commit push pending at report-amend time.
+- Merge into target result: `Fast-forwarded origin/personal` from `167584a056b8a81b066e10a435fb81d7e75f7b4b` to archived delivery commit `66c1f1b0`; release commit will fast-forward the target again.
+- Push target branch result: Archived delivery commit pushed; release commit push pending at report-amend time.
+- Repository finalization status: `Release commit prepared; final remote push pending`
+- Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: Repository release helper / tag-triggered GitHub release workflows
 - Method reference / command: `pnpm release 1.3.72 -- --release-notes tickets/done/centralized-memory-provider-design/release-notes.md --branch codex/centralized-memory-provider-design --no-push`, followed by pushing the ticket branch, `origin/personal`, and `v1.3.72` tag.
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Prepared` as `tickets/done/centralized-memory-provider-design/release-notes.md`; release helper will sync them to `.github/release-notes/release-notes.md`.
-- Blocker (if applicable): None at archival time.
+- Release/publication/deployment result: `Prepared locally; tag push pending at report-amend time`
+- Release notes handoff result: `Synced` from `tickets/done/centralized-memory-provider-design/release-notes.md` to `.github/release-notes/release-notes.md`.
+- Release helper log: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/logs/release-v1.3.72-helper.log`
+- Blocker (if applicable): None.
 
 ## Post-Finalization Cleanup
 
@@ -124,7 +125,7 @@ Release target selected: `v1.3.72` (next patch after latest existing semver tag 
 
 - Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/release-notes.md`
 - Archived release notes artifact used for release/publication: Pending ticket archive/finalization.
-- Release notes status: `Updated`
+- Release notes status: `Updated and synced into curated GitHub release notes by the release helper`
 
 ## Deployment Steps
 
@@ -165,6 +166,11 @@ Passed in Round 5 delivery artifact refresh:
 1. `git diff --check origin/personal && git diff --check`
    - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/logs/delivery-round5-final-diff-check.log`
 
+Passed in release preparation:
+
+1. `pnpm release 1.3.72 -- --release-notes tickets/done/centralized-memory-provider-design/release-notes.md --branch codex/centralized-memory-provider-design --no-push`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/centralized-memory-provider-design/tickets/done/centralized-memory-provider-design/logs/release-v1.3.72-helper.log`
+
 Passed in Round 5 delivery packaging rerun:
 
 1. `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`
@@ -179,4 +185,4 @@ Before finalization, rollback is simply to withhold merge/push of `codex/central
 
 ## Final Status
 
-User-approved for finalization/release. Ticket archived under `tickets/done/centralized-memory-provider-design/`; release target is `v1.3.72`; final commit/push/tag result will be recorded after release commands complete.
+Ticket archived under `tickets/done/centralized-memory-provider-design/`, archived delivery commit pushed, release helper prepared version/tag `v1.3.72` locally, and final branch/tag push remains as the last release step at report-amend time.
