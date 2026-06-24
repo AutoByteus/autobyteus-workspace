@@ -11,8 +11,6 @@
     </section>
 
     <p v-if="store.error" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ store.error }}</p>
-    <p v-if="store.info" class="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">{{ store.info }}</p>
-
     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div class="flex items-center justify-between gap-3">
         <div>
@@ -96,16 +94,16 @@
 
       <div class="mt-4 grid gap-3 md:grid-cols-2">
         <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.sourceNodeId') }}
-          <input v-model="sourceForm.sourceNodeId" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" placeholder="docker-node-1" />
+          <input v-model="sourceForm.sourceNodeId" data-testid="memory-sync-source-node-id" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" placeholder="docker-node-1" />
         </label>
         <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.displayName') }}
-          <input v-model="sourceForm.displayName" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+          <input v-model="sourceForm.displayName" data-testid="memory-sync-display-name" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
         </label>
         <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.hubBaseUrl') }}
-          <input v-model="sourceForm.hubBaseUrl" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" />
+          <input v-model="sourceForm.hubBaseUrl" data-testid="memory-sync-hub-base-url" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" />
         </label>
         <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.hubToken') }}
-          <input v-model="sourceForm.hubToken" type="password" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" :placeholder="store.status.source.hubTokenPreview || t('settings.components.settings.MemorySyncCard.pasteToken')" />
+          <input v-model="sourceForm.hubToken" data-testid="memory-sync-hub-token" type="password" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" :placeholder="store.status.source.hubTokenPreview || t('settings.components.settings.MemorySyncCard.pasteToken')" />
         </label>
         <label class="flex items-center gap-2 text-sm font-medium text-slate-700">
           <input v-model="sourceForm.backgroundEnabled" type="checkbox" /> {{ t('settings.components.settings.MemorySyncCard.backgroundSync') }}
@@ -116,23 +114,34 @@
       </div>
 
       <div class="mt-4 flex flex-wrap gap-2">
-        <button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50" :disabled="store.saving" @click="saveSource">{{ t('settings.components.settings.MemorySyncCard.saveSourceSettings') }}</button>
-        <button class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" @click="testConnection">{{ t('settings.components.settings.MemorySyncCard.testConnection') }}</button>
-        <button class="rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-100 disabled:opacity-50" :disabled="store.syncing" @click="store.syncNow">{{ store.syncing ? t('settings.components.settings.MemorySyncCard.syncing') : t('settings.components.settings.MemorySyncCard.syncNow') }}</button>
+        <button data-testid="memory-sync-save-source" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50" :disabled="store.saving" @click="saveSource">{{ t('settings.components.settings.MemorySyncCard.saveSourceSettings') }}</button>
+        <button data-testid="memory-sync-test-connection" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50" :disabled="store.testingConnection" @click="testConnection">
+          <span v-if="store.testingConnection" class="mr-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700 align-[-1px]" aria-hidden="true" />
+          {{ store.testingConnection ? t('settings.components.settings.MemorySyncCard.testing') : t('settings.components.settings.MemorySyncCard.testConnection') }}
+        </button>
+        <button data-testid="memory-sync-sync-now" class="rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-100 disabled:opacity-50" :disabled="store.syncing" @click="store.syncNow">
+          <span v-if="store.syncing" class="mr-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-green-200 border-t-green-700 align-[-1px]" aria-hidden="true" />
+          {{ store.syncing ? t('settings.components.settings.MemorySyncCard.syncing') : t('settings.components.settings.MemorySyncCard.syncNow') }}
+        </button>
       </div>
 
-      <div class="mt-4 text-sm text-slate-600">
-        <p>{{ t('settings.components.settings.MemorySyncCard.jobState') }}: {{ store.status.sourceState?.jobState || t('settings.components.settings.MemorySyncCard.idle') }}</p>
-        <p v-if="store.status.sourceState?.lastSuccessfulSyncAt">{{ t('settings.components.settings.MemorySyncCard.lastSuccess') }}: {{ formatTimestamp(store.status.sourceState.lastSuccessfulSyncAt) }}</p>
-        <p v-if="store.status.sourceState?.lastError" class="text-red-600">{{ t('settings.components.settings.MemorySyncCard.lastError') }}: {{ store.status.sourceState.lastError }}</p>
-        <p v-if="store.lastSyncResult" class="text-green-700">{{ t('settings.components.settings.MemorySyncCard.lastRun', { changed: store.lastSyncResult.changedFiles, unchanged: store.lastSyncResult.unchangedFiles }) }}</p>
+      <div v-if="store.testingConnection || store.connectionTestResult" data-testid="memory-sync-connection-test-status" class="mt-3 rounded-lg border px-3 py-2 text-sm" :class="connectionTestToneClass" role="status" aria-live="polite">
+        <p class="font-semibold">{{ connectionTestTitle }}</p>
+        <p v-if="connectionTestMessage" class="mt-1">{{ connectionTestMessage }}</p>
+        <p v-if="connectionTestMeta" class="mt-1 font-mono text-xs">{{ connectionTestMeta }}</p>
+        <p v-if="connectionTestFlags" class="mt-1 text-xs">{{ connectionTestFlags }}</p>
+      </div>
+
+      <div class="mt-4 space-y-1 text-sm text-slate-600" role="status" aria-live="polite">
+        <p data-testid="memory-sync-current-job"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.currentJob') }}:</span> {{ currentJobText }}</p>
+        <p data-testid="memory-sync-last-sync" :class="lastSyncStatusClass"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.lastSync') }}:</span> {{ lastSyncText }}</p>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive } from 'vue';
 import { useMemorySyncStore } from '~/stores/memorySyncStore';
 
 const props = defineProps<{
@@ -155,17 +164,31 @@ const sourceForm = reactive({
   batchSize: 25,
 });
 
-watch(() => store.status, syncForms, { deep: true });
+const STATUS_REFRESH_INTERVAL_MS = 30_000;
+let statusRefreshTimer: ReturnType<typeof setInterval> | null = null;
 
 onMounted(async () => {
   await store.loadStatus();
+  hydrateFormsFromStatus('initial');
   await loadCandidates();
-  syncForms();
+  startStatusRefreshTimer();
 });
 
-function syncForms() {
+onBeforeUnmount(() => {
+  stopStatusRefreshTimer();
+});
+
+function hydrateFormsFromStatus(_reason: 'initial' | 'after-save' | 'reset') {
+  hydrateHubFormFromStatus();
+  hydrateSourceFormFromStatus();
+}
+
+function hydrateHubFormFromStatus() {
   hubForm.enabled = store.status.hub.enabled;
   hubForm.advertisedHubBaseUrl = store.status.hub.advertisedHubBaseUrl || props.baseUrl || '';
+}
+
+function hydrateSourceFormFromStatus() {
   sourceForm.enabled = store.status.source.enabled;
   sourceForm.sourceNodeId = store.status.source.sourceNodeId || '';
   sourceForm.displayName = store.status.source.displayName || props.nodeName || '';
@@ -176,12 +199,30 @@ function syncForms() {
   sourceForm.batchSize = store.status.source.batchSize || 25;
 }
 
+function startStatusRefreshTimer() {
+  stopStatusRefreshTimer();
+  statusRefreshTimer = setInterval(() => {
+    if (typeof document !== 'undefined' && document.hidden) {
+      return;
+    }
+    void store.refreshStatusOnly();
+  }, STATUS_REFRESH_INTERVAL_MS);
+}
+
+function stopStatusRefreshTimer() {
+  if (statusRefreshTimer) {
+    clearInterval(statusRefreshTimer);
+    statusRefreshTimer = null;
+  }
+}
+
 async function loadCandidates() {
   await store.loadCandidates(props.baseUrl, hubForm.advertisedHubBaseUrl);
 }
 
 async function saveHub() {
   await store.updateHubConfig({ enabled: hubForm.enabled, advertisedHubBaseUrl: hubForm.advertisedHubBaseUrl });
+  hydrateHubFormFromStatus();
 }
 
 async function saveSource() {
@@ -189,15 +230,96 @@ async function saveSource() {
     ...sourceForm,
     hubToken: sourceForm.hubToken || undefined,
   });
+  hydrateSourceFormFromStatus();
 }
 
 async function testConnection() {
-  await store.testConnection({
-    hubBaseUrl: sourceForm.hubBaseUrl,
-    token: sourceForm.hubToken,
-    sourceNodeId: sourceForm.sourceNodeId,
-  });
+  const token = sourceForm.hubToken.trim();
+  if (token) {
+    await store.testConnection({
+      mode: 'draft',
+      hubBaseUrl: sourceForm.hubBaseUrl,
+      sourceNodeId: sourceForm.sourceNodeId,
+      token,
+    });
+    return;
+  }
+  await store.testConnection({ mode: 'saved' });
 }
+
+const isCurrentJobSyncing = computed(() => store.syncing || store.status.sourceState?.jobState === 'running');
+const currentJobText = computed(() => isCurrentJobSyncing.value
+  ? t('settings.components.settings.MemorySyncCard.syncingJob')
+  : t('settings.components.settings.MemorySyncCard.idle'));
+
+const lastSyncState = computed<'error' | 'success' | 'none'>(() => {
+  const sourceState = store.status.sourceState;
+  if (sourceState?.jobState === 'error' && sourceState.lastError) return 'error';
+  if (sourceState?.lastSuccessfulSyncAt) return 'success';
+  return 'none';
+});
+
+const lastSyncText = computed(() => {
+  const sourceState = store.status.sourceState;
+  if (lastSyncState.value === 'error') {
+    return `${t('settings.components.settings.MemorySyncCard.error')} · ${sourceState?.lastError}`;
+  }
+  if (lastSyncState.value === 'success') {
+    return `${t('settings.components.settings.MemorySyncCard.success')} · ${formatTimestamp(sourceState?.lastSuccessfulSyncAt)}`;
+  }
+  return t('settings.components.settings.MemorySyncCard.notSyncedYet');
+});
+
+const lastSyncStatusClass = computed(() => {
+  if (lastSyncState.value === 'error') return 'text-red-700';
+  if (lastSyncState.value === 'success') return 'text-green-700';
+  return 'text-slate-600';
+});
+
+const connectionTestToneClass = computed(() => {
+  if (store.testingConnection) return 'border-blue-200 bg-blue-50 text-blue-800';
+  return store.connectionTestResult?.ok
+    ? 'border-green-200 bg-green-50 text-green-800'
+    : 'border-red-200 bg-red-50 text-red-800';
+});
+
+const connectionTestTitle = computed(() => {
+  if (store.testingConnection) {
+    return sourceForm.hubToken.trim()
+      ? t('settings.components.settings.MemorySyncCard.testingDraftToken')
+      : t('settings.components.settings.MemorySyncCard.testingSavedSettings');
+  }
+  if (!store.connectionTestResult) return '';
+  const prefix = store.connectionTestResult.ok
+    ? t('settings.components.settings.MemorySyncCard.connectionTestSucceeded')
+    : t('settings.components.settings.MemorySyncCard.connectionTestFailed');
+  const mode = store.connectionTestResult.mode === 'draft'
+    ? t('settings.components.settings.MemorySyncCard.draftTokenMode')
+    : t('settings.components.settings.MemorySyncCard.savedSettingsMode');
+  return `${prefix} · ${mode}`;
+});
+
+const connectionTestMessage = computed(() => store.connectionTestResult?.message || '');
+const connectionTestMeta = computed(() => {
+  const result = store.connectionTestResult;
+  if (!result) return '';
+  const parts = [result.hubBaseUrl, result.sourceNodeId, formatTimestamp(result.testedAt)].filter(Boolean);
+  return parts.join(' · ');
+});
+const connectionTestFlags = computed(() => {
+  const result = store.connectionTestResult;
+  if (!result) return '';
+  return [
+    `${t('settings.components.settings.MemorySyncCard.hubEnabled')}: ${formatBoolean(result.hubEnabled)}`,
+    `${t('settings.components.settings.MemorySyncCard.authenticated')}: ${formatBoolean(result.authenticated)}`,
+  ].join(' · ');
+});
+
+const formatBoolean = (value?: boolean | null) => {
+  if (value === true) return t('settings.components.settings.MemorySyncCard.yes');
+  if (value === false) return t('settings.components.settings.MemorySyncCard.no');
+  return t('settings.components.settings.MemorySyncCard.unknown');
+};
 
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';

@@ -60,6 +60,15 @@ node from **Nodes -> Memory Sync**:
   window, set a stable `sourceNodeId`, paste the hub URL/token, and run
   **Test connection** before **Sync now** or background sync.
 
+On a source node, **Test connection** reports its result inline beside the
+source action controls. If the token input is blank after source settings have
+been saved, the test uses the fully persisted source configuration, including
+the saved redacted token. If a token is pasted into the draft field, the test
+uses the draft hub URL, source id, and token together. **Sync now** shows a
+disabled `Syncing…` state while work is in flight, and the Source card reports
+`Current job` plus `Last sync` so a latest error is visible even when an older
+success timestamp still exists.
+
 The hub keeps local runtime memory in `memory/agents` and `memory/agent_teams`
 unchanged. Imported source corpora are stored separately under
 `memory/imports/<sourceNodeId>/` and appear in the Memory page source selector as

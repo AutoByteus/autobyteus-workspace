@@ -128,6 +128,11 @@ reachable from inside the container. Use the Memory Hub URL candidates and choos
 a source-reachable advertised URL such as `http://host.docker.internal:29695` on
 Docker Desktop, or a LAN/VPN/tailnet URL if that is the trusted route. Then run
 **Test connection** from the Docker source node before enabling background sync.
+After source settings are saved, a blank token field tests the saved Docker
+source configuration with its redacted saved token; paste a token only when you
+want to test draft URL/source/token values before saving. The Source card shows
+inline connection-test feedback plus `Current job` and `Last sync` status for
+manual and background syncs.
 
 When one Docker node is the hub for other Docker nodes, use the hub URL printed
 by `autobyteus-docker urls` only if it is reachable from the source containers.
