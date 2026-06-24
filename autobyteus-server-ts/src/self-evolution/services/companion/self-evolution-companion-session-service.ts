@@ -84,7 +84,8 @@ export class SelfEvolutionCompanionSessionService {
     const watcher = new CompanionRunCompletionWatcher(session.companionRunId);
     const unsubscribe = run.subscribeToEvents((event) => watcher.observe(event));
     try {
-      const postResult = await run.postUserMessage(this.triggerMessageBuilder.build(request, session));
+      const triggerMessage = await this.triggerMessageBuilder.build(request, session);
+      const postResult = await run.postUserMessage(triggerMessage);
       if (!postResult.accepted) {
         throw new Error(postResult.message ?? `Self-evolver companion '${session.companionRunId}' rejected the request.`);
       }

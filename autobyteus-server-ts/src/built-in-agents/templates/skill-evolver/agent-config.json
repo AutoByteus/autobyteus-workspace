@@ -3,7 +3,9 @@
     "run_bash",
     "send_message_to"
   ],
-  "skillNames": [],
+  "skillNames": [
+    "retrospective-skill-coach"
+  ],
   "inputProcessorNames": [],
   "llmResponseProcessorNames": [],
   "systemPromptProcessorNames": [],

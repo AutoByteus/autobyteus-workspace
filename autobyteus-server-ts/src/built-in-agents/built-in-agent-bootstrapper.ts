@@ -37,6 +37,7 @@ export type BuiltInAgentBootstrapResult = {
   templateDir: string;
   syncedAgentMd: boolean;
   syncedAgentConfig: boolean;
+  syncedSkills: boolean;
   resolved: boolean;
   initializedSetting: boolean;
 };
@@ -103,11 +104,15 @@ export class BuiltInAgentBootstrapper {
     const templateDir = this.getTemplateDir(definition);
 
     await fs.mkdir(agentDir, { recursive: true });
-    const [syncedAgentMd, syncedAgentConfig] = await Promise.all([
+    const [syncedAgentMd, syncedAgentConfig, syncedSkills] = await Promise.all([
       this.syncFileFromTemplate(path.join(templateDir, "agent.md"), path.join(agentDir, "agent.md")),
       this.syncFileFromTemplate(
         path.join(templateDir, "agent-config.json"),
         path.join(agentDir, "agent-config.json"),
+      ),
+      this.syncDirectoryMirrorFromTemplate(
+        path.join(templateDir, "skills"),
+        path.join(agentDir, "skills"),
       ),
     ]);
 
@@ -123,6 +128,7 @@ export class BuiltInAgentBootstrapper {
       templateDir,
       syncedAgentMd,
       syncedAgentConfig,
+      syncedSkills,
       resolved,
       initializedSetting,
     };
@@ -148,6 +154,32 @@ export class BuiltInAgentBootstrapper {
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
     await fs.copyFile(templatePath, targetPath);
     return true;
+  }
+
+  private async syncDirectoryMirrorFromTemplate(
+    templatePath: string,
+    targetPath: string,
+  ): Promise<boolean> {
+    await fs.rm(targetPath, { recursive: true, force: true });
+
+    if (!(await this.isDirectory(templatePath))) {
+      return true;
+    }
+
+    await fs.mkdir(path.dirname(targetPath), { recursive: true });
+    await fs.cp(templatePath, targetPath, {
+      recursive: true,
+      dereference: false,
+    });
+    return true;
+  }
+
+  private async isDirectory(targetPath: string): Promise<boolean> {
+    try {
+      return (await fs.stat(targetPath)).isDirectory();
+    } catch {
+      return false;
+    }
   }
 
   private async resolveBuiltInDefinition(
