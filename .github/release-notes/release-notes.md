@@ -1,5 +1,6 @@
-# Release Notes: Browser MCP Activity Result Fix
+# Release Notes: Self-Evolution Prompt Cleanup
 
-- Fixed Browser MCP Activity details so successful `run_script` and other serializable Browser tool results show the actual structured result instead of a false `[Circular]` placeholder.
-- Preserved legitimate literal `[Circular]` string results and kept true circular payloads safely represented without crashing event streaming or run-history projection.
-- Strengthened backend regression coverage for shared result references, Browser MCP result normalization, runtime memory projection, and GraphQL run-history projection.
+- Simplified the Skill Self-Evolver runtime task packet so it focuses on work trace paths, editable skill package roots, package-tree context, and the final `skill_update` target.
+- Moved durable coaching guidance into the built-in Skill Self-Evolver package with the private `retrospective-skill-coach` skill and references.
+- Updated built-in agent startup sync so product-managed private skills are mirrored into app data and resolvable through normal configured-skill loading.
+- Kept final self-evolution notifications grant-scoped to the intended target run, message type, and editable skill-root references.
