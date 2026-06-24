@@ -19,6 +19,33 @@ describe("serializePayload", () => {
     expect(() => JSON.stringify(serialized)).not.toThrow();
   });
 
+  it("preserves shared references as duplicated JSON-safe values", () => {
+    const sharedResult = {
+      content: [
+        {
+          type: "text",
+          text: "{\"tab_id\":\"tab-1\",\"url\":\"https://example.com/\"}",
+        },
+      ],
+      structuredContent: null,
+    };
+
+    const serialized = serializePayload({
+      item: {
+        result: sharedResult,
+      },
+      result: sharedResult,
+    });
+
+    expect(serialized).toMatchObject({
+      item: {
+        result: sharedResult,
+      },
+      result: sharedResult,
+    });
+    expect(serialized.result).not.toBe("[Circular]");
+  });
+
   it("converts bigint values to strings", () => {
     const serialized = serializePayload({
       bytes: BigInt(42),

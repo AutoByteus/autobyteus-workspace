@@ -17,19 +17,22 @@ export const serializePayload = (data: unknown): Record<string, unknown> => {
   }
 
   try {
-    const seen = new WeakSet<object>();
+    const ancestors: object[] = [];
     const serialized = JSON.parse(
-      JSON.stringify(data, (_key: string, value: unknown): unknown => {
+      JSON.stringify(data, function (this: unknown, _key: string, value: unknown): unknown {
         if (typeof value === "bigint") {
           return value.toString();
         }
         if (!value || typeof value !== "object") {
           return value;
         }
-        if (seen.has(value)) {
+        while (ancestors.length > 0 && ancestors[ancestors.length - 1] !== this) {
+          ancestors.pop();
+        }
+        if (ancestors.includes(value)) {
           return "[Circular]";
         }
-        seen.add(value);
+        ancestors.push(value);
         return value;
       }),
     ) as unknown;
