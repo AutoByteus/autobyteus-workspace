@@ -1,4 +1,13 @@
-import { Field, Float, InputType, Int, ObjectType } from "type-graphql";
+import { Field, Float, InputType, Int, ObjectType, registerEnumType } from "type-graphql";
+
+export enum MemoryHubConnectionTestMode {
+  SAVED = "SAVED",
+  DRAFT = "DRAFT",
+}
+
+registerEnumType(MemoryHubConnectionTestMode, {
+  name: "MemoryHubConnectionTestMode",
+});
 
 @ObjectType()
 export class MemorySyncHubConfigGql {
@@ -281,12 +290,15 @@ export class CreateMemoryHubCredentialInput {
 
 @InputType()
 export class TestMemoryHubConnectionInput {
-  @Field(() => String)
-  hubBaseUrl!: string;
+  @Field(() => MemoryHubConnectionTestMode)
+  mode!: MemoryHubConnectionTestMode;
 
-  @Field(() => String)
-  token!: string;
+  @Field(() => String, { nullable: true })
+  hubBaseUrl?: string | null;
 
-  @Field(() => String)
-  sourceNodeId!: string;
+  @Field(() => String, { nullable: true })
+  token?: string | null;
+
+  @Field(() => String, { nullable: true })
+  sourceNodeId?: string | null;
 }

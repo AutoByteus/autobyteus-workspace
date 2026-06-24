@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { LocalFileMemoryImportStore } from "../../../src/memory-sync/hub/local-file-memory-import-store.js";
 import { createDefaultMemorySyncConfig, toPublicMemorySyncConfig } from "../../../src/memory-sync/source/memory-sync-config.js";
 import { MemorySyncConfigService } from "../../../src/memory-sync/source/memory-sync-config-service.js";
+import { MemorySyncConnectionTestService } from "../../../src/memory-sync/source/memory-sync-connection-test-service.js";
 import { LocalFileMemorySyncStateStore } from "../../../src/memory-sync/source/local-file-memory-sync-state-store.js";
 import { MemoryFileChangePlanner } from "../../../src/memory-sync/source/memory-file-change-planner.js";
 import { MemorySyncService } from "../../../src/memory-sync/source/memory-sync-service.js";
@@ -164,6 +165,75 @@ describe("Memory Sync local fix regressions", () => {
       relativePath: "agent-a/zero.txt",
       content: "changed-zero",
     }))).rejects.toThrow("already committed with different content");
+  });
+
+
+  it("tests saved Memory Sync source settings without mixing draft identity fields", async () => {
+    const config: MemorySyncConfig = {
+      ...createDefaultMemorySyncConfig(),
+      source: {
+        enabled: true,
+        sourceNodeId: "saved-source",
+        displayName: null,
+        hubBaseUrl: "http://saved-hub.local",
+        hubToken: "saved-token",
+        backgroundEnabled: false,
+        intervalMs: 60_000,
+        batchSize: 25,
+        updatedAt: null,
+      },
+    };
+    const configService = {
+      getConfig: vi.fn(async () => config),
+    } as unknown as MemorySyncConfigService;
+    const hubClient = {
+      testConnection: vi.fn(async () => ({
+        ok: true,
+        hubEnabled: true,
+        sourceNodeId: "saved-source",
+        authenticated: true,
+        message: "ok",
+      })),
+    } as unknown as MemoryHubClient;
+    const service = new MemorySyncConnectionTestService(configService, hubClient);
+
+    await service.testConnection({ mode: "saved" });
+
+    expect(hubClient.testConnection).toHaveBeenCalledWith({
+      hubBaseUrl: "http://saved-hub.local",
+      sourceNodeId: "saved-source",
+      token: "saved-token",
+    });
+  });
+
+  it("tests draft Memory Sync source input as one explicit draft identity", async () => {
+    const configService = {
+      getConfig: vi.fn(),
+    } as unknown as MemorySyncConfigService;
+    const hubClient = {
+      testConnection: vi.fn(async () => ({
+        ok: true,
+        hubEnabled: true,
+        sourceNodeId: "draft-source",
+        authenticated: true,
+        message: "ok",
+      })),
+    } as unknown as MemoryHubClient;
+    const service = new MemorySyncConnectionTestService(configService, hubClient);
+
+    await service.testConnection({
+      mode: "draft",
+      hubBaseUrl: "http://draft-hub.local/",
+      sourceNodeId: "draft-source",
+      token: "draft-token",
+    });
+
+    expect(configService.getConfig).not.toHaveBeenCalled();
+    expect(hubClient.testConnection).toHaveBeenCalledWith({
+      hubBaseUrl: "http://draft-hub.local",
+      sourceNodeId: "draft-source",
+      token: "draft-token",
+    });
   });
 
   it("coalesces background and manual source sync entry points through one run gate", async () => {

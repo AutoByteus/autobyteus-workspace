@@ -29,8 +29,10 @@ For a source:
 1. Open the source node in its own node-bound window.
 2. Set a stable `sourceNodeId` such as `docker-node-1`, `finance-prod`, or
    `cluster-a__finance__autobyteus-server`.
-3. Paste the hub base URL and hub token.
-4. Click **Test connection** from that source node.
+3. Paste the hub base URL and hub token, then save source settings.
+4. Click **Test connection** from that source node. A blank token field tests the
+   saved source settings; a pasted token tests the draft URL/source/token
+   together.
 5. Run **Sync now** or enable background sync.
 
 Frontend node names and `NodeProfile.id` values are navigation metadata only.
@@ -103,9 +105,22 @@ The Memory Hub REST endpoints are:
 - `GET /rest/memory-sync/v1/health?sourceNodeId=<sourceNodeId>`
 - `POST /rest/memory-sync/v1/batches`
 
-Sources authenticate with an `Authorization: Bearer <mhub_...>` token. **Test
-connection** calls the health endpoint from the source configuration and verifies
-that the hub is enabled, the token is accepted, and the source id is authorized.
+Sources authenticate with an `Authorization: Bearer <mhub_...>` token. GraphQL
+connection testing is explicit about which configuration is being tested:
+
+- `mode: SAVED` loads the persisted source `hubBaseUrl`, `sourceNodeId`, and
+  saved hub token from node-local config. This is the mode used by the UI when
+  the token field is blank after source settings were saved and the token is
+  only visible as a redacted placeholder.
+- `mode: DRAFT` uses the request's draft `hubBaseUrl`, `sourceNodeId`, and
+  plaintext token together. This is the mode used by the UI when the operator
+  pastes a draft token before saving it.
+
+The saved mode intentionally does not mix unsaved draft URL or source id edits
+with the saved token. To test edited URL/source-id values, save the source
+settings first or provide a draft token. Both modes call the health endpoint and
+verify that the hub is enabled, the token is accepted, and the source id is
+authorized. Test results are status-only; token values are never returned.
 
 ## Token And Security Behavior
 
@@ -150,6 +165,14 @@ runs coalesce. Background sync is off by default and uses the configured interva
 when enabled. Source sync failures are recorded in source state and do not stop
 local agent runtime execution.
 
+Source status records the current/last job state, `lastSuccessfulSyncAt`, and
+`lastError`. The frontend renders this as `Current job: idle` or
+`Current job: syncing…`, followed by `Last sync: success · <timestamp>` or the
+latest sync error. If a sync fails after an earlier success, the latest error is
+shown before the older success timestamp. Manual and background runs share this
+same generic status surface; the primary UI does not require operators to
+distinguish the trigger type.
+
 ## Imported Memory Explorer
 
 The Memory page defaults to `Local Memory`. When imports exist, the Memory page
@@ -189,15 +212,18 @@ Current v1 limits are intentional:
 Durable coverage includes both API-boundary and process-boundary checks:
 
 - `tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` covers GraphQL hub/source
-  setup, source token redaction, URL candidates, connection testing, REST batch
-  ingestion, duplicate retry, source-token binding, unsafe path rejection, and
+  setup, source token redaction, URL candidates, explicit draft and saved
+  connection-test modes, REST batch ingestion, duplicate retry,
+  source-token binding, unsafe path rejection, latest-error source status, and
   imported Memory Explorer reads.
 - `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` starts two real
   backend server processes with isolated app-data directories, configures the hub
-  and source through HTTP GraphQL, runs source-to-hub sync over HTTP, and asserts
-  imported files on the hub filesystem.
-- Frontend focused tests cover Memory Explorer source selection/store variables
-  and the Nodes page Memory Sync tab entry.
+  and source through HTTP GraphQL, validates saved-mode connection testing, runs
+  source-to-hub sync over HTTP, and asserts imported files on the hub filesystem.
+- Frontend focused tests cover Memory Explorer source selection/store variables,
+  the Nodes page Memory Sync tab entry, form-preserving source status refresh,
+  saved-vs-draft test dispatch, inline connection feedback, `Current job` /
+  `Last sync` precedence, and sync button loading state.
 
 The multi-process test intentionally does not require browser, Electron, Docker,
 or Kubernetes. Docker/Kubernetes network reachability remains an operational
@@ -209,7 +235,8 @@ Connection.
 - GraphQL Memory Sync API: `src/api/graphql/types/memory-sync.ts`
 - REST hub ingestion API: `src/api/rest/memory-sync.ts`
 - Hub services: `src/memory-sync/hub/`
-- Source services and worker: `src/memory-sync/source/`
+- Source services, saved/draft connection-test policy, and worker:
+  `src/memory-sync/source/`
 - Shared sync DTOs/path/source-id policy: `src/memory-sync/shared/`
 - URL candidates: `src/server-addressing/`
 - Imported/local Memory Explorer source resolution:

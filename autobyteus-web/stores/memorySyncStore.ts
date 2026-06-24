@@ -53,6 +53,23 @@ export interface MemorySyncStatus {
 
 export interface ServerAddressCandidate { id: string; kind: string; label: string; baseUrl: string; source: string }
 
+export type ConnectionTestMode = 'saved' | 'draft';
+
+export type ConnectionTestRequest =
+  | { mode: 'saved' }
+  | { mode: 'draft'; hubBaseUrl: string; sourceNodeId: string; token: string };
+
+export interface ConnectionTestResult {
+  ok: boolean;
+  mode: ConnectionTestMode;
+  testedAt: string;
+  hubBaseUrl?: string | null;
+  sourceNodeId?: string | null;
+  hubEnabled?: boolean | null;
+  authenticated?: boolean | null;
+  message?: string | null;
+}
+
 const emptyStatus = (): MemorySyncStatus => ({
   hub: { enabled: false, advertisedHubBaseUrl: null, updatedAt: null },
   source: {
@@ -87,16 +104,33 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
     loading: false,
     saving: false,
     syncing: false,
+    testingConnection: false,
+    statusRequestInFlight: false,
     error: null as string | null,
-    info: null as string | null,
     oneTimeToken: null as string | null,
-    lastSyncResult: null as any,
+    connectionTestResult: null as ConnectionTestResult | null,
   }),
 
   actions: {
     async loadStatus() {
-      this.loading = true;
-      this.error = null;
+      await this.requestStatus({ showLoading: true, exposeError: true });
+    },
+
+    async refreshStatusOnly() {
+      await this.requestStatus({ showLoading: false, exposeError: false });
+    },
+
+    async requestStatus(options: { showLoading: boolean; exposeError: boolean }) {
+      if (this.statusRequestInFlight) {
+        return;
+      }
+      this.statusRequestInFlight = true;
+      if (options.showLoading) {
+        this.loading = true;
+      }
+      if (options.exposeError) {
+        this.error = null;
+      }
       try {
         const { data, errors } = await getApolloClient().query<{ getMemorySyncStatus?: MemorySyncStatus }>({
           query: GET_MEMORY_SYNC_STATUS,
@@ -105,9 +139,14 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         this.applyStatus(data?.getMemorySyncStatus || emptyStatus());
       } catch (error: any) {
-        this.error = error?.message || 'Failed to load Memory Sync status.';
+        if (options.exposeError) {
+          this.error = error?.message || 'Failed to load Memory Sync status.';
+        }
       } finally {
-        this.loading = false;
+        this.statusRequestInFlight = false;
+        if (options.showLoading) {
+          this.loading = false;
+        }
       }
     },
 
@@ -172,34 +211,62 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
       }
     },
 
-    async testConnection(input: { hubBaseUrl: string; token: string; sourceNodeId: string }) {
-      this.info = null;
-      this.error = null;
+    async testConnection(input: ConnectionTestRequest) {
+      if (this.testingConnection) {
+        return null;
+      }
+      this.connectionTestResult = null;
+      this.testingConnection = true;
+      const testedAt = new Date().toISOString();
+      const context = this.connectionTestContext(input);
       try {
         const { data, errors } = await getApolloClient().mutate<any>({
           mutation: TEST_MEMORY_HUB_CONNECTION,
-          variables: { input },
+          variables: { input: this.toConnectionTestMutationInput(input) },
         });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         const result = data?.testMemoryHubConnection;
-        this.info = result?.ok ? 'Connection test succeeded.' : result?.message || 'Connection test failed.';
+        this.connectionTestResult = {
+          ok: Boolean(result?.ok),
+          mode: input.mode,
+          testedAt,
+          hubBaseUrl: context.hubBaseUrl,
+          sourceNodeId: result?.sourceNodeId || context.sourceNodeId,
+          hubEnabled: result?.hubEnabled ?? null,
+          authenticated: result?.authenticated ?? null,
+          message: result?.message || null,
+        };
         return result;
       } catch (error: any) {
-        this.error = error?.message || 'Connection test failed.';
+        this.connectionTestResult = {
+          ok: false,
+          mode: input.mode,
+          testedAt,
+          hubBaseUrl: context.hubBaseUrl,
+          sourceNodeId: context.sourceNodeId,
+          hubEnabled: null,
+          authenticated: null,
+          message: error?.message || null,
+        };
         return null;
+      } finally {
+        this.testingConnection = false;
       }
     },
 
     async syncNow() {
+      if (this.syncing) {
+        return;
+      }
       this.syncing = true;
       this.error = null;
       try {
-        const { data, errors } = await getApolloClient().mutate<any>({ mutation: START_MEMORY_SYNC });
+        const { errors } = await getApolloClient().mutate<any>({ mutation: START_MEMORY_SYNC });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        this.lastSyncResult = data?.startMemorySync || null;
-        await this.loadStatus();
+        await this.refreshStatusOnly();
       } catch (error: any) {
         this.error = error?.message || 'Sync failed.';
+        await this.refreshStatusOnly();
       } finally {
         this.syncing = false;
       }
@@ -226,6 +293,28 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
       if (status.oneTimePlaintextToken) {
         this.oneTimeToken = status.oneTimePlaintextToken;
       }
+    },
+
+    connectionTestContext(input: ConnectionTestRequest): { hubBaseUrl?: string | null; sourceNodeId?: string | null } {
+      if (input.mode === 'draft') {
+        return { hubBaseUrl: input.hubBaseUrl, sourceNodeId: input.sourceNodeId };
+      }
+      return {
+        hubBaseUrl: this.status.source.hubBaseUrl,
+        sourceNodeId: this.status.source.sourceNodeId,
+      };
+    },
+
+    toConnectionTestMutationInput(input: ConnectionTestRequest): Record<string, unknown> {
+      if (input.mode === 'draft') {
+        return {
+          mode: 'DRAFT',
+          hubBaseUrl: input.hubBaseUrl,
+          sourceNodeId: input.sourceNodeId,
+          token: input.token,
+        };
+      }
+      return { mode: 'SAVED' };
     },
   },
 });

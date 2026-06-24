@@ -192,7 +192,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
       mutation TestConnection($input: TestMemoryHubConnectionInput!) {
         testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceNodeId }
       }
-    `, { input: { hubBaseUrl, token: sourceToken, sourceNodeId: SOURCE_NODE_ID } });
+    `, { input: { mode: "DRAFT", hubBaseUrl, token: sourceToken, sourceNodeId: SOURCE_NODE_ID } });
     expect(connectionTest.testMemoryHubConnection).toEqual({
       ok: true,
       hubEnabled: true,
@@ -237,6 +237,25 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(sourceStatus.updateMemorySyncSourceConfig.oneTimePlaintextToken).toBeNull();
     expect(JSON.stringify(sourceStatus)).not.toContain(sourceToken);
     expect(Object.prototype.hasOwnProperty.call(sourceStatus.updateMemorySyncSourceConfig.source, "hubToken")).toBe(false);
+
+    const savedConnectionTest = await execGraphql<{ testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; sourceNodeId: string } }>(`
+      mutation TestSavedConnection($input: TestMemoryHubConnectionInput!) {
+        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceNodeId }
+      }
+    `, {
+      input: {
+        mode: "SAVED",
+        hubBaseUrl: "http://127.0.0.1:9",
+        token: "mhub_poisoned_draft_token",
+        sourceNodeId: "poisoned-draft-source",
+      },
+    });
+    expect(savedConnectionTest.testMemoryHubConnection).toEqual({
+      ok: true,
+      hubEnabled: true,
+      authenticated: true,
+      sourceNodeId: SOURCE_NODE_ID,
+    });
 
     const localRunId = "source-local-run";
     await new AgentRunMetadataStore(memoryDir).writeMetadata(localRunId, {
@@ -290,23 +309,26 @@ describe("Memory Sync public API and imported memory e2e", () => {
 
     const statusAfterSync = await execGraphql<{
       getMemorySyncStatus: {
-        sourceState: { jobState: string; trackedFileCount: number } | null;
+        sourceState: { jobState: string; lastSuccessfulSyncAt: string | null; lastError: string | null; trackedFileCount: number } | null;
         imports: Array<{ sourceNodeId: string; fileCount: number; lastCommittedBatchId: string | null }>;
         oneTimePlaintextToken: string | null;
       };
     }>(`
       query Status {
         getMemorySyncStatus {
-          sourceState { jobState trackedFileCount }
+          sourceState { jobState lastSuccessfulSyncAt lastError trackedFileCount }
           imports { sourceNodeId fileCount lastCommittedBatchId }
           oneTimePlaintextToken
         }
       }
     `);
     expect(statusAfterSync.getMemorySyncStatus.sourceState?.jobState).toBe("success");
+    expect(statusAfterSync.getMemorySyncStatus.sourceState?.lastSuccessfulSyncAt).toEqual(expect.any(String));
+    expect(statusAfterSync.getMemorySyncStatus.sourceState?.lastError).toBeNull();
     expect(statusAfterSync.getMemorySyncStatus.sourceState?.trackedFileCount).toBeGreaterThanOrEqual(3);
     expect(statusAfterSync.getMemorySyncStatus.imports.find((item) => item.sourceNodeId === SOURCE_NODE_ID)?.fileCount).toBeGreaterThanOrEqual(3);
     expect(statusAfterSync.getMemorySyncStatus.oneTimePlaintextToken).toBeNull();
+    const lastSuccessfulSyncAt = statusAfterSync.getMemorySyncStatus.sourceState?.lastSuccessfulSyncAt;
 
     const importedOnlyMetadata = JSON.stringify({
       runId: "rest-only-run",
@@ -422,5 +444,36 @@ describe("Memory Sync public API and imported memory e2e", () => {
       }
     `, { source: { type: "IMPORTED", sourceNodeId: "missing-source" } });
     expect(missingSourceResult.errors?.[0]?.message).toContain("Imported memory source 'missing-source' was not found");
+
+    await execGraphql(`
+      mutation PoisonSourceToken($input: UpdateMemorySyncSourceConfigInput!) {
+        updateMemorySyncSourceConfig(input: $input) { source { hubTokenConfigured } }
+      }
+    `, { input: { hubToken: "mhub_invalid_for_latest_error_probe" } });
+    writeText(path.join(memoryDir, "agents", localRunId, "latest-error-probe.txt"), "force a changed file for the failed sync");
+
+    const failedSync = await execGraphqlRaw(`
+      mutation StartFailedSync {
+        startMemorySync { committedBatches }
+      }
+    `);
+    expect(failedSync.errors?.[0]?.message).toContain("Memory Hub source token is invalid");
+
+    const statusAfterFailedSync = await execGraphql<{
+      getMemorySyncStatus: {
+        sourceState: { jobState: string; lastSuccessfulSyncAt: string | null; lastError: string | null } | null;
+      };
+    }>(`
+      query StatusAfterFailedSync {
+        getMemorySyncStatus {
+          sourceState { jobState lastSuccessfulSyncAt lastError }
+        }
+      }
+    `);
+    expect(statusAfterFailedSync.getMemorySyncStatus.sourceState).toMatchObject({
+      jobState: "error",
+      lastSuccessfulSyncAt,
+      lastError: "Memory Hub source token is invalid.",
+    });
   });
 });

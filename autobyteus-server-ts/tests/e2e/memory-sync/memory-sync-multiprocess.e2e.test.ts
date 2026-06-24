@@ -292,7 +292,7 @@ describe("Memory Sync multi-process backend e2e", () => {
       mutation TestConnection($input: TestMemoryHubConnectionInput!) {
         testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceNodeId }
       }
-    `, { input: { hubBaseUrl: hubServer.baseUrl, token, sourceNodeId } });
+    `, { input: { mode: "SAVED" } });
     expect(connection.testMemoryHubConnection).toEqual({
       ok: true,
       hubEnabled: true,
