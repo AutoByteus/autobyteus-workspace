@@ -782,6 +782,78 @@ describe("CodexThreadEventConverter", () => {
     expect(converted[0]?.payload.result).not.toHaveProperty("content");
   });
 
+  it("normalizes aliased Browser MCP completion results without circular placeholders", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const browserResultEnvelope = {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify({
+            url: "https://example.com/",
+            result: {
+              title: "Example Domain",
+              answer: 42,
+              href: "https://example.com/",
+            },
+            tab_id: "tab-run-1",
+          }),
+        },
+      ],
+      structuredContent: null,
+      _meta: null,
+    };
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_run_script",
+        turn_id: "turn-browser-2",
+        tool_name: "mcp__autobyteus_agent_tools__run_script",
+        arguments: {
+          tab_id: "tab-run-1",
+          script: "() => ({ title: document.title, answer: 42, href: location.href })",
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_run_script",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__run_script",
+          status: "completed",
+          success: true,
+          result: browserResultEnvelope,
+        },
+        result: browserResultEnvelope,
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_run_script",
+        turn_id: "turn-browser-2",
+        tool_name: "run_script",
+        arguments: {
+          tab_id: "tab-run-1",
+          script: "() => ({ title: document.title, answer: 42, href: location.href })",
+        },
+        result: {
+          url: "https://example.com/",
+          result: {
+            title: "Example Domain",
+            answer: 42,
+            href: "https://example.com/",
+          },
+          tab_id: "tab-run-1",
+        },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toBe("[Circular]");
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+  });
+
   it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
