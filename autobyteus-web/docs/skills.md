@@ -216,10 +216,10 @@ logical skill names.
 Manual self-evolution is a skill-first workflow. When the backend deems a run or
 team agent-member eligible, the visible evolver helper may edit only the exact
 configured skill root directories returned by backend eligibility. `SKILL.md`
-is the primary guidance file, but supporting files inside the same listed root
-may be changed when a reusable improvement needs them. Agent/team definitions,
-MCP/tool config, source code, run memory, sibling skills, and files outside the
-listed roots are out of MVP scope.
+is the package entry file; supporting files inside the same listed root may be
+changed when a reusable improvement needs them. Agent/team definitions, MCP/tool
+config, source code, run memory, sibling skills, and files outside the listed
+roots are out of MVP scope.
 
 The frontend does not decide whether a skill is eligible for evolution. The
 composer-adjacent **Self improve** CTA lazy-loads backend eligibility for the
@@ -227,12 +227,13 @@ selected active run or team member and stays hidden when the backend says the
 current target is ineligible. Run-history rows and launch forms do not own
 self-evolution actions. Before messaging the visible companion, the backend
 projects the target's raw trace corpus into readable work trace files and sends
-the companion only paths plus edit-scope metadata; it does not inline the work
-trace body or ask the companion to read raw trace JSONL. The backend records
-minimal provenance and does not compute changed paths or policy-violation
-metrics in the MVP. After launch, the workspace may show only a short transient
-start status. Only after meaningful durable skill package file changes, the
-companion reports through one direct `send_message_to` call with
+the companion a concise task packet with paths, editable skill roots, and a
+bounded relative package tree that marks each `SKILL.md` as `[entry]`; it does
+not inline the work trace body or ask the companion to read raw trace JSONL. The
+backend records minimal provenance and does not compute changed paths or
+policy-violation metrics in the MVP. After launch, the workspace may show only a
+short transient start status. Only after meaningful durable skill package file
+changes, the companion reports through one direct `send_message_to` call with
 `message_type: "skill_update"` to the still-active target run. Its content should
 explain what changed, why it matters, and how the target should use or reload the
 updated guidance, while dynamic references are absolute paths to changed or

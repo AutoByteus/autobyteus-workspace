@@ -103,6 +103,37 @@ self-evolution work trace, not raw JSONL and not a large inline prompt digest.
 A background projection worker is not part of this pass. Freshness is guaranteed
 on trigger by `ensureCurrent()`.
 
+## Prompt And Static Guidance Separation
+
+Self-evolution separates dynamic request facts from stable companion guidance.
+
+- Runtime task packet: `SelfEvolutionCompanionTriggerMessageBuilder` supplies the
+  work trace manifest/root/files, optional prior evolver run ids, editable skill
+  package roots, bounded relative package trees, target AgentRun id, and final
+  message type.
+- Package tree rendering: `SelfEvolutionSkillPackageTreeRenderer` lists each
+  editable skill root once, marks `SKILL.md` as `[entry]`, uses relative tree
+  lines below that root, excludes hidden/cache/generated/dependency/binary-heavy
+  paths, does not follow symlinks, and applies fixed depth/entry caps with
+  omission notes.
+- Thin built-in agent definition: the product-managed Skill Self-Evolver
+  `agent.md` owns identity, retrospective role, hard edit boundaries, the task
+  message authority rule, and final-notification conditions.
+- Private coaching skill: the configured agent-private
+  `retrospective-skill-coach` skill owns trace-reading workflow, high-signal
+  evidence patterns, package-improvement playbook, examples, and no-change
+  criteria. Server startup mirrors the built-in template `skills/` directory into
+  the product-managed app-data built-in agent directory so normal agent-private
+  skill resolution can load it.
+- Service-level grants: `SelfEvolutionCompanionSessionService` registers the
+  direct-message grant and the shared router enforces target id, message type,
+  allowed reference roots, one accepted delivery, expiry, and target liveness.
+
+Runtime task packets intentionally do not carry a `Rules:` section, coaching
+examples, implementation rationale, backend protocol explanations, or raw trace
+file-pattern warnings. Those concerns belong in static guidance, private skill
+content, docs, and grant enforcement respectively.
+
 ## Companion Lifecycle
 
 The manual action activates or reuses a target-scoped companion session.
@@ -116,7 +147,7 @@ The manual action activates or reuses a target-scoped companion session.
    workspace, memory directory, runtime/model context, and requires that the
    target `AgentRun` is active before companion activation.
 4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured
-   skills to exact writable skill roots and primary `SKILL.md` files.
+   skills to exact writable skill roots and `SKILL.md` entry files.
 5. `SelfEvolutionWorkTraceProjectionService.ensureCurrent()` produces the work
    trace package and manifest.
 6. `SelfEvolutionCompanionSessionService` loads target-scoped evolver session
@@ -126,11 +157,13 @@ The manual action activates or reuses a target-scoped companion session.
    unavailable or unsuccessful, the state is marked unavailable/replaced, prior
    evolver run ids are retained, and a replacement companion is launched with
    continuity metadata.
-7. `SelfEvolutionCompanionTriggerMessageBuilder` sends a small trigger message to
-   the companion. The message lists the work trace manifest path, work trace root
-   path, individual work trace file paths, editable skill roots, target run id,
-   and continuity context. It does not inline the work trace body and instructs
-   the companion not to read raw trace files.
+7. `SelfEvolutionCompanionTriggerMessageBuilder` sends a concise runtime task
+   packet to the companion. The packet lists the work trace manifest path, work
+   trace root path, individual work trace file paths, editable skill roots,
+   bounded package trees with `SKILL.md [entry]`, target run id, message type,
+   and continuity context when prior evolver runs exist. It does not inline the
+   work trace body and does not repeat stable coaching policy or backend-rationale
+   wording.
 8. The companion may inspect work trace files and edit only the listed skill
    roots. After meaningful durable skill package file changes, it may call
    `send_message_to({ target_agent_run_id, message_type: "skill_update", ... })`
@@ -154,12 +187,12 @@ constraints.
 
 - Editable targets are exact absolute skill root directories resolved from
   configured skills.
-- `SKILL.md` is the primary guidance file, but supporting files inside the same
-  listed skill root may be updated when a durable reusable improvement needs
-  them.
-- The companion prompt forbids editing agent/team definitions, MCP/tool config,
-  source code, run memory, raw trace files, sibling skills, or files outside
-  listed skill roots.
+- `SKILL.md` is the package entry file; supporting files inside the same listed
+  skill root may be updated when durable reusable improvement needs them.
+- The built-in Skill Self-Evolver static guidance and private coaching skill own
+  the stable edit boundaries: no agent/team definitions, MCP/tool config, source
+  code, run memory, sibling skills, files outside listed roots, or symlink/path
+  alias writes outside a listed root.
 - The product service does not compute changed paths, diff stats, off-target
   policy violations, or Git audit summaries in MVP.
 - Git-backed manual inspection/revert remains the testing and rollback workflow

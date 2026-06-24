@@ -3,13 +3,15 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../src/agent-definition/domain/models.js";
+import { AgentRunEventType } from "../../src/agent-execution/domain/agent-run-event.js";
+import { DirectAgentRunMessageGrantRegistry } from "../../src/agent-communication/services/direct-agent-run-message-grant-registry.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 import type { SelfEvolutionEffectiveConfig } from "../../src/self-evolution/domain/models.js";
 import type { SelfEvolutionTargetContext } from "../../src/self-evolution/services/self-evolution-target-context-resolver.js";
 import { SelfEvolutionEvolverSessionStore } from "../../src/self-evolution/services/companion/self-evolution-evolver-session-store.js";
 import { SelfEvolutionCompanionSessionService } from "../../src/self-evolution/services/companion/self-evolution-companion-session-service.js";
 import { SelfEvolutionCompanionTriggerMessageBuilder } from "../../src/self-evolution/services/companion/self-evolution-companion-trigger-message-builder.js";
-import { SELF_EVOLUTION_TARGET_MESSAGE_TYPE } from "../../src/self-evolution/domain/messages.js";
+import { SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE, SELF_EVOLUTION_TARGET_MESSAGE_TYPE } from "../../src/self-evolution/domain/messages.js";
 
 const effectiveConfig: SelfEvolutionEffectiveConfig = {
   enabled: true,
@@ -202,14 +204,187 @@ describe("SelfEvolutionCompanionSessionService", () => {
     });
   });
 
-  it("builds a path-only companion trigger with edit scope metadata", () => {
+  it("posts the concise self-evolution task packet through the companion request path and registers the final-message grant", async () => {
     const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "self_evolution", "work_traces", "work_traces_manifest.json");
     const workTraceRootPath = path.dirname(manifestPath);
     const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
     const skillRootPath = path.join(tempRoot, "skills", "durable-skill");
     const skillMdPath = path.join(skillRootPath, "SKILL.md");
+    await fs.mkdir(path.join(skillRootPath, "references"), { recursive: true });
+    await fs.writeFile(skillMdPath, "# Durable Skill\n", "utf-8");
+    await fs.writeFile(path.join(skillRootPath, "references", "playbook.md"), "# Playbook\n", "utf-8");
 
-    const message = new SelfEvolutionCompanionTriggerMessageBuilder().build({
+    let listener: ((event: unknown) => void) | null = null;
+    const postedMessages: unknown[] = [];
+    const companionRun = {
+      runId: "companion-run-1",
+      isActive: () => true,
+      postUserMessage: vi.fn(async (message: unknown) => {
+        postedMessages.push(message);
+        listener?.({
+          runId: "companion-run-1",
+          eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+          statusHint: null,
+          payload: { content: "No durable skill change was warranted." },
+        });
+        listener?.({
+          runId: "companion-run-1",
+          eventType: AgentRunEventType.TURN_COMPLETED,
+          statusHint: null,
+          payload: {},
+        });
+        return { accepted: true };
+      }),
+      subscribeToEvents: vi.fn((callback: (event: unknown) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    };
+    const agentRunService = {
+      getAgentRun: vi.fn(() => companionRun),
+      recordRunActivity: vi.fn(async () => undefined),
+    };
+    const grantRegistry = new DirectAgentRunMessageGrantRegistry();
+    const service = new SelfEvolutionCompanionSessionService({
+      agentRunService: agentRunService as any,
+      grantRegistry,
+      timeoutMs: 100,
+    });
+
+    const result = await service.postSelfImproveRequest({
+      target: { kind: "agent_run", runId: "target-run-1" },
+      companionRunId: "companion-run-1",
+      evolverAgentDefinitionId: "skill-evolver",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "model",
+      state: {
+        schemaVersion: 1,
+        target: { kind: "agent_run", runId: "target-run-1" },
+        status: "active",
+        currentEvolverRunId: "companion-run-1",
+        priorEvolverRunIds: ["prior-companion-internal"],
+        evolverAgentDefinitionId: "skill-evolver",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        llmModelIdentifier: "model",
+        workspaceRootPath: tempRoot,
+        memoryRootPath: context.memoryDir,
+        workTraces: {
+          rootPath: null,
+          manifestPath: null,
+          lastSummaryHash: null,
+        },
+        lastRequest: null,
+        updatedAt: "2026-01-01T00:00:00.000Z",
+      },
+    }, {
+      evolutionRunId: "evo-integrated-post",
+      requestedAt: "2026-01-01T00:00:00.000Z",
+      targetAgentRunId: "target-run-1",
+      workTracePackage: {
+        target: { kind: "agent_run", runId: "target-run-1" },
+        workTraceRootPath,
+        manifestPath,
+        summaryHash: "summary-hash",
+        manifest: {
+          schemaVersion: 1,
+          target: { kind: "agent_run", runId: "target-run-1" },
+          generatedAt: "2026-01-01T00:00:00.000Z",
+          workTraceRootPath,
+          manifestPath,
+          files: [{
+            sourceId: "active",
+            sourceKind: "active",
+            sourceFingerprint: "fingerprint",
+            fileName: "work_trace_active.md",
+            filePath: workTraceFilePath,
+            recordCount: 2,
+            firstTimestamp: "2026-01-01T00:00:00.000Z",
+            lastTimestamp: "2026-01-01T00:00:01.000Z",
+            generatedAt: "2026-01-01T00:00:02.000Z",
+          }],
+        },
+      },
+      editableSkillTargets: [{
+        skillName: "durable-skill",
+        skillRootPath,
+        skillMdPath,
+        isWritable: true,
+      }],
+    }, context);
+
+    expect(result).toMatchObject({
+      status: "completed",
+      outputText: "No durable skill change was warranted.",
+      notificationSummary: {
+        status: "send_message_not_attempted",
+        targetAgentRunId: "target-run-1",
+        evolverRunId: "companion-run-1",
+      },
+    });
+    expect(companionRun.subscribeToEvents).toHaveBeenCalledOnce();
+    expect(companionRun.postUserMessage).toHaveBeenCalledOnce();
+    expect(agentRunService.recordRunActivity).toHaveBeenCalledOnce();
+
+    const postedMessage = postedMessages[0] as { content: string; metadata: Record<string, unknown> };
+    expect(postedMessage.content).toContain(`Work trace manifest: ${manifestPath}`);
+    expect(postedMessage.content).toContain(`1. ${workTraceFilePath}`);
+    expect(postedMessage.content).toContain(`Root directory: ${skillRootPath}`);
+    expect(postedMessage.content).toContain("Package tree:\n   .");
+    expect(postedMessage.content).toContain("SKILL.md [entry]");
+    expect(postedMessage.content).toContain("playbook.md");
+    expect(postedMessage.content).toContain("- target_agent_run_id: target-run-1");
+    expect(postedMessage.content).toContain(`- message_type: ${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}`);
+    expect(postedMessage.content).not.toContain("Previous evolver run ids");
+    expect(postedMessage.content).not.toContain("prior-companion-internal");
+    expect(postedMessage.content).not.toContain("priorEvolverRunIds");
+    expect(postedMessage.content).not.toContain("Rules:");
+    expect(postedMessage.content).not.toContain("raw_traces");
+    expect(postedMessage.content).not.toContain("semantically complete");
+    expect(postedMessage.content).not.toContain("backend protocol");
+    expect(postedMessage.content).not.toContain("Primary guidance file");
+    expect(postedMessage.metadata.self_evolution_entry_skill_paths).toEqual([skillMdPath]);
+
+    const allowed = grantRegistry.evaluate({
+      senderRunId: "companion-run-1",
+      targetAgentRunId: "target-run-1",
+      messageType: SELF_EVOLUTION_TARGET_MESSAGE_TYPE,
+      referenceFiles: [skillMdPath],
+      now: new Date("2026-01-01T00:01:00.000Z"),
+    });
+    expect(allowed).toMatchObject({
+      kind: "allowed",
+      grant: {
+        senderRunId: "companion-run-1",
+        purpose: SELF_EVOLUTION_DIRECT_MESSAGE_GRANT_PURPOSE,
+        allowedTargetAgentRunIds: ["target-run-1"],
+        allowedMessageTypes: [SELF_EVOLUTION_TARGET_MESSAGE_TYPE],
+        allowedReferenceFileRoots: [skillRootPath],
+        maxAcceptedDeliveries: 1,
+      },
+    });
+    expect(grantRegistry.evaluate({
+      senderRunId: "companion-run-1",
+      targetAgentRunId: "target-run-1",
+      messageType: SELF_EVOLUTION_TARGET_MESSAGE_TYPE,
+      referenceFiles: [path.join(tempRoot, "outside.md")],
+      now: new Date("2026-01-01T00:01:00.000Z"),
+    })).toMatchObject({
+      kind: "rejected",
+      code: "DIRECT_MESSAGE_GRANT_REFERENCE_DENIED",
+    });
+  });
+
+  it("builds a concise path-only companion trigger with package tree metadata", async () => {
+    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "self_evolution", "work_traces", "work_traces_manifest.json");
+    const workTraceRootPath = path.dirname(manifestPath);
+    const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
+    const skillRootPath = path.join(tempRoot, "skills", "durable-skill");
+    const skillMdPath = path.join(skillRootPath, "SKILL.md");
+    await fs.mkdir(path.join(skillRootPath, "references"), { recursive: true });
+    await fs.writeFile(skillMdPath, "# Durable Skill\n", "utf-8");
+    await fs.writeFile(path.join(skillRootPath, "references", "guide.md"), "# Guide\n", "utf-8");
+
+    const message = await new SelfEvolutionCompanionTriggerMessageBuilder().build({
       evolutionRunId: "evo-path-only",
       requestedAt: "2026-01-01T00:00:00.000Z",
       targetAgentRunId: "target-run-1",
@@ -273,11 +448,25 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(message.content).toContain(`Work trace manifest: ${manifestPath}`);
     expect(message.content).toContain(`Work trace root: ${workTraceRootPath}`);
     expect(message.content).toContain(`1. ${workTraceFilePath}`);
+    expect(message.content).toContain("Use the listed work trace files as the evidence package.");
+    expect(message.content).toContain("Editable skill packages:");
     expect(message.content).toContain(`Root directory: ${skillRootPath}`);
-    expect(message.content).toContain('target_agent_run_id "target-run-1"');
-    expect(message.content).toContain(`message_type "${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}"`);
-    expect(message.content).toContain("Previous evolver run ids for continuity context: prior-companion");
-    expect(message.content).not.toContain("raw_traces.jsonl");
+    expect(message.content).toContain("Package tree:\n   .");
+    expect(message.content).toContain("SKILL.md [entry]");
+    expect(message.content).toContain("references/");
+    expect(message.content).toContain("guide.md");
+    expect(message.content).toContain("Completion target:");
+    expect(message.content).toContain("- target_agent_run_id: target-run-1");
+    expect(message.content).toContain(`- message_type: ${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}`);
+    expect(message.content).not.toContain("Previous evolver run ids");
+    expect(message.content).not.toContain("prior-companion");
+    expect(message.content).not.toContain("priorEvolverRunIds");
+    expect(message.content).not.toContain("Rules:");
+    expect(message.content).not.toContain("raw_traces");
+    expect(message.content).not.toContain("semantically complete");
+    expect(message.content).not.toContain("backend protocol");
+    expect(message.content).not.toContain("hide backend");
+    expect(message.content).not.toContain("Primary guidance file");
     expect(message.content).not.toContain("user:\n");
     expect(message.content).not.toContain("worker:\n");
     expect(message.metadata).toMatchObject({
@@ -288,5 +477,6 @@ describe("SelfEvolutionCompanionSessionService", () => {
     });
     expect(message.metadata.self_evolution_editable_skill_roots).toEqual([skillRootPath]);
     expect(message.metadata.self_evolution_primary_skill_paths).toEqual([skillMdPath]);
+    expect(message.metadata.self_evolution_entry_skill_paths).toEqual([skillMdPath]);
   });
 });
