@@ -1,11 +1,21 @@
 import { computed, ref } from 'vue'
+import {
+  RIGHT_PANEL_DEFAULT_WIDTH_PX,
+  RIGHT_PANEL_MIN_WIDTH_PX,
+  RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
+  WORKSPACE_CENTER_MIN_WIDTH_PX,
+  clampRightPanelWidth,
+  type PanelPresentation,
+} from '~/utils/layout/responsiveLayoutPolicy'
 
-// Global state for right panel visibility and width to allow sharing across components
+// Global user preference for right panel visibility and width shared across workspace surfaces.
 const isRightPanelVisible = ref(true)
-const DEFAULT_RIGHT_PANEL_WIDTH = 450
-export const MIN_RIGHT_PANEL_WIDTH = 400
-export const MIN_WORKSPACE_CENTER_WIDTH = 200
-export const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = 4
+const rightPanelPresentation = ref<PanelPresentation>('docked')
+
+export const DEFAULT_RIGHT_PANEL_WIDTH = RIGHT_PANEL_DEFAULT_WIDTH_PX
+export const MIN_RIGHT_PANEL_WIDTH = RIGHT_PANEL_MIN_WIDTH_PX
+export const MIN_WORKSPACE_CENTER_WIDTH = WORKSPACE_CENTER_MIN_WIDTH_PX
+export const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX
 
 const preferredRightPanelWidth = ref(DEFAULT_RIGHT_PANEL_WIDTH)
 const workspacePanelContainerWidth = ref<number | null>(null)
@@ -30,18 +40,11 @@ const maxRightPanelWidth = computed(() => {
 })
 
 const clampPreferredWidthForCurrentSpace = (width: number): number => {
-  const safeWidth = Number.isFinite(width) ? width : DEFAULT_RIGHT_PANEL_WIDTH
-  const maxWidth = maxRightPanelWidth.value
-
-  if (!Number.isFinite(maxWidth)) {
-    return Math.max(safeWidth, MIN_RIGHT_PANEL_WIDTH)
+  if (workspacePanelContainerWidth.value === null) {
+    return Math.max(Number.isFinite(width) ? width : DEFAULT_RIGHT_PANEL_WIDTH, MIN_RIGHT_PANEL_WIDTH)
   }
 
-  if (maxWidth < MIN_RIGHT_PANEL_WIDTH) {
-    return Math.max(0, Math.min(safeWidth, maxWidth))
-  }
-
-  return Math.min(Math.max(safeWidth, MIN_RIGHT_PANEL_WIDTH), maxWidth)
+  return clampRightPanelWidth(width, workspacePanelContainerWidth.value)
 }
 
 const rightPanelWidth = computed(() => {
@@ -58,21 +61,39 @@ const rightPanelWidth = computed(() => {
   return Math.min(Math.max(preferredRightPanelWidth.value, MIN_RIGHT_PANEL_WIDTH), maxWidth)
 })
 
+const isRightPanelDocked = computed(
+  () => isRightPanelVisible.value && rightPanelPresentation.value === 'docked',
+)
+
+const isRightPanelStripVisible = computed(
+  () => rightPanelPresentation.value === 'strip' || !isRightPanelVisible.value,
+)
+
 export function useRightPanel() {
   /**
-   * Toggles the visibility of the right panel.
+   * Toggles the user preference for right panel visibility.
+   * Responsive policy may still expose a strip/drawer affordance without
+   * overwriting this preference.
    */
   const toggleRightPanel = () => {
     isRightPanelVisible.value = !isRightPanelVisible.value
   }
 
+  const setRightPanelVisible = (visible: boolean) => {
+    isRightPanelVisible.value = visible
+  }
+
   /**
    * Registers the current center/right workspace container width.
    * The right panel keeps a preferred width, but the actual exposed width is
-   * clamped against this container so the center pane and splitter remain visible.
+   * clamped against this container so the center pane and splitter remain usable.
    */
   const setRightPanelWorkspaceWidth = (width: number | null | undefined) => {
     workspacePanelContainerWidth.value = sanitizeContainerWidth(width)
+  }
+
+  const setRightPanelResponsivePresentation = (presentation: PanelPresentation) => {
+    rightPanelPresentation.value = presentation
   }
 
   /**
@@ -82,6 +103,8 @@ export function useRightPanel() {
    * @param {MouseEvent} event - The mousedown event triggering the drag.
    */
   const initDragRightPanel = (event: MouseEvent) => {
+    if (!isRightPanelDocked.value) return
+
     event.preventDefault()
 
     const startX = event.clientX
@@ -117,9 +140,15 @@ export function useRightPanel() {
 
   return {
     isRightPanelVisible,
+    preferredRightPanelWidth,
+    rightPanelPresentation,
     rightPanelWidth,
+    isRightPanelDocked,
+    isRightPanelStripVisible,
     toggleRightPanel,
+    setRightPanelVisible,
     setRightPanelWorkspaceWidth,
+    setRightPanelResponsivePresentation,
     initDragRightPanel,
   }
 }

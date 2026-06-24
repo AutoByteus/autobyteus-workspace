@@ -1,0 +1,35 @@
+$ git diff --check
+$ rg stale public env docs
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal
+ M autobyteus-web/ARCHITECTURE.md
+ M autobyteus-web/README.md
+ M autobyteus-web/components/layout/RightSidebarStrip.vue
+ D autobyteus-web/components/layout/WorkspaceDesktopLayout.vue
+ D autobyteus-web/components/layout/WorkspaceMobileLayout.vue
+ D autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts
+ M autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue
+ M autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+ M autobyteus-web/composables/__tests__/useRightPanel.spec.ts
+ M autobyteus-web/composables/useLeftPanel.ts
+ D autobyteus-web/composables/useMobilePanels.ts
+ M autobyteus-web/composables/useRightPanel.ts
+ M autobyteus-web/composables/useRightSideTabs.ts
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/docs/terminal.md
+ M autobyteus-web/layouts/__tests__/default.spec.ts
+ M autobyteus-web/layouts/default.vue
+ M autobyteus-web/localization/messages/en/shell.ts
+ M autobyteus-web/localization/messages/zh-CN/shell.ts
+ M autobyteus-web/package.json
+ M autobyteus-web/pages/workspace.vue
+?? autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue
+?? autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue
+?? autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue
+?? autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+?? autobyteus-web/composables/layout/
+?? autobyteus-web/docs/workspace_layout.md
+?? autobyteus-web/tests/e2e/
+?? autobyteus-web/utils/layout/
+?? tickets/frontend-responsive-ux-audit/

@@ -1,7 +1,8 @@
 import { ref } from 'vue';
+import { LEFT_PANEL_DEFAULT_WIDTH_PX } from '~/utils/layout/responsiveLayoutPolicy';
 
 const isLeftPanelVisible = ref(true);
-const leftPanelWidth = ref(320);
+const leftPanelWidth = ref(LEFT_PANEL_DEFAULT_WIDTH_PX);
 
 const MIN_LEFT_PANEL_WIDTH = 260;
 const MAX_LEFT_PANEL_WIDTH = 520;
@@ -9,6 +10,10 @@ const MAX_LEFT_PANEL_WIDTH = 520;
 export function useLeftPanel() {
   const toggleLeftPanel = (): void => {
     isLeftPanelVisible.value = !isLeftPanelVisible.value;
+  };
+
+  const setLeftPanelVisible = (visible: boolean): void => {
+    isLeftPanelVisible.value = visible;
   };
 
   const initDragLeftPanel = (event: MouseEvent): void => {
@@ -41,6 +46,7 @@ export function useLeftPanel() {
     isLeftPanelVisible,
     leftPanelWidth,
     toggleLeftPanel,
+    setLeftPanelVisible,
     initDragLeftPanel,
   };
 }

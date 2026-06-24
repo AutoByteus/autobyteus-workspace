@@ -15,7 +15,7 @@ Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus 
 
 ## Mobile Shell and Desktop Boundary
 
-Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, and Activity views. Phase One removes the mobile Tools/Terminal/VNC page entirely. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, and Activity views. Phase One removes the mobile Tools/Terminal/VNC page entirely. Normal desktop routes, including standard `/workspace` and browser desktop flows, continue to use the regular adaptive web/desktop shell and must not be rewritten to the mobile shell.
 
 Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 

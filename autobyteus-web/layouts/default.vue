@@ -1,8 +1,8 @@
 <template>
   <div class="flex h-screen h-[100dvh] flex-col">
     <header
-      v-if="!isApplicationImmersive"
-      class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+      v-if="!isApplicationImmersive && shellResponsiveState.showHeader"
+      class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4"
     >
       <div class="flex items-center">
         <button
@@ -20,30 +20,26 @@
 
     <div class="relative flex flex-1 flex-row overflow-hidden">
       <div
-        v-if="!isApplicationImmersive && appLayoutStore.isMobileMenuOpen"
-        class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75 md:hidden"
+        v-if="showLeftDrawerBackdrop"
+        class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"
         @click="appLayoutStore.closeMobileMenu()"
       ></div>
 
       <aside
-        v-if="!isApplicationImmersive"
-        class="absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow"
-        :class="[
-          appLayoutStore.isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
-          isLeftPanelVisible ? '' : 'md:hidden',
-        ]"
+        v-if="showLeftPanelSurface"
+        :class="leftPanelClasses"
         :style="leftPanelStyle"
       >
         <AppLeftPanel />
       </aside>
 
       <div
-        v-if="!isApplicationImmersive && isLeftPanelVisible"
+        v-if="showLeftPanelDragHandle"
         class="left-panel-drag-handle hidden md:block"
         @mousedown="initDragLeftPanel"
       ></div>
 
-      <div v-else-if="!isApplicationImmersive" class="hidden md:flex">
+      <div v-else-if="showLeftStrip" class="hidden md:flex">
         <LeftSidebarStrip />
       </div>
 
@@ -61,20 +57,45 @@ import { computed, watch } from 'vue'
 import { useAppLayoutStore } from '~/stores/appLayoutStore'
 import { useRoute } from 'vue-router'
 import { useLeftPanel } from '~/composables/useLeftPanel'
+import { useAppShellResponsiveLayout } from '~/composables/layout/useAppShellResponsiveLayout'
 
 const appLayoutStore = useAppLayoutStore()
 const route = useRoute()
-const { isLeftPanelVisible, leftPanelWidth, initDragLeftPanel } = useLeftPanel()
+const { initDragLeftPanel } = useLeftPanel()
+const { shellResponsiveState } = useAppShellResponsiveLayout()
 
 const isApplicationImmersive = computed(
   () => appLayoutStore.hostShellPresentation === 'application_immersive',
 )
 
-const leftPanelStyle = computed(() => (
-  isLeftPanelVisible.value
-    ? { width: `${leftPanelWidth.value}px` }
-    : undefined
-))
+const isLeftDocked = computed(() => shellResponsiveState.value.leftPanelPresentation === 'docked')
+const showLeftDrawer = computed(
+  () => shellResponsiveState.value.canOpenLeftDrawer && appLayoutStore.isMobileMenuOpen,
+)
+const showLeftPanelSurface = computed(
+  () => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value),
+)
+const showLeftDrawerBackdrop = computed(
+  () => !isApplicationImmersive.value && showLeftDrawer.value,
+)
+const showLeftStrip = computed(
+  () => !isApplicationImmersive.value && shellResponsiveState.value.showLeftStrip,
+)
+const showLeftPanelDragHandle = computed(
+  () => !isApplicationImmersive.value && isLeftDocked.value,
+)
+
+const leftPanelStyle = computed(() => ({
+  width: `${shellResponsiveState.value.leftPanelWidth}px`,
+}))
+
+const leftPanelClasses = computed(() => [
+  'inset-y-0 left-0 z-50 h-full flex-shrink-0 transform bg-white transition-transform duration-300 ease-in-out',
+  isLeftDocked.value
+    ? 'static translate-x-0 shadow'
+    : 'fixed shadow-2xl',
+  showLeftDrawer.value || isLeftDocked.value ? 'translate-x-0' : '-translate-x-full',
+])
 
 const mainContentClasses = computed(() => [
   'relative z-0 flex-1 min-w-0 overflow-hidden w-full',
@@ -92,6 +113,16 @@ watch(
   isApplicationImmersive,
   (immersive) => {
     if (immersive) {
+      appLayoutStore.closeMobileMenu()
+    }
+  },
+  { immediate: true },
+)
+
+watch(
+  () => shellResponsiveState.value.canOpenLeftDrawer,
+  (canOpenDrawer) => {
+    if (!canOpenDrawer) {
       appLayoutStore.closeMobileMenu()
     }
   },

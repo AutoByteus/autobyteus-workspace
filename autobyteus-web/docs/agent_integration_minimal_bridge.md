@@ -178,17 +178,20 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 ### Team runtime config
 
 ```
-NUXT_PUBLIC_TEAM_WS_ENDPOINT=ws://localhost:8000/ws/agent-team
+BACKEND_TEAM_WS_ENDPOINT=ws://localhost:8000/ws/agent-team
 ```
 
 ## Runtime configuration
 
-Recommended environment variables:
+Recommended environment variables for a separately running backend:
 
 ```
-NUXT_PUBLIC_GRAPHQL_BASE_URL=http://localhost:8000/graphql
-NUXT_PUBLIC_AGENT_WS_ENDPOINT=ws://localhost:8000/ws/agent
+BACKEND_NODE_BASE_URL=http://localhost:8000
+BACKEND_GRAPHQL_BASE_URL=http://localhost:8000/graphql
+BACKEND_AGENT_WS_ENDPOINT=ws://localhost:8000/ws/agent
 ```
+
+In local development, Nuxt serves GraphQL and REST through the Vite proxy and derives those proxy targets from `BACKEND_NODE_BASE_URL`. Use explicit `BACKEND_*` endpoint overrides only when a specific deployed or test backend needs fixed URLs.
 
 If you want fixed agents per feature, add:
 

@@ -1,9 +1,18 @@
-
 import { ref, computed } from 'vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useBrowserShellStore } from '~/stores/browserShellStore';
+import {
+  getWorkspaceToolOrder,
+  type WorkspaceToolName,
+} from '~/utils/layout/workspaceSurfaceOrder';
 
-export type TabName = 'files' | 'teamMembers' | 'terminal' | 'vnc' | 'progress' | 'artifacts' | 'browser';
+export type TabName = WorkspaceToolName;
+
+interface RightSideTabDefinition {
+  name: TabName
+  label: string
+  requires: 'any' | 'team'
+}
 
 // Global state
 const activeTab = ref<TabName>('terminal');
@@ -13,18 +22,26 @@ export function useRightSideTabs() {
   const browserShellStore = useBrowserShellStore();
   const { t, resolvedLocale } = useLocalization();
 
-  const allTabs = computed(() => {
+  const tabLabels = computed<Record<TabName, string>>(() => {
     resolvedLocale.value;
 
-    return [
-      { name: 'files' as TabName, label: t('shell.rightTabs.files'), requires: 'any' },
-      { name: 'teamMembers' as TabName, label: t('shell.rightTabs.team'), requires: 'team' },
-      { name: 'terminal' as TabName, label: t('shell.rightTabs.terminal'), requires: 'any' },
-      { name: 'progress' as TabName, label: t('shell.rightTabs.activity'), requires: 'any' },
-      { name: 'artifacts' as TabName, label: t('shell.rightTabs.artifacts'), requires: 'any' },
-      { name: 'browser' as TabName, label: t('shell.rightTabs.browser'), requires: 'any' },
-      { name: 'vnc' as TabName, label: t('shell.rightTabs.vncViewer'), requires: 'any' },
-    ];
+    return {
+      files: t('shell.rightTabs.files'),
+      teamMembers: t('shell.rightTabs.team'),
+      terminal: t('shell.rightTabs.terminal'),
+      progress: t('shell.rightTabs.activity'),
+      artifacts: t('shell.rightTabs.artifacts'),
+      browser: t('shell.rightTabs.browser'),
+      vnc: t('shell.rightTabs.vncViewer'),
+    };
+  });
+
+  const allTabs = computed<RightSideTabDefinition[]>(() => {
+    return getWorkspaceToolOrder().map((name) => ({
+      name,
+      label: tabLabels.value[name],
+      requires: name === 'teamMembers' ? 'team' : 'any',
+    }));
   });
 
   const visibleTabs = computed(() => {

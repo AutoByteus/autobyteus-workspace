@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-full bg-white">
-    <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 border-b border-gray-200 flex-shrink-0">
-      <div class="flex items-center space-x-3 min-w-0 flex-1">
+    <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-gray-200 flex-shrink-0 sm:px-4">
+      <div class="flex min-w-0 flex-1 items-center space-x-3">
         <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center">
           <img
             v-if="showHeaderAvatarImage"
@@ -20,7 +20,7 @@
         <AgentStatusDisplay v-if="activeTeamContext" :status="headerStatus" />
       </div>
 
-      <div class="flex items-center gap-3 flex-wrap justify-end">
+      <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
         <TeamWorkspaceModeSwitch
           v-if="activeTeamContext"
           :mode="currentMode"

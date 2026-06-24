@@ -5,6 +5,7 @@
       :key="tab.name" 
       :name="tab.name" 
       :selected="selectedTab === tab.name" 
+      :density="density"
       @select="selectTab"
     >
       {{ tab.label || tab.name }}
@@ -21,9 +22,12 @@ interface TabInfo {
   label?: string;
 }
 
-const props = defineProps<{  tabs: TabInfo[];
+const props = withDefaults(defineProps<{  tabs: TabInfo[];
   selectedTab: string;
-}>();
+  density?: 'comfortable' | 'compact';
+}>(), {
+  density: 'comfortable',
+});
 
 const emit = defineEmits(["select"]);
 

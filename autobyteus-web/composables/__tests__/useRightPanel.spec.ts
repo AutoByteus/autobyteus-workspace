@@ -25,9 +25,9 @@ describe('useRightPanel', () => {
     expect(panel.rightPanelWidth.value).toBe(1450)
 
     panel.setRightPanelWorkspaceWidth(1300)
-    expect(panel.rightPanelWidth.value).toBe(1096)
+    expect(panel.rightPanelWidth.value).toBe(816)
 
-    panel.setRightPanelWorkspaceWidth(1700)
+    panel.setRightPanelWorkspaceWidth(2000)
     expect(panel.rightPanelWidth.value).toBe(1450)
   })
 
@@ -49,6 +49,6 @@ describe('useRightPanel', () => {
 
     panel.setRightPanelWorkspaceWidth(550)
 
-    expect(panel.rightPanelWidth.value).toBe(346)
+    expect(panel.rightPanelWidth.value).toBe(66)
   })
 })

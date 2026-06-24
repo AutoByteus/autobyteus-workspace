@@ -1,0 +1,913 @@
+{
+  "summary": [
+    {
+      "viewport": "phone-390x844",
+      "size": "390x844",
+      "media": {
+        "min390": true,
+        "min500": false,
+        "min640": false,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "legacy_mobile_running_agent_button_model"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 390,
+        "height": 788
+      },
+      "topButtons": [
+        "Open menu",
+        "Running",
+        "Agent",
+        "Running List",
+        "Configuration"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "legacy_mobile_running_agent_button_model"
+          ]
+        },
+        {
+          "action": "click_agent_top_button",
+          "afterFlags": []
+        }
+      ]
+    },
+    {
+      "viewport": "phone-short-390x640",
+      "size": "390x640",
+      "media": {
+        "min390": true,
+        "min500": false,
+        "min640": false,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "legacy_mobile_running_agent_button_model"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 390,
+        "height": 584
+      },
+      "topButtons": [
+        "Open menu",
+        "Running",
+        "Agent",
+        "Running List",
+        "Configuration"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "legacy_mobile_running_agent_button_model"
+          ]
+        },
+        {
+          "action": "click_agent_top_button",
+          "afterFlags": []
+        }
+      ]
+    },
+    {
+      "viewport": "narrow-500x700",
+      "size": "500x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": false,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "legacy_mobile_running_agent_button_model"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 500,
+        "height": 644
+      },
+      "topButtons": [
+        "Open menu",
+        "Running",
+        "Agent",
+        "Running List",
+        "Configuration"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "legacy_mobile_running_agent_button_model"
+          ]
+        },
+        {
+          "action": "click_agent_top_button",
+          "afterFlags": []
+        }
+      ]
+    },
+    {
+      "viewport": "narrow-short-500x420",
+      "size": "500x420",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": false,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "legacy_mobile_running_agent_button_model"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 500,
+        "height": 364
+      },
+      "topButtons": [
+        "Open menu",
+        "Running",
+        "Agent",
+        "Running List",
+        "Configuration"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "legacy_mobile_running_agent_button_model"
+          ]
+        },
+        {
+          "action": "click_agent_top_button",
+          "afterFlags": []
+        }
+      ]
+    },
+    {
+      "viewport": "threshold-639x700",
+      "size": "639x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": false,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "legacy_mobile_running_agent_button_model"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 639,
+        "height": 644
+      },
+      "topButtons": [
+        "Open menu",
+        "Running",
+        "Agent",
+        "Running List",
+        "Configuration"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "legacy_mobile_running_agent_button_model"
+          ]
+        },
+        {
+          "action": "click_agent_top_button",
+          "afterFlags": []
+        }
+      ]
+    },
+    {
+      "viewport": "threshold-640x700",
+      "size": "640x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "desktop_layout_mounted_but_hidden",
+        "visible_main_has_no_workspace_content"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 640,
+        "height": 644
+      },
+      "centerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "rightRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "topButtons": [
+        "Open menu"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "desktop_layout_mounted_but_hidden",
+            "visible_main_has_no_workspace_content"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "gap-700x700",
+      "size": "700x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "desktop_layout_mounted_but_hidden",
+        "visible_main_has_no_workspace_content"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 700,
+        "height": 644
+      },
+      "centerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "rightRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "topButtons": [
+        "Open menu"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "desktop_layout_mounted_but_hidden",
+            "visible_main_has_no_workspace_content"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "gap-767x700",
+      "size": "767x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": false,
+        "min1024": false
+      },
+      "flags": [
+        "desktop_layout_mounted_but_hidden",
+        "visible_main_has_no_workspace_content"
+      ],
+      "mainRect": {
+        "x": 0,
+        "y": 56,
+        "width": 767,
+        "height": 644
+      },
+      "centerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "rightRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "topButtons": [
+        "Open menu"
+      ],
+      "rightTabs": [],
+      "interactions": [
+        {
+          "action": "click_hamburger",
+          "afterFlags": [
+            "desktop_layout_mounted_but_hidden",
+            "visible_main_has_no_workspace_content"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "md-768x700",
+      "size": "768x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": false
+      },
+      "flags": [
+        "center_too_narrow_200px",
+        "right_panel_cramped_241px",
+        "left_panel_docked_too_wide_for_viewport"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 445,
+        "height": 700
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 200,
+        "height": 700
+      },
+      "rightRect": {
+        "x": 527,
+        "y": 0,
+        "width": 241,
+        "height": 700
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet-800x700",
+      "size": "800x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": false
+      },
+      "flags": [
+        "center_too_narrow_200px",
+        "right_panel_cramped_273px",
+        "left_panel_docked_too_wide_for_viewport"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 477,
+        "height": 700
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 200,
+        "height": 700
+      },
+      "rightRect": {
+        "x": 527,
+        "y": 0,
+        "width": 273,
+        "height": 700
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet-short-800x420",
+      "size": "800x420",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": false
+      },
+      "flags": [
+        "center_too_narrow_200px",
+        "right_panel_cramped_273px",
+        "left_panel_docked_too_wide_for_viewport",
+        "short_height_keeps_full_left_panel_docked"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 477,
+        "height": 420
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 200,
+        "height": 420
+      },
+      "rightRect": {
+        "x": 527,
+        "y": 0,
+        "width": 273,
+        "height": 420
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet-900x700",
+      "size": "900x700",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": false
+      },
+      "flags": [
+        "center_too_narrow_200px",
+        "left_panel_docked_too_wide_for_viewport"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 577,
+        "height": 700
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 200,
+        "height": 700
+      },
+      "rightRect": {
+        "x": 527,
+        "y": 0,
+        "width": 373,
+        "height": 700
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "small-desktop-1024x768",
+      "size": "1024x768",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": true
+      },
+      "flags": [
+        "center_too_narrow_247px",
+        "left_panel_docked_too_wide_for_viewport"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 701,
+        "height": 768
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 247,
+        "height": 768
+      },
+      "rightRect": {
+        "x": 574,
+        "y": 0,
+        "width": 450,
+        "height": 768
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "VNC Viewer",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "small-desktop-short-1024x480",
+      "size": "1024x480",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": true
+      },
+      "flags": [
+        "center_too_narrow_247px",
+        "left_panel_docked_too_wide_for_viewport",
+        "short_height_keeps_full_left_panel_docked"
+      ],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 701,
+        "height": 480
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 247,
+        "height": 480
+      },
+      "rightRect": {
+        "x": 574,
+        "y": 0,
+        "width": 450,
+        "height": 480
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "VNC Viewer",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "desktop-1180x800",
+      "size": "1180x800",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": true
+      },
+      "flags": [],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 857,
+        "height": 800
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 403,
+        "height": 800
+      },
+      "rightRect": {
+        "x": 730,
+        "y": 0,
+        "width": 450,
+        "height": 800
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "VNC Viewer",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "desktop-1280x800",
+      "size": "1280x800",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": true
+      },
+      "flags": [],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 957,
+        "height": 800
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 503,
+        "height": 800
+      },
+      "rightRect": {
+        "x": 830,
+        "y": 0,
+        "width": 450,
+        "height": 800
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "VNC Viewer",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "wide-1440x900",
+      "size": "1440x900",
+      "media": {
+        "min390": true,
+        "min500": true,
+        "min640": true,
+        "min768": true,
+        "min1024": true
+      },
+      "flags": [],
+      "mainRect": {
+        "x": 323,
+        "y": 0,
+        "width": 1117,
+        "height": 900
+      },
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 663,
+        "height": 900
+      },
+      "rightRect": {
+        "x": 990,
+        "y": 0,
+        "width": 450,
+        "height": 900
+      },
+      "topButtons": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Agents",
+        "Collapse left panel",
+        "Toggle Sidebar",
+        "Agent Teams",
+        "Skills"
+      ],
+      "rightTabs": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Artifacts",
+        "VNC Viewer",
+        "Toggle Sidebar"
+      ],
+      "interactions": [
+        {
+          "action": "click_visible_right_tabs_in_order",
+          "tabs": [
+            "Files",
+            "Terminal",
+            "Activity",
+            "Artifacts",
+            "VNC Viewer",
+            "Toggle Sidebar"
+          ]
+        }
+      ]
+    }
+  ],
+  "mobileRouteFlags": [],
+  "mobileRouteText": "AUTOBYTEUS REMOTE ACCESS Connect this phone Scan the Phone Access QR from desktop settings. The normal QR journey is one tap. Scan the QR code from Desktop > Nodes > Phone Setup > Phone Access. No server URL, port, or token setup is needed in the normal flow. Paste pairing link THIS DEVICE NAME Pair"
+}

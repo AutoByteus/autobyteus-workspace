@@ -197,7 +197,7 @@ The Terminal uses a light theme matching the application design:
 The Terminal is automatically available from the workspace page. If no agent/team/run workspace is active, it starts in the backend server user's home directory. If an active workspace root exists, it starts in that explicit workspace root.
 
 1. Open the workspace page
-2. Click the "Terminal" tab in the right panel (or the Terminal icon in the collapsed sidebar)
+2. Click the "Terminal" tab in the right panel. In constrained workspace sizes, open **Tools** from the workspace surface controls or use the right tool strip/drawer first.
 3. Type commands and press Enter
 4. View output directly in the terminal
 

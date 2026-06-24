@@ -5,7 +5,7 @@ const { TabStub } = vi.hoisted(() => ({
   TabStub: {
     name: 'Tab',
     template: '<button class="tab-stub" @click="$emit(\'select\', name)">{{ name }}</button>',
-    props: ['name', 'selected'],
+    props: ['name', 'selected', 'density'],
   },
 }));
 
@@ -54,7 +54,24 @@ describe('TabList.vue', () => {
     for (let i = 0; i < sampleTabs.length; i++) {
       expect(tabs[i].props().name).toBe(sampleTabs[i].name);
       expect(tabs[i].props().selected).toBe(sampleTabs[i].name === 'Tab1');
+      expect(tabs[i].props().density).toBe('comfortable');
     }
+  });
+
+  it('forwards compact density to tabs', () => {
+    const wrapper = mount(TabList, {
+      props: {
+        tabs: sampleTabs,
+        selectedTab: 'Tab1',
+        density: 'compact',
+      },
+      global: {
+        stubs: { Tab: TabStub },
+      },
+    });
+
+    const tabs = wrapper.findAllComponents(TabStub);
+    expect(tabs.every((tab) => tab.props().density === 'compact')).toBe(true);
   });
 
   it('emits the select event with the correct tab name when a Tab is clicked', async () => {

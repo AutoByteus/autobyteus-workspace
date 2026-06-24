@@ -16,7 +16,12 @@ describe('default layout source', () => {
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain("hostShellPresentation === 'application_immersive'")
-    expect(content).toContain('v-if="!isApplicationImmersive"')
+    expect(content).toContain('v-if="showLeftPanelSurface"')
+    expect(content).toContain('v-if="showLeftDrawerBackdrop"')
+    expect(content).toContain('() => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value)')
+    expect(content).toContain('() => !isApplicationImmersive.value && showLeftDrawer.value')
+    expect(content).toContain('() => !isApplicationImmersive.value && shellResponsiveState.value.showLeftStrip')
+    expect(content).toContain('() => !isApplicationImmersive.value && isLeftDocked.value')
     expect(content).toContain("isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50'")
   })
 
