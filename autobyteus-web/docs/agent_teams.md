@@ -91,20 +91,21 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
 
 
-The team launch data model can also carry run-owned self-evolution overrides.
-`TeamRunConfig.selfEvolution` applies to the team run launch, while agent-member
-overrides may set `selfEvolution` for a specific leaf member. The backend
-snapshots the effective result into each agent member's run metadata. Team
-definitions, `team-config.json`, and persisted default launch preferences do not
-own self-evolution eligibility, and whole-team/subteam evolution is not part of
-the MVP manual action. The team run configuration form exposes this as a
-launch-time team default plus leaf-member override controls when the global
-self-evolution capability is enabled.
+The team launch data model does not carry self-evolution overrides for the
+manual-click model. Team definitions, `team-config.json`, persisted default
+launch preferences, `TeamRunConfig`, and agent-member launch records do not own
+self-evolution eligibility; the backend resolves manual eligibility from current
+global self-evolution settings and the current active target state at click time.
+Whole-team/subteam evolution is not part of the MVP manual action, and the team
+run configuration form does not expose launch-time self-evolution default or
+leaf-member override controls.
 
 For manual self-evolution, the composer-adjacent CTA targets the selected active
 leaf member, not the whole team row. The frontend sends the member-scoped target
 identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSelfEvolution`, and
-the backend records source run ids for the selected member only. This preserves
+the backend records source run ids for the selected member only. Before
+triggering the companion, the backend ensures that member's work trace files are
+current, then activates or reuses the target-scoped companion run. This preserves
 the same valid focused leaf-member boundary used by the shared composer target
 and prevents stale history rows or whole-team containers from becoming evolution
 targets.

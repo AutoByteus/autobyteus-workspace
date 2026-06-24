@@ -142,7 +142,6 @@ export const useAgentRunStore = defineStore('agentRun', {
                 skillAccessMode: config.skillAccessMode,
                 runtimeKind: config.runtimeKind,
                 initialSummary: messageContent,
-                selfEvolution: config.selfEvolution ?? null,
               }
             }
           });

@@ -26,7 +26,6 @@
             :global-llm-config="globalLlmConfig"
             :coordinator-member-route-key="coordinatorMemberRouteKey"
             :disabled="disabled"
-            :self-evolution-controls-enabled="selfEvolutionControlsEnabled"
             :advanced-initially-expanded="advancedInitiallyExpanded"
             :read-only-mode="readOnlyMode"
             @update:override="forwardOverrideUpdate"
@@ -46,7 +45,6 @@
         :global-llm-config="globalLlmConfig"
         :is-coordinator="node.memberRouteKey === coordinatorMemberRouteKey"
         :disabled="disabled"
-        :self-evolution-controls-enabled="selfEvolutionControlsEnabled"
         :advanced-initially-expanded="advancedInitiallyExpanded"
         :missing-historical-config="memberMissingHistoricalConfig(node.memberRouteKey)"
         @update:override="forwardOverrideUpdate"
@@ -71,7 +69,6 @@ const props = defineProps<{
   globalLlmConfig?: Record<string, unknown> | null;
   coordinatorMemberRouteKey: string;
   disabled: boolean;
-  selfEvolutionControlsEnabled?: boolean;
   advancedInitiallyExpanded?: boolean;
   readOnlyMode?: boolean;
 }>();

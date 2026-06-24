@@ -57,9 +57,9 @@ describe("SelfEvolutionResolver GraphQL boundary", () => {
     expect(mutationFields).toHaveProperty("startAgentRunSelfEvolution");
     expect(mutationFields).toHaveProperty("startTeamMemberSelfEvolution");
 
-    expect(getInputFieldNames(schema, "CreateAgentRunInput")).toContain("selfEvolution");
-    expect(getInputFieldNames(schema, "CreateAgentTeamRunInput")).toContain("selfEvolution");
-    expect(getInputFieldNames(schema, "TeamMemberConfigInput")).toContain("selfEvolution");
+    expect(getInputFieldNames(schema, "CreateAgentRunInput")).not.toContain("selfEvolution");
+    expect(getInputFieldNames(schema, "CreateAgentTeamRunInput")).not.toContain("selfEvolution");
+    expect(getInputFieldNames(schema, "TeamMemberConfigInput")).not.toContain("selfEvolution");
     expect(getInputFieldNames(schema, "StartAgentRunSelfEvolutionInput")).toEqual(["runId"]);
     expect(getInputFieldNames(schema, "StartTeamMemberSelfEvolutionInput")).toEqual(["teamRunId", "memberRunId"]);
 

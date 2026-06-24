@@ -5,24 +5,6 @@ import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 
-const {
-  selfEvolutionCapabilityState,
-  selfEvolutionCapabilityStoreMock,
-} = vi.hoisted(() => {
-  const selfEvolutionCapabilityState = {
-    isEnabled: false,
-  }
-  return {
-    selfEvolutionCapabilityState,
-    selfEvolutionCapabilityStoreMock: {
-      get isEnabled() {
-        return selfEvolutionCapabilityState.isEnabled
-      },
-      ensureResolved: vi.fn(async () => null),
-    },
-  }
-})
-
 vi.mock('../WorkspaceSelector.vue', () => ({
   default: {
     name: 'WorkspaceSelector',
@@ -49,9 +31,6 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({
   useRuntimeAvailabilityStore: vi.fn(),
 }))
 
-vi.mock('~/stores/selfEvolutionCapabilityStore', () => ({
-  useSelfEvolutionCapabilityStore: () => selfEvolutionCapabilityStoreMock,
-}))
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -105,8 +84,6 @@ describe('AgentRunConfigForm', () => {
 
     ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
     ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeAvailabilityStore)
-    selfEvolutionCapabilityState.isEnabled = false
-    selfEvolutionCapabilityStoreMock.ensureResolved.mockClear()
   })
 
   const mockConfig = {
@@ -501,41 +478,6 @@ describe('AgentRunConfigForm', () => {
     expect(localConfig.llmConfig).toBeNull()
   })
 
-  it('marks standalone launch configs self-evolution eligible when the global capability is enabled', async () => {
-    selfEvolutionCapabilityState.isEnabled = true
-    const localConfig = {
-      ...mockConfig,
-      selfEvolution: null,
-    }
-
-    const wrapper = mount(AgentRunConfigForm, {
-      props: {
-        config: localConfig,
-        agentDefinition: mockAgentDef as any,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-      },
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    expect(selfEvolutionCapabilityStoreMock.ensureResolved).toHaveBeenCalledTimes(1)
-    expect(wrapper.get('[data-testid="agent-run-self-evolution-control"]').text()).toContain('Self evolution eligibility')
-    const toggle = wrapper.get('[data-testid="agent-run-self-evolution-toggle"]')
-    expect(toggle.attributes('aria-checked')).toBe('false')
-
-    await toggle.trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(localConfig.selfEvolution).toEqual({ enabled: true })
-    expect(toggle.attributes('aria-checked')).toBe('true')
-
-    await toggle.trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(localConfig.selfEvolution).toEqual({ enabled: false })
-    expect(toggle.attributes('aria-checked')).toBe('false')
-  })
 
   it('renders selected existing run configuration as read-only and expands advanced model settings', async () => {
     setProviders([

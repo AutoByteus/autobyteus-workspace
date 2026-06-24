@@ -223,22 +223,24 @@ listed roots are out of MVP scope.
 
 The frontend does not decide whether a skill is eligible for evolution. The
 composer-adjacent **Self improve** CTA lazy-loads backend eligibility for the
-selected active run or team member and stays hidden for ineligible, old, or
-pre-snapshot runs. Run-history rows do not own self-evolution actions. The
-backend launches a visible helper run with anonymized work-history evidence and
-records minimal provenance; it does not compute changed paths or
-policy-violation metrics in the MVP. After launch, the workspace may show only a
-short transient start status. Only after meaningful durable skill package file changes, the helper
-reports through one direct `send_message_to` call with
+selected active run or team member and stays hidden when the backend says the
+current target is ineligible. Run-history rows and launch forms do not own
+self-evolution actions. Before messaging the visible companion, the backend
+projects the target's raw trace corpus into readable work trace files and sends
+the companion only paths plus edit-scope metadata; it does not inline the work
+trace body or ask the companion to read raw trace JSONL. The backend records
+minimal provenance and does not compute changed paths or policy-violation
+metrics in the MVP. After launch, the workspace may show only a short transient
+start status. Only after meaningful durable skill package file changes, the
+companion reports through one direct `send_message_to` call with
 `message_type: "skill_update"` to the still-active target run. Its content should
 explain what changed, why it matters, and how the target should use or reload the
 updated guidance, while dynamic references are absolute paths to changed or
-directly relevant surviving files inside editable roots; the
-backend record distinguishes sent, rejected, target-inactive, and not-attempted
-outcomes. That helper-authored message is not a runtime/model skill-refresh
-instruction; next-run correctness is the MVP baseline. Users should still
-inspect any Git-backed skill changes directly before treating them as accepted
-improvements.
+directly relevant surviving files inside editable roots; the backend record
+distinguishes sent, rejected, target-inactive, and not-attempted outcomes. That
+helper-authored message is not a runtime/model skill-refresh instruction;
+next-run correctness is the MVP baseline. Users should still inspect any
+Git-backed skill changes directly before treating them as accepted improvements.
 
 Git-backed skill packages remain the recommended testing and rollback mode for
 this MVP when a skill source is owned by an external repository. AutoByteus does
@@ -248,6 +250,6 @@ separate proposal/apply UI or product audit service.
 
 ## Related Documentation
 
-- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, work trace projection, companion lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Skills are attached to agents to provide capabilities.
 - **[File Explorer](./file_explorer.md)**: Skills use the generic, workspace-agnostic File Explorer.

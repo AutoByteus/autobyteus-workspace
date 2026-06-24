@@ -102,15 +102,19 @@ Each major business area is isolated under `src/<module>` and usually contains:
 ## Self-Evolution Runtime
 
 The self-evolution subsystem is a control-plane workflow under `src/self-evolution`.
-It is globally disabled by default through `ENABLE_SELF_EVOLUTION`, then run-owned
-when enabled: launch APIs snapshot the effective self-evolution config into
-standalone run metadata or team agent-member metadata. Agent/team definitions do
-not own self-evolution eligibility. Manual starts use the stored snapshot, launch
-a separate visible helper `AgentRun`, provide anonymized work-history evidence,
-list exact editable skill root directories, and persist minimal provenance plus
-notification outcome. The MVP intentionally has no product change-audit or
-metrics/reporting service; Git/manual inspection remains the review surface. See
-`modules/self_evolution.md` for the detailed contract.
+It is globally disabled by default through `ENABLE_SELF_EVOLUTION`. Manual starts
+resolve eligibility from current global self-evolution settings and the current
+live target state, not from launch-time run overrides or stored launch snapshots.
+Agent/team definitions and launch inputs do not own self-evolution eligibility.
+Manual starts ensure a readable work trace projection is current for the selected
+standalone run or team member, then activate or reuse a visible target-scoped
+companion `AgentRun` and send it a small path-based trigger. The companion reads
+work trace files, may edit only exact configured skill roots, and can report a
+meaningful durable skill update through the grant-scoped `send_message_to`
+contract. A required startup migration removes obsolete `selfEvolutionEffective`
+fields from existing run and team-member metadata. The MVP intentionally has no
+product change-audit or metrics/reporting service; Git/manual inspection remains
+the review surface. See `modules/self_evolution.md` for the detailed contract.
 
 ## External-Channel Messaging Runtime
 

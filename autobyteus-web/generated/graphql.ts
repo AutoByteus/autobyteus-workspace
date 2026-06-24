@@ -417,7 +417,6 @@ export type CreateAgentRunInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
-  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   skillAccessMode: SkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
@@ -443,7 +442,6 @@ export type CreateAgentTeamDefinitionInput = {
 
 export type CreateAgentTeamRunInput = {
   memberConfigs: Array<TeamMemberConfigInput>;
-  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   teamDefinitionId: Scalars['String']['input'];
 };
 
@@ -621,13 +619,6 @@ export type GeminiSetupConfig = {
   vertexApiKeyConfigured: Scalars['Boolean']['output'];
   vertexLocation?: Maybe<Scalars['String']['output']>;
   vertexProject?: Maybe<Scalars['String']['output']>;
-};
-
-export type GraphqlSelfEvolutionConfigOverrideInput = {
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  evolverAgentDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  evolverStrategy?: InputMaybe<Scalars['String']['input']>;
-  triggerStrategy?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GraphqlSelfEvolutionConfigSourceTraceEntry = {
@@ -1884,7 +1875,6 @@ export type TeamMemberConfigInput = {
   memberName: Scalars['String']['input'];
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  selfEvolution?: InputMaybe<GraphqlSelfEvolutionConfigOverrideInput>;
   skillAccessMode: SkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;

@@ -2,18 +2,9 @@ export type SelfEvolutionTriggerStrategyName = "manual_only" | "scheduled" | "si
 export type SelfEvolutionEvolverStrategyName = "single_agent" | "agent_team";
 export type SelfEvolutionStrategyStatus = "implemented" | "not_implemented";
 
-export type SelfEvolutionConfigSource =
-  | "default"
-  | "agent_run_launch"
-  | "team_run_launch"
-  | "team_member_run_launch";
+export type SelfEvolutionConfigSource = "default";
 
-export type SelfEvolutionConfigOverride = {
-  enabled?: boolean;
-  triggerStrategy?: SelfEvolutionTriggerStrategyName;
-  evolverStrategy?: SelfEvolutionEvolverStrategyName;
-  evolverAgentDefinitionId?: string | null;
-};
+export type SelfEvolutionConfigField = "enabled" | "triggerStrategy" | "evolverStrategy" | "evolverAgentDefinitionId";
 
 export type SelfEvolutionEffectiveConfig = {
   enabled: boolean;
@@ -23,7 +14,7 @@ export type SelfEvolutionEffectiveConfig = {
   resolvedAt: string;
   sourceTrace: Array<{
     source: SelfEvolutionConfigSource;
-    fields: Array<keyof SelfEvolutionConfigOverride>;
+    fields: SelfEvolutionConfigField[];
   }>;
 };
 
@@ -69,14 +60,6 @@ export type SelfEvolutionSkillTarget = {
   skillMdPath: string;
   sourceLabel?: string | null;
   isWritable: boolean;
-};
-
-export type SelfEvolutionEvidencePackage = {
-  target: SelfEvolutionTargetRef;
-  sourceRunIds: string[];
-  anonymizedWorkHistory: string;
-  feedbackSignals: string[];
-  privacyWarnings: string[];
 };
 
 export type SelfEvolutionRunStatus =

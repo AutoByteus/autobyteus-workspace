@@ -213,8 +213,7 @@ export const hasMeaningfulMemberOverride = (
     hasExplicitMemberRuntimeOverride(override) ||
     hasExplicitMemberLlmModelOverride(override) ||
     override.autoExecuteTools !== undefined ||
-    hasExplicitMemberLlmConfigOverride(override) ||
-    override.selfEvolution !== undefined
+    hasExplicitMemberLlmConfigOverride(override)
   )
 }
 

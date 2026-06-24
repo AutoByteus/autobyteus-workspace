@@ -188,8 +188,9 @@ Team persisted files:
   containing resume/config/topology and stable lifecycle facts:
   `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
   `coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-  recursive `memberTree`; agent-member entries may include optional
-  `selfEvolutionEffective` launch snapshots
+  recursive `memberTree`; agent-member entries must not carry
+  `selfEvolutionEffective` launch snapshots after the self-evolution metadata
+  cleanup migration
 - member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
@@ -235,12 +236,14 @@ Important identity/storage rules:
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old
   memory directories
-- Self-evolution run snapshots are metadata facts: standalone runs store
-  `selfEvolutionEffective` on `run_metadata.json`, and team agent members store
-  `selfEvolutionEffective` on their member metadata entry. Old runs with no
-  snapshot are intentionally ineligible for manual self-evolution. History
-  listing and manual start flows must read these snapshots instead of current
-  agent/team definition config.
+- Self-evolution no longer stores launch-time eligibility snapshots in run
+  history metadata. Manual self-evolution uses current global settings plus the
+  current active target state at click time. Required startup app-data migration
+  `20260623_remove_self_evolution_run_metadata` removes obsolete
+  `selfEvolutionEffective` fields from standalone `run_metadata.json` files and
+  recursive team member metadata entries, creates per-file backups for changed
+  metadata, and reports migrated/skipped/failed item counts. History listing and
+  manual start flows must not rely on stale `selfEvolutionEffective` metadata.
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - new concrete agent runtime ids are allocated by `AgentRunIdentityAllocator` before backend creation and use `<agent_definition_name_slug>_<uuid-without-dashes>`; the slug is readability-only and the entire id is treated as opaque
 - standalone, team-member, and task-agent `AgentRun` ids use the same allocator-backed identity policy; new production paths do not derive ids from runtime kind, route key, team run id, or task id

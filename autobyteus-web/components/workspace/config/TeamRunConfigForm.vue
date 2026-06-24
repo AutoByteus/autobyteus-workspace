@@ -58,7 +58,6 @@
           :global-llm-config="config.llmConfig"
           :coordinator-member-route-key="coordinatorMemberRouteKey"
           :disabled="isFormReadOnly"
-          :self-evolution-controls-enabled="showSelfEvolutionControl"
           :advanced-initially-expanded="readOnlyMode"
           :read-only-mode="readOnlyMode"
           @update:override="handleOverrideUpdate"
@@ -86,37 +85,6 @@
           aria-hidden="true"
           class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
           :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
-        />
-      </button>
-    </div>
-
-    <div
-      v-if="showSelfEvolutionControl"
-      class="mt-2 flex items-center justify-between gap-4 rounded-md border border-emerald-100 bg-emerald-50/60 px-3 py-2"
-      data-testid="team-run-self-evolution-control"
-    >
-      <div class="min-w-0">
-        <label for="team-self-evolution-enabled" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility') }}</label>
-        <p class="mt-1 text-xs leading-relaxed text-gray-600">
-          {{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help') }}
-        </p>
-      </div>
-      <button
-        id="team-self-evolution-enabled"
-        type="button"
-        role="switch"
-        data-testid="team-run-self-evolution-toggle"
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :class="selfEvolutionEnabled ? 'bg-emerald-600' : 'bg-gray-200'"
-        :aria-checked="selfEvolutionEnabled"
-        :disabled="isFormReadOnly || !selfEvolutionCapabilityStore.isEnabled"
-        @click="updateSelfEvolutionEnabled(!selfEvolutionEnabled)"
-      >
-        <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility') }}</span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-          :class="selfEvolutionEnabled ? 'translate-x-5' : 'translate-x-0'"
         />
       </button>
     </div>
@@ -150,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRef } from 'vue'
+import { computed, ref, toRef } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
@@ -169,7 +137,6 @@ import {
   hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
 } from '~/utils/teamRunConfigUtils'
-import { useSelfEvolutionCapabilityStore } from '~/stores/selfEvolutionCapabilityStore'
 
 interface WorkspaceLoadingState {
   isLoading: boolean
@@ -191,13 +158,9 @@ const emit = defineEmits<{
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
-const selfEvolutionCapabilityStore = useSelfEvolutionCapabilityStore()
 const overridesExpanded = ref(true)
 const readOnlyMode = computed(() => props.readOnly === true)
 const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
-const selfEvolutionEnabled = computed(() => props.config.selfEvolution?.enabled === true)
-const hasSelfEvolutionOverride = computed(() => props.config.selfEvolution !== null && props.config.selfEvolution !== undefined)
-const showSelfEvolutionControl = computed(() => selfEvolutionCapabilityStore.isEnabled || hasSelfEvolutionOverride.value)
 const missingHistoricalGlobalConfig = computed(() =>
   readOnlyMode.value &&
   props.config.llmConfig == null,
@@ -218,10 +181,6 @@ const coordinatorMemberRouteKey = computed(() => {
 
 useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
 
-onMounted(() => {
-  void selfEvolutionCapabilityStore.ensureResolved().catch(() => undefined)
-})
-
 const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return
   const overrides = { ...(props.config.memberOverrides || {}) }
@@ -236,14 +195,6 @@ const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOver
 const updateAutoExecute = (checked: boolean) => {
   if (isFormReadOnly.value) return
   props.config.autoExecuteTools = checked
-}
-
-const updateSelfEvolutionEnabled = (enabled: boolean) => {
-  if (isFormReadOnly.value || !selfEvolutionCapabilityStore.isEnabled) return
-  props.config.selfEvolution = {
-    ...(props.config.selfEvolution ?? {}),
-    enabled,
-  }
 }
 
 const updateSkillAccessMode = (value: string) => {

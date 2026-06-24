@@ -11,6 +11,7 @@ import {
 } from "./self-evolution-target-context-resolver.js";
 import { SelfEvolverAgentSettingsResolver } from "./self-evolver-agent-settings-resolver.js";
 import { SelfEvolutionStrategyCatalogService } from "./strategies/self-evolution-strategy-catalog.js";
+import { SelfEvolutionEffectiveConfigResolver } from "./self-evolution-effective-config-resolver.js";
 
 export class SelfEvolutionEligibilityEvaluator {
   constructor(private readonly deps: {
@@ -19,6 +20,7 @@ export class SelfEvolutionEligibilityEvaluator {
     targetContextResolver?: SelfEvolutionTargetContextResolver;
     skillTargetResolver?: SelfEvolutionSkillTargetResolver;
     evolverSettingsResolver?: SelfEvolverAgentSettingsResolver;
+    effectiveConfigResolver?: SelfEvolutionEffectiveConfigResolver;
   } = {}) {}
 
   async evaluateTarget(target: SelfEvolutionTargetRef): Promise<SelfEvolutionEligibility> {
@@ -27,16 +29,23 @@ export class SelfEvolutionEligibilityEvaluator {
     let context: SelfEvolutionTargetContext | null = null;
     let skillTargets: SelfEvolutionEligibility["skillTargets"] = [];
 
-    if (!(await this.capabilityService.getCapability()).enabled) {
-      reasons.push("Self-evolution is disabled for this server.");
-    }
+    const capability = await this.capabilityService.getCapability();
     try {
       context = await this.targetContextResolver.resolve(target);
+      context = {
+        ...context,
+        effectiveConfig: this.effectiveConfigResolver.resolveCurrentManualSelfEvolutionSettings({
+          enabled: capability.enabled,
+        }),
+      };
       this.collectSnapshotEligibility(context.effectiveConfig, reasons);
       skillTargets = await this.skillTargetResolver.resolveForAgentDefinition(context.targetAgentDefinition);
       this.collectSkillEligibility(skillTargets, reasons, warnings);
       await this.collectEvolverEligibility(context, reasons);
     } catch (error) {
+      if (!capability.enabled) {
+        reasons.push("Self-evolution is disabled for this server.");
+      }
       reasons.push(String(error));
     }
 
@@ -54,11 +63,11 @@ export class SelfEvolutionEligibilityEvaluator {
     reasons: string[],
   ): void {
     if (!snapshot) {
-      reasons.push("Run was created before self-evolution effective-config snapshots were recorded.");
+      reasons.push("Self-evolution settings are unavailable.");
       return;
     }
     if (!snapshot.enabled) {
-      reasons.push("Self-evolution was disabled in this run's launch snapshot.");
+      reasons.push("Self-evolution is disabled for this server.");
     }
     if (!this.catalogService.isImplementedTrigger(snapshot.triggerStrategy)) {
       reasons.push(`Trigger strategy '${snapshot.triggerStrategy}' is not implemented.`);
@@ -122,6 +131,10 @@ export class SelfEvolutionEligibilityEvaluator {
 
   private get skillTargetResolver(): SelfEvolutionSkillTargetResolver {
     return this.deps.skillTargetResolver ?? new SelfEvolutionSkillTargetResolver();
+  }
+
+  private get effectiveConfigResolver(): SelfEvolutionEffectiveConfigResolver {
+    return this.deps.effectiveConfigResolver ?? new SelfEvolutionEffectiveConfigResolver();
   }
 
   private get evolverSettingsResolver(): SelfEvolverAgentSettingsResolver {

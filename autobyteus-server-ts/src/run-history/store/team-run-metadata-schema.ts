@@ -11,7 +11,6 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { buildMemberRouteKeyFromPath, normalizeMemberPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import { normalizeSelfEvolutionEffectiveConfig } from "../../self-evolution/domain/config.js";
 
 export const LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE =
   "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED";
@@ -136,7 +135,6 @@ const normalizeMemberMetadata = (
     applicationExecutionContext: normalizeApplicationExecutionContext(
       base.applicationExecutionContext,
     ),
-    selfEvolutionEffective: normalizeSelfEvolutionEffectiveConfig(base.selfEvolutionEffective),
   };
 };
 
@@ -207,7 +205,6 @@ const toMemberMetadata = (value: unknown): TeamRunMemberMetadata | null => {
       llmConfig: payload.llmConfig as Record<string, unknown> | null,
       workspaceRootPath: typeof payload.workspaceRootPath === "string" ? payload.workspaceRootPath : null,
       applicationExecutionContext: payload.applicationExecutionContext as ApplicationExecutionContext | null | undefined,
-      selfEvolutionEffective: normalizeSelfEvolutionEffectiveConfig(payload.selfEvolutionEffective),
       role: normalizeOptionalString(payload.role),
       description: normalizeOptionalString(payload.description),
     };

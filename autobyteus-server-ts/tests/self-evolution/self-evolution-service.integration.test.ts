@@ -87,25 +87,40 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      evidenceBuilder: {
-        build: vi.fn(async () => ({
-          evidence: {
+      workTraceProjectionService: {
+        ensureCurrent: vi.fn(async () => ({
+          target: { kind: "agent_run", runId: "target-run-1" },
+          workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+          manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+          summaryHash: "hash-123",
+          manifest: {
+            schemaVersion: 1,
             target: { kind: "agent_run", runId: "target-run-1" },
-            sourceRunIds: ["target-run-1"],
-            anonymizedWorkHistory: "[WORK_HISTORY_TO_LEARN_FROM]\nFeedback and improvement signals:\n- Prior evidence showed a reusable skill gap.",
-            feedbackSignals: ["Prior evidence showed a reusable skill gap."],
-            privacyWarnings: ["Do not persist user-specific details."],
+            generatedAt: "2026-01-01T00:00:00.000Z",
+            workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+            manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+            files: [],
           },
-          evidenceSummaryHash: "hash-123",
         })),
       } as any,
-      evolverStrategy: {
-        run: vi.fn(async () => ({
-          status: evolverStatus,
-          evolverRunId: "evolver-run-1",
+      companionSessionService: {
+        activateOrGet: vi.fn(async () => ({
+          target: { kind: "agent_run", runId: "target-run-1" },
+          companionRunId: "evolver-run-1",
           evolverAgentDefinitionId: "autobyteus-skill-evolver",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "target-model",
+          state: {},
+        })),
+        buildTriggerRequest: vi.fn((input) => ({
+          evolutionRunId: input.evolutionRunId,
+          requestedAt: input.requestedAt,
+          targetAgentRunId: "target-run-1",
+          workTracePackage: input.workTracePackage,
+          editableSkillTargets: input.editableSkillTargets,
+        })),
+        postSelfImproveRequest: vi.fn(async () => ({
+          status: evolverStatus === "timed_out" ? "timed_out" : "completed",
           outputText: evolverStatus === "completed" ? "done" : null,
           notificationSummary: evolverStatus === "completed"
             ? { status: "send_message_sent", message: "outcome sent", targetAgentRunId: "target-run-1", evolverRunId: "evolver-run-1" }
@@ -149,20 +164,20 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
 
   it("rejects a stale target before launching the helper", async () => {
     const runStore = new SelfEvolutionRunStore(memoryDir);
-    const evolverStrategy = { run: vi.fn() };
+    const companionSessionService = { activateOrGet: vi.fn(), postSelfImproveRequest: vi.fn(), buildTriggerRequest: vi.fn() };
     const service = new SelfEvolutionService({
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      evidenceBuilder: { build: vi.fn() } as any,
-      evolverStrategy: evolverStrategy as any,
+      workTraceProjectionService: { ensureCurrent: vi.fn() } as any,
+      companionSessionService: companionSessionService as any,
       recordLifecycle: new SelfEvolutionRecordLifecycle({ runStore }),
       agentRunManager: { getActiveRun: vi.fn(() => null) } as any,
     });
 
     await expect(service.startFromEvolutionRequest(request("evo-stale-target")))
       .rejects.toThrow("Self-evolution target run 'target-run-1' is not active.");
-    expect(evolverStrategy.run).not.toHaveBeenCalled();
+    expect(companionSessionService.activateOrGet).not.toHaveBeenCalled();
     await expect(runStore.readRecord("evo-stale-target"))
       .resolves.toMatchObject({ status: "failed" });
   });
@@ -178,4 +193,132 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     expect(result.record).not.toHaveProperty("updateMetrics");
     expect(result.record).not.toHaveProperty("benefitMetrics");
   });
+  it("refreshes work traces before each companion trigger and reuses the companion on later clicks", async () => {
+    const runStore = new SelfEvolutionRunStore(memoryDir);
+    let projectionCount = 0;
+    const packageFor = (count: number) => ({
+      target: { kind: "agent_run" as const, runId: "target-run-1" },
+      workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+      manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+      summaryHash: `hash-${count}`,
+      manifest: {
+        schemaVersion: 1,
+        target: { kind: "agent_run" as const, runId: "target-run-1" },
+        generatedAt: `2026-01-01T00:00:0${count}.000Z`,
+        workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+        manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+        files: [],
+      },
+    });
+    const workTraceProjectionService = {
+      ensureCurrent: vi.fn(async () => packageFor(++projectionCount)),
+    };
+    const companionSession = {
+      target: { kind: "agent_run" as const, runId: "target-run-1" },
+      companionRunId: "evolver-run-1",
+      evolverAgentDefinitionId: "autobyteus-skill-evolver",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "target-model",
+      state: {},
+    };
+    const companionSessionService = {
+      activateOrGet: vi.fn(async () => companionSession),
+      buildTriggerRequest: vi.fn((input) => ({
+        evolutionRunId: input.evolutionRunId,
+        requestedAt: input.requestedAt,
+        targetAgentRunId: "target-run-1",
+        workTracePackage: input.workTracePackage,
+        editableSkillTargets: input.editableSkillTargets,
+      })),
+      postSelfImproveRequest: vi.fn(async () => ({
+        status: "completed",
+        outputText: "done",
+        notificationSummary: {
+          status: "send_message_sent",
+          message: "outcome sent",
+          targetAgentRunId: "target-run-1",
+          evolverRunId: "evolver-run-1",
+        },
+      })),
+    };
+    const service = new SelfEvolutionService({
+      capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
+      targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
+      skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
+      workTraceProjectionService: workTraceProjectionService as any,
+      companionSessionService: companionSessionService as any,
+      recordLifecycle: new SelfEvolutionRecordLifecycle({ runStore }),
+      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+    });
+
+    await service.startFromEvolutionRequest(request("evo-first-click"));
+    await service.startFromEvolutionRequest(request("evo-later-click"));
+
+    expect(workTraceProjectionService.ensureCurrent).toHaveBeenCalledTimes(2);
+    expect(companionSessionService.activateOrGet).toHaveBeenCalledTimes(2);
+    expect(companionSessionService.postSelfImproveRequest).toHaveBeenCalledTimes(2);
+    expect(companionSessionService.postSelfImproveRequest.mock.calls[0][0].companionRunId).toBe("evolver-run-1");
+    expect(companionSessionService.postSelfImproveRequest.mock.calls[1][0].companionRunId).toBe("evolver-run-1");
+    expect(companionSessionService.postSelfImproveRequest.mock.calls[0][1].workTracePackage.summaryHash).toBe("hash-1");
+    expect(companionSessionService.postSelfImproveRequest.mock.calls[1][1].workTracePackage.summaryHash).toBe("hash-2");
+    expect(workTraceProjectionService.ensureCurrent.mock.invocationCallOrder[0])
+      .toBeLessThan(companionSessionService.postSelfImproveRequest.mock.invocationCallOrder[0]);
+    expect(workTraceProjectionService.ensureCurrent.mock.invocationCallOrder[1])
+      .toBeLessThan(companionSessionService.postSelfImproveRequest.mock.invocationCallOrder[1]);
+    await expect(runStore.readRecord("evo-later-click"))
+      .resolves.toMatchObject({ status: "completed", evolverRunId: "evolver-run-1", evidenceSummaryHash: "hash-2" });
+  });
+
+  it("records companion runtime errors as failed instead of timed out", async () => {
+    const runStore = new SelfEvolutionRunStore(memoryDir);
+    const service = new SelfEvolutionService({
+      capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
+      targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
+      skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
+      workTraceProjectionService: {
+        ensureCurrent: vi.fn(async () => ({
+          target: { kind: "agent_run", runId: "target-run-1" },
+          workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+          manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+          summaryHash: "hash-123",
+          manifest: {
+            schemaVersion: 1,
+            target: { kind: "agent_run", runId: "target-run-1" },
+            generatedAt: "2026-01-01T00:00:00.000Z",
+            workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
+            manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+            files: [],
+          },
+        })),
+      } as any,
+      companionSessionService: {
+        activateOrGet: vi.fn(async () => ({
+          target: { kind: "agent_run", runId: "target-run-1" },
+          companionRunId: "evolver-run-1",
+          evolverAgentDefinitionId: "autobyteus-skill-evolver",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          llmModelIdentifier: "target-model",
+          state: {},
+        })),
+        buildTriggerRequest: vi.fn((input) => ({
+          evolutionRunId: input.evolutionRunId,
+          requestedAt: input.requestedAt,
+          targetAgentRunId: "target-run-1",
+          workTracePackage: input.workTracePackage,
+          editableSkillTargets: input.editableSkillTargets,
+        })),
+        postSelfImproveRequest: vi.fn(async () => {
+          throw new Error("Self-evolver companion run 'evolver-run-1' failed.");
+        }),
+      } as any,
+      recordLifecycle: new SelfEvolutionRecordLifecycle({ runStore }),
+      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+    });
+
+    await expect(service.startFromEvolutionRequest(request("evo-companion-error")))
+      .rejects.toThrow("Self-evolver companion run 'evolver-run-1' failed.");
+    await expect(runStore.readRecord("evo-companion-error"))
+      .resolves.toMatchObject({ status: "failed", errors: ["Error: Self-evolver companion run 'evolver-run-1' failed."] });
+  });
+
 });

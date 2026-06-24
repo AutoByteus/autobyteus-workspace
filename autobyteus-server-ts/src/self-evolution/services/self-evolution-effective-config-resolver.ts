@@ -1,67 +1,23 @@
-import {
-  buildDefaultSelfEvolutionEffectiveConfig,
-  getSelfEvolutionOverrideFields,
-  normalizeSelfEvolutionConfigOverride,
-} from "../domain/config.js";
-import type {
-  SelfEvolutionConfigOverride,
-  SelfEvolutionConfigSource,
-  SelfEvolutionEffectiveConfig,
-} from "../domain/models.js";
-
-type OverrideSource = {
-  source: SelfEvolutionConfigSource;
-  override: SelfEvolutionConfigOverride | null | undefined;
-};
+import { buildDefaultSelfEvolutionEffectiveConfig } from "../domain/config.js";
+import type { SelfEvolutionEffectiveConfig } from "../domain/models.js";
+import { SelfEvolutionSettingsService } from "./self-evolution-settings-service.js";
 
 export class SelfEvolutionEffectiveConfigResolver {
-  resolveForStandalone(input: {
-    runLaunchOverride?: SelfEvolutionConfigOverride | null;
+  constructor(private readonly deps: { settingsService?: SelfEvolutionSettingsService } = {}) {}
+
+  resolveCurrentManualSelfEvolutionSettings(input: {
+    enabled: boolean;
     resolvedAt?: Date;
   }): SelfEvolutionEffectiveConfig {
-    return this.resolve([
-      { source: "agent_run_launch", override: input.runLaunchOverride ?? null },
-    ], input.resolvedAt);
-  }
-
-  resolveForTeamMember(input: {
-    teamRunOverride?: SelfEvolutionConfigOverride | null;
-    teamMemberOverride?: SelfEvolutionConfigOverride | null;
-    resolvedAt?: Date;
-  }): SelfEvolutionEffectiveConfig {
-    return this.resolve([
-      { source: "team_run_launch", override: input.teamRunOverride ?? null },
-      { source: "team_member_run_launch", override: input.teamMemberOverride ?? null },
-    ], input.resolvedAt);
-  }
-
-  private resolve(
-    sources: OverrideSource[],
-    resolvedAt: Date = new Date(),
-  ): SelfEvolutionEffectiveConfig {
-    const effective = buildDefaultSelfEvolutionEffectiveConfig(resolvedAt.toISOString());
-
-    for (const source of sources) {
-      const override = normalizeSelfEvolutionConfigOverride(source.override);
-      const fields = getSelfEvolutionOverrideFields(override);
-      if (!override || fields.length === 0) {
-        continue;
-      }
-      if (override.enabled !== undefined) {
-        effective.enabled = override.enabled;
-      }
-      if (override.triggerStrategy !== undefined) {
-        effective.triggerStrategy = override.triggerStrategy;
-      }
-      if (override.evolverStrategy !== undefined) {
-        effective.evolverStrategy = override.evolverStrategy;
-      }
-      if (override.evolverAgentDefinitionId !== undefined) {
-        effective.evolverAgentDefinitionId = override.evolverAgentDefinitionId;
-      }
-      effective.sourceTrace.push({ source: source.source, fields });
-    }
-
+    const effective = buildDefaultSelfEvolutionEffectiveConfig((input.resolvedAt ?? new Date()).toISOString());
+    effective.enabled = input.enabled;
+    effective.triggerStrategy = this.settingsService.getDefaultTriggerStrategy();
+    effective.evolverStrategy = this.settingsService.getDefaultEvolverStrategy();
+    effective.evolverAgentDefinitionId = this.settingsService.getDefaultEvolverAgentDefinitionId();
     return effective;
+  }
+
+  private get settingsService(): SelfEvolutionSettingsService {
+    return this.deps.settingsService ?? new SelfEvolutionSettingsService();
   }
 }

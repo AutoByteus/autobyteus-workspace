@@ -2,31 +2,63 @@
 
 ## Scope
 
-`src/self-evolution` owns the manual, skill-first self-evolution workflow for AutoByteus runs. It is a runtime/run capability: it can launch a visible helper agent to improve configured skill packages from anonymized work history, but it does not train a model, mutate agent/team definitions, run a post-edit audit service, or claim downstream benefit.
+`src/self-evolution` owns the manual, skill-first self-evolution workflow for
+AutoByteus runs. It is a runtime/run capability: a user can activate a visible
+self-evolver companion for an active standalone run or selected team member run.
+The backend converts that target's raw trace corpus into readable work trace
+files, keeps those files current before every manual trigger, and asks the
+companion to inspect the work trace paths and improve configured skill packages
+when a reusable improvement is warranted.
+
+Self-evolution does not train a model, mutate agent/team definitions, run a
+post-edit audit service, automatically edit source code, or claim downstream
+benefit. Skill edits remain prompt/tool-contract constrained and manually
+reviewable.
 
 ## Capability Gate And Settings
 
 Self-evolution is disabled by default for every server node.
 
-- `SelfEvolutionCapabilityService` reads and writes the `ENABLE_SELF_EVOLUTION` server setting.
-- If the setting is missing, the capability initializes disabled and records the source as `INITIALIZED_DISABLED`.
-- Every manual start mutation checks the capability gate before target resolution.
-- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` selects the helper agent definition. Server startup syncs the product-managed built-in `autobyteus-skill-evolver` through the built-in-agent bootstrap path and selects it only when the setting is blank.
+- `SelfEvolutionCapabilityService` reads and writes the `ENABLE_SELF_EVOLUTION`
+  server setting.
+- If the setting is missing, the capability initializes disabled and records the
+  source as `INITIALIZED_DISABLED`.
+- Every eligibility query and manual start mutation checks the capability gate.
+- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` selects the companion agent
+  definition. Server startup syncs the product-managed built-in
+  `autobyteus-skill-evolver` through the built-in-agent bootstrap path and
+  selects it only when the setting is blank.
 - The selected evolver definition must include `run_bash` and
   `send_message_to`. Blank runtime/model defaults fall back to the target run's
   runtime/model/config.
 
-Executable MVP strategies are intentionally narrow: `manual_only` trigger and `single_agent` evolver are implemented; `scheduled`, `signal_based`, and `agent_team` are catalog-visible `not_implemented` placeholders only.
+Executable MVP strategies remain intentionally narrow: `manual_only` trigger and
+`single_agent` evolver are implemented; `scheduled`, `signal_based`, and
+`agent_team` are catalog-visible `not_implemented` placeholders only.
 
-## Run-Owned Configuration And Snapshots
+## Click-Time Configuration, Launch Inputs, And Migration
 
-Self-evolution eligibility is run-launch owned, not definition-owned.
+Manual self-evolution eligibility is resolved at click time from the current
+global self-evolution settings and the current live target state. It is not
+resolved from launch-time run overrides.
 
-- Standalone launch APIs accept `AgentRunConfig.selfEvolution` and snapshot the resolved effective config into `AgentRunMetadata.selfEvolutionEffective`.
-- Team launch APIs accept `TeamRunConfig.selfEvolution`; supported member launch overrides may also carry `selfEvolution`. `TeamRunService` snapshots the result into each member's `TeamRunAgentMemberMetadata.selfEvolutionEffective`.
-- Agent/team definitions, `agent-config.json`, and `team-config.json` do not own self-evolution settings.
-- Old runs or members with no `selfEvolutionEffective` snapshot are ineligible.
-- Manual start mutations accept only target identity at the API boundary; they do not accept self-evolution config overrides. Internal requester attribution, when available, stays separate from config.
+- Standalone run, team run, and team member launch APIs do not accept
+  `selfEvolution` overrides for the manual-click model.
+- Run metadata and team member metadata do not persist
+  `selfEvolutionEffective` launch snapshots for new runs.
+- Agent/team definitions, `agent-config.json`, `team-config.json`, and persisted
+  definition launch preferences do not own self-evolution eligibility.
+- Manual start mutations accept only target identity plus requester attribution;
+  they do not accept self-evolution config overrides.
+- `SelfEvolutionRunRecord.effectiveConfig` still stores the click-time settings
+  used for that individual request as audit provenance.
+- Required startup app-data migration
+  `20260623_remove_self_evolution_run_metadata` removes obsolete
+  `selfEvolutionEffective` fields from existing standalone `run_metadata.json`
+  files and recursive team member metadata entries. Changed files are backed up
+  as `<metadata>.backup-<timestamp>`, rewritten atomically, and reported with
+  scanned/migrated/skipped/failed item counts through the app-data migration
+  runner.
 
 ## GraphQL Surface
 
@@ -41,19 +73,74 @@ Self-evolution eligibility is run-launch owned, not definition-owned.
 - `startTeamMemberSelfEvolution(input)`
 - `getSelfEvolutionRunRecord(evolutionRunId)`
 
-The schema exposes `selfEvolution` only on run-launch inputs. Agent/team definition create and update inputs must not accept it.
+Run/team launch input types no longer expose `selfEvolution`. Agent/team
+definition create and update inputs must not accept it.
 
-## Manual Lifecycle
+## Work Trace Projection
 
-1. Eligibility queries confirm the global capability, run/member metadata snapshot, implemented strategies, and configured writable skill targets.
-2. `ManualTriggerStrategy` converts the explicit user/API request into a canonical self-evolution request.
-3. `SelfEvolutionTargetContextResolver` loads target run/member metadata and target identity, and the service requires that target `AgentRun` to be active before helper launch.
-4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured skills to exact skill roots and primary `SKILL.md` files.
-5. `SelfEvolutionEvidenceBuilder` and `SelfEvolutionWorkHistoryProjector` build anonymized, human-readable work-history evidence without retaining raw trace file paths in the evidence package or record.
-6. `SingleAgentEvolverStrategy` launches a separate visible helper `AgentRun` in the target workspace with `autoExecuteTools: true` and a task prompt listing exact editable skill root directories plus primary `SKILL.md` paths.
-7. The strategy registers a narrow direct-message grant for the helper: one accepted `skill_update` message, only to the original active target run id, with `reference_files` limited to editable skill roots.
-8. Only after meaningful durable skill package file changes, the helper should call `send_message_to({ target_agent_run_id, message_type: "skill_update", ... })` exactly once. The target-facing content should concisely explain what durable skill guidance changed, why it matters for future work, and how the target should use or reload the updated guidance, while avoiding raw traces, secrets, private data, one-off paths, and transient task details. `reference_files` should be absolute paths for changed or directly relevant surviving files inside editable roots; deleted files are mentioned in content rather than referenced. If no durable skill package file changed, the helper sends no target direct message. The shared agent-communication router re-checks that the target run is still active before delivery.
-9. `SelfEvolutionRunStore` persists minimal provenance: source run IDs, target identity, visible evolver run ID/status, target skill roots, evidence hash, timestamps, errors, and the helper-authored skill-update delivery summary.
+Raw trace storage remains backend-internal. The self-evolver-facing format is a
+self-evolution work trace, not raw JSONL and not a large inline prompt digest.
+
+- `RawTraceWorkTraceSourceReader` reads the authoritative archived and active raw
+  trace corpus through the agent-memory/run-history boundary.
+- `SelfEvolutionWorkTraceProjectionService.ensureCurrent()` is the correctness
+  path. Every manual Self Improve request calls it before companion messaging.
+- The first request for a target backfills the current archived and active raw
+  traces into work trace files. Later requests reuse unchanged archive segment
+  conversions, regenerate changed active traces, and rewrite the manifest.
+- Work traces are stored under
+  `<target memoryDir>/self_evolution/work_traces/` with a
+  `work_traces_manifest.json`, numbered archive files such as
+  `work_trace_000001.md`, and `work_trace_active.md` for the active segment.
+- Work trace content is readable, timestamped, and semantically complete for
+  coaching: user messages, worker messages, meaningful tool names, arguments,
+  results/errors, retries, corrections, and feedback signals are preserved.
+- Backend-only/protocol fields are hidden from the visible coaching content by
+  default, including raw trace ids, `turn_id`, `seq`, `source_event`,
+  `correlation_id`, `tool_call_id`, provider ids, raw JSON envelopes, and raw
+  trace paths.
+
+A background projection worker is not part of this pass. Freshness is guaranteed
+on trigger by `ensureCurrent()`.
+
+## Companion Lifecycle
+
+The manual action activates or reuses a target-scoped companion session.
+
+1. Eligibility queries confirm the global capability, current click-time
+   settings, implemented strategies, a live target run, and configured writable
+   skill targets.
+2. `ManualTriggerStrategy` converts the explicit user/API request into a
+   canonical self-evolution request.
+3. `SelfEvolutionTargetContextResolver` loads target run/member identity,
+   workspace, memory directory, runtime/model context, and requires that the
+   target `AgentRun` is active before companion activation.
+4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured
+   skills to exact writable skill roots and primary `SKILL.md` files.
+5. `SelfEvolutionWorkTraceProjectionService.ensureCurrent()` produces the work
+   trace package and manifest.
+6. `SelfEvolutionCompanionSessionService` loads target-scoped evolver session
+   state from `<target memoryDir>/self_evolution/evolver_session.json`.
+   If the recorded companion run is active, it is reused. If it is unavailable,
+   the service attempts runtime restore/resume when available. If restore is
+   unavailable or unsuccessful, the state is marked unavailable/replaced, prior
+   evolver run ids are retained, and a replacement companion is launched with
+   continuity metadata.
+7. `SelfEvolutionCompanionTriggerMessageBuilder` sends a small trigger message to
+   the companion. The message lists the work trace manifest path, work trace root
+   path, individual work trace file paths, editable skill roots, target run id,
+   and continuity context. It does not inline the work trace body and instructs
+   the companion not to read raw trace files.
+8. The companion may inspect work trace files and edit only the listed skill
+   roots. After meaningful durable skill package file changes, it may call
+   `send_message_to({ target_agent_run_id, message_type: "skill_update", ... })`
+   exactly once. The shared agent-communication router re-checks grant scope,
+   reference paths, target liveness, and delivery limits.
+9. `SelfEvolutionRunStore` persists request provenance: source run ids, target
+   identity, companion/evolver run id/status, target skill roots, click-time
+   effective config, work-trace summary hash stored in the legacy
+   `evidenceSummaryHash` field, timestamps, errors, and helper-authored
+   skill-update delivery summary.
 
 The evolver is never inserted into the target's ordinary business team roster.
 Team-member manual starts are member-scoped: the request/record target is
@@ -62,52 +149,69 @@ recorded for the selected member run rather than for the whole team container.
 
 ## Direct-Edit Scope
 
-The MVP permits direct edits by the helper agent under prompt/tool-contract constraints.
+The MVP permits direct edits by the companion agent under prompt/tool-contract
+constraints.
 
-- Editable targets are exact absolute skill root directories resolved from configured skills.
-- `SKILL.md` is the primary guidance file, but supporting files inside the same listed skill root may be updated when a durable reusable improvement needs them.
-- The helper prompt forbids editing agent/team definitions, MCP/tool config, source code, run memory, sibling skills, or files outside listed skill roots.
-- The product service does not compute changed paths, diff stats, off-target policy violations, or Git audit summaries in MVP.
-- Git-backed manual inspection/revert remains the testing and rollback workflow outside the product service boundary.
+- Editable targets are exact absolute skill root directories resolved from
+  configured skills.
+- `SKILL.md` is the primary guidance file, but supporting files inside the same
+  listed skill root may be updated when a durable reusable improvement needs
+  them.
+- The companion prompt forbids editing agent/team definitions, MCP/tool config,
+  source code, run memory, raw trace files, sibling skills, or files outside
+  listed skill roots.
+- The product service does not compute changed paths, diff stats, off-target
+  policy violations, or Git audit summaries in MVP.
+- Git-backed manual inspection/revert remains the testing and rollback workflow
+  outside the product service boundary.
 
-## Evidence And Privacy
+## Work Trace Privacy And Records
 
-Prompt-facing evidence is an anonymized work-history digest, not raw trace JSON.
+Work trace files are purpose-built coaching records. They are derived from raw
+traces but are not raw traces.
 
-- The projector keeps useful conversation facts, tool outcomes, corrections, review feedback, and reusable improvement signals.
-- Explicit durable-skill update markers such as `DURABLE_SKILL_UPDATE:` / `SKILL_UPDATE:` are classified as high-signal feedback for the helper prompt, while ordinary one-off exact-answer task instructions must not be inflated into durable update requests.
-- It omits/redacts bookkeeping IDs, raw trace IDs, raw trace paths, provider event IDs, private home paths, credentials, tokens, private messages, and long raw tool payloads.
-- Exact editable skill root paths remain unredacted because the helper needs them to edit.
-- Evolution records store an evidence hash and source run IDs, not raw trace file paths.
+- The renderer preserves useful conversation facts, tool outcomes, corrections,
+  review feedback, and reusable improvement signals.
+- Explicit durable-skill update markers such as `DURABLE_SKILL_UPDATE:` /
+  `SKILL_UPDATE:` remain high-signal feedback for the companion, while ordinary
+  one-off exact-answer task instructions must not be inflated into durable
+  update requests.
+- Raw bookkeeping fields, provider event ids, private home paths, credentials,
+  tokens, private messages, and raw trace envelopes are omitted or redacted.
+- Exact editable skill root paths and work trace file paths remain visible
+  because the companion needs them to read evidence and edit allowed skills.
+- Evolution records store source run ids, click-time effective config, and a
+  work-trace summary hash; they do not expose raw trace JSONL as prompt content.
 
 ## Metrics And Benefit Reporting
 
-Harness-updating and harness-benefit remain useful future concepts, but there is no MVP metrics/reporting service and no `getSelfEvolutionMetricsReport` API.
+Harness-updating and harness-benefit remain useful future concepts, but there is
+no MVP metrics/reporting service and no `getSelfEvolutionMetricsReport` API.
 
 The UI exposes manual starts through the concise composer-adjacent **Self
-improve** CTA for the selected eligible source run/member, not through
-run-history row controls. Ineligible, old, or pre-snapshot runs hide that CTA by
-default. After start, the UI may show only a short transient toast/status. It
-must not render a persistent composer card, evolution record id, or helper-run
-open button, and it must not state that helper completion proves file changes,
-quality improvement, or downstream benefit. Completion communication is
-helper-authored only after meaningful durable skill package file changes: the
-evolver may send one direct `skill_update` message to the still-active target
-run through `send_message_to(target_agent_run_id=...)` with dynamic references
-to changed or directly relevant surviving files inside editable roots. Records distinguish sent, rejected,
-target-inactive, and not-attempted outcomes. The MVP does not post a
-`SenderType.SYSTEM` runtime message merely to render a completion notification;
-active runtime/model skill refresh is a separate future/gated concern. Future
-measurement should be added as a separate design after the manual loop proves
-useful.
+improve** CTA for the selected eligible active source run/member, not through
+run-history row controls or launch-time eligibility controls. After start, the UI
+may show only a short transient toast/status. It must not render a persistent
+composer card, evolution record id, or companion-run open button, and it must not
+state that companion completion proves file changes, quality improvement, or
+downstream benefit. Completion communication is helper-authored only after
+meaningful durable skill package file changes through a grant-scoped direct
+`skill_update` message. Records distinguish sent, rejected, target-inactive, and
+not-attempted outcomes. Active runtime/model skill refresh is a separate
+future/gated concern. Future measurement should be added as a separate design
+after the manual loop proves useful.
 
 ## MVP Limitations To Preserve
 
-- Only manual trigger plus single-agent evolver is executable.
+- Only manual trigger plus single-agent companion execution is implemented.
 - No scheduled, signal-based, or evolver-team execution is implemented.
-- Exact historical skill binding/path snapshots are deferred; current configured skill roots are resolved at evolution time and recorded as an MVP limitation.
-- Direct editing remains instruction-constrained and manually reviewable, not service-audited.
+- Work trace freshness is guaranteed on trigger; continuous background work
+  trace projection is not implemented.
+- Direct editing remains instruction-constrained and manually reviewable, not
+  service-audited.
+- The companion reads work trace files through existing file/tool capability; a
+  dedicated read-only work-trace tool remains future hardening.
 - Team-member live reload remains next-run-only in the MVP; helper-authored
-  `skill_update` messages may still be delivered to an active selected
-  member run by exact `memberRunId`, but they do not create Team Communication
+  `skill_update` messages may still be delivered to an active selected member
+  run by exact `memberRunId`, but they do not create Team Communication
   projection.

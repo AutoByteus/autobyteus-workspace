@@ -8,7 +8,6 @@ import type {
   SelfEvolutionTargetRef,
 } from "../domain/models.js";
 import { SelfEvolutionCapabilityService } from "./self-evolution-capability-service.js";
-import { SelfEvolutionEvidenceBuilder } from "./self-evolution-evidence-builder.js";
 import { SelfEvolutionSkillTargetResolver } from "./self-evolution-skill-target-resolver.js";
 import {
   SelfEvolutionTargetContextResolver,
@@ -16,10 +15,12 @@ import {
 } from "./self-evolution-target-context-resolver.js";
 import { SelfEvolutionEligibilityEvaluator } from "./self-evolution-eligibility-evaluator.js";
 import { SelfEvolutionRecordLifecycle } from "./self-evolution-record-lifecycle.js";
-import { SingleAgentEvolverStrategy } from "./strategies/single-agent-evolver-strategy.js";
 import { SelfEvolutionStrategyCatalogService } from "./strategies/self-evolution-strategy-catalog.js";
 import { ManualTriggerStrategy } from "./triggers/manual-trigger-strategy.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import { SelfEvolutionEffectiveConfigResolver } from "./self-evolution-effective-config-resolver.js";
+import { SelfEvolutionWorkTraceProjectionService } from "./work-traces/self-evolution-work-trace-projection-service.js";
+import { SelfEvolutionCompanionSessionService } from "./companion/self-evolution-companion-session-service.js";
 
 export type StartSelfEvolutionForAgentRunInput = { runId: string; requestedByUserId?: string | null; requestedFrom?: "run_detail" | "api"; };
 
@@ -30,12 +31,13 @@ type SelfEvolutionServiceDeps = {
   catalogService?: SelfEvolutionStrategyCatalogService;
   targetContextResolver?: SelfEvolutionTargetContextResolver;
   skillTargetResolver?: SelfEvolutionSkillTargetResolver;
-  evidenceBuilder?: SelfEvolutionEvidenceBuilder;
   manualTriggerStrategy?: ManualTriggerStrategy;
-  evolverStrategy?: SingleAgentEvolverStrategy;
   eligibilityEvaluator?: SelfEvolutionEligibilityEvaluator;
   recordLifecycle?: SelfEvolutionRecordLifecycle;
   agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
+  effectiveConfigResolver?: SelfEvolutionEffectiveConfigResolver;
+  workTraceProjectionService?: SelfEvolutionWorkTraceProjectionService;
+  companionSessionService?: SelfEvolutionCompanionSessionService;
 };
 
 export class SelfEvolutionService {
@@ -62,10 +64,7 @@ export class SelfEvolutionService {
     return this.evaluateTarget({ kind: "agent_run", runId: this.normalizeRequired(runId, "runId") });
   }
 
-  async getTeamMemberEligibility(
-    teamRunId: string,
-    memberRunId: string,
-  ): Promise<SelfEvolutionEligibility> {
+  async getTeamMemberEligibility(teamRunId: string, memberRunId: string): Promise<SelfEvolutionEligibility> {
     return this.evaluateTarget({
       kind: "team_member_run",
       teamRunId: this.normalizeRequired(teamRunId, "teamRunId"),
@@ -114,28 +113,34 @@ export class SelfEvolutionService {
         workspaceRootPath: context.workspaceRootPath,
       });
 
-      const { evidence, evidenceSummaryHash } = await this.evidenceBuilder.build({
-        targetContext: context,
-        skillTargets,
-      });
+      const workTracePackage = await this.workTraceProjectionService.ensureCurrent(context);
       record = await this.recordLifecycle.patchRecord(record, {
         status: "launching_evolver",
-        evidenceSummaryHash,
+        evidenceSummaryHash: workTracePackage.summaryHash,
       });
 
-      const result = await this.evolverStrategy.run({
-        targetContext: context,
-        evidence,
+      const session = await this.companionSessionService.activateOrGet(context);
+      record = await this.recordLifecycle.patchRecord(record, {
+        status: "running_evolver",
+        evolverRunId: session.companionRunId,
+        evolverAgentDefinitionId: session.evolverAgentDefinitionId,
+        runtimeKind: session.runtimeKind,
+        llmModelIdentifier: session.llmModelIdentifier,
+      });
+
+      const triggerRequest = this.companionSessionService.buildTriggerRequest({
+        evolutionRunId: request.evolutionRunId,
+        requestedAt: request.requestedAt,
+        target: request.target,
+        workTracePackage,
         editableSkillTargets: editableTargets,
       });
-      record = await this.recordLifecycle.patchRecord(record, {
-        evolverRunId: result.evolverRunId || null,
-        evolverAgentDefinitionId: result.evolverAgentDefinitionId,
-        runtimeKind: result.runtimeKind,
-        llmModelIdentifier: result.llmModelIdentifier,
-      });
-
-      record = await this.recordLifecycle.finalizeRecord(record, result.status, result.notificationSummary ?? null);
+      const result = await this.companionSessionService.postSelfImproveRequest(session, triggerRequest, context);
+      record = await this.recordLifecycle.finalizeRecord(
+        record,
+        result.status === "timed_out" ? "timed_out" : "completed",
+        result.notificationSummary,
+      );
       return {
         evolutionRunId: record.evolutionRunId,
         evolverRunId: record.evolverRunId ?? null,
@@ -156,13 +161,13 @@ export class SelfEvolutionService {
     requestedByUserId: string | null,
     requestedFrom: ManualSelfEvolutionRequestedFrom,
   ): Promise<SelfEvolutionStartResult> {
-    await this.capabilityService.requireEnabled();
+    const effectiveConfig = await this.resolveCurrentManualSelfEvolutionSettings();
+    this.requireRunnableSnapshot(effectiveConfig);
     const context = await this.targetContextResolver.resolve(target);
     this.requireLiveTarget(context.target);
-    const snapshot = this.requireRunnableSnapshot(context.effectiveConfig);
     const request = this.manualTriggerStrategy.createRequest(
       { target, requestedByUserId, requestedFrom },
-      snapshot,
+      effectiveConfig,
     );
     return this.startFromEvolutionRequest(request);
   }
@@ -176,13 +181,16 @@ export class SelfEvolutionService {
     return { ...context, effectiveConfig: request.effectiveConfig };
   }
 
-  private requireRunnableSnapshot(
-    snapshot: SelfEvolutionEffectiveConfig | null,
-  ): SelfEvolutionEffectiveConfig {
+  private async resolveCurrentManualSelfEvolutionSettings(): Promise<SelfEvolutionEffectiveConfig> {
+    const capability = await this.capabilityService.getCapability();
+    return this.effectiveConfigResolver.resolveCurrentManualSelfEvolutionSettings({ enabled: capability.enabled });
+  }
+
+  private requireRunnableSnapshot(snapshot: SelfEvolutionEffectiveConfig | null): SelfEvolutionEffectiveConfig {
     const reasons: string[] = [];
     this.eligibilityEvaluator.collectSnapshotEligibility(snapshot, reasons);
     if (reasons.length > 0 || !snapshot) {
-      throw new Error(reasons.join(" ") || "Self-evolution run snapshot is unavailable.");
+      throw new Error(reasons.join(" ") || "Self-evolution settings are unavailable.");
     }
     return snapshot;
   }
@@ -196,54 +204,27 @@ export class SelfEvolutionService {
 
   private normalizeRequired(value: string, fieldName: string): string {
     const normalized = value.trim();
-    if (!normalized) {
-      throw new Error(`${fieldName} is required.`);
-    }
+    if (!normalized) throw new Error(`${fieldName} is required.`);
     return normalized;
   }
 
-  private get capabilityService(): SelfEvolutionCapabilityService {
-    return this.deps.capabilityService ?? SelfEvolutionCapabilityService.getInstance();
-  }
-
-  private get catalogService(): SelfEvolutionStrategyCatalogService {
-    return this.deps.catalogService ?? new SelfEvolutionStrategyCatalogService();
-  }
-
-  private get targetContextResolver(): SelfEvolutionTargetContextResolver {
-    return this.deps.targetContextResolver ?? new SelfEvolutionTargetContextResolver();
-  }
-
-  private get skillTargetResolver(): SelfEvolutionSkillTargetResolver {
-    return this.deps.skillTargetResolver ?? new SelfEvolutionSkillTargetResolver();
-  }
-
-  private get evidenceBuilder(): SelfEvolutionEvidenceBuilder {
-    return this.deps.evidenceBuilder ?? new SelfEvolutionEvidenceBuilder();
-  }
-
-  private get manualTriggerStrategy(): ManualTriggerStrategy {
-    return this.deps.manualTriggerStrategy ?? new ManualTriggerStrategy();
-  }
-
-  private get evolverStrategy(): SingleAgentEvolverStrategy {
-    return this.deps.evolverStrategy ?? new SingleAgentEvolverStrategy();
-  }
-
+  private get capabilityService(): SelfEvolutionCapabilityService { return this.deps.capabilityService ?? SelfEvolutionCapabilityService.getInstance(); }
+  private get catalogService(): SelfEvolutionStrategyCatalogService { return this.deps.catalogService ?? new SelfEvolutionStrategyCatalogService(); }
+  private get targetContextResolver(): SelfEvolutionTargetContextResolver { return this.deps.targetContextResolver ?? new SelfEvolutionTargetContextResolver(); }
+  private get skillTargetResolver(): SelfEvolutionSkillTargetResolver { return this.deps.skillTargetResolver ?? new SelfEvolutionSkillTargetResolver(); }
+  private get manualTriggerStrategy(): ManualTriggerStrategy { return this.deps.manualTriggerStrategy ?? new ManualTriggerStrategy(); }
   private get eligibilityEvaluator(): SelfEvolutionEligibilityEvaluator {
     return this.deps.eligibilityEvaluator ?? new SelfEvolutionEligibilityEvaluator({
       capabilityService: this.capabilityService,
       catalogService: this.catalogService,
       targetContextResolver: this.targetContextResolver,
       skillTargetResolver: this.skillTargetResolver,
+      effectiveConfigResolver: this.effectiveConfigResolver,
     });
   }
-
-  private get recordLifecycle(): SelfEvolutionRecordLifecycle {
-    return this.deps.recordLifecycle ?? new SelfEvolutionRecordLifecycle();
-  }
-
-  private get agentRunManager(): Pick<AgentRunManager, "getActiveRun"> {
-    return this.deps.agentRunManager ?? AgentRunManager.getInstance();
-  }
+  private get recordLifecycle(): SelfEvolutionRecordLifecycle { return this.deps.recordLifecycle ?? new SelfEvolutionRecordLifecycle(); }
+  private get agentRunManager(): Pick<AgentRunManager, "getActiveRun"> { return this.deps.agentRunManager ?? AgentRunManager.getInstance(); }
+  private get effectiveConfigResolver(): SelfEvolutionEffectiveConfigResolver { return this.deps.effectiveConfigResolver ?? new SelfEvolutionEffectiveConfigResolver(); }
+  private get workTraceProjectionService(): SelfEvolutionWorkTraceProjectionService { return this.deps.workTraceProjectionService ?? new SelfEvolutionWorkTraceProjectionService(); }
+  private get companionSessionService(): SelfEvolutionCompanionSessionService { return this.deps.companionSessionService ?? new SelfEvolutionCompanionSessionService(); }
 }

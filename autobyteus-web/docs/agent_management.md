@@ -87,12 +87,12 @@ Those values are used in two places:
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 
 
-Self-evolution is explicitly excluded from persisted agent definition defaults.
-A run may carry a run-launch `selfEvolution` override and backend metadata
-snapshot, but `AgentDefinition`, `agent-config.json`, and the agent create/edit
-forms do not own self-evolution eligibility. The standalone run configuration
-form, not the definition editor, exposes the launch-time **Self-evolution
-eligibility** control when the global capability is enabled.
+Self-evolution is explicitly excluded from persisted agent definition defaults
+and run-launch configuration. `AgentDefinition`, `agent-config.json`, the agent
+create/edit forms, and the standalone run configuration form do not own
+self-evolution eligibility. The composer-adjacent **Self improve** CTA asks the
+backend for current eligibility for the selected active run, and the backend
+resolves that from global self-evolution settings plus current target state.
 
 ## Store Ownership
 

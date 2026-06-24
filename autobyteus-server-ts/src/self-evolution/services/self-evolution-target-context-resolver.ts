@@ -67,7 +67,7 @@ export class SelfEvolutionTargetContextResolver {
       llmModelIdentifier: metadata.llmModelIdentifier,
       llmConfig: metadata.llmConfig ?? null,
       skillAccessMode: metadata.skillAccessMode ?? null,
-      effectiveConfig: metadata.selfEvolutionEffective ?? null,
+      effectiveConfig: null,
       targetMetadata: metadata,
     };
   }
@@ -103,7 +103,7 @@ export class SelfEvolutionTargetContextResolver {
       llmModelIdentifier: member.llmModelIdentifier,
       llmConfig: member.llmConfig ?? null,
       skillAccessMode: member.skillAccessMode ?? null,
-      effectiveConfig: member.selfEvolutionEffective ?? null,
+      effectiveConfig: null,
       targetMetadata: member,
       teamMetadata: metadata,
     };

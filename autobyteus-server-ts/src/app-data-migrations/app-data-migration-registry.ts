@@ -4,6 +4,7 @@ import { RunHistoryIndexV2AppDataMigration } from "./migrations/run-history-inde
 import { RawTraceRotationLayoutMigration } from "./migrations/raw-trace-rotation-layout-migration.js";
 import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-history-index-v2-migration.js";
 import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree-migration.js";
+import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-self-evolution-run-metadata-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -12,6 +13,7 @@ export class AppDataMigrationRegistry {
     this.definitions = definitions ?? [
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+      new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
     ];

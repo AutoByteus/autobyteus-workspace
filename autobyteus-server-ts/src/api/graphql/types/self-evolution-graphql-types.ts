@@ -1,35 +1,5 @@
 import { Field, InputType, ObjectType } from "type-graphql";
 
-@InputType()
-export class GraphqlSelfEvolutionConfigOverrideInput {
-  @Field(() => Boolean, { nullable: true })
-  enabled?: boolean | null;
-
-  @Field(() => String, { nullable: true })
-  triggerStrategy?: string | null;
-
-  @Field(() => String, { nullable: true })
-  evolverStrategy?: string | null;
-
-  @Field(() => String, { nullable: true })
-  evolverAgentDefinitionId?: string | null;
-}
-
-@ObjectType()
-export class GraphqlSelfEvolutionConfigOverride {
-  @Field(() => Boolean, { nullable: true })
-  enabled?: boolean | null;
-
-  @Field(() => String, { nullable: true })
-  triggerStrategy?: string | null;
-
-  @Field(() => String, { nullable: true })
-  evolverStrategy?: string | null;
-
-  @Field(() => String, { nullable: true })
-  evolverAgentDefinitionId?: string | null;
-}
-
 @ObjectType()
 export class GraphqlSelfEvolutionConfigSourceTraceEntry {
   @Field(() => String)

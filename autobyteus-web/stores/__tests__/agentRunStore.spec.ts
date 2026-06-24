@@ -215,22 +215,14 @@ describe('agentRunStore', () => {
         );
     });
 
-    it('sendUserInputAndSubscribe includes the visible self-evolution launch override when preparing a new run', async () => {
+    it('sendUserInputAndSubscribe omits stale self-evolution launch overrides when preparing a new run', async () => {
         mockAgentContext.config.selfEvolution = { enabled: true };
         const store = useAgentRunStore();
 
         await store.sendUserInputAndSubscribe();
 
-        expect(mutateMock).toHaveBeenCalledWith(
-          expect.objectContaining({
-            mutation: PrepareAgentRun,
-            variables: expect.objectContaining({
-              input: expect.objectContaining({
-                selfEvolution: { enabled: true },
-              }),
-            }),
-          }),
-        );
+        const input = mutateMock.mock.calls[0][0].variables.input;
+        expect(input).not.toHaveProperty('selfEvolution');
     });
 
     it('acknowledges a new agent send locally before backend creation resolves', () => {

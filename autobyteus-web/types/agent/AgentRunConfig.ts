@@ -1,5 +1,4 @@
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import type { SelfEvolutionConfigOverride } from '~/types/agent/SelfEvolutionConfig';
 
 export type SkillAccessMode = 'PRELOADED_ONLY' | 'GLOBAL_DISCOVERY' | 'NONE';
 export type AgentRuntimeKind = string;
@@ -74,6 +73,4 @@ export interface AgentRunConfig {
    */
   llmConfig?: Record<string, unknown> | null;
 
-  /** Optional self-evolution override captured at run launch. */
-  selfEvolution?: SelfEvolutionConfigOverride | null;
 }

@@ -76,27 +76,6 @@
       </label>
     </div>
 
-    <div v-if="selfEvolutionControlsEnabled" class="mb-3">
-      <label :for="`override-self-evolution-${inputIdSuffix}`" class="mb-1 block text-xs text-gray-500">
-        {{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_override') }}
-      </label>
-      <select
-        :id="`override-self-evolution-${inputIdSuffix}`"
-        data-testid="member-self-evolution-override"
-        :value="selfEvolutionOverrideValue"
-        :disabled="disabled"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-        @change="handleSelfEvolutionChange(($event.target as HTMLSelectElement).value)"
-      >
-        <option value="">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default') }}</option>
-        <option value="enabled">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled') }}</option>
-        <option value="disabled">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled') }}</option>
-      </select>
-      <p class="mt-1 text-xs text-gray-500">
-        {{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_help') }}
-      </p>
-    </div>
-
     <ModelConfigSection
       v-if="effectiveModelIdentifier"
       :schema="modelConfigSchema"
@@ -145,7 +124,6 @@ const props = defineProps<{
   globalLlmModel: string
   globalLlmConfig?: Record<string, unknown> | null
   disabled: boolean
-  selfEvolutionControlsEnabled?: boolean
   isCoordinator?: boolean
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
@@ -170,15 +148,6 @@ const {
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
 const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
-const selfEvolutionOverrideValue = computed(() => {
-  if (props.override?.selfEvolution?.enabled === true) {
-    return 'enabled'
-  }
-  if (props.override?.selfEvolution?.enabled === false) {
-    return 'disabled'
-  }
-  return ''
-})
 const memberAdvancedExplicitlyExpanded = ref(false)
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
@@ -291,7 +260,6 @@ const buildOverride = (input: {
   llmModelIdentifier?: string
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null
-  selfEvolution?: MemberConfigOverride['selfEvolution']
 }): MemberConfigOverride | null => {
   const override: MemberConfigOverride = {
     agentDefinitionId: props.agentDefinitionId,
@@ -311,10 +279,6 @@ const buildOverride = (input: {
 
   if (input.llmConfig !== undefined) {
     override.llmConfig = input.llmConfig
-  }
-
-  if (input.selfEvolution !== undefined) {
-    override.selfEvolution = input.selfEvolution
   }
 
   return hasMeaningfulMemberOverride(override) ? override : null
@@ -341,7 +305,6 @@ watch(
       buildOverride({
         runtimeKind: props.override?.runtimeKind,
         autoExecuteTools: props.override?.autoExecuteTools,
-        selfEvolution: props.override?.selfEvolution,
       }),
     )
   },
@@ -374,7 +337,6 @@ const handleRuntimeChange = async (value: string) => {
       runtimeKind: nextRuntimeKind,
       llmModelIdentifier: retainedExplicitModel,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig:
         !runtimeChanged && retainedExplicitModel && hasExplicitMemberLlmConfigOverride(props.override)
           ? (props.override?.llmConfig ?? null)
@@ -403,7 +365,6 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig: explicitConfig,
     }),
   )
@@ -426,7 +387,6 @@ const handleModelChange = (value: string) => {
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig:
         !modelChanged && hasExplicitMemberLlmConfigOverride(props.override)
           ? (props.override?.llmConfig ?? null)
@@ -453,33 +413,9 @@ const handleAutoExecuteChange = () => {
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
       autoExecuteTools: newValue,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
         ? (props.override?.llmConfig ?? null)
         : undefined,
-    }),
-  )
-}
-
-const handleSelfEvolutionChange = (value: string) => {
-  if (props.disabled) return
-  const selfEvolution = value === 'enabled'
-    ? { enabled: true }
-    : value === 'disabled'
-      ? { enabled: false }
-      : undefined
-
-  emit(
-    'update:override',
-    props.memberRouteKey,
-    buildOverride({
-      runtimeKind: props.override?.runtimeKind,
-      llmModelIdentifier: props.override?.llmModelIdentifier,
-      autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
-        ? (props.override?.llmConfig ?? null)
-        : undefined,
-      selfEvolution,
     }),
   )
 }

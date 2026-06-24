@@ -91,8 +91,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         coordinatorMemberName: config.coordinatorMemberName,
         coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
         memberTree,
-        selfEvolution: config.selfEvolution,
-      }),
+        }),
       runtimeContext,
     });
   }

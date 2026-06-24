@@ -24,7 +24,6 @@ export interface TeamRunMemberConfigRecord {
   workspaceId?: string | null
   workspaceMetadata?: WorkspaceMetadata | null
   workspaceRootPath?: string | null
-  selfEvolution?: TeamRunConfig['selfEvolution']
 }
 
 export const buildTeamRunMemberConfigRecords = (params: {
@@ -61,6 +60,5 @@ export const buildTeamRunMemberConfigRecords = (params: {
       workspaceId: params.config.workspaceId || undefined,
       workspaceMetadata: params.config.workspaceMetadata ?? null,
       workspaceRootPath,
-      selfEvolution: override?.selfEvolution ?? null,
     }
   })

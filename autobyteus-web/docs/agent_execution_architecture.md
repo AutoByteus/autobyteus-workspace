@@ -381,54 +381,47 @@ Codex, a fast-capable model can therefore expose `service_tier` with the
 user-facing label **Fast mode** beside reasoning settings.
 
 
-### Self-Evolution Snapshots And Manual Composer Action
+### Self-Evolution Manual Composer Action
 
-Self-evolution is run-owned, not definition-owned. Frontend run-config types can
-carry an optional `selfEvolution` override for standalone runs, team runs, and
-team agent-member launch records, and the backend snapshots the effective result
-into run/member metadata as `selfEvolutionEffective`. Agent/team definition
-forms and persisted definition defaults must not add `selfEvolution`; changing a
-definition later must not change historical run eligibility. Existing runs with
-no snapshot are ineligible.
+Self-evolution is current-target owned, not definition-owned and not
+launch-config owned. Frontend run-config types no longer carry `selfEvolution`
+overrides for standalone runs, team runs, or team agent-member launch records,
+and the backend no longer snapshots `selfEvolutionEffective` into run/member
+metadata for new runs. Agent/team definition forms and persisted definition
+defaults must not add `selfEvolution`.
 
-The visible launch forms own the user-facing eligibility choice. Standalone
-agent launches expose a **Self-evolution eligibility** control when the backend
-capability is enabled; team launches expose a team-level default plus leaf
-member overrides. The controls are launch-time inputs only: turning them on
-sets the next run's `selfEvolution` override before launch, while history rows
-and existing runs continue to rely on the backend `selfEvolutionEffective`
-snapshot already stored for that run/member.
+The visible launch forms do not expose self-evolution eligibility controls. The
+only user-facing manual start entrypoint is the concise composer-adjacent **Self
+improve** CTA for the selected active standalone run or team member. That CTA is
+hidden when the global capability is disabled, hidden for Skill Self-Evolver
+companion runs, and lazy-loads backend eligibility before rendering. The UI must
+not show technical backend ineligibility reasons in chat and must not recompute
+eligibility from current definitions or local skill lists.
 
 `useSelfEvolutionCapabilityStore` owns the global typed capability query/mutation
 for `ENABLE_SELF_EVOLUTION`. `useSelfEvolutionStore` owns backend eligibility and
-manual start calls. Run-history rows do not expose self-evolution controls. The
-only user-facing manual start entrypoint is the concise composer-adjacent
-**Self improve** CTA for the selected active standalone run or team member. That
-CTA is hidden when the global capability is disabled, hidden for Skill
-Self-Evolver helper runs, hidden for old/pre-snapshot/ineligible runs, and
-lazy-loads backend eligibility before rendering. The UI must not show technical
-backend ineligibility reasons in chat and must not recompute eligibility from
-current definitions or local skill lists.
+manual start calls. Run-history rows do not expose self-evolution controls.
+Starting self-evolution from the composer CTA calls `startAgentRunSelfEvolution`
+or `startTeamMemberSelfEvolution` without run-time overrides. The backend uses
+current global self-evolution settings, current target state, and current
+configured writable skill roots; it first ensures work trace files are current
+for the selected target, then activates or reuses a visible target-scoped
+companion `AgentRun`. The returned record summary is stored only internally and
+the UI may show at most a short transient toast/status after start. It must not
+render a persistent composer card, evolution record id, or companion-run
+navigation button.
 
-Starting self-evolution from the composer CTA calls
-`startAgentRunSelfEvolution` or `startTeamMemberSelfEvolution` without run-time
-overrides. The backend uses the stored snapshot, starts a separate visible
-evolver `AgentRun`, and records the `evolutionRunId` / optional `evolverRunId`.
-The current UI stores the returned record summary only internally and shows at
-most a short transient toast/status after start. It must not render a persistent
-composer card, evolution record id, or helper-run navigation button.
 Meaningful completion communication is helper-authored only after durable skill
-package file changes: the visible evolver may call `send_message_to` once with
+package file changes: the visible companion may call `send_message_to` once with
 `message_type: "skill_update"`, the exact active target run id supplied by the
 backend, concise content explaining what changed, why it matters, and how the
 target should use or reload the updated guidance, plus dynamic references as
 absolute paths to changed or directly relevant surviving files inside editable
-roots. The backend records whether
-that direct outcome was sent, rejected, target-inactive, or not attempted. The
-skill update message is separate from any runtime/model skill-refresh instruction,
-and team-member live reload remains next-run-only in the MVP. The MVP does not
-expose a metrics/reporting query and the UI must not imply helper completion
-proves downstream improvement.
+roots. The backend records whether that direct outcome was sent, rejected,
+target-inactive, or not attempted. The skill update message is separate from any
+runtime/model skill-refresh instruction, and team-member live reload remains
+next-run-only in the MVP. The MVP does not expose a metrics/reporting query and
+the UI must not imply companion completion proves downstream improvement.
 
 ### New Run From Existing Run
 
@@ -597,7 +590,7 @@ needs to know that one exact turn has finished.
 
 ## Related Documentation
 
-- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, run-owned snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, work trace projection, companion lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

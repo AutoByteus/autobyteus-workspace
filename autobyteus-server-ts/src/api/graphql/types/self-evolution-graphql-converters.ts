@@ -1,6 +1,4 @@
-import { normalizeSelfEvolutionConfigOverride } from "../../../self-evolution/domain/config.js";
 import type {
-  SelfEvolutionConfigOverride,
   SelfEvolutionEffectiveConfig,
   SelfEvolutionEligibility,
   SelfEvolutionNotificationSummary,
@@ -10,8 +8,6 @@ import type {
   SelfEvolutionTargetRef,
 } from "../../../self-evolution/domain/models.js";
 import {
-  GraphqlSelfEvolutionConfigOverride,
-  GraphqlSelfEvolutionConfigOverrideInput,
   GraphqlSelfEvolutionEffectiveConfig,
   GraphqlSelfEvolutionEligibility,
   GraphqlSelfEvolutionNotificationSummary,
@@ -20,23 +16,6 @@ import {
   GraphqlSelfEvolutionStrategyCatalog,
   GraphqlSelfEvolutionTargetRef,
 } from "./self-evolution-graphql-types.js";
-
-export const toDomainSelfEvolutionConfigOverride = (
-  input?: GraphqlSelfEvolutionConfigOverrideInput | null,
-): SelfEvolutionConfigOverride | null | undefined => input === undefined
-  ? undefined
-  : normalizeSelfEvolutionConfigOverride(input);
-
-export const toGraphqlSelfEvolutionConfigOverride = (
-  value?: SelfEvolutionConfigOverride | null,
-): GraphqlSelfEvolutionConfigOverride | null => value
-  ? {
-      enabled: value.enabled ?? null,
-      triggerStrategy: value.triggerStrategy ?? null,
-      evolverStrategy: value.evolverStrategy ?? null,
-      evolverAgentDefinitionId: value.evolverAgentDefinitionId ?? null,
-    }
-  : null;
 
 const toGraphqlEffectiveConfig = (
   value: SelfEvolutionEffectiveConfig | null,
