@@ -4,8 +4,8 @@ import type { ServerAddressCandidate as DomainServerAddressCandidate } from "../
 import { getMemorySyncConfigService } from "../../../memory-sync/source/memory-sync-config-service.js";
 import { toPublicMemorySyncConfig } from "../../../memory-sync/source/memory-sync-config.js";
 import { getMemorySyncService, type MemorySyncRunResult } from "../../../memory-sync/source/memory-sync-service.js";
-import { MemoryHubClient } from "../../../memory-sync/source/memory-hub-client.js";
 import { getLocalFileMemorySyncStateStore } from "../../../memory-sync/source/local-file-memory-sync-state-store.js";
+import { getMemorySyncConnectionTestService } from "../../../memory-sync/source/memory-sync-connection-test-service.js";
 import { getMemoryHubCredentialService } from "../../../memory-sync/hub/memory-hub-credential-service.js";
 import { getMemoryHubConnectionInfoService } from "../../../memory-sync/hub/memory-hub-connection-info-service.js";
 import { getMemoryImportCatalogService } from "../../../memory-sync/hub/memory-import-catalog-service.js";
@@ -13,6 +13,7 @@ import type { MemoryHubSourceCredentialSummary as DomainCredentialSummary, Memor
 import {
   CreateMemoryHubCredentialInput,
   MemoryHubConnectionInfoGql,
+  MemoryHubConnectionTestMode,
   MemoryHubConnectionTestResultGql,
   MemoryHubCredentialMutationResultGql,
   MemoryHubCredentialSummaryGql,
@@ -134,7 +135,15 @@ export class MemorySyncResolver {
   async testMemoryHubConnection(
     @Arg("input", () => TestMemoryHubConnectionInput) input: TestMemoryHubConnectionInput,
   ): Promise<MemoryHubConnectionTestResultGql> {
-    return await new MemoryHubClient().testConnection(input);
+    if (input.mode === MemoryHubConnectionTestMode.SAVED) {
+      return await getMemorySyncConnectionTestService().testConnection({ mode: "saved" });
+    }
+    return await getMemorySyncConnectionTestService().testConnection({
+      mode: "draft",
+      hubBaseUrl: input.hubBaseUrl,
+      sourceNodeId: input.sourceNodeId,
+      token: input.token,
+    });
   }
 
   @Mutation(() => MemorySyncRunResultGql)

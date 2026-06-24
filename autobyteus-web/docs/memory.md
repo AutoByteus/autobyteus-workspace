@@ -133,6 +133,27 @@ state only reports that a token is configured and shows a fixed redaction
 placeholder. Use **Test connection** on the source node before relying on manual
 or background sync.
 
+The Source card keeps connection and sync feedback beside the action controls
+rather than relying on page-level alerts. **Test connection** enters a
+`Testing...` state and then shows an inline success or failure result with the
+tested endpoint, source id, timestamp, hub-enabled/authentication flags when
+available, and no token value. When the token field is blank and a saved source
+token exists, the connection test uses the fully persisted source settings:
+saved hub URL, saved `sourceNodeId`, and saved token. Unsaved draft URL or source
+id edits are not mixed with the saved token; save first or paste a draft token to
+test draft settings. When a draft token is pasted, the test uses the draft hub
+URL, draft source id, and draft token together without persisting the token.
+
+**Sync now** enters a disabled spinner/`Syncing…` state while the manual sync
+mutation is in flight. The card reports `Current job: idle` or
+`Current job: syncing…` from the authoritative source status, then reports
+`Last sync: success · <timestamp>` or the latest sync error. A latest sync error
+has display precedence over an older successful timestamp. Background sync uses
+the same generic current-job surface; the primary UI intentionally does not make
+users distinguish manual from background runs. Low-frequency status refresh keeps
+the status lines current without rehydrating the editable source form, so
+unsaved hub URL/source id edits and pasted draft tokens are preserved.
+
 Current v1 sync mirrors local `agents` and `agent_teams` files with full-file
 replacement batches. It excludes temporary/partial/lock files and does not sync
 deletes, deltas, analytics indexes, or runnable restore state.
@@ -152,6 +173,6 @@ Explorer and inspector stores increment request IDs for each fetch. Late respons
 Coverage includes:
 
 - Backend unit and GraphQL e2e checks for memory-derived agent/team inclusion, no-memory exclusion, `Unattributed runs`, selected agent/team filtering, and memory-view raw-trace lazy loading.
-- Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, connection testing, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, and unsafe path rejection.
-- Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
-- Frontend store/component/page tests for Memory Home, source selection, agent detail, team detail, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, Memory Sync tab entry, and source-aware query variables.
+- Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
+- Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
+- Frontend store/component/page tests for Memory Home, source selection, agent detail, team detail, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
