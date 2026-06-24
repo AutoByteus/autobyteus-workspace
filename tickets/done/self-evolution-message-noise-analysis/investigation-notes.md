@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Requirements approved by user; design spec in progress.
+- Current Status: Requirements/design refined after latest user clarification; lifecycle fallback restored, prior-run prompt removal retained.
 - Investigation Goal: Understand why self-evolution user messages include defensive/internal language and define whether/how to simplify the runtime-generated message.
 - Scope Classification (`Small`/`Medium`/`Large`): Medium
 - Scope Classification Rationale: Requires tracing prompt/message generation across runtime/self-evolution components and separating runtime task contract from durable policy instructions.
@@ -14,10 +14,12 @@
   - Which instructions are redundant or better placed in agent/skill/system guidance? Answer: most numbered rules except dynamic roots/target id; the “semantically complete / backend protocol fields” rationale belongs in docs only.
   - What constraints must remain in the user message for safety and completion? Answer: exact evidence paths, editable roots, `SKILL.md` entry-file path, target id/message type, and concise per-request completion parameters.
   - Is `Primary guidance file` the right label for `SKILL.md`? Answer: no; `SKILL.md` is the skill package entry file/entrypoint, while referenced files inside the root may contain equally important guidance.
+  - Should existing self-evolver companion sessions be replaced after restore failure? Latest answer: the earlier fallback is acceptable. The service may create a replacement companion if restore fails.
+  - Should prior evolver run ids appear in the runtime prompt? Answer: no. There is no inspection workflow for them; a replacement coach should behave like a new coach from the prompt perspective.
 
 ## Request Context
 
-User supplied an example self-evolution user message containing work trace paths, editable skill package roots, rules, and a final `send_message_to` instruction. User objected that some text feels like internal/defensive noise, especially raw-trace prohibitions despite only curated trace files being listed, and explanations about hidden backend protocol fields.
+User supplied an example self-evolution user message containing work trace paths, editable skill package roots, rules, and a final `send_message_to` instruction. User objected that some text feels like internal/defensive noise, especially raw-trace prohibitions despite only curated trace files being listed, and explanations about hidden backend protocol fields. During implementation, the user discussed the restore failure behavior and then clarified that the earlier fallback approach is acceptable: if restore fails, creating a replacement coach/evolver run is fine. The only issue is that previous evolver run ids are prompt noise and should not be sent to the coach.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -52,6 +54,7 @@ User supplied an example self-evolution user message containing work trace paths
 | 2026-06-24 | Code | `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts` | Verify built-in template sync behavior | Bootstrapper currently copies only `agent.md` and `agent-config.json`, not `skills/` directories | Yes: update bootstrapper if built-in agent gets private skill |
 | 2026-06-24 | Other | User approval in conversation | Confirm direction and ask to kick off ticket | User approved thin runtime prompt + retrospective coaching/private skill direction and requested detailed requirements/design including prompt/agent/skill content | No |
 | 2026-06-24 | Code | `autobyteus-server-ts/src/file-explorer/directory-traversal.ts`, `src/file-explorer/traversal-ignore-strategy/default-ignore-strategy.ts`, `src/agent-tools/skills/get-skill-content.ts` | Check existing tree rendering/ignore behavior | Existing tree traversal can build trees and default ignore excludes common generated/dependency/binary-heavy paths; existing skill content tool serializes a tree but not bounded/annotated exactly for this prompt | Yes: design a self-evolution-specific bounded package tree renderer or reusable formatter |
+| 2026-06-24 | Other | Downstream messages from `implementation_engineer` with user clarification | Capture requirement gap/design impact | Initial clarification questioned replacement, then latest user clarification restored earlier fallback behavior and narrowed the required change to removing previous/prior evolver run ids from the prompt | Yes: revise requirements/design and reroute through architecture review |
 
 ## Current Behavior / Current Flow
 
@@ -66,7 +69,7 @@ User supplied an example self-evolution user message containing work trace paths
   - Stable companion behavior owner: built-in Skill Self-Evolver `agent.md`, or preferably a thin `agent.md` plus agent-private self-evolver skill package.
   - Work-trace privacy/rationale owner: `docs/modules/self_evolution.md` plus work trace projection/redaction services.
   - Final notification enforcement owner: direct-agent-run message grant registry and global router.
-- Current behavior summary: The runtime prompt is path-only and does not inline work trace body, but it duplicates stable agent policy and embeds internal rationale.
+- Current behavior summary: The runtime prompt is path-only and does not inline work trace body, but it duplicates stable agent policy, embeds internal rationale, and includes previous evolver run ids when present. The restore-failure replacement lifecycle is acceptable per latest user clarification.
 
 ## Design Health Assessment Evidence
 
@@ -81,6 +84,8 @@ User supplied an example self-evolution user message containing work trace paths
 | Skill Self-Evolver `agent.md` | Stable generic rules are already present | Runtime message can be shorter; avoid duplicate policy | Maybe strengthen stable raw-trace read rule |
 | Self-evolution docs | “Semantically complete” and “hidden backend protocol fields” are documented as implementation/rationale facts | This should not be repeated to the worker in every task | Update docs if wording changes |
 | Direct-message grant | Code enforces final target/message/reference constraints | Prompt need not carry long defensive wording for those constraints | No |
+| User lifecycle clarification | User restored the earlier replacement fallback as acceptable | No lifecycle redesign required beyond prompt cleanup | Yes |
+| Runtime prompt prior ids | No workflow exists for new companion to inspect previous runs | Prior ids are prompt noise and must not be rendered | Yes |
 
 ## Relevant Files / Components
 
@@ -91,7 +96,7 @@ User supplied an example self-evolution user message containing work trace paths
 | `autobyteus-server-ts/docs/modules/self_evolution.md` | Product/module contract documentation | Explains work traces as curated backend-internal projection | Keep rationale here; do not surface it as user-message copy |
 | `autobyteus-server-ts/src/self-evolution/services/work-traces/self-evolution-work-trace-renderer.ts` | Converts raw memory trace events into readable work trace markdown | Emits user/worker/tool summaries, not raw trace JSONL envelopes | Supports positive wording: listed work traces are the evidence package |
 | `autobyteus-server-ts/src/self-evolution/services/work-traces/self-evolution-work-trace-redactor.ts` | Redacts obvious secrets/backend fields from rendered content | Enforces a subset of the “backend fields hidden” claim | Rationale belongs in docs/tests, not prompt |
-| `autobyteus-server-ts/src/self-evolution/services/companion/self-evolution-companion-session-service.ts` | Companion lifecycle and final-message grant setup | Registers exact grant before posting task | Prompt can state parameters concisely while code enforces grant |
+| `autobyteus-server-ts/src/self-evolution/services/companion/self-evolution-companion-session-service.ts` | Companion lifecycle and final-message grant setup | Registers exact grant before posting task; current fallback creates replacement after restore failure | Lifecycle fallback can remain; prompt must not expose prior run ids |
 | `autobyteus-server-ts/tests/self-evolution/self-evolution-companion-session-service.test.ts` | Focused companion/session test | Verifies current path-only prompt shape | Needs prompt text assertions updated if changed |
 
 ## Runtime / Probe Findings
@@ -125,7 +130,7 @@ User supplied an example self-evolution user message containing work trace paths
 | `Read the provided self-evolution work trace files as needed` | Essential task direction | Keep, preferably as positive evidence section wording |
 | `do not read raw_traces*.jsonl files` | Defensive negative / negative affordance | Remove from runtime prompt; if required, put stable read prohibition in `agent.md` |
 | Work trace manifest/root/file paths | Dynamic runtime data | Keep |
-| Prior evolver run ids | Dynamic continuity data | Keep when present, maybe clarify as optional context only |
+| Prior evolver run ids | Internal replacement-history/session data | Do not render in the runtime prompt; keep only as internal bookkeeping unless a future inspection workflow exists |
 | Editable skill packages/root/SKILL.md paths | Dynamic edit scope | Keep |
 | `Use the work trace files as coaching evidence. They are semantically complete...` | Mixed task direction + docs rationale | Keep task direction; move rationale to docs only |
 | `hide backend protocol fields` | Internal implementation rationale | Remove from runtime prompt |
@@ -134,6 +139,17 @@ User supplied an example self-evolution user message containing work trace paths
 | `If no durable reusable improvement...` | Stable behavior, already in agent.md | Can remove or keep as one short task outcome line; recommended agent.md owns it |
 | `Do not copy secrets...` | Stable privacy policy, already in agent.md partially | Keep in agent.md; remove from runtime prompt unless adding concise reminder is explicitly desired |
 | Final `send_message_to` rule | Mixed dynamic parameters + stable behavior | Keep exact dynamic parameters; move generic prose to agent.md |
+
+### Companion lifecycle clarification
+
+Latest user clarification restores the earlier lifecycle fallback:
+
+- If an existing companion run is active, reuse it.
+- If inactive, attempt to restore/wake it.
+- If restore/wake fails, creating a replacement companion is acceptable.
+- From the replacement companion's prompt perspective, it should behave like a new coach. Do not send old/prior evolver run ids as continuity context.
+- `priorEvolverRunIds` may remain internal audit/session bookkeeping if useful, but it should not be rendered in the runtime prompt and should not be presented as actionable evidence without a future inspection workflow.
+- Future `agent_team` support can define a similar fallback policy, but must not send previous team/evolver run ids in the prompt unless a real inspection workflow exists.
 
 ### Skill package label clarification
 
@@ -229,8 +245,6 @@ Work trace manifest: <manifestPath>
 Work trace root: <workTraceRootPath>
 Work trace files:
 1. <filePath>
-
-Previous evolver run ids for continuity context: <ids>   # only when present
 
 Editable skill packages:
 1. <skillName>

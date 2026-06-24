@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: Coverage investigation after code-review pass for self-evolution prompt/static-guidance cleanup.
 - Prior Round Reviewed: N/A
@@ -33,7 +33,7 @@ Executed the coverage plan from the Round 1 investigation. The pass criteria wer
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -142,8 +142,8 @@ Final executable scope intentionally focused on changed deterministic backend bo
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
-- This execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/self-evolution-message-noise-analysis/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/api-e2e-coverage-investigation.md`
+- This execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolution-message-noise-analysis/tickets/done/self-evolution-message-noise-analysis/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 

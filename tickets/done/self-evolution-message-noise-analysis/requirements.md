@@ -2,7 +2,9 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Design-ready.
+Refined.
+
+Refinement basis: downstream implementation surfaced a user lifecycle concern on 2026-06-24. The latest user clarification restores the earlier lifecycle fallback behavior: if an existing companion cannot be restored, creating a replacement companion is acceptable. The only required runtime-prompt change is to remove previous/prior evolver run ids from the task packet.
 
 User approval basis: On 2026-06-24 the user approved the cleanup direction and explicitly asked to kick off the ticket, with detailed requirements and design that preserve the prompt/agent/skill-package details discussed in the thread.
 
@@ -24,6 +26,8 @@ The current runtime message mixes dynamic task data, stable agent rules, documen
 - The platform supports agent-private skills through `agentDir/skills/<skill-name>` resolution in `ConfiguredAgentSkillResolver`, but built-in-agent bootstrap currently copies only `agent.md` and `agent-config.json` from `src/built-in-agents/templates/<agent>/` into app data. It does not sync template `skills/` directories yet.
 - The Skill Self-Evolver template currently has `"skillNames": []` in `agent-config.json`.
 - The direct-message grant already enforces the final `skill_update` delivery constraints in code: target run id, message type, reference file roots, max accepted delivery count, and expiry.
+- Existing companion lifecycle code attempts active-run reuse and runtime restore for `currentEvolverRunId`; when restore returns null/fails, it creates a replacement companion. The latest user clarification accepts this earlier fallback behavior.
+- `Previous evolver run ids for continuity context` currently appears in the runtime task packet, but the user considers this prompt noise. It should be removed from the prompt. `priorEvolverRunIds` may remain internal session/audit state for the replacement fallback, but it must not be rendered into the companion task packet.
 - `docs/modules/self_evolution.md` correctly documents work trace projection rationale. That rationale should remain in docs, not be repeated in the runtime user message.
 
 ## Design Health Assessment (Mandatory)
@@ -31,16 +35,18 @@ The current runtime message mixes dynamic task data, stable agent rules, documen
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Cleanup / behavior change / small feature extension
 - Initial design issue signal (`Yes`/`No`/`Unclear`): Yes
 - Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Duplicated Policy Or Coordination + Boundary Or Ownership Issue
-- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Needed now, scoped to prompt-contract composition, built-in self-evolver package structure, and built-in template skill syncing.
+- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Needed now, scoped to prompt-contract composition, built-in self-evolver package structure, built-in template skill syncing, and removal of prior-run prompt noise.
 - Evidence basis:
   - Runtime user message repeats static behavior that belongs in self-evolver static guidance.
   - Runtime prompt exposes module-design rationale and internal raw-trace file naming that the companion does not need to see.
   - `agent.md` is becoming too large if all retrospective coaching rules/examples are placed there; the existing platform has a better private-skill shape.
   - Current built-in bootstrap does not sync private skills, so a private skill addition needs bootstrap support.
+  - Current companion restore fallback can create a replacement companion after restore failure; the fallback is acceptable, but exposing prior evolver run ids in the prompt is confusing and lacks an inspection workflow.
 - Requirement or scope impact:
   - Separate dynamic task packet from static coaching playbook.
   - Add bounded package-tree context so the companion sees the whole editable skill package shape.
   - Move detailed retrospective coaching instructions and examples into an agent-private skill package.
+  - Preserve the earlier companion fallback behavior while removing the confusing prompt continuity hint.
 
 ## Recommendations
 
@@ -61,7 +67,9 @@ The current runtime message mixes dynamic task data, stable agent rules, documen
 8. Put the detailed retrospective coaching workflow, signal patterns, package-improvement guidance, examples, and no-change criteria in that private skill package.
 9. Update built-in-agent bootstrap to sync template `skills/` directories for product-managed built-in agents, then configure Skill Self-Evolver `agent-config.json` to include `"retrospective-skill-coach"`.
 10. Preserve service-level final-message grants exactly; prompt cleanup must not weaken grant enforcement.
-11. Update module docs and focused tests so future changes do not reintroduce noisy runtime prompt wording.
+11. Remove `Previous evolver run ids for continuity context` from the runtime task packet. Keep any prior-run bookkeeping internal only; do not send old coach/evolver run ids to the companion.
+12. Keep the earlier companion lifecycle fallback: reuse active stored companion, restore/wake inactive stored companion when possible, and create a replacement companion if restore fails. The replacement should behave like a new coach from the prompt perspective.
+13. Update module docs and focused tests so future changes do not reintroduce noisy runtime prompt wording.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -84,14 +92,14 @@ Rationale: Prompt text cleanup alone is small, but the approved shape adds an ag
 - Changing raw trace storage format or work trace projection semantics.
 - Adding a dedicated read-only work-trace tool.
 - Adding service-side diff auditing or off-target edit detection.
-- Changing self-evolution eligibility, strategy catalog behavior, run record lifecycle, companion reuse/restore logic, or direct-message grant semantics.
+- Broad self-evolution eligibility, strategy catalog behavior, companion reuse/restore fallback semantics, and direct-message grant semantics. The lifecycle fallback may remain as earlier implemented; only prior-run prompt rendering is in scope.
 - Changing non-Skill-Self-Evolver built-in agent behavior except for generic template skill syncing support needed by built-ins.
 - Making active target workers reload changed skills immediately; current next-run/live-refresh limitations remain.
 
 ## Functional Requirements
 
 - REQ-001: The runtime self-evolution user message must be a dynamic task packet, not a mini agent definition.
-- REQ-002: The runtime message must include work trace manifest path, work trace root path, individual work trace file paths, prior evolver run ids when present, editable skill packages, target agent run id, and final message type.
+- REQ-002: The runtime message must include work trace manifest path, work trace root path, individual work trace file paths, editable skill packages, target agent run id, and final message type. It must not include prior evolver run ids.
 - REQ-003: The runtime message must not include documentation-only rationale such as “semantically complete,” “hide backend protocol fields,” or similar implementation explanation.
 - REQ-004: The runtime message must not mention raw trace file patterns as a defensive negative. If a raw-trace read prohibition remains necessary, it belongs in static self-evolver guidance.
 - REQ-005: The runtime editable package section must list a bounded package tree/index for each editable skill root, marking `SKILL.md` as `[entry]`.
@@ -108,6 +116,9 @@ Rationale: Prompt text cleanup alone is small, but the approved shape adds an ag
 - REQ-016: Existing direct-message grant enforcement must remain unchanged: target id, message type, reference roots, one accepted delivery, and expiry are enforced by code.
 - REQ-017: Module docs must be updated to document the new prompt separation: runtime task packet vs thin agent definition vs private coaching skill vs service-level grant enforcement.
 - REQ-018: Tests must assert the concise runtime prompt shape, package tree rendering, private skill sync/configuration, and absence of reintroduced noisy/internal prompt wording.
+- REQ-019: The existing `single_agent` companion lifecycle fallback may remain: reuse an active stored companion, attempt to restore/wake an inactive stored companion, and create a replacement companion if restore fails.
+- REQ-020: Replacement history such as `priorEvolverRunIds` may remain internal session/audit bookkeeping, but previous/prior evolver run ids must never be included in the runtime task packet unless a future design adds a real prior-run inspection workflow.
+- REQ-021: Future `agent_team` evolver support may use the same fallback policy only if explicitly designed for team runs; no previous/prior team run ids should be sent in the prompt without a real inspection workflow.
 
 ## Target Runtime Message Contract
 
@@ -123,8 +134,6 @@ Work trace root: <absolute work trace root path>
 Work trace files:
 1. <absolute work trace file path>
 2. <absolute work trace file path>
-
-Previous evolver run ids for continuity context: <run id>, <run id>
 
 Editable skill packages:
 1. <skill name>
@@ -145,7 +154,7 @@ Completion target:
 
 Rules for this prompt:
 
-- Omit `Previous evolver run ids...` when no prior ids exist.
+- Do not include previous/prior evolver run ids. They are internal replacement-history bookkeeping only and are not companion prompt input for this design.
 - Do not include a `Rules:` section.
 - Do not mention `raw_traces`, `raw_traces*.jsonl`, backend protocol fields, provider envelopes, hidden protocol fields, or semantic completeness.
 - Do not inline work trace content; list paths only.
@@ -477,6 +486,7 @@ Bad update:
 - AC-002: The generated task packet contains work trace manifest/root/files and does not inline work trace bodies.
 - AC-003: The generated task packet contains editable skill package roots and bounded package trees with `SKILL.md [entry]`.
 - AC-004: The generated task packet contains target AgentRun id and `skill_update` message type in a concise completion section.
+- AC-004A: The generated task packet does not contain `Previous evolver run ids`, `priorEvolverRunIds`, or old companion run ids.
 - AC-005: The generated task packet omits `raw_traces`, `raw_traces*.jsonl`, `semantically complete`, `backend protocol`, `hide backend`, and equivalent internal rationale wording.
 - AC-006: The Skill Self-Evolver `agent.md` is reduced to thin identity/boundary/task-contract guidance and no longer contains detailed coaching method examples.
 - AC-007: The Skill Self-Evolver `agent.md` calls `SKILL.md` the entry file, not the primary guidance file.
@@ -488,10 +498,13 @@ Bad update:
 - AC-013: Self-evolution prompt tests prove the runtime prompt is path-only, tree-aware, and free of internal/noisy phrases.
 - AC-014: Existing direct-message grant tests remain passing; no grant enforcement is moved into prompt-only text.
 - AC-015: Docs describe the separation between runtime task packet, static self-evolver guidance, private coaching skill, work-trace docs, and service-level grant enforcement.
+- AC-016: Companion prompt tests prove prior/previous evolver run ids are not rendered even when internal session state contains `priorEvolverRunIds`.
+- AC-017: Existing lifecycle tests may continue to prove replacement companion creation after restore failure; such replacement must not add previous run ids to the prompt.
 
 ## Constraints / Dependencies
 
 - The task message must still carry dynamic paths and target ids because static guidance cannot know them.
+- Prior evolver run ids are not considered actionable dynamic prompt data without a future concrete inspection workflow. They may remain internal audit/session bookkeeping only.
 - The companion currently reads work trace files through general file/tool access; no dedicated read-only evidence tool exists.
 - Built-in agent sync is product-managed and intentionally overwrites app-data copies of built-in agents at startup; extending it to private skills should follow the same product-managed pattern only for built-in app-data directories.
 - Agent-private skill resolution already exists and should be reused.
@@ -510,16 +523,18 @@ Bad update:
 - Package tree rendering must avoid token blowup on large skill packages; use fixed caps and omission notes.
 - Existing built-in bootstrap API result currently reports only `syncedAgentMd` and `syncedAgentConfig`; design must decide whether to add `syncedSkills` or keep skill sync internal. Recommended: add `syncedSkillDirectories` or `syncedSkills` for testability.
 - If product owners still want an explicit raw-trace read prohibition, it should be in static self-evolver guidance, not the runtime prompt.
+- If product owners later want a replacement companion to inspect previous evolver runs, that requires a separate workflow and evidence surface; do not expose prior run ids in the prompt before that exists.
 
 ## Requirement-To-Use-Case Coverage
 
-- UC-001: REQ-001 through REQ-004, REQ-017, REQ-018
+- UC-001: REQ-001 through REQ-004, REQ-017, REQ-018, REQ-021
 - UC-002: REQ-005, REQ-006, REQ-018
 - UC-003: REQ-007 through REQ-013
 - UC-004: REQ-012, REQ-013
 - UC-005: REQ-011, REQ-013
 - UC-006: REQ-002, REQ-008, REQ-016
 - UC-007: REQ-014, REQ-015
+- Companion lifecycle fallback with no prompt prior ids: REQ-019, REQ-020, REQ-021
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -529,6 +544,7 @@ Bad update:
 - AC-013 validates self-evolution prompt regression coverage.
 - AC-014 validates unchanged service-level final-message enforcement.
 - AC-015 validates documentation sync.
+- AC-016 through AC-017 validate that lifecycle fallback does not leak prior ids into the prompt.
 
 ## Approval Status
 

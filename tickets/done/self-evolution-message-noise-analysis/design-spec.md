@@ -2,6 +2,8 @@
 
 ## Current-State Read
 
+Revision note: this design has been refined after the latest user clarification. The earlier companion lifecycle fallback is restored: reuse active companion, attempt restore/wake, and create a replacement companion if restore fails. The only lifecycle-adjacent prompt change is that previous/prior evolver run ids must not be sent in the runtime task packet.
+
 Manual self-evolution currently flows through `SelfEvolutionService.startFromEvolutionRequest()`:
 
 1. Resolve target context and writable configured target skills.
@@ -19,17 +21,20 @@ The current trigger message builder is the problematic owner. It emits a single 
 
 Current static built-in Skill Self-Evolver guidance lives in `autobyteus-server-ts/src/built-in-agents/templates/skill-evolver/agent.md`, but it is too small for the desired retrospective coaching behavior and uses `SKILL.md is the primary guidance file`, which is semantically wrong. `SKILL.md` is a package entry file; important guidance may live in referenced files under the same skill root.
 
+Current companion lifecycle code attempts active-run reuse and runtime restore for `currentEvolverRunId`. If restore fails, it marks the old run unavailable, appends it to `priorEvolverRunIds`, and creates a replacement companion. The latest user clarification accepts this fallback; only the prompt exposure of prior evolver run ids is rejected.
+
 The platform already supports agent-private skills under `agentDir/skills/<skill-name>` through `ConfiguredAgentSkillResolver`, but `BuiltInAgentBootstrapper` currently syncs only `agent.md` and `agent-config.json` for product-managed built-ins. Therefore adding a private self-evolver coaching skill requires built-in template skill sync support.
 
 ## Intended Change
 
 Change the self-evolution prompt and Skill Self-Evolver package shape to this ownership model:
 
-- Runtime user message: dynamic task packet only.
+- Runtime user message: dynamic task packet only, excluding prior/previous evolver run ids.
 - Thin built-in `agent.md`: identity, role, boundaries, dynamic task contract, final notification condition.
 - Agent-private `retrospective-skill-coach` skill: detailed retrospective coaching workflow, trace signal interpretation, package-improvement playbook, examples, no-change criteria.
 - Module docs: implementation rationale such as work trace projection, privacy, raw trace/internal protocol separation.
 - Direct-message grant/router: hard enforcement for final `skill_update` target, type, reference roots, delivery count, and expiry.
+- Companion lifecycle: keep the earlier restore-failure replacement fallback, but treat prior/previous run ids as internal bookkeeping only and do not send them to the replacement companion.
 
 Also add bounded editable skill package tree rendering in the dynamic task packet so the companion sees the whole package shape and does not over-focus on `SKILL.md`.
 
@@ -49,6 +54,7 @@ Also add bounded editable skill package tree rendering in the dynamic task packe
   - Add `retrospective-skill-coach` as an agent-private skill package.
   - Add product-managed built-in template skill syncing.
   - Add bounded package tree rendering as a local off-spine concern serving prompt construction.
+  - Keep the existing restore-failure replacement fallback while removing prompt continuity hints from the replacement companion's task packet.
 - Refactor rationale:
   - The change is not just wording; it corrects ownership: prompt builder should not own stable behavior/rationale; agent/private skill should own coaching method; docs should own design rationale; grants should own hard enforcement.
 - Intentional deferrals and residual risk, if any:
@@ -62,6 +68,7 @@ Also add bounded editable skill package tree rendering in the dynamic task packe
 - `SKILL.md entry file`: the skill package entrypoint, not necessarily the only or primary guidance file.
 - `Agent-private skill`: a skill package under `agentDir/skills/<skill-name>` resolved before global skills for that agent definition.
 - `Package tree`: a bounded relative listing of skill package contents shown in the runtime task packet.
+- `Prior evolver run ids`: internal replacement-history/session bookkeeping. They are not runtime prompt input in this design.
 
 ## Design Reading Order
 
@@ -78,6 +85,8 @@ Also add bounded editable skill package tree rendering in the dynamic task packe
   - Remove the old runtime `Rules:` section.
   - Remove runtime prompt references to `raw_traces*.jsonl`, semantic completeness, hidden backend protocol fields, and `Primary guidance file`.
   - Replace monolithic static behavior in `agent.md` with thin role/boundary guidance plus private skill usage.
+  - Remove `Previous evolver run ids for continuity context` from runtime prompt.
+  - Do not change the earlier restore-failure replacement fallback as part of this prompt cleanup.
 - No dual prompt format or compatibility flag should be retained.
 
 ## Data-Flow Spine Inventory
@@ -88,6 +97,7 @@ Also add bounded editable skill package tree rendering in the dynamic task packe
 | DS-002 | Primary End-to-End | Built-in agent bootstrap | App-data built-in agent with private coaching skill | `BuiltInAgentBootstrapper` | Needed so the Skill Self-Evolver can actually load its private coaching skill. |
 | DS-003 | Bounded Local | Editable skill target root | Bounded package tree text | `SelfEvolutionSkillPackageTreeRenderer` | Prevents misleading `Primary guidance file` wording and shows package shape safely. |
 | DS-004 | Return-Event | Companion durable edits | Direct `skill_update` to target run | Direct-message grant/router | Confirms final notification enforcement stays code-owned. |
+| DS-005 | Primary End-to-End | Existing self-evolver session | Active/restored companion or replacement companion after restore failure | `SelfEvolutionCompanionSessionService` | Documents accepted lifecycle fallback while keeping prior ids out of prompt. |
 
 ## Primary Execution Spine(s)
 
@@ -97,6 +107,9 @@ DS-001:
 DS-002:
 `Server Startup -> BuiltInAgentBootstrapper -> Template Agent Directory -> App-Data Built-In Agent Directory -> AgentDefinition/Skill Resolution`
 
+DS-005:
+`Target Self-Evolution Session -> Stored currentEvolverRunId -> Active Run Check -> Restore/Wake Attempt -> Original Companion Reused OR Replacement Companion Created Without Prior-Run Prompt Context`
+
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
@@ -105,11 +118,12 @@ DS-002:
 | DS-002 | Product-managed built-in agents are synced from templates into app data. The Skill Self-Evolver template now includes a private skill folder and config entry so the loaded agent resolves that skill normally. | Built-in template, app-data built-in agent, private skill package | `BuiltInAgentBootstrapper` | Recursive directory sync, product-managed overwrite semantics, tests |
 | DS-003 | For each editable skill root, render a bounded relative package tree marking `SKILL.md [entry]` and omitting ignored/excess entries. | Skill root, entry file, package tree text | `SelfEvolutionSkillPackageTreeRenderer` | Ignore policy, entry/depth caps, symlink handling |
 | DS-004 | After real durable edits, the companion sends one final update to the target run using grant-scoped target/message/reference constraints. | Skill update message | Direct-message grant/router | Grant usage summary, target liveness, reference file root validation |
+| DS-005 | The service preserves the earlier lifecycle: reuse active stored companion, try restore/wake when inactive, and create a replacement if restore fails. Replacement history is not sent to the companion prompt. | Self-evolver session, companion run | `SelfEvolutionCompanionSessionService` | Session store state, restore API, replacement history bookkeeping |
 
 ## Spine Actors / Main-Line Nodes
 
 - `SelfEvolutionService`: orchestrates target resolution, skill target resolution, work trace projection, companion session, trigger request.
-- `SelfEvolutionCompanionSessionService`: owns companion activation/reuse, direct-message grant registration, posting companion requests, outcome notification summary.
+- `SelfEvolutionCompanionSessionService`: owns companion activation/reuse/restore lifecycle, direct-message grant registration, posting companion requests, outcome notification summary.
 - `SelfEvolutionCompanionTriggerMessageBuilder`: owns human-readable runtime task packet composition.
 - `SelfEvolutionSkillPackageTreeRenderer`: owns bounded editable skill package tree text.
 - `BuiltInAgentBootstrapper`: owns product-managed built-in template sync into app data.
@@ -119,7 +133,7 @@ DS-002:
 
 | Main-Line Node | Owns | Must Not Own |
 | --- | --- | --- |
-| `SelfEvolutionCompanionTriggerMessageBuilder` | Concise dynamic task packet format; section ordering; dynamic values from request/session | Stable coaching method, module-design rationale, grant enforcement |
+| `SelfEvolutionCompanionTriggerMessageBuilder` | Concise dynamic task packet format; section ordering; dynamic values from request | Stable coaching method, module-design rationale, grant enforcement, prior run id replacement-history state |
 | `SelfEvolutionSkillPackageTreeRenderer` | Safe bounded tree rendering for editable skill roots | Skill resolution, edit policy, companion behavior |
 | Skill Self-Evolver `agent.md` | Role identity, non-negotiable boundaries, dynamic task contract | Long retrospective playbook/examples if private skill exists |
 | `retrospective-skill-coach` skill | Coaching workflow, evidence interpretation, package-improvement method, examples | Dynamic target paths/ids; runtime grant enforcement |
@@ -142,6 +156,7 @@ DS-002:
 | `semantically complete` / `hide backend protocol fields` prompt wording | Documentation/internal rationale | `docs/modules/self_evolution.md` | In This Change | Tests should prevent reintroduction. |
 | `Primary guidance file` label | Misrepresents `SKILL.md` | Package tree with `SKILL.md [entry]` | In This Change | Applies to runtime prompt and static guidance. |
 | Built-in bootstrap limitation to only two files | Private skill templates need product-managed sync | Template skill directory sync | In This Change | Not a compatibility layer. |
+| `Previous evolver run ids for continuity context` prompt field | No concrete prior-run inspection workflow exists; user considers it prompt noise | Internal session/audit bookkeeping only; no prompt rendering | In This Change | The replacement companion behaves like a new coach from the prompt perspective. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -160,6 +175,10 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 
 `Template Directory -> agent.md/config sync -> skills directory mirror sync -> resolve built-in definition -> initialize setting default`
 
+Companion lifecycle fallback inside `SelfEvolutionCompanionSessionService`:
+
+`Load Session -> If No Session Create Companion -> If currentEvolverRunId Exists Check Active -> If Inactive Restore/Wake -> If Restore Fails Mark Prior Internally And Create Replacement -> Prompt Omits Prior Run Ids`
+
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
@@ -169,6 +188,7 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 | Retrospective coaching playbook | DS-001 | Skill Self-Evolver agent | Detailed judgment method and examples | Too large for runtime prompt or thin agent.md | Runtime task packet becomes static manual. |
 | Direct message grants | DS-004 | `SelfEvolutionCompanionSessionService` | Enforce final delivery constraints | Hard boundary independent of prompt wording | Prompt text would become pretend enforcement. |
 | Built-in private skill sync | DS-002 | `BuiltInAgentBootstrapper` | Copy product-managed private skill templates | Required for bundled self-evolver skill | Runtime resolution would fail or depend on manual install. |
+| Replacement-history prompt suppression | DS-005 | `SelfEvolutionCompanionTriggerMessageBuilder` | Avoid rendering prior ids after lifecycle replacement | Prevents confusing the new coach with non-actionable ids | Prompt suggests an inspection workflow that does not exist. |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -179,12 +199,13 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 | Package tree traversal | `file-explorer/DirectoryTraversal` patterns | Create small self-evolution renderer, optionally reuse ignore concepts | Prompt needs bounded annotated relative tree, not generic full tree | Existing skill content tool serializes full tree without caps/entry annotation. |
 | Final target notification | Direct-message grant/router | Reuse | Already enforces target/type/reference limits | N/A |
 | Work trace privacy docs | `docs/modules/self_evolution.md` | Extend | Already owns module rationale | N/A |
+| Companion restore/reuse | `AgentRunService.restoreAgentRun` / active run lookup | Reuse/Strengthen | Existing restore hook is the right wake path | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `src/self-evolution/services/companion` | Trigger message composition, package tree rendering | DS-001, DS-003 | Companion request posting | Extend | Add renderer and make message builder concise/tree-aware. |
+| `src/self-evolution/services/companion` | Trigger message composition, package tree rendering, accepted companion lifecycle fallback | DS-001, DS-003, DS-005 | Companion request posting | Extend | Add renderer, make message builder concise/tree-aware, and suppress prior ids in prompt. |
 | `src/built-in-agents` | Product-managed built-in agent template sync | DS-002 | Built-in bootstrap | Extend | Add private skill directory sync. |
 | `src/built-in-agents/templates/skill-evolver` | Built-in Skill Self-Evolver package content | DS-002 | Skill Self-Evolver | Extend | Thin agent.md + private skill. |
 | `src/skills/services` | Agent-private skill resolution | DS-002 | Agent skill loading | Reuse | No resolver change expected. |
@@ -196,6 +217,7 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 | --- | --- | --- | --- | --- | --- |
 | `self-evolution-companion-trigger-message-builder.ts` | Self-evolution companion | Runtime task packet | Build concise prompt sections from request/session/tree renderer | Existing owner for trigger message | Uses tree renderer |
 | `self-evolution-skill-package-tree-renderer.ts` | Self-evolution companion | Package tree renderer | Render safe bounded tree text for a skill root | Separate filesystem traversal/format concern from prompt text | May reuse ignore patterns/constants |
+| `self-evolution-companion-session-service.ts` | Self-evolution companion | Companion lifecycle fallback | Reuse active, attempt restore, and create replacement if restore fails | Existing lifecycle owner | Uses AgentRunService restore hook |
 | `built-in-agent-bootstrapper.ts` | Built-in agents | Template sync | Mirror agent.md/config/private skills from templates into app-data built-ins | Existing bootstrap owner | Uses fs copy/rm |
 | `templates/skill-evolver/agent.md` | Built-in Skill Self-Evolver | Thin role/boundary facade | Identity, role, boundaries, task contract | Static agent identity file | Uses private skill |
 | `templates/skill-evolver/agent-config.json` | Built-in Skill Self-Evolver | Agent config | Tool and private skill names | Existing config file | N/A |
@@ -223,6 +245,7 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/self-evolution/services/companion/self-evolution-companion-session-service.ts` | Self-evolution companion | Companion lifecycle and request posting | Reuse active, attempt restore, and create replacement if restore fails | Existing lifecycle owner | AgentRunService restore hook, grant registry |
 | `autobyteus-server-ts/src/self-evolution/services/companion/self-evolution-companion-trigger-message-builder.ts` | Self-evolution companion | Runtime task packet | Async build of concise prompt; delegates package tree rendering | Keeps prompt wording in one owner | Yes, renderer dependency |
 | `autobyteus-server-ts/src/self-evolution/services/companion/self-evolution-skill-package-tree-renderer.ts` | Self-evolution companion | Package tree rendering | Bounded relative tree with `SKILL.md [entry]`, exclusions, omission notes | Avoids filesystem logic in prompt builder | Possibly local ignore constants |
 | `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts` | Built-in agents | Product-managed template sync | Sync `agent.md`, `agent-config.json`, and `skills/` directory mirror | Existing built-in sync owner | N/A |
@@ -239,10 +262,11 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 
 ## Ownership Boundaries
 
-- The prompt builder boundary owns only presentation of dynamic request facts. It must not be a policy manual.
+- The prompt builder boundary owns only presentation of dynamic request facts. It must not be a policy manual and must not surface prior run id replacement-history state.
 - The private coaching skill owns detailed self-evolver method. It must not contain per-request target paths or ids.
 - Built-in bootstrap owns product-managed installation of bundled built-in agent packages. It must not alter user package roots.
 - The direct-message grant owns final-message enforcement. Static guidance can describe it but must not replace it.
+- The companion session service owns lifecycle fallback. Prompt builders must not expose internal prior-run bookkeeping created by that fallback.
 
 ## Boundary Encapsulation Map
 
@@ -252,12 +276,14 @@ Built-in template skill sync inside `BuiltInAgentBootstrapper`:
 | `BuiltInAgentBootstrapper` | Template file/directory sync | Startup bootstrap caller | Separate ad hoc sync for skill-evolver skills | Extend bootstrapper sync API |
 | Direct-message grant/router | Delivery constraints and usage summary | Companion final message path | Prompt-only enforcement | Add grant constraints or router validation |
 | Private `retrospective-skill-coach` skill | Coaching method/examples | Skill Self-Evolver agent | Runtime prompt carrying examples/manual | Add skill reference files |
+| `SelfEvolutionCompanionSessionService` | Active-run lookup, restore/wake, replacement creation after restore failure | `SelfEvolutionService` manual start | Prompting replacement companion with prior-run ids | Keep prior history internal |
 
 ## Dependency Rules
 
 Allowed:
 
 - `SelfEvolutionCompanionSessionService` may depend on `SelfEvolutionCompanionTriggerMessageBuilder`.
+- `SelfEvolutionCompanionSessionService` may call `AgentRunService.getAgentRun` and `restoreAgentRun` for the stored `currentEvolverRunId`, and may create a replacement companion when restore fails.
 - `SelfEvolutionCompanionTriggerMessageBuilder` may depend on `SelfEvolutionSkillPackageTreeRenderer`.
 - `SelfEvolutionSkillPackageTreeRenderer` may depend on Node `fs/path` and local ignore constants; it may reuse file-explorer concepts only if that does not force unrelated workspace semantics.
 - `BuiltInAgentBootstrapper` may use Node `fs/path` to mirror template directories.
@@ -267,6 +293,7 @@ Forbidden:
 
 - Runtime prompt builder must not depend on raw trace internals.
 - Runtime prompt builder must not inline work trace bodies.
+- Runtime prompt builder must not include `priorEvolverRunIds`, previous evolver run ids, or old coach run ids.
 - Private skill content must not include runtime target ids or private example paths.
 - Built-in bootstrap must not mutate additional agent package roots outside app-data built-in targets.
 - Do not add compatibility branches for old prompt format.
@@ -275,7 +302,8 @@ Forbidden:
 
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
-| `SelfEvolutionCompanionTriggerMessageBuilder.build(...)` | Companion task packet | Build `AgentInputUserMessage` | `SelfEvolutionCompanionTriggerRequest`, `SelfEvolutionCompanionSession` | Make async if package tree rendering reads filesystem. |
+| `SelfEvolutionCompanionSessionService.activateOrGet(...)` | Companion lifecycle fallback | Return active/restored companion or replacement companion after restore failure | `SelfEvolutionTargetContext` | Existing behavior can remain. |
+| `SelfEvolutionCompanionTriggerMessageBuilder.build(...)` | Companion task packet | Build `AgentInputUserMessage` | `SelfEvolutionCompanionTriggerRequest`; session may be accepted only for non-prompt continuity metadata and must not render prior ids | Make async if package tree rendering reads filesystem. |
 | `SelfEvolutionSkillPackageTreeRenderer.render(target)` | Skill package tree | Render bounded package index | absolute `skillRootPath`, absolute `skillMdPath` | Returns text and omitted/excluded counts or fallback text. |
 | `BuiltInAgentBootstrapper.bootstrapBuiltInAgent(...)` | Built-in agent template sync | Sync product-managed built-in files/dirs | registry definition | Extend to `skills/`. |
 | `ConfiguredAgentSkillResolver.resolveForAgent(...)` | Configured skills | Resolve private/global skills | `skillNames`, `sourceInfo.agentDirPath` | No change expected. |
@@ -308,7 +336,8 @@ Forbidden:
 | Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/self-evolution/services/companion` | Folder | Self-evolution companion | Companion request/session prompt helpers | Existing companion service area | Built-in agent template content |
-| `.../self-evolution-companion-trigger-message-builder.ts` | File | Runtime task packet | Concise prompt composition | Existing builder | Static coaching manual |
+| `.../self-evolution-companion-session-service.ts` | File | Companion lifecycle fallback | Initial creation, active reuse, restore/wake, replacement after restore failure, request posting | Existing lifecycle owner | Prior run ids in replacement prompt |
+| `.../self-evolution-companion-trigger-message-builder.ts` | File | Runtime task packet | Concise prompt composition | Existing builder | Static coaching manual or prior run ids |
 | `.../self-evolution-skill-package-tree-renderer.ts` | File | Package tree rendering | Bounded tree text | Serves prompt builder | Work trace projection |
 | `autobyteus-server-ts/src/built-in-agents` | Folder | Built-in sync | Product-managed template sync | Existing subsystem | Runtime self-evolution logic |
 | `.../templates/skill-evolver` | Folder | Skill Self-Evolver template | Product-managed built-in agent package | Existing template | User-generated mutable skill targets |
@@ -328,6 +357,7 @@ Forbidden:
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
 | Runtime prompt | `Use the listed work trace files as the evidence package.` + paths/tree/completion target | `Rules: ... semantically complete ... hide backend protocol ... do not read raw_traces*.jsonl` | Keeps user message dynamic and avoids internal/noisy language. |
+| Companion lifecycle fallback | Stored `currentEvolverRunId` inactive -> restore/wake -> if restore fails create replacement; prompt has no previous-run ids | Mark old id prior, create new coach, tell new coach previous ids | Keeps earlier fallback while avoiding prompt noise. |
 | Skill package label | `SKILL.md [entry]` in tree | `Primary guidance file: .../SKILL.md` | Avoids misleading file authority. |
 | Static guidance placement | Thin `agent.md` + `retrospective-skill-coach` skill | Huge `agent.md` with all examples | Keeps agent definition readable and method maintainable. |
 | Trace-to-SOP example | Browser tool exploration converges into generalized inspect/selector/verify SOP | Copying exact private URL/DOM values | Teaches durable extraction. |
@@ -341,10 +371,11 @@ Forbidden:
 | Keep `Primary guidance file` and add tree | Simpler diff | Rejected | Use package tree with `SKILL.md [entry]`. |
 | Add private skill without bootstrap sync | Avoid bootstrap change | Rejected | Extend built-in bootstrap to sync template `skills/`. |
 | Feature flag old/new self-evolution prompt | Gradual rollout | Rejected | Internal prompt contract should change cleanly with tests. |
+| Rendering `priorEvolverRunIds` in prompt | Could suggest continuity to a replacement coach | Rejected | Keep prior ids internal only; remove prompt line. |
 
 ## Derived Layering (If Useful)
 
-- Runtime orchestration layer: `SelfEvolutionService`, `SelfEvolutionCompanionSessionService`.
+- Runtime orchestration/lifecycle layer: `SelfEvolutionService`, `SelfEvolutionCompanionSessionService`.
 - Prompt presentation off-spine layer: `SelfEvolutionCompanionTriggerMessageBuilder`, `SelfEvolutionSkillPackageTreeRenderer`.
 - Product-managed template layer: built-in agent templates and bootstrapper.
 - Static coaching content layer: Skill Self-Evolver `agent.md` and private skill package.
@@ -360,7 +391,8 @@ Forbidden:
    - symlink not followed.
 2. Make `SelfEvolutionCompanionTriggerMessageBuilder.build()` async if needed and update `SelfEvolutionCompanionSessionService.postSelfImproveRequest()` to await it.
 3. Replace trigger prompt template with the target task packet format.
-4. Update self-evolution prompt/session tests for new concise prompt and absence of internal/noisy phrases.
+4. Update self-evolution prompt/session tests for new concise prompt, absence of internal/noisy phrases, and absence of previous/prior evolver run ids.
+4a. Keep existing companion lifecycle fallback tests valid, but update prompt assertions so a replacement session with internal `priorEvolverRunIds` does not render previous/prior ids in the runtime task packet.
 5. Add private skill template files under `templates/skill-evolver/skills/retrospective-skill-coach/` using the drafted content.
 6. Replace Skill Self-Evolver `agent.md` with the thin role/boundary version.
 7. Update Skill Self-Evolver `agent-config.json` to include `retrospective-skill-coach`.
@@ -377,6 +409,7 @@ Forbidden:
 - Thin `agent.md` + private skill adds bootstrap work but keeps coaching guidance maintainable.
 - Package tree adds prompt tokens but prevents misleading `SKILL.md` over-focus. Caps/exclusions control size.
 - Removing raw-trace defensive negative improves clarity but relies on static guidance and work-trace path-only prompt. This is acceptable because raw traces are not supplied as evidence paths and module docs retain raw-trace rationale.
+- Creating a replacement after restore failure keeps self-improve available, but the replacement coach should not be prompted with non-actionable previous run ids.
 - Mirroring built-in `skills/` directories may remove app-data edits under product-managed built-in dirs, but this matches product-managed built-in overwrite semantics already used for `agent.md` and `agent-config.json`.
 
 ## Risks
@@ -400,4 +433,7 @@ Forbidden:
 - Preserve metadata currently attached to `AgentInputUserMessage` unless there is a strong reason to change it.
 - Use absolute paths only for root/evidence/reference facts required by the companion; use relative paths inside package tree lines.
 - Do not add a compatibility flag for the old prompt.
+- Remove `Previous evolver run ids for continuity context` from prompt rendering and tests.
+- `priorEvolverRunIds` may continue as internal state used by the accepted replacement fallback, but do not render it in the runtime prompt.
+- No lifecycle rename/refactor is required solely for this clarification.
 - When syncing built-in private skills, use product-managed mirror semantics and keep user package roots untouched.

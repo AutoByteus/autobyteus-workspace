@@ -262,7 +262,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
         target: { kind: "agent_run", runId: "target-run-1" },
         status: "active",
         currentEvolverRunId: "companion-run-1",
-        priorEvolverRunIds: [],
+        priorEvolverRunIds: ["prior-companion-internal"],
         evolverAgentDefinitionId: "skill-evolver",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         llmModelIdentifier: "model",
@@ -334,6 +334,9 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(postedMessage.content).toContain("playbook.md");
     expect(postedMessage.content).toContain("- target_agent_run_id: target-run-1");
     expect(postedMessage.content).toContain(`- message_type: ${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}`);
+    expect(postedMessage.content).not.toContain("Previous evolver run ids");
+    expect(postedMessage.content).not.toContain("prior-companion-internal");
+    expect(postedMessage.content).not.toContain("priorEvolverRunIds");
     expect(postedMessage.content).not.toContain("Rules:");
     expect(postedMessage.content).not.toContain("raw_traces");
     expect(postedMessage.content).not.toContain("semantically complete");
@@ -455,7 +458,9 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(message.content).toContain("Completion target:");
     expect(message.content).toContain("- target_agent_run_id: target-run-1");
     expect(message.content).toContain(`- message_type: ${SELF_EVOLUTION_TARGET_MESSAGE_TYPE}`);
-    expect(message.content).toContain("Previous evolver run ids for continuity context: prior-companion");
+    expect(message.content).not.toContain("Previous evolver run ids");
+    expect(message.content).not.toContain("prior-companion");
+    expect(message.content).not.toContain("priorEvolverRunIds");
     expect(message.content).not.toContain("Rules:");
     expect(message.content).not.toContain("raw_traces");
     expect(message.content).not.toContain("semantically complete");

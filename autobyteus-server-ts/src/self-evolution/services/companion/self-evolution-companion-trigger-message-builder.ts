@@ -12,12 +12,9 @@ export class SelfEvolutionCompanionTriggerMessageBuilder {
 
   async build(
     request: SelfEvolutionCompanionTriggerRequest,
-    session: SelfEvolutionCompanionSession,
+    _session: SelfEvolutionCompanionSession,
   ): Promise<AgentInputUserMessage> {
     const editablePackages = await this.renderEditablePackages(request.editableSkillTargets);
-    const priorRuns = session.state.priorEvolverRunIds.length
-      ? `\nPrevious evolver run ids for continuity context: ${session.state.priorEvolverRunIds.join(", ")}`
-      : "";
     const prompt = `Self-improvement requested for the target worker.
 
 Use the listed work trace files as the evidence package.
@@ -26,7 +23,6 @@ Work trace manifest: ${request.workTracePackage.manifestPath}
 Work trace root: ${request.workTracePackage.workTraceRootPath}
 Work trace files:
 ${request.workTracePackage.manifest.files.map((file, index) => `${index + 1}. ${file.filePath}`).join("\n")}
-${priorRuns}
 
 Editable skill packages:
 ${editablePackages}
