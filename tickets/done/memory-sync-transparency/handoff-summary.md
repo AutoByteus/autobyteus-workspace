@@ -2,13 +2,13 @@
 
 ## Status
 
-- Delivery state: User verified completion and requested finalization plus a new release version; ticket archived under `tickets/done`; repository finalization/release steps are in progress.
+- Delivery state: Finalized to `personal`; release version `v1.3.73` prepared and pushed; GitHub release workflows are running from the pushed tag.
 - Ticket branch: `codex/memory-sync-transparency-design`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-sync-transparency-design`
 - Finalization target/base branch: `origin/personal` / local `personal`
 - Latest tracked base checked: `origin/personal` at `ff17d2bb051724375e7ee6b227ea71dfafe2ccd0` (`docs: record v1.3.72 release`) after `git fetch origin personal` on 2026-06-24.
 - Integration method/result: Already current; no merge/rebase/checkpoint commit was needed before delivery-owned docs edits.
-- Repository finalization: In progress after explicit user verification; target branch is `personal`.
+- Repository finalization: Completed. Ticket branch commit `e0cc8a3b` was merged to `personal` by merge commit `6c779584` and pushed. Release commit `764a0bf8` was tagged `v1.3.73` and pushed.
 
 ## Implemented Behavior Summary
 
@@ -96,6 +96,19 @@
 - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; existing warning only.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
 
+
+## Release Workflow Status
+
+Tag `v1.3.73` was pushed on 2026-06-24 and started these GitHub Actions workflows:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28086057715 — status observed `in_progress` after tag push.
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28086057780 — status observed `in_progress` after tag push.
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28086057707 — status observed `in_progress` after tag push.
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28086057714 — status observed `in_progress` after tag push.
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28086057710 — status observed `in_progress` after tag push.
+
+The tag push is the documented publication trigger; workflow completion/published asset availability should be checked in GitHub Actions/GitHub Releases after CI finishes.
+
 ## Known Non-Blocking Items / Follow-up Notes
 
 - Broad web `nuxi typecheck` and full server `pnpm typecheck` remain known unrelated broad-check issues; focused server build typecheck and targeted executable coverage passed.
@@ -110,4 +123,4 @@
 - Release requested: Yes, normal new personal release.
 - Planned release version: `1.3.73`.
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-sync-transparency-design/tickets/done/memory-sync-transparency/release-notes.md`.
-- Ticket has been archived under `tickets/done/memory-sync-transparency/`; commit/push, target-branch merge, release, and cleanup evidence will be recorded in the delivery report.
+- Ticket has been archived under `tickets/done/memory-sync-transparency/`; commit/push, target-branch merge, release, and cleanup evidence are recorded in the delivery report.
