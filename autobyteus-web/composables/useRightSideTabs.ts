@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useBrowserShellStore } from '~/stores/browserShellStore';
 
-export type TabName = 'files' | 'teamMembers' | 'terminal' | 'vnc' | 'progress' | 'artifacts' | 'browser';
+export type TabName = 'files' | 'teamMembers' | 'terminal' | 'vnc' | 'progress' | 'artifacts' | 'browser' | 'usage';
 
 // Global state
 const activeTab = ref<TabName>('terminal');
@@ -21,6 +21,7 @@ export function useRightSideTabs() {
       { name: 'teamMembers' as TabName, label: t('shell.rightTabs.team'), requires: 'team' },
       { name: 'terminal' as TabName, label: t('shell.rightTabs.terminal'), requires: 'any' },
       { name: 'progress' as TabName, label: t('shell.rightTabs.activity'), requires: 'any' },
+      { name: 'usage' as TabName, label: t('shell.rightTabs.usage'), requires: 'any' },
       { name: 'artifacts' as TabName, label: t('shell.rightTabs.artifacts'), requires: 'any' },
       { name: 'browser' as TabName, label: t('shell.rightTabs.browser'), requires: 'any' },
       { name: 'vnc' as TabName, label: t('shell.rightTabs.vncViewer'), requires: 'any' },

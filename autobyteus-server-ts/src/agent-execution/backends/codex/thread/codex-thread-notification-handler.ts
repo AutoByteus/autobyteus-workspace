@@ -59,7 +59,15 @@ export const handleAppServerNotification = (
     const turnId =
       resolveTurnIdFromAppServerMessage(params) ??
       codexThread.activeTurnId;
-    const usage = resolveCodexThreadTokenUsage(params);
+    const usage = turnId
+      ? resolveCodexThreadTokenUsage({
+          params,
+          runId: codexThread.runId,
+          turnId,
+          threadId: codexThread.threadId,
+          model: codexThread.model,
+        })
+      : null;
     if (!turnId) {
       logger.warn(
         `Run '${codexThread.runId}': Codex token-usage update arrived without a turn id. Skipping persistence.`,

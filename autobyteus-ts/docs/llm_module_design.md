@@ -19,7 +19,7 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   The foundation for all LLM implementations. It manages:
   - **Message History:** `addUserMessage`, `addAssistantMessage`.
   - **System Prompts:** Configuration and dynamic updates.
-  - **Extensions:** Registry for plugins like token usage tracking.
+  - **Extensions:** Registry for optional lifecycle hooks; authoritative token accounting is emitted from provider usage observations, not from an auto-registered extension.
   - **Hooks:** `beforeInvoke` and `afterInvoke` lifecycle hooks.
   - **Abstract Methods:** Subclasses must implement `_sendUserMessageToLLM` (unary) and `_streamUserMessageToLLM` (streaming).
 
@@ -46,6 +46,7 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
     providers and custom-provider sync through
     `syncOpenAICompatibleEndpointModels(...)`.
   - **Creation:** `createLLM(identifier)` is the standard way to get a usable LLM object.
+  - **Pricing lookup:** `getModelPricingInfo(...)` exposes trusted/missing/placeholder API-price metadata for server-side cost estimates.
 
 ### 2.2 Provider Identity vs. Provider Type vs. Runtime
 
@@ -147,22 +148,34 @@ audio/TTS, and image models.
     `LLMFactory.initializeRegistry()` can build and register `LLMModel`
     entries.
 
-### 4.3 Extensions System
+### 4.3 Token Usage Observations And Extensions
 
-The `BaseLLM` supports extensions that hook into the request/response lifecycle.
+Provider adapters surface authoritative provider/runtime usage through
+`LlmTokenUsageObservation`, carried on `ChunkResponse.usage` and
+`CompleteResponse.usage`. The observation keeps input/output/total tokens,
+usage scope, model identity, cache/reasoning token details where available, raw
+provider JSON, and quality flags. `LlmPhase` emits these observations as
+`TOKEN_USAGE_UPDATED` stream events; the server token-usage ledger owns canonical
+run/team identity, accounting deltas, cost calculation, and persistence.
 
-- **`TokenUsageTrackingExtension`:** Automatically registered. Tracks input/output tokens and cost based on `LLMConfig`.
-- **Custom Extensions:** Can be registered via `registerExtension`. Useful for logging, rate limiting, or PII redaction.
+`BaseLLM` still supports optional extensions that hook into the request/response
+lifecycle, but token accounting must not depend on an auto-registered extension
+or local token estimation. The old `TokenUsageTracker` utility is retained only
+for non-authoritative/debug compatibility paths and must not feed persisted
+business accounting.
+
+- **Provider token usage normalizers:** Live under `src/llm/api/*token-usage-normalizer.ts` and convert provider usage payloads into `LlmTokenUsageObservation`.
+- **Custom Extensions:** Can be registered via `registerExtension` for logging, rate limiting, or PII redaction when explicitly needed.
 
 ## 5. Directory Structure
 
 ```text
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
-├── extensions/                         # LLM extensions (token usage, etc.)
+├── extensions/                         # Optional explicit lifecycle extensions
 ├── metadata/                           # Model metadata resolvers
 ├── transport/                          # Shared transport helpers
-├── utils/                              # Config, message types, pricing models
+├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
 ├── custom-llm-provider-config.ts       # Persisted custom-provider schema
 ├── llm-factory.ts                      # Singleton registry and factory
@@ -182,7 +195,7 @@ src/llm/
 - **`temperature`**: Sampling randomness.
 - **`maxTokens`**: Output limit.
 - **`systemMessage`**: Default system prompt.
-- **`pricingConfig`**: Cost per million tokens (input/output).
+- **`pricingConfig`**: Built-in catalog API-price metadata. Missing dimensions remain untrusted; server-side accounting decides whether estimated costs can be shown.
 - **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
 
 This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.

@@ -15,6 +15,7 @@ import type { MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
+import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
 export type { TaskAgentIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
@@ -34,6 +35,7 @@ export type ServerMessageType =
   | 'AGENT_STATUS'
   | 'AGENT_COMMAND_ACK'
   | 'COMPACTION_STATUS'
+  | 'TOKEN_USAGE_UPDATED'
   | 'TEAM_STATUS'
   | 'TOOL_APPROVAL_REQUESTED'
   | 'TOOL_APPROVED'
@@ -319,6 +321,11 @@ export interface ErrorPayload extends TeamStreamIdentityPayload {
   message: string;
 }
 
+
+export type TokenUsageUpdatedPayload =
+  TokenUsageUpdatedPayloadBase
+  & Omit<TeamStreamIdentityPayload, 'member_path' | 'member_route_key'>;
+
 // --- Server Message Union ---
 
 export type ServerMessage =
@@ -334,6 +341,7 @@ export type ServerMessage =
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
   | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
+  | { type: 'TOKEN_USAGE_UPDATED'; payload: TokenUsageUpdatedPayload }
   | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }
   | { type: 'TOOL_APPROVED'; payload: ToolApprovedPayload }

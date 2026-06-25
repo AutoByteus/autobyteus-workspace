@@ -3,7 +3,8 @@ import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { Message } from '../utils/messages.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import { createAutoByteusTokenUsageObservation } from './autobyteus-token-usage-normalizer.js';
+import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { AutobyteusClient } from '../../clients/autobyteus-client.js';
 import { AutobyteusPromptRenderer } from '../prompt-renderers/autobyteus-prompt-renderer.js';
 import { AutobyteusConversationPayload } from './autobyteus-conversation-payload.js';
@@ -16,14 +17,8 @@ const asString = (value: unknown): string | null => (typeof value === 'string' ?
 const asStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 
-const toTokenUsage = (value: unknown): TokenUsage => {
-  const record = isRecord(value) ? value : {};
-  return {
-    prompt_tokens: typeof record.prompt_tokens === 'number' ? record.prompt_tokens : 0,
-    completion_tokens: typeof record.completion_tokens === 'number' ? record.completion_tokens : 0,
-    total_tokens: typeof record.total_tokens === 'number' ? record.total_tokens : 0
-  };
-};
+const toTokenUsage = (value: unknown, model: LLMModel): LlmTokenUsageObservation | null =>
+  createAutoByteusTokenUsageObservation(value, model);
 
 export class AutobyteusLLM extends BaseLLM {
   private client: AutobyteusClient;
@@ -74,7 +69,7 @@ export class AutobyteusLLM extends BaseLLM {
       asString(responseRecord.content) ??
       asString(responseRecord.message) ??
       '';
-    const tokenUsage = toTokenUsage(responseRecord.token_usage);
+    const tokenUsage = toTokenUsage(responseRecord.token_usage, this.model);
 
     return new CompleteResponse({
       content: assistantMessage,
@@ -107,10 +102,10 @@ export class AutobyteusLLM extends BaseLLM {
       const content = asString(chunkRecord.content) ?? '';
 
       const isComplete = Boolean(chunkRecord.is_complete ?? false);
-      let usage: TokenUsage | null = null;
+      let usage: LlmTokenUsageObservation | null = null;
 
       if (isComplete) {
-        usage = toTokenUsage(chunkRecord.token_usage);
+        usage = toTokenUsage(chunkRecord.token_usage, this.model);
       }
 
       yield new ChunkResponse({

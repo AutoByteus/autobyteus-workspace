@@ -850,7 +850,7 @@ if prompt_tokens > 0.8 * input_budget:
 ### Where the trigger lives
 
 - **LlmPhase** (post-response):
-  1. Receives `TokenUsage` from the provider (exact prompt tokens)
+  1. Receives `LlmTokenUsageObservation` from the provider (exact prompt tokens)
   2. Evaluates the compaction policy
   3. Calls `MemoryManager.requestCompaction(activeTurnId)` and emits a
      `requested` lifecycle status when the threshold is crossed
@@ -1217,10 +1217,10 @@ on `ToolCallSpec.nativeToolCallContext`, not from the generic
 - Update `LLMExtension` interface:
   - `beforeInvoke(messages: Message[], renderedPayload: unknown, kwargs?: Record<string, unknown>)`
   - `afterInvoke(messages: Message[], response: CompleteResponse, kwargs?: Record<string, unknown>)`
-- Update `TokenUsageTrackingExtension`:
-  - Count input tokens from provided messages
-  - Override with provider usage if available
-  - Remove `on_user_message_added`/`on_assistant_message_added`
+- Keep token accounting outside the extension system:
+  - provider adapters produce `LlmTokenUsageObservation` from runtime-reported usage;
+  - `LlmPhase` uses the observation for compaction threshold decisions and emits token-usage events;
+  - server ledger enrichment, not native extensions, owns durable accounting and cost estimates.
 
 ### Streaming & Tool Parsing (compatibility)
 

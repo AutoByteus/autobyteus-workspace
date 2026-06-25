@@ -886,14 +886,22 @@ describe("CodexThread token usage readiness", () => {
     expect(thread.getReadyTurnTokenUsages()).toEqual([
       {
         turnId: "turn-usage-1",
-        usage: {
-          prompt_tokens: 10,
-          completion_tokens: 5,
-          total_tokens: 15,
-          prompt_cost: null,
-          completion_cost: null,
-          total_cost: null,
-        },
+        usage: expect.objectContaining({
+          turnId: "turn-usage-1",
+          runtime_kind: "codex_app_server",
+          ingestion_kind: "codex_thread_token_usage",
+          usage_scope: "per_turn",
+          snapshot_series_key: null,
+          idempotency_key: "codex_token_usage:run-auto:thread-1:turn-usage-1:per_turn:10:5:15",
+          reported_input_tokens: 10,
+          reported_output_tokens: 5,
+          reported_total_tokens: 15,
+          model_provider: "OPENAI",
+          model_identifier: "gpt-5.4-mini",
+          model_value: "gpt-5.4-mini",
+          raw_usage_json: { totalTokens: 15, inputTokens: 10, outputTokens: 5 },
+          quality_flags: [],
+        }),
       },
     ]);
   });
@@ -928,14 +936,59 @@ describe("CodexThread token usage readiness", () => {
     expect(thread.getReadyTurnTokenUsages()).toEqual([
       {
         turnId: "turn-usage-late-1",
-        usage: {
-          prompt_tokens: 11,
-          completion_tokens: 7,
-          total_tokens: 18,
-          prompt_cost: null,
-          completion_cost: null,
-          total_cost: null,
+        usage: expect.objectContaining({
+          turnId: "turn-usage-late-1",
+          usage_scope: "per_turn",
+          snapshot_series_key: null,
+          reported_input_tokens: 11,
+          reported_output_tokens: 7,
+          reported_total_tokens: 18,
+          raw_usage_json: { totalTokens: 18, inputTokens: 11, outputTokens: 7 },
+          quality_flags: [],
+        }),
+      },
+    ]);
+  });
+
+
+  it("models Codex total fallback as a cumulative snapshot with raw event metadata", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-usage-total-1" },
+    } as never);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+      threadId: "thread-total-1",
+      turnId: "turn-usage-total-1",
+      eventId: "codex-usage-event-total-1",
+      tokenUsage: {
+        total: {
+          totalTokens: 1400,
+          inputTokens: 1100,
+          outputTokens: 300,
         },
+      },
+    } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+      threadId: "thread-total-1",
+      turn: { id: "turn-usage-total-1" },
+    } as never);
+
+    expect(thread.getReadyTurnTokenUsages()).toEqual([
+      {
+        turnId: "turn-usage-total-1",
+        usage: expect.objectContaining({
+          turnId: "turn-usage-total-1",
+          usage_scope: "cumulative_snapshot",
+          snapshot_series_key: "codex_thread:thread-total-1",
+          idempotency_key: "codex_token_usage:codex-usage-event-total-1",
+          reported_input_tokens: 1100,
+          reported_output_tokens: 300,
+          reported_total_tokens: 1400,
+          raw_usage_json: { totalTokens: 1400, inputTokens: 1100, outputTokens: 300 },
+          raw_event_json: expect.objectContaining({ threadId: "thread-total-1", turnId: "turn-usage-total-1" }),
+        }),
       },
     ]);
   });

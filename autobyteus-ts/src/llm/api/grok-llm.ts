@@ -8,9 +8,9 @@ export class GrokLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'grok-4-1-fast-reasoning',
-        value: 'grok-4-1-fast-reasoning',
-        canonicalName: 'grok-4-1-fast-reasoning',
+        name: 'grok-4.3',
+        value: 'grok-4.3',
+        canonicalName: 'grok-4.3',
         provider: LLMProvider.GROK
       });
 

@@ -18,6 +18,7 @@
           {{ headerTitle }}
         </h4>
         <AgentStatusDisplay v-if="activeTeamContext" :status="headerStatus" />
+        <TokenUsageHeaderChip v-if="activeTeamContext" :team-run-id="activeTeamContext.teamRunId" />
       </div>
 
       <div class="flex items-center gap-3 flex-wrap justify-end">
@@ -114,6 +115,7 @@ import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue
 import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
+import TokenUsageHeaderChip from '~/components/workspace/usage/TokenUsageHeaderChip.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
 

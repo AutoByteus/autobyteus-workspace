@@ -1,10 +1,10 @@
-import { TokenUsage } from './token-usage.js';
+import type { LlmTokenUsageObservation } from './llm-token-usage-observation.js';
 import { ToolCallDelta } from './tool-call-delta.js';
 
 export class CompleteResponse {
   content: string;
   reasoning: string | null;
-  usage: TokenUsage | null;
+  usage: LlmTokenUsageObservation | null;
   image_urls: string[];
   audio_urls: string[];
   video_urls: string[];
@@ -12,7 +12,7 @@ export class CompleteResponse {
   constructor(data: {
     content: string;
     reasoning?: string | null;
-    usage?: TokenUsage | null;
+    usage?: LlmTokenUsageObservation | null;
     image_urls?: string[];
     audio_urls?: string[];
     video_urls?: string[];
@@ -34,7 +34,7 @@ export class ChunkResponse {
   content: string;
   reasoning: string | null;
   is_complete: boolean;
-  usage: TokenUsage | null;
+  usage: LlmTokenUsageObservation | null;
   image_urls: string[];
   audio_urls: string[];
   video_urls: string[];
@@ -44,7 +44,7 @@ export class ChunkResponse {
     content: string;
     reasoning?: string | null;
     is_complete?: boolean;
-    usage?: TokenUsage | null;
+    usage?: LlmTokenUsageObservation | null;
     image_urls?: string[];
     audio_urls?: string[];
     video_urls?: string[];

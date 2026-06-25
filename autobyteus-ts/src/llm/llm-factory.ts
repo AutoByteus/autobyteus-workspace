@@ -2,7 +2,7 @@ import { BaseLLM } from './base.js';
 import { LLMModel, ModelInfo } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
-import { LLMConfig } from './utils/llm-config.js';
+import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { OllamaModelProvider } from './ollama-provider.js';
 import { LMStudioModelProvider } from './lmstudio-provider.js';
 import { AutobyteusModelProvider } from './autobyteus-provider.js';
@@ -16,6 +16,43 @@ import {
   OpenAICompatibleEndpointModelProvider,
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
+
+
+export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
+
+export type ModelPricingInfo = {
+  model_identifier: string | null;
+  model_value: string | null;
+  canonical_name: string | null;
+  model_provider: string | null;
+  pricing_status: PricingStatus;
+  pricing_source: 'autobyteus_model_catalog' | string | null;
+  price_config_id: string | null;
+  currency: string | null;
+  input_price_per_million: number | null;
+  output_price_per_million: number | null;
+  cached_input_read_price_per_million: number | null;
+  cached_input_write_price_per_million: number | null;
+  trusted_dimensions: {
+    input: boolean;
+    output: boolean;
+    cached_input_read: boolean;
+    cached_input_write: boolean;
+  };
+  missing_reason?:
+    | 'model_not_found'
+    | 'pricing_config_absent'
+    | 'constructor_default_zero'
+    | 'placeholder_price'
+    | 'dimension_missing';
+};
+
+export type ModelPricingLookupInput = {
+  modelIdentifier?: string | null;
+  modelValue?: string | null;
+  canonicalName?: string | null;
+  modelProvider?: LLMProvider | string | null;
+};
 
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
@@ -231,6 +268,124 @@ export class LLMFactory {
 
     console.warn(`Could not find model with identifier '${modelIdentifier}' to get its provider.`);
     return null;
+  }
+
+
+  static async getModelPricingInfo(input: ModelPricingLookupInput): Promise<ModelPricingInfo | null> {
+    await LLMFactory.ensureInitialized();
+    const model = LLMFactory.findModelForPricingLookup(input);
+    if (!model) {
+      return {
+        model_identifier: input.modelIdentifier ?? null,
+        model_value: input.modelValue ?? null,
+        canonical_name: input.canonicalName ?? null,
+        model_provider: input.modelProvider ? String(input.modelProvider) : null,
+        pricing_status: 'missing',
+        pricing_source: null,
+        price_config_id: null,
+        currency: null,
+        input_price_per_million: null,
+        output_price_per_million: null,
+        cached_input_read_price_per_million: null,
+        cached_input_write_price_per_million: null,
+        trusted_dimensions: {
+          input: false,
+          output: false,
+          cached_input_read: false,
+          cached_input_write: false,
+        },
+        missing_reason: 'model_not_found',
+      };
+    }
+
+    const pricingConfig = model.defaultConfig?.pricingConfig;
+    if (!(pricingConfig instanceof TokenPricingConfig)) {
+      return LLMFactory.buildMissingPricingInfo(model, 'pricing_config_absent');
+    }
+
+    const inputTrusted = pricingConfig.inputTokenPricingTrusted;
+    const outputTrusted = pricingConfig.outputTokenPricingTrusted;
+    const status: PricingStatus = inputTrusted && outputTrusted ? 'trusted' : 'missing';
+    const missingReason = status === 'trusted'
+      ? undefined
+      : (!inputTrusted && !outputTrusted ? 'pricing_config_absent' : 'dimension_missing');
+
+    return {
+      model_identifier: model.modelIdentifier,
+      model_value: model.value,
+      canonical_name: model.canonicalName,
+      model_provider: model.provider,
+      pricing_status: status,
+      pricing_source: status === 'trusted' ? 'autobyteus_model_catalog' : null,
+      price_config_id: status === 'trusted'
+        ? `autobyteus_model_catalog:${model.provider}:${model.canonicalName}`
+        : null,
+      currency: status === 'trusted' ? 'USD' : null,
+      input_price_per_million: inputTrusted ? pricingConfig.inputTokenPricing : null,
+      output_price_per_million: outputTrusted ? pricingConfig.outputTokenPricing : null,
+      cached_input_read_price_per_million: null,
+      cached_input_write_price_per_million: null,
+      trusted_dimensions: {
+        input: inputTrusted,
+        output: outputTrusted,
+        cached_input_read: false,
+        cached_input_write: false,
+      },
+      ...(missingReason ? { missing_reason: missingReason } : {}),
+    };
+  }
+
+  private static buildMissingPricingInfo(
+    model: LLMModel,
+    missingReason: NonNullable<ModelPricingInfo['missing_reason']>,
+  ): ModelPricingInfo {
+    return {
+      model_identifier: model.modelIdentifier,
+      model_value: model.value,
+      canonical_name: model.canonicalName,
+      model_provider: model.provider,
+      pricing_status: 'missing',
+      pricing_source: null,
+      price_config_id: null,
+      currency: null,
+      input_price_per_million: null,
+      output_price_per_million: null,
+      cached_input_read_price_per_million: null,
+      cached_input_write_price_per_million: null,
+      trusted_dimensions: {
+        input: false,
+        output: false,
+        cached_input_read: false,
+        cached_input_write: false,
+      },
+      missing_reason: missingReason,
+    };
+  }
+
+  private static findModelForPricingLookup(input: ModelPricingLookupInput): LLMModel | null {
+    const candidates = Array.from(LLMFactory.modelsByIdentifier.values());
+    const provider = input.modelProvider ? String(input.modelProvider) : null;
+    const exactKeys = [input.modelIdentifier, input.modelValue, input.canonicalName]
+      .map((value) => value?.trim())
+      .filter((value): value is string => Boolean(value));
+
+    const direct = exactKeys
+      .map((key) => LLMFactory.modelsByIdentifier.get(key) ?? null)
+      .find((candidate): candidate is LLMModel => {
+        if (!candidate) return false;
+        return !provider || candidate.provider === provider;
+      });
+    if (direct) return direct;
+
+    return candidates.find((model) => {
+      if (provider && model.provider !== provider) return false;
+      return exactKeys.some((key) =>
+        model.modelIdentifier === key ||
+        model.value === key ||
+        model.name === key ||
+        model.canonicalName === key
+      );
+    }) ?? null;
   }
 
   static async reloadModels(provider: LLMProvider): Promise<number> {

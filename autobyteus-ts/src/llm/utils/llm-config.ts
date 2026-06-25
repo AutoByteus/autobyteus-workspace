@@ -15,29 +15,46 @@ export interface TokenPricingConfigInput {
 export class TokenPricingConfig {
   public inputTokenPricing: number;
   public outputTokenPricing: number;
+  public inputTokenPricingTrusted: boolean;
+  public outputTokenPricingTrusted: boolean;
 
   constructor(data: TokenPricingConfigInput = {}) {
-    this.inputTokenPricing = data.inputTokenPricing ?? 0.0;
-    this.outputTokenPricing = data.outputTokenPricing ?? 0.0;
+    this.inputTokenPricingTrusted = Object.prototype.hasOwnProperty.call(data, 'inputTokenPricing');
+    this.outputTokenPricingTrusted = Object.prototype.hasOwnProperty.call(data, 'outputTokenPricing');
+    this.inputTokenPricing = this.inputTokenPricingTrusted ? data.inputTokenPricing ?? 0.0 : 0.0;
+    this.outputTokenPricing = this.outputTokenPricingTrusted ? data.outputTokenPricing ?? 0.0 : 0.0;
+  }
+
+  get hasTrustedPricing(): boolean {
+    return this.inputTokenPricingTrusted && this.outputTokenPricingTrusted;
   }
 
   static fromDict(data: Record<string, unknown>): TokenPricingConfig {
-    return new TokenPricingConfig({
-      inputTokenPricing: (data as { input_token_pricing?: number }).input_token_pricing ?? 0.0,
-      outputTokenPricing: (data as { output_token_pricing?: number }).output_token_pricing ?? 0.0
-    });
+    const input: TokenPricingConfigInput = {};
+    if (Object.prototype.hasOwnProperty.call(data, 'input_token_pricing')) {
+      input.inputTokenPricing = (data as { input_token_pricing?: number }).input_token_pricing;
+    }
+    if (Object.prototype.hasOwnProperty.call(data, 'output_token_pricing')) {
+      input.outputTokenPricing = (data as { output_token_pricing?: number }).output_token_pricing;
+    }
+    return new TokenPricingConfig(input);
   }
 
   toDict(): TokenPricingConfigData {
-    return {
-      input_token_pricing: this.inputTokenPricing,
-      output_token_pricing: this.outputTokenPricing
-    };
+    const data: TokenPricingConfigData = {};
+    if (this.inputTokenPricingTrusted) {
+      data.input_token_pricing = this.inputTokenPricing;
+    }
+    if (this.outputTokenPricingTrusted) {
+      data.output_token_pricing = this.outputTokenPricing;
+    }
+    return data;
   }
 
   mergeWith(override: TokenPricingConfig | null | undefined): void {
     if (!override) return;
-    // Match Python behavior: any override value (including 0.0) replaces current.
+    this.inputTokenPricingTrusted = override.inputTokenPricingTrusted;
+    this.outputTokenPricingTrusted = override.outputTokenPricingTrusted;
     this.inputTokenPricing = override.inputTokenPricing;
     this.outputTokenPricing = override.outputTokenPricing;
   }
@@ -122,6 +139,13 @@ export class LLMConfig {
 
   static fromDict(data: Record<string, unknown>): LLMConfig {
     const pricingData = (data as { pricing_config?: TokenPricingConfigData }).pricing_config ?? {};
+    const pricingConfigInput: TokenPricingConfigInput = {};
+    if (Object.prototype.hasOwnProperty.call(pricingData, 'input_token_pricing')) {
+      pricingConfigInput.inputTokenPricing = pricingData.input_token_pricing;
+    }
+    if (Object.prototype.hasOwnProperty.call(pricingData, 'output_token_pricing')) {
+      pricingConfigInput.outputTokenPricing = pricingData.output_token_pricing;
+    }
 
     const configData: LLMConfigInput = {
       rateLimit: (data as { rate_limit?: number | null }).rate_limit ?? null,
@@ -136,10 +160,7 @@ export class LLMConfig {
       presencePenalty: (data as { presence_penalty?: number | null }).presence_penalty ?? null,
       stopSequences: (data as { stop_sequences?: string[] | null }).stop_sequences ?? null,
       extraParams: (data as { extra_params?: Record<string, unknown> }).extra_params ?? {},
-      pricingConfig: new TokenPricingConfig({
-        inputTokenPricing: pricingData.input_token_pricing,
-        outputTokenPricing: pricingData.output_token_pricing
-      })
+      pricingConfig: new TokenPricingConfig(pricingConfigInput)
     };
 
     return new LLMConfig(configData);

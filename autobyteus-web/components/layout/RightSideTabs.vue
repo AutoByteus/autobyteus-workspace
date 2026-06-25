@@ -48,6 +48,9 @@
       <div v-if="effectiveActiveTab === 'progress'" class="h-full min-h-0">
         <ProgressPanel />
       </div>
+      <div v-if="effectiveActiveTab === 'usage'" class="h-full min-h-0">
+        <TokenUsageMeterPanel />
+      </div>
     </div>
   </div>
 </template>
@@ -68,6 +71,7 @@ import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue
 import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
 import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
+import TokenUsageMeterPanel from '~/components/workspace/usage/TokenUsageMeterPanel.vue';
 
 const props = withDefaults(defineProps<{
   mode?: 'desktop' | 'mobile-tools'

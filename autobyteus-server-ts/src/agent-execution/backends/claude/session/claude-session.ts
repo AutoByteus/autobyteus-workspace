@@ -25,6 +25,7 @@ import {
 } from "./claude-session-output-events.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
+import { emitClaudeTokenUsageEvent } from "./claude-session-token-usage.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 import {
@@ -501,6 +502,7 @@ export class ClaudeSession {
         }
 
         if (isTerminalChunk) {
+          emitClaudeTokenUsageEvent(chunk, this.runId, options.turnId, this.sessionId, this.model, (event) => this.emitRuntimeEvent(event));
           break;
         }
       }

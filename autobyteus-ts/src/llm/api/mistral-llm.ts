@@ -3,7 +3,8 @@ import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
+import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { Message } from '../utils/messages.js';
 import { convertMistralToolCalls } from '../converters/mistral-tool-call-converter.js';
 import { LLMProvider } from '../providers.js';
@@ -38,13 +39,8 @@ export class MistralLLM extends BaseLLM {
     this._renderer = createMistralPromptRendererForToolFormat();
   }
 
-  private toTokenUsage(usage: any): TokenUsage | null {
-    if (!usage) return null;
-    return {
-      prompt_tokens: usage.prompt_tokens ?? 0,
-      completion_tokens: usage.completion_tokens ?? 0,
-      total_tokens: usage.total_tokens ?? 0
-    };
+  private toTokenUsage(usage: unknown): LlmTokenUsageObservation | null {
+    return createOpenAICompatibleTokenUsageObservation(usage, this.model);
   }
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {

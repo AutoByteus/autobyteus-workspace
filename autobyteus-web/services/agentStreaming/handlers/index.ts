@@ -52,3 +52,7 @@ export {
 export {
   handleFileChange,
 } from './fileChangeHandler';
+
+export {
+  handleTokenUsageUpdated,
+} from './tokenUsageHandler';

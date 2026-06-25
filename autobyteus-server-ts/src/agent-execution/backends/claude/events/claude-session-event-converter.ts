@@ -127,6 +127,12 @@ export class ClaudeSessionEventConverter {
           AgentRunEventType.COMPACTION_STATUS,
           this.buildClaudeCompactionBoundaryPayload(payload, "claude.status_compacting", false),
         )];
+      case ClaudeSessionEventName.TOKEN_USAGE_UPDATED:
+        return [this.createEvent(
+          claudeEventName,
+          AgentRunEventType.TOKEN_USAGE_UPDATED,
+          serializePayload(payload),
+        )];
       case ClaudeSessionEventName.COMPACT_BOUNDARY:
         return [this.createEvent(
           claudeEventName,

@@ -1,5 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { TokenUsage } from "autobyteus-ts";
+import type { CodexReadyTurnTokenUsage } from "./codex-thread-token-usage.js";
 import { asString } from "../codex-app-server-json.js";
 import { resolveTurnId } from "./codex-thread-id-resolver.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
@@ -43,7 +43,7 @@ export class CodexThread {
   readonly startup: CodexThreadStartupGate;
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
   readonly pendingMcpToolCalls: Map<string, CodexPendingMcpToolCall>;
-  readonly pendingTurnTokenUsage: Map<string, TokenUsage>;
+  readonly pendingTurnTokenUsage: Map<string, CodexReadyTurnTokenUsage>;
   readonly readyTurnTokenUsageTurnIds: Set<string>;
   readonly listeners: Set<(message: CodexAppServerMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
@@ -56,7 +56,7 @@ export class CodexThread {
     startup: CodexThreadStartupGate;
     approvalRecords?: Map<string, CodexApprovalRecord>;
     pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
-    pendingTurnTokenUsage?: Map<string, TokenUsage>;
+    pendingTurnTokenUsage?: Map<string, CodexReadyTurnTokenUsage>;
     readyTurnTokenUsageTurnIds?: Set<string>;
     listeners?: Set<(message: CodexAppServerMessage) => void>;
     unbindHandlers?: Array<() => void>;
@@ -165,16 +165,16 @@ export class CodexThread {
     this.runContext.runtimeContext.threadId = threadId;
   }
 
-  recordTurnTokenUsage(turnId: string, usage: TokenUsage): void {
+  recordTurnTokenUsage(turnId: string, usage: CodexReadyTurnTokenUsage): void {
     this.pendingTurnTokenUsage.set(turnId, usage);
     this.markTurnTokenUsageReady(turnId);
   }
 
   getReadyTurnTokenUsages(): Array<{
     turnId: string;
-    usage: TokenUsage;
+    usage: CodexReadyTurnTokenUsage;
   }> {
-    const ready: Array<{ turnId: string; usage: TokenUsage }> = [];
+    const ready: Array<{ turnId: string; usage: CodexReadyTurnTokenUsage }> = [];
     for (const turnId of this.readyTurnTokenUsageTurnIds) {
       const usage = this.pendingTurnTokenUsage.get(turnId);
       if (!usage) {

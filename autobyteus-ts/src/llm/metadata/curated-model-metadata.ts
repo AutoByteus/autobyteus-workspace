@@ -31,19 +31,19 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.ANTHROPIC]: {
+    'claude-opus-4-8': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
+      verifiedAt: '2026-06-24'
+    },
     'claude-opus-4-7': {
       maxContextTokens: 1000000,
       maxInputTokens: 1000000,
       maxOutputTokens: 128000,
       sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
       verifiedAt: '2026-04-25'
-    },
-    'claude-opus-4-6': {
-      maxContextTokens: 1000000,
-      maxInputTokens: 1000000,
-      maxOutputTokens: 128000,
-      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
-      verifiedAt: '2026-04-09'
     },
     'claude-sonnet-4-6': {
       maxContextTokens: 1000000,
@@ -52,13 +52,6 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
       verifiedAt: '2026-04-09'
     },
-    'claude-haiku-4-5': {
-      maxContextTokens: 200000,
-      maxInputTokens: 200000,
-      maxOutputTokens: 64000,
-      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
-      verifiedAt: '2026-04-09'
-    }
   },
   [LLMProvider.DEEPSEEK]: {
     'deepseek-v4-flash': {
@@ -119,9 +112,21 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxContextTokens: 256000,
       sourceUrl: 'https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart',
       verifiedAt: '2026-06-16'
+    },
+    'kimi-k2.7-code-highspeed': {
+      maxContextTokens: 256000,
+      sourceUrl: 'https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart',
+      verifiedAt: '2026-06-24'
     }
   },
   [LLMProvider.QWEN]: {
+    'qwen3.7-max': {
+      maxContextTokens: 262144,
+      maxInputTokens: 258048,
+      maxOutputTokens: 65536,
+      sourceUrl: 'https://www.alibabacloud.com/help/en/model-studio/models',
+      verifiedAt: '2026-06-24'
+    },
     'qwen3-max': {
       maxContextTokens: 262144,
       maxInputTokens: 258048,
@@ -140,6 +145,12 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.MINIMAX]: {
+    'MiniMax-M3': {
+      maxContextTokens: 204800,
+      maxInputTokens: 204800,
+      sourceUrl: 'https://platform.minimax.io/docs/release-notes/models',
+      verifiedAt: '2026-06-24'
+    },
     'MiniMax-M2.7': {
       maxContextTokens: 204800,
       maxInputTokens: 204800,
