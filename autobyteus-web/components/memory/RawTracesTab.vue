@@ -1,6 +1,22 @@
 <template>
   <div>
     <div class="flex flex-wrap items-center gap-3 mb-4">
+      <div v-if="rawTraceFiles?.length" class="flex items-center gap-2">
+        <label class="text-xs font-semibold text-gray-600" for="raw-trace-file-selector">
+          {{ $t('memory.components.memory.RawTracesTab.raw_trace_file') }}
+        </label>
+        <select
+          id="raw-trace-file-selector"
+          class="min-w-64 rounded-md border border-gray-200 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          :value="selectedRawTraceFileName ?? ''"
+          :disabled="loading"
+          @change="onFileChange"
+        >
+          <option v-for="file in rawTraceFiles" :key="file.fileName" :value="file.fileName">
+            {{ file.fileName }}{{ file.kind === 'active' ? ` (${$t('memory.components.memory.RawTracesTab.active_file')})` : '' }} — {{ formatCount(file.recordCount) }} {{ $t('memory.components.memory.RawTracesTab.records') }}
+          </option>
+        </select>
+      </div>
       <div class="text-xs font-semibold text-gray-600">{{ $t('memory.components.memory.RawTracesTab.raw_trace_limit') }}</div>
       <input
         v-model.number="limitInput"
@@ -58,16 +74,22 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { MemoryTraceEvent } from '~/types/memory';
+import type { MemoryTraceEvent, RawTraceFileSummary } from '~/types/memory';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   traces: MemoryTraceEvent[] | null;
+  rawTraceFiles?: RawTraceFileSummary[] | null;
+  selectedRawTraceFileName?: string | null;
   limit: number;
   loading: boolean;
-}>();
+}>(), {
+  rawTraceFiles: null,
+  selectedRawTraceFileName: null,
+});
 
 const emit = defineEmits<{
   (e: 'updateLimit', value: number): void;
+  (e: 'selectFile', value: string): void;
 }>();
 
 const limitInput = ref(props.limit);
@@ -87,6 +109,16 @@ const applyLimit = () => {
   }
   emit('updateLimit', limitInput.value);
 };
+
+const onFileChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement | null;
+  if (!target?.value) {
+    return;
+  }
+  emit('selectFile', target.value);
+};
+
+const formatCount = (value: number) => value.toLocaleString();
 
 const formatJson = (payload: unknown) => {
   try {

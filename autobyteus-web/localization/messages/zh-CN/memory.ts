@@ -6,6 +6,9 @@ const memoryMessages = {
   'memory.components.memory.MemoryHome.localRunnableMemory': '本地可运行记忆',
   'memory.components.memory.MemoryHome.lastImported': '最近导入 {{timestamp}}',
   'memory.components.memory.MemoryInspector.importedReadOnlyCorpus': '已导入记忆 · 只读语料',
+  'memory.components.memory.RawTracesTab.raw_trace_file': '原始轨迹文件',
+  'memory.components.memory.RawTracesTab.active_file': '当前',
+  'memory.components.memory.RawTracesTab.records': '条记录',
 } satisfies TranslationCatalog;
 
 export default memoryMessages;

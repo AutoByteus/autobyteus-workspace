@@ -95,12 +95,31 @@ export class RawTraceArchiveManager {
   }
 
   readCompleteArchiveRawTraceDicts(): Record<string, unknown>[] {
-    const manifest = this.readManifest();
     const records: Record<string, unknown>[] = [];
-    for (const segment of manifest.segments.filter((entry) => entry.status === 'complete').sort((a, b) => a.index - b.index)) {
+    for (const segment of this.listCompleteSegments()) {
       records.push(...this.readSegmentRawTraceDicts(segment));
     }
     return records;
+  }
+
+  listCompleteSegments(): RawTraceArchiveSegmentEntry[] {
+    return this.readManifest().segments
+      .filter((entry) => entry.status === 'complete')
+      .sort((a, b) => a.index - b.index);
+  }
+
+  findCompleteSegmentByFileName(fileName: string): RawTraceArchiveSegmentEntry | null {
+    return this.listCompleteSegments().find((entry) => entry.file_name === fileName) ?? null;
+  }
+
+  getCompleteSegmentPathByFileName(fileName: string): string | null {
+    const segment = this.findCompleteSegmentByFileName(fileName);
+    return segment ? this.resolveSegmentPath(segment.file_name) : null;
+  }
+
+  readCompleteSegmentRawTraceDictsByFileName(fileName: string): Record<string, unknown>[] | null {
+    const segment = this.findCompleteSegmentByFileName(fileName);
+    return segment ? this.readSegmentRawTraceDicts(segment) : null;
   }
 
   hasCompleteSegment(boundaryKey: string): boolean {

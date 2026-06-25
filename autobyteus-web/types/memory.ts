@@ -99,7 +99,9 @@ export interface MemoryMessage {
 }
 
 export interface MemoryTraceEvent {
+  id?: string | null;
   traceType: string;
+  sourceEvent?: string | null;
   content?: string | null;
   toolName?: string | null;
   toolCallId?: string | null;
@@ -112,12 +114,23 @@ export interface MemoryTraceEvent {
   ts: number;
 }
 
+export interface RawTraceFileSummary {
+  fileName: string;
+  kind: 'active' | 'segment';
+  recordCount: number;
+  segmentIndex?: number | null;
+  firstTimestamp?: number | null;
+  lastTimestamp?: number | null;
+}
+
 export interface RunMemoryView {
   runId: string;
   workingContext?: MemoryMessage[] | null;
   episodic?: Array<Record<string, unknown>> | null;
   semantic?: Array<Record<string, unknown>> | null;
   rawTraces?: MemoryTraceEvent[] | null;
+  rawTraceFiles?: RawTraceFileSummary[] | null;
+  selectedRawTraceFileName?: string | null;
 }
 
 export type MemoryInspectorTab = 'working' | 'episodic' | 'semantic' | 'raw';
