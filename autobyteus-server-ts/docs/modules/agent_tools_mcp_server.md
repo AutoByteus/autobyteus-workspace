@@ -239,7 +239,7 @@ may also return raw MCP tool results; their `content`, `isError`,
 
 For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP lifecycle
 events are normalized to canonical application-facing tool names such as
-`send_message_to`, `open_tab`, `generate_image`, `delegate_tasks`, and
+`send_message_to`, `open_tab`, `generate_image`, `delegate_task`, and
 `publish_artifacts`. Provider/server-qualified names such as
 `mcp__autobyteus_agent_tools__generate_image`, `autobyteus_agent_tools`, and
 bearer/header config details must not leak into frontend events, run history, or

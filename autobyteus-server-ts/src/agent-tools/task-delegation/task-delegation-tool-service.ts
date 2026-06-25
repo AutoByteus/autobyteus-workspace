@@ -5,8 +5,8 @@ import {
   type TaskDelegationRunRegistry,
 } from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import type {
-  DelegateTasksInput,
-  DelegateTasksResult,
+  DelegateTaskInput,
+  DelegateTaskResult,
   ReviewTaskResultInput,
   ReviewTaskResultResult,
   SubmitTaskResultInput,
@@ -66,12 +66,12 @@ export class TaskDelegationToolService {
     runRegistry?: TaskDelegationRunRegistry;
   } = {}) {}
 
-  async delegateTasks(
+  async delegateTask(
     context: TaskDelegationToolContext,
-    input: DelegateTasksInput,
-  ): Promise<DelegateTasksResult> {
+    input: DelegateTaskInput,
+  ): Promise<DelegateTaskResult> {
     const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).delegateTasks(context, input);
+    return this.getTaskDelegationService(run).delegateTask(context, input);
   }
 
   async submitTaskResult(

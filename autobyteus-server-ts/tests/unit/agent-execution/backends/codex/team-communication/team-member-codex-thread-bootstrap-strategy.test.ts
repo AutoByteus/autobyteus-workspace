@@ -133,7 +133,7 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       runContext,
       agentInstruction: "Solve the task.",
       configuredToolExposure: buildConfiguredAgentToolExposure([
-        "delegate_tasks",
+        "delegate_task",
         ["mark", "task", "completed"].join("_"),
         ["mark", "task", "failed"].join("_"),
         ["accept", "task"].join("_"),
@@ -144,8 +144,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     });
 
     expect(preparation.developerInstructions).toContain("Task delegation protocol");
-    expect(preparation.developerInstructions).toContain("Do not use `create_task`");
-    expect(preparation.developerInstructions).toContain("Use `delegate_tasks`");
+    expect(preparation.developerInstructions).toContain("Use `delegate_task`");
+    expect(preparation.developerInstructions).toContain("call `delegate_task` separately for each task");
+    expect(preparation.developerInstructions).not.toContain("do not pass delegator");
     expect(preparation.developerInstructions).toContain("`submit_task_result`");
     expect(preparation.developerInstructions).toContain("`review_task_result`");
     expect(preparation.dynamicToolRegistrations).toBeNull();

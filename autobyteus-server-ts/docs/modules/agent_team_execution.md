@@ -104,10 +104,9 @@ Team task delegation is owned by `TaskDelegationService`, not by runtime-specifi
 handlers, legacy model-facing task-plan tools, or future MCP transport code. The
 model-facing task-delegation protocol is:
 
-- `delegate_tasks`: a coordinator/delegator submits one or more bounded
-  ready-to-run tasks in a `tasks` array. Each item contains `member_name`, rich
-  `description`, and optional `reference_files`; dependency encoding is not part
-  of the task item shape.
+- `delegate_task`: a coordinator/delegator submits one bounded ready-to-run task
+  with direct `member_name`, rich `description`, and optional `reference_files`.
+  Multiple independent tasks use multiple `delegate_task` calls.
 - `submit_task_result`: the bound task-agent submits one reviewable result for
   its current task. The tool is selector-free; task identity comes from the
   task-agent context.
@@ -129,20 +128,20 @@ The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
    server-owned `MemberTeamContext` and calls `TaskDelegationToolService`.
-2. The service resolves the active `TeamRun`, creates `not_started` ledger
-   records, validates exact `member_name` targets against the team roster, and
-   treats the submitted tasks as independent ready-to-run work.
+2. The service resolves the active `TeamRun`, creates one `not_started` ledger
+   record, validates the exact `member_name` target against the team roster, and
+   treats the submitted task as independent ready-to-run work.
 3. `TaskDelegationActivationCoordinator` registers the active task-agent run in
    the team-run `TaskAgentDirectory`, binds the ledger record to the concrete
-   task-agent runtime identity, and starts one task-agent instance per task
+   task-agent runtime identity, and starts one task-agent instance for that task
    through `TeamRun.startTaskAgentInstance(...)`. The work packet includes the
    derived task label, rich `description`, optional reference files, the
    task-agent `target_agent_run_id`, original delegator identity, and
    instructions to use `submit_task_result` for reviewable output.
-4. Accepted activations mark records `active`, mark the exact run reachable, and
+4. Accepted activations mark the record `active`, mark the exact run reachable, and
    emit `TASK_DELEGATION_ACTIVATED`; rejected activations unregister the
-   starting run, roll records back to `not_started`, and are returned to the
-   tool caller in `activationResults`.
+   starting run, roll the record back to `not_started`, and are returned to the
+   tool caller as the direct `delegate_task` activation outcome.
 5. The task-agent calls `submit_task_result`. The ledger records a distinct
    submission id, moves the task to `awaiting_review`, sets `pendingSubmissionId`,
    emits `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the
@@ -183,12 +182,15 @@ suites under `tests/integration/agent-team-execution/` and
 GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
 `gpt-5.5` worker. The live path is intentionally skipped unless explicit live
 flags are set, so local/default validation can run the file and expect a skipped
-test while live validation can opt in with:
+test while live validation can opt in with an exact `LMSTUDIO_MODEL_ID` for a
+loaded provider-native tool-call-capable model. If `LMSTUDIO_MODEL_ID` is not
+set, the suite falls back to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment
+discovery.
 
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   AUTOBYTEUS_STREAM_PARSER=api_tool_call \
-  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b \
+  LMSTUDIO_MODEL_ID='<loaded-lmstudio-model-id>' \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \
     tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
@@ -253,7 +255,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   names and bearer/header config details must not leak into application-facing
   events or create extra Activity rows.
 - AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
-- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
+- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_task`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
   runtime-level provider policy. Codex App Server and Claude Agent SDK receive
   them through Agent Tools MCP only when the current member/tool configuration

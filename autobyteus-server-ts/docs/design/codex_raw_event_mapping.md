@@ -116,7 +116,7 @@ Codex Agent Tools MCP calls use this MCP spine through the thread-scoped
 `autobyteus_agent_tools` server config. Live conversion and diagnostic
 `thread/read` replay canonicalize provider/server-qualified tool identities to
 application-facing canonical names such as `send_message_to`, `generate_image`,
-`delegate_tasks`, and `publish_artifacts`, preserve invocation id and arguments,
+`delegate_task`, and `publish_artifacts`, preserve invocation id and arguments,
 apply any family-specific result canonicalization owned by the corresponding
 tool family, and sanitize nested payloads so
 `autobyteus_agent_tools`,

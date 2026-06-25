@@ -48,9 +48,7 @@ export type TaskDelegationTaskInput = {
   reference_files?: string[];
 };
 
-export type DelegateTasksInput = {
-  tasks: TaskDelegationTaskInput[];
-};
+export type DelegateTaskInput = TaskDelegationTaskInput;
 
 export type SubmitTaskResultInput = {
   message: string;
@@ -136,7 +134,6 @@ export type TaskDelegationRecord = {
 
 export type TaskDelegationActivationResult = {
   memberName: string;
-  taskCount: number;
   accepted: boolean;
   task_id: string;
   target_agent_run_id: string | null;
@@ -177,14 +174,13 @@ export type TaskDelegationStatusUpdatePayload = {
   terminal: boolean;
 };
 
-export type DelegateTasksResult = {
-  createdTasks: Array<{
-    member_name: string;
-    task_id: string;
-    target_agent_run_id: string | null;
-    status: TaskDelegationStatus;
-  }>;
-  activationResults: TaskDelegationActivationResult[];
+export type DelegateTaskResult = {
+  member_name: string;
+  task_id: string;
+  target_agent_run_id: string | null;
+  status: TaskDelegationStatus;
+  activation_accepted: boolean;
+  message: string | null;
 };
 
 export type TaskDelegationResultSubmittedPayload = {
