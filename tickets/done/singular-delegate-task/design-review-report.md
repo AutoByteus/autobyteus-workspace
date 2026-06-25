@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` for singular `delegate_task` API cleanup design.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-spec.md`. The design clearly targets a clean-cut replacement of the public/model-facing `delegate_tasks({ tasks: [...] })` contract with `delegate_task({ member_name, description, reference_files? })`, while preserving `submit_task_result` and `review_task_result` semantics.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-spec.md`. The design clearly targets a clean-cut replacement of the public/model-facing `delegate_tasks({ tasks: [...] })` contract with `delegate_task({ member_name, description, reference_files? })`, while preserving `submit_task_result` and `review_task_result` semantics.
 
 ## Task Design Health Assessment Verdict
 

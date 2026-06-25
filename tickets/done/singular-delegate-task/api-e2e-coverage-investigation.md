@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review handoff requesting API/E2E coverage investigation and execution for FR-009 / AC-008 after implementation review passed.
 - Prior Investigation Reviewed: N/A
@@ -104,7 +104,7 @@ Implementation handoff's Legacy / Compatibility Removal Check is clean: no backw
 4. Run the mixed runtime E2E with live flags, expected command:
    - `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
 5. If the live E2E fails due missing Codex binary/model/provider setup, record exact blocker evidence and optionally run the same file without live flags as a compile/skip diagnostic only.
-6. Write the canonical execution coverage report at `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/api-e2e-execution-coverage-report.md`.
+6. Write the canonical execution coverage report at `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/api-e2e-execution-coverage-report.md`.
 7. Because durable repository-resident E2E coverage will be updated after code review, route the cumulative package back to `code_reviewer` before delivery.
 
 ## Investigation Decision

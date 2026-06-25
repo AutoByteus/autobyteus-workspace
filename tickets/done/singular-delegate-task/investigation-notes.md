@@ -24,7 +24,7 @@ English note: this is best described as "negative instruction noise", "irrelevan
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task`
 - Current Branch: `codex/singular-delegate-task`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task`
 - Bootstrap Base Branch: `origin/personal`

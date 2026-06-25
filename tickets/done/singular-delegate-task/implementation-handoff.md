@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/in-progress/singular-delegate-task/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/singular-delegate-task/tickets/done/singular-delegate-task/design-review-report.md`
 
 ## What Changed
 

@@ -182,12 +182,15 @@ suites under `tests/integration/agent-team-execution/` and
 GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
 `gpt-5.5` worker. The live path is intentionally skipped unless explicit live
 flags are set, so local/default validation can run the file and expect a skipped
-test while live validation can opt in with:
+test while live validation can opt in with an exact `LMSTUDIO_MODEL_ID` for a
+loaded provider-native tool-call-capable model. If `LMSTUDIO_MODEL_ID` is not
+set, the suite falls back to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment
+discovery.
 
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   AUTOBYTEUS_STREAM_PARSER=api_tool_call \
-  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b \
+  LMSTUDIO_MODEL_ID='<loaded-lmstudio-model-id>' \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \
     tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
