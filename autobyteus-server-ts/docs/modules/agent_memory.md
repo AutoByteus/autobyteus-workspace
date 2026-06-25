@@ -68,7 +68,7 @@ are recorded only after the runtime adapter normalizes them into canonical
 `AgentRunEvent` tool lifecycles. The MCP route, method dispatcher, executor,
 and family services/dispatchers must not write raw traces directly. Raw traces
 use canonical tool names such as `send_message_to`, `generate_image`,
-`delegate_tasks`, and `publish_artifacts`, preserve the provider invocation id
+`delegate_task`, and `publish_artifacts`, preserve the provider invocation id
 as the tool-call id, and store the normalized application-facing result payload
 without provider/server-qualified tool names, MCP session ids, or bearer/header
 descriptor details. For families with a canonical public result contract, the

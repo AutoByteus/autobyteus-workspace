@@ -106,7 +106,7 @@ security, and adapter contract.
 
 The server owns the first-party bounded task-delegation surface for team runs:
 
-- `delegate_tasks`
+- `delegate_task`
 - `submit_task_result`
 - `review_task_result`
 
@@ -133,12 +133,11 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
-member identity. `delegate_tasks` creates one or more internal delegation ledger
-records from exact `member_name`, ready-to-run rich `description`, and optional
-`reference_files` work-packet inputs, then starts runnable task-agent instances
-with direct work packets. Do not encode dependencies in a task item; dependent
-follow-up work is delegated by the coordinator later through another
-`delegate_tasks` call. Bound task-agents submit reviewable output with
+member identity. `delegate_task` creates one internal delegation ledger record
+from exact `member_name`, ready-to-run rich `description`, and optional
+`reference_files` work-packet inputs, then starts one task-agent instance with a
+direct work packet. Multiple independent tasks and sequential follow-up work are
+delegated through additional `delegate_task` calls. Bound task-agents submit reviewable output with
 `submit_task_result`; the tool accepts only `message` and optional
 `reference_files` because the task is inferred from task-agent context. Original
 delegators review the latest pending submission with `review_task_result`, using

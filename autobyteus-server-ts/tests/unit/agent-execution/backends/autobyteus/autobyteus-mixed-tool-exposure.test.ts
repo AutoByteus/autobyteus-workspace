@@ -17,7 +17,7 @@ describe("autobyteus mixed tool exposure", () => {
           "get_task_plan_status",
           "assign_task_to",
           "update_task_status",
-          "delegate_tasks",
+          "delegate_task",
           "submit_task_result",
           "review_task_result",
           ["mark", "task", "completed"].join("_"),
@@ -28,7 +28,7 @@ describe("autobyteus mixed tool exposure", () => {
         memberTeamContext: mixedMemberTeamContext as any,
       }),
     ).toEqual([
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
       "read_file",

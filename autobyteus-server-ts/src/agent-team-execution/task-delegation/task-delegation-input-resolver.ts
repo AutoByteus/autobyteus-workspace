@@ -1,6 +1,6 @@
 import {
   TaskDelegationError,
-  type DelegateTasksInput,
+  type DelegateTaskInput,
   type TaskDelegationCallerIdentity,
   type TaskDelegationContext,
   type TaskDelegationDelegatorIdentity,
@@ -67,20 +67,18 @@ export class TaskDelegationInputResolver {
     this.assertAuthorizedDelegator(context);
   }
 
-  buildCreateInputs(
+  buildCreateInput(
     context: TaskDelegationContext,
-    input: DelegateTasksInput,
-  ): CreateTaskDelegationRecordInput[] {
-    const normalizedTasks = input.tasks.map((task) => this.normalizeTaskInput(task));
-    const members = normalizedTasks.map((task) =>
-      this.resolveMember(context, task.member_name),
-    );
-    return normalizedTasks.map((task, index) => ({
+    input: DelegateTaskInput,
+  ): CreateTaskDelegationRecordInput {
+    const task = this.normalizeTaskInput(input);
+    const member = this.resolveMember(context, task.member_name);
+    return {
       taskId: this.ledger.reserveTaskId(),
       task,
-      member: members[index]!,
+      member,
       delegator: cloneTaskDelegationDelegatorIdentity(context.caller),
-    }));
+    };
   }
 
   normalizeStatusMessage(message: string | null | undefined): string | null {

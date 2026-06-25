@@ -56,7 +56,7 @@ describe("AgentToolMcpCatalog", () => {
       "send_message_to",
       "open_tab",
       "generate_image",
-      "delegate_tasks",
+      "delegate_task",
       "publish_artifacts",
       "unknown_tool",
     ]);
@@ -75,7 +75,7 @@ describe("AgentToolMcpCatalog", () => {
       "send_message_to",
       "open_tab",
       "generate_image",
-      "delegate_tasks",
+      "delegate_task",
       "publish_artifacts",
     ]);
   });

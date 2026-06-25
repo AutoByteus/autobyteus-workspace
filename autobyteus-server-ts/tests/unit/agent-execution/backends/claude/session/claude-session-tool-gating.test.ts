@@ -112,7 +112,7 @@ const createSession = (configuredToolNames: string[] = [], input: {
     "read_page",
     "generate_image",
     "generate_speech",
-    "delegate_tasks",
+    "delegate_task",
     "submit_task_result",
     "review_task_result",
     "publish_artifacts",
@@ -460,7 +460,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("enables task delegation tools and their autobyteus_agent_tools MCP names only when configured", async () => {
     const { session, startQueryTurn } = createSession([
-      "delegate_tasks",
+      "delegate_task",
       ["mark", "task", "completed"].join("_"),
       ["mark", "task", "failed"].join("_"),
       ["accept", "task"].join("_"),
@@ -479,7 +479,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
           enabledTools: [
-            "delegate_tasks",
+            "delegate_task",
             "submit_task_result",
             "review_task_result",
           ],
@@ -490,8 +490,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: expect.stringContaining("Task delegation protocol"),
         allowedTools: [
-          "delegate_tasks",
-          "mcp__autobyteus_agent_tools__delegate_tasks",
+          "delegate_task",
+          "mcp__autobyteus_agent_tools__delegate_task",
           "submit_task_result",
           "mcp__autobyteus_agent_tools__submit_task_result",
           "review_task_result",

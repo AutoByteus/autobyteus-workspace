@@ -86,11 +86,11 @@ export const composeMemberRunInstructions = (
       runtimeLines.push("");
     }
     runtimeLines.push("Task delegation protocol");
-    runtimeLines.push("- Use `delegate_tasks` to assign bounded work to exact logical team members; use a one-item `tasks` list for a single task. The framework derives you as the delegator from tool context; do not pass delegator.");
-    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
-    runtimeLines.push("- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.");
+    runtimeLines.push("- Use `delegate_task` to assign one bounded ready-to-run task to an exact logical team member. Provide `member_name`, a complete `description`, and optional `reference_files`.");
+    runtimeLines.push("- To assign multiple independent tasks, call `delegate_task` separately for each task.");
+    runtimeLines.push("- Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
     runtimeLines.push("- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
-    runtimeLines.push("- Task-agents submit reviewable results with `submit_task_result`; the tool is bound to the current task-agent context, so do not pass task_id, task_name, member_name, or status.");
+    runtimeLines.push("- Task-agents submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional `reference_files`.");
     runtimeLines.push("- The original delegator reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty message and are delivered by the system to the same task-agent.");
     runtimeLines.push("- `send_message_to` remains ordinary agent message delivery only. Do not use it for task result submission, revision requests, acceptance, or finalization.");
     runtimeLines.push("- After the original delegator accepts the task, the framework settles or exits the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");

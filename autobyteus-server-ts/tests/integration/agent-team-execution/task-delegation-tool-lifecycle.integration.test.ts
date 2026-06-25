@@ -26,13 +26,13 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { TaskDelegationRunRegistry } from "../../../src/agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import { disposeTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import type {
-  DelegateTasksResult,
+  DelegateTaskResult,
   ReviewTaskResultResult,
   SubmitTaskResultResult,
   TaskDelegationContext,
 } from "../../../src/agent-team-execution/task-delegation/task-delegation-record.js";
 import {
-  DELEGATE_TASKS_TOOL_NAME,
+  DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
   SUBMIT_TASK_RESULT_TOOL_NAME,
   TASK_DELEGATION_TOOL_NAME_LIST,
@@ -45,7 +45,7 @@ import {
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const teamRunId = "task-delegation-codex-run";
-const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASKS_TOOL_NAME);
+const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
 const submitEntry = getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME);
 const reviewEntry = getTaskDelegationToolManifestEntry(REVIEW_TASK_RESULT_TOOL_NAME);
 
@@ -184,24 +184,36 @@ const createHarness = async () => {
     teamCommunicationService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
     runFileChangeService: { attachToTeamRun: vi.fn(() => () => undefined) } as never,
   });
-  const run = await manager.createTeamRun(new TeamRunConfig({
-    teamDefinitionId: "task-delegation-integration-team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    coordinatorMemberRouteKey: "coordinator",
-    memberConfigs: ["coordinator", "worker"].map((memberRouteKey) => ({
-      memberName: memberRouteKey,
-      memberRouteKey,
-      memberRunId: `run-${memberRouteKey}`,
-      agentDefinitionId: `agent-${memberRouteKey}`,
-      llmModelIdentifier: "gpt-test",
-      autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    })),
-  }));
+  const run = await manager.createTeamRun(
+    new TeamRunConfig({
+      teamDefinitionId: "task-delegation-integration-team",
+      teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberRouteKey: "coordinator",
+      memberConfigs: ["coordinator", "worker"].map((memberRouteKey) => ({
+        memberName: memberRouteKey,
+        memberRouteKey,
+        memberRunId: `run-${memberRouteKey}`,
+        agentDefinitionId: `agent-${memberRouteKey}`,
+        llmModelIdentifier: "gpt-test",
+        autoExecuteTools: true,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      })),
+    }),
+    teamRunId,
+  );
   if (!backend) throw new Error("Managed backend was not created.");
 
-  const runRegistry = new TaskDelegationRunRegistry();
+  let taskAgentAllocationCounter = 0;
+  const runRegistry = new TaskDelegationRunRegistry({
+    agentRunIdentityAllocator: {
+      allocateForAgentDefinition: async (agentDefinitionId: string) => {
+        taskAgentAllocationCounter += 1;
+        const logicalName = agentDefinitionId.replace(/^agent-/, "");
+        return `${teamRunId}__${logicalName}__task_${String(taskAgentAllocationCounter).padStart(4, "0")}`;
+      },
+    },
+  });
   const service = new TaskDelegationToolService({
     teamRunService: { resolveTeamRun: async (id: string) => (id === run.runId ? run : null) } as never,
     runRegistry,
@@ -257,15 +269,15 @@ const currentRun = (harness: Harness) => {
   return run;
 };
 
-const executeDelegateTasks = async (harness: Harness, rawInput: Record<string, unknown>) =>
-  (await delegateEntry.execute(harness.service, harness.coordinatorContext, delegateEntry.parseInput(rawInput))) as DelegateTasksResult;
+const executeDelegateTask = async (harness: Harness, rawInput: Record<string, unknown>) =>
+  (await delegateEntry.execute(harness.service, harness.coordinatorContext, delegateEntry.parseInput(rawInput))) as DelegateTaskResult;
 
-const executeDelegateTasksAsTaskAgent = async (harness: Harness, contextTaskId: string, rawInput: Record<string, unknown>) =>
+const executeDelegateTaskAsTaskAgent = async (harness: Harness, contextTaskId: string, rawInput: Record<string, unknown>) =>
   (await delegateEntry.execute(
     harness.service,
     buildToolContext(currentRun(harness), "worker", findTaskAgentIdentity(harness.backend, contextTaskId)),
     delegateEntry.parseInput(rawInput),
-  )) as DelegateTasksResult;
+  )) as DelegateTaskResult;
 
 const executeSubmitTaskResultAsTaskAgent = async (
   harness: Harness,
@@ -344,32 +356,38 @@ const publishIdleEvent = (
 const websocketMessageFor = (event: TeamRunEvent) =>
   convertTeamRunEventToServerMessage(event, { map: vi.fn() } as unknown as AgentRunEventMessageMapper);
 
-const twoStepDelegationInput = {
-  tasks: [
-    {
-      member_name: "worker",
-      description: "Draft a validation note. Done when draft.md content is summarized.",
-    },
-    {
-      member_name: "worker",
-      description: "Review the validation note independently. Done when review.md content is summarized.",
-    },
-  ],
+const draftDelegationInput = {
+  member_name: "worker",
+  description: "Draft a validation note. Done when draft.md content is summarized.",
+};
+
+const reviewDelegationInput = {
+  member_name: "worker",
+  description: "Review the validation note independently. Done when review.md content is summarized.",
 };
 
 describe("task delegation tool lifecycle integration", () => {
-  it("runs the server-managed delegate_tasks -> submit_task_result -> review_task_result -> idle settlement path", async () => {
+  it("runs the server-managed delegate_task -> submit_task_result -> review_task_result -> idle settlement path", async () => {
     const harness = await createHarness();
-    const created = await executeDelegateTasks(harness, twoStepDelegationInput);
+    const createdDraft = await executeDelegateTask(harness, draftDelegationInput);
+    const createdReview = await executeDelegateTask(harness, reviewDelegationInput);
 
-    expect(created.createdTasks).toEqual([
-      expect.objectContaining({ member_name: "worker", task_id: "task_0001", target_agent_run_id: "task-delegation-codex-run__worker__task_0001", status: "active" }),
-      expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002", status: "active" }),
-    ]);
-    expect(created.activationResults).toEqual([
-      expect.objectContaining({ accepted: true, memberName: "worker", taskCount: 1, task_id: "task_0001", target_agent_run_id: "task-delegation-codex-run__worker__task_0001" }),
-      expect.objectContaining({ accepted: true, memberName: "worker", taskCount: 1, task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002" }),
-    ]);
+    expect(createdDraft).toEqual(expect.objectContaining({
+      member_name: "worker",
+      task_id: "task_0001",
+      target_agent_run_id: "task-delegation-codex-run__worker__task_0001",
+      status: "active",
+      activation_accepted: true,
+      message: null,
+    }));
+    expect(createdReview).toEqual(expect.objectContaining({
+      member_name: "worker",
+      task_id: "task_0002",
+      target_agent_run_id: "task-delegation-codex-run__worker__task_0002",
+      status: "active",
+      activation_accepted: true,
+      message: null,
+    }));
     expect(harness.backend.taskAgentStarts[0]).toMatchObject({
       identity: expect.objectContaining({ taskId: "task_0001" }),
       message: expect.objectContaining({
@@ -433,17 +451,23 @@ describe("task delegation tool lifecycle integration", () => {
 
   it("lets a task-agent delegate child work and review the child through tight task-agent identity", async () => {
     const harness = await createHarness();
-    await executeDelegateTasks(harness, {
-      tasks: [{ member_name: "worker", description: "Parent worker task." }],
+    await executeDelegateTask(harness, {
+      member_name: "worker",
+      description: "Parent worker task.",
     });
     const parentTaskAgent = findTaskAgentIdentity(harness.backend, "task_0001");
 
-    const childCreated = await executeDelegateTasksAsTaskAgent(harness, "task_0001", {
-      tasks: [{ member_name: "worker", description: "Child worker task from parent task-agent." }],
+    const childCreated = await executeDelegateTaskAsTaskAgent(harness, "task_0001", {
+      member_name: "worker",
+      description: "Child worker task from parent task-agent.",
     });
-    expect(childCreated.createdTasks).toEqual([
-      expect.objectContaining({ member_name: "worker", task_id: "task_0002", target_agent_run_id: "task-delegation-codex-run__worker__task_0002", status: "active" }),
-    ]);
+    expect(childCreated).toEqual(expect.objectContaining({
+      member_name: "worker",
+      task_id: "task_0002",
+      target_agent_run_id: "task-delegation-codex-run__worker__task_0002",
+      status: "active",
+      activation_accepted: true,
+    }));
     expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Original delegator task-agent run: task-delegation-codex-run__worker__task_0001");
     expect(harness.backend.taskAgentStarts[1]?.message.content).toContain(parentTaskAgent.taskAgentRunId);
 
@@ -471,24 +495,33 @@ describe("task delegation tool lifecycle integration", () => {
     await harness.manager.terminateTeamRun(harness.backend.runId);
   });
 
-  it("keeps rejected task-agent activations out of active exact-run targets and websocket activation events", async () => {
+  it("scopes each singular activation to the created task and leaves stale rejected tasks inactive", async () => {
     const harness = await createHarness();
     harness.backend.taskAgentStartResults.push(
-      { accepted: true },
       { accepted: false, message: "worker route rejected task activation" },
+      { accepted: true },
     );
-    const created = await executeDelegateTasks(harness, twoStepDelegationInput);
-    expect(created.createdTasks).toEqual([
-      expect.objectContaining({ task_id: "task_0001", status: "active", target_agent_run_id: "task-delegation-codex-run__worker__task_0001" }),
-      expect.objectContaining({ task_id: "task_0002", status: "not_started", target_agent_run_id: null }),
-    ]);
-    expect(created.activationResults).toEqual([
-      expect.objectContaining({ accepted: true, memberName: "worker", taskCount: 1, task_id: "task_0001" }),
-      expect.objectContaining({ accepted: false, memberName: "worker", taskCount: 1, task_id: "task_0002" }),
-    ]);
+    const rejected = await executeDelegateTask(harness, draftDelegationInput);
+    const accepted = await executeDelegateTask(harness, reviewDelegationInput);
+
+    expect(rejected).toEqual(expect.objectContaining({
+      task_id: "task_0001",
+      status: "not_started",
+      target_agent_run_id: null,
+      activation_accepted: false,
+      message: "worker route rejected task activation",
+    }));
+    expect(accepted).toEqual(expect.objectContaining({
+      task_id: "task_0002",
+      status: "active",
+      target_agent_run_id: "task-delegation-codex-run__worker__task_0002",
+      activation_accepted: true,
+    }));
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
+    const activationPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
+    expect(activationPayload).toMatchObject({ taskIds: ["task_0002"] });
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_STATUS_UPDATED")).toHaveLength(0);
-    await expect(executeCoordinatorReview(harness, { task_id: "task_0002", decision: "accept" }))
+    await expect(executeCoordinatorReview(harness, { task_id: "task_0001", decision: "accept" }))
       .rejects.toMatchObject({ code: "TASK_NOT_AWAITING_REVIEW" });
     harness.runRegistry.clear();
     await harness.manager.terminateTeamRun(harness.backend.runId);
@@ -496,7 +529,7 @@ describe("task delegation tool lifecycle integration", () => {
 
   it("keeps the model-facing task surface limited to pure task delegation tools", () => {
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual([
-      DELEGATE_TASKS_TOOL_NAME,
+      DELEGATE_TASK_TOOL_NAME,
       SUBMIT_TASK_RESULT_TOOL_NAME,
       REVIEW_TASK_RESULT_TOOL_NAME,
     ]);

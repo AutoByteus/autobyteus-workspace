@@ -309,12 +309,15 @@ describe("member-run-instruction-composer", () => {
     });
 
     expect(enabled.runtimeInstruction).toContain("Task delegation protocol");
-    expect(enabled.runtimeInstruction).toContain("Use `delegate_tasks`");
+    expect(enabled.runtimeInstruction).toContain("Use `delegate_task`");
     expect(enabled.runtimeInstruction).toContain(
-      "Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`",
+      "To assign multiple independent tasks, call `delegate_task` separately for each task.",
     );
+    expect(enabled.runtimeInstruction).toContain("Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
     expect(enabled.runtimeInstruction).toContain("Task-agents submit reviewable results with `submit_task_result`");
     expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
+    expect(enabled.runtimeInstruction).not.toContain("do not pass delegator");
+    expect(enabled.runtimeInstruction).not.toContain("completion_criteria");
     expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary agent message delivery only");
     expect(enabled.runtimeInstruction).not.toContain(["accept", "task"].join("_"));
     expect(enabled.runtimeInstruction).not.toContain(["mark", "task", "completed"].join("_"));

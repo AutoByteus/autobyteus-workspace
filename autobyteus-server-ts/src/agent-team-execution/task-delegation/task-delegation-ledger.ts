@@ -93,39 +93,35 @@ export class TaskDelegationLedger {
     return this.nextTaskId();
   }
 
-  createRecords(input: CreateTaskDelegationRecordInput[]): TaskDelegationRecord[] {
+  createRecord(input: CreateTaskDelegationRecordInput): TaskDelegationRecord {
     const now = new Date().toISOString();
-    const created: TaskDelegationRecord[] = [];
-    for (const item of input) {
-      const taskId = item.taskId.trim();
-      if (!taskId) {
-        throw new TaskDelegationError("TASK_ID_REQUIRED", "taskId is required.");
-      }
-      const record: TaskDelegationRecord = {
-        taskId,
-        taskLabel: deriveTaskLabel(item.task.description, taskId),
-        description: item.task.description,
-        status: "not_started",
-        member: cloneIdentity(item.member),
-        delegator: cloneDelegatorIdentity(item.delegator),
-        referenceFiles: [...(item.task.reference_files ?? [])],
-        taskAgentInstance: null,
-        targetAgentRunId: null,
-        delegatorReplyRecipientName: null,
-        delegatorReplyTargetAgentRunId: null,
-        pendingSubmissionId: null,
-        resultSubmissions: [],
-        resultReviews: [],
-        acceptanceMessage: null,
-        acceptedAt: null,
-        createdAt: now,
-        updatedAt: now,
-        terminalAt: null,
-      };
-      this.recordsById.set(taskId, record);
-      created.push(cloneRecord(record));
+    const taskId = input.taskId.trim();
+    if (!taskId) {
+      throw new TaskDelegationError("TASK_ID_REQUIRED", "taskId is required.");
     }
-    return created;
+    const record: TaskDelegationRecord = {
+      taskId,
+      taskLabel: deriveTaskLabel(input.task.description, taskId),
+      description: input.task.description,
+      status: "not_started",
+      member: cloneIdentity(input.member),
+      delegator: cloneDelegatorIdentity(input.delegator),
+      referenceFiles: [...(input.task.reference_files ?? [])],
+      taskAgentInstance: null,
+      targetAgentRunId: null,
+      delegatorReplyRecipientName: null,
+      delegatorReplyTargetAgentRunId: null,
+      pendingSubmissionId: null,
+      resultSubmissions: [],
+      resultReviews: [],
+      acceptanceMessage: null,
+      acceptedAt: null,
+      createdAt: now,
+      updatedAt: now,
+      terminalAt: null,
+    };
+    this.recordsById.set(taskId, record);
+    return cloneRecord(record);
   }
 
   getRecord(taskId: string): TaskDelegationRecord | null {
@@ -145,10 +141,6 @@ export class TaskDelegationLedger {
     return [...this.recordsById.values()]
       .filter((record) => record.taskAgentInstance?.taskAgentRunId === normalizedRunId)
       .map(cloneRecord);
-  }
-
-  listRunnableNotStarted(): TaskDelegationRecord[] {
-    return this.listRecords().filter((record) => record.status === "not_started");
   }
 
   bindTaskAgent(input: {
@@ -205,22 +197,18 @@ export class TaskDelegationLedger {
     return cloneRecord(record);
   }
 
-  markNotStarted(taskIds: string[]): TaskDelegationRecord[] {
+  markNotStarted(taskId: string): TaskDelegationRecord | null {
     const now = new Date().toISOString();
-    const records: TaskDelegationRecord[] = [];
-    for (const taskId of taskIds) {
-      const record = this.recordsById.get(taskId);
-      if (!record || record.status !== "not_started") {
-        continue;
-      }
-      record.taskAgentInstance = null;
-      record.targetAgentRunId = null;
-      record.delegatorReplyRecipientName = null;
-      record.delegatorReplyTargetAgentRunId = null;
-      record.updatedAt = now;
-      records.push(cloneRecord(record));
+    const record = this.recordsById.get(taskId);
+    if (!record || record.status !== "not_started") {
+      return null;
     }
-    return records;
+    record.taskAgentInstance = null;
+    record.targetAgentRunId = null;
+    record.delegatorReplyRecipientName = null;
+    record.delegatorReplyTargetAgentRunId = null;
+    record.updatedAt = now;
+    return cloneRecord(record);
   }
 
   submitResult(input: {

@@ -8,8 +8,8 @@ import { TaskDelegationLedger } from "./task-delegation-ledger.js";
 import { TaskDelegationNotificationDispatcher } from "./task-delegation-notification-dispatcher.js";
 import {
   TaskDelegationError,
-  type DelegateTasksInput,
-  type DelegateTasksResult,
+  type DelegateTaskInput,
+  type DelegateTaskResult,
   type ReviewTaskResultInput,
   type ReviewTaskResultResult,
   type SubmitTaskResultInput,
@@ -20,7 +20,7 @@ import {
 } from "./task-delegation-record.js";
 import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
 
-type TaskDelegationServiceOptions = {
+export type TaskDelegationServiceOptions = {
   agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
 };
 
@@ -67,27 +67,27 @@ export class TaskDelegationService {
     this.settlementCoordinator.detach();
   }
 
-  async delegateTasks(
+  async delegateTask(
     context: TaskDelegationContext,
-    input: DelegateTasksInput,
-  ): Promise<DelegateTasksResult> {
+    input: DelegateTaskInput,
+  ): Promise<DelegateTaskResult> {
     this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
     this.assertActiveTaskAgentCaller(context);
-    const createInputs = this.inputResolver.buildCreateInputs(context, input);
-    const records = this.ledger.createRecords(createInputs);
-    const activationResults = await this.activationCoordinator.activateRunnableTasks(this.teamRun);
-    const currentRecords = records.map(
-      (record) => this.ledger.getRecord(record.taskId) ?? record,
+    const createInput = this.inputResolver.buildCreateInput(context, input);
+    const record = this.ledger.createRecord(createInput);
+    const activationResult = await this.activationCoordinator.activateTask(
+      this.teamRun,
+      record.taskId,
     );
+    const currentRecord = this.ledger.getRecord(record.taskId) ?? record;
     return {
-      createdTasks: currentRecords.map((record) => ({
-        member_name: record.member.memberName,
-        task_id: record.taskId,
-        target_agent_run_id: record.targetAgentRunId,
-        status: record.status,
-      })),
-      activationResults,
+      member_name: currentRecord.member.memberName,
+      task_id: currentRecord.taskId,
+      target_agent_run_id: currentRecord.targetAgentRunId,
+      status: currentRecord.status,
+      activation_accepted: activationResult.accepted,
+      message: activationResult.message ?? null,
     };
   }
 
