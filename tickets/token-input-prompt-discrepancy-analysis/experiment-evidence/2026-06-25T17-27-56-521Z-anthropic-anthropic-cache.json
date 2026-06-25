@@ -1,0 +1,79 @@
+{
+  "provider": "anthropic",
+  "mode": "anthropic-cache",
+  "model": {
+    "name": "claude-sonnet-4.6",
+    "value": "claude-sonnet-4-6",
+    "provider": "ANTHROPIC"
+  },
+  "started_at": "2026-06-25T17:27:53.474Z",
+  "completed_at": "2026-06-25T17:27:56.521Z",
+  "env_files_loaded": [
+    "../../autobyteus-workspace-superrepo/autobyteus-ts/.env.test",
+    "../../autobyteus-workspace-superrepo/autobyteus-server-ts/.env.test"
+  ],
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "WARMUP",
+      "normalized_usage": {
+        "input_tokens": 12,
+        "output_tokens": 6,
+        "total_tokens": 18,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 10436,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "input_tokens": 12,
+          "cache_creation_input_tokens": 10436,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 10436,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 6,
+          "service_tier": "standard",
+          "inference_geo": "global"
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "PROBE",
+      "normalized_usage": {
+        "input_tokens": 11,
+        "output_tokens": 5,
+        "total_tokens": 16,
+        "cache_read_input_tokens": 10436,
+        "cache_creation_input_tokens": 0,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "input_tokens": 11,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 10436,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5,
+          "service_tier": "standard",
+          "inference_geo": "global"
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_base_excludes_cache_for_anthropic_additive_usage"
+}

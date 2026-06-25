@@ -12,7 +12,11 @@ export type CodexReadyTurnTokenUsage = {
   reported_total_tokens: number | null;
   cache_read_input_tokens: number | null;
   reasoning_output_tokens: number | null;
-  effective_context_budget_tokens: number | null;
+  input_token_semantic: "gross_includes_cache";
+  cache_state: "positive" | "zero_reported" | "not_reported";
+  latest_prompt_tokens: number | null;
+  effective_context_window_tokens: number | null;
+  context_window_usage_percent: number | null;
   model_provider: string | null;
   model_identifier: string | null;
   model_value: string | null;
@@ -51,9 +55,12 @@ export const resolveCodexThreadTokenUsage = (input: {
   const explicitTotalTokens = asNonNegativeInt(selected.totalTokens ?? selected.total_tokens);
   const cacheReadTokens = asNonNegativeInt(selected.cachedInputTokens ?? selected.cached_input_tokens);
   const reasoningTokens = asNonNegativeInt(selected.reasoningOutputTokens ?? selected.reasoning_output_tokens);
-  const effectiveContextBudgetTokens = asNonNegativeInt(
+  const effectiveContextWindowTokens = asNonNegativeInt(
     tokenUsage?.modelContextWindow ?? tokenUsage?.model_context_window,
   );
+  const contextWindowUsagePercent = inputTokens !== null && effectiveContextWindowTokens !== null && effectiveContextWindowTokens > 0
+    ? (inputTokens / effectiveContextWindowTokens) * 100
+    : null;
   const totalTokens = explicitTotalTokens ?? (
     inputTokens !== null && outputTokens !== null ? inputTokens + outputTokens : null
   );
@@ -92,7 +99,11 @@ export const resolveCodexThreadTokenUsage = (input: {
     reported_total_tokens: totalTokens,
     cache_read_input_tokens: cacheReadTokens,
     reasoning_output_tokens: reasoningTokens,
-    effective_context_budget_tokens: effectiveContextBudgetTokens,
+    input_token_semantic: "gross_includes_cache",
+    cache_state: cacheReadTokens === null ? "not_reported" : (cacheReadTokens > 0 ? "positive" : "zero_reported"),
+    latest_prompt_tokens: inputTokens,
+    effective_context_window_tokens: effectiveContextWindowTokens,
+    context_window_usage_percent: contextWindowUsagePercent,
     model_provider: "OPENAI",
     model_identifier: input.model,
     model_value: input.model,

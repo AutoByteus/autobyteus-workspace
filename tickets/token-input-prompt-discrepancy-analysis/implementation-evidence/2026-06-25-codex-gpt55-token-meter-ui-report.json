@@ -1,0 +1,27 @@
+{
+  "runId": "codex_83d2fc2370fa4d90bf2899e491bdc7f4",
+  "url": "http://127.0.0.1:3000/workspace?workspaceExecutionKind=agent&workspaceExecutionRunId=codex_83d2fc2370fa4d90bf2899e491bdc7f4",
+  "screenshotPath": "/tmp/token-meter-codex-gpt55.png",
+  "checks": {
+    "hasCurrentPrompt": true,
+    "hasGrossInput": true,
+    "hasOutput": true,
+    "hasTotalEstimate": true,
+    "hasInputBreakdown": true,
+    "hasPricingDetails": true,
+    "hasUsageReports": true,
+    "hasEventsPrimaryLabel": false,
+    "hasCompactionText": false,
+    "hasModel": true,
+    "hasRuntime": true,
+    "hasEstimated": true,
+    "textSnippet": "Files\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nToken Meter\n\nLive server-accounted usage and estimated API price.\n\nCurrent prompt\n4.0%\n\n10.248 / 258.400 context tokens\n\nGROSS INPUT\n\n10.248 Tokens\n\nCache hit 48.7%\n\nCost 0,0288 $\n\nOUTPUT\n\n10 Tokens\n\nCost 0,0003 $\n\nTOTAL ESTIMATE\n\n10.258 Tokens\n\nEstimate 0,0291 $\n\nComplete estimate\nInput breakdown\nUncached / full-price input\n5.256 tok\n0,0263 $\nCache hits / discounted input\n4.992 tok\n0,0025 $\nTotal input cost\n0,0288 $\nPricing details\nLatest model\ngpt-5.5\nRuntime\ncodex_app_server\nPrice status\nComplete estimate\nUsage reports\n1 model calls",
+    "consoleMessages": [
+      {
+        "type": "log",
+        "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+      }
+    ],
+    "pageErrors": []
+  }
+}

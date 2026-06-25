@@ -1,0 +1,90 @@
+{
+  "provider": "gemini",
+  "mode": "two-call",
+  "model": {
+    "name": "gemini-3-flash-preview",
+    "value": "gemini-3-flash-preview",
+    "provider": "GEMINI"
+  },
+  "started_at": "2026-06-25T17:21:25.702Z",
+  "completed_at": "2026-06-25T17:21:28.013Z",
+  "env_files_loaded": [],
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 12,
+        "output_tokens": 1,
+        "total_tokens": 24,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 11,
+        "billable_input_tokens": null,
+        "billable_output_tokens": 12,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "promptTokenCount": 12,
+          "candidatesTokenCount": 1,
+          "totalTokenCount": 24,
+          "trafficType": "ON_DEMAND",
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 12
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1
+            }
+          ],
+          "thoughtsTokenCount": 11
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 11,
+        "output_tokens": 1,
+        "total_tokens": 23,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 11,
+        "billable_input_tokens": null,
+        "billable_output_tokens": 12,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "promptTokenCount": 11,
+          "candidatesTokenCount": 1,
+          "totalTokenCount": 23,
+          "trafficType": "ON_DEMAND",
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 11
+            }
+          ],
+          "candidatesTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 1
+            }
+          ],
+          "thoughtsTokenCount": 11
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "not_confirmed_from_payload"
+}

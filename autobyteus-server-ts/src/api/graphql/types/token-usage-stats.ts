@@ -32,19 +32,67 @@ export class TokenUsageRunSummaryGraphql {
   workspaceId?: string | null;
 
   @Field(() => Int)
-  inputTokens!: number;
+  grossInputTokens!: number;
+
+  @Field(() => Int)
+  standardInputTokens!: number;
+
+  @Field(() => Int)
+  cacheMissInputTokens!: number;
+
+  @Field(() => Int)
+  cacheReadInputTokens!: number;
+
+  @Field(() => Int)
+  cacheCreationInputTokens!: number;
+
+  @Field(() => Int)
+  cacheCreation5mInputTokens!: number;
+
+  @Field(() => Int)
+  cacheCreation1hInputTokens!: number;
 
   @Field(() => Int)
   outputTokens!: number;
 
   @Field(() => Int)
-  totalTokens!: number;
+  reasoningOutputTokens!: number;
 
   @Field(() => Int)
-  reasoningOutputTokens!: number;
+  billableOutputTokens!: number;
+
+  @Field(() => Int)
+  totalTokens!: number;
+
+  @Field(() => Float, { nullable: true })
+  cacheReadInputTokenRate?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  standardInputTokenRate?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  cacheCreationInputTokenRate?: number | null;
+
+  @Field(() => String)
+  cacheState!: string;
 
   @Field(() => Float, { nullable: true })
   estimatedApiInputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiStandardInputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiCacheReadInputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiCacheCreationInputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiCacheCreation5mInputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiCacheCreation1hInputCost?: number | null;
 
   @Field(() => Float, { nullable: true })
   estimatedApiOutputCost?: number | null;
@@ -61,14 +109,23 @@ export class TokenUsageRunSummaryGraphql {
   @Field(() => String)
   apiCostStatus!: string;
 
-  @Field(() => Int, { nullable: true })
-  latestContextInputTokens?: number | null;
+  @Field(() => [String])
+  missingPriceDimensions!: string[];
+
+  @Field(() => String, { nullable: true })
+  pricingPolicyKey?: string | null;
+
+  @Field(() => String, { nullable: true })
+  selectedPricingTierId?: string | null;
 
   @Field(() => Int, { nullable: true })
-  effectiveContextBudgetTokens?: number | null;
+  latestPromptTokens?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  effectiveContextWindowTokens?: number | null;
 
   @Field(() => Float, { nullable: true })
-  contextPressurePercent?: number | null;
+  contextWindowUsagePercent?: number | null;
 
   @Field(() => String, { nullable: true })
   latestModelProvider?: string | null;
@@ -80,7 +137,7 @@ export class TokenUsageRunSummaryGraphql {
   latestRuntimeKind?: string | null;
 
   @Field(() => Int)
-  eventCount!: number;
+  usageReportCount!: number;
 
   @Field(() => String, { nullable: true })
   updatedAt?: string | null;
@@ -95,23 +152,42 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   memberRouteKey: summary.member_route_key,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
-  inputTokens: summary.input_tokens,
+  grossInputTokens: summary.gross_input_tokens,
+  standardInputTokens: summary.standard_input_tokens,
+  cacheMissInputTokens: summary.cache_miss_input_tokens,
+  cacheReadInputTokens: summary.cache_read_input_tokens,
+  cacheCreationInputTokens: summary.cache_creation_input_tokens,
+  cacheCreation5mInputTokens: summary.cache_creation_5m_input_tokens,
+  cacheCreation1hInputTokens: summary.cache_creation_1h_input_tokens,
   outputTokens: summary.output_tokens,
-  totalTokens: summary.total_tokens,
   reasoningOutputTokens: summary.reasoning_output_tokens,
+  billableOutputTokens: summary.billable_output_tokens,
+  totalTokens: summary.total_tokens,
+  cacheReadInputTokenRate: summary.cache_read_input_token_rate,
+  standardInputTokenRate: summary.standard_input_token_rate,
+  cacheCreationInputTokenRate: summary.cache_creation_input_token_rate,
+  cacheState: summary.cache_state,
   estimatedApiInputCost: summary.estimated_api_input_cost,
+  estimatedApiStandardInputCost: summary.estimated_api_standard_input_cost,
+  estimatedApiCacheReadInputCost: summary.estimated_api_cache_read_input_cost,
+  estimatedApiCacheCreationInputCost: summary.estimated_api_cache_creation_input_cost,
+  estimatedApiCacheCreation5mInputCost: summary.estimated_api_cache_creation_5m_input_cost,
+  estimatedApiCacheCreation1hInputCost: summary.estimated_api_cache_creation_1h_input_cost,
   estimatedApiOutputCost: summary.estimated_api_output_cost,
   estimatedApiReasoningOutputCost: summary.estimated_api_reasoning_output_cost,
   estimatedApiTotalCost: summary.estimated_api_total_cost,
   currency: summary.currency,
   apiCostStatus: summary.api_cost_status,
-  latestContextInputTokens: summary.latest_context_input_tokens,
-  effectiveContextBudgetTokens: summary.effective_context_budget_tokens,
-  contextPressurePercent: summary.context_pressure_percent,
+  missingPriceDimensions: summary.missing_price_dimensions,
+  pricingPolicyKey: summary.pricing_policy_key,
+  selectedPricingTierId: summary.selected_pricing_tier_id,
+  latestPromptTokens: summary.latest_prompt_tokens,
+  effectiveContextWindowTokens: summary.effective_context_window_tokens,
+  contextWindowUsagePercent: summary.context_window_usage_percent,
   latestModelProvider: summary.latest_model_provider,
   latestModelIdentifier: summary.latest_model_identifier,
   latestRuntimeKind: summary.latest_runtime_kind,
-  eventCount: summary.event_count,
+  usageReportCount: summary.usage_report_count,
   updatedAt: summary.updated_at,
 });
 

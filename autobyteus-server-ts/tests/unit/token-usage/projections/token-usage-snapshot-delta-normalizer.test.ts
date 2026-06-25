@@ -3,11 +3,12 @@ import { createTokenUsageUpdatedPayload } from '../../../../src/agent-execution/
 import { TokenCostCalculator } from '../../../../src/token-usage/pricing/token-cost-calculator.js';
 import { TokenUsageSnapshotDeltaNormalizer } from '../../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js';
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
-import type { TokenPriceConfig } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
+import type { ResolvedTokenPricingPolicy } from '../../../../src/token-usage/pricing/token-pricing-policy.js';
 
 const cumulativeSnapshotSourceTokensKey = 'autobyteus_cumulative_snapshot_source_tokens';
 
-const trustedPrice: TokenPriceConfig = {
+const trustedPrice: ResolvedTokenPricingPolicy = {
+  pricing_policy_key: 'price:snapshot-test',
   price_config_id: 'price:snapshot-test',
   model_provider: 'OPENAI',
   model_identifier: 'gpt-test',
@@ -18,6 +19,8 @@ const trustedPrice: TokenPriceConfig = {
   output_price_per_million: 10,
   cached_input_read_price_per_million: 0.2,
   cached_input_write_price_per_million: 1,
+  cached_input_write_5m_price_per_million: null,
+  cached_input_write_1h_price_per_million: null,
   input_price_tiers: [],
   pricing_status: 'trusted',
   trusted_dimensions: {
@@ -25,6 +28,8 @@ const trustedPrice: TokenPriceConfig = {
     output: true,
     cached_input_read: true,
     cached_input_write: true,
+    cached_input_write_5m: false,
+    cached_input_write_1h: false,
   },
   missing_reason: null,
   source: 'autobyteus_model_catalog',
@@ -35,8 +40,34 @@ const trustedPrice: TokenPriceConfig = {
 
 let eventSequence = 0;
 
+const asToken = (value: unknown, fallback: number | null): number | null =>
+  typeof value === 'number' && Number.isFinite(value) ? Math.trunc(value) : fallback;
+
 const buildCumulativeSnapshot = (overrides: Record<string, unknown> = {}) => {
   eventSequence += 1;
+  const reportedInputTokens = asToken(overrides.reported_input_tokens, 100);
+  const reportedOutputTokens = asToken(overrides.reported_output_tokens, 40);
+  const cacheReadTokens = asToken(overrides.cache_read_input_tokens, 10);
+  const cacheCreationTokens = asToken(overrides.cache_creation_input_tokens, 5);
+  const reasoningOutputTokens = asToken(overrides.reasoning_output_tokens, 8);
+  const billableOutputTokens = asToken(
+    overrides.billable_output_tokens,
+    reportedOutputTokens === null ? null : reportedOutputTokens + (reasoningOutputTokens ?? 0),
+  );
+  const accountingInputTokens = asToken(overrides.accounting_input_tokens, reportedInputTokens);
+  const accountingOutputTokens = asToken(overrides.accounting_output_tokens, billableOutputTokens);
+  const accountingTotalTokens = asToken(
+    overrides.accounting_total_tokens,
+    accountingInputTokens !== null && accountingOutputTokens !== null
+      ? accountingInputTokens + accountingOutputTokens
+      : null,
+  );
+  const standardInputTokens = asToken(
+    overrides.standard_input_tokens,
+    reportedInputTokens === null
+      ? null
+      : Math.max(reportedInputTokens - (cacheReadTokens ?? 0) - (cacheCreationTokens ?? 0), 0),
+  );
   return createTokenUsageUpdatedPayload({
     runId: 'run-snapshot-normalizer-test',
     payload: {
@@ -46,14 +77,24 @@ const buildCumulativeSnapshot = (overrides: Record<string, unknown> = {}) => {
       ingestion_kind: 'codex_thread_token_usage',
       usage_scope: 'cumulative_snapshot',
       snapshot_series_key: 'codex_thread:thread-1',
-      reported_input_tokens: 100,
-      reported_output_tokens: 40,
-      reported_total_tokens: 140,
-      cache_read_input_tokens: 10,
-      cache_creation_input_tokens: 5,
-      reasoning_output_tokens: 8,
-      billable_input_tokens: 100,
-      billable_output_tokens: 48,
+      input_token_semantic: 'gross_includes_cache',
+      reported_input_tokens: reportedInputTokens,
+      reported_output_tokens: reportedOutputTokens,
+      reported_total_tokens: asToken(
+        overrides.reported_total_tokens,
+        reportedInputTokens !== null && reportedOutputTokens !== null ? reportedInputTokens + reportedOutputTokens : null,
+      ),
+      accounting_input_tokens: accountingInputTokens,
+      accounting_output_tokens: accountingOutputTokens,
+      accounting_total_tokens: accountingTotalTokens,
+      standard_input_tokens: standardInputTokens,
+      cache_miss_input_tokens: standardInputTokens,
+      cache_read_input_tokens: cacheReadTokens,
+      cache_creation_input_tokens: cacheCreationTokens,
+      cache_state: 'positive',
+      reasoning_output_tokens: reasoningOutputTokens,
+      billable_input_tokens: accountingInputTokens,
+      billable_output_tokens: billableOutputTokens,
       model_provider: 'OPENAI',
       model_identifier: 'gpt-test',
       ...overrides,
@@ -81,8 +122,9 @@ describe('TokenUsageSnapshotDeltaNormalizer', () => {
     }));
 
     expect(second.accounting_input_tokens).toBe(50);
-    expect(second.accounting_output_tokens).toBe(30);
-    expect(second.accounting_total_tokens).toBe(80);
+    expect(second.accounting_output_tokens).toBe(40);
+    expect(second.accounting_total_tokens).toBe(90);
+    expect(second.standard_input_tokens).toBe(31);
     expect(second.cache_read_input_tokens).toBe(15);
     expect(second.cache_creation_input_tokens).toBe(4);
     expect(second.reasoning_output_tokens).toBe(10);
@@ -112,8 +154,9 @@ describe('TokenUsageSnapshotDeltaNormalizer', () => {
 
     expect(third.previous_snapshot_event_id).toBe(second.usage_event_id);
     expect(third.accounting_input_tokens).toBe(60);
-    expect(third.accounting_output_tokens).toBe(30);
-    expect(third.accounting_total_tokens).toBe(90);
+    expect(third.accounting_output_tokens).toBe(42);
+    expect(third.accounting_total_tokens).toBe(102);
+    expect(third.standard_input_tokens).toBe(34);
     expect(third.cache_read_input_tokens).toBe(20);
     expect(third.cache_creation_input_tokens).toBe(6);
     expect(third.reasoning_output_tokens).toBe(12);
@@ -159,7 +202,7 @@ describe('TokenUsageSnapshotDeltaNormalizer', () => {
     expect(regressed.billable_input_tokens).toBeNull();
     expect(regressed.billable_output_tokens).toBeNull();
 
-    const priced = new TokenCostCalculator().applyPrice(regressed, trustedPrice);
+    const priced = new TokenCostCalculator().applyPolicy(regressed, trustedPrice);
     expect(priced.cost_basis).toBeNull();
     expect(priced.estimated_api_input_cost).toBeNull();
     expect(priced.estimated_api_standard_input_cost).toBeNull();
@@ -193,7 +236,7 @@ describe('TokenUsageSnapshotDeltaNormalizer', () => {
     expect(normalized.billable_input_tokens).toBeNull();
     expect(normalized.billable_output_tokens).toBeNull();
 
-    const priced = new TokenCostCalculator().applyPrice(normalized, trustedPrice);
+    const priced = new TokenCostCalculator().applyPolicy(normalized, trustedPrice);
     expect(priced.estimated_api_total_cost).toBeNull();
   });
 });

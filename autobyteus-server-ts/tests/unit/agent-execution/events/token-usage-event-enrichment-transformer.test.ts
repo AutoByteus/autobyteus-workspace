@@ -6,6 +6,7 @@ import { AgentRunEventType } from '../../../../src/agent-execution/domain/agent-
 import { TokenUsageEventEnrichmentTransformer } from '../../../../src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.js';
 import { TokenUsageContextEnricher } from '../../../../src/agent-execution/events/processors/token-usage/token-usage-context-enricher.js';
 import { TokenUsageSnapshotDeltaNormalizer } from '../../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js';
+import { TokenUsageComponentBasisResolver } from '../../../../src/token-usage/projections/token-usage-component-basis-resolver.js';
 import { TokenCostCalculator } from '../../../../src/token-usage/pricing/token-cost-calculator.js';
 import { MemberTeamContext } from '../../../../src/agent-team-execution/domain/member-team-context.js';
 import { TeamBackendKind } from '../../../../src/agent-team-execution/domain/team-backend-kind.js';
@@ -51,7 +52,8 @@ const runContext = new AgentRunContext({
 });
 
 const trustedPriceProvider = {
-  resolvePrice: async () => ({
+  resolvePolicy: async () => ({
+    pricing_policy_key: 'catalog:openai:gpt-5.4-mini',
     price_config_id: 'catalog:openai:gpt-5.4-mini',
     model_provider: 'OPENAI',
     model_identifier: 'gpt-5.4-mini',
@@ -62,6 +64,8 @@ const trustedPriceProvider = {
     output_price_per_million: 4,
     cached_input_read_price_per_million: null,
     cached_input_write_price_per_million: null,
+    cached_input_write_5m_price_per_million: null,
+    cached_input_write_1h_price_per_million: null,
     input_price_tiers: [],
     pricing_status: 'trusted',
     trusted_dimensions: {
@@ -69,6 +73,8 @@ const trustedPriceProvider = {
       output: true,
       cached_input_read: false,
       cached_input_write: false,
+      cached_input_write_5m: false,
+      cached_input_write_1h: false,
     },
     missing_reason: null,
     source: 'autobyteus_model_catalog',
@@ -82,6 +88,7 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
   it('replaces a raw token usage event with one enriched event carrying canonical team identity, deltas, and cost', async () => {
     const transformer = new TokenUsageEventEnrichmentTransformer(
       new TokenUsageContextEnricher(),
+      new TokenUsageComponentBasisResolver(),
       new TokenUsageSnapshotDeltaNormalizer({
         getLatestCumulativeSnapshot: async () => null,
       } as never),
@@ -96,6 +103,7 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
         runtime_kind: 'wrong-runtime',
         ingestion_kind: 'codex_thread_token_usage',
         usage_scope: 'per_turn',
+        input_token_semantic: 'gross_includes_cache',
         reported_input_tokens: 100,
         reported_output_tokens: 25,
         reported_total_tokens: 125,
@@ -138,12 +146,19 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
   it('converts cumulative snapshots into accounting deltas before pricing', async () => {
     const transformer = new TokenUsageEventEnrichmentTransformer(
       new TokenUsageContextEnricher(),
+      new TokenUsageComponentBasisResolver(),
       new TokenUsageSnapshotDeltaNormalizer({
         getLatestCumulativeSnapshot: async () => ({
           usage_event_id: 'previous-snapshot-event',
           reported_input_tokens: 80,
           reported_output_tokens: 20,
           reported_total_tokens: 100,
+          accounting_input_tokens: 80,
+          accounting_output_tokens: 20,
+          accounting_total_tokens: 100,
+          standard_input_tokens: 80,
+          billable_input_tokens: 80,
+          billable_output_tokens: 20,
         }),
       } as never),
       new TokenCostCalculator(trustedPriceProvider),
@@ -161,6 +176,7 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
           ingestion_kind: 'codex_thread_token_usage',
           usage_scope: 'cumulative_snapshot',
           snapshot_series_key: 'codex_thread:thread-1',
+          input_token_semantic: 'gross_includes_cache',
           reported_input_tokens: 140,
           reported_output_tokens: 50,
           reported_total_tokens: 190,

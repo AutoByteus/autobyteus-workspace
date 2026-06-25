@@ -7,6 +7,8 @@ export interface TokenPricingConfigData {
   output_token_pricing?: number;
   cached_input_read_token_pricing?: number;
   cached_input_write_token_pricing?: number;
+  cached_input_write_5m_token_pricing?: number;
+  cached_input_write_1h_token_pricing?: number;
   currency?: string;
   pricing_source?: string;
   pricing_effective_date?: string;
@@ -18,6 +20,8 @@ export interface TokenPricingConfigInput {
   outputTokenPricing?: number;
   cachedInputReadTokenPricing?: number;
   cachedInputWriteTokenPricing?: number;
+  cachedInputWrite5mTokenPricing?: number;
+  cachedInputWrite1hTokenPricing?: number;
   currency?: string;
   pricingSource?: string;
   pricingEffectiveDate?: string;
@@ -31,6 +35,8 @@ export interface TokenPricingTierData {
   output_token_pricing?: number;
   cached_input_read_token_pricing?: number;
   cached_input_write_token_pricing?: number;
+  cached_input_write_5m_token_pricing?: number;
+  cached_input_write_1h_token_pricing?: number;
 }
 
 export interface TokenPricingTierInput {
@@ -40,6 +46,8 @@ export interface TokenPricingTierInput {
   outputTokenPricing?: number;
   cachedInputReadTokenPricing?: number;
   cachedInputWriteTokenPricing?: number;
+  cachedInputWrite5mTokenPricing?: number;
+  cachedInputWrite1hTokenPricing?: number;
 }
 
 const hasOwn = (value: object, key: string): boolean =>
@@ -64,6 +72,8 @@ const normalizeTierInput = (tier: TokenPricingTierInput | TokenPricingTierData):
     outputTokenPricing: optionalNumber(raw.outputTokenPricing ?? raw.output_token_pricing),
     cachedInputReadTokenPricing: optionalNumber(raw.cachedInputReadTokenPricing ?? raw.cached_input_read_token_pricing),
     cachedInputWriteTokenPricing: optionalNumber(raw.cachedInputWriteTokenPricing ?? raw.cached_input_write_token_pricing),
+    cachedInputWrite5mTokenPricing: optionalNumber(raw.cachedInputWrite5mTokenPricing ?? raw.cached_input_write_5m_token_pricing),
+    cachedInputWrite1hTokenPricing: optionalNumber(raw.cachedInputWrite1hTokenPricing ?? raw.cached_input_write_1h_token_pricing),
   };
 };
 
@@ -79,6 +89,12 @@ const tierToDict = (tier: TokenPricingTierInput): TokenPricingTierData => {
   if (tier.cachedInputWriteTokenPricing !== undefined) {
     data.cached_input_write_token_pricing = tier.cachedInputWriteTokenPricing;
   }
+  if (tier.cachedInputWrite5mTokenPricing !== undefined) {
+    data.cached_input_write_5m_token_pricing = tier.cachedInputWrite5mTokenPricing;
+  }
+  if (tier.cachedInputWrite1hTokenPricing !== undefined) {
+    data.cached_input_write_1h_token_pricing = tier.cachedInputWrite1hTokenPricing;
+  }
   return data;
 };
 
@@ -87,10 +103,14 @@ export class TokenPricingConfig {
   public outputTokenPricing: number;
   public cachedInputReadTokenPricing: number;
   public cachedInputWriteTokenPricing: number;
+  public cachedInputWrite5mTokenPricing: number;
+  public cachedInputWrite1hTokenPricing: number;
   public inputTokenPricingTrusted: boolean;
   public outputTokenPricingTrusted: boolean;
   public cachedInputReadTokenPricingTrusted: boolean;
   public cachedInputWriteTokenPricingTrusted: boolean;
+  public cachedInputWrite5mTokenPricingTrusted: boolean;
+  public cachedInputWrite1hTokenPricingTrusted: boolean;
   public currency: string;
   private currencyExplicit: boolean;
   public pricingSource: string | null;
@@ -102,6 +122,8 @@ export class TokenPricingConfig {
     this.outputTokenPricingTrusted = hasOwn(data, 'outputTokenPricing');
     this.cachedInputReadTokenPricingTrusted = hasOwn(data, 'cachedInputReadTokenPricing');
     this.cachedInputWriteTokenPricingTrusted = hasOwn(data, 'cachedInputWriteTokenPricing');
+    this.cachedInputWrite5mTokenPricingTrusted = hasOwn(data, 'cachedInputWrite5mTokenPricing');
+    this.cachedInputWrite1hTokenPricingTrusted = hasOwn(data, 'cachedInputWrite1hTokenPricing');
     this.inputTokenPricing = this.inputTokenPricingTrusted ? data.inputTokenPricing ?? 0.0 : 0.0;
     this.outputTokenPricing = this.outputTokenPricingTrusted ? data.outputTokenPricing ?? 0.0 : 0.0;
     this.cachedInputReadTokenPricing = this.cachedInputReadTokenPricingTrusted
@@ -109,6 +131,12 @@ export class TokenPricingConfig {
       : 0.0;
     this.cachedInputWriteTokenPricing = this.cachedInputWriteTokenPricingTrusted
       ? data.cachedInputWriteTokenPricing ?? 0.0
+      : 0.0;
+    this.cachedInputWrite5mTokenPricing = this.cachedInputWrite5mTokenPricingTrusted
+      ? data.cachedInputWrite5mTokenPricing ?? 0.0
+      : 0.0;
+    this.cachedInputWrite1hTokenPricing = this.cachedInputWrite1hTokenPricingTrusted
+      ? data.cachedInputWrite1hTokenPricing ?? 0.0
       : 0.0;
     this.currencyExplicit = hasOwn(data, 'currency');
     this.currency = data.currency?.trim() || 'USD';
@@ -136,6 +164,14 @@ export class TokenPricingConfig {
     if (hasOwn(data, 'cached_input_write_token_pricing')) {
       input.cachedInputWriteTokenPricing =
         (data as { cached_input_write_token_pricing?: number }).cached_input_write_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_write_5m_token_pricing')) {
+      input.cachedInputWrite5mTokenPricing =
+        (data as { cached_input_write_5m_token_pricing?: number }).cached_input_write_5m_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_write_1h_token_pricing')) {
+      input.cachedInputWrite1hTokenPricing =
+        (data as { cached_input_write_1h_token_pricing?: number }).cached_input_write_1h_token_pricing;
     }
     const currency = optionalString(data.currency);
     if (currency) input.currency = currency;
@@ -166,6 +202,12 @@ export class TokenPricingConfig {
     if (this.cachedInputWriteTokenPricingTrusted) {
       data.cached_input_write_token_pricing = this.cachedInputWriteTokenPricing;
     }
+    if (this.cachedInputWrite5mTokenPricingTrusted) {
+      data.cached_input_write_5m_token_pricing = this.cachedInputWrite5mTokenPricing;
+    }
+    if (this.cachedInputWrite1hTokenPricingTrusted) {
+      data.cached_input_write_1h_token_pricing = this.cachedInputWrite1hTokenPricing;
+    }
     if (this.currencyExplicit || this.currency !== 'USD') data.currency = this.currency;
     if (this.pricingSource) data.pricing_source = this.pricingSource;
     if (this.pricingEffectiveDate) data.pricing_effective_date = this.pricingEffectiveDate;
@@ -181,10 +223,14 @@ export class TokenPricingConfig {
     this.outputTokenPricingTrusted = override.outputTokenPricingTrusted;
     this.cachedInputReadTokenPricingTrusted = override.cachedInputReadTokenPricingTrusted;
     this.cachedInputWriteTokenPricingTrusted = override.cachedInputWriteTokenPricingTrusted;
+    this.cachedInputWrite5mTokenPricingTrusted = override.cachedInputWrite5mTokenPricingTrusted;
+    this.cachedInputWrite1hTokenPricingTrusted = override.cachedInputWrite1hTokenPricingTrusted;
     this.inputTokenPricing = override.inputTokenPricing;
     this.outputTokenPricing = override.outputTokenPricing;
     this.cachedInputReadTokenPricing = override.cachedInputReadTokenPricing;
     this.cachedInputWriteTokenPricing = override.cachedInputWriteTokenPricing;
+    this.cachedInputWrite5mTokenPricing = override.cachedInputWrite5mTokenPricing;
+    this.cachedInputWrite1hTokenPricing = override.cachedInputWrite1hTokenPricing;
     this.currency = override.currency;
     this.currencyExplicit = override.currencyExplicit;
     this.pricingSource = override.pricingSource;

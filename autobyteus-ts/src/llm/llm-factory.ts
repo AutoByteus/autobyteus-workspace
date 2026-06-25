@@ -27,11 +27,15 @@ export type ModelPricingTierInfo = {
   output_price_per_million: number | null;
   cached_input_read_price_per_million: number | null;
   cached_input_write_price_per_million: number | null;
+  cached_input_write_5m_price_per_million: number | null;
+  cached_input_write_1h_price_per_million: number | null;
   trusted_dimensions: {
     input: boolean;
     output: boolean;
     cached_input_read: boolean;
     cached_input_write: boolean;
+    cached_input_write_5m: boolean;
+    cached_input_write_1h: boolean;
   };
 };
 
@@ -48,12 +52,16 @@ export type ModelPricingInfo = {
   output_price_per_million: number | null;
   cached_input_read_price_per_million: number | null;
   cached_input_write_price_per_million: number | null;
+  cached_input_write_5m_price_per_million: number | null;
+  cached_input_write_1h_price_per_million: number | null;
   input_price_tiers: ModelPricingTierInfo[];
   trusted_dimensions: {
     input: boolean;
     output: boolean;
     cached_input_read: boolean;
     cached_input_write: boolean;
+    cached_input_write_5m: boolean;
+    cached_input_write_1h: boolean;
   };
   missing_reason?:
     | 'model_not_found'
@@ -304,12 +312,16 @@ export class LLMFactory {
         output_price_per_million: null,
         cached_input_read_price_per_million: null,
         cached_input_write_price_per_million: null,
+        cached_input_write_5m_price_per_million: null,
+        cached_input_write_1h_price_per_million: null,
         input_price_tiers: [],
         trusted_dimensions: {
           input: false,
           output: false,
           cached_input_read: false,
           cached_input_write: false,
+          cached_input_write_5m: false,
+          cached_input_write_1h: false,
         },
         missing_reason: 'model_not_found',
       };
@@ -327,11 +339,15 @@ export class LLMFactory {
       output_price_per_million: tier.outputTokenPricing ?? null,
       cached_input_read_price_per_million: tier.cachedInputReadTokenPricing ?? null,
       cached_input_write_price_per_million: tier.cachedInputWriteTokenPricing ?? null,
+      cached_input_write_5m_price_per_million: tier.cachedInputWrite5mTokenPricing ?? null,
+      cached_input_write_1h_price_per_million: tier.cachedInputWrite1hTokenPricing ?? null,
       trusted_dimensions: {
         input: tier.inputTokenPricing !== undefined,
         output: tier.outputTokenPricing !== undefined,
         cached_input_read: tier.cachedInputReadTokenPricing !== undefined,
         cached_input_write: tier.cachedInputWriteTokenPricing !== undefined,
+        cached_input_write_5m: tier.cachedInputWrite5mTokenPricing !== undefined,
+        cached_input_write_1h: tier.cachedInputWrite1hTokenPricing !== undefined,
       },
     }));
     const inputTrusted = pricingConfig.inputTokenPricingTrusted;
@@ -362,12 +378,20 @@ export class LLMFactory {
       cached_input_write_price_per_million: pricingConfig.cachedInputWriteTokenPricingTrusted
         ? pricingConfig.cachedInputWriteTokenPricing
         : null,
+      cached_input_write_5m_price_per_million: pricingConfig.cachedInputWrite5mTokenPricingTrusted
+        ? pricingConfig.cachedInputWrite5mTokenPricing
+        : null,
+      cached_input_write_1h_price_per_million: pricingConfig.cachedInputWrite1hTokenPricingTrusted
+        ? pricingConfig.cachedInputWrite1hTokenPricing
+        : null,
       input_price_tiers: status === 'trusted' ? tierInfos : [],
       trusted_dimensions: {
         input: inputTrusted,
         output: outputTrusted,
         cached_input_read: pricingConfig.cachedInputReadTokenPricingTrusted,
         cached_input_write: pricingConfig.cachedInputWriteTokenPricingTrusted,
+        cached_input_write_5m: pricingConfig.cachedInputWrite5mTokenPricingTrusted,
+        cached_input_write_1h: pricingConfig.cachedInputWrite1hTokenPricingTrusted,
       },
       ...(missingReason ? { missing_reason: missingReason } : {}),
     };
@@ -390,12 +414,16 @@ export class LLMFactory {
       output_price_per_million: null,
       cached_input_read_price_per_million: null,
       cached_input_write_price_per_million: null,
+      cached_input_write_5m_price_per_million: null,
+      cached_input_write_1h_price_per_million: null,
       input_price_tiers: [],
       trusted_dimensions: {
         input: false,
         output: false,
         cached_input_read: false,
         cached_input_write: false,
+        cached_input_write_5m: false,
+        cached_input_write_1h: false,
       },
       missing_reason: missingReason,
     };

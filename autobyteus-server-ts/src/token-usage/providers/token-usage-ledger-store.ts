@@ -3,6 +3,7 @@ import type {
   TokenUsageRunSummaryPayload,
   TokenUsageUpdatedPayload,
 } from "../../agent-execution/domain/agent-run-token-usage.js";
+import { summarizeCacheState } from "../domain/token-usage-component-basis.js";
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
 
 const add = (a: number, b: number | null): number => a + (b ?? 0);
@@ -29,6 +30,12 @@ const sumCost = (
   events: TokenUsageUpdatedPayload[],
   select: (event: TokenUsageUpdatedPayload) => number | null,
 ): number | null => events.reduce((sum, event) => addNullableCost(sum, select(event)), null as number | null);
+
+const rate = (numerator: number, denominator: number): number | null =>
+  denominator > 0 ? numerator / denominator : null;
+
+const uniqueStrings = (values: Array<string | null | undefined>): string[] =>
+  Array.from(new Set(values.filter((value): value is string => Boolean(value)))).sort();
 
 export class TokenUsageLedgerStore {
   constructor(private readonly repository = new SqlTokenUsageLedgerRepository()) {}
@@ -77,10 +84,17 @@ export class TokenUsageLedgerStore {
     rootTeamRunIdOverride?: string | null,
   ): TokenUsageRunSummaryPayload {
     const latest = events.at(-1) ?? null;
-    const inputTokens = events.reduce((sum, event) => add(sum, event.accounting_input_tokens), 0);
+    const grossInputTokens = events.reduce((sum, event) => add(sum, event.accounting_input_tokens), 0);
+    const standardInputTokens = events.reduce((sum, event) => add(sum, event.standard_input_tokens), 0);
+    const cacheMissInputTokens = events.reduce((sum, event) => add(sum, event.cache_miss_input_tokens), 0);
+    const cacheReadTokens = events.reduce((sum, event) => add(sum, event.cache_read_input_tokens), 0);
+    const cacheCreationTokens = events.reduce((sum, event) => add(sum, event.cache_creation_input_tokens), 0);
+    const cacheCreation5mTokens = events.reduce((sum, event) => add(sum, event.cache_creation_5m_input_tokens), 0);
+    const cacheCreation1hTokens = events.reduce((sum, event) => add(sum, event.cache_creation_1h_input_tokens), 0);
     const outputTokens = events.reduce((sum, event) => add(sum, event.accounting_output_tokens), 0);
-    const totalTokens = events.reduce((sum, event) => add(sum, event.accounting_total_tokens), 0);
     const reasoningTokens = events.reduce((sum, event) => add(sum, event.reasoning_output_tokens), 0);
+    const billableOutputTokens = events.reduce((sum, event) => add(sum, event.billable_output_tokens), 0);
+    const totalTokens = events.reduce((sum, event) => add(sum, event.accounting_total_tokens), 0);
     const { currency, mixed } = currencySummary(events);
     const costStatus = mixed ? "mixed" : summarizeCostStatus(events.map((event) => event.api_cost_status));
 
@@ -93,23 +107,46 @@ export class TokenUsageLedgerStore {
       member_route_key: latest?.member_route_key ?? null,
       agent_definition_id: latest?.agent_definition_id ?? null,
       workspace_id: latest?.workspace_id ?? null,
-      input_tokens: inputTokens,
+      gross_input_tokens: grossInputTokens,
+      standard_input_tokens: standardInputTokens,
+      cache_miss_input_tokens: cacheMissInputTokens,
+      cache_read_input_tokens: cacheReadTokens,
+      cache_creation_input_tokens: cacheCreationTokens,
+      cache_creation_5m_input_tokens: cacheCreation5mTokens,
+      cache_creation_1h_input_tokens: cacheCreation1hTokens,
       output_tokens: outputTokens,
-      total_tokens: totalTokens,
       reasoning_output_tokens: reasoningTokens,
+      billable_output_tokens: billableOutputTokens,
+      total_tokens: totalTokens,
+      cache_read_input_token_rate: rate(cacheReadTokens, grossInputTokens),
+      standard_input_token_rate: rate(standardInputTokens, grossInputTokens),
+      cache_creation_input_token_rate: rate(cacheCreationTokens, grossInputTokens),
+      cache_state: summarizeCacheState(events.map((event) => event.cache_state)),
       estimated_api_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_input_cost),
+      estimated_api_standard_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_standard_input_cost),
+      estimated_api_cache_read_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_cache_read_input_cost),
+      estimated_api_cache_creation_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_cache_creation_input_cost),
+      estimated_api_cache_creation_5m_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_cache_creation_5m_input_cost),
+      estimated_api_cache_creation_1h_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_cache_creation_1h_input_cost),
       estimated_api_output_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_output_cost),
       estimated_api_reasoning_output_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_reasoning_output_cost),
       estimated_api_total_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_total_cost),
       currency,
       api_cost_status: costStatus,
-      latest_context_input_tokens: latest?.latest_context_input_tokens ?? null,
-      effective_context_budget_tokens: latest?.effective_context_budget_tokens ?? null,
-      context_pressure_percent: latest?.context_pressure_percent ?? null,
+      missing_price_dimensions: uniqueStrings(events.flatMap((event) => event.missing_price_dimensions)),
+      pricing_policy_key: uniqueStrings(events.map((event) => event.pricing_policy_key)).length === 1
+        ? uniqueStrings(events.map((event) => event.pricing_policy_key))[0] ?? null
+        : null,
+      selected_pricing_tier_id: uniqueStrings(events.map((event) => event.selected_pricing_tier_id)).length === 1
+        ? uniqueStrings(events.map((event) => event.selected_pricing_tier_id))[0] ?? null
+        : null,
+      latest_prompt_tokens: latest?.latest_prompt_tokens ?? null,
+      effective_context_window_tokens: latest?.effective_context_window_tokens ?? null,
+      context_window_usage_percent: latest?.context_window_usage_percent ?? null,
       latest_model_provider: latest?.model_provider ?? null,
       latest_model_identifier: latest?.model_identifier ?? null,
       latest_runtime_kind: latest?.runtime_kind ?? null,
-      event_count: events.length,
+      usage_report_count: events.length,
       updated_at: latest?.observed_at ?? null,
     };
   }

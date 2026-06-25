@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "provider": "openai",
+  "mode": "two-call",
+  "error": "Error in OPENAI Responses API request: 401 Incorrect API key provided: sk-<redacted>. You can find your API key at https://platform.openai.com/account/api-keys.",
+  "completed_at": "2026-06-25T17:16:20.206Z"
+}

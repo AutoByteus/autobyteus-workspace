@@ -1,0 +1,16 @@
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "input_token_semantic" TEXT NOT NULL DEFAULT 'unknown';
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "standard_input_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cache_miss_input_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cache_creation_5m_input_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cache_creation_1h_input_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cache_state" TEXT NOT NULL DEFAULT 'unknown';
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cached_input_write_5m_price_per_million" REAL;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "cached_input_write_1h_price_per_million" REAL;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "pricing_policy_key" TEXT;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "selected_pricing_tier_id" TEXT;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "missing_price_dimensions_json" TEXT;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "estimated_api_cache_creation_5m_input_cost" REAL;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "estimated_api_cache_creation_1h_input_cost" REAL;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "latest_prompt_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "effective_context_window_tokens" INTEGER;
+ALTER TABLE "token_usage_ledger_events" ADD COLUMN "context_window_usage_percent" REAL;

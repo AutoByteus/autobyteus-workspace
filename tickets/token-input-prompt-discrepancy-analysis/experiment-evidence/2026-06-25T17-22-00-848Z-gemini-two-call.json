@@ -1,0 +1,87 @@
+{
+  "provider": "gemini",
+  "mode": "two-call",
+  "model": {
+    "name": "gemini-3-flash-preview",
+    "value": "gemini-3-flash-preview",
+    "provider": "GEMINI"
+  },
+  "started_at": "2026-06-25T17:21:57.312Z",
+  "completed_at": "2026-06-25T17:22:00.848Z",
+  "env_files_loaded": [],
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 9926,
+        "output_tokens": null,
+        "total_tokens": 9939,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 13,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [
+          "output_tokens_missing"
+        ],
+        "raw_usage_json": {
+          "promptTokenCount": 9926,
+          "totalTokenCount": 9939,
+          "trafficType": "ON_DEMAND",
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 9926
+            }
+          ],
+          "thoughtsTokenCount": 13
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 9925,
+        "output_tokens": null,
+        "total_tokens": 9937,
+        "cache_read_input_tokens": 8168,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 12,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [
+          "output_tokens_missing"
+        ],
+        "raw_usage_json": {
+          "promptTokenCount": 9925,
+          "totalTokenCount": 9937,
+          "cachedContentTokenCount": 8168,
+          "trafficType": "ON_DEMAND",
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 9925
+            }
+          ],
+          "cacheTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 8168
+            }
+          ],
+          "thoughtsTokenCount": 12
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_gross_includes_cache"
+}
