@@ -20,6 +20,21 @@ import {
 
 export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
 
+export type ModelPricingTierInfo = {
+  tier_id: string | null;
+  max_input_tokens: number | null;
+  input_price_per_million: number | null;
+  output_price_per_million: number | null;
+  cached_input_read_price_per_million: number | null;
+  cached_input_write_price_per_million: number | null;
+  trusted_dimensions: {
+    input: boolean;
+    output: boolean;
+    cached_input_read: boolean;
+    cached_input_write: boolean;
+  };
+};
+
 export type ModelPricingInfo = {
   model_identifier: string | null;
   model_value: string | null;
@@ -33,6 +48,7 @@ export type ModelPricingInfo = {
   output_price_per_million: number | null;
   cached_input_read_price_per_million: number | null;
   cached_input_write_price_per_million: number | null;
+  input_price_tiers: ModelPricingTierInfo[];
   trusted_dimensions: {
     input: boolean;
     output: boolean;
@@ -288,6 +304,7 @@ export class LLMFactory {
         output_price_per_million: null,
         cached_input_read_price_per_million: null,
         cached_input_write_price_per_million: null,
+        input_price_tiers: [],
         trusted_dimensions: {
           input: false,
           output: false,
@@ -303,6 +320,20 @@ export class LLMFactory {
       return LLMFactory.buildMissingPricingInfo(model, 'pricing_config_absent');
     }
 
+    const tierInfos = pricingConfig.inputTokenPricingTiers.map((tier): ModelPricingTierInfo => ({
+      tier_id: tier.tierId ?? null,
+      max_input_tokens: tier.maxInputTokens ?? null,
+      input_price_per_million: tier.inputTokenPricing ?? null,
+      output_price_per_million: tier.outputTokenPricing ?? null,
+      cached_input_read_price_per_million: tier.cachedInputReadTokenPricing ?? null,
+      cached_input_write_price_per_million: tier.cachedInputWriteTokenPricing ?? null,
+      trusted_dimensions: {
+        input: tier.inputTokenPricing !== undefined,
+        output: tier.outputTokenPricing !== undefined,
+        cached_input_read: tier.cachedInputReadTokenPricing !== undefined,
+        cached_input_write: tier.cachedInputWriteTokenPricing !== undefined,
+      },
+    }));
     const inputTrusted = pricingConfig.inputTokenPricingTrusted;
     const outputTrusted = pricingConfig.outputTokenPricingTrusted;
     const status: PricingStatus = inputTrusted && outputTrusted ? 'trusted' : 'missing';
@@ -316,20 +347,27 @@ export class LLMFactory {
       canonical_name: model.canonicalName,
       model_provider: model.provider,
       pricing_status: status,
-      pricing_source: status === 'trusted' ? 'autobyteus_model_catalog' : null,
+      pricing_source: status === 'trusted'
+        ? pricingConfig.pricingSource ?? 'autobyteus_model_catalog'
+        : null,
       price_config_id: status === 'trusted'
         ? `autobyteus_model_catalog:${model.provider}:${model.canonicalName}`
         : null,
-      currency: status === 'trusted' ? 'USD' : null,
+      currency: status === 'trusted' ? pricingConfig.currency : null,
       input_price_per_million: inputTrusted ? pricingConfig.inputTokenPricing : null,
       output_price_per_million: outputTrusted ? pricingConfig.outputTokenPricing : null,
-      cached_input_read_price_per_million: null,
-      cached_input_write_price_per_million: null,
+      cached_input_read_price_per_million: pricingConfig.cachedInputReadTokenPricingTrusted
+        ? pricingConfig.cachedInputReadTokenPricing
+        : null,
+      cached_input_write_price_per_million: pricingConfig.cachedInputWriteTokenPricingTrusted
+        ? pricingConfig.cachedInputWriteTokenPricing
+        : null,
+      input_price_tiers: status === 'trusted' ? tierInfos : [],
       trusted_dimensions: {
         input: inputTrusted,
         output: outputTrusted,
-        cached_input_read: false,
-        cached_input_write: false,
+        cached_input_read: pricingConfig.cachedInputReadTokenPricingTrusted,
+        cached_input_write: pricingConfig.cachedInputWriteTokenPricingTrusted,
       },
       ...(missingReason ? { missing_reason: missingReason } : {}),
     };
@@ -352,6 +390,7 @@ export class LLMFactory {
       output_price_per_million: null,
       cached_input_read_price_per_million: null,
       cached_input_write_price_per_million: null,
+      input_price_tiers: [],
       trusted_dimensions: {
         input: false,
         output: false,

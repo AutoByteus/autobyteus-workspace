@@ -59,6 +59,48 @@ payloads into the ledger/event contract:
    `TokenUsageLedgerStore`. Persistence failures are logged and must not block
    runtime streaming/event dispatch.
 
+## Runtime-Native Token Event Ingestion
+
+Runtime token events use the same canonical ledger contract as native
+`autobyteus-ts` provider observations. Runtime adapters must map first-class
+usage fields before the event reaches the enrichment/pricing/persistence spine;
+future callers should not depend on raw JSON for supported fields.
+
+### Codex App Server
+
+Codex App Server emits raw `thread/tokenUsage/updated` notifications with
+`tokenUsage.last`, `tokenUsage.total`, and `tokenUsage.modelContextWindow`.
+`resolveCodexThreadTokenUsage(...)` owns this mapping:
+
+- prefer `last` as a `per_turn` delta when present;
+- fall back to `total` as a `cumulative_snapshot` with a stable
+  `snapshot_series_key` when `last` is absent;
+- map `inputTokens`, `outputTokens`, and `totalTokens` to reported token fields;
+- map `cachedInputTokens` to first-class `cache_read_input_tokens`;
+- map `reasoningOutputTokens` to first-class `reasoning_output_tokens`; and
+- map `modelContextWindow` to `effective_context_budget_tokens`.
+
+The raw Codex payload is still preserved for audit/debugging, but cache,
+reasoning, and context fields must not be raw-only. Durable DS-007 coverage
+asserts these fields persist in `token_usage_ledger_events`, surface through
+GraphQL summaries where exposed, and update the live token meter store state.
+
+### Claude Agent SDK
+
+Claude Agent SDK accounting is terminal-result based. Assistant thinking/text
+chunks are content stream events, not token-accounting rows, and must not be
+summed into usage. `buildClaudeTokenUsageEvent(...)` emits one `per_turn`
+`TOKEN_USAGE_UPDATED` event only from terminal `result` payloads with
+`result.usage` and/or `modelUsage`.
+
+The mapper preserves input/output/total tokens plus cache-read/cache-creation
+fields from snake_case or camelCase usage shapes. If a future SDK result exposes
+numeric thinking details such as `output_tokens_details.thinking_tokens` or
+`thinkingTokens`, that value maps to `reasoning_output_tokens`. If the SDK emits
+thinking content but no numeric thinking-token count, `reasoning_output_tokens`
+stays null; the UI should show accurate output totals/cost without a
+thinking-token subline.
+
 ## Ledger Semantics
 
 The ledger separates **reported** provider/runtime readings from **accounting**
@@ -68,6 +110,16 @@ deltas:
   preserve what the runtime said.
 - `accounting_input_tokens`, `accounting_output_tokens`, and
   `accounting_total_tokens` are the only fields that summaries/statistics add.
+- Cost calculation uses billable token fields when providers expose them. For
+  example, Gemini thinking tokens are carried as `reasoning_output_tokens` and
+  billable output tokens so output-price estimates include provider-billed
+  thinking, while reasoning remains a visible output sub-breakdown instead of
+  being double-counted in token totals.
+- Cache and reasoning fields are normalized before persistence:
+  `cache_read_input_tokens`, `cache_creation_input_tokens`,
+  `reasoning_output_tokens`, `billable_input_tokens`, and
+  `billable_output_tokens` are delta-normalized for cumulative snapshots just
+  like the primary input/output/total fields.
 - `usage_scope` is `per_call`, `per_turn`, or `cumulative_snapshot`.
 - `raw_usage_json` and `raw_event_json` preserve provider/runtime details such
   as cache and reasoning token fields when available.
@@ -77,17 +129,22 @@ deltas:
 Cost is always an **estimated API-price** interpretation over accounting token
 deltas. It is separate from token counts and is nullable:
 
-- `api_cost_status = estimated` only when trusted input/output pricing resolves
-  from the shared catalog.
+- `api_cost_status = estimated` only when trusted pricing resolves from the
+  shared catalog for all dimensions needed by the observed row.
 - `price_missing` means tokens were stored but no trusted price was available.
 - `partial_price_missing` means only part of the needed price dimensions were
-  trusted.
-- `mixed` is used by aggregate summaries/statistics when rows have different
-  cost statuses.
+  trusted, such as observed cache-write tokens without a trusted cache-write
+  price.
+- `mixed` is used by aggregate summaries/statistics when rows have incompatible
+  cost statuses or currencies. Mixed-currency aggregates keep token totals but
+  return nullable aggregate costs instead of adding USD and CNY values together.
 
 Constructor/default-zero price values are not trusted free prices. Unknown,
 placeholder, local, or unmatched models remain token-only until trusted pricing
-is added.
+is added. The shared `autobyteus-ts` catalog can express currency, cache
+read/write prices, provider pricing source/effective date, and input-size price
+tiers; server-side accounting selects the applicable trusted tier before
+estimating cost.
 
 ## SQL Storage
 
@@ -116,7 +173,10 @@ be reintroduced as compatibility writers.
   returns focused member usage.
 
 All summary token totals are computed from accounting deltas, not reported
-cumulative snapshots.
+cumulative snapshots. Run, team, member, and statistics GraphQL shapes include
+reasoning output tokens and nullable reasoning-output estimated cost alongside
+input/output/total fields. Clients must treat those fields as server-owned
+summary data, not as a prompt to recalculate prices locally.
 
 ## Frontend Contract
 
@@ -124,25 +184,38 @@ The frontend treats token usage as display-only state:
 
 - live `TOKEN_USAGE_UPDATED` WebSocket events update `tokenUsageMeterStore`;
 - reopening/focusing runs hydrates from the GraphQL summary queries;
-- `TokenUsageHeaderChip` and the right-side `Usage` tab render tokens,
-  nullable estimated API costs, price status, model/runtime metadata, and latest
-  context pressure;
+- `TokenUsageHeaderChip` and the right-side `Token` tab render tokens, nullable
+  estimated API costs, price status, model/runtime metadata, and latest context
+  pressure;
+- `TokenUsageMeterPanel` presents compact paired Input, Output, and Total cards
+  so each token count appears with its related cost estimate. Costs are quiet
+  secondary rows but remain accessibly labeled; the Total card is subtly
+  highlighted.
+- the Output card adds thinking/reasoning detail only when the server summary
+  reports a positive `reasoningOutputTokens` value. The detail is a native
+  disclosure chip with a chevron and explanatory copy that those thinking tokens
+  are already included in output tokens and estimated output cost;
+- unknown context pressure is hidden rather than rendered as a noisy empty card.
+  Context pressure appears only when a numeric pressure percentage and effective
+  context budget are present;
 - the frontend does not compute authoritative accounting deltas or model prices.
 
 "Unpriced" means token usage exists but trusted API-price metadata was missing;
-it must not be displayed as `$0`.
+it must not be displayed as `$0`. Mixed-currency aggregate costs are displayed
+as mixed/unavailable rather than summed under one currency label.
 
 ## Browser Frontend Evidence
 
-Delivery evidence exercised the browser-facing Usage UI against real local
-backend/frontend stacks and the ledger-backed GraphQL hydration path. The latest
-reviewed evidence covers all three requested runtime families:
+Historical delivery evidence exercised the browser-facing token UI against real
+local backend/frontend stacks and the ledger-backed GraphQL hydration path. That
+evidence covered all three requested runtime families:
 
-| Runtime proof | How usage reached the browser | Verified Usage UI state |
+| Runtime proof | How usage reached the browser | Verified token UI state |
 | --- | --- | --- |
-| AutoByteus + LM Studio qwen3.5 | Built backend + Nuxt frontend, seeded historical run metadata, and one ledger event loaded through the workspace route. | Header `366 tok · unpriced`; Usage tokens `321 / 45 / 366`; cost cards `unpriced`; `apiCostStatus = price_missing`; model `qwen3.5-27b:lmstudio@127.0.0.1:1234`; runtime `autobyteus`; event count `1`; context pressure `12.2%` with `500 / 4.096` context tokens; header chip reopened Usage after switching tabs. |
-| Codex App Server | Real backend GraphQL-created run and WebSocket turn emitted `TOKEN_USAGE_UPDATED`, persisted one ledger event, then the persisted run opened in Nuxt Usage. | Header `12.7k tok · 0,0096 $ est`; Usage tokens `12.695 / 26 / 12.721`; estimated cost cards; `apiCostStatus = estimated`; model `gpt-5.4-mini`; runtime `codex_app_server`; event count `1`. |
-| Claude Agent SDK | Real backend GraphQL-created run and WebSocket turn emitted `TOKEN_USAGE_UPDATED`, persisted one ledger event, then the persisted run opened in Nuxt Usage. | Header `22.3k tok · unpriced`; Usage tokens `22.270 / 39 / 22.309`; cost cards `unpriced`; `apiCostStatus = price_missing`; model `sonnet`; runtime `claude_agent_sdk`; event count `1`. |
+| AutoByteus + LM Studio qwen3.5 | Built backend + Nuxt frontend, seeded historical run metadata, and one ledger event loaded through the workspace route. | Header `366 tok · unpriced`; token totals `321 / 45 / 366`; costs `unpriced`; `apiCostStatus = price_missing`; model `qwen3.5-27b:lmstudio@127.0.0.1:1234`; runtime `autobyteus`; event count `1`; context pressure `12.2%` with `500 / 4.096` context tokens; header chip reopened the token panel after switching tabs. |
+| Codex App Server | Real backend GraphQL-created run and WebSocket turn emitted `TOKEN_USAGE_UPDATED`, persisted one ledger event, then the persisted run opened in Nuxt. | Header `12.7k tok · 0,0096 $ est`; token totals `12.695 / 26 / 12.721`; estimated costs; `apiCostStatus = estimated`; model `gpt-5.4-mini`; runtime `codex_app_server`; event count `1`. |
+| Claude Agent SDK | Real backend GraphQL-created run and WebSocket turn emitted `TOKEN_USAGE_UPDATED`, persisted one ledger event, then the persisted run opened in Nuxt. | Header `22.3k tok · unpriced`; token totals `22.270 / 39 / 22.309`; costs `unpriced`; `apiCostStatus = price_missing`; model `sonnet`; runtime `claude_agent_sdk`; event count `1`. |
+| Codex App Server + GPT-5.5 UI polish proof | Live browser run opened the Token tab after a Codex App Server / GPT-5.5 prompt with reasoning output. | Compact auto-fit paired cards, quiet cost rows, highlighted Total card, single quiet price-status line, hidden unknown context-pressure block, and expanded thinking-token disclosure with chevron/explanatory copy. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/6b2c05-1782396115079.png`. |
 
 Together these proofs confirm the current browser contract over server-owned
 ledger data for both estimated-price and missing-price cases. The frontend must
@@ -150,9 +223,14 @@ continue to render server-provided cost status and nullable estimated costs; it
 must not synthesize prices or display missing prices as `$0`.
 
 The browser proofs are one-off delivery evidence rather than a committed browser
-or screenshot automation harness. Durable frontend regression coverage still
-comes from store/handler tests, production build/guards, and any future browser
-E2E harness the project chooses to add.
+or screenshot automation harness. Current durable regression coverage for the
+token-pricing UI contract comes from GraphQL E2E coverage for reasoning fields,
+mixed-currency aggregate behavior, removed MiniMax M2.7 model-list exposure, and
+the DS-007 runtime-native Codex cache/reasoning/context baseline. Frontend
+store/component/composable tests cover live runtime-like reasoning/cost/context
+state, compact paired Token meter cards, accessible cost rows, native
+thinking-token disclosure open/closed behavior, hidden zero-thinking state, and
+the right-side tab label.
 
 ## Runtime E2E Coverage
 
@@ -186,6 +264,9 @@ design.
 - Native provider adapters preserve raw/cache/reasoning usage details in
   `LlmTokenUsageObservation` before the server turns observations into ledger
   events.
+- Removed provider models such as MiniMax M2.7 must not remain selectable via
+  model-list GraphQL/API compatibility aliases. MiniMax M3 remains the supported
+  MiniMax LLM catalog entry.
 - Deterministic unit/integration/E2E coverage validates the ledger, cost,
   GraphQL, and frontend meter contracts; the environment-gated runtime E2E above
   provides live-runtime confirmation when configured runtimes are available.

@@ -46,8 +46,10 @@
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.llm_model') }}</th>
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.prompt_tokens') }}</th>
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.assistant_tokens') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.thinking_tokens') }}</th>
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.prompt_tokens_cost') }}</th>
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.assistant_tokens_cost') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.thinking_tokens_cost') }}</th>
             <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.total_cost') }}</th>
           </tr>
         </thead>
@@ -56,8 +58,10 @@
             <td class="py-2 px-4 border">{{ stat.llmModel }}</td>
             <td class="py-2 px-4 border">{{ stat.promptTokens.toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ stat.assistantTokens.toLocaleString() }}</td>
+            <td class="py-2 px-4 border">{{ stat.reasoningTokens.toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.promptCost, stat.currency, stat.apiCostStatus)) }}</td>
             <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.assistantCost, stat.currency, stat.apiCostStatus)) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.reasoningCost, stat.currency, stat.apiCostStatus)) }}</td>
             <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.totalCost, stat.currency, stat.apiCostStatus)) }}</td>
           </tr>
           <!-- Total Row -->
@@ -65,8 +69,10 @@
             <td class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.total') }}</td>
             <td class="py-2 px-4 border">{{ getTotalPromptTokens().toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ getTotalAssistantTokens().toLocaleString() }}</td>
+            <td class="py-2 px-4 border">{{ getTotalReasoningTokens().toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ formatCost(getTotalPromptCost()) }}</td>
             <td class="py-2 px-4 border">{{ formatCost(getTotalAssistantCost()) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(getTotalReasoningCost()) }}</td>
             <td class="py-2 px-4 border">{{ formatCost(store.getTotalCost) }}</td>
           </tr>
         </tbody>
@@ -140,6 +146,12 @@ const costAggregate = (
 const aggregateCosts = (
   values: TokenUsageCostAggregate[],
 ): TokenUsageCostAggregate => values.reduce<TokenUsageCostAggregate>((aggregate, next, index) => {
+  if (aggregate.status === 'mixed' && aggregate.currency === null && index > 0) {
+    return aggregate;
+  }
+  if (aggregate.currency && next.currency && aggregate.currency !== next.currency) {
+    return { amount: null, currency: null, status: 'mixed' };
+  }
   const amount = aggregate.amount === null && next.amount === null
     ? null
     : (aggregate.amount ?? 0) + (next.amount ?? 0);
@@ -153,7 +165,11 @@ const aggregateCosts = (
 }, { amount: null, currency: null, status: 'price_missing' });
 
 const formatCost = (cost: TokenUsageCostAggregate): string => {
-  if (cost.amount === null) return $t('shell.tokenUsage.unpriced');
+  if (cost.amount === null) {
+    return cost.status === 'mixed'
+      ? $t('shell.tokenUsage.mixedCurrencyCost')
+      : $t('shell.tokenUsage.unpriced');
+  }
   const formattedAmount = cost.currency
     ? new Intl.NumberFormat(undefined, { style: 'currency', currency: cost.currency, maximumFractionDigits: 4 }).format(cost.amount)
     : formatNumber(cost.amount);
@@ -174,6 +190,10 @@ const getTotalAssistantTokens = (): number => {
   return store.getStatistics.reduce((sum, stat) => sum + stat.assistantTokens, 0);
 };
 
+const getTotalReasoningTokens = (): number => {
+  return store.getStatistics.reduce((sum, stat) => sum + stat.reasoningTokens, 0);
+};
+
 const getTotalPromptCost = (): TokenUsageCostAggregate => {
   return aggregateCosts(
     store.getStatistics.map((stat) => costAggregate(stat.promptCost, stat.currency, stat.apiCostStatus)),
@@ -183,6 +203,12 @@ const getTotalPromptCost = (): TokenUsageCostAggregate => {
 const getTotalAssistantCost = (): TokenUsageCostAggregate => {
   return aggregateCosts(
     store.getStatistics.map((stat) => costAggregate(stat.assistantCost, stat.currency, stat.apiCostStatus)),
+  );
+};
+
+const getTotalReasoningCost = (): TokenUsageCostAggregate => {
+  return aggregateCosts(
+    store.getStatistics.map((stat) => costAggregate(stat.reasoningCost, stat.currency, stat.apiCostStatus)),
   );
 };
 

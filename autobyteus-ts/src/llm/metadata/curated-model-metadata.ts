@@ -150,12 +150,6 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxInputTokens: 204800,
       sourceUrl: 'https://platform.minimax.io/docs/release-notes/models',
       verifiedAt: '2026-06-24'
-    },
-    'MiniMax-M2.7': {
-      maxContextTokens: 204800,
-      maxInputTokens: 204800,
-      sourceUrl: 'https://platform.minimax.io/docs/release-notes/models',
-      verifiedAt: '2026-04-09'
     }
   }
 };

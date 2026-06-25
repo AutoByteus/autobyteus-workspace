@@ -53,6 +53,16 @@ cumulative-snapshot delta normalization, cost status, and persistence. Higher
 layers must not parse raw Codex token payloads directly or sum cumulative totals
 as deltas.
 
+`codex-thread-token-usage.ts` also owns the runtime-specific field promotion for
+Codex app-server usage. It maps raw `inputTokens`, `outputTokens`, and
+`totalTokens` into reported token fields; `cachedInputTokens` into first-class
+`cache_read_input_tokens`; `reasoningOutputTokens` into first-class
+`reasoning_output_tokens`; and `modelContextWindow` into
+`effective_context_budget_tokens`. These values are preserved in the raw usage
+payload for audit, but supported cache/reasoning/context fields must not be
+raw-only because the ledger, GraphQL summaries, and token meter store consume
+the canonical fields.
+
 ## Apply-Patch / Edit-File Spine
 
 For Codex `apply_patch`, the authoritative mutation spine is the raw `fileChange` item lifecycle, not the `custom_tool_call` completion.
@@ -314,7 +324,7 @@ Output shape:
   source. `thread/read` replay is diagnostic/runtime-native mapping support;
   keep supported history item families aligned with the live lifecycle families
   above, but do not use them as the normal UI display fallback or merge partner.
-- Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Emit and persist ready `TOKEN_USAGE_UPDATED` events from the thread/backend boundary, preserving `per_turn` versus `cumulative_snapshot` scope, instead of parsing raw token payloads or summing totals in higher runtime layers.
+- Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Emit and persist ready `TOKEN_USAGE_UPDATED` events from the thread/backend boundary, preserving `per_turn` versus `cumulative_snapshot` scope, instead of parsing raw token payloads or summing totals in higher runtime layers. Promote supported Codex cache/reasoning/context fields (`cachedInputTokens`, `reasoningOutputTokens`, `modelContextWindow`) into canonical token-usage fields before ledger enrichment.
 - Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy transition-field transport.
 - Treat provider/session compaction signals as storage-only boundary metadata: non-rotating in-progress provenance for Codex `contextCompaction` starts, marker append plus eligible segmented archive rotation for completed provider boundaries, and no marker/rotation for `compaction_trigger`. Never treat provider compaction as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
 - Do not infer `edit_file` success from published-artifact transport on the frontend.

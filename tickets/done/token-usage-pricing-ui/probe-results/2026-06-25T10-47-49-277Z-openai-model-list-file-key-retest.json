@@ -1,0 +1,10 @@
+{
+  "provider": "openai-model-list-file-key-retest",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "summary": {
+    "modelCount": 124,
+    "hasGpt54Mini": true
+  }
+}

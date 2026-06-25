@@ -48,7 +48,7 @@ OpenAI-compatible path.
 Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
-  and MiniMax still use `OpenAICompatibleLLM`.
+  and the retained MiniMax M3 entry still use `OpenAICompatibleLLM`.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
   merges provider-specific `extraParams`, filters framework-internal kwargs, owns
@@ -140,6 +140,8 @@ The current latest-model support set is summarized in
 - Moonshot/Kimi `kimi-k2.6` general-purpose model and `kimi-k2.7-code`
   coding/agentic model (verified 2026-06-16).
 - Zhipu GLM `glm-5.2` (verified 2026-06-16).
+- MiniMax `minimax-m3` / `MiniMax-M3` (verified 2026-06-24). MiniMax M2.7 is
+  removed and must not be retained as an alias.
 
 Provider adapters own request-shape differences:
 
@@ -147,7 +149,8 @@ Provider adapters own request-shape differences:
   thinking budgets or an adapter-injected default `temperature`.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
-  `extra_body.thinking.type` before the shared request builder runs.
+  top-level `thinking.type` before the shared request builder runs, dropping
+  stale caller-supplied `thinking` / `extra_body.thinking` values.
 - `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
   modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
   Gemini thinking config schema.

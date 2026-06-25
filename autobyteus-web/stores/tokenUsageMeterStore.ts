@@ -20,8 +20,10 @@ const emptySummary = (runId: string): TokenUsageRunSummary => ({
   inputTokens: 0,
   outputTokens: 0,
   totalTokens: 0,
+  reasoningOutputTokens: 0,
   estimatedApiInputCost: null,
   estimatedApiOutputCost: null,
+  estimatedApiReasoningOutputCost: null,
   estimatedApiTotalCost: null,
   currency: null,
   apiCostStatus: 'price_missing',
@@ -45,6 +47,12 @@ const mergeStatus = (current: TokenUsageApiCostStatus, next?: string | null, pri
   if (priorEventCount === 0) return normalized;
   if (current === normalized) return current;
   return 'mixed';
+};
+
+const mergeCurrency = (current: string | null, next?: string | null): { currency: string | null; mixed: boolean } => {
+  if (!next || next === current) return { currency: current, mixed: false };
+  if (!current) return { currency: next, mixed: false };
+  return { currency: null, mixed: true };
 };
 
 export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
@@ -75,6 +83,13 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     const inputDelta = payload.meter_delta_input_tokens ?? payload.accounting_input_tokens ?? 0;
     const outputDelta = payload.meter_delta_output_tokens ?? payload.accounting_output_tokens ?? 0;
     const totalDelta = payload.meter_delta_total_tokens ?? payload.accounting_total_tokens ?? (inputDelta + outputDelta);
+    const reasoningDelta = payload.reasoning_output_tokens ?? 0;
+    const currencyMerge = summary.apiCostStatus === 'mixed' && summary.currency === null && summary.eventCount > 0
+      ? { currency: null, mixed: true }
+      : mergeCurrency(summary.currency, payload.currency);
+    const status = currencyMerge.mixed
+      ? 'mixed'
+      : mergeStatus(summary.apiCostStatus, payload.api_cost_status, summary.eventCount);
     return {
       ...summary,
       rootTeamRunId: payload.root_team_run_id ?? summary.rootTeamRunId,
@@ -86,11 +101,13 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       inputTokens: summary.inputTokens + inputDelta,
       outputTokens: summary.outputTokens + outputDelta,
       totalTokens: summary.totalTokens + totalDelta,
-      estimatedApiInputCost: addCost(summary.estimatedApiInputCost, payload.estimated_api_input_cost),
-      estimatedApiOutputCost: addCost(summary.estimatedApiOutputCost, payload.estimated_api_output_cost),
-      estimatedApiTotalCost: addCost(summary.estimatedApiTotalCost, payload.estimated_api_total_cost),
-      currency: payload.currency ?? summary.currency,
-      apiCostStatus: mergeStatus(summary.apiCostStatus, payload.api_cost_status, summary.eventCount),
+      reasoningOutputTokens: summary.reasoningOutputTokens + reasoningDelta,
+      estimatedApiInputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiInputCost, payload.estimated_api_input_cost),
+      estimatedApiOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiOutputCost, payload.estimated_api_output_cost),
+      estimatedApiReasoningOutputCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiReasoningOutputCost, payload.estimated_api_reasoning_output_cost),
+      estimatedApiTotalCost: currencyMerge.mixed ? null : addCost(summary.estimatedApiTotalCost, payload.estimated_api_total_cost),
+      currency: currencyMerge.currency,
+      apiCostStatus: status,
       latestContextInputTokens: payload.latest_context_input_tokens ?? summary.latestContextInputTokens,
       effectiveContextBudgetTokens: payload.effective_context_budget_tokens ?? summary.effectiveContextBudgetTokens,
       contextPressurePercent: payload.context_pressure_percent ?? summary.contextPressurePercent,

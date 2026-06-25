@@ -62,6 +62,7 @@ const trustedPriceProvider = {
     output_price_per_million: 4,
     cached_input_read_price_per_million: null,
     cached_input_write_price_per_million: null,
+    input_price_tiers: [],
     pricing_status: 'trusted',
     trusted_dimensions: {
       input: true,

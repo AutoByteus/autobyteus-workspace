@@ -9,12 +9,95 @@ const cloneRecord = (value: unknown): Record<string, unknown> | null => {
   return record ? JSON.parse(JSON.stringify(record)) as Record<string, unknown> : null;
 };
 
+const firstNonNegativeInt = (...values: unknown[]): number | null => {
+  for (const value of values) {
+    const number = asNonNegativeInt(value);
+    if (number !== null) return number;
+  }
+  return null;
+};
+
 const firstRecord = (...values: unknown[]): Record<string, unknown> | null => {
   for (const value of values) {
     const record = asObject(value);
     if (record) return record;
   }
   return null;
+};
+
+const hasTokenUsageShape = (record: Record<string, unknown>): boolean =>
+  firstNonNegativeInt(
+    record.input_tokens,
+    record.inputTokens,
+    record.prompt_tokens,
+    record.promptTokens,
+    record.output_tokens,
+    record.outputTokens,
+    record.completion_tokens,
+    record.completionTokens,
+    record.cache_creation_input_tokens,
+    record.cacheCreationInputTokens,
+    record.cache_read_input_tokens,
+    record.cacheReadInputTokens,
+  ) !== null;
+
+const resolveModelUsageRecord = (
+  value: unknown,
+  preferredModel: string,
+): { model: string | null; usage: Record<string, unknown> | null } => {
+  const record = asObject(value);
+  if (!record) return { model: null, usage: null };
+  if (hasTokenUsageShape(record)) return { model: null, usage: record };
+
+  const preferredUsage = asObject(record[preferredModel]);
+  if (preferredUsage) return { model: preferredModel, usage: preferredUsage };
+
+  for (const [model, usage] of Object.entries(record)) {
+    const usageRecord = asObject(usage);
+    if (usageRecord) return { model, usage: usageRecord };
+  }
+  return { model: null, usage: null };
+};
+
+const resolveThinkingTokens = (
+  usage: Record<string, unknown>,
+  modelUsage: Record<string, unknown> | null,
+): number | null => {
+  const outputDetails = firstRecord(
+    usage.output_tokens_details,
+    usage.outputTokensDetails,
+    usage.completion_tokens_details,
+    usage.completionTokensDetails,
+  );
+  const modelOutputDetails = firstRecord(
+    modelUsage?.output_tokens_details,
+    modelUsage?.outputTokensDetails,
+    modelUsage?.completion_tokens_details,
+    modelUsage?.completionTokensDetails,
+  );
+
+  return firstNonNegativeInt(
+    outputDetails?.thinking_tokens,
+    outputDetails?.thinkingTokens,
+    outputDetails?.reasoning_tokens,
+    outputDetails?.reasoningTokens,
+    usage.thinking_tokens,
+    usage.thinkingTokens,
+    usage.reasoning_output_tokens,
+    usage.reasoningOutputTokens,
+    usage.reasoning_tokens,
+    usage.reasoningTokens,
+    modelOutputDetails?.thinking_tokens,
+    modelOutputDetails?.thinkingTokens,
+    modelOutputDetails?.reasoning_tokens,
+    modelOutputDetails?.reasoningTokens,
+    modelUsage?.thinking_tokens,
+    modelUsage?.thinkingTokens,
+    modelUsage?.reasoning_output_tokens,
+    modelUsage?.reasoningOutputTokens,
+    modelUsage?.reasoning_tokens,
+    modelUsage?.reasoningTokens,
+  );
 };
 
 export const buildClaudeTokenUsageEvent = (input: {
@@ -26,34 +109,66 @@ export const buildClaudeTokenUsageEvent = (input: {
 }): ClaudeSessionEvent | null => {
   const payload = asObject(input.chunk);
   if (!payload) return null;
+
+  const terminalResult = asObject(payload.result) ?? payload;
+  if (asString(terminalResult.type)?.toLowerCase() !== "result") return null;
+
+  const modelUsageInfo = resolveModelUsageRecord(
+    terminalResult.modelUsage ?? terminalResult.model_usage ?? payload.modelUsage ?? payload.model_usage,
+    input.model,
+  );
   const usage = firstRecord(
+    terminalResult.usage,
     payload.usage,
-    payload.modelUsage,
-    payload.model_usage,
-    asObject(payload.result)?.usage,
-    asObject(payload.message)?.usage,
+    modelUsageInfo.usage,
   );
   if (!usage) return null;
 
-  const inputTokens = asNonNegativeInt(
-    usage.input_tokens ?? usage.inputTokens ?? usage.prompt_tokens ?? usage.promptTokens,
+  const modelUsage = modelUsageInfo.usage;
+  const inputTokens = firstNonNegativeInt(
+    usage.input_tokens,
+    usage.inputTokens,
+    usage.prompt_tokens,
+    usage.promptTokens,
+    modelUsage?.input_tokens,
+    modelUsage?.inputTokens,
+    modelUsage?.prompt_tokens,
+    modelUsage?.promptTokens,
   );
-  const outputTokens = asNonNegativeInt(
-    usage.output_tokens ?? usage.outputTokens ?? usage.completion_tokens ?? usage.completionTokens,
+  const outputTokens = firstNonNegativeInt(
+    usage.output_tokens,
+    usage.outputTokens,
+    usage.completion_tokens,
+    usage.completionTokens,
+    modelUsage?.output_tokens,
+    modelUsage?.outputTokens,
+    modelUsage?.completion_tokens,
+    modelUsage?.completionTokens,
   );
-  const explicitTotalTokens = asNonNegativeInt(usage.total_tokens ?? usage.totalTokens);
+  const explicitTotalTokens = firstNonNegativeInt(usage.total_tokens, usage.totalTokens, modelUsage?.total_tokens, modelUsage?.totalTokens);
   const totalTokens = explicitTotalTokens ?? (
     inputTokens !== null && outputTokens !== null ? inputTokens + outputTokens : null
   );
   if (inputTokens === null && outputTokens === null && totalTokens === null) return null;
 
-  const cacheCreation = asNonNegativeInt(
-    usage.cache_creation_input_tokens ?? usage.cacheCreationInputTokens ?? usage.cache_creation_tokens,
+  const cacheCreation = firstNonNegativeInt(
+    usage.cache_creation_input_tokens,
+    usage.cacheCreationInputTokens,
+    usage.cache_creation_tokens,
+    modelUsage?.cache_creation_input_tokens,
+    modelUsage?.cacheCreationInputTokens,
+    modelUsage?.cache_creation_tokens,
   );
-  const cacheRead = asNonNegativeInt(
-    usage.cache_read_input_tokens ?? usage.cacheReadInputTokens ?? usage.cache_read_tokens,
+  const cacheRead = firstNonNegativeInt(
+    usage.cache_read_input_tokens,
+    usage.cacheReadInputTokens,
+    usage.cache_read_tokens,
+    modelUsage?.cache_read_input_tokens,
+    modelUsage?.cacheReadInputTokens,
+    modelUsage?.cache_read_tokens,
   );
-  const model = asString(payload.model) ?? asString(usage.model) ?? input.model;
+  const reasoningTokens = resolveThinkingTokens(usage, modelUsage);
+  const model = asString(terminalResult.model) ?? asString(payload.model) ?? asString(usage.model) ?? modelUsageInfo.model ?? input.model;
   const eventKey = [input.runId, input.sessionId, input.turnId, model, inputTokens ?? "x", outputTokens ?? "x", totalTokens ?? "x"].join(":");
   const qualityFlags: string[] = [];
   if (inputTokens === null) qualityFlags.push("reported_input_tokens_missing");
@@ -77,6 +192,7 @@ export const buildClaudeTokenUsageEvent = (input: {
       reported_total_tokens: totalTokens,
       cache_creation_input_tokens: cacheCreation,
       cache_read_input_tokens: cacheRead,
+      reasoning_output_tokens: reasoningTokens,
       raw_usage_json: cloneRecord(usage),
       raw_event_json: cloneRecord(payload),
       quality_flags: qualityFlags,

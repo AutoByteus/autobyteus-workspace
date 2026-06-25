@@ -41,6 +41,7 @@ describe('buildClaudeTokenUsageEvent', () => {
         reported_total_tokens: 1440,
         cache_creation_input_tokens: 30,
         cache_read_input_tokens: 400,
+        reasoning_output_tokens: null,
         raw_usage_json: chunk.usage,
         raw_event_json: chunk,
         quality_flags: [],
@@ -49,6 +50,102 @@ describe('buildClaudeTokenUsageEvent', () => {
     expect(event?.params.idempotency_key).toBe(
       'claude_sdk_usage:run-claude-1:session-claude-1:turn-claude-1:claude-sonnet-4-6:1200:240:1440',
     );
+  });
+
+  it('ignores assistant chunks and uses only terminal result usage/modelUsage for accounting', () => {
+    const assistantThinkingChunk = {
+      type: 'assistant',
+      id: 'msg-duplicate-1',
+      usage: {
+        input_tokens: 9393,
+        cache_creation_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        output_tokens: 0,
+      },
+      content: [{ type: 'thinking' }],
+    };
+
+    expect(buildClaudeTokenUsageEvent({
+      chunk: assistantThinkingChunk,
+      runId: 'run-claude-probe',
+      turnId: 'turn-claude-probe',
+      sessionId: 'session-claude-probe',
+      model: 'fallback-model',
+    })).toBeNull();
+
+    const terminalResult = {
+      type: 'result',
+      subtype: 'success',
+      is_error: false,
+      total_cost_usd: 0.047365,
+      usage: {
+        input_tokens: 9393,
+        cache_creation_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        output_tokens: 16,
+        cache_creation: { ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 0 },
+        service_tier: 'standard',
+      },
+      modelUsage: {
+        'claude-sonnet-4-6': {
+          inputTokens: 9393,
+          outputTokens: 16,
+          cacheReadInputTokens: 0,
+          cacheCreationInputTokens: 0,
+          costUSD: 0.047365,
+          contextWindow: 200000,
+          maxOutputTokens: 32000,
+        },
+      },
+      stop_reason: 'end_turn',
+    };
+
+    const event = buildClaudeTokenUsageEvent({
+      chunk: terminalResult,
+      runId: 'run-claude-probe',
+      turnId: 'turn-claude-probe',
+      sessionId: 'session-claude-probe',
+      model: 'fallback-model',
+    });
+
+    expect(event?.params).toEqual(expect.objectContaining({
+      model_identifier: 'claude-sonnet-4-6',
+      model_value: 'claude-sonnet-4-6',
+      reported_input_tokens: 9393,
+      reported_output_tokens: 16,
+      reported_total_tokens: 9409,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 0,
+      reasoning_output_tokens: null,
+      raw_usage_json: terminalResult.usage,
+      raw_event_json: terminalResult,
+      quality_flags: [],
+    }));
+  });
+
+  it('maps future numeric Claude thinking-token details as reasoning output sub-breakdown', () => {
+    const event = buildClaudeTokenUsageEvent({
+      chunk: {
+        type: 'result',
+        model: 'claude-sonnet-4-6',
+        usage: {
+          input_tokens: 1000,
+          output_tokens: 80,
+          output_tokens_details: { thinking_tokens: 35 },
+        },
+      },
+      runId: 'run-claude-thinking',
+      turnId: 'turn-claude-thinking',
+      sessionId: 'session-claude-thinking',
+      model: 'fallback-model',
+    });
+
+    expect(event?.params).toEqual(expect.objectContaining({
+      reported_input_tokens: 1000,
+      reported_output_tokens: 80,
+      reported_total_tokens: 1080,
+      reasoning_output_tokens: 35,
+    }));
   });
 
   it('uses modelUsage/model_usage variants and flags missing reported dimensions', () => {

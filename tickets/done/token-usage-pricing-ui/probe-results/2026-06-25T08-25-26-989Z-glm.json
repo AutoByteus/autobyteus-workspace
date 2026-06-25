@@ -1,0 +1,52 @@
+{
+  "provider": "glm",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "durationMs": 3927,
+  "model": "glm-5.2",
+  "summary": {
+    "topLevelKeys": [
+      "choices",
+      "created",
+      "id",
+      "model",
+      "object",
+      "request_id",
+      "usage"
+    ],
+    "usage": {
+      "completion_tokens": 64,
+      "completion_tokens_details": {
+        "reasoning_tokens": 64
+      },
+      "prompt_tokens": 19,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 83
+    },
+    "usageKeys": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "promptDetails": {
+      "cached_tokens": 0
+    },
+    "completionDetails": {
+      "reasoning_tokens": 64
+    },
+    "messageKeys": [
+      "content",
+      "reasoning_content",
+      "role"
+    ],
+    "deltaKeys": [],
+    "hasReasoningContent": true,
+    "hasReasoningTextField": false,
+    "finishReason": "length"
+  }
+}

@@ -6,6 +6,7 @@ export type AnthropicUsageAccumulator = {
   outputTokens: number | null;
   cacheCreationInputTokens: number | null;
   cacheReadInputTokens: number | null;
+  reasoningOutputTokens: number | null;
   rawUsages: Record<string, unknown>[];
 };
 
@@ -20,6 +21,7 @@ export const createAnthropicUsageAccumulator = (): AnthropicUsageAccumulator => 
   outputTokens: null,
   cacheCreationInputTokens: null,
   cacheReadInputTokens: null,
+  reasoningOutputTokens: null,
   rawUsages: [],
 });
 
@@ -39,11 +41,16 @@ export const foldAnthropicUsage = (
   const cacheRead =
     numberField(usage, 'cache_read_input_tokens') ??
     numberField(usage, 'cache_read_tokens');
+  const outputDetails = asRecord(usage.output_tokens_details);
+  const reasoningOutput =
+    numberField(outputDetails, 'thinking_tokens') ??
+    numberField(outputDetails, 'reasoning_tokens');
 
   if (inputTokens !== null) accumulator.inputTokens = inputTokens;
   if (outputTokens !== null) accumulator.outputTokens = outputTokens;
   if (cacheCreation !== null) accumulator.cacheCreationInputTokens = cacheCreation;
   if (cacheRead !== null) accumulator.cacheReadInputTokens = cacheRead;
+  if (reasoningOutput !== null) accumulator.reasoningOutputTokens = reasoningOutput;
   return accumulator;
 };
 
@@ -63,7 +70,8 @@ export const createAnthropicTokenUsageObservationFromAccumulator = (
     accumulator.inputTokens === null &&
     accumulator.outputTokens === null &&
     accumulator.cacheCreationInputTokens === null &&
-    accumulator.cacheReadInputTokens === null
+    accumulator.cacheReadInputTokens === null &&
+    accumulator.reasoningOutputTokens === null
   ) {
     return null;
   }
@@ -80,5 +88,6 @@ export const createAnthropicTokenUsageObservationFromAccumulator = (
     },
     cacheCreationInputTokens: accumulator.cacheCreationInputTokens,
     cacheReadInputTokens: accumulator.cacheReadInputTokens,
+    reasoningOutputTokens: accumulator.reasoningOutputTokens,
   });
 };

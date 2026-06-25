@@ -47,6 +47,8 @@ type RunSummary = {
   inputTokens: number;
   outputTokens: number;
   totalTokens: number;
+  reasoningOutputTokens: number;
+  estimatedApiReasoningOutputCost: number | null;
   estimatedApiTotalCost: number | null;
   currency: string | null;
   apiCostStatus: string;
@@ -59,6 +61,8 @@ type UsageStatisticsRow = {
   llmModel: string;
   promptTokens: number;
   assistantTokens: number;
+  reasoningTokens: number;
+  reasoningCost: number | null;
   totalCost: number | null;
   currency: string | null;
   apiCostStatus: string;
@@ -427,6 +431,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           inputTokens
           outputTokens
           totalTokens
+          reasoningOutputTokens
+          estimatedApiReasoningOutputCost
           estimatedApiTotalCost
           currency
           apiCostStatus
@@ -447,6 +453,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           llmModel
           promptTokens
           assistantTokens
+          reasoningTokens
+          reasoningCost
           totalCost
           currency
           apiCostStatus
@@ -606,6 +614,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           expect(summary.inputTokens).toBeGreaterThan(0);
           expect(summary.outputTokens).toBeGreaterThan(0);
           expect(summary.totalTokens).toBeGreaterThan(0);
+          expect(summary.reasoningOutputTokens).toBeGreaterThanOrEqual(0);
           expect(summary.eventCount).toBeGreaterThan(0);
           expect(["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
 
@@ -622,6 +631,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           const runtimeStats = statistics.find((row) => row.llmModel === llmModelIdentifier);
           expect(runtimeStats?.promptTokens).toBeGreaterThan(0);
           expect(runtimeStats?.assistantTokens).toBeGreaterThan(0);
+          expect(runtimeStats?.reasoningTokens).toBeGreaterThanOrEqual(0);
         } finally {
           socket.close();
           await app.close();

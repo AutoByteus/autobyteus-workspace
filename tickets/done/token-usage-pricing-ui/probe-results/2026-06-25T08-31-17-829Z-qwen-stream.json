@@ -1,0 +1,49 @@
+{
+  "provider": "qwen",
+  "attempted": true,
+  "ok": true,
+  "stream": true,
+  "status": 200,
+  "durationMs": 5007,
+  "model": "qwen3.7-max",
+  "summary": {
+    "parsedEvents": 49,
+    "parseErrors": 0,
+    "usageChunks": 1,
+    "usage": {
+      "total_tokens": 178,
+      "completion_tokens": 161,
+      "prompt_tokens": 17,
+      "completion_tokens_details": {
+        "reasoning_tokens": 156
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "usageKeys": [
+      "total_tokens",
+      "completion_tokens",
+      "prompt_tokens",
+      "completion_tokens_details",
+      "prompt_tokens_details"
+    ],
+    "promptDetails": {
+      "cached_tokens": 0
+    },
+    "completionDetails": {
+      "reasoning_tokens": 156
+    },
+    "deltaKeys": [
+      "content",
+      "role",
+      "reasoning_content"
+    ],
+    "sawReasoningDelta": true,
+    "sawReasoningTextField": false,
+    "sawContentDelta": true,
+    "finishReasons": [
+      "stop"
+    ]
+  }
+}

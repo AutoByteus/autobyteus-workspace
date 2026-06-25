@@ -10,8 +10,10 @@ interface TokenUsageStatistic {
   llmModel: string;
   promptTokens: number;
   assistantTokens: number;
+  reasoningTokens: number;
   promptCost: number | null;
   assistantCost: number | null;
+  reasoningCost: number | null;
   totalCost: number | null;
   currency: string | null;
   apiCostStatus: TokenUsageCostStatus;
@@ -27,8 +29,10 @@ type UsageStatisticsRow = {
   llmModel: string;
   promptTokens: number;
   assistantTokens: number;
+  reasoningTokens?: number | null;
   promptCost?: number | null;
   assistantCost?: number | null;
+  reasoningCost?: number | null;
   totalCost?: number | null;
   currency?: string | null;
   apiCostStatus?: string | null;
@@ -69,10 +73,13 @@ const aggregateCosts = (
 
   for (const stat of statistics) {
     const rowAmount = selectAmount(stat);
-    amount = amount === null && rowAmount === null ? null : (amount ?? 0) + (rowAmount ?? 0);
     if (stat.currency) {
-      currency = !currency || currency === stat.currency ? stat.currency : null;
+      if (currency && currency !== stat.currency) {
+        return { amount: null, currency: null, status: 'mixed' };
+      }
+      currency = stat.currency;
     }
+    amount = amount === null && rowAmount === null ? null : (amount ?? 0) + (rowAmount ?? 0);
     status = mergeStatus(status, stat.apiCostStatus, count);
     count += 1;
   }
@@ -114,8 +121,10 @@ export const useTokenUsageStatisticsStore = defineStore('tokenUsageStatistics', 
             llmModel: stat.llmModel,
             promptTokens: stat.promptTokens,
             assistantTokens: stat.assistantTokens,
+            reasoningTokens: stat.reasoningTokens ?? 0,
             promptCost: stat.promptCost ?? null,
             assistantCost: stat.assistantCost ?? null,
+            reasoningCost: stat.reasoningCost ?? null,
             totalCost: stat.totalCost ?? null,
             currency: stat.currency ?? null,
             apiCostStatus: normalizeStatus(stat.apiCostStatus)
@@ -150,8 +159,10 @@ export const useTokenUsageStatisticsStore = defineStore('tokenUsageStatistics', 
                 llmModel: stat.llmModel,
                 promptTokens: 0,
                 assistantTokens: 0,
+                reasoningTokens: 0,
                 promptCost: null,
                 assistantCost: null,
+                reasoningCost: null,
                 totalCost: current.amount,
                 currency: current.currency,
                 apiCostStatus: current.status,

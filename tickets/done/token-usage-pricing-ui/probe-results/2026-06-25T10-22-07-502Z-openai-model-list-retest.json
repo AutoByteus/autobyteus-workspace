@@ -1,0 +1,14 @@
+{
+  "provider": "openai-model-list-retest",
+  "attempted": true,
+  "ok": false,
+  "status": 401,
+  "summary": {
+    "error": {
+      "type": "invalid_request_error",
+      "code": "invalid_api_key",
+      "param": null,
+      "message": "Incorrect API key provided: [REDACTED]********************************************************************************************************************************************************_sgA. You can find your API ke"
+    }
+  }
+}

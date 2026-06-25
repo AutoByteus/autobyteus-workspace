@@ -1,0 +1,56 @@
+{
+  "provider": "deepseek",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "durationMs": 1259,
+  "model": "deepseek-v4-flash",
+  "summary": {
+    "topLevelKeys": [
+      "id",
+      "object",
+      "created",
+      "model",
+      "choices",
+      "usage",
+      "system_fingerprint"
+    ],
+    "usage": {
+      "prompt_tokens": 11,
+      "completion_tokens": 24,
+      "total_tokens": 35,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 22
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 11
+    },
+    "usageKeys": [
+      "prompt_tokens",
+      "completion_tokens",
+      "total_tokens",
+      "prompt_tokens_details",
+      "completion_tokens_details",
+      "prompt_cache_hit_tokens",
+      "prompt_cache_miss_tokens"
+    ],
+    "promptDetails": {
+      "cached_tokens": 0
+    },
+    "completionDetails": {
+      "reasoning_tokens": 22
+    },
+    "messageKeys": [
+      "role",
+      "content",
+      "reasoning_content"
+    ],
+    "deltaKeys": [],
+    "hasReasoningContent": true,
+    "hasReasoningTextField": false,
+    "finishReason": "stop"
+  }
+}

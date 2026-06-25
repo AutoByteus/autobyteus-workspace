@@ -15,6 +15,8 @@ const buildEvent = (input: {
   inputCost: number | null;
   outputCost: number | null;
   totalCost: number | null;
+  reasoningTokens?: number | null;
+  reasoningCost?: number | null;
   status: TokenUsageUpdatedPayload["api_cost_status"];
   currency?: string | null;
 }): TokenUsageUpdatedPayload => ({
@@ -29,10 +31,12 @@ const buildEvent = (input: {
       accounting_input_tokens: input.inputTokens,
       accounting_output_tokens: input.outputTokens,
       accounting_total_tokens: (input.inputTokens ?? 0) + (input.outputTokens ?? 0),
+      reasoning_output_tokens: input.reasoningTokens ?? null,
       pricing_status: input.status === "estimated" ? "trusted" : "missing",
       api_cost_status: input.status,
       estimated_api_input_cost: input.inputCost,
       estimated_api_output_cost: input.outputCost,
+      estimated_api_reasoning_output_cost: input.reasoningCost ?? null,
       estimated_api_total_cost: input.totalCost,
       currency: input.currency ?? null,
     },
@@ -40,8 +44,10 @@ const buildEvent = (input: {
   accounting_input_tokens: input.inputTokens,
   accounting_output_tokens: input.outputTokens,
   accounting_total_tokens: (input.inputTokens ?? 0) + (input.outputTokens ?? 0),
+  reasoning_output_tokens: input.reasoningTokens ?? null,
   estimated_api_input_cost: input.inputCost,
   estimated_api_output_cost: input.outputCost,
+  estimated_api_reasoning_output_cost: input.reasoningCost ?? null,
   estimated_api_total_cost: input.totalCost,
   api_cost_status: input.status,
   currency: input.currency ?? null,
@@ -69,7 +75,7 @@ describe("TokenUsageStatisticsProvider", () => {
   it("aggregates stats per model with mixed price status", async () => {
     const now = new Date();
     mockStore.listEventsInPeriod.mockResolvedValue([
-      buildEvent({ model: "gpt-test", inputTokens: 10, outputTokens: 0, inputCost: 1.0, outputCost: 0, totalCost: 1.0, status: "estimated", currency: "USD" }),
+      buildEvent({ model: "gpt-test", inputTokens: 10, outputTokens: 0, inputCost: 1.0, outputCost: 0, totalCost: 1.0, reasoningTokens: 3, reasoningCost: 0.3, status: "estimated", currency: "USD" }),
       buildEvent({ model: "gpt-test", inputTokens: 0, outputTokens: 5, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
       buildEvent({ model: null, inputTokens: 0, outputTokens: 20, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
     ]);
@@ -84,6 +90,8 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(stats["gpt-test"]).toBeInstanceOf(TokenUsageStats);
     expect(stats["gpt-test"]?.promptTokens).toBe(10);
     expect(stats["gpt-test"]?.assistantTokens).toBe(5);
+    expect(stats["gpt-test"]?.reasoningTokens).toBe(3);
+    expect(stats["gpt-test"]?.reasoningTokenCost).toBe(0.3);
     expect(stats["gpt-test"]?.totalCost).toBe(1.0);
     expect(stats["gpt-test"]?.apiCostStatus).toBe("mixed");
     expect(stats["gpt-test"]?.currency).toBe("USD");
@@ -92,6 +100,53 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(stats.unknown?.apiCostStatus).toBe("price_missing");
   });
 
+
+
+
+  it("returns null aggregate cost and mixed status for mixed currencies", async () => {
+    const now = new Date();
+    const start = new Date(now.getTime() - 1_000);
+    const end = new Date(now.getTime() + 1_000);
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({
+        model: "glm-direct",
+        inputTokens: 100,
+        outputTokens: 10,
+        inputCost: 0.001,
+        outputCost: 0.002,
+        totalCost: 0.003,
+        reasoningTokens: 1,
+        reasoningCost: 0.0002,
+        status: "estimated",
+        currency: "USD",
+      }),
+      buildEvent({
+        model: "glm-direct",
+        inputTokens: 200,
+        outputTokens: 20,
+        inputCost: 0.02,
+        outputCost: 0.04,
+        totalCost: 0.06,
+        reasoningTokens: 2,
+        reasoningCost: 0.004,
+        status: "estimated",
+        currency: "CNY",
+      }),
+    ]);
+
+    const provider = new TokenUsageStatisticsProvider(mockStore as never);
+
+    await expect(provider.getTotalCost(start, end)).resolves.toBeNull();
+    const stats = await provider.getStatisticsPerModel(start, end);
+
+    expect(stats["glm-direct"]?.promptTokens).toBe(300);
+    expect(stats["glm-direct"]?.assistantTokens).toBe(30);
+    expect(stats["glm-direct"]?.reasoningTokens).toBe(3);
+    expect(stats["glm-direct"]?.totalCost).toBeNull();
+    expect(stats["glm-direct"]?.reasoningTokenCost).toBeNull();
+    expect(stats["glm-direct"]?.currency).toBeNull();
+    expect(stats["glm-direct"]?.apiCostStatus).toBe("mixed");
+  });
 
   it("preserves partial-price-missing statistics instead of coercing missing dimensions to zero", async () => {
     const now = new Date();

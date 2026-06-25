@@ -6,7 +6,7 @@ const settingsMessages = {
   'settings.page.empty.title': '设置',
   'settings.page.empty.description': '选择一个分类以配置设置。',
   'settings.page.sections.apiKeys': 'API 密钥',
-  'settings.page.sections.tokenUsage': '令牌使用统计',
+  'settings.page.sections.tokenUsage': 'Token 统计',
   'settings.page.sections.messaging': '消息',
   'settings.page.sections.display': '显示',
   'settings.page.sections.language': '语言',

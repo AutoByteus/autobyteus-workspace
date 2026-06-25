@@ -19,6 +19,17 @@ const summarizeCostStatus = (statuses: string[]): TokenUsageApiCostStatus => {
   return "mixed";
 };
 
+const currencySummary = (events: TokenUsageUpdatedPayload[]): { currency: string | null; mixed: boolean } => {
+  const currencies = Array.from(new Set(events.map((event) => event.currency).filter((value): value is string => Boolean(value))));
+  if (currencies.length > 1) return { currency: null, mixed: true };
+  return { currency: currencies[0] ?? null, mixed: false };
+};
+
+const sumCost = (
+  events: TokenUsageUpdatedPayload[],
+  select: (event: TokenUsageUpdatedPayload) => number | null,
+): number | null => events.reduce((sum, event) => addNullableCost(sum, select(event)), null as number | null);
+
 export class TokenUsageLedgerStore {
   constructor(private readonly repository = new SqlTokenUsageLedgerRepository()) {}
 
@@ -69,9 +80,10 @@ export class TokenUsageLedgerStore {
     const inputTokens = events.reduce((sum, event) => add(sum, event.accounting_input_tokens), 0);
     const outputTokens = events.reduce((sum, event) => add(sum, event.accounting_output_tokens), 0);
     const totalTokens = events.reduce((sum, event) => add(sum, event.accounting_total_tokens), 0);
-    const inputCost = events.reduce((sum, event) => addNullableCost(sum, event.estimated_api_input_cost), null as number | null);
-    const outputCost = events.reduce((sum, event) => addNullableCost(sum, event.estimated_api_output_cost), null as number | null);
-    const totalCost = events.reduce((sum, event) => addNullableCost(sum, event.estimated_api_total_cost), null as number | null);
+    const reasoningTokens = events.reduce((sum, event) => add(sum, event.reasoning_output_tokens), 0);
+    const { currency, mixed } = currencySummary(events);
+    const costStatus = mixed ? "mixed" : summarizeCostStatus(events.map((event) => event.api_cost_status));
+
     return {
       run_id: runId,
       root_team_run_id: rootTeamRunIdOverride ?? latest?.root_team_run_id ?? null,
@@ -84,11 +96,13 @@ export class TokenUsageLedgerStore {
       input_tokens: inputTokens,
       output_tokens: outputTokens,
       total_tokens: totalTokens,
-      estimated_api_input_cost: inputCost,
-      estimated_api_output_cost: outputCost,
-      estimated_api_total_cost: totalCost,
-      currency: latest?.currency ?? null,
-      api_cost_status: summarizeCostStatus(events.map((event) => event.api_cost_status)),
+      reasoning_output_tokens: reasoningTokens,
+      estimated_api_input_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_input_cost),
+      estimated_api_output_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_output_cost),
+      estimated_api_reasoning_output_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_reasoning_output_cost),
+      estimated_api_total_cost: mixed ? null : sumCost(events, (event) => event.estimated_api_total_cost),
+      currency,
+      api_cost_status: costStatus,
       latest_context_input_tokens: latest?.latest_context_input_tokens ?? null,
       effective_context_budget_tokens: latest?.effective_context_budget_tokens ?? null,
       context_pressure_percent: latest?.context_pressure_percent ?? null,

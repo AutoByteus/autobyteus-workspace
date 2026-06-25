@@ -1,0 +1,38 @@
+{
+  "provider": "gemini",
+  "attempted": true,
+  "ok": false,
+  "status": 403,
+  "durationMs": 185,
+  "model": "gemini-3.5-flash",
+  "summary": {
+    "errorKeys": [
+      "error"
+    ],
+    "error": {
+      "error": {
+        "code": 403,
+        "message": "Requests to this API generativelanguage.…(144 chars)",
+        "status": "PERMISSION_DENIED",
+        "details": [
+          {
+            "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+            "reason": "API_KEY_SERVICE_BLOCKED",
+            "domain": "googleapis.com",
+            "metadata": {
+              "service": "generativelanguage.googleapis.com",
+              "methodName": "google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent",
+              "consumer": "projects/303290304011",
+              "apiName": "generativelanguage.googleapis.com"
+            }
+          },
+          {
+            "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+            "locale": "en-US",
+            "message": "Requests to this API generativelanguage.…(144 chars)"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -29,7 +29,9 @@ const buildPayload = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenU
   meter_delta_output_tokens: 25,
   meter_delta_total_tokens: 125,
   estimated_api_input_cost: 0.001,
+  reasoning_output_tokens: 0,
   estimated_api_output_cost: 0.002,
+  estimated_api_reasoning_output_cost: null,
   estimated_api_total_cost: 0.003,
   currency: 'USD',
   api_cost_status: 'estimated',
@@ -54,6 +56,7 @@ describe('tokenUsageMeterStore', () => {
       inputTokens: 100,
       outputTokens: 25,
       totalTokens: 125,
+      reasoningOutputTokens: 0,
       estimatedApiTotalCost: 0.003,
       currency: 'USD',
       apiCostStatus: 'estimated',
@@ -129,6 +132,74 @@ describe('tokenUsageMeterStore', () => {
     });
   });
 
+
+  it('aggregates Codex runtime reasoning and context fields from live usage events', () => {
+    const store = useTokenUsageMeterStore();
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'reasoning-event',
+      idempotency_key: 'reasoning-key',
+      runtime_kind: 'codex_app_server',
+      model_identifier: 'gpt-5.4-mini',
+      reasoning_output_tokens: 12,
+      estimated_api_input_cost: 0.0011,
+      estimated_api_reasoning_output_cost: 0.0012,
+      estimated_api_output_cost: 0.0025,
+      estimated_api_total_cost: 0.0036,
+      latest_context_input_tokens: 384,
+      effective_context_budget_tokens: 1_024,
+      context_pressure_percent: 37.5,
+    }));
+
+    expect(store.getRunSummary('run-1')).toMatchObject({
+      reasoningOutputTokens: 12,
+      estimatedApiInputCost: 0.0011,
+      estimatedApiReasoningOutputCost: 0.0012,
+      estimatedApiOutputCost: 0.0025,
+      estimatedApiTotalCost: 0.0036,
+      latestContextInputTokens: 384,
+      effectiveContextBudgetTokens: 1_024,
+      contextPressurePercent: 37.5,
+      latestModelIdentifier: 'gpt-5.4-mini',
+      latestRuntimeKind: 'codex_app_server',
+    });
+  });
+  it('clears aggregate costs when live events mix currencies', () => {
+    const store = useTokenUsageMeterStore();
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'usd-event',
+      idempotency_key: 'usd-key',
+      estimated_api_total_cost: 0.003,
+      currency: 'USD',
+    }));
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'cny-event',
+      idempotency_key: 'cny-key',
+      accounting_input_tokens: 50,
+      accounting_output_tokens: 10,
+      accounting_total_tokens: 60,
+      meter_delta_input_tokens: 50,
+      meter_delta_output_tokens: 10,
+      meter_delta_total_tokens: 60,
+      estimated_api_input_cost: 0.02,
+      estimated_api_output_cost: 0.04,
+      estimated_api_total_cost: 0.06,
+      currency: 'CNY',
+    }));
+
+    expect(store.getRunSummary('run-1')).toMatchObject({
+      inputTokens: 150,
+      outputTokens: 35,
+      totalTokens: 185,
+      estimatedApiInputCost: null,
+      estimatedApiOutputCost: null,
+      estimatedApiTotalCost: null,
+      currency: null,
+      apiCostStatus: 'mixed',
+    });
+  });
+
   it('lets ledger-backed reload summaries replace provisional live summaries', () => {
     const store = useTokenUsageMeterStore();
 
@@ -149,8 +220,10 @@ describe('tokenUsageMeterStore', () => {
       inputTokens: 250,
       outputTokens: 50,
       totalTokens: 300,
+      reasoningOutputTokens: 0,
       estimatedApiInputCost: null,
       estimatedApiOutputCost: null,
+      estimatedApiReasoningOutputCost: null,
       estimatedApiTotalCost: null,
       currency: null,
       apiCostStatus: 'price_missing',

@@ -24,17 +24,6 @@ function cloneExtraBody(value: unknown): unknown {
   return extraBody;
 }
 
-function mergeThinkingIntoExtraBody(
-  extraBodyValue: unknown,
-  thinkingType: DeepSeekThinkingType
-): Record<string, unknown> {
-  const extraBody = isRecord(extraBodyValue) ? { ...extraBodyValue } : {};
-  const thinking = isRecord(extraBody.thinking) ? { ...extraBody.thinking } : {};
-  thinking.type = thinkingType;
-  extraBody.thinking = thinking;
-  return extraBody;
-}
-
 function normalizeDeepSeekExtraParams(extraParams?: Record<string, unknown>): Record<string, unknown> {
   const params = { ...(extraParams ?? {}) };
   const thinkingType = params.thinking_type;
@@ -44,10 +33,13 @@ function normalizeDeepSeekExtraParams(extraParams?: Record<string, unknown>): Re
 
   if (params.extra_body !== undefined) {
     params.extra_body = cloneExtraBody(params.extra_body);
+    if (isRecord(params.extra_body)) {
+      delete params.extra_body.thinking;
+    }
   }
 
   if (isDeepSeekThinkingType(thinkingType)) {
-    params.extra_body = mergeThinkingIntoExtraBody(params.extra_body, thinkingType);
+    params.thinking = { type: thinkingType };
     if (thinkingType === 'disabled') {
       delete params.reasoning_effort;
     }

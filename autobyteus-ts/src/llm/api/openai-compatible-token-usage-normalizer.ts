@@ -27,7 +27,10 @@ export const createOpenAICompatibleTokenUsageObservation = (
       modelIdentifier: model.modelIdentifier,
       modelValue: model.value,
     },
-    cacheReadInputTokens: numberField(promptDetails, 'cached_tokens'),
+    cacheReadInputTokens:
+      numberField(promptDetails, 'cached_tokens') ??
+      numberField(usage, 'cached_tokens') ??
+      numberField(usage, 'prompt_cache_hit_tokens'),
     reasoningOutputTokens:
       numberField(completionDetails, 'reasoning_tokens') ?? numberField(completionDetails, 'thinking_tokens'),
   });

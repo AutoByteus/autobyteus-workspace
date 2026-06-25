@@ -40,11 +40,17 @@ export class TokenUsageRunSummaryGraphql {
   @Field(() => Int)
   totalTokens!: number;
 
+  @Field(() => Int)
+  reasoningOutputTokens!: number;
+
   @Field(() => Float, { nullable: true })
   estimatedApiInputCost?: number | null;
 
   @Field(() => Float, { nullable: true })
   estimatedApiOutputCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  estimatedApiReasoningOutputCost?: number | null;
 
   @Field(() => Float, { nullable: true })
   estimatedApiTotalCost?: number | null;
@@ -92,8 +98,10 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   inputTokens: summary.input_tokens,
   outputTokens: summary.output_tokens,
   totalTokens: summary.total_tokens,
+  reasoningOutputTokens: summary.reasoning_output_tokens,
   estimatedApiInputCost: summary.estimated_api_input_cost,
   estimatedApiOutputCost: summary.estimated_api_output_cost,
+  estimatedApiReasoningOutputCost: summary.estimated_api_reasoning_output_cost,
   estimatedApiTotalCost: summary.estimated_api_total_cost,
   currency: summary.currency,
   apiCostStatus: summary.api_cost_status,
@@ -118,11 +126,17 @@ export class UsageStatistics {
   @Field(() => Int)
   assistantTokens!: number;
 
+  @Field(() => Int)
+  reasoningTokens!: number;
+
   @Field(() => Float, { nullable: true })
   promptCost?: number | null;
 
   @Field(() => Float, { nullable: true })
   assistantCost?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  reasoningCost?: number | null;
 
   @Field(() => Float, { nullable: true })
   totalCost?: number | null;
@@ -138,8 +152,10 @@ const toUsageStatistics = (model: string, stats: TokenUsageStats): UsageStatisti
   llmModel: model,
   promptTokens: stats.promptTokens,
   assistantTokens: stats.assistantTokens,
+  reasoningTokens: stats.reasoningTokens,
   promptCost: stats.promptTokenCost,
   assistantCost: stats.assistantTokenCost,
+  reasoningCost: stats.reasoningTokenCost,
   totalCost: stats.totalCost,
   currency: stats.currency,
   apiCostStatus: stats.apiCostStatus,

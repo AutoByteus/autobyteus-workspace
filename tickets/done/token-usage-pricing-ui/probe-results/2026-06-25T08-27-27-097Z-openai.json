@@ -1,0 +1,21 @@
+{
+  "provider": "openai",
+  "attempted": true,
+  "ok": false,
+  "status": 400,
+  "durationMs": 1404,
+  "model": "gemini-3-pro-app-rpa:autobyteus@192.168.2.158:51739",
+  "summary": {
+    "errorKeys": [
+      "error"
+    ],
+    "error": {
+      "error": {
+        "message": "The requested model 'gemini-3-pro-app-rpa:autobyteus@192.168.2.158:51739' does not exist.",
+        "type": "invalid_request_error",
+        "param": "model",
+        "code": "model_not_found"
+      }
+    }
+  }
+}

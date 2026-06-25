@@ -10,6 +10,9 @@ export type CodexReadyTurnTokenUsage = {
   reported_input_tokens: number | null;
   reported_output_tokens: number | null;
   reported_total_tokens: number | null;
+  cache_read_input_tokens: number | null;
+  reasoning_output_tokens: number | null;
+  effective_context_budget_tokens: number | null;
   model_provider: string | null;
   model_identifier: string | null;
   model_value: string | null;
@@ -46,10 +49,21 @@ export const resolveCodexThreadTokenUsage = (input: {
   const inputTokens = asNonNegativeInt(selected.inputTokens ?? selected.input_tokens);
   const outputTokens = asNonNegativeInt(selected.outputTokens ?? selected.output_tokens);
   const explicitTotalTokens = asNonNegativeInt(selected.totalTokens ?? selected.total_tokens);
+  const cacheReadTokens = asNonNegativeInt(selected.cachedInputTokens ?? selected.cached_input_tokens);
+  const reasoningTokens = asNonNegativeInt(selected.reasoningOutputTokens ?? selected.reasoning_output_tokens);
+  const effectiveContextBudgetTokens = asNonNegativeInt(
+    tokenUsage?.modelContextWindow ?? tokenUsage?.model_context_window,
+  );
   const totalTokens = explicitTotalTokens ?? (
     inputTokens !== null && outputTokens !== null ? inputTokens + outputTokens : null
   );
-  if (inputTokens === null && outputTokens === null && totalTokens === null) {
+  if (
+    inputTokens === null &&
+    outputTokens === null &&
+    totalTokens === null &&
+    cacheReadTokens === null &&
+    reasoningTokens === null
+  ) {
     return null;
   }
 
@@ -76,6 +90,9 @@ export const resolveCodexThreadTokenUsage = (input: {
     reported_input_tokens: inputTokens,
     reported_output_tokens: outputTokens,
     reported_total_tokens: totalTokens,
+    cache_read_input_tokens: cacheReadTokens,
+    reasoning_output_tokens: reasoningTokens,
+    effective_context_budget_tokens: effectiveContextBudgetTokens,
     model_provider: "OPENAI",
     model_identifier: input.model,
     model_value: input.model,

@@ -1,0 +1,41 @@
+{
+  "provider": "openai-responses-stream-file-key",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "summary": {
+    "parsedEvents": 11,
+    "eventTypes": [
+      "response.created",
+      "response.in_progress",
+      "response.output_item.added",
+      "response.output_item.done",
+      "response.content_part.added",
+      "response.output_text.delta",
+      "response.output_text.done",
+      "response.content_part.done",
+      "response.completed"
+    ],
+    "completedUsage": {
+      "input_tokens": 13,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 20,
+      "output_tokens_details": {
+        "reasoning_tokens": 13
+      },
+      "total_tokens": 33
+    },
+    "outputItemTypes": [
+      "reasoning",
+      "message"
+    ],
+    "reasoningSummaryEvents": 0,
+    "textDeltaEvents": 1,
+    "completedOutputItemTypes": [
+      "reasoning",
+      "message"
+    ]
+  }
+}

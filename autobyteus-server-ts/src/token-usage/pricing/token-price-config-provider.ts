@@ -1,6 +1,21 @@
 import { LLMFactory, type ModelPricingInfo } from "autobyteus-ts";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
+export type TokenPriceTierConfig = {
+  tier_id: string | null;
+  max_input_tokens: number | null;
+  input_price_per_million: number | null;
+  output_price_per_million: number | null;
+  cached_input_read_price_per_million: number | null;
+  cached_input_write_price_per_million: number | null;
+  trusted_dimensions: {
+    input: boolean;
+    output: boolean;
+    cached_input_read: boolean;
+    cached_input_write: boolean;
+  };
+};
+
 export type TokenPriceConfig = {
   price_config_id: string | null;
   model_provider: string | null;
@@ -12,6 +27,7 @@ export type TokenPriceConfig = {
   output_price_per_million: number | null;
   cached_input_read_price_per_million: number | null;
   cached_input_write_price_per_million: number | null;
+  input_price_tiers: TokenPriceTierConfig[];
   pricing_status: "trusted" | "missing" | "placeholder";
   trusted_dimensions: {
     input: boolean;
@@ -37,6 +53,7 @@ const toPriceConfig = (info: ModelPricingInfo | null): TokenPriceConfig => ({
   output_price_per_million: info?.output_price_per_million ?? null,
   cached_input_read_price_per_million: info?.cached_input_read_price_per_million ?? null,
   cached_input_write_price_per_million: info?.cached_input_write_price_per_million ?? null,
+  input_price_tiers: info?.input_price_tiers ?? [],
   pricing_status: info?.pricing_status ?? "missing",
   trusted_dimensions: info?.trusted_dimensions ?? {
     input: false,

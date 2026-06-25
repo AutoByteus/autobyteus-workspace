@@ -1,5 +1,5 @@
 import type { LLMModelOptions } from './models.js';
-import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
+import { LLMConfig, TokenPricingConfig, type TokenPricingConfigInput } from './utils/llm-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
 import { OpenAILLM } from './api/openai-llm.js';
@@ -19,8 +19,15 @@ export type SupportedModelDefinition = Omit<
   'maxContextTokens' | 'activeContextTokens' | 'maxInputTokens' | 'maxOutputTokens' | 'runtime' | 'hostUrl'
 >;
 
-const pricing = (input: number, output: number) =>
-  new TokenPricingConfig({ inputTokenPricing: input, outputTokenPricing: output });
+const pricing = (input: number, output: number, options: Omit<TokenPricingConfigInput, 'inputTokenPricing' | 'outputTokenPricing'> = {}) =>
+  new TokenPricingConfig({
+    currency: 'USD',
+    pricingSource: 'autobyteus_model_catalog',
+    pricingEffectiveDate: '2026-06-25',
+    ...options,
+    inputTokenPricing: input,
+    outputTokenPricing: output,
+  });
 
 const openaiReasoningSchema = new ParameterSchema([
   new ParameterDefinition({
@@ -140,7 +147,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.5',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 30.0) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 30.0, { cachedInputReadTokenPricing: 0.5 }) }),
     configSchema: openaiReasoningSchema
   },
   {
@@ -149,7 +156,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.4',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(2.5, 15.0) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(2.5, 15.0, { cachedInputReadTokenPricing: 0.25 }) }),
     configSchema: openaiReasoningSchema
   },
   {
@@ -158,7 +165,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.4-mini',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 4.5) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 4.5, { cachedInputReadTokenPricing: 0.075 }) }),
     configSchema: openaiReasoningSchema
   },
   {
@@ -182,14 +189,16 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'grok-4.3',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-4.3'
+    canonicalName: 'grok-4.3',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.25, 2.5, { cachedInputReadTokenPricing: 0.2 }) })
   },
   {
     name: 'grok-build-0.1',
     value: 'grok-build-0.1',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-build-0.1'
+    canonicalName: 'grok-build-0.1',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 2.0, { cachedInputReadTokenPricing: 0.2 }) })
   },
   {
     name: 'claude-opus-4.8',
@@ -197,6 +206,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.8',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, { cachedInputReadTokenPricing: 0.5 }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },
   {
@@ -205,7 +215,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.7',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, { cachedInputReadTokenPricing: 0.5 }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },
   {
@@ -214,7 +224,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-4.6',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, { cachedInputReadTokenPricing: 0.3 }) }),
     configSchema: claudeSchema
   },
   {
@@ -225,7 +235,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'deepseek-v4-flash',
     defaultConfig: new LLMConfig({
       rateLimit: 60,
-      pricingConfig: pricing(0.14, 0.28)
+      pricingConfig: pricing(0.14, 0.28, { cachedInputReadTokenPricing: 0.0028 })
     }),
     configSchema: deepseekV4Schema
   },
@@ -237,7 +247,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'deepseek-v4-pro',
     defaultConfig: new LLMConfig({
       rateLimit: 60,
-      pricingConfig: pricing(1.74, 3.48)
+      pricingConfig: pricing(0.435, 0.87, { cachedInputReadTokenPricing: 0.003625 })
     }),
     configSchema: deepseekV4Schema
   },
@@ -247,7 +257,24 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.1-pro-preview',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 12.0) }),
+    defaultConfig: new LLMConfig({
+      pricingConfig: pricing(2.0, 12.0, {
+        inputTokenPricingTiers: [
+          {
+            tierId: 'prompt_le_200k',
+            maxInputTokens: 200_000,
+            inputTokenPricing: 2.0,
+            outputTokenPricing: 12.0,
+          },
+          {
+            tierId: 'prompt_gt_200k',
+            maxInputTokens: null,
+            inputTokenPricing: 4.0,
+            outputTokenPricing: 18.0,
+          },
+        ],
+      })
+    }),
     configSchema: geminiSchema
   },
   {
@@ -273,14 +300,16 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'kimi-k2.6',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.6'
+    canonicalName: 'kimi-k2.6',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.16 }) })
   },
   {
     name: 'kimi-k2.7-code',
     value: 'kimi-k2.7-code',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.7-code'
+    canonicalName: 'kimi-k2.7-code',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.19 }) })
   },
   {
     name: 'kimi-k2.7-code-highspeed',
@@ -301,10 +330,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'qwen3-max',
     provider: LLMProvider.QWEN,
     llmClass: QwenLLM,
-    canonicalName: 'qwen3-max',
-    defaultConfig: new LLMConfig({
-      pricingConfig: new TokenPricingConfig({ inputTokenPricing: 2.4, outputTokenPricing: 12.0 })
-    })
+    canonicalName: 'qwen3-max'
   },
   {
     name: 'glm-5.2',
@@ -312,7 +338,13 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.GLM,
     llmClass: GlmLLM,
     canonicalName: 'glm-5.2',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.4, 4.4) }),
+    defaultConfig: new LLMConfig({
+      pricingConfig: pricing(8.0, 28.0, {
+        currency: 'CNY',
+        cachedInputReadTokenPricing: 2.0,
+        pricingSource: 'bigmodel_direct_pricing_2026_06_25',
+      })
+    }),
     configSchema: glmSchema
   },
   {
@@ -320,14 +352,27 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'MiniMax-M3',
     provider: LLMProvider.MINIMAX,
     llmClass: MinimaxLLM,
-    canonicalName: 'minimax-m3'
-  },
-  {
-    name: 'minimax-m2.7',
-    value: 'MiniMax-M2.7',
-    provider: LLMProvider.MINIMAX,
-    llmClass: MinimaxLLM,
-    canonicalName: 'minimax-m2.7',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.15, 0.45) })
+    canonicalName: 'minimax-m3',
+    defaultConfig: new LLMConfig({
+      pricingConfig: pricing(0.3, 1.2, {
+        cachedInputReadTokenPricing: 0.06,
+        inputTokenPricingTiers: [
+          {
+            tierId: 'standard_le_512k',
+            maxInputTokens: 512_000,
+            inputTokenPricing: 0.3,
+            outputTokenPricing: 1.2,
+            cachedInputReadTokenPricing: 0.06,
+          },
+          {
+            tierId: 'standard_gt_512k',
+            maxInputTokens: null,
+            inputTokenPricing: 0.6,
+            outputTokenPricing: 2.4,
+            cachedInputReadTokenPricing: 0.12,
+          },
+        ],
+      })
+    })
   }
 ];

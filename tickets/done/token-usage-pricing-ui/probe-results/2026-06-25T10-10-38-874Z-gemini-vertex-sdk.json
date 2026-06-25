@@ -1,0 +1,51 @@
+{
+  "provider": "gemini-vertex-sdk",
+  "attempted": true,
+  "ok": true,
+  "runtime": "vertex-api-key",
+  "model": "gemini-3.5-flash",
+  "summary": {
+    "topLevelKeys": [
+      "sdkHttpResponse",
+      "candidates",
+      "createTime",
+      "modelVersion",
+      "responseId",
+      "usageMetadata"
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 7,
+      "candidatesTokenCount": 1,
+      "totalTokenCount": 8,
+      "trafficType": "ON_DEMAND",
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 7
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1
+        }
+      ]
+    },
+    "usageKeys": [
+      "promptTokenCount",
+      "candidatesTokenCount",
+      "totalTokenCount",
+      "trafficType",
+      "promptTokensDetails",
+      "candidatesTokensDetails"
+    ],
+    "partKeys": [
+      [
+        "text",
+        "thoughtSignature"
+      ]
+    ],
+    "hasThoughtPart": false,
+    "finishReason": "STOP"
+  }
+}

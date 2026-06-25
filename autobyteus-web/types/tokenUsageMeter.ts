@@ -24,11 +24,13 @@ export interface TokenUsageUpdatedPayload {
   accounting_input_tokens?: number | null;
   accounting_output_tokens?: number | null;
   accounting_total_tokens?: number | null;
+  reasoning_output_tokens?: number | null;
   meter_delta_input_tokens?: number | null;
   meter_delta_output_tokens?: number | null;
   meter_delta_total_tokens?: number | null;
   estimated_api_input_cost?: number | null;
   estimated_api_output_cost?: number | null;
+  estimated_api_reasoning_output_cost?: number | null;
   estimated_api_total_cost?: number | null;
   currency?: string | null;
   api_cost_status?: TokenUsageApiCostStatus | string;
@@ -50,8 +52,10 @@ export interface TokenUsageRunSummary {
   inputTokens: number;
   outputTokens: number;
   totalTokens: number;
+  reasoningOutputTokens: number;
   estimatedApiInputCost: number | null;
   estimatedApiOutputCost: number | null;
+  estimatedApiReasoningOutputCost: number | null;
   estimatedApiTotalCost: number | null;
   currency: string | null;
   apiCostStatus: TokenUsageApiCostStatus;

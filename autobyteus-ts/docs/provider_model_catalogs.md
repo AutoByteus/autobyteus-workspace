@@ -29,6 +29,7 @@ or changing provider-specific request-shaping behavior.
 | LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-06-16 | General-purpose Kimi model; keeps K2.6-specific tool-workflow normalization. |
 | LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Coding/agentic Kimi model; always-on thinking and fixed sampling constraints are enforced in `KimiLLM`. |
 | LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
+| LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-06-24 | Replaces removed MiniMax M2.7 support; uses tiered pricing metadata and the MiniMax OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
 | Image | `gemini-3.1-flash-image-preview` | `gemini-3.1-flash-image-preview` | Gemini | 2026-05-05 | Registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
@@ -114,9 +115,10 @@ DeepSeek enable/disable state and reads the schema default, so default
 Advanced renders `reasoning_effort` with its effective schema default (normally
 `high`), not a second `Thinking Type` control. `DeepSeekLLM` owns the
 request-shape conversion: it removes the flat `thinking_type` key, drops any
-stale raw top-level `thinking` value, and sends the provider switch as
-`extra_body.thinking.type`. When `thinking_type` is `disabled`, the adapter omits
-`reasoning_effort` instead of sending an OpenAI-style `reasoning_effort: "none"`.
+stale raw top-level or `extra_body.thinking` value supplied by callers, and
+sends the provider switch as top-level `thinking.type`. When `thinking_type` is
+`disabled`, the adapter omits `reasoning_effort` instead of sending an
+OpenAI-style `reasoning_effort: "none"`.
 
 No new DeepSeek transport path is required for these models.
 
@@ -171,6 +173,19 @@ constraints from K2.6:
 
 `kimi-k2-thinking` is no longer an active built-in model and must not be
 retained as an alias for K2.7 Code.
+
+### MiniMax M3
+
+`minimax-m3` is the active built-in MiniMax LLM entry. MiniMax M2.7 was removed
+from supported model definitions and curated metadata without an alias or
+compatibility fallback, so model-list/API surfaces should no longer expose
+`minimax-m2.7` / `MiniMax-M2.7`.
+
+MiniMax M3 keeps provider value `MiniMax-M3`, uses the MiniMax
+OpenAI-compatible adapter, and carries docs-backed tiered pricing metadata. The
+catalog expresses the standard tier up to 512k input tokens and the higher tier
+above that threshold so server-side accounting can choose the trusted tier
+instead of flattening provider-specific pricing.
 
 ### Gemini LLM Models
 
@@ -231,9 +246,29 @@ model update.
   models unless a separate product decision explicitly calls for that.
 - Deprecated provider identifiers should be removed by a dedicated
   deprecation/removal task rather than kept as hidden aliases.
+- MiniMax M2.7 is intentionally removed; do not reintroduce it as a hidden alias,
+  compatibility shim, or selectable fallback for MiniMax M3.
 - Do not add fuzzy aliases for unverified model names. Prefer exact provider
   API values plus a single intentional user-facing ID when the project already
   uses a compact display convention.
+
+## Pricing Metadata Contract
+
+Built-in LLM price metadata lives on `LLMConfig.pricingConfig` and is consumed by
+server-side token usage accounting. Pricing metadata can include:
+
+- currency, including non-USD provider billing such as CNY-denominated GLM
+  prices;
+- trusted input/output prices per million tokens;
+- optional trusted cache-read and cache-write prices;
+- provider source/effective-date identifiers; and
+- input-token tier rows with tier-specific input/output/cache prices.
+
+Missing price dimensions must remain untrusted rather than being represented as
+free. When provider pricing is regional, ambiguous, quota-specific, or otherwise
+not safely represented by a single catalog value, leave the pricing dimension
+missing and let server summaries surface `price_missing` or
+`partial_price_missing`.
 
 ## Validation and Secret Hygiene
 

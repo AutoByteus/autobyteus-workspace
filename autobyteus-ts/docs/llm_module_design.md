@@ -136,6 +136,8 @@ Current examples of provider-specific model rules:
 - `kimi-k2.7-code` is the coding/agentic Kimi model. It keeps thinking on and
   normalizes K2.7 Code fixed sampling/tool-choice constraints locally in
   `KimiLLM` before the shared request builder runs.
+- `minimax-m3` is the active MiniMax LLM entry. MiniMax M2.7 is removed from the
+  built-in registry and curated metadata without a compatibility alias.
 
 See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
 audio/TTS, and image models.
@@ -195,7 +197,11 @@ src/llm/
 - **`temperature`**: Sampling randomness.
 - **`maxTokens`**: Output limit.
 - **`systemMessage`**: Default system prompt.
-- **`pricingConfig`**: Built-in catalog API-price metadata. Missing dimensions remain untrusted; server-side accounting decides whether estimated costs can be shown.
+- **`pricingConfig`**: Built-in catalog API-price metadata. It can carry
+  currency, trusted input/output/cache-read/cache-write prices, provider
+  source/effective-date identifiers, and input-token tiers. Missing dimensions
+  remain untrusted; server-side accounting decides whether estimated costs can
+  be shown and must not treat constructor/default zero values as free pricing.
 - **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
 
 This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.
@@ -217,10 +223,10 @@ per-request `temperature`, while `kimi-k2.7-code` overrides the generic default
 temperature and other fixed sampling/tool-choice fields to provider-valid
 values. `GlmLLM` owns GLM `thinking_type` to `thinking.type` conversion and
 omits stale effort values when thinking is disabled. `DeepSeekLLM` similarly
-owns V4 thinking request normalization: user-facing `thinking_type` is converted to
-`extra_body.thinking.type`, stale raw top-level `thinking` is dropped, and
-disabled thinking omits `reasoning_effort` instead of sending an OpenAI-style
-`none` effort.
+owns V4 thinking request normalization: user-facing `thinking_type` is converted
+to top-level `thinking.type`, stale caller-supplied `thinking` and
+`extra_body.thinking` values are dropped, and disabled thinking omits
+`reasoning_effort` instead of sending an OpenAI-style `none` effort.
 
 Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
 message-history extensions. The default `OpenAIChatRenderer` is conservative and
@@ -350,7 +356,7 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
 | Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
 | Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
-| DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{extra_body: {thinking: {type: "enabled"}}}` |
+| DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |
 | Zhipu GLM 5.2     | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |

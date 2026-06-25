@@ -1,0 +1,75 @@
+{
+  "provider": "openai",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "durationMs": 2065,
+  "model": "gpt-5.4-mini",
+  "summary": {
+    "topLevelKeys": [
+      "id",
+      "object",
+      "created_at",
+      "status",
+      "background",
+      "billing",
+      "completed_at",
+      "error",
+      "frequency_penalty",
+      "incomplete_details",
+      "instructions",
+      "max_output_tokens",
+      "max_tool_calls",
+      "model",
+      "moderation",
+      "output",
+      "parallel_tool_calls",
+      "presence_penalty",
+      "previous_response_id",
+      "prompt_cache_key",
+      "prompt_cache_retention",
+      "reasoning",
+      "safety_identifier",
+      "service_tier",
+      "store",
+      "temperature",
+      "text",
+      "tool_choice",
+      "tools",
+      "top_logprobs",
+      "top_p",
+      "truncation",
+      "usage",
+      "user",
+      "metadata"
+    ],
+    "usage": {
+      "input_tokens": 13,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 18,
+      "output_tokens_details": {
+        "reasoning_tokens": 11
+      },
+      "total_tokens": 31
+    },
+    "usageKeys": [
+      "input_tokens",
+      "input_tokens_details",
+      "output_tokens",
+      "output_tokens_details",
+      "total_tokens"
+    ],
+    "inputDetails": {
+      "cached_tokens": 0
+    },
+    "outputDetails": {
+      "reasoning_tokens": 11
+    },
+    "outputItemTypes": [
+      "reasoning",
+      "message"
+    ]
+  }
+}

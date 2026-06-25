@@ -22,8 +22,10 @@ export interface TokenUsageRunSummaryPayload {
   input_tokens: number;
   output_tokens: number;
   total_tokens: number;
+  reasoning_output_tokens: number;
   estimated_api_input_cost: number | null;
   estimated_api_output_cost: number | null;
+  estimated_api_reasoning_output_cost: number | null;
   estimated_api_total_cost: number | null;
   currency: string | null;
   api_cost_status: TokenUsageApiCostStatus;

@@ -6,8 +6,10 @@ export const GET_TOKEN_USAGE_STATISTICS = gql`
       llmModel
       promptTokens
       assistantTokens
+      reasoningTokens
       promptCost
       assistantCost
+      reasoningCost
       totalCost
       currency
       apiCostStatus

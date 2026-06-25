@@ -9,7 +9,7 @@ const translationMap: Record<string, string> = {
   'settings.page.empty.title': 'Settings',
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
-  'settings.page.sections.tokenUsage': 'Token Usage Statistics',
+  'settings.page.sections.tokenUsage': 'Token Statistics',
   'settings.page.sections.messaging': 'Messaging',
   'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',

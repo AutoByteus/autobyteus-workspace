@@ -906,6 +906,66 @@ describe("CodexThread token usage readiness", () => {
     ]);
   });
 
+  it("maps Codex app-server cache, reasoning, and context fields into canonical token usage", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: {
+        id: "turn-usage-rich-1",
+      },
+    } as never);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+      threadId: "thread-1",
+      turnId: "turn-usage-rich-1",
+      tokenUsage: {
+        modelContextWindow: 128000,
+        last: {
+          totalTokens: 24,
+          inputTokens: 16,
+          cachedInputTokens: 6,
+          outputTokens: 8,
+          reasoningOutputTokens: 3,
+        },
+      },
+    } as never);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
+      threadId: "thread-1",
+      status: {
+        type: "idle",
+      },
+    } as never);
+
+    expect(thread.getReadyTurnTokenUsages()).toEqual([
+      {
+        turnId: "turn-usage-rich-1",
+        usage: expect.objectContaining({
+          turnId: "turn-usage-rich-1",
+          usage_scope: "per_turn",
+          snapshot_series_key: null,
+          reported_input_tokens: 16,
+          reported_output_tokens: 8,
+          reported_total_tokens: 24,
+          cache_read_input_tokens: 6,
+          reasoning_output_tokens: 3,
+          effective_context_budget_tokens: 128000,
+          raw_usage_json: {
+            totalTokens: 24,
+            inputTokens: 16,
+            cachedInputTokens: 6,
+            outputTokens: 8,
+            reasoningOutputTokens: 3,
+          },
+          raw_event_json: expect.objectContaining({
+            tokenUsage: expect.objectContaining({ modelContextWindow: 128000 }),
+          }),
+          quality_flags: [],
+        }),
+      },
+    ]);
+  });
+
   it("marks late token usage ready after turn completion", () => {
     const { thread } = createThread(true);
 
@@ -963,10 +1023,13 @@ describe("CodexThread token usage readiness", () => {
       turnId: "turn-usage-total-1",
       eventId: "codex-usage-event-total-1",
       tokenUsage: {
+        modelContextWindow: 200000,
         total: {
           totalTokens: 1400,
           inputTokens: 1100,
+          cachedInputTokens: 700,
           outputTokens: 300,
+          reasoningOutputTokens: 120,
         },
       },
     } as never);
@@ -986,8 +1049,21 @@ describe("CodexThread token usage readiness", () => {
           reported_input_tokens: 1100,
           reported_output_tokens: 300,
           reported_total_tokens: 1400,
-          raw_usage_json: { totalTokens: 1400, inputTokens: 1100, outputTokens: 300 },
-          raw_event_json: expect.objectContaining({ threadId: "thread-total-1", turnId: "turn-usage-total-1" }),
+          cache_read_input_tokens: 700,
+          reasoning_output_tokens: 120,
+          effective_context_budget_tokens: 200000,
+          raw_usage_json: {
+            totalTokens: 1400,
+            inputTokens: 1100,
+            cachedInputTokens: 700,
+            outputTokens: 300,
+            reasoningOutputTokens: 120,
+          },
+          raw_event_json: expect.objectContaining({
+            threadId: "thread-total-1",
+            turnId: "turn-usage-total-1",
+            tokenUsage: expect.objectContaining({ modelContextWindow: 200000 }),
+          }),
         }),
       },
     ]);

@@ -13,8 +13,10 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
     inputTokens
     outputTokens
     totalTokens
+    reasoningOutputTokens
     estimatedApiInputCost
     estimatedApiOutputCost
+    estimatedApiReasoningOutputCost
     estimatedApiTotalCost
     currency
     apiCostStatus

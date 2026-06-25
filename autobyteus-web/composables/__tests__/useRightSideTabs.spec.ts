@@ -24,4 +24,13 @@ describe('useRightSideTabs', () => {
 
     expect(visibleTabs.value.some((tab) => tab.name === 'browser')).toBe(true)
   })
+
+  it('keeps the internal usage tab id while exposing Token as the user-visible label', () => {
+    const { visibleTabs } = useRightSideTabs()
+
+    expect(visibleTabs.value.find((tab) => tab.name === 'usage')).toMatchObject({
+      name: 'usage',
+      label: 'Token',
+    })
+  })
 })

@@ -2268,10 +2268,14 @@ export type UsageStatistics = {
   __typename?: 'UsageStatistics';
   assistantCost?: Maybe<Scalars['Float']['output']>;
   assistantTokens: Scalars['Int']['output'];
+  reasoningTokens: Scalars['Int']['output'];
   llmModel: Scalars['String']['output'];
   promptCost?: Maybe<Scalars['Float']['output']>;
+  reasoningCost?: Maybe<Scalars['Float']['output']>;
   promptTokens: Scalars['Int']['output'];
   totalCost?: Maybe<Scalars['Float']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  apiCostStatus: Scalars['String']['output'];
 };
 
 export type WorkspaceHistoryTeamDefinitionObject = {
@@ -3156,7 +3160,7 @@ export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
 }>;
 
 
-export type GetUsageStatisticsInPeriodQuery = { __typename?: 'Query', usageStatisticsInPeriod: Array<{ __typename?: 'UsageStatistics', llmModel: string, promptTokens: number, assistantTokens: number, promptCost?: number | null, assistantCost?: number | null, totalCost?: number | null }> };
+export type GetUsageStatisticsInPeriodQuery = { __typename?: 'Query', usageStatisticsInPeriod: Array<{ __typename?: 'UsageStatistics', llmModel: string, promptTokens: number, assistantTokens: number, reasoningTokens: number, promptCost?: number | null, assistantCost?: number | null, reasoningCost?: number | null, totalCost?: number | null, currency?: string | null, apiCostStatus: string }> };
 
 export type GetToolsQueryVariables = Exact<{
   origin?: InputMaybe<ToolOriginEnum>;
@@ -7683,9 +7687,13 @@ export const GetUsageStatisticsInPeriodDocument = gql`
     llmModel
     promptTokens
     assistantTokens
+    reasoningTokens
     promptCost
     assistantCost
+    reasoningCost
     totalCost
+    currency
+    apiCostStatus
   }
 }
     `;
