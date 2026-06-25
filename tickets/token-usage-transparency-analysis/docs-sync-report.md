@@ -5,8 +5,8 @@
 - Ticket: `token-usage-transparency-analysis`
 - Trigger: Delivery-stage docs sync after post-API/E2E round-4 Codex/Claude browser screenshot evidence re-review passed from `code_reviewer` as code-review round 7.
 - Bootstrap base reference: `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d` (`chore(release): bump workspace release version to 1.3.75`) recorded by the upstream package.
-- Integrated base reference used for docs sync: `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d` after `git fetch origin personal` on 2026-06-25; local `HEAD` was the same commit and `git rev-list --left-right --count HEAD...origin/personal` returned `0 0`.
-- Post-integration verification reference: No base commits were integrated, so upstream source/API/E2E/code-review evidence remains on the same base. Delivery updated docs/artifacts only, then ran `git diff --check origin/personal`, a delivery-owned docs/artifacts whitespace scan, and a long-lived-doc stale-current-assertion scan.
+- Integrated base reference used for docs sync: initial docs sync was prepared on `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d`; after `origin/personal` advanced, delivery created checkpoint commit `ffca05da710f57cee4c804a3e447c90b824c0289` and merged latest `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f` with merge commit `fef712188cf17f593e4c872530755692f0542b06`.
+- Post-integration verification reference: Latest-base merge completed cleanly. Delivery reran the documented macOS Electron build `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` on the integrated state and refreshed handoff artifacts with the new base/build evidence. Delivery also ran tracked-diff/artifact whitespace and stale-doc checks before committing this refresh.
 
 ## Why Docs Were Updated
 
@@ -76,10 +76,23 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against branch state confirmed current with `origin/personal` @ `5bd521ba83e4`. `git diff --check origin/personal` passed after docs edits; a delivery-owned docs/artifacts whitespace scan passed for the updated documentation and ticket artifacts. Corrected stale-current-doc assertion scan passed with no matches for old current-behavior claims. Finalization is intentionally paused pending explicit user verification.
+- Notes: Docs sync remains valid after merging latest `origin/personal` @ `ae7bb7217e03`. The merge completed cleanly after checkpoint commit `ffca05da710f57cee4c804a3e447c90b824c0289`; post-merge Electron build passed and produced `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg` plus `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`. `git diff --check origin/personal`, delivery-owned docs/artifacts whitespace scan, and stale-current-doc assertion scan passed before this artifact refresh commit. Finalization is intentionally paused pending explicit user verification.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
 - Why docs could not be finalized truthfully: N/A
+
+
+## Latest-Base Refresh Addendum — 2026-06-25
+
+- Checkpoint commit before integration: `ffca05da710f57cee4c804a3e447c90b824c0289`.
+- Latest tracked base merged: `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`.
+- Merge commit: `fef712188cf17f593e4c872530755692f0542b06`.
+- Merge result: clean; no conflicts and no implementation-engineer reroute.
+- Required post-integration executable check: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` — Passed.
+- Local Electron artifacts for user testing:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`

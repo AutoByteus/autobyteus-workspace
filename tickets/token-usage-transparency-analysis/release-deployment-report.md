@@ -12,18 +12,18 @@ Repository finalization and release/deployment are not in scope yet because expl
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d` recorded by the upstream package.
-- Latest tracked remote base reference checked: `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d` after `git fetch origin personal` on 2026-06-25.
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed` — no merge/rebase was required because local `HEAD` and `origin/personal` were identical at `5bd521ba83e4a2df852be5e8914915959149137d`; delivery did not mutate branch history before verification.
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
+- Bootstrap base reference: earlier delivery package was prepared on `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d`.
+- Latest tracked remote base reference checked: `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f` after `git fetch origin personal` on 2026-06-25.
+- Base advanced since bootstrap or previous refresh: `Yes`
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `ffca05da710f57cee4c804a3e447c90b824c0289` (`feat: add token usage ledger transparency`) protected the reviewed/validated candidate before integration.
+- Integration method: `Merge`
+- Integration result: `Completed` — merge commit `fef712188cf17f593e4c872530755692f0542b06` incorporated latest `origin/personal` cleanly with no conflicts.
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): No base commits were integrated (`git rev-list --left-right --count HEAD...origin/personal` = `0 0`), so upstream source/API/E2E/code-review evidence remains on the same base. Delivery changed long-lived docs and ticket artifacts only, then ran delivery tracked-diff, docs/artifacts whitespace, doc-staleness, and sync checks.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` as of delivery fetch of `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d`.
+- No-rerun rationale (only if no new base commits were integrated): N/A — new base commits were integrated and the documented Electron build was rerun.
+- Delivery edits started only after integrated state was current: `Yes` for this artifact refresh.
+- Handoff state current with latest tracked remote base: `Yes`; branch was ahead `2` and behind `0` relative to latest `origin/personal` before this artifact refresh commit.
 - Blocker (if applicable): None for handoff preparation; repository finalization is intentionally held pending user verification.
 
 ## User Verification
@@ -56,13 +56,13 @@ Not performed. Current workspace base version is `1.3.75` from `origin/personal`
 
 - Bootstrap context source: Upstream cumulative package from `code_reviewer` after post-API/E2E round-4 Codex/Claude browser screenshot evidence re-review passed.
 - Ticket branch: `codex/token-usage-transparency-analysis`
-- Ticket branch commit result: Not started pending explicit user verification.
+- Ticket branch commit result: Checkpoint commit completed locally before latest-base merge: `ffca05da710f57cee4c804a3e447c90b824c0289`. Finalization push/target-merge still pending explicit user verification.
 - Ticket branch push result: Not started pending explicit user verification.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: N/A — user verification not yet received.
 - Delivery-owned edits protected before re-integration: `Not needed` at handoff stage.
-- Re-integration before final merge result: `Not needed` at handoff stage; must be rechecked after user verification before finalization.
+- Re-integration before final merge result: `Completed` for the current handoff via merge commit `fef712188cf17f593e4c872530755692f0542b06`; must be checked again after user verification if `origin/personal` advances.
 - Target branch update result: Not started pending explicit user verification.
 - Merge into target result: Not started pending explicit user verification.
 - Push target branch result: Not started pending explicit user verification.
@@ -110,6 +110,7 @@ No deployment steps were run. If deployment/release is later requested, refresh 
 - Real runtime E2E requires configured LM Studio, Codex App Server, and Claude Agent SDK access and is intentionally gated by `RUN_RUNTIME_TOKEN_USAGE_E2E=1`; default runs skip it safely.
 - Round-3 browser proof used seeded AutoByteus ledger data; screenshot retained at `/Users/normy/.autobyteus/browser-artifacts/8e23ce-1782359481206.png`.
 - Round-4 browser proof used temporary backend/frontend local stack plus real Codex and Claude runtime turns through backend GraphQL/WebSocket, persisted ledger summaries, real Nuxt Usage panels, and retained screenshots `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361217464.png` and `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361241017.png`. The probe cleaned temporary scripts/processes/data and did not add committed durable browser automation.
+- Post-merge user-test Electron build produced `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 - No manual service startup or external provider credentials were used by delivery.
 
 ## Verification Checks
@@ -118,12 +119,21 @@ Delivery-run checks:
 
 | Command | Result | Notes |
 | --- | --- | --- |
-| `git fetch origin personal` | Passed | Latest tracked base stayed `5bd521ba83e4a2df852be5e8914915959149137d`. |
-| `git rev-parse --short=12 HEAD && git rev-parse --short=12 origin/personal && git rev-list --left-right --count HEAD...origin/personal` | Passed | Both refs were `5bd521ba83e4`; ahead/behind was `0 0`. |
-| `git diff --check origin/personal` | Passed | Tracked worktree diff produced no whitespace errors at handoff state. |
+| `git fetch origin personal` | Passed | Latest tracked base is `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`. |
+| `git commit -m "feat: add token usage ledger transparency"` | Passed | Checkpoint commit `ffca05da710f57cee4c804a3e447c90b824c0289` created before merging latest base. |
+| `git merge --no-ff origin/personal -m "merge origin/personal into token usage transparency"` | Passed | Merge commit `fef712188cf17f593e4c872530755692f0542b06` completed cleanly; no implementation-engineer reroute was needed. |
+| `git rev-parse --short=12 HEAD && git rev-parse --short=12 origin/personal && git rev-list --left-right --count HEAD...origin/personal` | Passed | Before this artifact refresh commit, integrated branch was ahead `2` and behind `0`; latest base was `ae7bb7217e03`. |
+| `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` | Passed | Rebuilt macOS ARM64 Electron app on the integrated state. |
+| `git diff --check origin/personal` | Passed | Tracked integrated diff produced no whitespace errors. |
 | Delivery-owned docs/artifacts whitespace scan | Passed | Checked the updated long-lived docs and ticket artifacts for trailing whitespace. |
 | Corrected long-lived-doc stale-current-assertion `rg` scan | Passed/no matches | Checked for stale current-behavior assertions including old `TokenUsageStore` SQL-backed wording, auto-registered `TokenUsageTrackingExtension`, old `TokenUsage` streaming snippets, and Codex token no-op wording. Removed component names only remain as explicit decommission notes or historical coverage references. |
 | `cmp -s autobyteus-web/docs/agent_execution_architecture.md autobyteus-web/docs/settings.md` | Passed | Duplicate frontend docs remain synchronized. |
+
+Electron artifacts produced for user testing:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
 Upstream authoritative checks are recorded in:
 
@@ -157,4 +167,4 @@ Before finalization, rollback is simply to withhold approval and leave the ticke
 
 ## Final Status
 
-Delivery handoff preparation is complete. The branch is current with `origin/personal`, docs are synchronized with round-2 real-runtime validation plus round-3/4 multi-runtime browser evidence, release notes are prepared, and finalization/release/deployment are intentionally paused pending explicit user verification.
+Delivery handoff preparation is complete. The branch has checkpoint commit `ffca05da710f57cee4c804a3e447c90b824c0289` plus merge commit `fef712188cf17f593e4c872530755692f0542b06` on top of latest `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`, docs are synchronized with round-2 real-runtime validation plus round-3/4 multi-runtime browser evidence, post-merge Electron artifacts are prepared for user testing, and finalization/release/deployment are intentionally paused pending explicit user verification.

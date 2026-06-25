@@ -9,11 +9,14 @@ Delivery handoff is prepared and waiting for explicit user verification. Reposit
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis`
 - Ticket branch: `codex/token-usage-transparency-analysis`
 - Recorded base / finalization target: `origin/personal`
-- Latest tracked base checked by delivery: `origin/personal` @ `5bd521ba83e4a2df852be5e8914915959149137d`
-- Local branch `HEAD` at delivery refresh: `5bd521ba83e4a2df852be5e8914915959149137d`
-- Base comparison after `git fetch origin personal` on 2026-06-25: `git rev-list --left-right --count HEAD...origin/personal` = `0 0`
-- Integration method: Already current; no merge, rebase, or checkpoint commit was needed.
-- Delivery note: because no base commits were integrated, upstream source/API/E2E/code-review evidence remains on the same base. Delivery then synchronized long-lived docs and prepared handoff/release-note artifacts.
+- Latest tracked base checked by delivery: `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`
+- Pre-merge checkpoint commit: `ffca05da710f57cee4c804a3e447c90b824c0289` (`feat: add token usage ledger transparency`)
+- Latest-base merge commit: `fef712188cf17f593e4c872530755692f0542b06` (`merge origin/personal into token usage transparency`)
+- Base comparison after latest merge: `git rev-list --left-right --count HEAD...origin/personal` = `2 0` before this artifact-refresh commit; the branch contains the checkpoint and merge commits on top of latest `origin/personal`.
+- Integration method: checkpoint commit, then merge latest `origin/personal` into the ticket branch.
+- Merge result: completed cleanly with no conflicts; no implementation-engineer reroute was required.
+- Post-integration executable check: documented macOS Electron build passed using `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`.
+- Delivery note: new upstream base commits were integrated after the earlier handoff, so this handoff now supersedes prior base-current notes and records the renewed integrated-state build evidence.
 
 ## Implementation Summary
 
@@ -102,11 +105,18 @@ Upstream reviewer/API-E2E evidence remains authoritative for source/test validat
   - `pnpm -C autobyteus-ts run build`, `pnpm -C autobyteus-server-ts run build:full`, and web guards/build passed in round 1 evidence.
   - Broad web `nuxi typecheck` still has a known baseline failure outside token usage surfaces; token-usage diagnostic grep had no matches.
 
-Delivery-run checks after docs/artifact updates:
+Delivery-run checks after latest-base merge and artifact updates:
 
-- `git fetch origin personal` — Passed; latest tracked base remained `5bd521ba83e4a2df852be5e8914915959149137d`.
-- `git rev-parse --short=12 HEAD && git rev-parse --short=12 origin/personal && git rev-list --left-right --count HEAD...origin/personal` — Passed; both refs were `5bd521ba83e4`, ahead/behind was `0 0`.
-- `git diff --check origin/personal` — Passed after delivery docs/artifact edits.
+- `git fetch origin personal` — Passed; latest tracked base is `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`.
+- Checkpoint commit before merge — Passed: `ffca05da710f57cee4c804a3e447c90b824c0289`.
+- `git merge --no-ff origin/personal -m "merge origin/personal into token usage transparency"` — Passed cleanly; merge commit `fef712188cf17f593e4c872530755692f0542b06`.
+- `git rev-parse --short=12 HEAD && git rev-parse --short=12 origin/personal && git rev-list --left-right --count HEAD...origin/personal` — Passed before this artifact refresh commit; integrated branch was ahead `2` and behind `0` relative to latest `origin/personal`.
+- `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` — Passed on the integrated state.
+- Electron artifacts produced for testing:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- `git diff --check origin/personal` — Passed after delivery docs/artifact edits for the integrated tracked diff.
 - Delivery-owned docs/artifacts whitespace scan — Passed for the updated long-lived docs and ticket artifacts.
 - Corrected long-lived-doc stale-current-assertion scan — Passed/no matches for stale current assertions such as auto-registered `TokenUsageTrackingExtension`, old `TokenUsage` streaming usage snippets, or Codex token no-op wording. Old component names remain only where the docs explicitly mark them as replaced/decommissioned or in historical coverage references.
 - `cmp -s autobyteus-web/docs/agent_execution_architecture.md autobyteus-web/docs/settings.md` — Passed; duplicate frontend docs remain synchronized.

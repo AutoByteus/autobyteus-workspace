@@ -47,3 +47,21 @@ After the draft design work started, `origin/personal` advanced to `46acf8018477
 ## 2026-06-24 final refresh before frontend-placement design update
 
 `origin/personal` advanced again to `5bd521ba83e4a2df852be5e8914915959149137d` (`chore(release): bump workspace release version to 1.3.75`). The ticket branch was fast-forwarded with `git merge --ff-only origin/personal`. The untracked token-usage design artifacts were preserved. The additional upstream commits are release/ticket-finalization and self-evolution/message-noise changes; they do not alter the token usage storage/UI conclusions found in this artifact set.
+
+## 2026-06-25 delivery checkpoint and latest-base merge
+
+After delivery handoff and the local Electron test build, `origin/personal` advanced to `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`. Per delivery/finalization workflow, the reviewed token usage state was first protected in checkpoint commit `ffca05da710f57cee4c804a3e447c90b824c0289` (`feat: add token usage ledger transparency`), then the latest tracked base was merged into the ticket branch with merge commit `fef712188cf17f593e4c872530755692f0542b06` (`merge origin/personal into token usage transparency`). The merge completed cleanly without conflicts; no implementation-engineer reroute was required.
+
+Post-merge validation included the documented macOS Electron build command:
+
+```sh
+NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac
+```
+
+The build passed and produced local test artifacts:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.dmg`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.75.zip`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+
+The latest integrated base is now `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`. The ticket branch is ahead of `origin/personal` by the checkpoint and merge commits plus the delivery artifact refresh commit that records this integration.
