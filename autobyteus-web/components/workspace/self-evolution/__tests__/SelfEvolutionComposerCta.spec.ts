@@ -132,8 +132,8 @@ describe('SelfEvolutionComposerCta', () => {
     await flushPromises();
 
     const button = wrapper.get('[data-test="self-evolution-composer-cta"]');
-    expect(button.text()).toContain('Self improve');
-    expect(button.attributes('aria-label')).toBe('Self improve this run');
+    expect(button.text()).toContain('self improve');
+    expect(button.attributes('aria-label')).toBe('self improve this run');
     expect(button.attributes('title')).toContain('this run');
     expect(button.attributes('disabled')).toBeUndefined();
 
@@ -143,7 +143,7 @@ describe('SelfEvolutionComposerCta', () => {
     expect(selfEvolutionStoreMock.fetchAgentRunEligibility).toHaveBeenCalledWith('run-1');
     expect(selfEvolutionStoreMock.startAgentRunSelfEvolution).toHaveBeenCalledWith('run-1');
     expect(addToastMock).toHaveBeenCalledWith(
-      'Self improve started. Skills may be updated or no changes may be made.',
+      'self improve started. Skills may be updated or no changes may be made.',
       'success',
     );
     expect(wrapper.find('[data-test="self-evolution-composer-cta-started"]').exists()).toBe(false);
@@ -229,8 +229,8 @@ describe('SelfEvolutionComposerCta', () => {
     await flushPromises();
 
     const button = wrapper.get('[data-test="self-evolution-composer-cta"]');
-    expect(button.text()).toContain('Self improve');
-    expect(button.attributes('aria-label')).toBe("Self improve this member's run");
+    expect(button.text()).toContain('self improve');
+    expect(button.attributes('aria-label')).toBe("self improve this member's run");
     expect(button.attributes('title')).toContain("this member's run");
 
     await button.trigger('click');
