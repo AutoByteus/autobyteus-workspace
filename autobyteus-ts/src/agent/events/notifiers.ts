@@ -2,6 +2,7 @@ import { EventEmitter } from '../../events/event-emitter.js';
 import { EventType } from '../../events/event-types.js';
 import { AgentStatus } from '../status/status-enum.js';
 import type { CompleteResponse } from '../../llm/utils/response-types.js';
+import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 
 const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
 
@@ -120,6 +121,20 @@ export class AgentExternalEventNotifier extends EventEmitter {
 
   notifyAgentDataAssistantCompleteResponse(completeResponse: CompleteResponse): void {
     this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, completeResponse);
+  }
+
+  notifyAgentTokenUsageUpdated(payload: {
+    usage: LlmTokenUsageObservation;
+    usage_event_id?: string;
+    idempotency_key?: string;
+    turn_id?: string | null;
+    llm_call_id?: string | null;
+    call_sequence?: number | null;
+    runtime_kind?: string;
+    ingestion_kind?: string;
+    raw_event_json?: Record<string, unknown> | null;
+  }): void {
+    this.emitEvent(EventType.AGENT_TOKEN_USAGE_UPDATED, payload);
   }
 
   notifyAgentSegmentEvent(eventDict: Record<string, any>): void {

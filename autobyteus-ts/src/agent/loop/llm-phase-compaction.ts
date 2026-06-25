@@ -1,6 +1,6 @@
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
 import type { BaseLLM } from '../../llm/base.js';
-import type { TokenUsage } from '../../llm/utils/token-usage.js';
+import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import type { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
@@ -8,7 +8,7 @@ import type { CompactionRuntimeSettingsResolver } from '../../memory/compaction/
 export function evaluateLlmPhaseCompaction(input: {
   llmInstance: BaseLLM;
   memoryManager: NonNullable<AgentContext['state']['memoryManager']>;
-  tokenUsage: TokenUsage | null;
+  tokenUsage: LlmTokenUsageObservation | null;
   activeTurnId: string;
   compactionReporter: CompactionRuntimeReporter;
   runtimeSettingsResolver: CompactionRuntimeSettingsResolver;
@@ -39,10 +39,10 @@ export function evaluateLlmPhaseCompaction(input: {
 
   applyCompactionPolicy(memoryManager.compactionPolicy, budget);
   const compactionRequired = Boolean(
-    memoryManager.compactionPolicy.shouldCompact(tokenUsage.prompt_tokens, budget.inputBudget)
+    memoryManager.compactionPolicy.shouldCompact(tokenUsage.input_tokens ?? 0, budget.inputBudget)
   );
   compactionReporter.logBudgetEvaluated({
-    prompt_tokens: tokenUsage.prompt_tokens,
+    prompt_tokens: tokenUsage.input_tokens ?? 0,
     effective_total_context_tokens: budget.effectiveContextCapacity,
     context_derived_input_cap_tokens: budget.contextDerivedInputCapTokens,
     provider_input_cap_tokens: budget.providerInputCapTokens,

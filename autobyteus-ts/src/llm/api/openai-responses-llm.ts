@@ -5,10 +5,11 @@ import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { Message } from '../utils/messages.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
 import { ToolCallDelta } from '../utils/tool-call-delta.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createOpenAIResponsesRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
+import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 
 type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
@@ -21,7 +22,6 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
-const asNumber = (value: unknown): number => (typeof value === 'number' ? value : 0);
 
 export class OpenAIResponsesLLM extends BaseLLM {
   protected client: OpenAIClient;
@@ -56,13 +56,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
     this._renderer = createOpenAIResponsesRendererForToolFormat();
   }
 
-  private createTokenUsage(usageData?: ResponseUsage | null): TokenUsage | null {
-    if (!usageData) return null;
-    return {
-      prompt_tokens: asNumber(usageData.input_tokens),
-      completion_tokens: asNumber(usageData.output_tokens),
-      total_tokens: asNumber(usageData.total_tokens)
-    };
+  private createTokenUsage(usageData?: ResponseUsage | null): LlmTokenUsageObservation | null {
+    return createOpenAICompatibleTokenUsageObservation(usageData, this.model);
   }
 
   private extractOutputContent(outputItems: ResponseOutputItem[]): { content: string; reasoning: string | null } {

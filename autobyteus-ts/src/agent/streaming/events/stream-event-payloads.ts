@@ -6,6 +6,11 @@ export {
 } from './stream-event-payload-assistant.js';
 
 export {
+  TokenUsageUpdatedData,
+  createTokenUsageUpdatedData
+} from './stream-event-payload-token-usage.js';
+
+export {
   ToolInteractionLogEntryData,
   ToolApprovalRequestedData,
   ToolApprovedData,
@@ -52,6 +57,7 @@ export {
 import type {
   AssistantCompleteResponseData
 } from './stream-event-payload-assistant.js';
+import type { TokenUsageUpdatedData } from './stream-event-payload-token-usage.js';
 import type {
   ToolInteractionLogEntryData,
   ToolApprovalRequestedData,
@@ -78,6 +84,7 @@ import type {
 
 export type StreamDataPayload =
   | AssistantCompleteResponseData
+  | TokenUsageUpdatedData
   | ToolInteractionLogEntryData
   | TurnLifecycleData
   | AgentStatusData

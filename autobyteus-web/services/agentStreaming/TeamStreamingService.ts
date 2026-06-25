@@ -30,6 +30,7 @@ import {
   handleToolLog,
   handleAgentStatus,
   handleCompactionStatus,
+  handleTokenUsageUpdated,
   handleAssistantComplete,
   handleTurnCompleted,
   handleTurnInterrupted,
@@ -443,6 +444,10 @@ export class TeamStreamingService {
 
       case 'COMPACTION_STATUS':
         handleCompactionStatus(message.payload, memberContext);
+        break;
+
+      case 'TOKEN_USAGE_UPDATED':
+        handleTokenUsageUpdated(message.payload, memberContext);
         break;
 
       case 'TURN_STARTED':

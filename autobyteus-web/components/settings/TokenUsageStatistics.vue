@@ -56,25 +56,35 @@
             <td class="py-2 px-4 border">{{ stat.llmModel }}</td>
             <td class="py-2 px-4 border">{{ stat.promptTokens.toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ stat.assistantTokens.toLocaleString() }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(stat.promptCost) }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(stat.assistantCost) }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(stat.totalCost) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.promptCost, stat.currency, stat.apiCostStatus)) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.assistantCost, stat.currency, stat.apiCostStatus)) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(costAggregate(stat.totalCost, stat.currency, stat.apiCostStatus)) }}</td>
           </tr>
           <!-- Total Row -->
           <tr class="font-semibold bg-gray-50">
             <td class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.total') }}</td>
             <td class="py-2 px-4 border">{{ getTotalPromptTokens().toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ getTotalAssistantTokens().toLocaleString() }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(getTotalPromptCost()) }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(getTotalAssistantCost()) }}</td>
-            <td class="py-2 px-4 border">€{{ formatNumber(store.getTotalCost) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(getTotalPromptCost()) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(getTotalAssistantCost()) }}</td>
+            <td class="py-2 px-4 border">{{ formatCost(store.getTotalCost) }}</td>
           </tr>
         </tbody>
       </table>
 
       <div class="mt-6 h-[400px]">
-        <BarChart :labels="chartLabels" :data="chartData" />
+        <BarChart
+          :labels="chartLabels"
+          :data="chartData"
+          :dataset-label="chartDatasetLabel"
+          :x-axis-label="chartXAxisLabel"
+          :y-axis-label="chartYAxisLabel"
+          :tooltip-labels="chartTooltipLabels"
+        />
       </div>
+      <p v-if="hasOmittedUnpricedChartCosts" class="mt-2 text-sm text-gray-500">
+        {{ $t('shell.tokenUsage.unpricedCostChartNote') }}
+      </p>
       </div>
     </div>
   </div>
@@ -84,6 +94,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useTokenUsageStatisticsStore } from '~/stores/tokenUsageStatistics';
+import type { TokenUsageCostAggregate } from '~/stores/tokenUsageStatistics';
 import BarChart from '~/components/common/BarChart.vue';
 
 const store = useTokenUsageStatisticsStore();
@@ -92,13 +103,67 @@ const startDate = ref('');
 const endDate = ref('');
 
 const chartLabels = computed(() => store.getStatistics.map(stat => stat.llmModel));
-const chartData = computed(() => store.getStatistics.map(stat => stat.totalCost));
+const chartCostAggregates = computed(() => store.getStatistics.map(stat =>
+  costAggregate(stat.totalCost, stat.currency, stat.apiCostStatus)
+));
+const chartData = computed(() => chartCostAggregates.value.map(cost => cost.amount));
+const chartTooltipLabels = computed(() => chartCostAggregates.value.map(formatCost));
+const hasOmittedUnpricedChartCosts = computed(() => chartCostAggregates.value.some(cost => cost.amount === null));
+const chartCurrency = computed(() => {
+  const currencies = new Set(
+    chartCostAggregates.value
+      .filter(cost => cost.amount !== null && cost.currency)
+      .map(cost => cost.currency as string),
+  );
+  return currencies.size === 1 ? [...currencies][0] : null;
+});
+const chartDatasetLabel = computed(() => $t('settings.components.settings.TokenUsageStatistics.total_cost'));
+const chartXAxisLabel = computed(() => $t('settings.components.settings.TokenUsageStatistics.llm_model'));
+const chartYAxisLabel = computed(() => chartCurrency.value
+  ? `${chartDatasetLabel.value} (${chartCurrency.value})`
+  : chartDatasetLabel.value
+);
 
 const formatNumber = (value: number): string => {
   return value.toLocaleString('en-US', { 
     minimumFractionDigits: 0,
     maximumFractionDigits: 20  // This will show all decimal places up to 20
   });
+};
+
+const costAggregate = (
+  amount: number | null,
+  currency: string | null,
+  status: TokenUsageCostAggregate['status'],
+): TokenUsageCostAggregate => ({ amount, currency, status });
+
+const aggregateCosts = (
+  values: TokenUsageCostAggregate[],
+): TokenUsageCostAggregate => values.reduce<TokenUsageCostAggregate>((aggregate, next, index) => {
+  const amount = aggregate.amount === null && next.amount === null
+    ? null
+    : (aggregate.amount ?? 0) + (next.amount ?? 0);
+  const currency = !next.currency
+    ? aggregate.currency
+    : !aggregate.currency || aggregate.currency === next.currency
+      ? next.currency
+      : null;
+  const status = index === 0 || aggregate.status === next.status ? next.status : 'mixed';
+  return { amount, currency, status };
+}, { amount: null, currency: null, status: 'price_missing' });
+
+const formatCost = (cost: TokenUsageCostAggregate): string => {
+  if (cost.amount === null) return $t('shell.tokenUsage.unpriced');
+  const formattedAmount = cost.currency
+    ? new Intl.NumberFormat(undefined, { style: 'currency', currency: cost.currency, maximumFractionDigits: 4 }).format(cost.amount)
+    : formatNumber(cost.amount);
+  if (cost.status === 'partial_price_missing') {
+    return `${formattedAmount} ${$t('shell.tokenUsage.partialEstimateSuffix')}`;
+  }
+  if (cost.status === 'mixed') {
+    return `${formattedAmount} ${$t('shell.tokenUsage.mixedEstimateSuffix')}`;
+  }
+  return `${formattedAmount} ${$t('shell.tokenUsage.headerEstimateSuffix')}`;
 };
 
 const getTotalPromptTokens = (): number => {
@@ -109,12 +174,16 @@ const getTotalAssistantTokens = (): number => {
   return store.getStatistics.reduce((sum, stat) => sum + stat.assistantTokens, 0);
 };
 
-const getTotalPromptCost = (): number => {
-  return store.getStatistics.reduce((sum, stat) => sum + stat.promptCost, 0);
+const getTotalPromptCost = (): TokenUsageCostAggregate => {
+  return aggregateCosts(
+    store.getStatistics.map((stat) => costAggregate(stat.promptCost, stat.currency, stat.apiCostStatus)),
+  );
 };
 
-const getTotalAssistantCost = (): number => {
-  return store.getStatistics.reduce((sum, stat) => sum + stat.assistantCost, 0);
+const getTotalAssistantCost = (): TokenUsageCostAggregate => {
+  return aggregateCosts(
+    store.getStatistics.map((stat) => costAggregate(stat.assistantCost, stat.currency, stat.apiCostStatus)),
+  );
 };
 
 const fetchStatistics = async () => {

@@ -1,94 +1,121 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenUsageStats } from "../../../../src/token-usage/domain/models.js";
 import { TokenUsageStatisticsProvider } from "../../../../src/token-usage/providers/statistics-provider.js";
-import { TokenUsageRecord, TokenUsageStats } from "../../../../src/token-usage/domain/models.js";
+import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 
-const mockStore = vi.hoisted(() => ({
-  getTotalCostInPeriod: vi.fn(),
-  getUsageRecordsInPeriod: vi.fn(),
-}));
+const mockStore = {
+  listEventsInPeriod: vi.fn(),
+};
 
-vi.mock("../../../../src/token-usage/providers/token-usage-store.js", () => {
-  class MockTokenUsageStore {
-    getTotalCostInPeriod = mockStore.getTotalCostInPeriod;
-    getUsageRecordsInPeriod = mockStore.getUsageRecordsInPeriod;
-  }
-
-  return {
-    TokenUsageStore: MockTokenUsageStore,
-  };
+const buildEvent = (input: {
+  model: string | null;
+  inputTokens: number | null;
+  outputTokens: number | null;
+  inputCost: number | null;
+  outputCost: number | null;
+  totalCost: number | null;
+  status: TokenUsageUpdatedPayload["api_cost_status"];
+  currency?: string | null;
+}): TokenUsageUpdatedPayload => ({
+  ...createTokenUsageUpdatedPayload({
+    runId: `stats_${input.model ?? "unknown"}`,
+    payload: {
+      idempotency_key: `stats:${input.model ?? "unknown"}:${Math.random()}`,
+      model_identifier: input.model,
+      reported_input_tokens: input.inputTokens,
+      reported_output_tokens: input.outputTokens,
+      reported_total_tokens: (input.inputTokens ?? 0) + (input.outputTokens ?? 0),
+      accounting_input_tokens: input.inputTokens,
+      accounting_output_tokens: input.outputTokens,
+      accounting_total_tokens: (input.inputTokens ?? 0) + (input.outputTokens ?? 0),
+      pricing_status: input.status === "estimated" ? "trusted" : "missing",
+      api_cost_status: input.status,
+      estimated_api_input_cost: input.inputCost,
+      estimated_api_output_cost: input.outputCost,
+      estimated_api_total_cost: input.totalCost,
+      currency: input.currency ?? null,
+    },
+  }),
+  accounting_input_tokens: input.inputTokens,
+  accounting_output_tokens: input.outputTokens,
+  accounting_total_tokens: (input.inputTokens ?? 0) + (input.outputTokens ?? 0),
+  estimated_api_input_cost: input.inputCost,
+  estimated_api_output_cost: input.outputCost,
+  estimated_api_total_cost: input.totalCost,
+  api_cost_status: input.status,
+  currency: input.currency ?? null,
 });
 
 describe("TokenUsageStatisticsProvider", () => {
   beforeEach(() => {
-    mockStore.getTotalCostInPeriod.mockReset();
-    mockStore.getUsageRecordsInPeriod.mockReset();
+    mockStore.listEventsInPeriod.mockReset();
   });
 
-  it("gets total cost via token usage store", async () => {
-    mockStore.getTotalCostInPeriod.mockResolvedValue(15.75);
-
-    const provider = new TokenUsageStatisticsProvider();
+  it("gets nullable total cost via ledger events without turning missing price into zero", async () => {
     const start = new Date("2023-01-01T00:00:00.000Z");
     const end = new Date("2023-01-02T00:00:00.000Z");
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({ model: "unknown-model", inputTokens: 10, outputTokens: 5, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
+    ]);
 
+    const provider = new TokenUsageStatisticsProvider(mockStore as never);
     const totalCost = await provider.getTotalCost(start, end);
 
-    expect(mockStore.getTotalCostInPeriod).toHaveBeenCalledWith(start, end);
-    expect(totalCost).toBe(15.75);
+    expect(mockStore.listEventsInPeriod).toHaveBeenCalledWith(start, end);
+    expect(totalCost).toBeNull();
   });
 
-  it("aggregates stats per model", async () => {
+  it("aggregates stats per model with mixed price status", async () => {
     const now = new Date();
-    mockStore.getUsageRecordsInPeriod.mockResolvedValue([
-      new TokenUsageRecord({
-        runId: "agent1",
-        role: "user",
-        tokenCount: 10,
-        cost: 1.0,
-        createdAt: now,
-        llmModel: "gpt-3.5",
-      }),
-      new TokenUsageRecord({
-        runId: "agent2",
-        role: "assistant",
-        tokenCount: 5,
-        cost: 0.5,
-        createdAt: now,
-        llmModel: "gpt-3.5",
-      }),
-      new TokenUsageRecord({
-        runId: "agent3",
-        role: "assistant",
-        tokenCount: 20,
-        cost: 2.0,
-        createdAt: now,
-        llmModel: null,
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({ model: "gpt-test", inputTokens: 10, outputTokens: 0, inputCost: 1.0, outputCost: 0, totalCost: 1.0, status: "estimated", currency: "USD" }),
+      buildEvent({ model: "gpt-test", inputTokens: 0, outputTokens: 5, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
+      buildEvent({ model: null, inputTokens: 0, outputTokens: 20, inputCost: null, outputCost: null, totalCost: null, status: "price_missing" }),
+    ]);
+
+    const provider = new TokenUsageStatisticsProvider(mockStore as never);
+    const stats = await provider.getStatisticsPerModel(
+      new Date(now.getTime() - 24 * 60 * 60 * 1000),
+      new Date(now.getTime() + 24 * 60 * 60 * 1000),
+    );
+
+    expect(Object.keys(stats).sort()).toEqual(["gpt-test", "unknown"]);
+    expect(stats["gpt-test"]).toBeInstanceOf(TokenUsageStats);
+    expect(stats["gpt-test"]?.promptTokens).toBe(10);
+    expect(stats["gpt-test"]?.assistantTokens).toBe(5);
+    expect(stats["gpt-test"]?.totalCost).toBe(1.0);
+    expect(stats["gpt-test"]?.apiCostStatus).toBe("mixed");
+    expect(stats["gpt-test"]?.currency).toBe("USD");
+    expect(stats.unknown?.assistantTokens).toBe(20);
+    expect(stats.unknown?.totalCost).toBeNull();
+    expect(stats.unknown?.apiCostStatus).toBe("price_missing");
+  });
+
+
+  it("preserves partial-price-missing statistics instead of coercing missing dimensions to zero", async () => {
+    const now = new Date();
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({
+        model: "gpt-cache-partial",
+        inputTokens: 1000,
+        outputTokens: 200,
+        inputCost: 0.0012,
+        outputCost: 0.002,
+        totalCost: 0.0032,
+        status: "partial_price_missing",
+        currency: "USD",
       }),
     ]);
 
-    const provider = new TokenUsageStatisticsProvider();
-    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const end = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const provider = new TokenUsageStatisticsProvider(mockStore as never);
+    const stats = await provider.getStatisticsPerModel(
+      new Date(now.getTime() - 1_000),
+      new Date(now.getTime() + 1_000),
+    );
 
-    const stats = await provider.getStatisticsPerModel(start, end);
-    expect(mockStore.getUsageRecordsInPeriod).toHaveBeenCalledWith(start, end);
-
-    expect(Object.keys(stats).sort()).toEqual(["gpt-3.5", "unknown"]);
-
-    const gptStats = stats["gpt-3.5"];
-    expect(gptStats).toBeInstanceOf(TokenUsageStats);
-    expect(gptStats.promptTokens).toBe(10);
-    expect(gptStats.promptTokenCost).toBe(1.0);
-    expect(gptStats.assistantTokens).toBe(5);
-    expect(gptStats.assistantTokenCost).toBe(0.5);
-    expect(gptStats.totalCost).toBe(1.5);
-
-    const unknownStats = stats["unknown"];
-    expect(unknownStats).toBeInstanceOf(TokenUsageStats);
-    expect(unknownStats.promptTokens).toBe(0);
-    expect(unknownStats.promptTokenCost).toBe(0);
-    expect(unknownStats.assistantTokens).toBe(20);
-    expect(unknownStats.assistantTokenCost).toBe(2.0);
-    expect(unknownStats.totalCost).toBe(2.0);
+    expect(stats["gpt-cache-partial"]?.totalCost).toBe(0.0032);
+    expect(stats["gpt-cache-partial"]?.apiCostStatus).toBe("partial_price_missing");
+    expect(stats["gpt-cache-partial"]?.currency).toBe("USD");
   });
 });

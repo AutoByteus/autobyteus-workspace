@@ -18,7 +18,7 @@ import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { ToolInvocation } from '../tool-invocation.js';
-import type { TokenUsage } from '../../llm/utils/token-usage.js';
+import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
@@ -47,7 +47,7 @@ export class LlmPhase {
 
     let completeResponseText = '';
     let completeReasoningText = '';
-    let tokenUsage: TokenUsage | null = null;
+    let tokenUsage: LlmTokenUsageObservation | null = null;
     const completeImageUrls: string[] = [];
     const completeAudioUrls: string[] = [];
     const completeVideoUrls: string[] = [];
@@ -114,6 +114,8 @@ export class LlmPhase {
     }
     turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
 
+    const llmCallSequence = turn.toolInvocationBatches.length + 1;
+    const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
     const segmentIdPrefix = `segment_${randomUUID().replace(/-/g, '')}:`;
     let currentReasoningPartId: string | null = null;
     let parsedToolInvocationCount = 0;
@@ -217,6 +219,18 @@ export class LlmPhase {
       audio_urls: completeAudioUrls,
       video_urls: completeVideoUrls
     });
+
+    if (tokenUsage) {
+      notifier?.notifyAgentTokenUsageUpdated({
+        usage: tokenUsage,
+        turn_id: activeTurnId,
+        llm_call_id: llmCallId,
+        call_sequence: llmCallSequence,
+        runtime_kind: 'autobyteus',
+        ingestion_kind: 'autobyteus_llm_phase',
+        idempotency_key: `${agentId}:${llmCallId}`
+      });
+    }
 
     if (toolNames.length) {
       const toolInvocations = streamingHandler.getAllInvocations();

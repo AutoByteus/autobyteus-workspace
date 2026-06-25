@@ -731,6 +731,46 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
+
+
+  it("maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [event] = converter.convert({
+      method: ClaudeSessionEventName.TOKEN_USAGE_UPDATED,
+      params: {
+        turn_id: "turn-claude-usage-1",
+        session_id: "session-1",
+        runtime_kind: "claude_agent_sdk",
+        ingestion_kind: "claude_sdk_result",
+        usage_scope: "per_turn",
+        model_provider: "ANTHROPIC",
+        model_identifier: "claude-sonnet-4-6",
+        reported_input_tokens: 100,
+        reported_output_tokens: 20,
+        reported_total_tokens: 120,
+        cache_read_input_tokens: 10,
+        raw_usage_json: { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 10 },
+      },
+    });
+
+    expect(event).toEqual(expect.objectContaining({
+      eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+      runId: "run-claude-converter",
+      payload: expect.objectContaining({
+        turn_id: "turn-claude-usage-1",
+        runtime_kind: "claude_agent_sdk",
+        ingestion_kind: "claude_sdk_result",
+        usage_scope: "per_turn",
+        reported_input_tokens: 100,
+        reported_output_tokens: 20,
+        reported_total_tokens: 120,
+        cache_read_input_tokens: 10,
+        raw_usage_json: { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 10 },
+      }),
+    }));
+  });
+
   it("normalizes compacting status without rotation eligibility", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 

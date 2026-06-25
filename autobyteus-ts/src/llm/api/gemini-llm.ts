@@ -5,7 +5,8 @@ import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { Message } from '../utils/messages.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import { createGeminiTokenUsageObservation } from './gemini-token-usage-normalizer.js';
+import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { initializeGeminiClientWithRuntime } from '../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
 import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter.js';
@@ -140,21 +141,8 @@ export class GeminiLLM extends BaseLLM {
     return tools as Array<Record<string, unknown>>;
   }
 
-  private toTokenUsage(usage: unknown): TokenUsage | null {
-    if (!isRecord(usage)) {
-      return null;
-    }
-    const prompt = typeof usage.promptTokenCount === 'number' ? usage.promptTokenCount : 0;
-    const completion = typeof usage.candidatesTokenCount === 'number' ? usage.candidatesTokenCount : 0;
-    const total =
-      typeof usage.totalTokenCount === 'number'
-        ? usage.totalTokenCount
-        : prompt + completion;
-    return {
-      prompt_tokens: prompt,
-      completion_tokens: completion,
-      total_tokens: total
-    };
+  private toTokenUsage(usage: unknown): LlmTokenUsageObservation | null {
+    return createGeminiTokenUsageObservation(usage, this.model);
   }
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {

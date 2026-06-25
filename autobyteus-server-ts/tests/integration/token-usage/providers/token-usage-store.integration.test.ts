@@ -1,145 +1,102 @@
-import { describe, expect, it } from "vitest";
-import { TokenUsageStore } from "../../../../src/token-usage/providers/token-usage-store.js";
-import { SqlTokenUsageRecordRepository } from "../../../../src/token-usage/repositories/sql/token-usage-record-repository.js";
+import { afterEach, describe, expect, it } from "vitest";
+import { randomUUID } from "node:crypto";
+import { PrismaClient } from "@prisma/client";
+import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenUsageLedgerStore } from "../../../../src/token-usage/providers/token-usage-ledger-store.js";
+import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const prisma = new PrismaClient();
+const store = new TokenUsageLedgerStore();
+const createdRunIds = new Set<string>();
 
-describe("TokenUsageStore", () => {
-  const provider = new TokenUsageStore();
-  const repo = new SqlTokenUsageRecordRepository();
+const buildLedgerEvent = (input: {
+  runId?: string;
+  rootTeamRunId?: string | null;
+  memberAgentRunId?: string | null;
+  memberRouteKey?: string | null;
+  inputTokens: number;
+  outputTokens: number;
+  totalCost?: number | null;
+  status?: TokenUsageUpdatedPayload["api_cost_status"];
+}): TokenUsageUpdatedPayload => {
+  const runId = input.runId ?? `ledger_store_${randomUUID()}`;
+  createdRunIds.add(runId);
+  const payload = createTokenUsageUpdatedPayload({
+    runId,
+    payload: {
+      idempotency_key: `ledger_store:${randomUUID()}`,
+      usage_scope: "per_turn",
+      root_team_run_id: input.rootTeamRunId ?? null,
+      member_agent_run_id: input.memberAgentRunId ?? null,
+      member_route_key: input.memberRouteKey ?? null,
+      reported_input_tokens: input.inputTokens,
+      reported_output_tokens: input.outputTokens,
+      reported_total_tokens: input.inputTokens + input.outputTokens,
+      accounting_input_tokens: input.inputTokens,
+      accounting_output_tokens: input.outputTokens,
+      accounting_total_tokens: input.inputTokens + input.outputTokens,
+      model_identifier: "gpt-test",
+      runtime_kind: "codex_app_server",
+      ingestion_kind: "codex_thread_token_usage",
+      pricing_status: input.totalCost === null ? "missing" : "trusted",
+      api_cost_status: input.status ?? (input.totalCost === null ? "price_missing" : "estimated"),
+      estimated_api_total_cost: input.totalCost ?? null,
+      estimated_api_input_cost: input.totalCost === null || input.totalCost === undefined ? null : input.totalCost / 2,
+      estimated_api_output_cost: input.totalCost === null || input.totalCost === undefined ? null : input.totalCost / 2,
+      currency: input.totalCost === null ? null : "USD",
+    },
+  });
+  return {
+    ...payload,
+    meter_delta_input_tokens: payload.accounting_input_tokens,
+    meter_delta_output_tokens: payload.accounting_output_tokens,
+    meter_delta_total_tokens: payload.accounting_total_tokens,
+  };
+};
 
-  it("creates token usage records", async () => {
-    const record = await provider.createTokenUsageRecord(
-      "sql_test_agent_id",
-      "assistant",
-      50,
-      0.002,
-      "sql_test_model",
-    );
+afterEach(async () => {
+  const runIds = Array.from(createdRunIds);
+  createdRunIds.clear();
+  if (runIds.length > 0) {
+    await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+  }
+});
 
-    try {
-      expect(record.runId).toBe("sql_test_agent_id");
-      expect(record.role).toBe("assistant");
-      expect(record.tokenCount).toBe(50);
-      expect(record.cost).toBe(0.002);
-      expect(record.createdAt).toBeInstanceOf(Date);
-      expect(record.llmModel).toBe("sql_test_model");
-      expect(record.tokenUsageRecordId).toBeTruthy();
-      expect(uuidRegex.test(record.tokenUsageRecordId ?? "")).toBe(true);
-    } finally {
-      await repo.deleteMany({
-        where: { usageRecordId: record.tokenUsageRecordId ?? undefined },
-      });
-    }
+describe("TokenUsageLedgerStore", () => {
+  it("summarizes an agent run using accounting deltas only", async () => {
+    const runId = `ledger_store_agent_${randomUUID()}`;
+    await store.appendTokenUsageEvent(buildLedgerEvent({ runId, inputTokens: 10, outputTokens: 5, totalCost: 0.001 }));
+    await store.appendTokenUsageEvent(buildLedgerEvent({ runId, inputTokens: 7, outputTokens: 3, totalCost: null }));
+
+    const summary = await store.getAgentRunSummary(runId);
+
+    expect(summary.run_id).toBe(runId);
+    expect(summary.input_tokens).toBe(17);
+    expect(summary.output_tokens).toBe(8);
+    expect(summary.total_tokens).toBe(25);
+    expect(summary.estimated_api_total_cost).toBe(0.001);
+    expect(summary.api_cost_status).toBe("mixed");
   });
 
-  it("gets usage records in period without model filter", async () => {
-    const now = Date.now();
-    const start = new Date(now - 24 * 60 * 60 * 1000);
-    const end = new Date(now + 24 * 60 * 60 * 1000);
+  it("summarizes team and member usage from enriched identity fields", async () => {
+    const teamRunId = `team_${randomUUID()}`;
+    const memberRunId = `member_${randomUUID()}`;
+    await store.appendTokenUsageEvent(buildLedgerEvent({
+      runId: memberRunId,
+      rootTeamRunId: teamRunId,
+      memberAgentRunId: memberRunId,
+      memberRouteKey: "worker",
+      inputTokens: 4,
+      outputTokens: 6,
+      totalCost: 0.002,
+    }));
 
-    const record1 = await provider.createTokenUsageRecord("agent_a", "user", 10, 0.001);
-    const record2 = await provider.createTokenUsageRecord("agent_b", "assistant", 20, 0.002);
+    const teamSummary = await store.getTeamRunSummary(teamRunId);
+    const memberSummary = await store.getTeamMemberSummary({ rootTeamRunId: teamRunId, memberAgentRunId: memberRunId });
 
-    try {
-      const records = await provider.getUsageRecordsInPeriod(start, end);
-      const runIds = new Set(records.map((record) => record.runId));
-      expect(runIds.has(record1.runId)).toBe(true);
-      expect(runIds.has(record2.runId)).toBe(true);
-    } finally {
-      await repo.deleteMany({
-        where: { usageRecordId: { in: [record1.tokenUsageRecordId!, record2.tokenUsageRecordId!] } },
-      });
-    }
-  });
-
-  it("gets usage records in period filtered by model", async () => {
-    const now = Date.now();
-    const start = new Date(now - 24 * 60 * 60 * 1000);
-    const end = new Date(now + 24 * 60 * 60 * 1000);
-
-    const recordA = await provider.createTokenUsageRecord(
-      "agent_c",
-      "user",
-      30,
-      0.003,
-      "modelSQLA",
-    );
-    const recordB = await provider.createTokenUsageRecord(
-      "agent_d",
-      "assistant",
-      40,
-      0.004,
-      "modelSQLB",
-    );
-
-    try {
-      const filtered = await provider.getUsageRecordsInPeriod(start, end, "modelSQLA");
-      expect(filtered.length).toBeGreaterThan(0);
-      expect(filtered[0]?.llmModel).toBe("modelSQLA");
-      expect(filtered[0]?.runId).toBe(recordA.runId);
-    } finally {
-      await repo.deleteMany({
-        where: { usageRecordId: { in: [recordA.tokenUsageRecordId!, recordB.tokenUsageRecordId!] } },
-      });
-    }
-  });
-
-  it("returns empty when no records match", async () => {
-    const now = Date.now();
-    const start = new Date(now - 10 * 24 * 60 * 60 * 1000);
-    const end = new Date(now - 9 * 24 * 60 * 60 * 1000);
-
-    const record = await provider.createTokenUsageRecord(
-      "agent_e",
-      "assistant",
-      50,
-      0.005,
-      "modelSQLX",
-    );
-
-    try {
-      const records = await provider.getUsageRecordsInPeriod(start, end);
-      expect(records).toHaveLength(0);
-    } finally {
-      await repo.deleteMany({
-        where: { usageRecordId: record.tokenUsageRecordId ?? undefined },
-      });
-    }
-  });
-
-  it("calculates total cost in period", async () => {
-    const now = Date.now();
-    const start = new Date(now - 24 * 60 * 60 * 1000);
-    const end = new Date(now + 24 * 60 * 60 * 1000);
-
-    const record1 = await provider.createTokenUsageRecord(
-      "agent_f",
-      "user",
-      10,
-      0.001,
-      "modelSQL7",
-    );
-    const record2 = await provider.createTokenUsageRecord(
-      "agent_g",
-      "assistant",
-      20,
-      0.002,
-      "modelSQL8",
-    );
-
-    try {
-      const totalCost = await provider.getTotalCostInPeriod(start, end);
-      expect(totalCost).toBeGreaterThan(0);
-
-      const oldStart = new Date(now - 10 * 24 * 60 * 60 * 1000);
-      const oldEnd = new Date(now - 9 * 24 * 60 * 60 * 1000);
-      const totalCostOlder = await provider.getTotalCostInPeriod(oldStart, oldEnd);
-      expect(totalCostOlder).toBe(0);
-    } finally {
-      await repo.deleteMany({
-        where: { usageRecordId: { in: [record1.tokenUsageRecordId!, record2.tokenUsageRecordId!] } },
-      });
-    }
+    expect(teamSummary.total_tokens).toBe(10);
+    expect(memberSummary.run_id).toBe(memberRunId);
+    expect(memberSummary.member_route_key).toBe("worker");
+    expect(memberSummary.estimated_api_total_cost).toBe(0.002);
   });
 });

@@ -49,7 +49,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - Services expose `getInstance()` or accessor functions.
 - Cached providers decorate persistence providers for read-heavy flows.
 - Persistence is owned per subsystem instead of by a global runtime mode.
-- Token usage uses the SQL-backed `TokenUsageStore`, while agent definitions, team definitions, and MCP config continue to use their subsystem-native file providers.
+- Token usage is ledger-backed through `TokenUsageLedgerStore` / `token_usage_ledger_events`; legacy role-split `token_usage_records` and response-processor writes are not current accounting sources.
 - GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
 - Startup registration and background initialization run through `src/startup`.
 - Application bundles, orchestration, backend gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.

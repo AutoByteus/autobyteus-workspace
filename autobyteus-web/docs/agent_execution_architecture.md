@@ -24,11 +24,13 @@ graph TD
     Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
+    Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
     TeamCommunicationStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
+    UsageMeterStore-->|Reactivity| UI
 ```
 
 ---
@@ -493,6 +495,7 @@ Incoming events are routed based on their `type`:
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
+| `TOKEN_USAGE_UPDATED`    | `tokenUsageHandler.handleTokenUsageUpdated`        | Applies server-accounted token/cost deltas to `tokenUsageMeterStore`; the frontend does not compute authoritative accounting or pricing. |
 
 ---
 
@@ -554,7 +557,14 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
       - `components/progress/ToolActivityItem.vue` renders the right-side tool activity row, including the textual status chip and short invocation id.
       - `components/progress/CompactionActivityItem.vue` renders the right-side compaction activity row without pretending it is a tool invocation.
     - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual tool activity-status changes should stay in `ToolActivityItem.vue`; compaction row presentation should stay in the compaction row components.
-4.  **Todos (`AgentTodoStore`)**:
+4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
+    - Listens to live `TOKEN_USAGE_UPDATED` events through `tokenUsageHandler.ts` and hydrates reopened/focused runs through ledger-backed GraphQL summary queries.
+    - Maintains separate run and team summaries keyed by server run/team ids, deduplicates events by `usage_event_id` / `idempotency_key`, and only applies server-provided accounting deltas.
+    - Preserves nullable estimated API costs and `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, or `mixed`). Missing price data is rendered as unpriced, never as `$0`.
+    - Powers `TokenUsageHeaderChip.vue` and the right-side `Usage` tab (`TokenUsageMeterPanel.vue`) for run/team totals, focused-member totals, latest model/runtime, event count, and context pressure.
+    - Browser-facing proof should validate the real header chip and Usage tab against server/GraphQL-backed summaries, including estimated and unpriced cost/status, model/runtime, event count, and context-pressure display where present; the frontend must still not calculate prices.
+    - Latest delivery evidence confirms this contract for AutoByteus+LM Studio unpriced usage, Codex App Server estimated usage, and Claude Agent SDK unpriced usage through real local browser screenshots.
+5.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
 
 ### Run-Level Compaction Activity

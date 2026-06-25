@@ -1,156 +1,152 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, afterEach } from "vitest";
 import { randomUUID } from "node:crypto";
-import { SqlTokenUsageRecordRepository } from "../../../../src/token-usage/repositories/sql/token-usage-record-repository.js";
+import { PrismaClient } from "@prisma/client";
+import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { SqlTokenUsageLedgerRepository } from "../../../../src/token-usage/repositories/sql/token-usage-ledger-repository.js";
 
-describe("SqlTokenUsageRecordRepository", () => {
-  const repo = new SqlTokenUsageRecordRepository();
+const prisma = new PrismaClient();
+const repo = new SqlTokenUsageLedgerRepository();
+const createdRunIds = new Set<string>();
 
-  it("creates usage records", async () => {
-    const runId = randomUUID();
-    const record = await repo.createUsageRecord({
-      runId,
-      role: "user",
-      tokenCount: 100,
-      cost: 0.002,
-      llmModel: "sample_model",
-    });
+const buildEvent = (input: {
+  runId?: string;
+  idempotencyKey?: string;
+  scope?: "per_call" | "per_turn" | "cumulative_snapshot";
+  snapshotSeriesKey?: string | null;
+  inputTokens?: number;
+  outputTokens?: number;
+}) => {
+  const runId = input.runId ?? `ledger_repo_${randomUUID()}`;
+  createdRunIds.add(runId);
+  const reportedInput = input.inputTokens ?? 10;
+  const reportedOutput = input.outputTokens ?? 5;
+  const payload = createTokenUsageUpdatedPayload({
+    runId,
+    payload: {
+      idempotency_key: input.idempotencyKey ?? `ledger_repo:${randomUUID()}`,
+      usage_scope: input.scope ?? "per_turn",
+      snapshot_series_key: input.snapshotSeriesKey ?? null,
+      reported_input_tokens: reportedInput,
+      reported_output_tokens: reportedOutput,
+      reported_total_tokens: reportedInput + reportedOutput,
+      accounting_input_tokens: reportedInput,
+      accounting_output_tokens: reportedOutput,
+      accounting_total_tokens: reportedInput + reportedOutput,
+      model_identifier: "gpt-test",
+      runtime_kind: "codex_app_server",
+      ingestion_kind: "codex_thread_token_usage",
+      pricing_status: "missing",
+      api_cost_status: "price_missing",
+    },
+  });
+  return {
+    ...payload,
+    meter_delta_input_tokens: payload.accounting_input_tokens,
+    meter_delta_output_tokens: payload.accounting_output_tokens,
+    meter_delta_total_tokens: payload.accounting_total_tokens,
+  };
+};
 
-    try {
-      expect(record).toBeTruthy();
-      expect(record.runId).toBe(runId);
-      expect(record.role).toBe("user");
-      expect(record.tokenCount).toBe(100);
-      expect(record.cost).toBe(0.002);
-      expect(record.createdAt).toBeInstanceOf(Date);
-      expect(record.usageRecordId).toBeTruthy();
-    } finally {
-      await repo.delete({ where: { id: record.id } });
-    }
+afterEach(async () => {
+  const runIds = Array.from(createdRunIds);
+  createdRunIds.clear();
+  if (runIds.length > 0) {
+    await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+  }
+});
+
+describe("SqlTokenUsageLedgerRepository", () => {
+  it("appends and lists ledger events by run id", async () => {
+    const event = buildEvent({ inputTokens: 100, outputTokens: 50 });
+
+    const created = await repo.appendUsageEvent(event);
+    const records = await repo.listEventsByRunId(event.run_id);
+
+    expect(created.usage_event_id).toBe(event.usage_event_id);
+    expect(records).toHaveLength(1);
+    expect(records[0]?.run_id).toBe(event.run_id);
+    expect(records[0]?.accounting_total_tokens).toBe(150);
+    expect(records[0]?.estimated_api_total_cost).toBeNull();
   });
 
-  it("gets usage records by agent id", async () => {
-    const runId = randomUUID();
-    const record = await repo.createUsageRecord({
-      runId,
-      role: "assistant",
-      tokenCount: 50,
-      cost: 0.001,
-      llmModel: "model_xyz",
-    });
 
-    try {
-      const records = await repo.getUsageRecordsByRunId(runId);
-      expect(records).toHaveLength(1);
-      expect(records[0]?.runId).toBe(runId);
-      expect(records[0]?.role).toBe("assistant");
-      expect(records[0]?.tokenCount).toBe(50);
-      expect(records[0]?.cost).toBe(0.001);
-    } finally {
-      await repo.delete({ where: { id: record.id } });
-    }
+
+  it("round-trips raw usage, cache, reasoning, and pricing status fields", async () => {
+    const event = createTokenUsageUpdatedPayload({
+      runId: `ledger_repo_raw_${randomUUID()}`,
+      payload: {
+        idempotency_key: `ledger_repo_raw:${randomUUID()}`,
+        usage_scope: "per_call",
+        runtime_kind: "autobyteus",
+        ingestion_kind: "autobyteus_llm_phase",
+        model_provider: "OPENAI",
+        model_identifier: "gpt-5.4-mini",
+        reported_input_tokens: 1000,
+        reported_output_tokens: 200,
+        reported_total_tokens: 1200,
+        accounting_input_tokens: 1000,
+        accounting_output_tokens: 200,
+        accounting_total_tokens: 1200,
+        cache_read_input_tokens: 700,
+        reasoning_output_tokens: 50,
+        raw_usage_json: {
+          prompt_tokens: 1000,
+          completion_tokens: 200,
+          prompt_tokens_details: { cached_tokens: 700 },
+          completion_tokens_details: { reasoning_tokens: 50 },
+        },
+        pricing_status: "missing",
+        api_cost_status: "price_missing",
+      },
+    });
+    createdRunIds.add(event.run_id);
+
+    await repo.appendUsageEvent(event);
+    const [record] = await repo.listEventsByRunId(event.run_id);
+
+    expect(record).toEqual(expect.objectContaining({
+      cache_read_input_tokens: 700,
+      reasoning_output_tokens: 50,
+      pricing_status: "missing",
+      api_cost_status: "price_missing",
+      estimated_api_total_cost: null,
+      raw_usage_json: {
+        prompt_tokens: 1000,
+        completion_tokens: 200,
+        prompt_tokens_details: { cached_tokens: 700 },
+        completion_tokens_details: { reasoning_tokens: 50 },
+      },
+    }));
   });
 
-  it("calculates total cost in period", async () => {
-    const now = Date.now();
-    const startDate = new Date(now - 60 * 60 * 1000);
-    const endDate = new Date(now + 60 * 60 * 1000);
+  it("returns the existing event on duplicate idempotency key", async () => {
+    const idempotencyKey = `ledger_repo_duplicate:${randomUUID()}`;
+    const first = buildEvent({ idempotencyKey, inputTokens: 3, outputTokens: 2 });
+    const second = buildEvent({ runId: first.run_id, idempotencyKey, inputTokens: 99, outputTokens: 1 });
 
-    const records = await Promise.all([
-      repo.createUsageRecord({
-        runId: randomUUID(),
-        role: "user",
-        tokenCount: 100,
-        cost: 0.002,
-        llmModel: "model_1",
-      }),
-      repo.createUsageRecord({
-        runId: randomUUID(),
-        role: "assistant",
-        tokenCount: 150,
-        cost: 0.003,
-        llmModel: "model_2",
-      }),
-      repo.createUsageRecord({
-        runId: randomUUID(),
-        role: "user",
-        tokenCount: 200,
-        cost: 0.004,
-        llmModel: "model_3",
-      }),
-    ]);
+    const created = await repo.appendUsageEvent(first);
+    const duplicate = await repo.appendUsageEvent(second);
 
-    try {
-      const totalCost = await repo.getTotalCostInPeriod(startDate, endDate);
-      expect(totalCost).toBeCloseTo(0.009, 6);
-    } finally {
-      await Promise.all(records.map((record) => repo.delete({ where: { id: record.id } })));
-    }
+    expect(duplicate.usage_event_id).toBe(created.usage_event_id);
+    expect(duplicate.accounting_total_tokens).toBe(5);
   });
 
-  it("returns empty records for unknown agent", async () => {
-    const records = await repo.getUsageRecordsByRunId("nonexistent-id");
-    expect(records).toHaveLength(0);
-  });
+  it("finds the latest cumulative snapshot for a run and series", async () => {
+    const runId = `ledger_repo_snapshot_${randomUUID()}`;
+    const snapshotSeriesKey = `series_${randomUUID()}`;
+    const first = buildEvent({ runId, scope: "cumulative_snapshot", snapshotSeriesKey, inputTokens: 10, outputTokens: 5 });
+    const second = buildEvent({ runId, scope: "cumulative_snapshot", snapshotSeriesKey, inputTokens: 20, outputTokens: 10 });
 
-  it("returns zero cost for empty period", async () => {
-    const startDate = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
-    const endDate = new Date(Date.now() - 9 * 24 * 60 * 60 * 1000);
-    const totalCost = await repo.getTotalCostInPeriod(startDate, endDate);
-    expect(totalCost).toBe(0);
-  });
-
-  it("handles multiple records for the same agent", async () => {
-    const runId = randomUUID();
-    const records = await Promise.all([
-      repo.createUsageRecord({
-        runId,
-        role: "user",
-        tokenCount: 100,
-        cost: 0.002,
-        llmModel: "model_x",
-      }),
-      repo.createUsageRecord({
-        runId,
-        role: "assistant",
-        tokenCount: 150,
-        cost: 0.003,
-        llmModel: "model_y",
-      }),
-      repo.createUsageRecord({
-        runId,
-        role: "user",
-        tokenCount: 200,
-        cost: 0.004,
-        llmModel: "model_z",
-      }),
-    ]);
-
-    const baseTime = new Date();
-    await repo.update({
-      where: { id: records[0].id },
-      data: { createdAt: new Date(baseTime.getTime() + 1000) },
-    });
-    await repo.update({
-      where: { id: records[1].id },
-      data: { createdAt: new Date(baseTime.getTime() + 2000) },
-    });
-    await repo.update({
-      where: { id: records[2].id },
-      data: { createdAt: new Date(baseTime.getTime() + 3000) },
+    await repo.appendUsageEvent(first);
+    await repo.appendUsageEvent({
+      ...second,
+      observed_at: new Date(Date.now() + 1_000).toISOString(),
+      previous_snapshot_event_id: first.usage_event_id,
     });
 
-    try {
-      const retrieved = await repo.getUsageRecordsByRunId(runId);
-      expect(retrieved).toHaveLength(3);
-      expect(retrieved.map((record) => record.role)).toEqual([
-        "user",
-        "assistant",
-        "user",
-      ]);
-      const totalCost = retrieved.reduce((sum, record) => sum + record.cost, 0);
-      expect(totalCost).toBeCloseTo(0.009, 6);
-    } finally {
-      await Promise.all(records.map((record) => repo.delete({ where: { id: record.id } })));
-    }
+    const latest = await repo.findLatestCumulativeSnapshot({ runId, snapshotSeriesKey });
+
+    expect(latest?.usage_event_id).toBe(second.usage_event_id);
+    expect(latest?.reported_total_tokens).toBe(30);
   });
 });

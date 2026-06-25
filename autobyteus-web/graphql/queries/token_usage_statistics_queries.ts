@@ -9,6 +9,8 @@ export const GET_TOKEN_USAGE_STATISTICS = gql`
       promptCost
       assistantCost
       totalCost
+      currency
+      apiCostStatus
     }
   }
 `;

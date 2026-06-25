@@ -1,12 +1,10 @@
 import { LLMModel } from './models.js';
 import { LLMConfig } from './utils/llm-config.js';
 import { ExtensionRegistry } from './extensions/extension-registry.js';
-import { TokenUsageTrackingExtension } from './extensions/token-usage-tracking-extension.js';
 import { LLMExtension } from './extensions/base-extension.js';
 import { Message, MessageRole } from './utils/messages.js';
 import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
-import { TokenUsage } from './utils/token-usage.js';
 
 export type LLMInvocationOptions = {
   signal?: AbortSignal | null;
@@ -19,7 +17,6 @@ export abstract class BaseLLM {
   public model: LLMModel;
   public config: LLMConfig;
   protected extensionRegistry: ExtensionRegistry;
-  protected tokenUsageExtension: TokenUsageTrackingExtension;
   public systemMessage: string;
 
   constructor(model: LLMModel, llmConfig: LLMConfig) {
@@ -27,20 +24,10 @@ export abstract class BaseLLM {
     this.model = model;
     this.config = llmConfig;
     this.extensionRegistry = new ExtensionRegistry();
-    
-    // Auto-register token usage
-    this.tokenUsageExtension = new TokenUsageTrackingExtension(this);
-    this.registerExtension(this.tokenUsageExtension);
 
     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_SYSTEM_MESSAGE;
   }
 
-  get latestTokenUsage(): TokenUsage | null {
-    if (!this.tokenUsageExtension.isEnabled) {
-      return null;
-    }
-    return this.tokenUsageExtension.getLatestUsage();
-  }
 
   registerExtension(extension: LLMExtension): LLMExtension {
     this.extensionRegistry.register(extension);

@@ -6,6 +6,50 @@ import { CodexAgentRunBackend } from "../../../../../src/agent-execution/backend
 import { CodexThread } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread.js";
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
+vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
+  TokenPriceConfigProvider: class TokenPriceConfigProvider {
+    async resolvePrice() {
+      return {
+        price_config_id: null,
+        model_provider: null,
+        model_identifier: null,
+        model_value: null,
+        canonical_name: null,
+        currency: null,
+        input_price_per_million: null,
+        output_price_per_million: null,
+        cached_input_read_price_per_million: null,
+        cached_input_write_price_per_million: null,
+        pricing_status: "missing",
+        trusted_dimensions: {
+          input: false,
+          output: false,
+          cached_input_read: false,
+          cached_input_write: false,
+        },
+        missing_reason: "test_unpriced",
+        source: null,
+        effective_from: null,
+        effective_to: null,
+        version: null,
+      };
+    }
+  },
+}));
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 5_000,
+): Promise<void> => {
+  const startedAt = Date.now();
+  while (!predicate()) {
+    if (Date.now() - startedAt > timeoutMs) {
+      throw new Error("Timed out waiting for expected Codex backend event.");
+    }
+    await new Promise<void>((resolve) => setTimeout(resolve, 10));
+  }
+};
+
 const createBackend = (overrides: Record<string, unknown> = {}) => {
   const threadManager = {
     hasThread: vi.fn().mockReturnValue(true),
@@ -162,7 +206,9 @@ describe("CodexAgentRunBackend", () => {
         },
       },
     });
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    await waitForCondition(() =>
+      emittedEvents.some((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED),
+    );
 
     expect(emittedEvents).toEqual(
       expect.arrayContaining([
@@ -171,6 +217,23 @@ describe("CodexAgentRunBackend", () => {
           payload: expect.objectContaining({
             status: "idle",
             can_interrupt: false,
+          }),
+        }),
+        expect.objectContaining({
+          eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+          runId: "run-codex-1",
+          payload: expect.objectContaining({
+            turn_id: "turn-usage-1",
+            runtime_kind: "codex_app_server",
+            ingestion_kind: "codex_thread_token_usage",
+            usage_scope: "per_turn",
+            idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:per_turn:10:5:15",
+            reported_input_tokens: 10,
+            reported_output_tokens: 5,
+            reported_total_tokens: 15,
+            model_provider: "OPENAI",
+            model_identifier: "gpt-5.4-mini",
+            raw_usage_json: { totalTokens: 15, inputTokens: 10, outputTokens: 5 },
           }),
         }),
         expect.objectContaining({
@@ -183,7 +246,7 @@ describe("CodexAgentRunBackend", () => {
     );
   });
 
-  it("does not emit runtime events for late token usage updates after idle", () => {
+  it("emits normalized token usage events for late token usage updates after idle", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-late-usage-1";
     codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
@@ -209,6 +272,21 @@ describe("CodexAgentRunBackend", () => {
       },
     });
 
-    expect(emittedEvents).toHaveLength(0);
+    await waitForCondition(() => emittedEvents.length === 1);
+
+    expect(emittedEvents).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+        runId: "run-codex-1",
+        payload: expect.objectContaining({
+          turn_id: "turn-late-usage-1",
+          usage_scope: "per_turn",
+          idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-late-usage-1:per_turn:11:7:18",
+          reported_input_tokens: 11,
+          reported_output_tokens: 7,
+          reported_total_tokens: 18,
+        }),
+      }),
+    ]);
   });
 });

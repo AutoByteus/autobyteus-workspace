@@ -178,20 +178,26 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
   },
   {
-    name: 'grok-4-1-fast-reasoning',
-    value: 'grok-4-1-fast-reasoning',
+    name: 'grok-4.3',
+    value: 'grok-4.3',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-4-1-fast-reasoning',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 0.5) })
+    canonicalName: 'grok-4.3'
   },
   {
-    name: 'grok-code-fast-1',
-    value: 'grok-code-fast-1',
+    name: 'grok-build-0.1',
+    value: 'grok-build-0.1',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-code-fast-1',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 1.5) })
+    canonicalName: 'grok-build-0.1'
+  },
+  {
+    name: 'claude-opus-4.8',
+    value: 'claude-opus-4-8',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-opus-4.8',
+    configSchema: claudeAdaptiveThinkingSchema
   },
   {
     name: 'claude-opus-4.7',
@@ -203,30 +209,12 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     configSchema: claudeAdaptiveThinkingSchema
   },
   {
-    name: 'claude-opus-4.6',
-    value: 'claude-opus-4-6',
-    provider: LLMProvider.ANTHROPIC,
-    llmClass: AnthropicLLM,
-    canonicalName: 'claude-opus-4.6',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0) }),
-    configSchema: claudeSchema
-  },
-  {
     name: 'claude-sonnet-4.6',
     value: 'claude-sonnet-4-6',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-4.6',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0) }),
-    configSchema: claudeSchema
-  },
-  {
-    name: 'claude-haiku-4.5',
-    value: 'claude-haiku-4-5',
-    provider: LLMProvider.ANTHROPIC,
-    llmClass: AnthropicLLM,
-    canonicalName: 'claude-haiku-4.5',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 5.0) }),
     configSchema: claudeSchema
   },
   {
@@ -295,6 +283,20 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'kimi-k2.7-code'
   },
   {
+    name: 'kimi-k2.7-code-highspeed',
+    value: 'kimi-k2.7-code-highspeed',
+    provider: LLMProvider.KIMI,
+    llmClass: KimiLLM,
+    canonicalName: 'kimi-k2.7-code-highspeed'
+  },
+  {
+    name: 'qwen3.7-max',
+    value: 'qwen3.7-max',
+    provider: LLMProvider.QWEN,
+    llmClass: QwenLLM,
+    canonicalName: 'qwen3.7-max'
+  },
+  {
     name: 'qwen3-max',
     value: 'qwen3-max',
     provider: LLMProvider.QWEN,
@@ -312,6 +314,13 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'glm-5.2',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.4, 4.4) }),
     configSchema: glmSchema
+  },
+  {
+    name: 'minimax-m3',
+    value: 'MiniMax-M3',
+    provider: LLMProvider.MINIMAX,
+    llmClass: MinimaxLLM,
+    canonicalName: 'minimax-m3'
   },
   {
     name: 'minimax-m2.7',

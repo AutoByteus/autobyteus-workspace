@@ -19,6 +19,7 @@ import {
   ToDoListUpdateData,
   ArtifactPersistedData,
   ArtifactUpdatedData,
+  TokenUsageUpdatedData,
   type StreamDataPayload
 } from './stream-event-payloads.js';
 
@@ -43,7 +44,8 @@ export enum StreamEventType {
   INTER_AGENT_MESSAGE = 'inter_agent_message',
   AGENT_TODO_LIST_UPDATE = 'agent_todo_list_updated',
   ARTIFACT_PERSISTED = 'artifact_persisted',
-  ARTIFACT_UPDATED = 'artifact_updated'
+  ARTIFACT_UPDATED = 'artifact_updated',
+  TOKEN_USAGE_UPDATED = 'token_usage_updated'
 }
 
 const STREAM_EVENT_TYPE_TO_PAYLOAD_CLASS: Record<
@@ -70,7 +72,8 @@ const STREAM_EVENT_TYPE_TO_PAYLOAD_CLASS: Record<
   [StreamEventType.INTER_AGENT_MESSAGE]: InterAgentMessageData,
   [StreamEventType.AGENT_TODO_LIST_UPDATE]: ToDoListUpdateData,
   [StreamEventType.ARTIFACT_PERSISTED]: ArtifactPersistedData,
-  [StreamEventType.ARTIFACT_UPDATED]: ArtifactUpdatedData
+  [StreamEventType.ARTIFACT_UPDATED]: ArtifactUpdatedData,
+  [StreamEventType.TOKEN_USAGE_UPDATED]: TokenUsageUpdatedData
 };
 
 const normalizeEventType = (eventType: StreamEventType | string): StreamEventType => {

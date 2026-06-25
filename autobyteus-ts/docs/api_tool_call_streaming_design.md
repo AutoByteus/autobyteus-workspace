@@ -162,14 +162,14 @@ export type ToolCallDelta = {
 **Concern**: Transport container for all chunk data from LLM stream.
 
 ```ts
-import { TokenUsage } from 'src/llm/utils/token-usage';
+import type { LlmTokenUsageObservation } from 'src/llm/utils/llm-token-usage-observation';
 import { ToolCallDelta } from 'src/llm/utils/tool-call-delta';
 
 export class ChunkResponse {
   content: string;
   reasoning: string | null;
   is_complete: boolean;
-  usage: TokenUsage | null;
+  usage: LlmTokenUsageObservation | null;
   image_urls: string[];
   audio_urls: string[];
   video_urls: string[];
@@ -179,7 +179,7 @@ export class ChunkResponse {
     content: string;
     reasoning?: string | null;
     is_complete?: boolean;
-    usage?: TokenUsage | null;
+    usage?: LlmTokenUsageObservation | null;
     image_urls?: string[];
     audio_urls?: string[];
     video_urls?: string[];

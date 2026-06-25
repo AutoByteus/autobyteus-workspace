@@ -3,7 +3,12 @@ import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import {
+  createAnthropicTokenUsageObservation,
+  createAnthropicUsageAccumulator,
+  createAnthropicTokenUsageObservationFromAccumulator,
+  foldAnthropicUsage,
+} from './anthropic-token-usage-normalizer.js';
 import { Message, MessageRole } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
@@ -169,12 +174,7 @@ export class AnthropicLLM extends BaseLLM {
       return new CompleteResponse({
         content: content ?? '',
         reasoning,
-        usage: {
-          prompt_tokens: response.usage.input_tokens,
-          completion_tokens: response.usage.output_tokens,
-          total_tokens: response.usage.input_tokens + response.usage.output_tokens
-        }
-      });
+usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
     } catch (e) {
       throw new Error(`Error in Anthropic API: ${e}`);
     }
@@ -202,7 +202,12 @@ export class AnthropicLLM extends BaseLLM {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
       const stream = await this.client.messages.create(params, requestOptions as any);
       
+      const usageAccumulator = createAnthropicUsageAccumulator();
+
       for await (const event of stream as AsyncIterable<RawMessageStreamEvent>) {
+        if (event.type === 'message_start' && event.message?.usage) {
+          foldAnthropicUsage(usageAccumulator, event.message.usage);
+        }
         if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
           yield new ChunkResponse({ content: event.delta.text });
         }
@@ -224,14 +229,12 @@ export class AnthropicLLM extends BaseLLM {
         }
         
         if (event.type === 'message_delta' && event.usage) {
-           yield new ChunkResponse({
-             content: "", is_complete: true,
-             usage: {
-               prompt_tokens: 0, // Not provided in delta usually? Start event has input tokens?
-               completion_tokens: event.usage.output_tokens,
-               total_tokens: event.usage.output_tokens 
-             }
-           });
+          foldAnthropicUsage(usageAccumulator, event.usage);
+          yield new ChunkResponse({
+            content: "",
+            is_complete: true,
+            usage: createAnthropicTokenUsageObservationFromAccumulator(usageAccumulator, this.model)
+          });
         }
       }
     } catch (e) {

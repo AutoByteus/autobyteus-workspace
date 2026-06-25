@@ -3,7 +3,7 @@ import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import { buildLlmTokenUsageObservation, type LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { Message } from '../utils/messages.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createOllamaPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
@@ -81,6 +81,24 @@ export class OllamaLLM extends BaseLLM {
     };
   }
 
+
+  private toTokenUsage(response: unknown): LlmTokenUsageObservation | null {
+    if (!response || typeof response !== 'object' || Array.isArray(response)) {
+      return null;
+    }
+    const record = response as Record<string, unknown>;
+    return buildLlmTokenUsageObservation({
+      inputTokens: record.prompt_eval_count,
+      outputTokens: record.eval_count,
+      rawUsage: record,
+      model: {
+        modelProvider: this.model.provider,
+        modelIdentifier: this.model.modelIdentifier,
+        modelValue: this.model.value,
+      },
+    });
+  }
+
   protected async _sendMessagesToLLM(
     messages: Message[],
     kwargs: Record<string, unknown>,
@@ -93,13 +111,7 @@ export class OllamaLLM extends BaseLLM {
       const response: any = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, false) as any);
     const messageParts = this.extractMessageParts(response?.message);
 
-    const promptTokens = response?.prompt_eval_count ?? 0;
-    const completionTokens = response?.eval_count ?? 0;
-    const usage: TokenUsage = {
-      prompt_tokens: promptTokens,
-      completion_tokens: completionTokens,
-      total_tokens: promptTokens + completionTokens
-    };
+    const usage = this.toTokenUsage(response);
 
       return new CompleteResponse({
         content: messageParts.content,
@@ -168,15 +180,9 @@ export class OllamaLLM extends BaseLLM {
         }
       }
 
-      let usage: TokenUsage | null = null;
+      let usage: LlmTokenUsageObservation | null = null;
       if (finalResponse) {
-        const promptTokens = finalResponse?.prompt_eval_count ?? 0;
-        const completionTokens = finalResponse?.eval_count ?? 0;
-        usage = {
-          prompt_tokens: promptTokens,
-          completion_tokens: completionTokens,
-          total_tokens: promptTokens + completionTokens
-        };
+        usage = this.toTokenUsage(finalResponse);
       }
 
       yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage });

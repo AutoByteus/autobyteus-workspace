@@ -10,6 +10,7 @@ import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
 import { projectCodexAgentStatus } from "../events/codex-status-projector.js";
 import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
   accepted: false,
@@ -169,10 +170,48 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   private async handleAppServerMessage(event: CodexAppServerMessage): Promise<void> {
     const convertedEvents = this.eventConverter.convert(event);
+    const tokenUsageEvents = this.consumeReadyTokenUsageEvents();
+    const events = [...convertedEvents, ...tokenUsageEvents];
+    if (events.length === 0) {
+      return;
+    }
     await dispatchProcessedAgentRunEvents({
       runContext: this.runContext,
       listeners: this.listeners,
-      events: convertedEvents,
+      events,
     });
+  }
+
+  private consumeReadyTokenUsageEvents(): AgentRunEvent[] {
+    const readyUsages = this.codexThread.getReadyTurnTokenUsages();
+    if (readyUsages.length === 0) {
+      return [];
+    }
+    const events = readyUsages.map(({ turnId, usage }): AgentRunEvent => ({
+      eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+      runId: this.runId,
+      payload: {
+        turn_id: turnId,
+        idempotency_key: usage.idempotency_key,
+        runtime_kind: usage.runtime_kind,
+        ingestion_kind: usage.ingestion_kind,
+        usage_scope: usage.usage_scope,
+        snapshot_series_key: usage.snapshot_series_key,
+        model_provider: usage.model_provider,
+        model_identifier: usage.model_identifier,
+        model_value: usage.model_value,
+        reported_input_tokens: usage.reported_input_tokens,
+        reported_output_tokens: usage.reported_output_tokens,
+        reported_total_tokens: usage.reported_total_tokens,
+        raw_usage_json: usage.raw_usage_json,
+        raw_event_json: usage.raw_event_json,
+        quality_flags: usage.quality_flags,
+      },
+      statusHint: null,
+    }));
+    for (const { turnId } of readyUsages) {
+      this.codexThread.markTurnTokenUsagePersisted(turnId);
+    }
+    return events;
   }
 }

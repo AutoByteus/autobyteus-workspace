@@ -17,6 +17,7 @@
         </div>
         <h4 class="text-base font-medium text-gray-800 truncate" :title="headerTitle">{{ headerTitle }}</h4>
         <AgentStatusDisplay v-if="selectedAgent" :status="selectedAgent.state.currentStatus" />
+        <TokenUsageHeaderChip v-if="selectedAgent" :run-id="selectedAgent.state.runId" />
       </div>
       
       <div class="flex items-center space-x-2">
@@ -61,6 +62,7 @@ import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeade
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import CopyButton from '~/components/common/CopyButton.vue';
 import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
+import TokenUsageHeaderChip from '~/components/workspace/usage/TokenUsageHeaderChip.vue';
 import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
