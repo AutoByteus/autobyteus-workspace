@@ -141,13 +141,13 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "Self improve",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "self improve",
   "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "this run",
   "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "this member's run",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "Self improve {{scope}}",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "self improve {{scope}}",
   "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "Start a visible Skill Self-Evolver for {{scope}}. It may update configured skill packages or make no changes.",
   "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "This run is not eligible for self-improvement.",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "Self improve started. Skills may be updated or no changes may be made.",
+  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "self improve started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;
