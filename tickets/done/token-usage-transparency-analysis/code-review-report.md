@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/requirements.md`
 - Current Review Round: 7
 - Trigger: API/E2E round 4 corrected the user-identified Codex/Claude browser screenshot evidence gap and updated the authoritative coverage investigation/execution reports. No repository-resident durable coverage changed in round 4, but the cumulative package still contains repository-resident durable coverage updates from earlier API/E2E rounds and therefore must pass code review before delivery.
 - Prior Review Round Reviewed: 6
 - Latest Authoritative Round: 7
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No` in round 4 itself; `Yes` remains true for the cumulative package because earlier API/E2E rounds updated durable coverage code after the original implementation review.
 
@@ -34,8 +34,8 @@ Round rules applied: prior findings were rechecked, the same canonical report pa
 
 Round 7 reviewed the latest API/E2E round-4 artifacts and evidence, plus a focused spot-check that the repository-resident durable runtime E2E code introduced in earlier API/E2E rounds remains safe and review-clean:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts`
 - `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361217464.png`
 - `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361241017.png`

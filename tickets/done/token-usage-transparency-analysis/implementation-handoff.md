@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-report.md`
 - Additional upstream context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/analysis-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/latest-origin-personal-refresh-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-round-1-rework-report.md`
-- Code review round 1 report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/analysis-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/latest-origin-personal-refresh-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-round-1-rework-report.md`
+- Code review round 1 report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/code-review-report.md`
 
 ## What Changed
 
@@ -25,7 +25,7 @@ Implemented the reviewed no-legacy token usage transparency/storage design acros
 
 ## Code Review Round 1 Local Fix Update
 
-Addressed all round-1 Local Fix findings from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/code-review-report.md`:
+Addressed all round-1 Local Fix findings from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/code-review-report.md`:
 
 - CR-001: Replaced stale old token usage tests so they no longer import deleted `TokenUsagePersistenceProcessor`, `TokenUsageTrackingExtension`, `TokenUsageStore`, `SqlTokenUsageRecordRepository`, or old `TokenUsageRecord` paths. Startup coverage now asserts the old response processor is not registered; token usage tests cover the new observation/ledger/statistics paths. Deleted the stale generated JS old repository test counterpart.
 - CR-002: Settings token statistics table/store/API now carry server currency/status through the stats projection, preserve nullable aggregate costs, display all-unpriced totals as unpriced, and display mixed/partial estimates explicitly. The remaining chart-specific CR-002 issue was addressed in the round-2 Local Fix update below.
@@ -33,7 +33,7 @@ Addressed all round-1 Local Fix findings from `/Users/normy/autobyteus_org/autob
 
 ## Code Review Round 2 Local Fix Update
 
-Addressed the remaining CR-002 chart finding from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/code-review-report.md`:
+Addressed the remaining CR-002 chart finding from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/code-review-report.md`:
 
 - `TokenUsageStatistics.vue` no longer converts `null`/unpriced `totalCost` values into ordinary zero-valued chart points. Chart data now preserves `null` cost values, chart tooltips reuse the same server-status-aware cost formatter as the table, and an explicit localized note tells users that unpriced rows are omitted from the cost chart.
 - `BarChart.vue` no longer contains token-cost-specific Euro semantics. Dataset label, x-axis label, y-axis label, and tooltip labels are passed by the owning token usage statistics component; the y-axis includes a currency code only when all priced chart rows share one server-provided currency.

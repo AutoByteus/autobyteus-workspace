@@ -8,7 +8,7 @@
 - Base requested by user: latest `origin/personal`.
 - Latest `origin/personal` after final fetch: `5bd521ba83e4a2df852be5e8914915959149137d` (`chore(release): bump workspace release version to 1.3.75`).
 - Worktree `HEAD`: `5bd521ba83e4a2df852be5e8914915959149137d` after fast-forwarding the ticket branch.
-- Prior ticket artifact folder was preserved when the worktree was reset earlier; current authoritative artifacts are under `tickets/token-usage-transparency-analysis/` in this dedicated worktree.
+- Prior ticket artifact folder was preserved when the worktree was reset earlier; current authoritative artifacts are under `tickets/done/token-usage-transparency-analysis/` in this dedicated worktree.
 
 ## Commands / Evidence Log
 
@@ -485,7 +485,7 @@ User explicitly confirmed the design should not keep legacy code or compatibilit
 
 Review artifact consulted:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-report.md`
 
 Review decision was `Fail — Design Impact` with four findings AR-001 through AR-004. I re-inspected the current `origin/personal` worktree and updated requirements/design to resolve these findings before resubmission.
 

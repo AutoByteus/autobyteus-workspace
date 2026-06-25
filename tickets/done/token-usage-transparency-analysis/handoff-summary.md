@@ -2,7 +2,7 @@
 
 ## Current Status
 
-Delivery handoff is prepared and waiting for explicit user verification. Repository finalization, ticket archival, push/merge, release, deployment, and cleanup have not been performed because the delivery workflow requires user confirmation first.
+User verification/finalization approval was received. The ticket has been archived to `tickets/done/token-usage-transparency-analysis/` for repository finalization. Release/versioning is explicitly out of scope for this finalization.
 
 ## Worktree / Branch
 
@@ -66,9 +66,9 @@ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/token-usage-runti
   - Codex App Server screenshot: header `12.7k tok · 0,0096 $ est`, Usage tokens `12.695 / 26 / 12.721`, estimated cost cards, `price status estimated`, model `gpt-5.4-mini`, runtime `codex_app_server`, events `1`, screenshot `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361217464.png`.
   - Claude Agent SDK screenshot: header `22.3k tok · unpriced`, Usage tokens `22.270 / 39 / 22.309`, unpriced cost cards, `price status price_missing`, model `sonnet`, runtime `claude_agent_sdk`, events `1`, screenshot `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361241017.png`.
 
-Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/docs-sync-report.md`
+Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/docs-sync-report.md`
 
-Release notes prepared for a future release/finalization path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/release-notes.md`
+Release notes artifact archived for history at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/release-notes.md`; no release/version bump is being run per user instruction.
 
 ## Verification Evidence
 
@@ -134,25 +134,25 @@ Delivery-run checks after latest-base merge and artifact updates:
 
 ## Cumulative Artifacts
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-spec.md`
-- Analysis report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/analysis-report.md`
-- Latest origin/personal refresh report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/latest-origin-personal-refresh-report.md`
-- Design review round-1 rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-round-1-rework-report.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-spec.md`
+- Analysis report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/analysis-report.md`
+- Latest origin/personal refresh report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/latest-origin-personal-refresh-report.md`
+- Design review round-1 rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-round-1-rework-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/api-e2e-execution-coverage-report.md`
 - Changed real-runtime durable coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts`
 - AutoByteus browser screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/8e23ce-1782359481206.png`
 - Codex browser screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361217464.png`
 - Claude browser screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/7462ad-1782361241017.png`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/docs-sync-report.md`
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/release-deployment-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/token-usage-transparency-analysis/release-notes.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/docs-sync-report.md`
+- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-transparency-analysis/tickets/done/token-usage-transparency-analysis/release-notes.md`
 
 ## User Verification / Finalization Approval
 
-No explicit user verification/finalization approval has been received yet. To proceed beyond this handoff, the user should verify the prepared state and explicitly approve finalization. After that signal, delivery must refresh `origin/personal` again, protect/re-integrate if the target advanced, move the ticket folder to `tickets/done/token-usage-transparency-analysis/`, commit/push the ticket branch, merge to the recorded target branch, and run release/deployment only if explicitly requested or project policy requires it.
+Explicit user verification/finalization approval received: User message on 2026-06-25: "the task is done. lets finalize, no need to release a new version. follow finaiozeation guidelines". The ticket folder is archived at `tickets/done/token-usage-transparency-analysis/`. Finalization will commit/push `codex/token-usage-transparency-analysis`, merge it into `personal`, and push `personal`. Release/deployment/version bump are skipped by explicit user instruction.
