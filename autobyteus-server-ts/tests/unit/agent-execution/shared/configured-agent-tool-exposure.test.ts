@@ -11,7 +11,7 @@ describe("configured-agent-tool-exposure", () => {
       " open_tab ",
       "read_page",
       "generate_image",
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
       "send_message_to",
@@ -25,7 +25,7 @@ describe("configured-agent-tool-exposure", () => {
       "open_tab",
       "read_page",
       "generate_image",
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
       "send_message_to",
@@ -34,7 +34,7 @@ describe("configured-agent-tool-exposure", () => {
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
     ]);
@@ -45,7 +45,7 @@ describe("configured-agent-tool-exposure", () => {
         "open_tab",
         "read_page",
         "generate_image",
-        "delegate_tasks",
+        "delegate_task",
         "submit_task_result",
         "review_task_result",
         "send_message_to",
@@ -62,7 +62,7 @@ describe("configured-agent-tool-exposure", () => {
       "get_task_plan_status",
       "assign_task_to",
       "update_task_status",
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
       ["mark", "task", "completed"].join("_"),
@@ -71,7 +71,7 @@ describe("configured-agent-tool-exposure", () => {
     ]);
 
     expect(exposure.enabledTaskDelegationToolNames).toEqual([
-      "delegate_tasks",
+      "delegate_task",
       "submit_task_result",
       "review_task_result",
     ]);

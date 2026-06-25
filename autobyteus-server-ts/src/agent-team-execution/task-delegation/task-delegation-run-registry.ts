@@ -1,5 +1,8 @@
 import type { TeamRun } from "../domain/team-run.js";
-import { TaskDelegationService } from "./task-delegation-service.js";
+import {
+  TaskDelegationService,
+  type TaskDelegationServiceOptions,
+} from "./task-delegation-service.js";
 
 type RegistryEntry = {
   run: TeamRun;
@@ -8,6 +11,8 @@ type RegistryEntry = {
 
 export class TaskDelegationRunRegistry {
   private readonly entries = new Map<string, RegistryEntry>();
+
+  constructor(private readonly serviceOptions: TaskDelegationServiceOptions = {}) {}
 
   getOrCreate(run: TeamRun): TaskDelegationService {
     const existing = this.entries.get(run.runId) ?? null;
@@ -18,7 +23,7 @@ export class TaskDelegationRunRegistry {
       existing.service.dispose();
       this.entries.delete(run.runId);
     }
-    const service = new TaskDelegationService(run);
+    const service = new TaskDelegationService(run, this.serviceOptions);
     this.entries.set(run.runId, { run, service });
     return service;
   }

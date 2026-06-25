@@ -1,21 +1,21 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type {
-  DelegateTasksInput,
-  DelegateTasksResult,
+  DelegateTaskInput,
+  DelegateTaskResult,
   ReviewTaskResultInput,
   ReviewTaskResultResult,
   SubmitTaskResultInput,
   SubmitTaskResultResult,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import {
-  DELEGATE_TASKS_TOOL_NAME,
+  DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
   SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolContext,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 import {
-  parseDelegateTasksInput,
+  parseDelegateTaskInput,
   parseReviewTaskResultInput,
   parseSubmitTaskResultInput,
 } from "./task-delegation-tool-input-parsers.js";
@@ -23,11 +23,11 @@ import { buildTaskDelegationToolParameterSchema } from "./task-delegation-tool-p
 import type { TaskDelegationToolService } from "./task-delegation-tool-service.js";
 
 type TaskDelegationToolParsedInput =
-  | DelegateTasksInput
+  | DelegateTaskInput
   | SubmitTaskResultInput
   | ReviewTaskResultInput;
 type TaskDelegationToolExecutionResult =
-  | DelegateTasksResult
+  | DelegateTaskResult
   | SubmitTaskResultResult
   | ReviewTaskResultResult;
 
@@ -45,18 +45,18 @@ export type TaskDelegationToolManifestEntry = {
 
 export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = [
   {
-    name: DELEGATE_TASKS_TOOL_NAME,
+    name: DELEGATE_TASK_TOOL_NAME,
     description:
-      "Delegate one or more ready-to-run task work packets to exact logical team members. The framework derives you as delegator from tool context and starts one concrete task-agent per task. Task-agents submit reviewable results with submit_task_result; delegators accept or request revision with review_task_result.",
-    parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASKS_TOOL_NAME),
-    parseInput: parseDelegateTasksInput,
+      "Delegate one ready-to-run task to an exact logical team member. Provide member_name, a complete task description, and optional reference_files. The framework starts one task-agent for this task; the task-agent later submits its result with submit_task_result.",
+    parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
+    parseInput: parseDelegateTaskInput,
     execute: (service, context, input) =>
-      service.delegateTasks(context, input as DelegateTasksInput),
+      service.delegateTask(context, input as DelegateTaskInput),
   },
   {
     name: SUBMIT_TASK_RESULT_TOOL_NAME,
     description:
-      "Submit a reviewable result for the delegated task bound to the current task-agent context. This tool is task-agent-only and selector-free: do not pass task_id, member_name, task_name, status, or generic completion fields. The system records the submission, moves the task to awaiting_review, and notifies the original delegator.",
+      "Submit a reviewable result for the delegated task bound to the current task-agent context. Provide a non-empty message and optional reference_files. The system records the submission, moves the task to awaiting_review, and notifies the original delegator.",
     parameterSchema: buildTaskDelegationToolParameterSchema(SUBMIT_TASK_RESULT_TOOL_NAME),
     parseInput: parseSubmitTaskResultInput,
     execute: (service, context, input) =>

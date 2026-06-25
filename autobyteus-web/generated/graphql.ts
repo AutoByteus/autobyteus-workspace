@@ -68,8 +68,10 @@ export enum AgentMemoryAttribution {
 export type AgentMemoryView = {
   __typename?: 'AgentMemoryView';
   episodic?: Maybe<Array<Scalars['JSON']['output']>>;
+  rawTraceFiles?: Maybe<Array<RawTraceFileSummary>>;
   rawTraces?: Maybe<Array<MemoryTraceEvent>>;
   runId: Scalars['String']['output'];
+  selectedRawTraceFileName?: Maybe<Scalars['String']['output']>;
   semantic?: Maybe<Array<Scalars['JSON']['output']>>;
   workingContext?: Maybe<Array<MemoryMessage>>;
 };
@@ -452,6 +454,11 @@ export type CreateAgentTeamRunResult = {
   teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
+export type CreateMemoryHubCredentialInput = {
+  boundSourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateSkillInput = {
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -823,6 +830,84 @@ export type MemoryAvailabilitySummary = {
   latestMemoryAt?: Maybe<Scalars['String']['output']>;
 };
 
+export type MemoryExplorerSourceInput = {
+  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  type: MemoryExplorerSourceType;
+};
+
+export type MemoryExplorerSourceOption = {
+  __typename?: 'MemoryExplorerSourceOption';
+  displayName?: Maybe<Scalars['String']['output']>;
+  key: Scalars['String']['output'];
+  label: Scalars['String']['output'];
+  lastImportedAt?: Maybe<Scalars['String']['output']>;
+  lastSyncStatus?: Maybe<Scalars['String']['output']>;
+  readOnly: Scalars['Boolean']['output'];
+  sourceNodeId?: Maybe<Scalars['String']['output']>;
+  type: MemoryExplorerSourceType;
+};
+
+export enum MemoryExplorerSourceType {
+  Imported = 'IMPORTED',
+  Local = 'LOCAL'
+}
+
+export type MemoryHubConnectionInfoGql = {
+  __typename?: 'MemoryHubConnectionInfoGql';
+  advertisedHubBaseUrl?: Maybe<Scalars['String']['output']>;
+  credentials: Array<MemoryHubCredentialSummaryGql>;
+  healthEndpointUrl?: Maybe<Scalars['String']['output']>;
+  hubEnabled: Scalars['Boolean']['output'];
+  ingestEndpointUrl?: Maybe<Scalars['String']['output']>;
+  secureTransportWarning?: Maybe<Scalars['String']['output']>;
+};
+
+export enum MemoryHubConnectionTestMode {
+  Draft = 'DRAFT',
+  Saved = 'SAVED'
+}
+
+export type MemoryHubConnectionTestResultGql = {
+  __typename?: 'MemoryHubConnectionTestResultGql';
+  authenticated: Scalars['Boolean']['output'];
+  hubEnabled: Scalars['Boolean']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  sourceNodeId: Scalars['String']['output'];
+};
+
+export type MemoryHubCredentialMutationResultGql = {
+  __typename?: 'MemoryHubCredentialMutationResultGql';
+  credential: MemoryHubCredentialSummaryGql;
+  plaintextToken?: Maybe<Scalars['String']['output']>;
+};
+
+export type MemoryHubCredentialSummaryGql = {
+  __typename?: 'MemoryHubCredentialSummaryGql';
+  boundSourceNodeId?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  credentialId: Scalars['String']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  lastUsedAt?: Maybe<Scalars['String']['output']>;
+  revokedAt?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+};
+
+export type MemoryImportSummaryGql = {
+  __typename?: 'MemoryImportSummaryGql';
+  displayName?: Maybe<Scalars['String']['output']>;
+  fileCount: Scalars['Int']['output'];
+  firstImportedAt?: Maybe<Scalars['String']['output']>;
+  lastCommittedAt?: Maybe<Scalars['String']['output']>;
+  lastCommittedBatchId?: Maybe<Scalars['String']['output']>;
+  lastError?: Maybe<Scalars['String']['output']>;
+  lastImportedAt?: Maybe<Scalars['String']['output']>;
+  lastKnownEndpoint?: Maybe<Scalars['String']['output']>;
+  lastSyncStatus?: Maybe<Scalars['String']['output']>;
+  sourceNodeId: Scalars['String']['output'];
+  totalBytes: Scalars['Float']['output'];
+};
+
 export type MemoryMessage = {
   __typename?: 'MemoryMessage';
   content?: Maybe<Scalars['String']['output']>;
@@ -830,6 +915,57 @@ export type MemoryMessage = {
   role: Scalars['String']['output'];
   toolPayload?: Maybe<Scalars['JSON']['output']>;
   ts?: Maybe<Scalars['Float']['output']>;
+};
+
+export type MemorySyncHubConfigGql = {
+  __typename?: 'MemorySyncHubConfigGql';
+  advertisedHubBaseUrl?: Maybe<Scalars['String']['output']>;
+  enabled: Scalars['Boolean']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+};
+
+export type MemorySyncRunResultGql = {
+  __typename?: 'MemorySyncRunResultGql';
+  changedFiles: Scalars['Int']['output'];
+  committedBatches: Scalars['Int']['output'];
+  deferredFiles: Scalars['Int']['output'];
+  duplicateBatches: Scalars['Int']['output'];
+  finishedAt: Scalars['String']['output'];
+  scannedFiles: Scalars['Int']['output'];
+  startedAt: Scalars['String']['output'];
+  unchangedFiles: Scalars['Int']['output'];
+};
+
+export type MemorySyncSourceConfigGql = {
+  __typename?: 'MemorySyncSourceConfigGql';
+  backgroundEnabled: Scalars['Boolean']['output'];
+  batchSize: Scalars['Int']['output'];
+  displayName?: Maybe<Scalars['String']['output']>;
+  enabled: Scalars['Boolean']['output'];
+  hubBaseUrl?: Maybe<Scalars['String']['output']>;
+  hubTokenConfigured: Scalars['Boolean']['output'];
+  hubTokenPreview?: Maybe<Scalars['String']['output']>;
+  intervalMs: Scalars['Int']['output'];
+  sourceNodeId?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+};
+
+export type MemorySyncSourceStateGql = {
+  __typename?: 'MemorySyncSourceStateGql';
+  jobState: Scalars['String']['output'];
+  lastError?: Maybe<Scalars['String']['output']>;
+  lastSuccessfulSyncAt?: Maybe<Scalars['String']['output']>;
+  trackedFileCount: Scalars['Int']['output'];
+};
+
+export type MemorySyncStatusGql = {
+  __typename?: 'MemorySyncStatusGql';
+  connectionInfo: MemoryHubConnectionInfoGql;
+  hub: MemorySyncHubConfigGql;
+  imports: Array<MemoryImportSummaryGql>;
+  oneTimePlaintextToken?: Maybe<Scalars['String']['output']>;
+  source: MemorySyncSourceConfigGql;
+  sourceState?: Maybe<MemorySyncSourceStateGql>;
 };
 
 export type MemoryTraceEvent = {
@@ -882,6 +1018,7 @@ export type Mutation = {
   createAgentTeamRun: CreateAgentTeamRunResult;
   createCustomLlmProvider: LlmProviderObject;
   createFileOrFolder: Scalars['String']['output'];
+  createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   createSkill: Skill;
   createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
@@ -908,6 +1045,7 @@ export type Mutation = {
   probeCustomLlmProvider: CustomLlmProviderProbeResultObject;
   refreshAgentDefinitionCatalog: Scalars['Boolean']['output'];
   refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
+  regenerateMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   reloadAgentPackage: Array<AgentPackage>;
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
@@ -919,6 +1057,7 @@ export type Mutation = {
   renameFileOrFolder: Scalars['String']['output'];
   restoreAgentRun: RestoreAgentRunResult;
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
+  revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   setApplicationsEnabled: ApplicationsCapability;
@@ -927,13 +1066,17 @@ export type Mutation = {
   setSearchConfig: Scalars['String']['output'];
   setSelfEvolutionEnabled: SelfEvolutionCapability;
   startAgentRunSelfEvolution: GraphqlSelfEvolutionStartResult;
+  startMemorySync: MemorySyncRunResultGql;
   startTeamMemberSelfEvolution: GraphqlSelfEvolutionStartResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
+  testMemoryHubConnection: MemoryHubConnectionTestResultGql;
   updateAgentDefinition: AgentDefinition;
   updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
+  updateMemoryHubConfig: MemorySyncStatusGql;
+  updateMemorySyncSourceConfig: MemorySyncStatusGql;
   updateServerSetting: Scalars['String']['output'];
   updateSkill: Skill;
   uploadSkillFile: Scalars['Boolean']['output'];
@@ -1007,6 +1150,11 @@ export type MutationCreateFileOrFolderArgs = {
   isFile: Scalars['Boolean']['input'];
   path: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type MutationCreateMemoryHubSourceCredentialArgs = {
+  input?: InputMaybe<CreateMemoryHubCredentialInput>;
 };
 
 
@@ -1125,6 +1273,11 @@ export type MutationProbeCustomLlmProviderArgs = {
 };
 
 
+export type MutationRegenerateMemoryHubSourceCredentialArgs = {
+  credentialId: Scalars['String']['input'];
+};
+
+
 export type MutationReloadAgentPackageArgs = {
   packageId: Scalars['String']['input'];
 };
@@ -1175,6 +1328,11 @@ export type MutationRestoreAgentRunArgs = {
 
 export type MutationRestoreAgentTeamRunArgs = {
   teamRunId: Scalars['String']['input'];
+};
+
+
+export type MutationRevokeMemoryHubSourceCredentialArgs = {
+  credentialId: Scalars['String']['input'];
 };
 
 
@@ -1244,6 +1402,11 @@ export type MutationTerminateAgentTeamRunArgs = {
 };
 
 
+export type MutationTestMemoryHubConnectionArgs = {
+  input: TestMemoryHubConnectionInput;
+};
+
+
 export type MutationUpdateAgentDefinitionArgs = {
   input: UpdateAgentDefinitionInput;
 };
@@ -1256,6 +1419,16 @@ export type MutationUpdateAgentPackageArgs = {
 
 export type MutationUpdateAgentTeamDefinitionArgs = {
   input: UpdateAgentTeamDefinitionInput;
+};
+
+
+export type MutationUpdateMemoryHubConfigArgs = {
+  input: UpdateMemoryHubConfigInput;
+};
+
+
+export type MutationUpdateMemorySyncSourceConfigArgs = {
+  input: UpdateMemorySyncSourceConfigInput;
 };
 
 
@@ -1337,6 +1510,8 @@ export type Query = {
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getGeminiSetupConfig: GeminiSetupConfig;
   getLlmProviderApiKeyConfigured: Scalars['Boolean']['output'];
+  getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
+  getMemorySyncStatus: MemorySyncStatusGql;
   getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
@@ -1353,6 +1528,9 @@ export type Query = {
   listAgentTeamsWithMemory: AgentTeamWithMemoryPage;
   listAgentsWithMemory: AgentWithMemoryPage;
   listApplications: Array<Application>;
+  listMemoryExplorerSources: Array<MemoryExplorerSourceOption>;
+  listMemoryHubUrlCandidates: Array<ServerAddressCandidateGql>;
+  listMemoryImports: Array<MemoryImportSummaryGql>;
   listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
   managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
   managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
@@ -1427,11 +1605,14 @@ export type QueryFolderChildrenArgs = {
 export type QueryGetAgentRunMemoryViewArgs = {
   includeArchive?: Scalars['Boolean']['input'];
   includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraceFiles?: Scalars['Boolean']['input'];
   includeRawTraces?: Scalars['Boolean']['input'];
   includeSemantic?: Scalars['Boolean']['input'];
   includeWorkingContext?: Scalars['Boolean']['input'];
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
   runId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -1473,11 +1654,14 @@ export type QueryGetTeamCommunicationMessagesArgs = {
 export type QueryGetTeamMemberRunMemoryViewArgs = {
   includeArchive?: Scalars['Boolean']['input'];
   includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraceFiles?: Scalars['Boolean']['input'];
   includeRawTraces?: Scalars['Boolean']['input'];
   includeSemantic?: Scalars['Boolean']['input'];
   includeWorkingContext?: Scalars['Boolean']['input'];
   memberRunId: Scalars['String']['input'];
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   teamRunId: Scalars['String']['input'];
 };
 
@@ -1504,6 +1688,7 @@ export type QueryListAgentRunsWithMemoryArgs = {
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   selector: AgentWithMemorySelectorInput;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -1511,6 +1696,7 @@ export type QueryListAgentTeamRunsWithMemoryArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   teamDefinitionId: Scalars['String']['input'];
 };
 
@@ -1519,6 +1705,7 @@ export type QueryListAgentTeamsWithMemoryArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -1526,6 +1713,13 @@ export type QueryListAgentsWithMemoryArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+};
+
+
+export type QueryListMemoryHubUrlCandidatesArgs = {
+  currentNodeBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  manualBaseUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1593,6 +1787,16 @@ export type QueryUsageStatisticsInPeriodArgs = {
 
 export type QueryWorkspaceMetadataArgs = {
   rootPath: Scalars['String']['input'];
+};
+
+export type RawTraceFileSummary = {
+  __typename?: 'RawTraceFileSummary';
+  fileName: Scalars['String']['output'];
+  firstTimestamp?: Maybe<Scalars['Float']['output']>;
+  kind: Scalars['String']['output'];
+  lastTimestamp?: Maybe<Scalars['Float']['output']>;
+  recordCount: Scalars['Int']['output'];
+  segmentIndex?: Maybe<Scalars['Int']['output']>;
 };
 
 export type ReloadToolSchemaResult = {
@@ -1719,6 +1923,15 @@ export type SelfEvolutionCapability = {
   __typename?: 'SelfEvolutionCapability';
   enabled: Scalars['Boolean']['output'];
   settingKey: Scalars['String']['output'];
+  source: Scalars['String']['output'];
+};
+
+export type ServerAddressCandidateGql = {
+  __typename?: 'ServerAddressCandidateGql';
+  baseUrl: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  label: Scalars['String']['output'];
   source: Scalars['String']['output'];
 };
 
@@ -1930,6 +2143,13 @@ export type TerminateAgentTeamRunResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type TestMemoryHubConnectionInput = {
+  hubBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  mode: MemoryHubConnectionTestMode;
+  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ToolArgumentSchema = {
   __typename?: 'ToolArgumentSchema';
   parameters: Array<ToolParameterDefinition>;
@@ -2005,6 +2225,22 @@ export type UpdateAgentTeamDefinitionInput = {
   instructions?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nodes?: InputMaybe<Array<TeamMemberInput>>;
+};
+
+export type UpdateMemoryHubConfigInput = {
+  advertisedHubBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateMemorySyncSourceConfigInput = {
+  backgroundEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  batchSize?: InputMaybe<Scalars['Int']['input']>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  hubBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  hubToken?: InputMaybe<Scalars['String']['input']>;
+  intervalMs?: InputMaybe<Scalars['Int']['input']>;
+  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {
@@ -2440,6 +2676,55 @@ export type ImportMcpServerConfigsMutationVariables = Exact<{
 
 export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number } };
 
+export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
+
+export type UpdateMemoryHubConfigMutationVariables = Exact<{
+  input: UpdateMemoryHubConfigInput;
+}>;
+
+
+export type UpdateMemoryHubConfigMutation = { __typename?: 'Mutation', updateMemoryHubConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+
+export type UpdateMemorySyncSourceConfigMutationVariables = Exact<{
+  input: UpdateMemorySyncSourceConfigInput;
+}>;
+
+
+export type UpdateMemorySyncSourceConfigMutation = { __typename?: 'Mutation', updateMemorySyncSourceConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+
+export type CreateMemoryHubSourceCredentialMutationVariables = Exact<{
+  input?: InputMaybe<CreateMemoryHubCredentialInput>;
+}>;
+
+
+export type CreateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', createMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
+
+export type RegenerateMemoryHubSourceCredentialMutationVariables = Exact<{
+  credentialId: Scalars['String']['input'];
+}>;
+
+
+export type RegenerateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', regenerateMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
+
+export type RevokeMemoryHubSourceCredentialMutationVariables = Exact<{
+  credentialId: Scalars['String']['input'];
+}>;
+
+
+export type RevokeMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', revokeMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } };
+
+export type TestMemoryHubConnectionMutationVariables = Exact<{
+  input: TestMemoryHubConnectionInput;
+}>;
+
+
+export type TestMemoryHubConnectionMutation = { __typename?: 'Mutation', testMemoryHubConnection: { __typename?: 'MemoryHubConnectionTestResultGql', ok: boolean, hubEnabled: boolean, sourceNodeId: string, authenticated: boolean, message?: string | null } };
+
+export type StartMemorySyncMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StartMemorySyncMutation = { __typename?: 'Mutation', startMemorySync: { __typename?: 'MemorySyncRunResultGql', startedAt: string, finishedAt: string, scannedFiles: number, changedFiles: number, unchangedFiles: number, deferredFiles: number, committedBatches: number, duplicateBatches: number } };
+
 export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -2665,7 +2950,13 @@ export type PreviewMcpServerToolsQueryVariables = Exact<{
 
 export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServerTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string }> };
 
+export type ListMemoryExplorerSourcesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListMemoryExplorerSourcesQuery = { __typename?: 'Query', listMemoryExplorerSources: Array<{ __typename?: 'MemoryExplorerSourceOption', key: string, type: MemoryExplorerSourceType, label: string, sourceNodeId?: string | null, displayName?: string | null, readOnly: boolean, lastImportedAt?: string | null, lastSyncStatus?: string | null }> };
+
 export type ListAgentsWithMemoryQueryVariables = Exact<{
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -2676,6 +2967,7 @@ export type ListAgentsWithMemoryQuery = { __typename?: 'Query', listAgentsWithMe
 
 export type ListAgentRunsWithMemoryQueryVariables = Exact<{
   selector: AgentWithMemorySelectorInput;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -2685,6 +2977,7 @@ export type ListAgentRunsWithMemoryQueryVariables = Exact<{
 export type ListAgentRunsWithMemoryQuery = { __typename?: 'Query', listAgentRunsWithMemory: { __typename?: 'AgentRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentRunMemorySummary', runId: string, agentDefinitionId?: string | null, agentName?: string | null, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
 
 export type ListAgentTeamsWithMemoryQueryVariables = Exact<{
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -2695,6 +2988,7 @@ export type ListAgentTeamsWithMemoryQuery = { __typename?: 'Query', listAgentTea
 
 export type ListAgentTeamRunsWithMemoryQueryVariables = Exact<{
   teamDefinitionId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -2703,32 +2997,56 @@ export type ListAgentTeamRunsWithMemoryQueryVariables = Exact<{
 
 export type ListAgentTeamRunsWithMemoryQuery = { __typename?: 'Query', listAgentTeamRunsWithMemory: { __typename?: 'AgentTeamRunMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamRunMemorySummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, summary?: string | null, workspaceRootPath?: string | null, createdAt?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }, memberTargets: Array<{ __typename?: 'TeamMemberMemoryTargetSummary', memberRouteKey: string, memberName: string, memberRunId: string, agentDefinitionId?: string | null, lastUpdatedAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> }> } };
 
+export type GetMemorySyncStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMemorySyncStatusQuery = { __typename?: 'Query', getMemorySyncStatus: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+
+export type ListMemoryHubUrlCandidatesQueryVariables = Exact<{
+  currentNodeBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  manualBaseUrl?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ListMemoryHubUrlCandidatesQuery = { __typename?: 'Query', listMemoryHubUrlCandidates: Array<{ __typename?: 'ServerAddressCandidateGql', id: string, kind: string, label: string, baseUrl: string, source: string }> };
+
+export type GetMemoryHubConnectionInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMemoryHubConnectionInfoQuery = { __typename?: 'Query', getMemoryHubConnectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> } };
+
 export type GetAgentRunMemoryViewQueryVariables = Exact<{
   runId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
   includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
   includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
   includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraceFiles?: InputMaybe<Scalars['Boolean']['input']>;
   includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAgentRunMemoryViewQuery = { __typename?: 'Query', getAgentRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
+export type GetAgentRunMemoryViewQuery = { __typename?: 'Query', getAgentRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
   memberRunId: Scalars['String']['input'];
+  source?: InputMaybe<MemoryExplorerSourceInput>;
   includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
   includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
   includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
   includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraceFiles?: InputMaybe<Scalars['Boolean']['input']>;
   includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
+export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -3081,6 +3399,63 @@ export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
     refType
     refScope
   }
+}
+    `;
+export const MemorySyncStatusFieldsFragmentDoc = gql`
+    fragment MemorySyncStatusFields on MemorySyncStatusGql {
+  hub {
+    enabled
+    advertisedHubBaseUrl
+    updatedAt
+  }
+  source {
+    enabled
+    sourceNodeId
+    displayName
+    hubBaseUrl
+    hubTokenConfigured
+    hubTokenPreview
+    backgroundEnabled
+    intervalMs
+    batchSize
+    updatedAt
+  }
+  connectionInfo {
+    hubEnabled
+    advertisedHubBaseUrl
+    ingestEndpointUrl
+    healthEndpointUrl
+    secureTransportWarning
+    credentials {
+      credentialId
+      label
+      boundSourceNodeId
+      createdAt
+      lastUsedAt
+      revokedAt
+      status
+    }
+  }
+  sourceState {
+    jobState
+    lastSuccessfulSyncAt
+    lastError
+    trackedFileCount
+  }
+  imports {
+    sourceNodeId
+    displayName
+    lastKnownEndpoint
+    firstImportedAt
+    lastImportedAt
+    lastSyncStatus
+    lastError
+    fileCount
+    totalBytes
+    lastCommittedBatchId
+    lastCommittedAt
+  }
+  oneTimePlaintextToken
 }
     `;
 export const ApplicationsCapabilityFieldsFragmentDoc = gql`
@@ -4667,6 +5042,240 @@ export function useImportMcpServerConfigsMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>(ImportMcpServerConfigsDocument, options);
 }
 export type ImportMcpServerConfigsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>;
+export const UpdateMemoryHubConfigDocument = gql`
+    mutation UpdateMemoryHubConfig($input: UpdateMemoryHubConfigInput!) {
+  updateMemoryHubConfig(input: $input) {
+    ...MemorySyncStatusFields
+  }
+}
+    ${MemorySyncStatusFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateMemoryHubConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemoryHubConfigMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemoryHubConfigMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateMemoryHubConfigMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMemoryHubConfigMutation(options: VueApolloComposable.UseMutationOptions<UpdateMemoryHubConfigMutation, UpdateMemoryHubConfigMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateMemoryHubConfigMutation, UpdateMemoryHubConfigMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateMemoryHubConfigMutation, UpdateMemoryHubConfigMutationVariables>(UpdateMemoryHubConfigDocument, options);
+}
+export type UpdateMemoryHubConfigMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateMemoryHubConfigMutation, UpdateMemoryHubConfigMutationVariables>;
+export const UpdateMemorySyncSourceConfigDocument = gql`
+    mutation UpdateMemorySyncSourceConfig($input: UpdateMemorySyncSourceConfigInput!) {
+  updateMemorySyncSourceConfig(input: $input) {
+    ...MemorySyncStatusFields
+  }
+}
+    ${MemorySyncStatusFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateMemorySyncSourceConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemorySyncSourceConfigMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemorySyncSourceConfigMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateMemorySyncSourceConfigMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMemorySyncSourceConfigMutation(options: VueApolloComposable.UseMutationOptions<UpdateMemorySyncSourceConfigMutation, UpdateMemorySyncSourceConfigMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateMemorySyncSourceConfigMutation, UpdateMemorySyncSourceConfigMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateMemorySyncSourceConfigMutation, UpdateMemorySyncSourceConfigMutationVariables>(UpdateMemorySyncSourceConfigDocument, options);
+}
+export type UpdateMemorySyncSourceConfigMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateMemorySyncSourceConfigMutation, UpdateMemorySyncSourceConfigMutationVariables>;
+export const CreateMemoryHubSourceCredentialDocument = gql`
+    mutation CreateMemoryHubSourceCredential($input: CreateMemoryHubCredentialInput) {
+  createMemoryHubSourceCredential(input: $input) {
+    plaintextToken
+    credential {
+      credentialId
+      label
+      boundSourceNodeId
+      createdAt
+      lastUsedAt
+      revokedAt
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useCreateMemoryHubSourceCredentialMutation__
+ *
+ * To run a mutation, you first call `useCreateMemoryHubSourceCredentialMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMemoryHubSourceCredentialMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateMemoryHubSourceCredentialMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMemoryHubSourceCredentialMutation(options: VueApolloComposable.UseMutationOptions<CreateMemoryHubSourceCredentialMutation, CreateMemoryHubSourceCredentialMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateMemoryHubSourceCredentialMutation, CreateMemoryHubSourceCredentialMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateMemoryHubSourceCredentialMutation, CreateMemoryHubSourceCredentialMutationVariables>(CreateMemoryHubSourceCredentialDocument, options);
+}
+export type CreateMemoryHubSourceCredentialMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateMemoryHubSourceCredentialMutation, CreateMemoryHubSourceCredentialMutationVariables>;
+export const RegenerateMemoryHubSourceCredentialDocument = gql`
+    mutation RegenerateMemoryHubSourceCredential($credentialId: String!) {
+  regenerateMemoryHubSourceCredential(credentialId: $credentialId) {
+    plaintextToken
+    credential {
+      credentialId
+      label
+      boundSourceNodeId
+      createdAt
+      lastUsedAt
+      revokedAt
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useRegenerateMemoryHubSourceCredentialMutation__
+ *
+ * To run a mutation, you first call `useRegenerateMemoryHubSourceCredentialMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRegenerateMemoryHubSourceCredentialMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRegenerateMemoryHubSourceCredentialMutation({
+ *   variables: {
+ *     credentialId: // value for 'credentialId'
+ *   },
+ * });
+ */
+export function useRegenerateMemoryHubSourceCredentialMutation(options: VueApolloComposable.UseMutationOptions<RegenerateMemoryHubSourceCredentialMutation, RegenerateMemoryHubSourceCredentialMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RegenerateMemoryHubSourceCredentialMutation, RegenerateMemoryHubSourceCredentialMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RegenerateMemoryHubSourceCredentialMutation, RegenerateMemoryHubSourceCredentialMutationVariables>(RegenerateMemoryHubSourceCredentialDocument, options);
+}
+export type RegenerateMemoryHubSourceCredentialMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RegenerateMemoryHubSourceCredentialMutation, RegenerateMemoryHubSourceCredentialMutationVariables>;
+export const RevokeMemoryHubSourceCredentialDocument = gql`
+    mutation RevokeMemoryHubSourceCredential($credentialId: String!) {
+  revokeMemoryHubSourceCredential(credentialId: $credentialId) {
+    credentialId
+    label
+    boundSourceNodeId
+    createdAt
+    lastUsedAt
+    revokedAt
+    status
+  }
+}
+    `;
+
+/**
+ * __useRevokeMemoryHubSourceCredentialMutation__
+ *
+ * To run a mutation, you first call `useRevokeMemoryHubSourceCredentialMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeMemoryHubSourceCredentialMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRevokeMemoryHubSourceCredentialMutation({
+ *   variables: {
+ *     credentialId: // value for 'credentialId'
+ *   },
+ * });
+ */
+export function useRevokeMemoryHubSourceCredentialMutation(options: VueApolloComposable.UseMutationOptions<RevokeMemoryHubSourceCredentialMutation, RevokeMemoryHubSourceCredentialMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RevokeMemoryHubSourceCredentialMutation, RevokeMemoryHubSourceCredentialMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RevokeMemoryHubSourceCredentialMutation, RevokeMemoryHubSourceCredentialMutationVariables>(RevokeMemoryHubSourceCredentialDocument, options);
+}
+export type RevokeMemoryHubSourceCredentialMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RevokeMemoryHubSourceCredentialMutation, RevokeMemoryHubSourceCredentialMutationVariables>;
+export const TestMemoryHubConnectionDocument = gql`
+    mutation TestMemoryHubConnection($input: TestMemoryHubConnectionInput!) {
+  testMemoryHubConnection(input: $input) {
+    ok
+    hubEnabled
+    sourceNodeId
+    authenticated
+    message
+  }
+}
+    `;
+
+/**
+ * __useTestMemoryHubConnectionMutation__
+ *
+ * To run a mutation, you first call `useTestMemoryHubConnectionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useTestMemoryHubConnectionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useTestMemoryHubConnectionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useTestMemoryHubConnectionMutation(options: VueApolloComposable.UseMutationOptions<TestMemoryHubConnectionMutation, TestMemoryHubConnectionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TestMemoryHubConnectionMutation, TestMemoryHubConnectionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<TestMemoryHubConnectionMutation, TestMemoryHubConnectionMutationVariables>(TestMemoryHubConnectionDocument, options);
+}
+export type TestMemoryHubConnectionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TestMemoryHubConnectionMutation, TestMemoryHubConnectionMutationVariables>;
+export const StartMemorySyncDocument = gql`
+    mutation StartMemorySync {
+  startMemorySync {
+    startedAt
+    finishedAt
+    scannedFiles
+    changedFiles
+    unchangedFiles
+    deferredFiles
+    committedBatches
+    duplicateBatches
+  }
+}
+    `;
+
+/**
+ * __useStartMemorySyncMutation__
+ *
+ * To run a mutation, you first call `useStartMemorySyncMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useStartMemorySyncMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useStartMemorySyncMutation();
+ */
+export function useStartMemorySyncMutation(options: VueApolloComposable.UseMutationOptions<StartMemorySyncMutation, StartMemorySyncMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StartMemorySyncMutation, StartMemorySyncMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<StartMemorySyncMutation, StartMemorySyncMutationVariables>(StartMemorySyncDocument, options);
+}
+export type StartMemorySyncMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartMemorySyncMutation, StartMemorySyncMutationVariables>;
 export const DeleteStoredRunDocument = gql`
     mutation DeleteStoredRun($runId: String!) {
   deleteStoredRun(runId: $runId) {
@@ -5897,9 +6506,48 @@ export function usePreviewMcpServerToolsLazyQuery(variables?: PreviewMcpServerTo
   return VueApolloComposable.useLazyQuery<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>(PreviewMcpServerToolsDocument, variables, options);
 }
 export type PreviewMcpServerToolsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>;
+export const ListMemoryExplorerSourcesDocument = gql`
+    query ListMemoryExplorerSources {
+  listMemoryExplorerSources {
+    key
+    type
+    label
+    sourceNodeId
+    displayName
+    readOnly
+    lastImportedAt
+    lastSyncStatus
+  }
+}
+    `;
+
+/**
+ * __useListMemoryExplorerSourcesQuery__
+ *
+ * To run a query within a Vue component, call `useListMemoryExplorerSourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListMemoryExplorerSourcesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListMemoryExplorerSourcesQuery();
+ */
+export function useListMemoryExplorerSourcesQuery(options: VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>(ListMemoryExplorerSourcesDocument, {}, options);
+}
+export function useListMemoryExplorerSourcesLazyQuery(options: VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>(ListMemoryExplorerSourcesDocument, {}, options);
+}
+export type ListMemoryExplorerSourcesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListMemoryExplorerSourcesQuery, ListMemoryExplorerSourcesQueryVariables>;
 export const ListAgentsWithMemoryDocument = gql`
-    query ListAgentsWithMemory($search: String, $page: Int, $pageSize: Int) {
-  listAgentsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+    query ListAgentsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+  listAgentsWithMemory(
+    source: $source
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
     total
     page
     pageSize
@@ -5936,6 +6584,7 @@ export const ListAgentsWithMemoryDocument = gql`
  *
  * @example
  * const { result, loading, error } = useListAgentsWithMemoryQuery({
+ *   source: // value for 'source'
  *   search: // value for 'search'
  *   page: // value for 'page'
  *   pageSize: // value for 'pageSize'
@@ -5949,9 +6598,10 @@ export function useListAgentsWithMemoryLazyQuery(variables: ListAgentsWithMemory
 }
 export type ListAgentsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentsWithMemoryQuery, ListAgentsWithMemoryQueryVariables>;
 export const ListAgentRunsWithMemoryDocument = gql`
-    query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $search: String, $page: Int, $pageSize: Int) {
+    query ListAgentRunsWithMemory($selector: AgentWithMemorySelectorInput!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
   listAgentRunsWithMemory(
     selector: $selector
+    source: $source
     search: $search
     page: $page
     pageSize: $pageSize
@@ -5994,6 +6644,7 @@ export const ListAgentRunsWithMemoryDocument = gql`
  * @example
  * const { result, loading, error } = useListAgentRunsWithMemoryQuery({
  *   selector: // value for 'selector'
+ *   source: // value for 'source'
  *   search: // value for 'search'
  *   page: // value for 'page'
  *   pageSize: // value for 'pageSize'
@@ -6007,8 +6658,13 @@ export function useListAgentRunsWithMemoryLazyQuery(variables?: ListAgentRunsWit
 }
 export type ListAgentRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentRunsWithMemoryQuery, ListAgentRunsWithMemoryQueryVariables>;
 export const ListAgentTeamsWithMemoryDocument = gql`
-    query ListAgentTeamsWithMemory($search: String, $page: Int, $pageSize: Int) {
-  listAgentTeamsWithMemory(search: $search, page: $page, pageSize: $pageSize) {
+    query ListAgentTeamsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+  listAgentTeamsWithMemory(
+    source: $source
+    search: $search
+    page: $page
+    pageSize: $pageSize
+  ) {
     total
     page
     pageSize
@@ -6044,6 +6700,7 @@ export const ListAgentTeamsWithMemoryDocument = gql`
  *
  * @example
  * const { result, loading, error } = useListAgentTeamsWithMemoryQuery({
+ *   source: // value for 'source'
  *   search: // value for 'search'
  *   page: // value for 'page'
  *   pageSize: // value for 'pageSize'
@@ -6057,9 +6714,10 @@ export function useListAgentTeamsWithMemoryLazyQuery(variables: ListAgentTeamsWi
 }
 export type ListAgentTeamsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentTeamsWithMemoryQuery, ListAgentTeamsWithMemoryQueryVariables>;
 export const ListAgentTeamRunsWithMemoryDocument = gql`
-    query ListAgentTeamRunsWithMemory($teamDefinitionId: String!, $search: String, $page: Int, $pageSize: Int) {
+    query ListAgentTeamRunsWithMemory($teamDefinitionId: String!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
   listAgentTeamRunsWithMemory(
     teamDefinitionId: $teamDefinitionId
+    source: $source
     search: $search
     page: $page
     pageSize: $pageSize
@@ -6117,6 +6775,7 @@ export const ListAgentTeamRunsWithMemoryDocument = gql`
  * @example
  * const { result, loading, error } = useListAgentTeamRunsWithMemoryQuery({
  *   teamDefinitionId: // value for 'teamDefinitionId'
+ *   source: // value for 'source'
  *   search: // value for 'search'
  *   page: // value for 'page'
  *   pageSize: // value for 'pageSize'
@@ -6129,16 +6788,176 @@ export function useListAgentTeamRunsWithMemoryLazyQuery(variables?: ListAgentTea
   return VueApolloComposable.useLazyQuery<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>(ListAgentTeamRunsWithMemoryDocument, variables, options);
 }
 export type ListAgentTeamRunsWithMemoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListAgentTeamRunsWithMemoryQuery, ListAgentTeamRunsWithMemoryQueryVariables>;
+export const GetMemorySyncStatusDocument = gql`
+    query GetMemorySyncStatus {
+  getMemorySyncStatus {
+    hub {
+      enabled
+      advertisedHubBaseUrl
+      updatedAt
+    }
+    source {
+      enabled
+      sourceNodeId
+      displayName
+      hubBaseUrl
+      hubTokenConfigured
+      hubTokenPreview
+      backgroundEnabled
+      intervalMs
+      batchSize
+      updatedAt
+    }
+    connectionInfo {
+      hubEnabled
+      advertisedHubBaseUrl
+      ingestEndpointUrl
+      healthEndpointUrl
+      secureTransportWarning
+      credentials {
+        credentialId
+        label
+        boundSourceNodeId
+        createdAt
+        lastUsedAt
+        revokedAt
+        status
+      }
+    }
+    sourceState {
+      jobState
+      lastSuccessfulSyncAt
+      lastError
+      trackedFileCount
+    }
+    imports {
+      sourceNodeId
+      displayName
+      lastKnownEndpoint
+      firstImportedAt
+      lastImportedAt
+      lastSyncStatus
+      lastError
+      fileCount
+      totalBytes
+      lastCommittedBatchId
+      lastCommittedAt
+    }
+    oneTimePlaintextToken
+  }
+}
+    `;
+
+/**
+ * __useGetMemorySyncStatusQuery__
+ *
+ * To run a query within a Vue component, call `useGetMemorySyncStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMemorySyncStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetMemorySyncStatusQuery();
+ */
+export function useGetMemorySyncStatusQuery(options: VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>(GetMemorySyncStatusDocument, {}, options);
+}
+export function useGetMemorySyncStatusLazyQuery(options: VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>(GetMemorySyncStatusDocument, {}, options);
+}
+export type GetMemorySyncStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetMemorySyncStatusQuery, GetMemorySyncStatusQueryVariables>;
+export const ListMemoryHubUrlCandidatesDocument = gql`
+    query ListMemoryHubUrlCandidates($currentNodeBaseUrl: String, $manualBaseUrl: String) {
+  listMemoryHubUrlCandidates(
+    currentNodeBaseUrl: $currentNodeBaseUrl
+    manualBaseUrl: $manualBaseUrl
+  ) {
+    id
+    kind
+    label
+    baseUrl
+    source
+  }
+}
+    `;
+
+/**
+ * __useListMemoryHubUrlCandidatesQuery__
+ *
+ * To run a query within a Vue component, call `useListMemoryHubUrlCandidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListMemoryHubUrlCandidatesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListMemoryHubUrlCandidatesQuery({
+ *   currentNodeBaseUrl: // value for 'currentNodeBaseUrl'
+ *   manualBaseUrl: // value for 'manualBaseUrl'
+ * });
+ */
+export function useListMemoryHubUrlCandidatesQuery(variables: ListMemoryHubUrlCandidatesQueryVariables | VueCompositionApi.Ref<ListMemoryHubUrlCandidatesQueryVariables> | ReactiveFunction<ListMemoryHubUrlCandidatesQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>(ListMemoryHubUrlCandidatesDocument, variables, options);
+}
+export function useListMemoryHubUrlCandidatesLazyQuery(variables: ListMemoryHubUrlCandidatesQueryVariables | VueCompositionApi.Ref<ListMemoryHubUrlCandidatesQueryVariables> | ReactiveFunction<ListMemoryHubUrlCandidatesQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>(ListMemoryHubUrlCandidatesDocument, variables, options);
+}
+export type ListMemoryHubUrlCandidatesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListMemoryHubUrlCandidatesQuery, ListMemoryHubUrlCandidatesQueryVariables>;
+export const GetMemoryHubConnectionInfoDocument = gql`
+    query GetMemoryHubConnectionInfo {
+  getMemoryHubConnectionInfo {
+    hubEnabled
+    advertisedHubBaseUrl
+    ingestEndpointUrl
+    healthEndpointUrl
+    secureTransportWarning
+    credentials {
+      credentialId
+      label
+      boundSourceNodeId
+      createdAt
+      lastUsedAt
+      revokedAt
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMemoryHubConnectionInfoQuery__
+ *
+ * To run a query within a Vue component, call `useGetMemoryHubConnectionInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMemoryHubConnectionInfoQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetMemoryHubConnectionInfoQuery();
+ */
+export function useGetMemoryHubConnectionInfoQuery(options: VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>(GetMemoryHubConnectionInfoDocument, {}, options);
+}
+export function useGetMemoryHubConnectionInfoLazyQuery(options: VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>(GetMemoryHubConnectionInfoDocument, {}, options);
+}
+export type GetMemoryHubConnectionInfoQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetMemoryHubConnectionInfoQuery, GetMemoryHubConnectionInfoQueryVariables>;
 export const GetAgentRunMemoryViewDocument = gql`
-    query GetAgentRunMemoryView($runId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
+    query GetAgentRunMemoryView($runId: String!, $source: MemoryExplorerSourceInput, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeRawTraceFiles: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $rawTraceFileName: String) {
   getAgentRunMemoryView(
     runId: $runId
+    source: $source
     includeWorkingContext: $includeWorkingContext
     includeEpisodic: $includeEpisodic
     includeSemantic: $includeSemantic
     includeRawTraces: $includeRawTraces
+    includeRawTraceFiles: $includeRawTraceFiles
     includeArchive: $includeArchive
     rawTraceLimit: $rawTraceLimit
+    rawTraceFileName: $rawTraceFileName
   ) {
     runId
     workingContext {
@@ -6150,8 +6969,19 @@ export const GetAgentRunMemoryViewDocument = gql`
     }
     episodic
     semantic
+    rawTraceFiles {
+      fileName
+      kind
+      recordCount
+      segmentIndex
+      firstTimestamp
+      lastTimestamp
+    }
+    selectedRawTraceFileName
     rawTraces {
+      id
       traceType
+      sourceEvent
       content
       toolName
       toolCallId
@@ -6180,12 +7010,15 @@ export const GetAgentRunMemoryViewDocument = gql`
  * @example
  * const { result, loading, error } = useGetAgentRunMemoryViewQuery({
  *   runId: // value for 'runId'
+ *   source: // value for 'source'
  *   includeWorkingContext: // value for 'includeWorkingContext'
  *   includeEpisodic: // value for 'includeEpisodic'
  *   includeSemantic: // value for 'includeSemantic'
  *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeRawTraceFiles: // value for 'includeRawTraceFiles'
  *   includeArchive: // value for 'includeArchive'
  *   rawTraceLimit: // value for 'rawTraceLimit'
+ *   rawTraceFileName: // value for 'rawTraceFileName'
  * });
  */
 export function useGetAgentRunMemoryViewQuery(variables: GetAgentRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetAgentRunMemoryViewQueryVariables> | ReactiveFunction<GetAgentRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>> = {}) {
@@ -6196,16 +7029,19 @@ export function useGetAgentRunMemoryViewLazyQuery(variables?: GetAgentRunMemoryV
 }
 export type GetAgentRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunMemoryViewQuery, GetAgentRunMemoryViewQueryVariables>;
 export const GetTeamMemberRunMemoryViewDocument = gql`
-    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
+    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $source: MemoryExplorerSourceInput, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeRawTraceFiles: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $rawTraceFileName: String) {
   getTeamMemberRunMemoryView(
     teamRunId: $teamRunId
     memberRunId: $memberRunId
+    source: $source
     includeWorkingContext: $includeWorkingContext
     includeEpisodic: $includeEpisodic
     includeSemantic: $includeSemantic
     includeRawTraces: $includeRawTraces
+    includeRawTraceFiles: $includeRawTraceFiles
     includeArchive: $includeArchive
     rawTraceLimit: $rawTraceLimit
+    rawTraceFileName: $rawTraceFileName
   ) {
     runId
     workingContext {
@@ -6217,8 +7053,19 @@ export const GetTeamMemberRunMemoryViewDocument = gql`
     }
     episodic
     semantic
+    rawTraceFiles {
+      fileName
+      kind
+      recordCount
+      segmentIndex
+      firstTimestamp
+      lastTimestamp
+    }
+    selectedRawTraceFileName
     rawTraces {
+      id
       traceType
+      sourceEvent
       content
       toolName
       toolCallId
@@ -6248,12 +7095,15 @@ export const GetTeamMemberRunMemoryViewDocument = gql`
  * const { result, loading, error } = useGetTeamMemberRunMemoryViewQuery({
  *   teamRunId: // value for 'teamRunId'
  *   memberRunId: // value for 'memberRunId'
+ *   source: // value for 'source'
  *   includeWorkingContext: // value for 'includeWorkingContext'
  *   includeEpisodic: // value for 'includeEpisodic'
  *   includeSemantic: // value for 'includeSemantic'
  *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeRawTraceFiles: // value for 'includeRawTraceFiles'
  *   includeArchive: // value for 'includeArchive'
  *   rawTraceLimit: // value for 'rawTraceLimit'
+ *   rawTraceFileName: // value for 'rawTraceFileName'
  * });
  */
 export function useGetTeamMemberRunMemoryViewQuery(variables: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {

@@ -4,13 +4,13 @@ import {
   ParameterType,
 } from "autobyteus-ts/utils/parameter-schema.js";
 import {
-  DELEGATE_TASKS_TOOL_NAME,
+  DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
   SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 
-const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
+export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: "member_name",
     type: ParameterType.STRING,
@@ -20,7 +20,7 @@ const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Required rich ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put task instructions here, but do not encode dependencies or lifecycle result/review fields.",
+    description: "Complete ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance.",
     required: true,
   }),
   new ParameterDefinition({
@@ -32,23 +32,12 @@ const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
   }),
 ]);
 
-export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
-  new ParameterSchema([
-    new ParameterDefinition({
-      name: "tasks",
-      type: ParameterType.ARRAY,
-      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not pass delegator, task_name, dependencies, completion_criteria, expected_deliverables, or status; the framework derives the delegator from tool context. Task-agent results are submitted later with submit_task_result.",
-      required: true,
-      arrayItemSchema: buildTaskItemSchema(),
-    }),
-  ]);
-
 export const buildSubmitTaskResultParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
       name: "message",
       type: ParameterType.STRING,
-      description: "Required reviewable result message for the task bound to the current task-agent context. Do not pass task_id, task_name, member_name, status, or other selectors.",
+      description: "Required reviewable result message for the task bound to the current task-agent context.",
       required: true,
     }),
     new ParameterDefinition({
@@ -93,8 +82,8 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
 export const buildTaskDelegationToolParameterSchema = (
   toolName: TaskDelegationToolName,
 ): ParameterSchema => {
-  if (toolName === DELEGATE_TASKS_TOOL_NAME) {
-    return buildDelegateTasksParameterSchema();
+  if (toolName === DELEGATE_TASK_TOOL_NAME) {
+    return buildDelegateTaskParameterSchema();
   }
   if (toolName === SUBMIT_TASK_RESULT_TOOL_NAME) {
     return buildSubmitTaskResultParameterSchema();

@@ -11,7 +11,7 @@ the server stack:
 messages, memory, and LLM integration. It must not reintroduce a native team
 lifecycle or native team task ledger.
 
-Server-managed bounded task delegation (`delegate_tasks`, `submit_task_result`, and
+Server-managed bounded task delegation (`delegate_task`, `submit_task_result`, and
 `review_task_result`) is implemented in `autobyteus-server-ts` and is the
 authoritative workflow for team tasks.
 Personal ToDo tools remain local agent tools in `src/task-management` and keep
@@ -66,10 +66,10 @@ The cross-runtime task workflow lives in `autobyteus-server-ts` and is owned by
 model-facing workflow. Server-managed Codex, Claude, AutoByteus-in-server-team,
 and mixed team paths own the supported task-agent lifecycle.
 
-### `delegate_tasks`
+### `delegate_task`
 
-A coordinator/delegator creates one or more bounded ready-to-run tasks with a
-`tasks` array. Each task item contains:
+A coordinator/delegator creates one bounded ready-to-run task per tool call with
+direct fields:
 
 - `member_name`: the exact logical team member/template name from the current
   roster;
@@ -78,12 +78,11 @@ A coordinator/delegator creates one or more bounded ready-to-run tasks with a
 - optional `reference_files`: file or artifact paths the task-agent should
   inspect.
 
-The service creates internal ledger records, assigns stable ids such as
-`task_0001`, and starts one concrete task-agent instance per accepted task. A
-one-item `tasks` array is the single-task form; do not use `create_task` or
-`assign_task_to`. Do not encode dependencies in task items; if task B depends on
-task A, the coordinator reviews task A's submitted result and then calls
-`delegate_tasks` again for task B.
+The service creates one internal ledger record, assigns a stable id such as
+`task_0001`, and starts one concrete task-agent instance for the accepted task.
+Multiple independent tasks are represented by multiple `delegate_task` calls.
+For sequential follow-up work, the coordinator reviews task A's submitted result
+and then calls `delegate_task` again for task B.
 
 ### Result submission and review
 
@@ -137,7 +136,7 @@ settled.
 - Use `send_message_to` for free-form conversation and handoff messages only; do
   not use it for task result submission, revision requests, acceptance, or
   finalization.
-- Use `delegate_tasks`, `submit_task_result`, and `review_task_result` for
+- Use `delegate_task`, `submit_task_result`, and `review_task_result` for
   bounded server-managed work with ledger state, result/review events, system
   notifications, and safe task-agent settlement on supported server team
   backends.

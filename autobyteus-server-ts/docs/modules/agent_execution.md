@@ -233,8 +233,8 @@ delegates through the shared registry/MCP proxy owner.
 Runtime converters must canonicalize all Agent Tools MCP provider identities
 before emitting application-facing events. Provider/server-qualified names such
 as `autobyteus_agent_tools` and
-`mcp__autobyteus_agent_tools__delegate_tasks` normalize to canonical tool names
-such as `delegate_tasks`; bearer tokens, session ids, `Authorization`, and
+`mcp__autobyteus_agent_tools__delegate_task` normalize to canonical tool names
+such as `delegate_task`; bearer tokens, session ids, `Authorization`, and
 `http_headers` are sanitized from events, run history, and memory traces. MCP
 text-content result/error shapes remain preserved while family-specific result
 payloads stay owned by the underlying browser, media, task-delegation,

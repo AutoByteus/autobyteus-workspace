@@ -15,7 +15,7 @@ import {
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from './memory-file-names.js';
-import type { RawTraceArchiveManifest } from './raw-trace-archive-manifest.js';
+import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
   type RawTraceArchiveBoundaryInput,
@@ -176,6 +176,18 @@ export class RunMemoryFileStore {
 
   readCompleteArchiveRawTraceDicts(): Record<string, unknown>[] {
     return this.archiveManager.readCompleteArchiveRawTraceDicts();
+  }
+
+  listCompleteRawTraceArchiveSegments(): RawTraceArchiveSegmentEntry[] {
+    return this.archiveManager.listCompleteSegments();
+  }
+
+  getCompleteRawTraceArchiveSegmentPathByFileName(fileName: string): string | null {
+    return this.archiveManager.getCompleteSegmentPathByFileName(fileName);
+  }
+
+  readCompleteRawTraceArchiveSegmentDictsByFileName(fileName: string): Record<string, unknown>[] | null {
+    return this.archiveManager.readCompleteSegmentRawTraceDictsByFileName(fileName);
   }
 
   listArchiveRawTracesOrdered(): RawTraceItem[] {

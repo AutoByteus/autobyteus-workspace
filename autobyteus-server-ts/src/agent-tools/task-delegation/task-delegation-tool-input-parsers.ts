@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {
-  type DelegateTasksInput,
+  type DelegateTaskInput,
   type ReviewTaskResultInput,
   type SubmitTaskResultInput,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
@@ -8,14 +8,10 @@ import {
 const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
-const TaskInputSchema = z.object({
+const DelegateTaskInputSchema = z.object({
   member_name: nonEmptyString("member_name"),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
-}).strict();
-
-const DelegateTasksInputSchema = z.object({
-  tasks: z.array(TaskInputSchema).min(1, "delegate_tasks requires at least one task"),
 }).strict();
 
 const SubmitTaskResultInputSchema = z.object({
@@ -41,12 +37,12 @@ const ReviewTaskResultInputSchema = z.object({
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");
 
-export const parseDelegateTasksInput = (
+export const parseDelegateTaskInput = (
   rawArguments: Record<string, unknown>,
-): DelegateTasksInput => {
-  const result = DelegateTasksInputSchema.safeParse(rawArguments);
+): DelegateTaskInput => {
+  const result = DelegateTaskInputSchema.safeParse(rawArguments);
   if (!result.success) {
-    throw new Error(`Invalid delegate_tasks input: ${parseZodIssues(result.error)}`);
+    throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
   }
   return result.data;
 };

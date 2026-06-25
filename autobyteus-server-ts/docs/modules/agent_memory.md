@@ -68,7 +68,7 @@ are recorded only after the runtime adapter normalizes them into canonical
 `AgentRunEvent` tool lifecycles. The MCP route, method dispatcher, executor,
 and family services/dispatchers must not write raw traces directly. Raw traces
 use canonical tool names such as `send_message_to`, `generate_image`,
-`delegate_tasks`, and `publish_artifacts`, preserve the provider invocation id
+`delegate_task`, and `publish_artifacts`, preserve the provider invocation id
 as the tool-call id, and store the normalized application-facing result payload
 without provider/server-qualified tool names, MCP session ids, or bearer/header
 descriptor details. For families with a canonical public result contract, the
@@ -150,13 +150,17 @@ GraphQL memory-view queries:
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
 - `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!, source: MemoryExplorerSourceInput)`
 
-Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab or changes the trace limit.
+Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
 
-`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending raw-trace manifest entries and merge complete rotated segments with active records when archive inclusion is requested, deduping by raw trace `id` with active records preferred.
+`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
+
+When `includeRawTraceFiles` is true or `rawTraceFileName` is supplied, `RawTraceFileSourceService` lists active `raw_traces.jsonl` plus complete rotated segment files, ignores pending raw-trace manifest entries, validates the requested file name against that list, and reads only the selected file. Inspector ordering is active first when present, then complete segments newest-to-oldest by segment index. If the requested file name is missing or invalid, the backend falls back to the default listed file and returns `selectedRawTraceFileName` so clients can realign local selected state.
+
+When archive inclusion is requested without file-selector mode, readers retain the complete-corpus behavior: complete rotated segments plus active records are merged, deduped by raw trace `id` with active records preferred, and returned in chronological order.
 
 ## Archive, Rotation, And Retention Boundaries
 
-`RunMemoryFileStore` is the facade for active raw traces plus complete rotated-segment reads. `RawTraceArchiveManager` is the only owner of raw-trace rotation manifest/segment filenames and rotation-internal policy.
+`RunMemoryFileStore` is the facade for active raw traces plus complete rotated-segment reads. `RawTraceArchiveManager` is the only owner of raw-trace rotation manifest/segment filenames and rotation-internal policy. `RawTraceFileSourceService` owns the agent-memory read boundary for UI-safe raw-trace file summaries, selected filename validation, and selected-file reads; it delegates physical path resolution and manifest policy to the store/archive owners rather than exposing paths to GraphQL clients.
 
 Current archive/rotation behavior:
 
@@ -203,6 +207,8 @@ When runtime-native Codex or Claude history cannot be read, the local-memory pro
 
 - Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
 - Source resolver: `src/agent-memory/services/memory-explorer-source-service.ts`
+- Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
+- Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
