@@ -2,7 +2,7 @@
 
 ## Current Status
 
-User verification/finalization approval was received. The ticket has been archived to `tickets/done/token-usage-transparency-analysis/` for repository finalization. Release/versioning is explicitly out of scope for this finalization.
+User verification/finalization approval was received. The ticket has been archived to `tickets/done/token-usage-transparency-analysis/`, merged into `personal`, and pushed to `origin/personal`. Release/versioning is explicitly out of scope for this finalization and was not performed.
 
 ## Worktree / Branch
 
@@ -12,7 +12,10 @@ User verification/finalization approval was received. The ticket has been archiv
 - Latest tracked base checked by delivery: `origin/personal` @ `ae7bb7217e03534a3668dc7f4bfabd0066e7858f`
 - Pre-merge checkpoint commit: `ffca05da710f57cee4c804a3e447c90b824c0289` (`feat: add token usage ledger transparency`)
 - Latest-base merge commit: `fef712188cf17f593e4c872530755692f0542b06` (`merge origin/personal into token usage transparency`)
-- Base comparison after latest merge: `git rev-list --left-right --count HEAD...origin/personal` = `2 0` before this artifact-refresh commit; the branch contains the checkpoint and merge commits on top of latest `origin/personal`.
+- Archived-ticket commit: `7b76653f01a254a5bd0e091cca758debe193df96` (`chore(ticket): archive token usage transparency`)
+- Finalization target merge commit: `f326f01bcf3fe034fc8d57db74a68c2a4977f04b` (`merge token usage transparency`)
+- Finalization target push: `origin/personal` updated from `ae7bb7217e03534a3668dc7f4bfabd0066e7858f` to `f326f01bcf3fe034fc8d57db74a68c2a4977f04b`.
+- Base comparison after latest merge: `git rev-list --left-right --count HEAD...origin/personal` = `2 0` before the delivery artifact-refresh commit; the branch contains the checkpoint and merge commits on top of latest `origin/personal`.
 - Integration method: checkpoint commit, then merge latest `origin/personal` into the ticket branch.
 - Merge result: completed cleanly with no conflicts; no implementation-engineer reroute was required.
 - Post-integration executable check: documented macOS Electron build passed using `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`.
@@ -155,4 +158,4 @@ Delivery-run checks after latest-base merge and artifact updates:
 
 ## User Verification / Finalization Approval
 
-Explicit user verification/finalization approval received: User message on 2026-06-25: "the task is done. lets finalize, no need to release a new version. follow finaiozeation guidelines". The ticket folder is archived at `tickets/done/token-usage-transparency-analysis/`. Finalization will commit/push `codex/token-usage-transparency-analysis`, merge it into `personal`, and push `personal`. Release/deployment/version bump are skipped by explicit user instruction.
+Explicit user verification/finalization approval received: User message on 2026-06-25: "the task is done. lets finalize, no need to release a new version. follow finaiozeation guidelines". The ticket folder is archived at `tickets/done/token-usage-transparency-analysis/`. Finalization committed/pushed `codex/token-usage-transparency-analysis`, merged it into `personal`, and pushed `personal` to `origin/personal`. Release/deployment/version bump were skipped by explicit user instruction. Ticket worktree cleanup is deferred to preserve the Electron artifacts produced for user testing.
