@@ -22,12 +22,23 @@ export type MemoryTraceEvent = {
   ts: number;
 };
 
+export type RawTraceFileSummary = {
+  fileName: string;
+  kind: "active" | "segment";
+  recordCount: number;
+  segmentIndex?: number | null;
+  firstTimestamp?: number | null;
+  lastTimestamp?: number | null;
+};
+
 export type AgentMemoryView = {
   runId: string;
   workingContext?: MemoryMessage[] | null;
   episodic?: Array<Record<string, unknown>> | null;
   semantic?: Array<Record<string, unknown>> | null;
   rawTraces?: MemoryTraceEvent[] | null;
+  rawTraceFiles?: RawTraceFileSummary[] | null;
+  selectedRawTraceFileName?: string | null;
 };
 
 export type AgentMemoryAttribution = "DEFINITION" | "UNATTRIBUTED";

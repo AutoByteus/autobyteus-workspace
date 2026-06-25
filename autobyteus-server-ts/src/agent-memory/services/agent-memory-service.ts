@@ -2,25 +2,30 @@ import type {
   AgentMemoryView,
   MemoryMessage,
   MemoryTraceEvent,
+  RawTraceFileSummary,
 } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
-
-type RawTrace = Record<string, unknown>;
+import { RawTraceFileSourceService } from "./raw-trace-file-source-service.js";
+import { normalizeRawTraceRecords } from "./raw-trace-record-normalizer.js";
 
 type AgentMemoryViewOptions = {
   includeWorkingContext?: boolean;
   includeEpisodic?: boolean;
   includeSemantic?: boolean;
   includeRawTraces?: boolean;
+  includeRawTraceFiles?: boolean;
   includeArchive?: boolean;
   rawTraceLimit?: number | null;
+  rawTraceFileName?: string | null;
 };
 
 export class AgentMemoryService {
   private store: MemoryFileStore;
+  private rawTraceFileSourceService: RawTraceFileSourceService;
 
   constructor(store: MemoryFileStore) {
     this.store = store;
+    this.rawTraceFileSourceService = new RawTraceFileSourceService(store);
   }
 
   getRunMemoryView(runId: string, options: AgentMemoryViewOptions = {}): AgentMemoryView {
@@ -29,8 +34,10 @@ export class AgentMemoryService {
       includeEpisodic = true,
       includeSemantic = true,
       includeRawTraces = false,
+      includeRawTraceFiles = false,
       includeArchive = false,
       rawTraceLimit = null,
+      rawTraceFileName = null,
     } = options;
 
     let workingContext: MemoryMessage[] | null = null;
@@ -43,13 +50,30 @@ export class AgentMemoryService {
     const semantic = includeSemantic ? this.store.readSemantic(runId) : null;
 
     let rawTraces: MemoryTraceEvent[] | null = null;
-    if (includeRawTraces) {
-      let merged = includeArchive
-        ? this.store.readRawTraceCorpus(runId)
-        : this.mergeAndSortTraces(this.store.readRawTracesActive(runId));
-      merged = this.applyRawTraceLimit(merged, rawTraceLimit);
+    let rawTraceFiles: RawTraceFileSummary[] | null = null;
+    let selectedRawTraceFileName: string | null = null;
+    const useSelectedFileMode = includeRawTraceFiles || rawTraceFileName !== null;
 
-      rawTraces = merged.map((trace) => this.toTraceEvent(trace));
+    if (useSelectedFileMode) {
+      if (includeRawTraces) {
+        const selectedRead = this.rawTraceFileSourceService.readSelectedFile(
+          runId,
+          rawTraceFileName,
+          rawTraceLimit,
+        );
+        rawTraceFiles = includeRawTraceFiles ? selectedRead.files : null;
+        selectedRawTraceFileName = selectedRead.selectedRawTraceFileName;
+        rawTraces = selectedRead.records;
+      } else if (includeRawTraceFiles) {
+        const selection = this.rawTraceFileSourceService.resolveSelection(runId, rawTraceFileName);
+        rawTraceFiles = selection.files;
+        selectedRawTraceFileName = selection.selectedRawTraceFileName;
+      }
+    } else if (includeRawTraces) {
+      const records = includeArchive
+        ? this.store.readRawTraceCorpus(runId)
+        : this.store.readRawTracesActive(runId);
+      rawTraces = normalizeRawTraceRecords(records, rawTraceLimit);
     }
 
     return {
@@ -58,6 +82,8 @@ export class AgentMemoryService {
       episodic,
       semantic,
       rawTraces,
+      rawTraceFiles,
+      selectedRawTraceFileName,
     };
   }
 
@@ -86,56 +112,6 @@ export class AgentMemoryService {
     }
 
     return parsed;
-  }
-
-  private mergeAndSortTraces(active: RawTrace[], archive?: RawTrace[]): RawTrace[] {
-    const combined = [...active, ...(archive ?? [])];
-    combined.sort((a, b) => {
-      const tsA = (a.ts as number | undefined) ?? 0;
-      const tsB = (b.ts as number | undefined) ?? 0;
-      if (tsA !== tsB) {
-        return tsA - tsB;
-      }
-      const turnA = (a.turn_id as string | undefined) ?? "";
-      const turnB = (b.turn_id as string | undefined) ?? "";
-      if (turnA !== turnB) {
-        return turnA.localeCompare(turnB);
-      }
-      const seqA = (a.seq as number | undefined) ?? 0;
-      const seqB = (b.seq as number | undefined) ?? 0;
-      if (seqA !== seqB) {
-        return seqA - seqB;
-      }
-      const idA = (a.id as string | undefined) ?? "";
-      const idB = (b.id as string | undefined) ?? "";
-      return idA.localeCompare(idB);
-    });
-    return combined;
-  }
-
-  private applyRawTraceLimit(traces: RawTrace[], limit?: number | null): RawTrace[] {
-    if (!limit || limit <= 0) {
-      return traces;
-    }
-    return traces.slice(-limit);
-  }
-
-  private toTraceEvent(trace: RawTrace): MemoryTraceEvent {
-    return {
-      id: (trace.id as string | undefined) ?? null,
-      traceType: (trace.trace_type as string | undefined) ?? "",
-      sourceEvent: (trace.source_event as string | undefined) ?? null,
-      content: (trace.content as string | undefined) ?? null,
-      toolName: (trace.tool_name as string | undefined) ?? null,
-      toolCallId: (trace.tool_call_id as string | undefined) ?? null,
-      toolArgs: (trace.tool_args as Record<string, unknown> | undefined) ?? null,
-      toolResult: (trace.tool_result as unknown) ?? null,
-      toolError: (trace.tool_error as string | undefined) ?? null,
-      media: (trace.media as Record<string, string[]> | undefined) ?? null,
-      turnId: (trace.turn_id as string | undefined) ?? "",
-      seq: Number((trace.seq as number | undefined) ?? 0),
-      ts: Number((trace.ts as number | undefined) ?? 0),
-    };
   }
 }
 

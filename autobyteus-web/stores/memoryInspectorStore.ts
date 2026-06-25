@@ -15,8 +15,10 @@ type ViewVariables = {
   includeEpisodic?: boolean;
   includeSemantic?: boolean;
   includeRawTraces?: boolean;
+  includeRawTraceFiles?: boolean;
   includeArchive?: boolean;
   rawTraceLimit?: number;
+  rawTraceFileName?: string | null;
 };
 
 interface MemoryInspectorState {
@@ -25,6 +27,7 @@ interface MemoryInspectorState {
   activeTab: MemoryInspectorTab;
   rawTraceLimit: number;
   includeRawTraces: boolean;
+  selectedRawTraceFileName: string | null;
   loading: boolean;
   error: string | null;
   requestId: number;
@@ -50,6 +53,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
     activeTab: 'working',
     rawTraceLimit: 500,
     includeRawTraces: false,
+    selectedRawTraceFileName: null,
     loading: false,
     error: null,
     requestId: 0,
@@ -61,6 +65,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
         this.memoryView = null;
         this.activeTab = 'working';
         this.includeRawTraces = false;
+        this.selectedRawTraceFileName = null;
       }
       this.target = target;
       return await this.fetchMemoryView();
@@ -76,6 +81,12 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
 
     async setRawTraceLimit(limit: number) {
       this.rawTraceLimit = limit;
+      if (this.includeRawTraces) await this.fetchMemoryView();
+    },
+
+    async setRawTraceFileName(fileName: string) {
+      if (!fileName || this.selectedRawTraceFileName === fileName) return;
+      this.selectedRawTraceFileName = fileName;
       if (this.includeRawTraces) await this.fetchMemoryView();
     },
 
@@ -97,7 +108,12 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
         const payload = this.target.kind === 'agent_run'
           ? (data as AgentRunMemoryViewQuery)?.getAgentRunMemoryView
           : (data as TeamMemberRunMemoryViewQuery)?.getTeamMemberRunMemoryView;
-        if (payload) this.memoryView = payload;
+        if (payload) {
+          this.memoryView = payload;
+          if (this.includeRawTraces) {
+            this.selectedRawTraceFileName = payload.selectedRawTraceFileName ?? null;
+          }
+        }
         return payload ?? null;
       } catch (error: any) {
         if (currentRequestId === this.requestId) this.error = error?.message || 'Failed to fetch memory view.';
@@ -114,8 +130,10 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
         includeEpisodic: true,
         includeSemantic: true,
         includeRawTraces: this.includeRawTraces,
+        includeRawTraceFiles: this.includeRawTraces,
         includeArchive: false,
         rawTraceLimit: this.rawTraceLimit,
+        rawTraceFileName: this.includeRawTraces ? this.selectedRawTraceFileName : null,
       };
       if (target.kind === 'agent_run') return { ...common, runId: target.runId };
       return { ...common, teamRunId: target.teamRunId, memberRunId: target.memberRunId };
@@ -126,6 +144,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
       this.memoryView = null;
       this.error = null;
       this.includeRawTraces = false;
+      this.selectedRawTraceFileName = null;
       this.activeTab = 'working';
     },
   },

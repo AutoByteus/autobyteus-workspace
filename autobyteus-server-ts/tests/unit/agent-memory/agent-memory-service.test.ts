@@ -138,6 +138,75 @@ describe("AgentMemoryService", () => {
     expect(view.rawTraces?.map((trace) => trace.id)).toEqual(["rt-archive", "rt-boundary"]);
   });
 
+  it("lists raw trace files active first and reads only the selected segment filename", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
+    const runId = "agent-segments";
+    const agentDir = path.join(tempDir, "agents", runId);
+
+    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+      { id: "active-1", trace_type: "assistant", content: "active", ts: 30, turn_id: "t1", seq: 3 },
+    ]);
+    writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
+      { id: "segment-1", trace_type: "user", content: "segment one", ts: 10, turn_id: "t1", seq: 1 },
+    ]);
+    writeJsonl(path.join(agentDir, "raw_traces_000002.jsonl"), [
+      { id: "segment-2", trace_type: "assistant", content: "segment two", ts: 20, turn_id: "t1", seq: 2 },
+    ]);
+    writeJson(path.join(agentDir, "raw_traces_manifest.json"), {
+      schema_version: 1,
+      next_segment_index: 4,
+      segments: [
+        segmentEntry(1, "raw_traces_000001.jsonl", 10, "complete"),
+        segmentEntry(2, "raw_traces_000002.jsonl", 20, "complete"),
+        segmentEntry(3, "raw_traces_000003.jsonl", 25, "pending"),
+      ],
+    });
+
+    const service = new AgentMemoryService(new MemoryFileStore(tempDir));
+    const view = service.getRunMemoryView(runId, {
+      includeRawTraces: true,
+      includeRawTraceFiles: true,
+      rawTraceFileName: "raw_traces_000001.jsonl",
+    });
+
+    expect(view.rawTraceFiles?.map((file) => file.fileName)).toEqual([
+      "raw_traces.jsonl",
+      "raw_traces_000002.jsonl",
+      "raw_traces_000001.jsonl",
+    ]);
+    expect(view.rawTraceFiles?.map((file) => file.recordCount)).toEqual([1, 1, 1]);
+    expect(view.selectedRawTraceFileName).toBe("raw_traces_000001.jsonl");
+    expect(view.rawTraces?.map((trace) => trace.content)).toEqual(["segment one"]);
+  });
+
+  it("falls back to the default raw trace file for invalid selected filenames", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
+    const runId = "agent-invalid-file";
+    const agentDir = path.join(tempDir, "agents", runId);
+
+    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+      { id: "active-1", trace_type: "assistant", content: "active", ts: 30, turn_id: "t1", seq: 3 },
+    ]);
+    writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
+      { id: "segment-1", trace_type: "user", content: "segment one", ts: 10, turn_id: "t1", seq: 1 },
+    ]);
+    writeJson(path.join(agentDir, "raw_traces_manifest.json"), {
+      schema_version: 1,
+      next_segment_index: 2,
+      segments: [segmentEntry(1, "raw_traces_000001.jsonl", 10, "complete")],
+    });
+
+    const service = new AgentMemoryService(new MemoryFileStore(tempDir));
+    const view = service.getRunMemoryView(runId, {
+      includeRawTraces: true,
+      includeRawTraceFiles: true,
+      rawTraceFileName: "/tmp/raw_traces_000001.jsonl",
+    });
+
+    expect(view.selectedRawTraceFileName).toBe("raw_traces.jsonl");
+    expect(view.rawTraces?.map((trace) => trace.content)).toEqual(["active"]);
+  });
+
   it("does not create a missing run directory for includeArchive raw-trace reads", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
     const runId = "missing-run";
@@ -175,4 +244,26 @@ describe("AgentMemoryService", () => {
     expect(view.semantic).toBeNull();
     expect(view.rawTraces?.length).toBe(1);
   });
+});
+
+const segmentEntry = (
+  index: number,
+  fileName: string,
+  ts: number,
+  status: "complete" | "pending",
+) => ({
+  index,
+  file_name: fileName,
+  boundary_type: "provider_compaction_boundary",
+  boundary_key: `boundary-${index}`,
+  boundary_trace_id: null,
+  runtime_kind: null,
+  source_event: null,
+  archived_at: ts,
+  first_trace_id: `first-${index}`,
+  last_trace_id: `last-${index}`,
+  first_ts: ts,
+  last_ts: ts,
+  record_count: 1,
+  status,
 });
