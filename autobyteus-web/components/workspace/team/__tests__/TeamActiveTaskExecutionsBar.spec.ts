@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import TeamTaskAgentActivityBar from '../TeamTaskAgentActivityBar.vue';
+import TeamActiveTaskExecutionsBar from '../TeamActiveTaskExecutionsBar.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const { postToolExecutionApproval } = vi.hoisted(() => ({
@@ -74,28 +74,48 @@ const buildTeamContext = () => {
       },
     },
   };
+  const taskTeamNode = {
+    memberKind: 'agent_team',
+    memberName: 'Software Engineering Team · task_0001',
+    displayName: 'Software Engineering Team · task_0001',
+    memberPath: ['task-team-run-1'],
+    memberRouteKey: 'task-team-run-1',
+    memberRunId: 'task-team-run-1',
+    teamDefinitionId: 'software-team',
+    teamRunId: 'task-team-run-1',
+    children: [],
+    isTaskTeamInstance: true,
+    taskTeamInstanceId: 'task-team-instance-1',
+    taskTeamRunId: 'task-team-run-1',
+    taskId: 'task_0001',
+    logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+    logicalTeamPath: ['SoftwareEngineeringTeam'],
+    taskExecutionStatus: 'awaiting_review',
+    currentStatus: AgentStatus.Running,
+  };
 
   return {
     teamRunId: 'team-run',
-    memberTree: [logicalWorkerNode, taskAgentNode],
-    memberNodesByRouteKey: new Map([
+    memberTree: [logicalWorkerNode, taskTeamNode, taskAgentNode],
+    memberNodesByRouteKey: new Map<string, any>([
       ['worker', logicalWorkerNode],
+      ['task-team-run-1', taskTeamNode],
       ['team-run__worker__task_0001', taskAgentNode],
     ]),
-    leafAgentContextsByRouteKey: new Map([
+    leafAgentContextsByRouteKey: new Map<string, any>([
       ['team-run__worker__task_0001', taskAgentContext],
     ]),
     focusedMemberRouteKey: 'worker',
   };
 };
 
-describe('TeamTaskAgentActivityBar', () => {
+describe('TeamActiveTaskExecutionsBar', () => {
   beforeEach(() => {
     postToolExecutionApproval.mockReset();
   });
 
   it('renders active task-agent entities and pending approvals in focus mode surfaces', () => {
-    const wrapper = mount(TeamTaskAgentActivityBar, {
+    const wrapper = mount(TeamActiveTaskExecutionsBar, {
       props: {
         teamContext: buildTeamContext() as any,
       },
@@ -109,7 +129,9 @@ describe('TeamTaskAgentActivityBar', () => {
       },
     });
 
-    expect(wrapper.get('[data-test="team-task-agent-activity-bar"]').text()).toContain('Active task agents');
+    expect(wrapper.get('[data-test="team-active-task-executions-bar"]').text()).toContain('Active task executions');
+    expect(wrapper.get('[data-test="task-team-entity-card"]').text()).toContain('Task team');
+    expect(wrapper.get('[data-test="task-team-entity-card"]').text()).toContain('awaiting_review');
     expect(wrapper.get('[data-test="task-agent-entity-card"]').text()).toContain('Task agent');
     expect(wrapper.text()).toContain('team-run__worker__task_0001');
     expect(wrapper.text()).toContain('Approval required');
@@ -118,7 +140,7 @@ describe('TeamTaskAgentActivityBar', () => {
   });
 
   it('approves a task-agent tool request with the concrete task-agent run identity', async () => {
-    const wrapper = mount(TeamTaskAgentActivityBar, {
+    const wrapper = mount(TeamActiveTaskExecutionsBar, {
       props: {
         teamContext: buildTeamContext() as any,
       },
@@ -144,7 +166,7 @@ describe('TeamTaskAgentActivityBar', () => {
   });
 
   it('selects the concrete task-agent entity when its card is clicked', async () => {
-    const wrapper = mount(TeamTaskAgentActivityBar, {
+    const wrapper = mount(TeamActiveTaskExecutionsBar, {
       props: {
         teamContext: buildTeamContext() as any,
       },

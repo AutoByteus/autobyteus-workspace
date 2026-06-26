@@ -218,4 +218,73 @@ describe('TeamMemberMonitorTile', () => {
     expect(wrapper.text()).not.toContain('Task-agent run');
   });
 
+  it('renders task-team badge, lifecycle timeline, and scoped child rows', () => {
+    const scopedChildNode = {
+      memberKind: 'agent',
+      memberName: 'solution_designer',
+      displayName: 'Solution Designer',
+      memberPath: ['task-team-run-1', 'solution_designer'],
+      memberRouteKey: 'task-team-run-1/solution_designer',
+      memberRunId: null,
+      agentDefinitionId: 'solution-def',
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+      structuralSourceRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+    };
+    const taskTeamNode = {
+      memberKind: 'agent_team',
+      memberName: 'Software Engineering Team · task_0001',
+      displayName: 'Software Engineering Team · task_0001',
+      memberPath: ['task-team-run-1'],
+      memberRouteKey: 'task-team-run-1',
+      memberRunId: 'task-team-run-1',
+      teamDefinitionId: 'software-team',
+      teamRunId: 'task-team-run-1',
+      children: [scopedChildNode],
+      isTaskTeamInstance: true,
+      taskTeamRunId: 'task-team-run-1',
+      taskId: 'task_0001',
+      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+      taskExecutionStatus: 'awaiting_review',
+      currentStatus: AgentStatus.Running,
+      taskTimeline: [
+        { id: 'activated', label: 'Task team activated', status: 'active' },
+        { id: 'submitted', label: 'Result submitted', status: 'awaiting_review' },
+      ],
+    };
+
+    const wrapper = mount(TeamMemberMonitorTile, {
+      props: {
+        memberNode: taskTeamNode as any,
+        memberContext: null,
+        teamContext: {
+          focusedMemberRouteKey: 'task-team-run-1',
+          memberNodesByRouteKey: new Map<string, any>([
+            ['task-team-run-1', taskTeamNode],
+            ['task-team-run-1/solution_designer', scopedChildNode],
+          ]),
+          leafAgentContextsByRouteKey: new Map(),
+        } as any,
+      },
+      global: {
+        stubs: {
+          AgentStatusDisplay: {
+            props: ['status'],
+            template: '<span data-test="team-member-status">{{ status }}</span>',
+          },
+          AgentConversationFeed: {
+            template: '<div data-test="conversation-feed" />',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.find('[data-test="task-team-badge"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="task-team-lifecycle"]').text()).toContain('awaiting_review');
+    expect(wrapper.get('[data-test="task-team-lifecycle"]').text()).toContain('Result submitted');
+    expect(wrapper.text()).toContain('Solution Designer');
+    expect(wrapper.text()).toContain('task-team-run-1/solution_designer');
+    expect(wrapper.find('[data-test="conversation-feed"]').exists()).toBe(false);
+  });
+
 });

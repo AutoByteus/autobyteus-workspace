@@ -71,6 +71,31 @@ export const resolveToolApprovalTargetSelector = (
   ],
 });
 
+export const resolveToolApprovalTaskTeamRunId = (
+  payload: Record<string, unknown>,
+): string | null => {
+  for (const key of ["task_team_run_id", "taskTeamRunId"]) {
+    const value = payload[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return null;
+};
+
+export const resolveTaskTeamScopedToolApprovalTargetSelector = (
+  payload: Record<string, unknown>,
+): TeamMemberSelector | null => resolveTeamMemberSelectorFromPayload(payload, {
+  pathKeys: [
+    "task_team_relative_member_path",
+    "taskTeamRelativeMemberPath",
+  ],
+  routeKeyKeys: [
+    "task_team_relative_member_route_key",
+    "taskTeamRelativeMemberRouteKey",
+  ],
+});
+
 export const resolveToolApprovalTargetRunId = (
   payload: Record<string, unknown>,
 ): string | null => {

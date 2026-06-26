@@ -91,6 +91,12 @@ const messages = {
     "Subteam members",
   "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
     "Task agent",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_badge":
+    "Task team",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_scoped_badge":
+    "Task scoped",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_status":
+    "Task-team status",
   "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
     "Member",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
@@ -104,6 +110,14 @@ const messages = {
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.task_agent_badge":
     "Task agent",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
+    "Approval required",
+  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.active_task_executions":
+    "Active task executions",
+  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_agent_badge":
+    "Task agent",
+  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_team_badge":
+    "Task team",
+  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.approval_required":
     "Approval required",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",

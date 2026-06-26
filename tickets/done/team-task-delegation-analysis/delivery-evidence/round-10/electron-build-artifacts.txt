@@ -1,0 +1,14 @@
+Electron macOS build artifact manifest
+Generated at: 2026-06-26T13:25:37Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac
+Log: /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/electron-mac-build.log
+
+Top-level electron-dist contents:
+FILE /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.77.dmg  401074740 bytes
+FILE /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.77.dmg.blockmap  418294 bytes
+FILE /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.77.zip  396816498 bytes
+FILE /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.77.zip.blockmap  407561 bytes
+FILE /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/latest-mac.yml  561 bytes
+DIR  /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/mac-arm64
+DIR  /Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app

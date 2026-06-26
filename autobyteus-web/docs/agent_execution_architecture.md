@@ -89,9 +89,12 @@ tool invocation. For team streams, approval dispatch must use the structured
 route key/path. When the pending approval belongs to a delegated task-agent run,
 the target must also carry the concrete `task_agent_run_id` emitted by the
 backend so approval/denial routes to that task-scoped runtime rather than the
-logical member template. The frontend must not rebuild approval targets from the
-current focused member, scalar aliases, or invocation-id fallbacks after focus
-changes.
+logical member template. When the pending approval belongs to a task-team scoped
+child, the target must carry `task_team_run_id` plus the emitted
+`task_team_relative_member_path` or `task_team_relative_member_route_key`; a
+nested task-agent approval can also carry `task_agent_run_id` as the concrete
+child-run guard. The frontend must not rebuild approval targets from the current
+focused member, scalar aliases, or invocation-id fallbacks after focus changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
@@ -163,28 +166,40 @@ member-scoped active history/snapshot/event, the other members must stay at
 their own member-scoped status, or default to `offline/canInterrupt=false`
 until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
 out aggregate team `running` or `initializing` state to every member row.
-Delegated task-agent instances are task-scoped transient child entities under
-their logical member/template. When team stream payloads carry explicit
-task-agent identity (`task_agent_instance_id`, `task_agent_run_id`, `task_id`)
-plus logical member metadata (`member_path` / `member_route_key` and
-`source_path` / `source_route_key`), `TeamStreamingService` creates a temporary
-task-agent context/node keyed by the task-agent run id.
-`TeamTaskAgentActivityBar` renders these nodes in an **Active task agents**
-strip as concrete task children, and shows pending approvals on the task-agent
-card when the task-agent runtime is waiting for tool approval. Running and
-awaiting-acceptance task-agent children must remain visible and addressable
-after active team reopen/hydration, even when server resume metadata only lists
-the stable logical coordinator/member rows. Run-open hydration therefore
-restores concrete children from live task-agent projection/identity instead of
-collapsing them into the logical member parent. Stream message routing is owned
-by the team-stream member context resolver: task-agent identity wins first,
-then exact logical route/path identity, then compatible run-id fallback. The
-frontend must not recreate the removed `isTaskAgentRunId` generated-run-id
-heuristic or any other run-id-format parser as a routing authority. After
-delegator acceptance and backend settlement/offline cleanup, the frontend
-removes the transient child node/card while preserving the logical member
-parent and the coordinator/member history that records the delegated task
-completion.
+Delegated task executions are task-scoped transient child entities rather than
+structural team topology. When team stream payloads carry explicit task-agent
+identity (`execution_kind: "task_agent"`, `task_agent_instance_id`,
+`task_agent_run_id`, `task_id`) plus logical member metadata (`member_path` /
+`member_route_key` and `source_path` / `source_route_key`),
+`TeamStreamingService` creates a temporary task-agent context/node keyed by the
+task-agent run id. When payloads carry task-team identity
+(`execution_kind: "task_team"`, `task_team_instance_id`, `task_team_run_id`,
+`task_id`, `team_path`, and `team_route_key`), the service creates a temporary
+task-team root node distinct from the structural `agent_team` member. Events
+inside that task-team child run must carry `task_team_run_id` plus
+`task_team_relative_member_path` or `task_team_relative_member_route_key`; the
+frontend clones scoped child member nodes/contexts under the task-team root and
+drops task-team scoped events that lack a task-team run id instead of guessing
+from the structural route.
+
+`TeamActiveTaskExecutionsBar` renders task-agent and task-team nodes in an
+active task executions strip as concrete task children, and shows pending
+approvals on the appropriate task execution card when the runtime is waiting for
+tool approval. `TeamMemberMonitorTile` renders task-team roots with a task-team
+badge, lifecycle/timeline status, and scoped child rows instead of falling back
+to the structural conversation feed. Running and awaiting-acceptance task
+executions must remain visible after active team reopen/hydration, even when
+server resume metadata only lists stable logical coordinator/member rows.
+Run-open hydration therefore restores concrete task executions from live
+projection/identity instead of collapsing them into the logical member or team
+parent. Stream routing is projection-first: task-team root/scoped child identity
+wins before task-agent identity, then exact logical route/path identity, then
+compatible run-id fallback. The frontend must not recreate the removed
+`isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
+as a routing authority. After delegator acceptance and backend settlement or
+offline cleanup, the frontend removes the transient task execution root, scoped
+children, and nested task-agent projections while preserving the structural
+member/team topology and the history that records the delegated task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -475,13 +490,13 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent identity update the transient task-agent context and remove its card after terminal `offline`; resolver-owned routing must not depend on generated run-id patterns. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
 | `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
 | `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
-| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain their concrete task-agent run id and logical member route/path for card-level approve/deny routing. |
+| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain concrete task-agent run id and logical member route/path, while task-team scoped approvals retain task-team run id plus relative child selector for card-level approve/deny routing. |
 | `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
 | `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
 | `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |

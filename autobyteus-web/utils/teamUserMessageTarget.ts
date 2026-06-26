@@ -10,6 +10,7 @@ export type TeamUserMessageTargetResolutionReason =
   | 'missing_node'
   | 'missing_leaf_context'
   | 'subteam_without_leaf_context'
+  | 'task_execution_focus'
   | 'task_agent_only_logical_member';
 
 export interface TeamUserMessageTarget {
@@ -52,6 +53,10 @@ const resolveRouteTarget = (
   const node = teamContext.memberNodesByRouteKey.get(memberRouteKey) || null;
   if (!node) {
     return buildResolution(null, memberRouteKey, 'missing_node');
+  }
+
+  if (node.isTaskTeamInstance || node.isTaskTeamChildProjection) {
+    return buildResolution(null, memberRouteKey, 'task_execution_focus');
   }
 
   if (node.memberKind === 'agent_team') {

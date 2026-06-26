@@ -60,7 +60,9 @@ describe("task delegation runtime descriptions", () => {
   it("describes the pure task result/review protocol without lifecycle chat fallback", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toMatch(/Delegate one ready-to-run task/i);
-    expect(delegateEntry.description).toContain("member_name");
+    expect(delegateEntry.description).toContain("target");
+    expect(delegateEntry.description).toContain("member");
+    expect(delegateEntry.description).toContain("team");
     expect(delegateEntry.description).toContain("description");
     expect(delegateEntry.description).toContain("reference_files");
     expect(delegateEntry.description).toContain("submit_task_result");
@@ -70,12 +72,12 @@ describe("task delegation runtime descriptions", () => {
 
     const delegateSchema = buildDelegateTaskParameterSchema();
     expect(delegateSchema.parameters.map((parameter) => parameter.name)).toEqual([
-      "member_name",
+      "target",
       "description",
       "reference_files",
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
-    expect(findParameter(delegateSchema, "member_name")?.required).toBe(true);
+    expect(findParameter(delegateSchema, "target")?.required).toBe(true);
     expect(findParameter(delegateSchema, "description")?.description).toContain("Complete ready-to-run work-packet body");
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateSchema)).not.toContain("completion_criteria");
@@ -83,7 +85,7 @@ describe("task delegation runtime descriptions", () => {
 
   it("describes submit_task_result as context-bound and review_task_result as accept-or-revise", () => {
     const submitEntry = getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME);
-    expect(submitEntry.description).toContain("bound to the current task-agent context");
+    expect(submitEntry.description).toContain("bound to the current task-agent or task-team ingress context");
     expect(submitEntry.description).toContain("message");
     expect(submitEntry.description).toContain("reference_files");
     expect(submitEntry.description).not.toContain("Do not pass");
@@ -107,7 +109,7 @@ describe("task delegation runtime descriptions", () => {
     ]);
     expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["mark", "task", "completed"].join("_"));
     expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["accept", "task"].join("_"));
-    expect(adapters[1]?.definition.description).toContain("bound to the current task-agent context");
+    expect(adapters[1]?.definition.description).toContain("bound to the current task-agent or task-team ingress context");
     expect(adapters.every((adapter) => !adapter.isAvailable({
       configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
       sender: null,

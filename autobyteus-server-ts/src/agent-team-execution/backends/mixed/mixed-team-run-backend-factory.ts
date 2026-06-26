@@ -1,4 +1,5 @@
 import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
+import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import {
   AgentMemoryLocationService,
   getAgentMemoryLocationService,
@@ -45,8 +46,8 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
       options.createTeamManager ?? ((context, subTeamRunFactory) => new MixedTeamManager(context, { subTeamRunFactory }));
     this.memoryLocationService = options.memoryLocationService ?? getAgentMemoryLocationService();
     this.subTeamRunFactory = new MixedSubTeamRunFactory({
-      buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary) =>
-        this.buildTeamRunContext(config, teamRunId, restoreRuntimeContext, parentBoundary),
+      buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary, taskTeamInstance) =>
+        this.buildTeamRunContext(config, teamRunId, restoreRuntimeContext, parentBoundary, taskTeamInstance),
       createTeamManager: (context) => this.createTeamManager(context, this.subTeamRunFactory),
     });
   }
@@ -69,6 +70,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
     teamRunId: string,
     restoreRuntimeContext: MixedTeamRunContext | null = null,
     parentBoundary: MixedParentBoundaryContext | null = null,
+    taskTeamInstance: TaskTeamInstanceIdentity | null = null,
   ): TeamRunContext<MixedTeamRunContext> {
     const memoryScope = this.getContextMemoryScope(teamRunId, parentBoundary);
     const memberTree = this.attachRuntimeIdentity(config.memberTree, memoryScope);
@@ -78,6 +80,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         this.buildRuntimeMemberContext(memberConfig, restoreRuntimeContext),
       ),
       parentBoundary,
+      taskTeamInstance,
     });
 
     return new TeamRunContext({

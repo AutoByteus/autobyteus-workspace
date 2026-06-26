@@ -286,14 +286,20 @@ Route-key/path identity from metadata remains authoritative for reconnect,
 stream attribution, focus changes, and command targeting. Stream payloads for
 nested activity can include `member_path`, `member_route_key`, `source_path`,
 and `source_route_key`; one-name aliases are display compatibility only.
-Delegated task-agent stream payloads add concrete `task_agent_instance_id`,
-`task_agent_run_id`, and `task_id` fields. The web client projects those
-payloads as transient task-agent child nodes under the stable logical member,
-uses the explicit task-agent run id for child execution identity, and removes
-the child after accepted settlement/offline cleanup. Logical member parents
-remain part of the stable team topology. Active-execution focus, send,
-interrupt, and run-open hydration use this explicit parent/child projection
-instead of parsing generated run-id formats.
+Delegated task execution stream payloads add explicit execution identity.
+Task-agent payloads carry `execution_kind: "task_agent"`,
+`task_agent_instance_id`, `task_agent_run_id`, and `task_id`; the web client
+projects them as transient task-agent child nodes under the stable logical
+member. Task-team payloads carry `execution_kind: "task_team"`,
+`task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
+`team_route_key`; the client projects them as transient task-team root nodes
+that are distinct from the structural `agent_team` member. Child-member events
+inside a task-team run must carry `task_team_run_id` plus relative child route
+or path fields, and the client scopes those child nodes/contexts under the
+concrete task-team run. Logical member/team parents remain part of the stable
+team topology. Active-execution focus, send/approval targeting, interrupt, and
+run-open hydration use explicit task execution identity instead of parsing
+generated run-id formats or guessing from structural team names.
 
 Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
 shows the subteam Team Messages perspective, while focusing a leaf such as

@@ -29,20 +29,17 @@ import {
   INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE,
   SEND_MESSAGE_INVALID_TARGET_MESSAGE,
   TEAM_COMMAND_INVALID_TARGET_CODE,
-  TOOL_APPROVAL_INVALID_TARGET_MESSAGE,
-  TOOL_APPROVAL_MISSING_TARGET_MESSAGE,
   hasInvalidCommandSelectorFields,
   resolveInterruptGenerationTargetRunId,
   resolveInterruptGenerationTargetSelector,
   resolveSendMessageTargetSelector,
-  resolveToolApprovalTargetRunId,
-  resolveToolApprovalTargetSelector,
 } from "./team-command-selector-parser.js";
 import {
   TeamRuntimeStatusSnapshotService,
   getTeamRuntimeStatusSnapshotService,
 } from "./team-runtime-status-snapshot-service.js";
 import { convertTeamRunEventToServerMessage } from "./team-run-event-websocket-message-mapper.js";
+import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -405,44 +402,13 @@ export class AgentTeamStreamHandler {
     approved: boolean,
     connection: WebSocketConnection | null,
   ): Promise<void> {
-    const invocationId = payload.invocation_id;
-    if (typeof invocationId !== "string" || invocationId.length === 0) {
-      logger.warn("Team tool approval missing invocation_id");
-      return;
-    }
-
-    const activeRun = this.resolveCommandRun(teamRunId);
-    if (!activeRun) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: active run not found.`);
-      return;
-    }
-
-    const reason = typeof payload.reason === "string" ? payload.reason : null;
-    if (hasInvalidCommandSelectorFields(payload)) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: ${TOOL_APPROVAL_INVALID_TARGET_MESSAGE}`);
-      this.sendInvalidTarget(connection, TOOL_APPROVAL_INVALID_TARGET_MESSAGE);
-      return;
-    }
-    const approvalTarget = resolveToolApprovalTargetSelector(payload);
-
-    if (!approvalTarget) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: ${TOOL_APPROVAL_MISSING_TARGET_MESSAGE}`);
-      this.sendInvalidTarget(connection, TOOL_APPROVAL_MISSING_TARGET_MESSAGE);
-      return;
-    }
-
-    const result = await activeRun.approveToolInvocation(
-      approvalTarget,
-      invocationId,
+    await handleTeamToolApprovalCommand({
+      teamRunId,
+      payload,
       approved,
-      reason,
-      resolveToolApprovalTargetRunId(payload),
-    );
-    if (!result.accepted) {
-      logger.warn(
-        `TOOL_APPROVAL rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-      );
-    }
+      connection,
+      activeRun: this.resolveCommandRun(teamRunId),
+    });
   }
 
   private resolveCommandRun(

@@ -9,7 +9,10 @@ const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
 const DelegateTaskInputSchema = z.object({
-  member_name: nonEmptyString("member_name"),
+  target: z.object({
+    kind: z.enum(["member", "team"]),
+    name: nonEmptyString("target.name"),
+  }).strict(),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict();
@@ -41,9 +44,7 @@ export const parseDelegateTaskInput = (
   rawArguments: Record<string, unknown>,
 ): DelegateTaskInput => {
   const result = DelegateTaskInputSchema.safeParse(rawArguments);
-  if (!result.success) {
-    throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
-  }
+  if (!result.success) throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
   return result.data;
 };
 
@@ -51,9 +52,7 @@ export const parseSubmitTaskResultInput = (
   rawArguments: Record<string, unknown>,
 ): SubmitTaskResultInput => {
   const result = SubmitTaskResultInputSchema.safeParse(rawArguments);
-  if (!result.success) {
-    throw new Error(`Invalid submit_task_result input: ${parseZodIssues(result.error)}`);
-  }
+  if (!result.success) throw new Error(`Invalid submit_task_result input: ${parseZodIssues(result.error)}`);
   return result.data;
 };
 
@@ -61,8 +60,6 @@ export const parseReviewTaskResultInput = (
   rawArguments: Record<string, unknown>,
 ): ReviewTaskResultInput => {
   const result = ReviewTaskResultInputSchema.safeParse(rawArguments);
-  if (!result.success) {
-    throw new Error(`Invalid review_task_result input: ${parseZodIssues(result.error)}`);
-  }
+  if (!result.success) throw new Error(`Invalid review_task_result input: ${parseZodIssues(result.error)}`);
   return result.data;
 };

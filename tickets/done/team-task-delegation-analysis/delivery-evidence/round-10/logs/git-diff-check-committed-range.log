@@ -1,0 +1,7 @@
+# Delivery integrated-state committed diff whitespace check
+started_at=2026-06-26T13:08:54Z
+head=ab5ce30950f899240d1838ff5fbbe159fbffaa5a
+base=a5c11c59188a056b9f106a585c50d106af3efa8a
+command=git diff --check origin/personal...HEAD
+exit_status=0
+ended_at=2026-06-26T13:08:54Z

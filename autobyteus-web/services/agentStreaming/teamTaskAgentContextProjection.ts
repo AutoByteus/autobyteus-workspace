@@ -16,6 +16,13 @@ export interface TaskAgentStreamIdentity {
   taskId: string | null;
   logicalMemberRouteKey: string | null;
   logicalMemberPath: string[];
+  parentTaskTeamRunId?: string | null;
+  parentTaskTeamInstanceId?: string | null;
+  parentTaskId?: string | null;
+  taskTeamRelativeMemberRouteKey?: string | null;
+  taskTeamRelativeMemberPath?: string[] | null;
+  structuralSourceRouteKey?: string | null;
+  structuralSourcePath?: string[] | null;
 }
 
 const taskAgentIdentityByContext = new WeakMap<AgentContext, TaskAgentStreamIdentity>();
@@ -23,6 +30,8 @@ const taskAgentIdentityByContext = new WeakMap<AgentContext, TaskAgentStreamIden
 const cloneTaskAgentIdentity = (identity: TaskAgentStreamIdentity): TaskAgentStreamIdentity => ({
   ...identity,
   logicalMemberPath: [...identity.logicalMemberPath],
+  taskTeamRelativeMemberPath: identity.taskTeamRelativeMemberPath ? [...identity.taskTeamRelativeMemberPath] : null,
+  structuralSourcePath: identity.structuralSourcePath ? [...identity.structuralSourcePath] : null,
 });
 
 const setTaskAgentContextIdentity = (
@@ -208,6 +217,13 @@ const buildTaskAgentNode = (
     taskAgentRunId: identity.taskAgentRunId,
     taskId: identity.taskId,
     logicalMemberRouteKey: identity.logicalMemberRouteKey,
+    parentTaskTeamRunId: identity.parentTaskTeamRunId ?? null,
+    parentTaskTeamInstanceId: identity.parentTaskTeamInstanceId ?? null,
+    parentTaskId: identity.parentTaskId ?? null,
+    taskTeamRelativeMemberRouteKey: identity.taskTeamRelativeMemberRouteKey ?? null,
+    taskTeamRelativeMemberPath: identity.taskTeamRelativeMemberPath ? [...identity.taskTeamRelativeMemberPath] : null,
+    structuralSourceRouteKey: identity.structuralSourceRouteKey ?? null,
+    structuralSourcePath: identity.structuralSourcePath ? [...identity.structuralSourcePath] : null,
   };
 };
 

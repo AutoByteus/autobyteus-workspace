@@ -3,6 +3,10 @@ import {
   buildTeamMembershipRosterManifest,
   renderTeamMembershipRosterManifest,
 } from "./member-team-roster-manifest.js";
+import {
+  buildDelegationTargetRosterManifest,
+  renderDelegationTargetRosterManifest,
+} from "./delegation-target-roster-builder.js";
 
 type MemberRunInstructionComposerInput = {
   teamInstruction: string | null;
@@ -85,15 +89,20 @@ export const composeMemberRunInstructions = (
     if (runtimeLines.length > 0) {
       runtimeLines.push("");
     }
+    runtimeLines.push(renderDelegationTargetRosterManifest(
+      buildDelegationTargetRosterManifest(memberTeamContext!),
+    ));
+    runtimeLines.push("");
     runtimeLines.push("Task delegation protocol");
-    runtimeLines.push("- Use `delegate_task` to assign one bounded ready-to-run task to an exact logical team member. Provide `member_name`, a complete `description`, and optional `reference_files`.");
+    runtimeLines.push('- Use `delegate_task` to assign one bounded ready-to-run task to an explicit target object: `{ target: { kind: "member" | "team", name }, description, reference_files? }`.');
+    runtimeLines.push("- Member targets are physical current-team agent members. Team targets are visible current-team teams/subteams; the team is accountable and the listed ingress coordinator receives the initial packet.");
     runtimeLines.push("- To assign multiple independent tasks, call `delegate_task` separately for each task.");
     runtimeLines.push("- Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
-    runtimeLines.push("- Activated task-agent instances receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
-    runtimeLines.push("- Task-agents submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional `reference_files`.");
-    runtimeLines.push("- The original delegator reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty message and are delivered by the system to the same task-agent.");
+    runtimeLines.push("- Activated task-agent or task-team executions receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
+    runtimeLines.push("- Task execution targets submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional `reference_files`.");
+    runtimeLines.push("- The original delegator reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty message and are delivered by the system to the same execution instance.");
     runtimeLines.push("- `send_message_to` remains ordinary agent message delivery only. Do not use it for task result submission, revision requests, acceptance, or finalization.");
-    runtimeLines.push("- After the original delegator accepts the task, the framework settles or exits the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");
+    runtimeLines.push("- After the original delegator accepts the task, the framework settles or exits the final task execution after safe gates confirm no delegated work remains for that execution.");
   }
 
   return {

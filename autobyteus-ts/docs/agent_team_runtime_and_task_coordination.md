@@ -1,8 +1,9 @@
 # Agent Team Runtime and Task Coordination
 
 The native `autobyteus-ts` agent-team runtime has been decommissioned. Team
-launch, restore, member routing, scoped team communication, task-agent
-activation, and team stream projection are owned by `autobyteus-server-ts` via
+launch, restore, member routing, scoped team communication, task-agent and
+task-team activation, and team stream projection are owned by
+`autobyteus-server-ts` via
 the server stack:
 
 `TeamRun -> MixedTeamManager -> AgentRunManager -> runtime AgentRun backend`
@@ -45,15 +46,16 @@ The removed native surface included:
 
 Server-created AutoByteus team members are ordinary `AgentRun`s configured by
 the server with `MemberTeamContext`-derived instructions and primitive
-`customData.teamContext` fields. Any future team-task UI or ledger must be
-designed from server-owned task-delegation data, not from native
-`autobyteus-ts` task state.
+`customData.teamContext` fields. Team-task UI, ledger state, task-agent
+instances, and task-team child runs are designed from server-owned
+task-delegation data, not from native `autobyteus-ts` task state.
 
 ## Streaming Boundary
 
 Native `AgentEventStream` records remain single-agent stream records. Server
 team streams enrich child agent events, Team Communication messages, task-agent
-status metadata, and reference-file entries under `autobyteus-server-ts`.
+and task-team status metadata, scoped child identity, and reference-file entries
+under `autobyteus-server-ts`.
 Agent-level events can still include generic `SYSTEM_TASK_NOTIFICATION` and
 `TODO_LIST_UPDATE` stream items where the single-agent runtime emits them.
 These are not native team task-plan events.
@@ -64,47 +66,59 @@ The cross-runtime task workflow lives in `autobyteus-server-ts` and is owned by
 `TaskDelegationService` plus the server tool manifest under
 `src/agent-tools/task-delegation`. Native `autobyteus-ts` teams do not own this
 model-facing workflow. Server-managed Codex, Claude, AutoByteus-in-server-team,
-and mixed team paths own the supported task-agent lifecycle.
+and mixed team paths own member-target task-agent lifecycle and team-target
+task-team child-run lifecycle.
 
 ### `delegate_task`
 
 A coordinator/delegator creates one bounded ready-to-run task per tool call with
-direct fields:
+explicit accountable target fields:
 
-- `member_name`: the exact logical team member/template name from the current
-  roster;
+- `target`: `{ kind: "member" | "team", name }`; `member` targets are physical
+  current-team agent members, while `team` targets are visible current-team
+  `agent_team` / subteam members that own the delegated work;
 - `description`: the complete work-packet body, including objective, context,
   scope, constraints, done conditions, and expected output guidance;
-- optional `reference_files`: file or artifact paths the task-agent should
-  inspect.
+- optional `reference_files`: file or artifact paths the task execution target
+  should inspect.
+
+The old direct `member_name` selector is not the current model-facing surface.
+Communication recipients are not delegation targets: a subteam representative
+can receive ordinary `send_message_to` traffic while the visible subteam itself
+is the `delegate_task` team target.
 
 The service creates one internal ledger record, assigns a stable id such as
-`task_0001`, and starts one concrete task-agent instance for the accepted task.
-Multiple independent tasks are represented by multiple `delegate_task` calls.
-For sequential follow-up work, the coordinator reviews task A's submitted result
-and then calls `delegate_task` again for task B.
+`task_0001`, and activates one execution instance for the accepted task. Member
+targets start one concrete task-agent instance. Team targets start one
+concrete, task-scoped child team run whose ingress coordinator receives the work
+packet while the logical team remains the accountable owner. Multiple
+independent tasks are represented by multiple `delegate_task` calls. For
+sequential follow-up work, the coordinator reviews task A's submitted result and
+then calls `delegate_task` again for task B; a later team-target task receives a
+fresh task-team run identity rather than reusing the completed run.
 
 ### Result submission and review
 
-Activated task-agent instances receive a system work packet that contains the
-task label, logical member identity, rich description, reference files, concrete
-runtime identity, and lifecycle instructions. The packet explicitly tells the
-task-agent not to poll for tasks; all necessary task details are pushed with the
-activation.
+Activated task-agent and task-team executions receive a system work packet that
+contains the task label, target identity, rich description, reference files,
+concrete runtime identity (`target_agent_run_id` or `task_team_run_id`), and
+lifecycle instructions. The packet explicitly tells the execution target not to
+poll for tasks; all necessary task details are pushed with the activation.
 
-Task-agents submit reviewable output with `submit_task_result({ message,
-reference_files? })`. The task is inferred from the bound task-agent context, so
-the model must not pass task selectors such as `task_id`, `task_name`,
-`member_name`, or status fields. Successful submission records a stable
-submission id, moves the task to `awaiting_review`, and system-notifies the
-original delegator.
+Task-agents and task-team ingress contexts submit reviewable output with
+`submit_task_result({ message, reference_files? })`. The task is inferred from
+the bound execution context, so the model must not pass task selectors such as
+`task_id`, `task_name`, `member_name`, or status fields. Successful submission
+records a stable submission id, moves the task to `awaiting_review`, and
+system-notifies the original delegator.
 
 Original delegators review the latest pending submission with
 `review_task_result({ task_id, decision, message?, reference_files? })`.
 `decision="request_revision"` requires a non-empty message and system-notifies
-that same task-agent. `decision="accept"` marks the task accepted and requests
-safe task-agent settlement. Every review records the reviewed submission id so
-multi-cycle result/revision history is explicit.
+that same task execution instance. `decision="accept"` marks the task accepted
+and requests safe settlement for the task-agent or task-team execution. Every
+review records the reviewed submission id so multi-cycle result/revision history
+is explicit.
 
 `send_message_to` remains available for ordinary teammate communication and
 handoffs. It is not the task result, revision, acceptance, or finalization
@@ -115,21 +129,30 @@ protocol.
 Server-owned task delegation is event-driven rather than model-polled:
 
 - accepted work-packet activations emit `TASK_DELEGATION_ACTIVATED`;
-- task-agent result submissions emit `TASK_DELEGATION_RESULT_SUBMITTED` and a
-  status projection containing the pending submission id;
+- result submissions emit `TASK_DELEGATION_RESULT_SUBMITTED` and a status
+  projection containing the pending submission id;
 - delegator reviews emit `TASK_DELEGATION_RESULT_REVIEWED` and a status
   projection containing `reviewId` and `reviewedSubmissionId`;
 - system notification delivery failure does not roll back valid lifecycle state;
   tool results return `notification_delivered` and deterministic `warnings[]`.
 
-After acceptance, the framework requests settlement for the concrete task-agent
-instance only after the current tool call can finish. The settlement coordinator
-waits for the bound task-agent run to become idle/offline, rechecks that no
-non-terminal work is assigned to that task-agent run and no non-terminal child
-delegation is owned by that task-agent run, protects the coordinator by default,
-and calls the team-run settlement boundary. The internal task-agent run identity
-is the stale-route guard, so a later replacement instance is not accidentally
-settled.
+Task-agent events carry explicit `task_agent_instance_id`, `task_agent_run_id`,
+and `task_id`. Task-team root events carry `execution_kind: "task_team"`,
+`task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
+`team_route_key`; child events inside the task-team run also carry
+`task_team_relative_member_path` / `task_team_relative_member_route_key` so
+clients can project scoped child activity without mutating the structural team
+node.
+
+After acceptance, task-agent settlement waits for the bound task-agent run to
+become idle/offline, rechecks that no non-terminal work is assigned to that run
+and no non-terminal child delegation is owned by it, protects the coordinator by
+default, and calls the team-run settlement boundary with the concrete run id as
+a stale-route guard. Task-team settlement waits until the active child team has
+no open delegation ledger work, no active task-agent instances, and idle/offline
+aggregate status; then it settles the task-team child run, detaches the
+server-side task-delegation service for that child run, and removes the active
+run binding. Future delegation to the same logical team remains topology-based.
 
 ## Developer Guidance
 
@@ -138,8 +161,8 @@ settled.
   finalization.
 - Use `delegate_task`, `submit_task_result`, and `review_task_result` for
   bounded server-managed work with ledger state, result/review events, system
-  notifications, and safe task-agent settlement on supported server team
-  backends.
+  notifications, and safe task-agent or task-team settlement on supported
+  server team backends.
 - Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
   `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
 - If a future MCP transport is added, it should call the existing server-owned

@@ -253,6 +253,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       parentBoundary: this.options.teamContext.runtimeContext.parentBoundary,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
+      taskTeamInstance: this.resolveTaskTeamIngressBinding(),
     });
 
     return new AgentRunConfig({
@@ -267,6 +268,16 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       memberTeamContext,
       applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
     });
+  }
+
+  private resolveTaskTeamIngressBinding() {
+    const taskTeamInstance = this.options.teamContext.runtimeContext.taskTeamInstance ?? null;
+    if (!taskTeamInstance) {
+      return null;
+    }
+    return taskTeamInstance.ingress.memberRouteKey === this.context.memberRouteKey
+      ? taskTeamInstance
+      : null;
   }
 
   private assertRecordableMemberMemoryDir(): void {

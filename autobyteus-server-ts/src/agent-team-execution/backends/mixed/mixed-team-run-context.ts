@@ -5,6 +5,7 @@ import type {
   InterAgentMessageDeliveryHandler,
   TeamRepresentedSubTeam,
 } from "../../domain/inter-agent-message-delivery.js";
+import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import type {
   TeamAgentMemberRuntimeContext,
   TeamMemberRuntimeContext,
@@ -95,17 +96,20 @@ export type MixedTeamRunContextInput = {
   coordinatorMemberRouteKey: string | null;
   memberContexts: MixedTeamMemberContext[];
   parentBoundary?: MixedParentBoundaryContext | null;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 };
 
 export class MixedTeamRunContext {
   readonly coordinatorMemberRouteKey: string | null;
   readonly memberContexts: MixedTeamMemberContext[];
   readonly parentBoundary: MixedParentBoundaryContext | null;
+  readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
 
   constructor(input: MixedTeamRunContextInput) {
     this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey;
     this.memberContexts = [...input.memberContexts];
     this.parentBoundary = input.parentBoundary ?? null;
+    this.taskTeamInstance = input.taskTeamInstance ?? null;
   }
 }
 

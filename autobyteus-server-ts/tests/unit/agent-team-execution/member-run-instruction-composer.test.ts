@@ -314,7 +314,7 @@ describe("member-run-instruction-composer", () => {
       "To assign multiple independent tasks, call `delegate_task` separately for each task.",
     );
     expect(enabled.runtimeInstruction).toContain("Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
-    expect(enabled.runtimeInstruction).toContain("Task-agents submit reviewable results with `submit_task_result`");
+    expect(enabled.runtimeInstruction).toContain("Task execution targets submit reviewable results with `submit_task_result`");
     expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
     expect(enabled.runtimeInstruction).not.toContain("do not pass delegator");
     expect(enabled.runtimeInstruction).not.toContain("completion_criteria");
@@ -322,7 +322,7 @@ describe("member-run-instruction-composer", () => {
     expect(enabled.runtimeInstruction).not.toContain(["accept", "task"].join("_"));
     expect(enabled.runtimeInstruction).not.toContain(["mark", "task", "completed"].join("_"));
     expect(enabled.runtimeInstruction).toContain(
-      "the framework settles or exits the final task-agent instance",
+      "the framework settles or exits the final task execution",
     );
     expect(disabled.runtimeInstruction).not.toContain("Task delegation protocol");
   });

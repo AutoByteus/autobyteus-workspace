@@ -22,7 +22,8 @@ import {
   buildTeamMemberInputMessageId,
 } from "../../../services/team-member-input-event-builder.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
-import type { MixedTeamMemberRegistry } from "../members/mixed-team-member-registry.js";
+import type { PersistentMemberRegistryAccess } from "../members/mixed-persistent-member-registry.js";
+import type { TaskAgentInstanceDeliveryAccess } from "../members/mixed-task-agent-instance-registry.js";
 import type { MixedTeamEventPublish, MixedTeamStatusChange } from "../members/mixed-team-member-handle.js";
 import {
   TeamMessageRecipientResolver,
@@ -39,7 +40,8 @@ export class TeamMemberDeliveryCoordinator {
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: MixedTeamMemberRegistry;
+    memberRegistry: PersistentMemberRegistryAccess;
+    taskAgentDelivery: TaskAgentInstanceDeliveryAccess;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
   }) {
@@ -47,6 +49,7 @@ export class TeamMemberDeliveryCoordinator {
       teamContext: options.teamContext,
       memberRegistry: options.memberRegistry,
       taskAgentDirectory: getTaskAgentDirectory(options.teamContext.runId),
+      resolveTaskAgentLogicalContext: (runId) => options.taskAgentDelivery.resolveTaskAgentLogicalContext(runId),
     });
   }
 
@@ -69,7 +72,7 @@ export class TeamMemberDeliveryCoordinator {
     const tracedRequest = this.attachRecipientInputTrace(normalizedRequest, communicationPayload);
 
     const result = resolvedRecipient.targetKind === "task_agent_run"
-      ? await this.options.memberRegistry.deliverInterAgentMessageToTaskAgent(
+      ? await this.options.taskAgentDelivery.deliverInterAgentMessageToTaskAgent(
           resolvedRecipient.logicalMemberRouteKey,
           resolvedRecipient.targetAgentRunId,
           tracedRequest,
@@ -187,7 +190,7 @@ export class TeamMemberDeliveryCoordinator {
         return resolved;
       }
     }
-    const taskAgentSender = this.options.memberRegistry.resolveTaskAgentLogicalContext(
+    const taskAgentSender = this.options.taskAgentDelivery.resolveTaskAgentLogicalContext(
       request.sender.participant.memberRunId,
     );
     if (taskAgentSender) {

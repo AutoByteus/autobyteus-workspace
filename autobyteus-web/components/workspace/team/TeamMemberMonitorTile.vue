@@ -36,7 +36,14 @@
               variant="compact"
             />
             <span
-              v-if="memberNode?.isTaskAgentInstance"
+              v-if="memberNode?.isTaskTeamInstance"
+              data-test="task-team-badge"
+              class="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-indigo-600"
+            >
+              {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_team_badge') }}
+            </span>
+            <span
+              v-else-if="memberNode?.isTaskAgentInstance"
               class="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-indigo-600"
             >
               {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge') }}
@@ -48,10 +55,17 @@
               {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.member_badge') }}
             </span>
             <span
-              v-if="memberNode?.memberKind === 'agent_team'"
+              v-if="memberNode?.memberKind === 'agent_team' && !memberNode?.isTaskTeamInstance"
               class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
             >
               Team
+            </span>
+            <span
+              v-if="memberNode?.isTaskTeamChildProjection"
+              data-test="task-team-child-badge"
+              class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-indigo-500"
+            >
+              {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_scoped_badge') }}
             </span>
           </div>
         </div>
@@ -79,6 +93,28 @@
         v-else-if="memberNode?.memberKind === 'agent_team'"
         class="h-full overflow-y-auto rounded-lg border border-slate-200 bg-white p-3"
       >
+        <div
+          v-if="memberNode.isTaskTeamInstance"
+          data-test="task-team-lifecycle"
+          class="mb-3 rounded-lg border border-indigo-100 bg-indigo-50/60 p-3"
+        >
+          <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">
+            {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_team_status') }}
+          </p>
+          <p class="mt-1 text-sm font-medium text-indigo-900">
+            {{ memberNode.taskExecutionStatus || 'active' }}
+          </p>
+          <ul v-if="taskTimelineRows.length" class="mt-2 space-y-1">
+            <li
+              v-for="entry in taskTimelineRows"
+              :key="entry.id"
+              class="truncate text-xs text-indigo-700"
+              :title="entry.label"
+            >
+              {{ entry.label }} · {{ entry.status }}
+            </li>
+          </ul>
+        </div>
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
           {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members') }}
         </p>
@@ -97,7 +133,13 @@
                 {{ child.node.displayName || child.node.memberName }}
               </p>
               <span
-                v-if="child.node.memberKind === 'agent_team'"
+                v-if="child.node.isTaskTeamChildProjection"
+                class="rounded-full border border-indigo-100 bg-white px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-indigo-500"
+              >
+                {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.task_scoped_badge') }}
+              </span>
+              <span
+                v-else-if="child.node.memberKind === 'agent_team'"
                 class="rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-slate-500"
               >
                 Team
@@ -170,6 +212,7 @@ const subteamChildRows = computed(() => (
     ? flattenTeamMemberNodesForDisplay(props.memberNode.children)
     : []
 ));
+const taskTimelineRows = computed(() => props.memberNode?.taskTimeline ?? []);
 const interAgentSenderNameById = computed(() => {
   return props.teamContext ? getInterAgentSenderNameById(props.teamContext) : undefined;
 });
