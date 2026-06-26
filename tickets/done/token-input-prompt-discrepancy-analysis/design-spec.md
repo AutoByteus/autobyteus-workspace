@@ -4,8 +4,8 @@
 
 Ready for architecture review.
 
-Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-input-prompt-discrepancy-analysis/tickets/token-input-prompt-discrepancy-analysis/requirements.md`  
-Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-input-prompt-discrepancy-analysis/tickets/token-input-prompt-discrepancy-analysis/investigation-notes.md`  
+Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-input-prompt-discrepancy-analysis/tickets/token-input-prompt-discrepancy-analysis/requirements.md`
+Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-input-prompt-discrepancy-analysis/tickets/token-input-prompt-discrepancy-analysis/investigation-notes.md`
 Provider probe matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-input-prompt-discrepancy-analysis/tickets/token-input-prompt-discrepancy-analysis/provider-probe-matrix.md`
 
 User authorization: the user asked to complete two-round probes, document each provider immediately, then proceed to design. All in-scope paid probes are complete except user-excluded Mistral and MiniMax.
@@ -233,20 +233,20 @@ Build one provider-aware token accounting and pricing path that:
 
 ### Component basis resolution
 
-Parent owner: Token usage enrichment pipeline.  
-Chain: `reported fields + provider/runtime identity + input semantic -> gross/standard/cache/billable output basis -> quality flags`.  
+Parent owner: Token usage enrichment pipeline.
+Chain: `reported fields + provider/runtime identity + input semantic -> gross/standard/cache/billable output basis -> quality flags`.
 Why it matters: this is the only place where provider token semantics are converted into canonical accounting components.
 
 ### Snapshot delta normalization
 
-Parent owner: token usage projections.  
-Chain: `source per-call/per-turn/snapshot component values -> accounting deltas -> meter deltas`.  
+Parent owner: token usage projections.
+Chain: `source per-call/per-turn/snapshot component values -> accounting deltas -> meter deltas`.
 Why it matters: Codex and future snapshot sources must not double-count cumulative snapshots.
 
 ### UI details expansion
 
-Parent owner: Token Meter UI.  
-Chain: `summary -> top cards -> input breakdown rows -> pricing/details section`.  
+Parent owner: Token Meter UI.
+Chain: `summary -> top cards -> input breakdown rows -> pricing/details section`.
 Why it matters: keeps dense provider/pricing data available without overwhelming the primary view.
 
 ## Off-Spine Concerns Around The Spine

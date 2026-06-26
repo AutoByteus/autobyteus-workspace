@@ -1,6 +1,6 @@
 # Provider / Runtime Live Probe Matrix
 
-Date: 2026-06-25  
+Date: 2026-06-25
 Scope rule: every built-in paid/managed provider/runtime where the user may pay provider/API money must be confirmed from a two-round live probe unless explicitly excluded by the user. Local/no-bill, arbitrary custom endpoints, and remote AutoByteus-provider config are not live-probe targets for this task.
 
 ## Final Status
