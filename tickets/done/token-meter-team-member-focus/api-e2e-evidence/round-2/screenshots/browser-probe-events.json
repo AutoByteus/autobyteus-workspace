@@ -1,0 +1,166 @@
+[
+  {
+    "name": "seeded",
+    "detail": {
+      "selectedRunId": "api-e2e-team-run-round-2",
+      "selectedType": "team",
+      "focusedMemberRouteKey": "solution_designer",
+      "runSummaryKeys": [
+        "api-e2e-solution-run",
+        "api-e2e-implementation-run",
+        "api-e2e-code-reviewer-run",
+        "api-e2e-agent-run-round-2"
+      ],
+      "teamSummaryKeys": [
+        "api-e2e-team-run-round-2"
+      ]
+    },
+    "at": "2026-06-26T07:20:27.749Z"
+  },
+  {
+    "name": "solution-focus-pass",
+    "detail": {
+      "solutionHeader": "SD Solution Designer Idle Focus Grid Spotlight",
+      "primarySnippet": "Current prompt 0.6% 777 / 128,000 context tokens GROSS INPUT 1,111 Tokens Cache hit 9.0% Cost $0.0077 OUTPUT 11 Tokens Cost $0.0034 TOTAL ESTIMATE 1,122 Tokens Estimate $0.0111 Complete estimate Input breakdown Uncached / full-price input 1,011 tok $0.0077 Cac",
+      "rows": [
+        {
+          "kind": "team-token-row",
+          "routeKey": "solution_designer",
+          "focused": "true",
+          "text": "Solution DesignerFocusedsolution_designerGross input1,111Output11Total tokens1,122Cost$0.0111Complete estimateIn $0.0077 · Out $0.0034",
+          "height": 139,
+          "width": 247
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "implementation_engineer",
+          "focused": "false",
+          "text": "Implementation Engineerimplementation_engineerGross input2,222Output22Total tokens2,244Cost$0.0222Partial estimateIn $0.0155 · Out $0.0067",
+          "height": 140,
+          "width": 247
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "code_reviewer",
+          "focused": "false",
+          "text": "Code Reviewercode_reviewerGross input3,330Output33Total tokens3,363CostLocal / no API billLocal / no API billIn Local / no API bill · Out Local / no API bill",
+          "height": 147,
+          "width": 247
+        },
+        {
+          "kind": "team-token-total-row",
+          "routeKey": null,
+          "focused": null,
+          "text": "Team totalGross input9,000Output900Total tokens9,900CostMixed currencies/providersMixed currencies/providersIn Mixed currencies/providers · Out Mixed currencies/providers",
+          "height": 147,
+          "width": 247
+        }
+      ]
+    },
+    "at": "2026-06-26T07:20:28.151Z"
+  },
+  {
+    "name": "implementation-focus-pass",
+    "detail": {
+      "implementationHeader": "IE Implementation Engineer Offline Focus Grid Spotlight",
+      "primarySnippet": "Current prompt 0.6% 777 / 128,000 context tokens GROSS INPUT 2,222 Tokens Cache hit 4.5% Cost $0.0155 OUTPUT 22 Tokens Thinking 3 tokens Cost $0.0067 TOTAL ESTIMATE 2,244 Tokens Estimate $0.0222 Partial estimate Input breakdown Uncached / full-price input 2,12",
+      "rows": [
+        {
+          "kind": "team-token-row",
+          "routeKey": "solution_designer",
+          "focused": "false",
+          "text": "Solution Designersolution_designerGross input1,111Output11Total tokens1,122Cost$0.0111Complete estimateIn $0.0077 · Out $0.0034",
+          "height": 120,
+          "width": 247
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "implementation_engineer",
+          "focused": "true",
+          "text": "Implementation EngineerFocusedimplementation_engineerGross input2,222Output22Total tokens2,244Cost$0.0222Partial estimateIn $0.0155 · Out $0.0067",
+          "height": 160,
+          "width": 247
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "code_reviewer",
+          "focused": "false",
+          "text": "Code Reviewercode_reviewerGross input3,330Output33Total tokens3,363CostLocal / no API billLocal / no API billIn Local / no API bill · Out Local / no API bill",
+          "height": 147,
+          "width": 247
+        },
+        {
+          "kind": "team-token-total-row",
+          "routeKey": null,
+          "focused": null,
+          "text": "Team totalGross input9,000Output900Total tokens9,900CostMixed currencies/providersMixed currencies/providersIn Mixed currencies/providers · Out Mixed currencies/providers",
+          "height": 147,
+          "width": 247
+        }
+      ]
+    },
+    "at": "2026-06-26T07:20:28.352Z"
+  },
+  {
+    "name": "non-leaf-focus-pass",
+    "detail": {
+      "nonLeafRows": [
+        {
+          "kind": "team-token-row",
+          "routeKey": "solution_designer",
+          "focused": "false",
+          "text": "Solution Designersolution_designerGross input1,111Output11Total tokens1,122Cost$0.0111Complete estimateIn $0.0077 · Out $0.0034"
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "implementation_engineer",
+          "focused": "false",
+          "text": "Implementation Engineerimplementation_engineerGross input2,222Output22Total tokens2,244Cost$0.0222Partial estimateIn $0.0155 · Out $0.0067"
+        },
+        {
+          "kind": "team-token-row",
+          "routeKey": "code_reviewer",
+          "focused": "false",
+          "text": "Code Reviewercode_reviewerGross input3,330Output33Total tokens3,363CostLocal / no API billLocal / no API billIn Local / no API bill · Out Local / no API bill"
+        },
+        {
+          "kind": "team-token-total-row",
+          "routeKey": null,
+          "focused": null,
+          "text": "Team totalGross input9,000Output900Total tokens9,900CostMixed currencies/providersMixed currencies/providersIn Mixed currencies/providers · Out Mixed currencies/providers"
+        }
+      ],
+      "textSnippet": "Token Meter Live server-accounted usage and estimated API price. Select a leaf team member to view focused token usage. Team Per-member token and cost comparison. Focus a row for full detail above. Solution Designer solution_designer GROSS INPUT 1,111 OUTPUT 11 TOTAL TOKENS 1,122 COST $0.0111 Complete estimate In $0.0077 · Out $0.0034 Implementation Engineer"
+    },
+    "at": "2026-06-26T07:20:28.573Z"
+  },
+  {
+    "name": "agent-header-pass",
+    "detail": {
+      "agentHeader": "SA Standalone Agent - ND-2 Offline",
+      "primarySnippet": "Current prompt 0.6% 777 / 128,000 context tokens GROSS INPUT 3,333 Tokens Cache hit 3.0% Cost $0.0233 OUTPUT 33 Tokens Thinking 3 tokens Cost $0.0100 TOTAL ESTIMATE 3,366 Tokens Estimate $0.0333 Complete estimate Input breakdown Uncached / full-price input 3,2"
+    },
+    "at": "2026-06-26T07:20:28.786Z"
+  },
+  {
+    "name": "zh-cn-token-pass",
+    "detail": {
+      "textSnippet": "Token 用量计 实时显示服务端计量的用量与预估 API 价格。 当前提示词 0.6% 777 / 128,000 上下文 token 总输入 3,333 Token 缓存命中 3.0% 费用 $0.0233 输出 33 Token 思考 3 token 费用 $0.0100 总预估 3,366 Token 预估 $0.0333 完整预估 输入拆分 未缓存 / 全价输入 3,233 tok $0.0233 缓存命中 / 折扣输入 100 tok 缺少价格 输入费用合计 $0.0233 价格详情 最新模型 gpt-5.5-api-e2e 运行时 codex_app_server 价格状态 完整预估 用量报告 2 次模型调用"
+    },
+    "at": "2026-06-26T07:20:29.080Z"
+  },
+  {
+    "name": "browser-probe-pass",
+    "detail": {
+      "screenshots": [
+        "browser-agent-focus.png",
+        "browser-implementation-focus-compact.png",
+        "browser-non-leaf-focus-compact.png",
+        "browser-probe-events.json",
+        "browser-solution-focus-compact.png",
+        "browser-zh-cn-token.png"
+      ]
+    },
+    "at": "2026-06-26T07:20:29.080Z"
+  }
+]

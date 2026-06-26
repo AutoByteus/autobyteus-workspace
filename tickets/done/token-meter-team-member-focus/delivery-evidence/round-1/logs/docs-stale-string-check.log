@@ -1,0 +1,3 @@
+$ rg -n 'TokenUsageHeaderChip|real header chip|Focused member|Member tokens|Member cost|focused-member totals|run/team totals' autobyteus-web/docs/agent_execution_architecture.md autobyteus-web/docs/settings.md
+rg_exit_status=1
+No stale Token Meter/header docs strings found in reviewed durable docs.
