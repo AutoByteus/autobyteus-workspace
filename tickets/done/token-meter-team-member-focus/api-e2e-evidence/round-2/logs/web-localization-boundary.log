@@ -1,0 +1,8 @@
+Command: pnpm -C autobyteus-web guard:localization-boundary
+Started: 2026-06-26T09:05:13+02:00
+
+> autobyteus@1.3.76 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+Finished: 2026-06-26T09:05:13+02:00
