@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
 - Current Execution Round: 3
 - Trigger: User requested a realistic browser validation and corrected the environment requirement: start the backend from this worktree per README, not the Electron internal/static server.
 - Prior Round Reviewed: Yes — Rounds 1 and 2 had no unresolved task-team API/E2E failures; Round 2 live-browser scope was reopened by explicit user request.
@@ -28,7 +28,7 @@ Execution followed the Round 3 coverage investigation. The validation basis was 
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -170,12 +170,12 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/team-ta
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
-- Round 3 active task-team browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live.png`
-- Round 3 active task-team browser evidence JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json`
-- Round 3 accepted/cleaned-up browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png`
-- Round 3 accepted/cleaned-up browser evidence JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
+- Round 3 active task-team browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live.png`
+- Round 3 active task-team browser evidence JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json`
+- Round 3 accepted/cleaned-up browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png`
+- Round 3 accepted/cleaned-up browser evidence JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -224,11 +224,11 @@ No temporary repository-resident scripts or harnesses were created. Round 3 used
   - runtime/model: `codex_app_server` / `gpt-5.5`
 - Browser probe opened `http://127.0.0.1:3020/workspace`, sent the prompt through the visible frontend composer, and observed the frontend WebSocket `ws://localhost:8000/ws/agent-team/browser_parent_nested_team_mquxl2zwihks8_26d2828d378b46e4bee4d6433ddc2bd3`.
 - Active-state evidence passed:
-  - screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live.png` shows `ACTIVE TASK EXECUTIONS`, a `TASK TEAM` card, `MiniChildTeam · task_0001`, task-team run id `minichildteam_88ad9e7840944c2db4da4f47a82ff1c8`, and scoped `child_worker` under the task-team node.
-  - evidence JSON `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json` records `passedVisibleTaskTeamActivation: true`, `activationFrameSeen: true`, and `sentViaFrontendComposer: true`. It also records one non-product Playwright selector parse warning from an early optional wait; subsequent visible composer interaction, websocket observation, DOM match, screenshot, and the no-error follow-up probe all succeeded.
+  - screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live.png` shows `ACTIVE TASK EXECUTIONS`, a `TASK TEAM` card, `MiniChildTeam · task_0001`, task-team run id `minichildteam_88ad9e7840944c2db4da4f47a82ff1c8`, and scoped `child_worker` under the task-team node.
+  - evidence JSON `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json` records `passedVisibleTaskTeamActivation: true`, `activationFrameSeen: true`, and `sentViaFrontendComposer: true`. It also records one non-product Playwright selector parse warning from an early optional wait; subsequent visible composer interaction, websocket observation, DOM match, screenshot, and the no-error follow-up probe all succeeded.
 - Accepted/cleanup evidence passed:
-  - screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png` shows the PM idle, result message `FRONTEND_NESTED_TEAM_OK`, `review_task_result`, and final response `Accepted. The nested team produced FRONTEND_NESTED_TEAM_OK.`
-  - evidence JSON `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json` records `hasFrontendNestedOk: true`, `hasAcceptedFinal: true`, `hasTaskTeamCard: false`, and `hasActiveExecutionBar: false`, confirming the task-team UI cleaned up after terminal rendering while structural nodes remained.
+  - screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png` shows the PM idle, result message `FRONTEND_NESTED_TEAM_OK`, `review_task_result`, and final response `Accepted. The nested team produced FRONTEND_NESTED_TEAM_OK.`
+  - evidence JSON `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json` records `hasFrontendNestedOk: true`, `hasAcceptedFinal: true`, `hasTaskTeamCard: false`, and `hasActiveExecutionBar: false`, confirming the task-team UI cleaned up after terminal rendering while structural nodes remained.
 - `terminateAgentTeamRun(teamRunId: browser_parent_nested_team_mquxl2zwihks8_26d2828d378b46e4bee4d6433ddc2bd3)` — passed after evidence capture.
 
 ### Known Non-Gating Command Failure

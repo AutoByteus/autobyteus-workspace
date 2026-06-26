@@ -290,9 +290,9 @@ Decisions now reflected in the requirements and design spec:
 
 Updated authoritative artifacts:
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/requirements.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/investigation-notes.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/requirements.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/investigation-notes.md`
 
 ## AR-003 / AR-004 Resolution Notes (2026-06-26)
 

@@ -12,12 +12,12 @@ Requirements remain `Design-ready` after CR-005 revision; this design now includ
 
 ## Inputs
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/investigation-notes.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-review-report.md`
-- Implementation handoff reviewed as current implementation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/implementation-handoff.md`
-- Code review report requiring this rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/code-review-report.md`
-- Frontend task-team UI requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/frontend-task-team-ui-requirement-gap.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/investigation-notes.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-review-report.md`
+- Implementation handoff reviewed as current implementation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/implementation-handoff.md`
+- Code review report requiring this rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/code-review-report.md`
+- Frontend task-team UI requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/frontend-task-team-ui-requirement-gap.md`
 - Base branch: `origin/personal`
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis` / `codex/team-task-delegation-analysis`
 

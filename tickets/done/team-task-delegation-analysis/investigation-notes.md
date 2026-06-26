@@ -22,7 +22,7 @@ User is exploring an organizational model where a product-manager agent creates 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis`
 - Current Branch: `codex/team-task-delegation-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis`
 - Bootstrap Base Branch: `origin/personal`
@@ -352,7 +352,7 @@ Rework decision for AR-002:
 
 A stricter code-review pass after functional implementation review requested design-impact rework before API/E2E. Canonical report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/code-review-report.md`
 
 Additional implementation-state files inspected for this rework:
 
@@ -413,14 +413,14 @@ Rework decision for CR-003:
 
 Design spec updated accordingly:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`
 
 
 ## CR-005 Frontend Task-Team Visibility Requirement-Gap Investigation (2026-06-26)
 
 Canonical requirement-gap artifact:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/frontend-task-team-ui-requirement-gap.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/frontend-task-team-ui-requirement-gap.md`
 
 Additional files inspected for this reset:
 
@@ -476,7 +476,7 @@ Requirements updated:
 
 Design spec updated:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`
 
 
 ### Child Member Node Clarification (2026-06-26)
@@ -505,5 +505,5 @@ Design response now recorded in the design spec:
 
 Updated artifacts:
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/requirements.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/requirements.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`

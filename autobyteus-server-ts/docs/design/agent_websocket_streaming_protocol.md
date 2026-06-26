@@ -78,7 +78,13 @@ task-agent execution, the payload also carries explicit task-agent identity:
 `member_path` / `member_route_key`, and canonical `source_path` /
 `source_route_key`. Clients must key the transient task-agent execution by
 `task_agent_run_id` and must not infer task-agent identity from generated run id
-formats.
+formats. When the status belongs to a task-team execution, root events carry
+`execution_kind: "task_team"`, `task_team_instance_id`, `task_team_run_id`,
+`task_id`, `team_path`, and `team_route_key`; child-member events inside that
+task-team run additionally carry `task_team_relative_member_path` and, when
+available, `task_team_relative_member_route_key`. Clients must key task-team
+roots and scoped child projections by `task_team_run_id`, not by the structural
+team route alone.
 
 Startup lifecycle tokens such as `bootstrapping`, `starting`, `startup`,
 `initializing`, and active `uninitialized` normalize to `initializing`, not to
@@ -167,6 +173,13 @@ Team events expose path-aware member identity:
 - delegated task-agent events and member-status overlays also carry
   `task_agent_instance_id`, `task_agent_run_id`, and `task_id` for the concrete
   task-scoped child execution under that logical member.
+- delegated task-team root events carry `execution_kind: "task_team"`,
+  `task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
+  `team_route_key` for the concrete task-scoped child team execution.
+- task-team child events carry `task_team_run_id` plus
+  `task_team_relative_member_path` / `task_team_relative_member_route_key` so
+  clients can route nested status, transcript, and tool lifecycle messages to
+  the scoped child projection without mutating the structural subteam node.
 - `sub_team_node_name` is a deprecated display alias only and must not be used
   as routing identity.
 
@@ -275,12 +288,20 @@ event:
 - `source_route_key` / `sourceRouteKey`, `member_route_key` /
   `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
 
+For a task-team scoped child approval, the payload must also include
+`task_team_run_id` / `taskTeamRunId` and must use the relative child selector
+emitted by the backend: `task_team_relative_member_path` /
+`taskTeamRelativeMemberPath` or `task_team_relative_member_route_key` /
+`taskTeamRelativeMemberRouteKey`. A nested task-agent approval may additionally
+round-trip `task_agent_run_id` / `taskAgentRunId` as the concrete run guard.
+
 Scalar name/id fields (`agent_name`, `agentName`, `member_name`,
 `memberName`, `target_member_name`, `targetMemberName`, `target_agent_name`,
 `targetAgentName`, `agent_id`, and `agentId`) are rejected as approval command
 targets. The client must round-trip the route/path identity emitted with the
 approval request event. An approval request aimed at a subteam member rather
-than a leaf agent is rejected by the runtime.
+than a leaf agent is rejected by the runtime unless it is accompanied by the
+required task-team scoped child identity.
 
 Team interrupt uses a stricter command shape than single-agent interrupt. A
 client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
@@ -298,8 +319,11 @@ For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
 to the active run backend and then to the agent's public
 `postToolExecutionApproval(...)` boundary. For native team runs, the team
 backend resolves the target member and routes the decision through that member
-agent's public approval API via the async team event path. The backend may
-publish approval status/projection events after a valid decision, but
+agent's public approval API via the async team event path. If `task_team_run_id`
+is present, the parent team first resolves that active task-team child run and
+then resolves the relative child selector inside it before invoking the child
+member runtime. The backend may publish approval status/projection events after
+a valid decision, but
 `ToolExecutionApprovalEvent` is not a WebSocket command payload that can start a
 turn, restore a run, or bypass the active member runtime. Stale, inactive,
 no-pending, and interrupted approval attempts are non-restoring failures.

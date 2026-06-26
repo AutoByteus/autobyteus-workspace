@@ -411,7 +411,7 @@
     "sendButtonDisabledBeforeClick": false,
     "sentViaFrontendComposer": true,
     "finalBodyText": "Agents Agent Teams Skills Memory Nodes Workspaces temp_workspace TEAMS BP Browser Parent Nested Team mquxl2zwihks8 (1) Run the nested team browser validation now. Delegate one task to MiniChildTeam. The expected chil... now P product_manager now M MiniChildTeam TEAM now C child_worker now M· MiniChildTeam · task_0001 TEAM now C child_worker now Settings P product_manager Running Focus Grid Spotlight ACTIVE TASK EXECUTIONS 1 TASK TEAM MiniChildTeam · task_0001 minichildteam_88ad9e7840944c2db4da4f47a82ff1c8 active Running You Run the nested team browser validation now. Delegate one task to MiniChildTeam. The expected child result is FRONTEND_NESTED_TEAM_OK. P product_manager Thinking delegate_task Context Files (0) (drag, paste, or upload) Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages No team messages yet Accepted inter-agent messages will appear here with their reference files.",
-    "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live.png"
+    "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live.png"
   },
   "finishedAt": "2026-06-26T12:52:47.157Z",
   "result": {

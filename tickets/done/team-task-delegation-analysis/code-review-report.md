@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/requirements.md`
 - Current Review Round: 10
 - Trigger: API/E2E round 3 corrected the live browser validation after the prior delivery handoff was paused; the corrected package proves the browser ran against the README-started worktree backend instead of Electron `127.0.0.1:29695`.
 - Prior Review Round Reviewed: 9
 - Latest Authoritative Round: 10
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` in the API/E2E round-2 package already under review (`autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts` and `autobyteus-web/components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts`). Round 3 added/updated execution artifacts and browser evidence, not new production source.
 
@@ -38,14 +38,14 @@ Round 10 result: Post-API/E2E durable coverage-code and corrected execution-arti
 This was a narrow post-API/E2E re-review centered on the API/E2E-authored durable coverage and the corrected round-3 execution evidence:
 
 - Updated coverage investigation artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-coverage-investigation.md`
 - Updated execution coverage report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/api-e2e-execution-coverage-report.md`
 - Round-3 browser evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-evidence.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/done/team-task-delegation-analysis/evidence/browser-task-team-live-after-accept-evidence.json`
 - Durable coverage updated by API/E2E round 2 and rechecked for this delivery gate:
   - `autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts`
   - `autobyteus-web/components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts`

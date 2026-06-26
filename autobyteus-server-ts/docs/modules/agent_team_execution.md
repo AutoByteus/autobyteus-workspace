@@ -81,9 +81,13 @@ names exist.
   at a subteam member is rejected; approval clients must use the
   `source_path` / `source_route_key` or member path/route emitted with the
   approval request event. For delegated task-agent tool calls, approval
-  clients must preserve the emitted concrete task-agent run identity so the
+  clients must preserve the emitted concrete `task_agent_run_id` so the
   approval/denial command routes to the active task-agent runtime rather than
-  the logical member template.
+  the logical member template. For task-team scoped child tool calls, approval
+  clients must also round-trip `task_team_run_id` plus the emitted relative
+  child selector (`task_team_relative_member_path` or
+  `task_team_relative_member_route_key`) so the parent team routes the decision
+  into the active task-scoped child team run before resolving the child member.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
   transport metadata only and are not accepted as command target inputs.
 
@@ -105,18 +109,25 @@ handlers, legacy model-facing task-plan tools, or future MCP transport code. The
 model-facing task-delegation protocol is:
 
 - `delegate_task`: a coordinator/delegator submits one bounded ready-to-run task
-  with direct `member_name`, rich `description`, and optional `reference_files`.
-  Multiple independent tasks use multiple `delegate_task` calls.
-- `submit_task_result`: the bound task-agent submits one reviewable result for
-  its current task. The tool is selector-free; task identity comes from the
-  task-agent context.
+  with `target: { kind: "member" | "team", name }`, rich `description`, and
+  optional `reference_files`. Member targets are physical current-team agent
+  members. Team targets are visible current-team `agent_team` / subteam members
+  that become the accountable task owner. The old direct `member_name` selector
+  is not part of the current model-facing surface.
+- `submit_task_result`: the bound task-agent or task-team ingress context
+  submits one reviewable result for its current task. The tool is selector-free;
+  task identity comes from the caller's bound execution context.
 - `review_task_result`: the original delegator reviews the latest pending
-  submission using `decision="accept"` or `decision="request_revision"`.
-  Revision decisions require a non-empty message and are delivered by the system
-  to the same task-agent.
+  submission by `task_id` using `decision="accept"` or
+  `decision="request_revision"`. Revision decisions require a non-empty message
+  and are delivered by the system to the same task-agent or task-team execution
+  instance.
 
 `send_message_to` remains ordinary teammate communication only. It is not the
-task result, revision, acceptance, or finalization protocol.
+task result, revision, acceptance, or finalization protocol. Communication
+recipients and delegation targets are separate prompt rosters: a subteam
+representative/coordinator can be a communication recipient while the visible
+subteam itself is the team delegation target and accountable owner.
 
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
@@ -127,43 +138,59 @@ activation, result/review history, stream projection, and settlement safety.
 The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
-   server-owned `MemberTeamContext` and calls `TaskDelegationToolService`.
-2. The service resolves the active `TeamRun`, creates one `not_started` ledger
-   record, validates the exact `member_name` target against the team roster, and
-   treats the submitted task as independent ready-to-run work.
-3. `TaskDelegationActivationCoordinator` registers the active task-agent run in
-   the team-run `TaskAgentDirectory`, binds the ledger record to the concrete
-   task-agent runtime identity, and starts one task-agent instance for that task
-   through `TeamRun.startTaskAgentInstance(...)`. The work packet includes the
-   derived task label, rich `description`, optional reference files, the
-   task-agent `target_agent_run_id`, original delegator identity, and
-   instructions to use `submit_task_result` for reviewable output.
-4. Accepted activations mark the record `active`, mark the exact run reachable, and
-   emit `TASK_DELEGATION_ACTIVATED`; rejected activations unregister the
-   starting run, roll the record back to `not_started`, and are returned to the
-   tool caller as the direct `delegate_task` activation outcome.
-5. The task-agent calls `submit_task_result`. The ledger records a distinct
-   submission id, moves the task to `awaiting_review`, sets `pendingSubmissionId`,
-   emits `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the
-   notification dispatcher attempts a system notification to the original
-   delegator.
-6. The original delegator calls `review_task_result`. `request_revision` records
+   server-owned `MemberTeamContext`; `TaskDelegationToolRunRouter` binds the
+   tool call either to the active parent `TeamRun` or, for task-team ingress
+   result submission, to the active task-team child run registered for that
+   parent.
+2. `TaskDelegationService` creates one `not_started` ledger record, validates
+   the explicit target object against the delegation target roster, and treats
+   the submitted task as independent ready-to-run work. Delegation targets are
+   topology-derived and are not inferred from communication recipients.
+3. For a member target, activation binds a concrete task-agent execution in the
+   `TaskAgentDirectory`, starts one task-agent instance through
+   `TeamRun.startTaskAgentInstance(...)`, and sends a work packet that includes
+   `target_agent_run_id`, the original delegator identity, the task id, rich
+   `description`, optional reference files, and instructions to use
+   `submit_task_result` for reviewable output.
+4. For a team target, activation materializes a `TaskTeamInstanceIdentity` and
+   child team-run config, starts one task-scoped child team run through
+   `TeamRun.startTaskTeamInstance(...)`, binds the active child run in
+   `TaskTeamActiveRunDirectory`, and sends the work packet to the child team's
+   ingress coordinator/representative. The packet metadata includes
+   `execution_kind: "task_team"`, `task_team_run_id`, and
+   `task_team_instance_id`; the accountable owner remains the logical team
+   target, not the ingress coordinator.
+5. Accepted activations mark the record `active`, mark the exact execution run
+   reachable, and emit `TASK_DELEGATION_ACTIVATED`; rejected activations roll
+   the record back to `not_started`, unregister the starting execution, and are
+   returned to the tool caller as the direct `delegate_task` activation outcome.
+6. The bound task-agent or task-team ingress context calls `submit_task_result`.
+   The ledger records a distinct submission id, moves the task to
+   `awaiting_review`, sets `pendingSubmissionId`, emits
+   `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the notification
+   dispatcher attempts a system notification to the original delegator.
+7. The original delegator calls `review_task_result`. `request_revision` records
    a review linked to the pending submission id, returns the task to `active`,
-   emits review/status events, and attempts a system revision notification to the
-   same task-agent. `accept` records a review linked to the pending submission,
-   marks the task `accepted`, emits review/status events, and requests safe
-   settlement.
-7. Notification delivery is non-transactional after valid lifecycle mutation:
+   emits review/status events, and attempts a system revision notification to
+   the same task execution instance. `accept` records a review linked to the
+   pending submission, marks the task `accepted`, emits review/status events,
+   and requests safe settlement.
+8. Notification delivery is non-transactional after valid lifecycle mutation:
    committed state and events remain authoritative even if the system input is
    rejected. Tool results expose `notification_delivered` and deterministic
    `warnings[]` with `TASK_NOTIFICATION_DELIVERY_FAILED` when delivery fails.
-8. `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
-   the bound task-agent run, verifies `TaskDelegationLedger` has no non-terminal
-   assigned work and no non-terminal child delegations where that task-agent run
-   is the original delegator, protects the coordinator by default, and calls
-   `TeamRun.settleTaskAgentInstance(routeKey, internal task-agent run id,
-   reason)`. The internal run identity is a stale-route guard so a later
-   replacement instance is not accidentally settled.
+9. Task-agent settlement waits for an idle/offline event from the bound
+   task-agent run, verifies there is no non-terminal assigned work or child
+   delegation owned by that run, protects the coordinator by default, and calls
+   `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId, reason)` with a
+   stale-route guard.
+10. Task-team settlement watches the active child team run until the child has no
+    open task-delegation ledger work, no active task-agent instances, and an
+    idle/offline aggregate status. It then calls
+    `TeamRun.settleTaskTeamInstance(logicalTeamRouteKey, taskTeamRunId,
+    reason)`, detaches the task-team run from the delegation run registry, and
+    unbinds it from `TaskTeamActiveRunDirectory`. Future delegations to the same
+    logical team remain topology-based and allocate fresh task-team run identity.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages.
@@ -171,21 +198,30 @@ Current event types include `TASK_DELEGATION_ACTIVATED`,
 `TASK_DELEGATION_RESULT_SUBMITTED`, `TASK_DELEGATION_RESULT_REVIEWED`, and
 `TASK_DELEGATION_STATUS_UPDATED`. Result/review payloads include `submissionId`,
 `reviewId`, and `reviewedSubmissionId` so consumers do not infer relationships
-from history array order.
+from history array order. Flattened payloads include `execution_kind` plus the
+concrete task-agent or task-team execution identity; task-team payloads carry
+`task_team_run_id`, `task_team_instance_id`, `team_route_key`, and `team_path`.
+Events emitted by members inside a task-team child run also carry
+`task_team_relative_member_path` and, when resolvable,
+`task_team_relative_member_route_key` so clients route scoped child events by
+`task_team_run_id` instead of guessing from the structural team route.
 
 ### Task Delegation Validation Notes
 
 Durable deterministic coverage lives in the task-delegation integration/unit
 suites under `tests/integration/agent-team-execution/` and
-`tests/unit/agent-team-execution/`. A gated live mixed-runtime E2E lives at
+`tests/unit/agent-team-execution/`. The integration suite covers member-target
+and team-target delegation, task-team ingress, child tool routing, revision,
+settlement gates, cleanup, and sequential same-logical-team delegation. A gated
+live mixed-runtime E2E lives at
 `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; it creates a real
 GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
-`gpt-5.5` worker. The live path is intentionally skipped unless explicit live
-flags are set, so local/default validation can run the file and expect a skipped
-test while live validation can opt in with an exact `LMSTUDIO_MODEL_ID` for a
-loaded provider-native tool-call-capable model. If `LMSTUDIO_MODEL_ID` is not
-set, the suite falls back to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment
-discovery.
+`gpt-5.5` worker for the concrete task-agent result/revision path. The live path
+is intentionally skipped unless explicit live flags are set, so local/default
+validation can run the file and expect a skipped test while live validation can
+opt in with an exact `LMSTUDIO_MODEL_ID` for a loaded provider-native
+tool-call-capable model. If `LMSTUDIO_MODEL_ID` is not set, the suite falls back
+to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment discovery.
 
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
