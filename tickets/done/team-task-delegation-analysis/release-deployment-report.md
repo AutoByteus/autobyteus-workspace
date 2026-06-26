@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery-stage handoff plus a README-guided local macOS Electron build for user testing. The user first requested repository finalization without a release, then verified the finalized build and requested a new release. Release preparation is now in scope for version `1.3.78`.
+Delivery-stage handoff plus a README-guided local macOS Electron build for user testing. The user first requested repository finalization without a release, then verified the finalized build and requested a new release. Release `v1.3.78` has been published through the documented release helper and all tag-triggered release workflows completed successfully.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records corrected round-10 package, integrated base state, docs sync, delivery checks, browser evidence paths, README-guided local Electron build output, ticket archival, completed no-release finalization, and cleanup.
+- Notes: Handoff summary records corrected round-10 package, integrated base state, docs sync, delivery checks, browser evidence paths, README-guided local Electron build output, ticket archival, cleanup, and completed `v1.3.78` release.
 
 ## Initial Delivery Integration Refresh
 
@@ -65,7 +65,13 @@ Delivery-stage handoff plus a README-guided local macOS Electron build for user 
 
 ## Version / Tag / Release Commit
 
-Release version `1.3.78` is now in scope after the user verified the finalized build and requested a new version. Release notes were added at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`.
+- Release version: `1.3.78`
+- Release notes prep commit: `eb324fb18df7033da39e8b2e70beb0d67d5ffa66` (`docs(ticket): prepare team task delegation release notes`)
+- Release commit: `c2c6a10d24137526e4a90696bad689f020eac1a7` (`chore(release): bump workspace release version to 1.3.78`)
+- Release tag: `v1.3.78` (`dac2942348b8703d442a044b8e9357f32563b081`, targeting `c2c6a10d24137526e4a90696bad689f020eac1a7`)
+- Version sync: `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` both now record `1.3.78`.
+- Curated release notes source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`
+- GitHub release notes source in tagged revision: `.github/release-notes/release-notes.md`
 
 ## Repository Finalization
 
@@ -80,7 +86,7 @@ Release version `1.3.78` is now in scope after the user verified the finalized b
 - Re-integration before final merge result: `Not needed` at this stage; latest tracked base is already integrated.
 - Target branch update result: `Completed` — local `personal` refreshed from `origin/personal` at `a5c11c59188a056b9f106a585c50d106af3efa8a` before merge.
 - Merge into target result: `Completed` — merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a` (`Merge branch 'codex/team-task-delegation-analysis' into personal`).
-- Push target branch result: `Completed` — pushed `personal` to `origin/personal` through merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a`; this final no-release report update is committed on `personal` after the merge for durable recordkeeping.
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` through merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a`, finalization report commit `6dcb2569a2b155cc8a9180df1a949e1d58374eda`, release-notes prep commit `eb324fb18df7033da39e8b2e70beb0d67d5ffa66`, and release commit `c2c6a10d24137526e4a90696bad689f020eac1a7`.
 - Repository finalization status: `Completed`
 - Blocker (if applicable): None.
 
@@ -89,9 +95,19 @@ Release version `1.3.78` is now in scope after the user verified the finalized b
 - Applicable: `Yes` — user requested a new version after verifying the finalized build.
 - Method: documented release helper from repo root.
 - Method reference / command: `pnpm release 1.3.78 -- --release-notes tickets/done/team-task-delegation-analysis/release-notes.md`.
-- Release/publication/deployment result: `Pending release helper execution`
-- Release notes handoff result: `Prepared` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`
+- Release/publication/deployment result: `Completed` — release helper pushed `personal` and tag `v1.3.78`; GitHub Release is published at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.78` with 21 assets.
+- Release notes handoff result: `Completed` — curated ticket notes were copied into `.github/release-notes/release-notes.md` by the release helper and included in tag `v1.3.78`.
 - Blocker (if applicable): None.
+
+### Release Workflow Results
+
+- `Release Messaging Gateway` run `28256188324`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188324
+- `Server Docker Release` run `28256188303`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188303
+- `Desktop Release` run `28256188275`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188275
+- `Android APK Release` run `28256188265`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188265
+- `iOS App Store Connect Release` run `28256188263`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188263
+- Release verification summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/release-v1.3.78-summary.txt`
+- Release verification JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/release-v1.3.78-status.json`
 
 ## Local Electron Build For User Testing
 
@@ -117,13 +133,13 @@ Release version `1.3.78` is now in scope after the user verified the finalized b
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `Not required`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
+- Release notes artifact created before release: `Yes` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`
+- Archived release notes artifact used for release/publication: `Yes`
+- Release notes status: `Published` in GitHub Release `v1.3.78` via `.github/release-notes/release-notes.md`.
 
 ## Deployment Steps
 
-Release helper execution is pending for `v1.3.78`. The release tag will start the documented GitHub release workflows; no separate manual dispatch is planned.
+Executed `pnpm release 1.3.78 -- --release-notes tickets/done/team-task-delegation-analysis/release-notes.md`. The helper bumped package versions, synced managed messaging release manifest metadata, copied curated release notes, committed the release version bump, created annotated tag `v1.3.78`, and pushed `personal` plus the tag. No `release:manual-dispatch` was run. Tag-triggered desktop, Android, iOS, messaging-gateway, and server Docker workflows completed successfully.
 
 ## Environment Or Migration Notes
 
@@ -153,6 +169,9 @@ Delivery-executed checks:
 | Post-verification finalization base refresh | Pass | `origin/personal` remained `a5c11c59188a056b9f106a585c50d106af3efa8a`; log `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/finalization-base-refresh.log`. |
 | Finalization precommit `git diff --check` | Pass | Log `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/finalization-precommit-git-diff-check.log`. |
 | Finalization precommit archived-ticket whitespace scan | Pass | Log `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/finalization-precommit-artifact-whitespace-scan.log`. |
+| Release helper `pnpm release 1.3.78 -- --release-notes tickets/done/team-task-delegation-analysis/release-notes.md` | Pass | Commit `c2c6a10d24137526e4a90696bad689f020eac1a7`; tag `v1.3.78` pushed. |
+| GitHub Release `v1.3.78` | Pass | Published at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.78` with 21 assets. |
+| Tag-triggered release workflows | Pass | Messaging gateway, server Docker, desktop, Android APK, and iOS workflows all completed successfully; see `release-v1.3.78-summary.txt`. |
 
 Upstream authoritative checks are recorded in:
 
@@ -163,8 +182,8 @@ Known caveat: full frontend `nuxi typecheck` remains broad pre-existing debt out
 
 ## Rollback Criteria
 
-If a regression is discovered after finalization, revert merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a` from `personal` after preserving the archived ticket artifacts. Functional rollback should restore the prior member-target-only task-delegation behavior and previous task-agent-only frontend projection. If the `v1.3.78` release must be rolled back before users adopt it, remove or supersede the release/tag according to repository release policy and revert the release-version bump commit if needed.
+If a regression is discovered after finalization, revert merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a` from `personal` after preserving the archived ticket artifacts. Functional rollback should restore the prior member-target-only task-delegation behavior and previous task-agent-only frontend projection. If the `v1.3.78` release must be rolled back before users adopt it, remove or supersede the release/tag according to repository release policy and revert release commit `c2c6a10d24137526e4a90696bad689f020eac1a7` if needed.
 
 ## Final Status
 
-`Repository finalization complete. User requested release after verification; release notes prepared and release helper execution pending for v1.3.78.`
+`Repository finalization complete. Release v1.3.78 published successfully; all tag-triggered release workflows completed successfully.`

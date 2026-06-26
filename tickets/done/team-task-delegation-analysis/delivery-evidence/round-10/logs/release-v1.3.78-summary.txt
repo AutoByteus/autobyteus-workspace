@@ -1,0 +1,42 @@
+Release v1.3.78 verification summary
+Generated: 2026-06-26T18:32:45Z
+Release command: pnpm release 1.3.78 -- --release-notes tickets/done/team-task-delegation-analysis/release-notes.md
+Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.78
+Release commit: c2c6a10d24137526e4a90696bad689f020eac1a7
+Tag: v1.3.78
+
+Remote refs:
+c2c6a10d24137526e4a90696bad689f020eac1a7	refs/heads/personal
+dac2942348b8703d442a044b8e9357f32563b081	refs/tags/v1.3.78
+c2c6a10d24137526e4a90696bad689f020eac1a7	refs/tags/v1.3.78^{}
+
+Workflow statuses:
+28256188324 Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188324
+28256188303 Server Docker Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188303
+28256188275 Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188275
+28256188265 Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188265
+28256188263 iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28256188263
+
+GitHub release assets:
+asset_count=21
+autobyteus-message-gateway-1.3.78-node-generic.tar.gz	45871721
+autobyteus-message-gateway-1.3.78-node-generic.tar.gz.json	429
+autobyteus-message-gateway-1.3.78-node-generic.tar.gz.sha256	120
+AutoByteus_personal_android-1.3.78-release.apk	1846691
+AutoByteus_personal_android-1.3.78-release.apk.sha256	113
+AutoByteus_personal_linux-arm64-1.3.78.AppImage	355944463
+AutoByteus_personal_linux-x64-1.3.78.AppImage	367572082
+AutoByteus_personal_macos-arm64-1.3.78.dmg	432981393
+AutoByteus_personal_macos-arm64-1.3.78.dmg.blockmap	452853
+AutoByteus_personal_macos-arm64-1.3.78.zip	428689315
+AutoByteus_personal_macos-arm64-1.3.78.zip.blockmap	439852
+AutoByteus_personal_macos-x64-1.3.78.dmg	455190223
+AutoByteus_personal_macos-x64-1.3.78.dmg.blockmap	473415
+AutoByteus_personal_macos-x64-1.3.78.zip	450328972
+AutoByteus_personal_macos-x64-1.3.78.zip.blockmap	460043
+AutoByteus_personal_windows-1.3.78.exe	301420856
+latest-linux-arm64.yml	417
+latest-linux.yml	413
+latest-mac.yml	897
+latest.yml	354
+release-manifest.json	904
