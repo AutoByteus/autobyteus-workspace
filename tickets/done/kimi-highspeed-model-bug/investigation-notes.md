@@ -31,7 +31,7 @@ Screenshot evidence files:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/tickets/kimi-highspeed-model-bug`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/tickets/done/kimi-highspeed-model-bug`
 - Current Branch: `codex/kimi-highspeed-model-bug`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug`
 - Bootstrap Base Branch: `origin/personal`
