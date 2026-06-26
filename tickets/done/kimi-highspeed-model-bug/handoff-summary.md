@@ -4,7 +4,7 @@
 
 - Ticket: `kimi-highspeed-model-bug`
 - Date: `2026-06-26`
-- Current Status: `User verified; repository finalization and release in progress`
+- Current Status: `Completed; repository finalized and v1.3.77 release tag pushed`
 - Latest authoritative validation round: API/E2E Round 1 `Pass`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug`
 - Ticket branch: `codex/kimi-highspeed-model-bug`
@@ -17,7 +17,7 @@
 - AutoByteus backend scope: `AutoByteusAgentRunBackendFactory` now passes raw persisted run `llmConfig` directly to `LLMFactory` instead of wrapping the entire record as `new LLMConfig({ extraParams })`.
 - Catalog scope: Both official Kimi K2.7 Code IDs remain visible and distinct: `kimi-k2.7-code` and `kimi-k2.7-code-highspeed`. They share `src/llm/api/kimi-k2-7-code-policy.ts` for fixed defaults/invariants and keep separate pricing metadata.
 - Docs scope: Long-lived LLM/provider docs were updated after latest-base integration to record the Kimi HighSpeed variant and the global config composition contract.
-- Deferred / not delivered: No browser/UI Daily Assistant manual flow was run; API/E2E classified it as unnecessary for this backend/factory/provider request-construction bug after durable tests, request-capture probes, backend/factory probes, and live Kimi HighSpeed provider validation passed. Version bump/tag/release is now requested after repository finalization; no deployment or branch cleanup has been performed yet.
+- Deferred / not delivered: No browser/UI Daily Assistant manual flow was run; API/E2E classified it as unnecessary for this backend/factory/provider request-construction bug after durable tests, request-capture probes, backend/factory probes, and live Kimi HighSpeed provider validation passed. Version bump/tag/release completed with v1.3.77 after repository finalization; no separate deployment step was run beyond the tag-triggered release workflows.
 - Key source files changed:
   - `autobyteus-ts/src/llm/api/kimi-k2-7-code-policy.ts`
   - `autobyteus-ts/src/llm/api/kimi-llm.ts`
@@ -117,12 +117,12 @@
 
 ## Finalization Record
 
-- Repository finalization status: `In progress after user verification`.
-- Ticket archive state: `Will be archived under tickets/done/kimi-highspeed-model-bug/ before the final ticket-branch commit`.
-- Ticket branch push status: `Pending finalization commit`.
-- Target branch merge/push status: `Pending ticket branch push and target merge`.
-- Release/publication/deployment status: `New release requested; planned version v1.3.77 using the documented pnpm release helper after repository finalization`.
-- Cleanup status: `Pending after safe finalization and release`.
+- Repository finalization status: `Completed`.
+- Ticket archive state: `Archived under tickets/done/kimi-highspeed-model-bug/ before the final ticket-branch commit`.
+- Ticket branch push status: `Completed — origin/codex/kimi-highspeed-model-bug at e8fe36fa18f7c750d5b7fe61533b88754ab8ac5f`.
+- Target branch merge/push status: `Completed — personal merge commit 27911f0e1bc3aafa5c90da72eed52409e77e4064 pushed`.
+- Release/publication/deployment status: `Release completed — v1.3.77 tag pushed by pnpm release helper`.
+- Cleanup status: `Ticket worktree/branches retained to preserve local Electron artifact and pushed branch evidence`.
 - Rollback before finalization: reset/discard the ticket branch/worktree changes or abandon local branch `codex/kimi-highspeed-model-bug` if user verification rejects the delivered behavior.
 
 
@@ -133,3 +133,16 @@
 - No renewed verification is required because the final target did not advance after the Electron-test handoff state.
 - Planned archive path: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/tickets/done/kimi-highspeed-model-bug/`.
 - Planned release: `v1.3.77` with release notes from `tickets/done/kimi-highspeed-model-bug/release-notes.md` via `pnpm release 1.3.77 -- --release-notes tickets/done/kimi-highspeed-model-bug/release-notes.md`.
+
+
+## Final Completion Record
+
+- Ticket branch final commit: `e8fe36fa18f7c750d5b7fe61533b88754ab8ac5f`.
+- Ticket branch push: `origin/codex/kimi-highspeed-model-bug` updated to `e8fe36fa18f7c750d5b7fe61533b88754ab8ac5f`.
+- Finalization target merge commit: `27911f0e1bc3aafa5c90da72eed52409e77e4064` on `personal`.
+- Target branch push: `origin/personal` updated to `27911f0e1bc3aafa5c90da72eed52409e77e4064` before release.
+- Release command: `pnpm release 1.3.77 -- --release-notes tickets/done/kimi-highspeed-model-bug/release-notes.md`.
+- Release commit: `260badb5445b4ef86c590efc5d80cf68f76d1781`.
+- Release tag: `v1.3.77` (annotated tag object `49f65b447be149c7dc9b7171b05b2c6c23b1b2e5`, target commit `260badb5445b4ef86c590efc5d80cf68f76d1781`).
+- Release helper pushed both `personal` and `v1.3.77`; tag push starts the documented release workflows.
+- Post-release local article draft files were restored from the temporary release-cleanliness stash.
