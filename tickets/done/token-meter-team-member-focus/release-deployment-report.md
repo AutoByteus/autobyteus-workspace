@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, deployment, version bump, tag, or packaging publication step is in scope for this ticket. Delivery refreshed latest base state, synchronized durable docs, updated handoff artifacts, archived the ticket after explicit user verification, and produced a local no-notarization/no-timestamp macOS Electron build for user testing after the API/E2E round 2 compact Team table/list pass.
+No release, publication, deployment, version bump, tag, or packaging publication step is in scope for this ticket. Delivery refreshed latest base state, synchronized durable docs, updated handoff artifacts, archived the ticket after explicit user verification, finalized the ticket branch into `personal`, pushed `personal`, and produced no-notarization/no-timestamp macOS Electron builds for user testing after the API/E2E round 2 compact Team table/list pass and again from the finalized main repo checkout.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records the already-current base check, docs sync, API/E2E round 2 evidence, fresh local Electron test build, and explicit post-verification finalization sequence.
+- Notes: Handoff summary records the already-current base check, docs sync, API/E2E round 2 evidence, ticket archive, finalization into `personal`, and post-finalization main repo Electron test build.
 
 ## Initial Delivery Integration Refresh
 
@@ -26,7 +26,7 @@ No release, publication, deployment, version bump, tag, or packaging publication
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
 
-Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/integration-refresh.log`
+Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/integration-refresh.log`
 
 ## User Verification
 
@@ -38,17 +38,17 @@ Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-mem
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/docs/agent_execution_architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/`
 
 ## Version / Tag / Release Commit
 
@@ -56,20 +56,20 @@ Not applicable. No version bump, tag, release commit, or release notes are requi
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/investigation-notes.md`
 - Ticket branch: `codex/token-meter-team-member-focus`
-- Ticket branch commit result: Pending — archived-ticket commit not created yet.
-- Ticket branch push result: Pending — after archived-ticket commit.
+- Ticket branch commit result: Completed — `63df9f65d96cf407467ffb91823930cf03077616` (`feat(web): focus token meter on team member usage`).
+- Ticket branch push result: Completed — `origin/codex/token-meter-team-member-focus` pushed at `63df9f65d96cf407467ffb91823930cf03077616`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; final pre-merge target refresh kept `origin/personal` at `a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6`.
-- Final pre-merge target refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-remote-refresh.log`
+- Final pre-merge target refresh evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-remote-refresh.log`
 - Delivery-owned edits protected before re-integration: `Not needed`; target did not advance.
 - Re-integration before final merge result: `Not needed`; target did not advance beyond the reviewed/verified state.
-- Target branch update result: Pending — after ticket branch push.
-- Merge into target result: Pending — after ticket branch push and target update.
-- Push target branch result: Pending — after target merge.
-- Repository finalization status: In progress — final target refresh passed; ticket branch commit/push and target merge/push remain.
+- Target branch update result: Completed — local `personal` was already equal to fetched `origin/personal` before merge.
+- Merge into target result: Completed — merge commit `36e828c451ea6325f89686d6030df5f7b7832939`.
+- Push target branch result: Completed — `origin/personal` verified at `36e828c451ea6325f89686d6030df5f7b7832939` before this docs-only finalization report update.
+- Repository finalization status: Completed for source/app changes; this report update records the completed finalization and post-finalization main-repo Electron build.
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -77,24 +77,31 @@ Not applicable. No version bump, tag, release commit, or release notes are requi
 - Applicable: `No` for release/deployment; `Yes` for user-requested local Electron test package.
 - Method: `Documented Command`
 - Method reference / command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac`
-- Release/publication/deployment result: `Not required`; local Electron test build completed.
+- Release/publication/deployment result: `Not required`; local Electron test builds completed in the ticket worktree and again from the finalized main repo checkout.
 - Release notes handoff result: `Not required`
 - Blocker (if applicable): N/A
 
-Local Electron test build artifacts:
+Ticket-worktree Electron test build artifacts:
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip`
 - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log`
-- Artifact manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/electron-build-artifacts.txt`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log`
+- Artifact manifest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/electron-build-artifacts.txt`
+
+Post-finalization main repo Electron test build artifacts:
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/main-electron-mac-build.log`
+- Artifact manifest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/main-electron-build-artifacts.txt`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus`
-- Worktree cleanup result: Not run — cleanup is only safe after repository finalization.
-- Worktree prune result: Not run — cleanup is only safe after repository finalization.
-- Local ticket branch cleanup result: Not run — cleanup is only safe after repository finalization.
-- Remote branch cleanup result: `Not required` at this hold point.
+- Worktree cleanup result: Not run — retained locally to preserve the earlier ticket-worktree Electron test package and full working evidence while the main repo package is handed to the user.
+- Worktree prune result: Not run — no prune needed while retaining the ticket worktree.
+- Local ticket branch cleanup result: Not run — local ticket branch remains attached to the retained worktree.
+- Remote branch cleanup result: `Not required`; `origin/codex/token-meter-team-member-focus` is retained as the pushed ticket branch.
 - Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -116,7 +123,7 @@ N/A — no deployment in scope.
 ## Environment Or Migration Notes
 
 - No database, migration, package dependency, release, or deployment environment change is introduced by delivery docs sync.
-- Local Electron build prepared bundled server resources under ignored build output directories and produced ignored `electron-dist` artifacts for user testing.
+- Local Electron builds prepared bundled server resources under ignored build output directories and produced ignored `electron-dist` artifacts for user testing in both the ticket worktree and the finalized main repo checkout.
 - Upstream API/E2E noted temporary browser probe backend/frontend ports were stopped and temporary seed/probe files were removed.
 
 ## Verification Checks
@@ -136,19 +143,22 @@ Delivery-stage checks:
 - `git fetch origin personal` plus ref comparison — passed; latest tracked base matched ticket `HEAD`.
 - Final pre-merge `git fetch origin personal` plus ref comparison after user verification — passed; target did not advance.
 - `rg -n 'TokenUsageHeaderChip|real header chip|Focused member|Member tokens|Member cost|focused-member totals|run/team totals|separate summary card|Team total.*card' autobyteus-web/docs/agent_execution_architecture.md autobyteus-web/docs/settings.md` — passed with no matches.
-- `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac` — passed, exit status 0.
+- Ticket worktree `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac` — passed, exit status 0.
+- Main repo post-finalization `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac` — passed, exit status 0.
 - `git diff --check` — passed.
 - Untracked source/delivery artifact whitespace check — passed.
 
 Evidence:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/integration-refresh.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/docs-stale-string-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-remote-refresh.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/electron-build-artifacts.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/git-diff-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/untracked-source-whitespace-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/final-git-status.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/integration-refresh.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/docs-stale-string-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-remote-refresh.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/main-finalization-merge.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/main-personal-push-verify.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/electron-build-artifacts.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/untracked-source-whitespace-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/final-git-status.log`
 
 ## Rollback Criteria
 
@@ -156,4 +166,4 @@ If user verification or later finalization identifies a regression, revert the t
 
 ## Final Status
 
-User verification received. Ticket is archived under `tickets/done/token-meter-team-member-focus/`; final target refresh passed with no target advance, and repository finalization is in progress. Remaining steps are the ticket-branch commit/push, merge into `personal`, push `personal`, then build Electron from the updated main repo checkout.
+Completed. User verification was received, the ticket is archived under `tickets/done/token-meter-team-member-focus/`, the ticket branch was committed and pushed, `personal` was merged and pushed, and the Electron macOS test package was rebuilt from the finalized main repo checkout.

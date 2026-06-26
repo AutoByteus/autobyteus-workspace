@@ -1,0 +1,204 @@
+# Main repo finalization merge
+Started: 2026-06-26T07:46:47Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Branch before: personal
+Status before:
+## personal...origin/personal
+?? .article-work/
+?? docs/articles/
+
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+ * branch              codex/token-meter-team-member-focus -> FETCH_HEAD
+
+Refs after fetch:
+HEAD=a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6
+origin/personal=a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6
+origin/codex=63df9f65d96cf407467ffb91823930cf03077616
+
+Already up to date.
+
+Merge made by the 'ort' strategy.
+ .../workspace/agent/AgentWorkspaceView.vue         |   2 -
+ .../agent/__tests__/AgentWorkspaceView.spec.ts     |   6 +
+ .../workspace/team/TeamWorkspaceView.vue           |   2 -
+ .../team/__tests__/TeamWorkspaceView.spec.ts       |   6 +
+ .../workspace/usage/TeamTokenUsageSummary.vue      | 428 +++++++++++++++++++++
+ .../workspace/usage/TokenUsageHeaderChip.vue       |  64 ---
+ .../workspace/usage/TokenUsageMeterPanel.vue       | 147 +++----
+ .../usage/__tests__/TokenUsageMeterPanel.spec.ts   | 357 ++++++++++++-----
+ .../workspace/usage/tokenUsageFormatting.ts        |  95 +++++
+ .../composables/tokenUsageTeamMemberRows.ts        |  58 +++
+ .../composables/useTokenUsageWorkspaceScope.ts     | 241 ++++++++++++
+ .../docs/agent_execution_architecture.md           |  10 +-
+ autobyteus-web/docs/settings.md                    |  10 +-
+ autobyteus-web/localization/messages/en/shell.ts   |  23 +-
+ .../localization/messages/zh-CN/shell.ts           |  23 +-
+ .../api-e2e-coverage-investigation.md              | 139 +++++++
+ .../round-1/logs/browser-probe-backend.log         | 245 ++++++++++++
+ .../round-1/logs/browser-probe-frontend.log        |  20 +
+ .../round-1/logs/browser-probe-nuxt-prepare.log    |   4 +
+ .../round-1/logs/browser-probe.log                 |   7 +
+ .../logs/final-nuxt-prepare-after-cleanup.log      |   4 +
+ .../round-1/logs/frontend-focused-vitest.log       |  54 +++
+ .../round-1/logs/git-diff-check.log                |   0
+ .../round-1/logs/post-cleanup-git-status.log       |  14 +
+ .../round-1/logs/post-cleanup-port-3012.log        |   0
+ .../round-1/logs/post-cleanup-port-8000.log        |   0
+ .../logs/server-token-usage-graphql-e2e.log        | 107 ++++++
+ .../api-e2e-evidence/round-1/logs/web-build.log    | 220 +++++++++++
+ .../round-1/logs/web-localization-boundary.log     |   5 +
+ .../round-1/logs/web-localization-literals.log     |   9 +
+ .../round-1/screenshots/browser-agent-focus.png    | Bin 0 -> 82523 bytes
+ .../screenshots/browser-implementation-focus.png   | Bin 0 -> 83217 bytes
+ .../round-1/screenshots/browser-non-leaf-focus.png | Bin 0 -> 85205 bytes
+ .../round-1/screenshots/browser-probe-events.json  |  32 ++
+ .../round-1/screenshots/browser-solution-focus.png | Bin 0 -> 80321 bytes
+ .../round-1/screenshots/browser-zh-cn-token.png    | Bin 0 -> 82672 bytes
+ .../round-2/logs/browser-probe-backend.log         | 247 ++++++++++++
+ .../round-2/logs/browser-probe-frontend.log        |  21 +
+ .../round-2/logs/browser-probe-readiness.log       |   2 +
+ .../round-2/logs/browser-probe.log                 |  10 +
+ .../round-2/logs/frontend-focused-vitest.log       |  58 +++
+ .../round-2/logs/git-diff-check.log                |   3 +
+ .../round-2/logs/post-cleanup-git-status.log       |  16 +
+ .../round-2/logs/post-cleanup-port-3012.log        |   0
+ .../round-2/logs/post-cleanup-port-8000.log        |   0
+ .../logs/server-token-usage-graphql-e2e.log        | 111 ++++++
+ .../api-e2e-evidence/round-2/logs/web-boundary.log |   8 +
+ .../api-e2e-evidence/round-2/logs/web-build.log    | 223 +++++++++++
+ .../round-2/logs/web-localization-boundary.log     |   8 +
+ .../round-2/logs/web-localization-literals.log     |  12 +
+ .../round-2/logs/web-nuxt-prepare-post-cleanup.log |   7 +
+ .../round-2/screenshots/browser-agent-focus.png    | Bin 0 -> 79218 bytes
+ .../browser-implementation-focus-compact.png       | Bin 0 -> 79075 bytes
+ .../screenshots/browser-non-leaf-focus-compact.png | Bin 0 -> 110316 bytes
+ .../round-2/screenshots/browser-probe-events.json  | 166 ++++++++
+ .../screenshots/browser-solution-focus-compact.png | Bin 0 -> 80590 bytes
+ .../round-2/screenshots/browser-zh-cn-token.png    | Bin 0 -> 81443 bytes
+ .../api-e2e-execution-coverage-report.md           | 240 ++++++++++++
+ .../code-review-report.md                          | 179 +++++++++
+ .../logs/finalization-cached-diff-check.log        |   4 +
+ .../logs/finalization-remote-refresh.log           |  19 +
+ .../round-1/electron-build-artifacts.txt           |  24 ++
+ .../round-1/logs/artifact-whitespace-check.log     |   1 +
+ .../round-1/logs/docs-stale-string-check.log       |   3 +
+ .../round-1/logs/electron-mac-build.log            | Bin 0 -> 102024 bytes
+ .../round-1/logs/electron-mac-build.status         |   1 +
+ .../round-1/logs/final-git-status.log              |  18 +
+ .../round-1/logs/git-diff-check.log                |   1 +
+ .../round-1/logs/integration-refresh.log           |  27 ++
+ .../logs/untracked-source-whitespace-check.log     |   1 +
+ .../round-2/electron-build-artifacts.txt           |  29 ++
+ .../round-2/logs/docs-stale-string-check.log       |   3 +
+ .../round-2/logs/electron-mac-build.log            | Bin 0 -> 102900 bytes
+ .../round-2/logs/electron-mac-build.status         |   1 +
+ .../round-2/logs/final-git-status.log              |  18 +
+ .../round-2/logs/git-diff-check.log                |   1 +
+ .../round-2/logs/integration-refresh.log           |  27 ++
+ .../logs/untracked-source-whitespace-check.log     |   1 +
+ .../design-review-report.md                        | 204 ++++++++++
+ .../token-meter-team-member-focus/design-spec.md   | 350 +++++++++++++++++
+ .../docs-sync-report.md                            |  65 ++++
+ .../handoff-summary.md                             |  97 +++++
+ .../implementation-handoff.md                      | 137 +++++++
+ .../investigation-notes.md                         | 168 ++++++++
+ .../release-deployment-report.md                   | 159 ++++++++
+ .../token-meter-team-member-focus/requirements.md  | 188 +++++++++
+ .../screenshots/implementation-focus-primary.png   | Bin 0 -> 218172 bytes
+ .../implementation-focus-switch-code-reviewer.png  | Bin 0 -> 269529 bytes
+ .../implementation-focus-team-comparison.png       | Bin 0 -> 266720 bytes
+ .../screenshots/solution-focus-primary.png         | Bin 0 -> 166552 bytes
+ .../screenshots/solution-focus-team-comparison.png | Bin 0 -> 164235 bytes
+ .../visual-validation/visual-validation-notes.md   |  29 ++
+ 92 files changed, 4929 insertions(+), 290 deletions(-)
+ create mode 100644 autobyteus-web/components/workspace/usage/TeamTokenUsageSummary.vue
+ delete mode 100644 autobyteus-web/components/workspace/usage/TokenUsageHeaderChip.vue
+ create mode 100644 autobyteus-web/components/workspace/usage/tokenUsageFormatting.ts
+ create mode 100644 autobyteus-web/composables/tokenUsageTeamMemberRows.ts
+ create mode 100644 autobyteus-web/composables/useTokenUsageWorkspaceScope.ts
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/browser-probe-backend.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/browser-probe-frontend.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/browser-probe-nuxt-prepare.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/browser-probe.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/final-nuxt-prepare-after-cleanup.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/frontend-focused-vitest.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/git-diff-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/post-cleanup-git-status.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/post-cleanup-port-3012.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/post-cleanup-port-8000.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/server-token-usage-graphql-e2e.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/web-build.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/web-localization-boundary.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/logs/web-localization-literals.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-agent-focus.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-implementation-focus.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-non-leaf-focus.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-probe-events.json
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-solution-focus.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-1/screenshots/browser-zh-cn-token.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/browser-probe-backend.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/browser-probe-frontend.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/browser-probe-readiness.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/browser-probe.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/frontend-focused-vitest.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/git-diff-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/post-cleanup-git-status.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/post-cleanup-port-3012.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/post-cleanup-port-8000.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/server-token-usage-graphql-e2e.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/web-boundary.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/web-build.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/web-localization-boundary.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/web-localization-literals.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/logs/web-nuxt-prepare-post-cleanup.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-agent-focus.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-implementation-focus-compact.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-non-leaf-focus-compact.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-probe-events.json
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-solution-focus-compact.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-evidence/round-2/screenshots/browser-zh-cn-token.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/code-review-report.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-cached-diff-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/finalization-remote-refresh.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/electron-build-artifacts.txt
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/artifact-whitespace-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/docs-stale-string-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/electron-mac-build.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/electron-mac-build.status
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/final-git-status.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/git-diff-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/integration-refresh.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/untracked-source-whitespace-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/electron-build-artifacts.txt
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/docs-stale-string-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.status
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/final-git-status.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/git-diff-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/integration-refresh.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/untracked-source-whitespace-check.log
+ create mode 100644 tickets/done/token-meter-team-member-focus/design-review-report.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/design-spec.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/docs-sync-report.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/handoff-summary.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/implementation-handoff.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/investigation-notes.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/release-deployment-report.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/requirements.md
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/screenshots/implementation-focus-primary.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/screenshots/implementation-focus-switch-code-reviewer.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/screenshots/implementation-focus-team-comparison.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/screenshots/solution-focus-primary.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/screenshots/solution-focus-team-comparison.png
+ create mode 100644 tickets/done/token-meter-team-member-focus/visual-validation/visual-validation-notes.md
+
+Branch after: personal
+HEAD after merge=36e828c451ea6325f89686d6030df5f7b7832939
+Status after:
+## personal...origin/personal [ahead 2]
+?? .article-work/
+?? docs/articles/
+Finished: 2026-06-26T07:46:49Z
