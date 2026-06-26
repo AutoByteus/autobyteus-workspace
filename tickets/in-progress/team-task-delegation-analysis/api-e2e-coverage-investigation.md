@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis/tickets/in-progress/team-task-delegation-analysis/code-review-report.md`
-- Current Investigation Round: 2
+- Current Investigation Round: 3
 - Trigger: Code review round 8 passed after frontend/backend task-team projection, terminal cleanup, and task-team scoped approval routing rework.
 - Prior Investigation Reviewed: Yes — prior Round 1 API/E2E artifacts remain context, but the round 8 frontend/backend rework changes coverage needs.
-- Latest Authoritative Investigation: This file, Round 2.
+- Latest Authoritative Investigation: This file, Round 3.
 
 ## Current Requirement And Design Basis
 
@@ -89,11 +89,19 @@ The implementation handoff's `Legacy / Compatibility Removal Check` is clean and
 | --- | --- | --- | --- |
 | APIE2E-FE-TYPECHECK-001 | `pnpm -C autobyteus-web exec nuxi prepare` then `pnpm -C autobyteus-web exec nuxi typecheck --pretty false` with touched-path impact inspection if it fails | Whether round 8 touched frontend task-team paths are implicated in the broad typecheck result | Repository-wide typecheck already exists as a command, not task-specific durable coverage; known broad pre-existing failures must be classified with evidence. |
 
+
+### Round 3 Browser Validation Addendum
+
+| Scenario ID | Current Behavior To Validate | Decision | Planned Surface / Evidence | Rationale |
+| --- | --- | --- | --- | --- |
+| APIE2E-BROWSER-001 | A real browser against the worktree-started server can open a minimal nested parent team, send a coordinator prompt, receive task-team target activation from the backend, and visibly render the task-team active execution/lifecycle state in the frontend. | Use Temporary Executable Probe Only | Start the backend from `/Users/normy/autobyteus_org/autobyteus-worktrees/team-task-delegation-analysis` per `autobyteus-server-ts/README.md` on `127.0.0.1:8000` with an isolated `--data-dir`; start Nuxt dev on `127.0.0.1:3020`; create agent/team definitions via that backend GraphQL; use a real browser automation session to open `/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=<run>&workspaceExecutionMemberRouteKey=product_manager`; send the prompt through the frontend composer; capture DOM/screenshot and runtime events. | The previous Round 2 no-live-browser classification no longer satisfies the user's confidence concern. This is temporary evidence because a live Codex model/browser orchestration is slower and environment-sensitive, while durable coverage remains the deterministic unit/integration coverage already added. |
+| APIE2E-BROWSER-002 | The live browser run uses the worktree backend, not the Electron internal/static backend at `127.0.0.1:29695`. | Use Temporary Executable Probe Only | Record backend health URL, PID/command/data-dir, frontend URL, browser page URL, and any screenshot path. | The user specifically rejected Electron-server validation; the browser proof must be tied to the README startup path and isolated worktree data. |
+
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Live LLM-driven PM -> team target browser/WebSocket E2E with real model workers | Requires live model/runtime flags and high-cost orchestration beyond local default environment; existing live server E2E is env-gated | Model prompt compliance and full live browser orchestration are not directly proven in this local run | Deterministic server integration plus frontend service/component tests cover runtime contracts; delivery can document live-gated command if needed. |
+| Full live LLM/browser PM -> task-team settlement after acceptance | Round 3 now attempts browser task-team activation/rendering, but final settlement depends on model prompt compliance and may time out or require manual acceptance/retry if Codex runtime/model authentication blocks. | If activation is observed but settlement is not, browser proof covers frontend activation/lifecycle visibility but not complete autonomous closeout. | Record exact browser/runtime result in the execution report; durable deterministic backend integration remains the settlement proof. |
 | Durable product documentation sync | Delivery engineer owns docs after API/E2E/code-review loop | Docs may still describe old schema/lifecycle until delivery | Include docs-impact note in handoff to delivery/code reviewer. |
 
 ## Ambiguities Or Reroute Triggers
@@ -103,6 +111,12 @@ The implementation handoff's `Legacy / Compatibility Removal Check` is clean and
 | None before execution | N/A | Upstream requirements/design/code review are sufficient to decide coverage validity. | N/A |
 
 ## Execution Plan
+
+0. Round 3 live browser validation:
+   - Confirm backend health at `http://127.0.0.1:8000/rest/health` and that the backend process command is `node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-team-task-delegation-browser-data --host 127.0.0.1 --port 8000` from the worktree README startup path.
+   - Confirm Nuxt dev frontend is on `http://127.0.0.1:3020/` and routes to the worktree backend, not Electron `127.0.0.1:29695`.
+   - Create a minimal nested team with `product_manager` plus nested `MiniChildTeam`/`child_worker`, using `runtimeKind: codex_app_server`, `llmModelIdentifier: gpt-5.5`, `autoExecuteTools: true`, `skillAccessMode: NONE`, and configured task-delegation tools.
+   - Use browser automation to open the team run in the frontend, send the initial user prompt through the visible composer when possible, wait for task-team activation/lifecycle DOM evidence, and capture screenshot/event evidence.
 
 1. Apply narrow durable frontend coverage updates listed above before final execution.
 2. Run `git diff --check`.
