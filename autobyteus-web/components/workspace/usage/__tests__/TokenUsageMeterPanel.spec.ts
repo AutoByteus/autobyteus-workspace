@@ -1,8 +1,90 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { nextTick } from 'vue';
 import TokenUsageMeterPanel from '../TokenUsageMeterPanel.vue';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 
-const summary = {
+const messages: Record<string, string> = {
+  'shell.tokenUsage.title': 'Token Meter',
+  'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
+  'shell.tokenUsage.currentPrompt': 'Current prompt',
+  'shell.tokenUsage.contextTokens': 'context tokens',
+  'shell.tokenUsage.grossInput': 'Gross input',
+  'shell.tokenUsage.output': 'Output',
+  'shell.tokenUsage.totalEstimate': 'Total estimate',
+  'shell.tokenUsage.tokensLabel': 'Tokens',
+  'shell.tokenUsage.tokenShortLabel': 'tok',
+  'shell.tokenUsage.costLabel': 'Cost',
+  'shell.tokenUsage.estimateLabel': 'Estimate',
+  'shell.tokenUsage.thinkingTokensIncluded': 'Thinking {tokens} tokens',
+  'shell.tokenUsage.thinkingTokensTooltip': 'Included in output tokens and estimated output cost.',
+  'shell.tokenUsage.cacheHitRate': 'Cache hit {percent}',
+  'shell.tokenUsage.cacheUnsupportedLocal': 'Local runtime; no provider cache bill',
+  'shell.tokenUsage.cacheNotReported': 'Usage reports no cache details',
+  'shell.tokenUsage.inputBreakdown': 'Input breakdown',
+  'shell.tokenUsage.uncachedInput': 'Uncached input',
+  'shell.tokenUsage.cacheHits': 'Cache hits',
+  'shell.tokenUsage.cacheWrites': 'Cache writes',
+  'shell.tokenUsage.totalInputCost': 'Total input cost',
+  'shell.tokenUsage.pricingDetails': 'Pricing details',
+  'shell.tokenUsage.priceStatus': 'Price status',
+  'shell.tokenUsage.priceStatusComplete': 'Estimated',
+  'shell.tokenUsage.priceStatusPartial': 'Partial estimate',
+  'shell.tokenUsage.priceStatusMissing': 'Price missing',
+  'shell.tokenUsage.priceStatusLocal': 'Local/no API bill',
+  'shell.tokenUsage.priceStatusMixed': 'Mixed',
+  'shell.tokenUsage.latestModel': 'Latest model:',
+  'shell.tokenUsage.runtime': 'Runtime:',
+  'shell.tokenUsage.usageReports': 'Usage reports',
+  'shell.tokenUsage.usageReportsTooltip': 'Server usage reports received for this summary.',
+  'shell.tokenUsage.usageReportsValue': '{count} reports',
+  'shell.tokenUsage.missingPriceDimensions': 'Missing price dimensions',
+  'shell.tokenUsage.unknown': 'unknown',
+  'shell.tokenUsage.unpriced': 'price missing',
+  'shell.tokenUsage.loading': 'Loading token usage for the focused run…',
+  'shell.tokenUsage.unavailable': 'Token usage is temporarily unavailable for the focused run.',
+  'shell.tokenUsage.focusUnavailable': 'Select a leaf team member to view focused token usage.',
+  'shell.tokenUsage.teamHeading': 'Team',
+  'shell.tokenUsage.teamSubtitle': 'Per-member token and cost comparison. Focus a row for full detail above.',
+  'shell.tokenUsage.teamMember': 'Member',
+  'shell.tokenUsage.focusedBadge': 'Focused',
+  'shell.tokenUsage.totalTokens': 'Total tokens',
+  'shell.tokenUsage.teamTotal': 'Team total',
+  'shell.tokenUsage.teamLoading': 'Loading token usage…',
+  'shell.tokenUsage.teamUnavailable': 'Token usage unavailable.',
+  'shell.tokenUsage.teamNoUsage': 'No usage reported yet.',
+  'shell.tokenUsage.teamNoMembers': 'No leaf team members are available.',
+  'shell.tokenUsage.teamTotalLoading': 'Loading team total…',
+  'shell.tokenUsage.teamTotalUnavailable': 'Team total is temporarily unavailable.',
+  'shell.tokenUsage.inputCost': 'Input cost',
+  'shell.tokenUsage.outputCost': 'Output cost',
+  'shell.tokenUsage.empty': 'No token usage has been reported for the active run yet.',
+};
+
+const translate = (key: string, params?: Record<string, unknown>) => {
+  const template = messages[key] ?? key;
+  return Object.entries(params ?? {}).reduce(
+    (text, [param, value]) => text.replace(`{${param}}`, String(value)).replace(`{{${param}}}`, String(value)),
+    template,
+  );
+};
+
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({
+    t: translate,
+  }),
+}));
+
+const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
   runId: 'run-1',
   rootTeamRunId: null,
   teamRunPath: null,
@@ -48,129 +130,194 @@ const summary = {
   latestRuntimeKind: 'autobyteus',
   usageReportCount: 1,
   updatedAt: '2026-06-25T00:00:00.000Z',
+  ...overrides,
+});
+
+const buildAgentContext = (runId: string, name: string) => {
+  const conversation = {
+    id: runId,
+    messages: [],
+    createdAt: '2026-06-25T00:00:00.000Z',
+    updatedAt: '2026-06-25T00:00:00.000Z',
+    agentDefinitionId: `${name}-definition`,
+    agentName: name,
+  };
+  const state = new AgentRunState(runId, conversation as any);
+  state.currentStatus = AgentStatus.Idle;
+  return new AgentContext({
+    agentDefinitionId: `${name}-definition`,
+    agentDefinitionName: name,
+    runtimeKind: 'autobyteus',
+    llmModelIdentifier: 'gpt-test',
+    workspaceId: null,
+    workspaceMetadata: null,
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+    llmConfig: null,
+    isLocked: true,
+  } as any, state);
 };
 
-let currentSummary = summary;
+const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string) => ({
+  memberKind: 'agent',
+  memberName: displayName,
+  displayName,
+  memberPath: [memberRouteKey],
+  memberRouteKey,
+  memberRunId,
+  agentDefinitionId: `${displayName}-definition`,
+});
 
-vi.mock('~/stores/agentSelectionStore', () => ({
-  useAgentSelectionStore: () => ({ selectedType: 'agent' }),
-}));
-
-vi.mock('~/stores/activeContextStore', () => ({
-  useActiveContextStore: () => ({ activeAgentContext: { state: { runId: 'run-1' } } }),
-}));
-
-vi.mock('~/stores/agentTeamContextsStore', () => ({
-  useAgentTeamContextsStore: () => ({ activeTeamContext: null }),
-}));
-
-vi.mock('~/stores/tokenUsageMeterStore', () => ({
-  useTokenUsageMeterStore: () => ({
-    getRunSummary: () => currentSummary,
-    getTeamSummary: () => null,
-    fetchAgentRunSummary: vi.fn().mockResolvedValue(currentSummary),
-    fetchTeamRunSummary: vi.fn().mockResolvedValue(null),
-  }),
-}));
-
-const messages: Record<string, string> = {
-  'shell.tokenUsage.title': 'Token Meter',
-  'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
-  'shell.tokenUsage.currentPrompt': 'Current prompt',
-  'shell.tokenUsage.contextTokens': 'context tokens',
-  'shell.tokenUsage.grossInput': 'Gross input',
-  'shell.tokenUsage.output': 'Output',
-  'shell.tokenUsage.totalEstimate': 'Total estimate',
-  'shell.tokenUsage.tokensLabel': 'Tokens',
-  'shell.tokenUsage.tokenShortLabel': 'tok',
-  'shell.tokenUsage.costLabel': 'Cost',
-  'shell.tokenUsage.estimateLabel': 'Estimate',
-  'shell.tokenUsage.thinkingTokensIncluded': 'Thinking {tokens} tokens',
-  'shell.tokenUsage.thinkingTokensTooltip': 'Included in output tokens and estimated output cost.',
-  'shell.tokenUsage.cacheHitRate': 'Cache hit {percent}',
-  'shell.tokenUsage.cacheUnsupportedLocal': 'Local runtime; no provider cache bill',
-  'shell.tokenUsage.cacheNotReported': 'Usage reports no cache details',
-  'shell.tokenUsage.inputBreakdown': 'Input breakdown',
-  'shell.tokenUsage.uncachedInput': 'Uncached input',
-  'shell.tokenUsage.cacheHits': 'Cache hits',
-  'shell.tokenUsage.cacheWrites': 'Cache writes',
-  'shell.tokenUsage.totalInputCost': 'Total input cost',
-  'shell.tokenUsage.pricingDetails': 'Pricing details',
-  'shell.tokenUsage.priceStatus': 'Price status',
-  'shell.tokenUsage.priceStatusComplete': 'Estimated',
-  'shell.tokenUsage.priceStatusPartial': 'Partial estimate',
-  'shell.tokenUsage.priceStatusMissing': 'Price missing',
-  'shell.tokenUsage.priceStatusLocal': 'Local/no API bill',
-  'shell.tokenUsage.priceStatusMixed': 'Mixed',
-  'shell.tokenUsage.latestModel': 'Latest model:',
-  'shell.tokenUsage.runtime': 'Runtime:',
-  'shell.tokenUsage.usageReports': 'Usage reports',
-  'shell.tokenUsage.usageReportsTooltip': 'Server usage reports received for this summary.',
-  'shell.tokenUsage.usageReportsValue': '{count} reports',
-  'shell.tokenUsage.missingPriceDimensions': 'Missing price dimensions',
-  'shell.tokenUsage.unknown': 'unknown',
-  'shell.tokenUsage.unpriced': 'price missing',
-};
-
-const translate = (key: string, params?: Record<string, unknown>) => {
-  const template = messages[key] ?? key;
-  return Object.entries(params ?? {}).reduce(
-    (text, [param, value]) => text.replace(`{${param}}`, String(value)),
-    template,
-  );
-};
-
-vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({
-    t: translate,
-  }),
-}));
+const mountPanel = () => mount(TokenUsageMeterPanel, {
+  global: {
+    mocks: {
+      $t: translate,
+    },
+  },
+});
 
 describe('TokenUsageMeterPanel', () => {
   beforeEach(() => {
-    currentSummary = summary;
+    setActivePinia(createPinia());
   });
 
   it('renders the approved Token Meter hierarchy with server-owned component values', () => {
-    const wrapper = mount(TokenUsageMeterPanel, {
-      global: {
-        mocks: {
-          $t: translate,
-        },
-      },
-    });
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary());
+    selectionStore.setRunSelection('run-1', 'agent');
 
-    const text = wrapper.text();
-    expect(text).toContain('Current prompt');
-    expect(text).toContain('Gross input');
-    expect(text).toContain('Output');
-    expect(text).toContain('Total estimate');
-    expect(text).toContain('Input breakdown');
-    expect(text).toContain('Uncached input');
-    expect(text).toContain('Cache hits');
-    expect(text).toContain('Pricing details');
-    expect(text).toContain('Usage reports');
-    expect(text).toContain('Tokens');
-    expect(text).toContain('$0.0020');
-    expect(text).toContain('$0.0012');
-    expect(text).toContain('$0.0032');
-    expect(text).toContain('Thinking 33 tokens');
-    expect(text).toContain('Estimated');
-    expect(text).toContain('1 reports');
-    expect(text).not.toContain('Events');
+    const wrapper = mountPanel();
+    const primaryText = wrapper.get('[data-test="token-usage-primary"]').text();
 
+    expect(primaryText).toContain('Current prompt');
+    expect(primaryText).toContain('Gross input');
+    expect(primaryText).toContain('Output');
+    expect(primaryText).toContain('Total estimate');
+    expect(primaryText).toContain('Input breakdown');
+    expect(primaryText).toContain('Uncached input');
+    expect(primaryText).toContain('Cache hits');
+    expect(primaryText).toContain('Pricing details');
+    expect(primaryText).toContain('Usage reports');
+    expect(primaryText).toContain('Tokens');
+    expect(primaryText).toContain('$0.0020');
+    expect(primaryText).toContain('$0.0012');
+    expect(primaryText).toContain('$0.0032');
+    expect(primaryText).toContain('Thinking 33 tokens');
+    expect(primaryText).toContain('Estimated');
+    expect(primaryText).toContain('1 reports');
+    expect(primaryText).not.toContain('Events');
     expect(wrapper.find('[title="Included in output tokens and estimated output cost."]').exists()).toBe(true);
   });
 
   it('omits the thinking-token subline when no reasoning tokens are present', () => {
-    currentSummary = {
-      ...summary,
-      reasoningOutputTokens: 0,
-      estimatedApiReasoningOutputCost: null,
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary({ reasoningOutputTokens: 0, estimatedApiReasoningOutputCost: null }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).not.toContain('Thinking');
+  });
+
+  it('uses the focused team member as primary and keeps aggregate usage only in the Team section', async () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const meterStore = useTokenUsageMeterStore();
+    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
+    const reviewerNode = buildAgentMemberNode('reviewer', 'Reviewer', 'reviewer-run');
+    teamContextsStore.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
+      memberTree: [leadNode, reviewerNode],
+      memberNodesByRouteKey: new Map<string, any>([
+        ['lead', leadNode],
+        ['reviewer', reviewerNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map<string, any>([
+        ['lead', buildAgentContext('lead-run', 'Lead')],
+        ['reviewer', buildAgentContext('reviewer-run', 'Reviewer')],
+      ]),
+      coordinatorMemberRouteKey: 'lead',
+      historicalHydration: null,
+      focusedMemberRouteKey: 'lead',
+      currentStatus: AgentTeamStatus.Running,
+      isSubscribed: false,
+    } as any);
+    meterStore.upsertSummary(buildSummary({ runId: 'lead-run', rootTeamRunId: 'team-1', memberRouteKey: 'lead', grossInputTokens: 1111, outputTokens: 11, totalTokens: 1122, estimatedApiTotalCost: 0.0111 }));
+    meterStore.upsertSummary(buildSummary({ runId: 'reviewer-run', rootTeamRunId: 'team-1', memberRouteKey: 'reviewer', grossInputTokens: 2222, outputTokens: 22, totalTokens: 2244, estimatedApiTotalCost: 0.0222 }));
+    meterStore.teamSummaries['team-1'] = buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', grossInputTokens: 9000, outputTokens: 900, totalTokens: 9900, estimatedApiTotalCost: 0.099 });
+    selectionStore.setRunSelection('team-1', 'team');
+
+    const wrapper = mountPanel();
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('1,111');
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Lead');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Reviewer');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
+    expect(wrapper.text()).not.toContain('Focused member');
+    expect(wrapper.text()).not.toContain('Member tokens');
+    expect(wrapper.text()).not.toContain('Member cost');
+
+    teamContextsStore.setFocusedMember('reviewer');
+    await nextTick();
+
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('2,222');
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
+    const rows = wrapper.findAll('[data-test="team-token-row"]');
+    const reviewerRow = rows.find((row) => row.attributes('data-member-route-key') === 'reviewer');
+    expect(reviewerRow?.attributes('data-focused')).toBe('true');
+    expect(reviewerRow?.text()).toContain('Gross input');
+    expect(reviewerRow?.text()).toContain('Output');
+    expect(reviewerRow?.text()).toContain('Total tokens');
+    expect(reviewerRow?.text()).toContain('Cost');
+    expect(reviewerRow?.text()).toContain('Estimated');
+  });
+
+  it('shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run', () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const meterStore = useTokenUsageMeterStore();
+    const subteamNode = {
+      memberKind: 'agent_team',
+      memberName: 'Planning Squad',
+      displayName: 'Planning Squad',
+      memberPath: ['planning'],
+      memberRouteKey: 'planning',
+      teamDefinitionId: 'planning-def',
+      children: [],
     };
+    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
+    teamContextsStore.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
+      memberTree: [subteamNode, leadNode],
+      memberNodesByRouteKey: new Map<string, any>([
+        ['planning', subteamNode],
+        ['lead', leadNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map<string, any>([
+        ['lead', buildAgentContext('lead-run', 'Lead')],
+      ]),
+      coordinatorMemberRouteKey: 'lead',
+      historicalHydration: null,
+      focusedMemberRouteKey: 'planning',
+      currentStatus: AgentTeamStatus.Running,
+      isSubscribed: false,
+    } as any);
+    meterStore.teamSummaries['team-1'] = buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 });
+    selectionStore.setRunSelection('team-1', 'team');
 
-    const wrapper = mount(TokenUsageMeterPanel);
+    const wrapper = mountPanel();
 
-    expect(wrapper.text()).not.toContain('Thinking');
+    expect(wrapper.find('[data-test="token-usage-primary"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Select a leaf team member to view focused token usage.');
+    expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
   });
 });

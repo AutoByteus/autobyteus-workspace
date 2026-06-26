@@ -266,6 +266,21 @@ describe('KimiLLM', () => {
     });
   });
 
+  it('normalizes kimi-k2.7-code-highspeed no-custom-temperature requests to the fixed provider temperature', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.7-code-highspeed'));
+
+    await llm.sendMessages([
+      new Message(MessageRole.SYSTEM, { content: 'You are a coding assistant.' }),
+      new Message(MessageRole.USER, { content: 'Say pong.' })
+    ]);
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.7-code-highspeed',
+      temperature: 1.0
+    });
+  });
+
   it('keeps kimi-k2.7-code thinking on and normalizes provider-fixed request parameters', async () => {
     const llm = new KimiLLM(
       buildModel('kimi-k2.7-code'),
@@ -300,6 +315,49 @@ describe('KimiLLM', () => {
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.7-code',
+      temperature: 1.0,
+      top_p: 0.95,
+      n: 1,
+      presence_penalty: 0.0,
+      frequency_penalty: 0.0,
+      thinking: { type: 'enabled' }
+    });
+  });
+
+  it('normalizes explicit invalid kimi-k2.7-code-highspeed sampling values to fixed provider constraints', async () => {
+    const llm = new KimiLLM(
+      buildModel('kimi-k2.7-code-highspeed'),
+      new LLMConfig({
+        temperature: 0.7,
+        topP: 0.5,
+        presencePenalty: 0.8,
+        frequencyPenalty: 0.9,
+        extraParams: {
+          thinking: { type: 'disabled' },
+          n: 2
+        }
+      })
+    );
+
+    await llm.sendMessages(
+      [
+        new Message(MessageRole.SYSTEM, { content: 'You are a coding assistant.' }),
+        new Message(MessageRole.USER, { content: 'Write a small TypeScript function.' })
+      ],
+      null,
+      {
+        temperature: 0.2,
+        top_p: 0.1,
+        presence_penalty: 1.0,
+        frequency_penalty: 1.0,
+        n: 3,
+        thinking: { type: 'disabled' }
+      }
+    );
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.7-code-highspeed',
       temperature: 1.0,
       top_p: 0.95,
       n: 1,

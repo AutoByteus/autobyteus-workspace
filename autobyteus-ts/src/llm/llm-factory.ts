@@ -3,6 +3,7 @@ import { LLMModel, ModelInfo } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
+import { applyRawLlmConfigOverrides, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
 import { OllamaModelProvider } from './ollama-provider.js';
 import { LMStudioModelProvider } from './lmstudio-provider.js';
 import { AutobyteusModelProvider } from './autobyteus-provider.js';
@@ -78,6 +79,8 @@ export type ModelPricingLookupInput = {
   modelProvider?: LLMProvider | string | null;
 };
 
+export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
+
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
 
@@ -112,6 +115,9 @@ const groupEndpointModelsByEndpoint = (
 
   return grouped;
 };
+
+const isRawConfigRecord = (value: unknown): value is RawLlmConfigOverrides =>
+  Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
 export class LLMFactory {
   private static modelsByProvider = new Map<LLMProvider, LLMModel[]>();
@@ -205,7 +211,22 @@ export class LLMFactory {
     return report;
   }
 
-  static async createLLM(modelIdentifier: string, llmConfig?: LLMConfig): Promise<BaseLLM> {
+  private static composeEffectiveConfig(model: LLMModel, configInput?: LLMFactoryConfigInput): LLMConfig {
+    const config = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
+
+    if (configInput instanceof LLMConfig) {
+      config.mergeWith(configInput);
+      return config;
+    }
+
+    if (isRawConfigRecord(configInput)) {
+      applyRawLlmConfigOverrides(config, configInput);
+    }
+
+    return config;
+  }
+
+  static async createLLM(modelIdentifier: string, configInput?: LLMFactoryConfigInput): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
     const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
@@ -214,10 +235,7 @@ export class LLMFactory {
       if (!LLMClass) {
         throw new Error(`Model '${model.modelIdentifier}' does not have an LLM class registered yet.`);
       }
-      const config = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
-      if (llmConfig) {
-        config.mergeWith(llmConfig);
-      }
+      const config = LLMFactory.composeEffectiveConfig(model, configInput);
       return new LLMClass(model, config);
     }
 

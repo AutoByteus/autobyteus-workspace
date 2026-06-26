@@ -208,6 +208,7 @@ describe('TeamWorkspaceView', () => {
             </div>
           `,
         },
+        TokenUsageHeaderChip: { template: '<div data-test="token-usage-header-chip" />' },
         AgentStatusDisplay: {
           props: ['status'],
           template: '<div data-test="header-status">{{ status }}</div>',
@@ -219,6 +220,11 @@ describe('TeamWorkspaceView', () => {
   it('shows focused member name in header', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('Professor');
+  });
+
+  it('does not render the token usage header chip', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
   });
 
   it('shows focused member status in header', () => {

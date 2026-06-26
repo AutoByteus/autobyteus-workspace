@@ -150,6 +150,63 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     defaultToolRegistry.restore(toolRegistrySnapshot);
   });
 
+  it("passes raw run llmConfig to LLMFactory without wrapping it as extraParams", async () => {
+    const createLLM = vi.fn(async () =>
+      new DummyLLM(
+        new LLMModel({
+          name: "dummy-model",
+          value: "dummy-model",
+          canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      ),
+    );
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () =>
+          new AgentDefinition({
+            id: "agent-1",
+            name: "Professor",
+            description: "Coordinates work.",
+          }),
+        ),
+      } as any,
+      llmFactory: { createLLM } as any,
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: {
+        getSkill: () => null,
+      } as any,
+    });
+    const rawLlmConfig = {
+      temperature: 0.2,
+      provider_specific_flag: "kept",
+    };
+
+    await (factory as any).buildAgentConfig(
+      new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        llmConfig: rawLlmConfig,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+      }),
+      "run-professor",
+    );
+
+    expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig);
+    expect(createLLM.mock.calls[0]?.[1]).toBe(rawLlmConfig);
+    expect(createLLM.mock.calls[0]?.[1]).not.toBeInstanceOf(LLMConfig);
+  });
+
   it("filters mixed task-management tools, composes server team prompts, and injects primitive team context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {

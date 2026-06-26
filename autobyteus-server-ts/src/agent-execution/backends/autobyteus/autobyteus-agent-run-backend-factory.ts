@@ -19,7 +19,6 @@ import {
 } from "autobyteus-ts";
 import type { Agent } from "autobyteus-ts/agent/agent.js";
 import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
-import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
@@ -412,8 +411,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       }
     }
 
-    const config = llmConfig ? new LLMConfig({ extraParams: llmConfig }) : undefined;
-    const llmInstance = await this.llmFactory.createLLM(llmModelIdentifier, config);
+    const llmInstance = await this.llmFactory.createLLM(llmModelIdentifier, llmConfig ?? undefined);
 
     let workspaceInstance = workspaceId
       ? this.workspaceManager.getWorkspaceById(workspaceId)

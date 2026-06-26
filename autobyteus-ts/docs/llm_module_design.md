@@ -79,7 +79,8 @@ new built-in enum value for every saved endpoint.
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
       `claude-opus-4.7`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
-      `kimi-k2.6`).
+      the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
+      `kimi-k2.7-code-highspeed` rows).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
     - Leaves custom OpenAI-compatible provider sync to the caller that owns
       persisted provider records.
@@ -133,9 +134,11 @@ Current examples of provider-specific model rules:
 - `kimi-k2.6` remains the general-purpose Kimi model. It disables thinking
   automatically for tool workflows when the caller has not supplied an explicit
   thinking override and normalizes provider-safe K2.6 temperature defaults.
-- `kimi-k2.7-code` is the coding/agentic Kimi model. It keeps thinking on and
-  normalizes K2.7 Code fixed sampling/tool-choice constraints locally in
-  `KimiLLM` before the shared request builder runs.
+- `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` are distinct official Kimi
+  K2.7 Code serving routes. They share the Kimi K2.7 family policy in
+  `src/llm/api/kimi-k2-7-code-policy.ts`, keep thinking on, and normalize fixed
+  sampling/tool-choice constraints locally in `KimiLLM` before the shared
+  request builder runs.
 - `minimax-m3` is the active MiniMax LLM entry. MiniMax M2.7 is removed from the
   built-in registry and curated metadata without a compatibility alias.
 
@@ -216,7 +219,34 @@ src/llm/
   be shown and must not treat constructor/default zero values as free pricing.
 - **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
 
-This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.
+`LLMConfig` is the effective configuration object passed to provider
+instances. Factory-created runtime paths compose that effective config in this
+order:
+
+```text
+base `LLMConfig` defaults
+-> model registry `LLMModel.defaultConfig`
+-> explicit user/run raw `llmConfig` overrides only
+-> provider/model invariant enforcement
+-> request builder/provider SDK
+```
+
+`LLMFactory.createLLM(identifier, configInput?)` starts from a clone of the
+selected model's `defaultConfig` when present, otherwise from a fresh
+`LLMConfig`. Passing an `LLMConfig` means the caller already has an effective
+config, so the factory merges it over the model defaults. Passing a plain object
+means the caller is providing a sparse raw run/default-launch `llmConfig`;
+`llm-config-overrides.ts` applies only explicitly present fields. Missing
+standard fields do not override model defaults, standard keys such as
+`temperature`, `top_p`, `max_tokens`, penalties, and stop sequences become
+first-class `LLMConfig` fields, and unknown provider-specific keys are preserved
+in `extraParams`. Standard/reserved keys are filtered out of nested
+`extra_params` / `extraParams` containers to avoid first-class-field collisions.
+
+Server runtime boundaries should pass persisted raw `llmConfig` records to
+`LLMFactory` directly. They should not turn the entire raw record into
+`new LLMConfig({ extraParams: rawConfig })`, because that loses absence
+semantics and lets standard fields reach the provider as accidental extras.
 
 For OpenAI-compatible Chat Completions providers, `OpenAICompatibleRequestBuilder`
 is the single request-body construction boundary. It maps `LLMConfig`
@@ -231,9 +261,10 @@ agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
-per-request `temperature`, while `kimi-k2.7-code` overrides the generic default
-temperature and other fixed sampling/tool-choice fields to provider-valid
-values. `GlmLLM` owns GLM `thinking_type` to `thinking.type` conversion and
+per-request `temperature`, while the `kimi-k2.7-code` and
+`kimi-k2.7-code-highspeed` variants enforce fixed temperature, sampling, and
+tool-choice values to keep requests provider-valid. `GlmLLM` owns GLM
+`thinking_type` to `thinking.type` conversion and
 omits stale effort values when thinking is disabled. `DeepSeekLLM` similarly
 owns V4 thinking request normalization: user-facing `thinking_type` is converted
 to top-level `thinking.type`, stale caller-supplied `thinking` and

@@ -27,7 +27,8 @@ or changing provider-specific request-shaping behavior.
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
 | LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-06-16 | General-purpose Kimi model; keeps K2.6-specific tool-workflow normalization. |
-| LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Coding/agentic Kimi model; always-on thinking and fixed sampling constraints are enforced in `KimiLLM`. |
+| LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Standard K2.7 Code serving route; always-on thinking and fixed sampling constraints are shared through the Kimi K2.7 policy and enforced in `KimiLLM`. |
+| LLM | `kimi-k2.7-code-highspeed` | `kimi-k2.7-code-highspeed` | Moonshot / Kimi | 2026-06-26 | High-speed K2.7 Code serving route; distinct official provider ID that shares the Kimi K2.7 fixed sampling/tool policy. |
 | LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
 | LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-06-24 | Replaces removed MiniMax M2.7 support; uses tiered pricing metadata and the MiniMax OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
@@ -72,6 +73,36 @@ read-only/non-disable-capable state, but it must not invent values such as
 `reasoning` but expose no schema/default metadata must not get a guessed
 **Thinking** state; provider or catalog owners should add machine-readable
 metadata if that state should be visible.
+
+## Runtime Config Composition Contract
+
+Factory-created LLMs compose runtime configuration in one path:
+
+```text
+base `LLMConfig` defaults
+-> `LLMModel.defaultConfig`
+-> explicit user/run raw `llmConfig` overrides
+-> provider/model invariant enforcement
+-> request builder/provider SDK
+```
+
+`LLMFactory.createLLM(modelId, configInput?)` clones the selected model's
+`defaultConfig` when one exists, otherwise it starts from a normal `LLMConfig`.
+If `configInput` is already an `LLMConfig`, it is treated as an effective config
+and merged over those defaults. If `configInput` is a plain run/default-launch
+record, it is interpreted as a sparse override: missing standard fields do not
+override model defaults, standard keys such as `temperature`, `top_p`,
+`max_tokens`, penalties, and stop sequences become first-class `LLMConfig`
+fields, and unknown provider-specific keys flow through `extraParams`.
+Standard/reserved keys are filtered out of nested `extra_params`/`extraParams`
+so they cannot accidentally override the first-class values later in request
+construction.
+
+Server/runtime boundaries should therefore pass persisted raw `llmConfig`
+records directly to `LLMFactory`; they should not wrap those records as
+`new LLMConfig({ extraParams: llmConfig })`. Provider adapters still own hard
+invariants after composition. Catalog defaults are normal defaults unless the
+provider adapter also enforces them as fixed constraints.
 
 ## Provider-Specific Runtime Notes
 
@@ -156,16 +187,29 @@ request normalization for Moonshot tool workflows:
   `temperature: 0.6`, non-tool requests use `temperature: 1`, and explicit
   per-request `temperature` kwargs are preserved.
 
-### Kimi K2.7 Code
+### Kimi K2.7 Code and HighSpeed
 
-`kimi-k2.7-code` is registered separately for coding and agentic workflows. It
-uses the same Kimi OpenAI-compatible endpoint but has different request
-constraints from K2.6:
+`kimi-k2.7-code` and `kimi-k2.7-code-highspeed` are both active built-in Kimi
+K2.7 Code rows. They use distinct official provider identifiers/routes; the
+HighSpeed row is the faster serving variant of the same K2.7 Code model family,
+not an alias, fallback, or accidental duplicate. Keep both rows visible and do
+not collapse either ID into the other.
+
+The shared Kimi K2.7 family policy lives in
+`src/llm/api/kimi-k2-7-code-policy.ts`. It owns the two model IDs, fixed
+sampling constants, allowed tool-choice values, the family predicate used by
+`KimiLLM`, and the default-config helper used by the catalog rows. Both catalog
+rows seed the same provider-fixed defaults while preserving their separate
+pricing metadata.
+
+K2.7 Code variants use the same Kimi OpenAI-compatible endpoint but have
+different request constraints from K2.6:
 
 - the adapter never auto-injects `thinking: { type: "disabled" }` for K2.7
   Code because thinking is always on;
-- the shared default `LLMConfig.temperature = 0.7` is overridden locally to the
-  provider-fixed `temperature: 1.0`;
+- the model default config starts from the provider-fixed
+  `temperature: 1.0`, `top_p: 0.95`, `n: 1`, `presence_penalty: 0`, and
+  `frequency_penalty: 0` values;
 - explicit non-default fixed sampling controls are normalized to documented
   fixed values (`top_p: 0.95`, `n: 1`, `presence_penalty: 0`,
   `frequency_penalty: 0`); and
