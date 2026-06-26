@@ -12,6 +12,10 @@ import {
   type TeamRunEvent,
 } from "../domain/team-run-event.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
+import {
+  cloneTaskTeamInstanceIdentity,
+  type TaskTeamInstanceIdentity,
+} from "../domain/task-team-instance.js";
 import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 import {
   buildAgentMemberCommandStartStatusEvent,
@@ -34,6 +38,7 @@ export class TeamCommandStatusOverlayStore {
     getTeamRunId: () => string | null;
     publishEvent: (event: TeamRunEvent) => void;
     publishTeamStatusIfChanged: () => void;
+    taskTeamInstance?: TaskTeamInstanceIdentity | null;
   }) {}
 
   publishMemberCommandStatus(input: {
@@ -71,7 +76,9 @@ export class TeamCommandStatusOverlayStore {
       }),
       buildAgentMemberCommandStatusPayload(eventInput),
     );
-    this.options.publishEvent(buildAgentMemberCommandStartStatusEvent(eventInput));
+    this.options.publishEvent(this.withTaskTeamInstance(
+      buildAgentMemberCommandStartStatusEvent(eventInput),
+    ));
     if (input.notifyStatusChange !== false) {
       this.options.publishTeamStatusIfChanged();
     }
@@ -95,12 +102,12 @@ export class TeamCommandStatusOverlayStore {
 
     const sourcePath = [...input.sourcePath];
     this.teamStatusesBySourcePathKey.set(this.sourcePathKey(sourcePath), input.status);
-    this.options.publishEvent(buildTeamCommandStartStatusEvent({
+    this.options.publishEvent(this.withTaskTeamInstance(buildTeamCommandStartStatusEvent({
       teamRunId,
       sourcePath,
       status: input.status,
       errorMessage: input.errorMessage ?? null,
-    }));
+    })));
     if (input.notifyStatusChange !== false) {
       this.options.publishTeamStatusIfChanged();
     }
@@ -255,6 +262,12 @@ export class TeamCommandStatusOverlayStore {
 
   private clearTeamReplacement(sourcePath: readonly string[]): boolean {
     return this.teamStatusesBySourcePathKey.delete(this.sourcePathKey(sourcePath));
+  }
+
+  private withTaskTeamInstance(event: TeamRunEvent): TeamRunEvent {
+    return this.options.taskTeamInstance
+      ? { ...event, taskTeamInstance: cloneTaskTeamInstanceIdentity(this.options.taskTeamInstance) }
+      : event;
   }
 
   private resolveSnapshotExecutionKey(snapshot: AgentStatusPayload): string | null {

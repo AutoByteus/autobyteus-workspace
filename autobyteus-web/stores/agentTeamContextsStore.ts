@@ -305,7 +305,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       if (targetNode.memberKind !== 'agent') {
         return;
       }
-      if (targetNode.isTaskAgentInstance) {
+      if (targetNode.isTaskAgentInstance || targetNode.isTaskTeamChildProjection || targetNode.isTaskTeamInstance) {
         return;
       }
 

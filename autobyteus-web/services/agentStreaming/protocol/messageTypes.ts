@@ -16,7 +16,7 @@ export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayloa
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
-export type { TaskAgentIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
+export type { TaskAgentIdentityPayload, TaskTeamIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
 // Server → Client Message Types
@@ -105,7 +105,7 @@ export interface AgentStatusPayload extends TeamStreamIdentityPayload {
   error_details?: string | null;
 }
 
-export interface TeamStatusPayload {
+export interface TeamStatusPayload extends TeamStreamIdentityPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   error_message?: string | null;
   sub_team_node_name?: string | null;
@@ -401,6 +401,16 @@ export interface ToolActionPayload {
   taskAgentRunId?: string;
   target_member_run_id?: string;
   targetMemberRunId?: string;
+  task_team_run_id?: string;
+  taskTeamRunId?: string;
+  team_route_key?: string;
+  teamRouteKey?: string;
+  team_path?: string[];
+  teamPath?: string[];
+  task_team_relative_member_route_key?: string;
+  taskTeamRelativeMemberRouteKey?: string;
+  task_team_relative_member_path?: string[];
+  taskTeamRelativeMemberPath?: string[];
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }

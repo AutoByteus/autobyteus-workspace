@@ -41,6 +41,11 @@ export interface ToolApprovalTarget {
   sourceRouteKey?: string | null;
   sourcePath?: string[] | null;
   taskAgentRunId?: string | null;
+  taskTeamRunId?: string | null;
+  teamRouteKey?: string | null;
+  teamPath?: string[] | null;
+  taskTeamRelativeMemberRouteKey?: string | null;
+  taskTeamRelativeMemberPath?: string[] | null;
 }
 
 export interface AIResponseTextSegment {

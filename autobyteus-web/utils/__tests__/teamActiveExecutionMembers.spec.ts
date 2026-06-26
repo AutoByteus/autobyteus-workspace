@@ -115,4 +115,52 @@ describe('teamActiveExecutionMembers', () => {
 
     expect(routeKeys(teamContext)).toEqual(['coordinator', 'worker']);
   });
+
+  it('includes task-team roots, scoped child projections, and nested task agents together', () => {
+    const scopedChild = buildMemberNode('task-team-run-1/worker', 'Worker', {
+      memberPath: ['task-team-run-1', 'worker'],
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+      taskTeamRelativeMemberRouteKey: 'worker',
+    });
+    const nestedTaskAgent = buildMemberNode('task-agent-run-inside-team', 'Worker · nested task', {
+      memberPath: ['task-team-run-1', 'worker', 'task-agent-run-inside-team'],
+      memberRunId: 'task-agent-run-inside-team',
+      isTaskAgentInstance: true,
+      taskAgentRunId: 'task-agent-run-inside-team',
+      taskId: 'task_nested',
+      logicalMemberRouteKey: 'task-team-run-1/worker',
+      parentTaskTeamRunId: 'task-team-run-1',
+    });
+    const taskTeamRoot = {
+      memberKind: 'agent_team',
+      memberName: 'SoftwareTeam task',
+      displayName: 'SoftwareTeam task',
+      memberPath: ['task-team-run-1'],
+      memberRouteKey: 'task-team-run-1',
+      memberRunId: 'task-team-run-1',
+      teamDefinitionId: 'software-team',
+      teamRunId: 'task-team-run-1',
+      children: [scopedChild, nestedTaskAgent],
+      isTaskTeamInstance: true,
+      taskTeamRunId: 'task-team-run-1',
+      taskExecutionStatus: 'active',
+      currentStatus: AgentStatus.Running,
+    };
+    const teamContext = buildTeamContext(
+      buildContext('worker-run', AgentStatus.Offline),
+      [taskTeamRoot],
+      [
+        ['task-team-run-1/worker', buildContext('task-team-run-1/worker', AgentStatus.Offline)],
+        ['task-agent-run-inside-team', buildContext('task-agent-run-inside-team', AgentStatus.Running)],
+      ],
+    );
+
+    expect(routeKeys(teamContext)).toEqual([
+      'coordinator',
+      'task-team-run-1',
+      'task-team-run-1/worker',
+      'task-agent-run-inside-team',
+    ]);
+  });
 });

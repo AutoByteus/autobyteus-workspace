@@ -71,7 +71,13 @@ export const isActiveExecutionMemberNode = (
     return false;
   }
 
-  if (node.isTaskAgentInstance || !hasCoordinator(teamContext) || isCoordinatorNode(teamContext, node)) {
+  if (
+    node.isTaskAgentInstance ||
+    node.isTaskTeamInstance ||
+    node.isTaskTeamChildProjection ||
+    !hasCoordinator(teamContext) ||
+    isCoordinatorNode(teamContext, node)
+  ) {
     return true;
   }
 

@@ -20,6 +20,7 @@ export interface MixedTeamMemberHandle {
     invocationId: string,
     approved: boolean,
     reason?: string | null,
+    targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
   interrupt(
     target: TeamMemberSelector | null,

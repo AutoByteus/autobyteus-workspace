@@ -1,6 +1,7 @@
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
+import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
 import {
   MemberTeamContext,
@@ -71,6 +72,7 @@ export class MemberTeamContextBuilder {
     parentBoundary?: ParentBoundaryCommunicationContextInput | null;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    taskTeamInstance?: TaskTeamInstanceIdentity | null;
   }): Promise<MemberTeamContext> {
     const members = input.members.map((member) => this.buildMemberDescriptor(input.teamRunId, member));
     const currentMemberRouteKey = input.currentMemberRouteKey.trim();
@@ -110,6 +112,7 @@ export class MemberTeamContextBuilder {
       sendMessageToEnabled: Boolean(deliverInterAgentMessage),
       deliverInterAgentMessage,
       taskAgentInstance: input.taskAgentInstance ?? null,
+      taskTeamInstance: input.taskTeamInstance ?? null,
     });
   }
 

@@ -1,5 +1,6 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
+import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
 import type {
   InterAgentMessageDeliveryHandler,
   InterAgentMessageParticipant,
@@ -92,6 +93,7 @@ export class MemberTeamContext {
   readonly sendMessageToEnabled: boolean;
   readonly deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
   readonly taskAgentInstance: TaskAgentInstanceIdentity | null;
+  readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
 
   constructor(input: {
     teamRunId: string;
@@ -111,6 +113,7 @@ export class MemberTeamContext {
     sendMessageToEnabled?: boolean;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    taskTeamInstance?: TaskTeamInstanceIdentity | null;
   }) {
     this.teamRunId = input.teamRunId;
     this.teamDefinitionId = input.teamDefinitionId;
@@ -129,5 +132,6 @@ export class MemberTeamContext {
     this.sendMessageToEnabled = Boolean(input.sendMessageToEnabled);
     this.deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
     this.taskAgentInstance = input.taskAgentInstance ?? null;
+    this.taskTeamInstance = input.taskTeamInstance ?? null;
   }
 }

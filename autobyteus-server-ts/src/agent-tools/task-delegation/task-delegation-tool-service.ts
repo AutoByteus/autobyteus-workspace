@@ -1,9 +1,7 @@
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import {
-  getTaskDelegationRunRegistry,
-  type TaskDelegationRunRegistry,
-} from "../../agent-team-execution/task-delegation/task-delegation-run-registry.js";
+import type {
+  MemberTeamContext,
+  MemberTeamDescriptor,
+} from "../../agent-team-execution/domain/member-team-context.js";
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
@@ -12,122 +10,128 @@ import type {
   SubmitTaskResultInput,
   SubmitTaskResultResult,
   TaskDelegationCallerIdentity,
-  TaskDelegationMemberIdentity,
+  TaskDelegationContext,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import {
-  getTeamRunService,
-  type TeamRunService,
-} from "../../agent-team-execution/services/team-run-service.js";
+import type {
+  TaskDelegationContextMember,
+  TaskDelegationMemberIdentity,
+  TaskDelegationTeamIdentity,
+} from "../../agent-team-execution/task-delegation/task-delegation-target.js";
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
+import { TaskDelegationToolRunRouter } from "./task-delegation-tool-run-router.js";
 
-const toIdentity = (member: {
+const toMemberIdentity = (member: {
   memberName: string;
   memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
   runtimeKind?: TaskDelegationMemberIdentity["runtimeKind"];
+  role?: string | null;
+  description?: string | null;
 }): TaskDelegationMemberIdentity => ({
+  memberKind: "agent",
   memberName: member.memberName,
   memberPath: [...member.memberPath],
   memberRouteKey: member.memberRouteKey,
   memberRunId: member.memberRunId,
   runtimeKind: member.runtimeKind ?? null,
+  role: member.role ?? null,
+  description: member.description ?? null,
 });
+
+const toTeamIdentity = (
+  member: Extract<MemberTeamDescriptor, { memberKind: "agent_team" }>,
+): TaskDelegationTeamIdentity => ({
+  memberKind: "agent_team",
+  memberName: member.memberName,
+  memberPath: [...member.memberPath],
+  memberRouteKey: member.memberRouteKey,
+  memberRunId: member.memberRunId,
+  teamDefinitionId: member.teamDefinitionId,
+  childTeamRunId: member.childTeamRunId ?? null,
+  coordinatorMemberRouteKey: member.coordinatorMemberRouteKey ?? null,
+  ingress: member.representative
+    ? {
+        memberName: member.representative.memberName,
+        memberPath: [...member.representative.memberPath],
+        memberRouteKey: member.representative.memberRouteKey,
+        memberRunId: member.representative.memberRunId,
+        runtimeKind: member.representative.runtimeKind ?? null,
+        role: member.representative.role ?? null,
+        description: member.representative.description ?? null,
+      }
+    : null,
+  role: member.role ?? null,
+  description: member.description ?? null,
+});
+
+const toContextMember = (member: MemberTeamDescriptor): TaskDelegationContextMember =>
+  member.memberKind === "agent_team" ? toTeamIdentity(member) : toMemberIdentity(member);
 
 export const buildTaskDelegationToolContextFromMemberTeamContext = (
   memberTeamContext: MemberTeamContext,
 ): TaskDelegationToolContext => {
   const caller: TaskDelegationCallerIdentity = {
-    ...toIdentity(memberTeamContext),
+    ...toMemberIdentity(memberTeamContext),
     ...(memberTeamContext.taskAgentInstance
       ? {
+          taskAgentInstanceId: memberTeamContext.taskAgentInstance.taskAgentInstanceId,
           taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
           taskId: memberTeamContext.taskAgentInstance.taskId,
-          logicalMemberRouteKey:
-            memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
+          logicalMemberRouteKey: memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
         }
       : {}),
+    taskTeamInstance: memberTeamContext.taskTeamInstance ?? null,
   };
-  const members = memberTeamContext.members.map(toIdentity);
   return {
     teamRunId: memberTeamContext.teamRunId,
     teamDefinitionId: memberTeamContext.teamDefinitionId,
     teamName: memberTeamContext.teamName,
     caller,
     coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
-    members,
+    members: memberTeamContext.members.map(toContextMember),
   };
 };
 
 export class TaskDelegationToolService {
-  constructor(private readonly dependencies: {
-    teamRunService?: TeamRunService;
-    runRegistry?: TaskDelegationRunRegistry;
-  } = {}) {}
+  private readonly runRouter: TaskDelegationToolRunRouter;
+
+  constructor(dependencies: {
+    runRouter?: TaskDelegationToolRunRouter;
+  } = {}) {
+    this.runRouter = dependencies.runRouter ?? new TaskDelegationToolRunRouter();
+  }
 
   async delegateTask(
     context: TaskDelegationToolContext,
     input: DelegateTaskInput,
   ): Promise<DelegateTaskResult> {
-    const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).delegateTask(context, input);
+    const service = await this.runRouter.resolveServiceForDelegateOrReview(context);
+    return service.delegateTask(context, input);
   }
 
   async submitTaskResult(
     context: TaskDelegationToolContext,
     input: SubmitTaskResultInput,
   ): Promise<SubmitTaskResultResult> {
-    const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).submitTaskResult(context, input);
+    const route = await this.runRouter.resolveServiceForSubmit(context);
+    return route.kind === "task_team_ingress_parent"
+      ? route.service.submitTaskTeamIngressResult(route.context, input, route.taskTeamInstance)
+      : route.service.submitTaskAgentResult(route.context, input);
   }
 
   async reviewTaskResult(
     context: TaskDelegationToolContext,
     input: ReviewTaskResultInput,
   ): Promise<ReviewTaskResultResult> {
-    const run = await this.resolveBoundTeamRun(context);
-    return this.getTaskDelegationService(run).reviewTaskResult(context, input);
-  }
-
-  private async resolveBoundTeamRun(
-    context: TaskDelegationToolContext,
-  ): Promise<TeamRun> {
-    const teamRunId = context.teamRunId?.trim();
-    if (!teamRunId) {
-      throw new TaskDelegationError(
-        "TEAM_RUN_CONTEXT_REQUIRED",
-        "Task delegation tools require an active team run context.",
-      );
-    }
-    const run = await (this.dependencies.teamRunService ?? getTeamRunService())
-      .resolveTeamRun(teamRunId);
-    if (!run) {
-      throw new TaskDelegationError(
-        "TEAM_RUN_NOT_FOUND",
-        `Team run '${teamRunId}' is not active or could not be restored.`,
-      );
-    }
-    if (run.runId !== teamRunId) {
-      throw new TaskDelegationError(
-        "TEAM_RUN_MISMATCH",
-        `Resolved team run '${run.runId}' does not match bound context '${teamRunId}'.`,
-      );
-    }
-    return run;
-  }
-
-  private getTaskDelegationService(run: TeamRun) {
-    return (this.dependencies.runRegistry ?? getTaskDelegationRunRegistry())
-      .getOrCreate(run);
+    const service = await this.runRouter.resolveServiceForDelegateOrReview(context);
+    return service.reviewTaskResult(context, input);
   }
 }
 
 let cachedTaskDelegationToolService: TaskDelegationToolService | null = null;
 
 export const getTaskDelegationToolService = (): TaskDelegationToolService => {
-  if (!cachedTaskDelegationToolService) {
-    cachedTaskDelegationToolService = new TaskDelegationToolService();
-  }
+  if (!cachedTaskDelegationToolService) cachedTaskDelegationToolService = new TaskDelegationToolService();
   return cachedTaskDelegationToolService;
 };

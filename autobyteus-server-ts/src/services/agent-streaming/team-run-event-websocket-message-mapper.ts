@@ -30,36 +30,82 @@ const normalizePath = (value: unknown): string[] => (
     : []
 );
 
+const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
+  path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
+
+const flattenTaskTeamScopedIdentity = (
+  event: TeamRunEvent,
+): Record<string, unknown> => {
+  const taskTeamInstance = event.taskTeamInstance ?? null;
+  if (!taskTeamInstance?.taskTeamRunId) {
+    return {};
+  }
+
+  const teamPath = [...taskTeamInstance.logicalTeam.memberPath];
+  const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
+  const relativeMemberPath = pathStartsWith(sourcePath, teamPath)
+    ? sourcePath.slice(teamPath.length)
+    : [];
+  const relativeMemberRouteKey = relativeMemberPath.length > 0
+    ? relativeMemberPath.join("/")
+    : null;
+
+  return {
+    task_team_run_id: taskTeamInstance.taskTeamRunId,
+    task_team_instance_id: taskTeamInstance.taskTeamInstanceId,
+    task_id: taskTeamInstance.taskId,
+    team_route_key: taskTeamInstance.logicalTeam.memberRouteKey,
+    team_path: teamPath,
+    task_team_relative_member_path: relativeMemberPath,
+    ...(relativeMemberRouteKey ? { task_team_relative_member_route_key: relativeMemberRouteKey } : {}),
+  };
+};
+
 const flattenTaskDelegationIdentity = (
   payload: Record<string, unknown>,
 ): Record<string, unknown> => {
-  const taskAgentInstance = asRecord(payload.taskAgentInstance);
-  const member = asRecord(payload.member);
+  const execution = asRecord(payload.execution);
+  const taskAgentInstance = execution.kind === "task_agent"
+    ? asRecord(execution.taskAgentInstance)
+    : {};
+  const taskTeamInstance = execution.kind === "task_team"
+    ? asRecord(execution.taskTeamInstance)
+    : {};
+  const target = asRecord(payload.target);
+  const member = target.kind === "member" ? asRecord(target.member) : {};
+  const team = target.kind === "team" ? asRecord(target.team) : {};
   const logicalMember = asRecord(taskAgentInstance.logicalMember);
+  const logicalTeam = asRecord(taskTeamInstance.logicalTeam);
   const memberPath = normalizePath(member.memberPath).length > 0
     ? normalizePath(member.memberPath)
     : normalizePath(logicalMember.memberPath);
+  const teamPath = normalizePath(team.memberPath).length > 0
+    ? normalizePath(team.memberPath)
+    : normalizePath(logicalTeam.memberPath);
   const memberRouteKey = typeof member.memberRouteKey === "string" && member.memberRouteKey.trim()
     ? member.memberRouteKey.trim()
     : typeof logicalMember.memberRouteKey === "string" && logicalMember.memberRouteKey.trim()
       ? logicalMember.memberRouteKey.trim()
       : null;
+  const teamRouteKey = typeof team.memberRouteKey === "string" && team.memberRouteKey.trim()
+    ? team.memberRouteKey.trim()
+    : typeof logicalTeam.memberRouteKey === "string" && logicalTeam.memberRouteKey.trim()
+      ? logicalTeam.memberRouteKey.trim()
+      : null;
 
   return {
-    ...(typeof taskAgentInstance.taskAgentInstanceId === "string" ? {
-      task_agent_instance_id: taskAgentInstance.taskAgentInstanceId,
-    } : {}),
-    ...(typeof taskAgentInstance.taskAgentRunId === "string" ? {
-      task_agent_run_id: taskAgentInstance.taskAgentRunId,
-      agent_id: taskAgentInstance.taskAgentRunId,
-    } : {}),
-    ...(typeof taskAgentInstance.taskId === "string" ? {
-      task_id: taskAgentInstance.taskId,
-    } : typeof payload.taskId === "string" ? {
-      task_id: payload.taskId,
-    } : {}),
+    ...(typeof execution.kind === "string" ? { execution_kind: execution.kind } : {}),
+    ...(typeof taskAgentInstance.taskAgentInstanceId === "string" ? { task_agent_instance_id: taskAgentInstance.taskAgentInstanceId } : {}),
+    ...(typeof taskAgentInstance.taskAgentRunId === "string" ? { task_agent_run_id: taskAgentInstance.taskAgentRunId, agent_id: taskAgentInstance.taskAgentRunId } : {}),
+    ...(typeof taskTeamInstance.taskTeamInstanceId === "string" ? { task_team_instance_id: taskTeamInstance.taskTeamInstanceId } : {}),
+    ...(typeof taskTeamInstance.taskTeamRunId === "string" ? { task_team_run_id: taskTeamInstance.taskTeamRunId } : {}),
+    ...(typeof taskAgentInstance.taskId === "string" ? { task_id: taskAgentInstance.taskId } :
+      typeof taskTeamInstance.taskId === "string" ? { task_id: taskTeamInstance.taskId } :
+        typeof payload.taskId === "string" ? { task_id: payload.taskId } : {}),
     ...(memberRouteKey ? { member_route_key: memberRouteKey } : {}),
     ...(memberPath.length > 0 ? { member_path: memberPath } : {}),
+    ...(teamRouteKey ? { team_route_key: teamRouteKey } : {}),
+    ...(teamPath.length > 0 ? { team_path: teamPath } : {}),
   };
 };
 
@@ -73,6 +119,7 @@ export const convertTeamRunEventToServerMessage = (
     source_path: sourcePath,
     ...(sourceRouteKey ? { source_route_key: sourceRouteKey } : {}),
     ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
+    ...flattenTaskTeamScopedIdentity(event),
   };
 
   if (event.eventSourceType === TeamRunEventSourceType.AGENT) {

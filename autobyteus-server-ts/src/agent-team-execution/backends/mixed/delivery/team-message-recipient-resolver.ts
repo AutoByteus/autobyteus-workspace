@@ -17,7 +17,7 @@ import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { selectorFromMemberPath } from "../../../domain/team-run-member-identity.js";
 import { MemberCommunicationRosterBuilder } from "../../../services/member-communication-roster-builder.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
-import type { MixedTeamMemberRegistry } from "../members/mixed-team-member-registry.js";
+import type { PersistentMemberRegistryAccess } from "../members/mixed-persistent-member-registry.js";
 import { getMixedTaskAgentHandleRecoveryCache } from "../members/mixed-task-agent-handle-recovery-cache.js";
 
 export type ResolvedTeamMessageRecipient =
@@ -73,8 +73,9 @@ export class TeamMessageRecipientResolver {
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: MixedTeamMemberRegistry;
+    memberRegistry: PersistentMemberRegistryAccess;
     taskAgentDirectory: TaskAgentDirectory;
+    resolveTaskAgentLogicalContext: (runId: string) => MixedTeamMemberContext | null;
   }) {}
 
   resolve(intent: InterAgentMessageDeliveryIntent): ResolvedTeamMessageRecipient | AgentOperationResult {
@@ -270,7 +271,7 @@ export class TeamMessageRecipientResolver {
     if (!isOperationResult(resolved)) {
       return resolved;
     }
-    const taskAgentSender = this.options.memberRegistry.resolveTaskAgentLogicalContext(
+    const taskAgentSender = this.options.resolveTaskAgentLogicalContext(
       intent.sender.participant.memberRunId,
     );
     if (taskAgentSender) {

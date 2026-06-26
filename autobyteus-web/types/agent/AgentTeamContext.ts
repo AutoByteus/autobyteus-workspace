@@ -4,6 +4,10 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import type {
+  TaskExecutionProjectionStatus,
+  TaskExecutionTimelineEntry,
+} from '~/services/agentStreaming/teamTaskExecutionProjection';
 
 export type TeamMemberNodeKind = 'agent' | 'agent_team';
 
@@ -20,6 +24,23 @@ export interface TeamMemberNodeBase {
   taskAgentRunId?: string | null;
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
+  /** True for transient frontend projections of concrete delegated task-team executions. */
+  isTaskTeamInstance?: boolean;
+  taskTeamInstanceId?: string | null;
+  taskTeamRunId?: string | null;
+  logicalTeamRouteKey?: string | null;
+  logicalTeamPath?: string[] | null;
+  taskExecutionStatus?: TaskExecutionProjectionStatus | null;
+  taskTimeline?: TaskExecutionTimelineEntry[];
+  /** True for cloned child member nodes scoped under a concrete task-team execution. */
+  isTaskTeamChildProjection?: boolean;
+  parentTaskTeamRunId?: string | null;
+  parentTaskTeamInstanceId?: string | null;
+  parentTaskId?: string | null;
+  taskTeamRelativeMemberRouteKey?: string | null;
+  taskTeamRelativeMemberPath?: string[] | null;
+  structuralSourceRouteKey?: string | null;
+  structuralSourcePath?: string[] | null;
   /** Backend-owned canonical status for structural/non-leaf members. */
   currentStatus?: AgentStatus | null;
   role?: string | null;

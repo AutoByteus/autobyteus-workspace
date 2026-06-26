@@ -14,6 +14,13 @@ import {
   type TaskResultReview,
   type TaskResultSubmission,
 } from "./task-delegation-record.js";
+import { getTaskExecutionKind, getTaskExecutionRunId } from "./task-execution-instance.js";
+import { getTaskDelegationTargetName } from "./task-delegation-target.js";
+
+const sourcePathForRecord = (record: TaskDelegationRecord): string[] =>
+  record.target.kind === "member"
+    ? record.target.member.memberPath
+    : record.target.team.memberPath;
 
 export class TaskDelegationEventPublisher {
   publishActivated(input: {
@@ -21,26 +28,26 @@ export class TaskDelegationEventPublisher {
     teamRunId: string;
     record: TaskDelegationRecord;
   }): void {
-    if (!input.record.taskAgentInstance) {
-      throw new Error(`Task '${input.record.taskId}' is missing task-agent instance identity.`);
-    }
+    if (!input.record.execution) throw new Error(`Task '${input.record.taskId}' is missing execution identity.`);
+    const executionKind = getTaskExecutionKind(input.record.execution)!;
     const payload: TaskDelegationActivationPayload = {
       teamRunId: input.teamRunId,
-      member: input.record.member,
-      taskAgentInstance: input.record.taskAgentInstance,
+      target: input.record.target,
+      execution: input.record.execution,
       taskIds: [input.record.taskId],
       tasks: [input.record].map((record) => ({
         taskId: record.taskId,
         taskLabel: record.taskLabel,
         status: record.status,
-        targetAgentRunId: record.targetAgentRunId,
+        executionKind,
+        executionRunId: getTaskExecutionRunId(record.execution),
       })),
       activatedAt: new Date().toISOString(),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.record.member.memberPath,
+      sourcePath: sourcePathForRecord(input.record),
       eventType: "TASK_DELEGATION_ACTIVATED",
       payload,
     });
@@ -56,10 +63,9 @@ export class TaskDelegationEventPublisher {
       teamRunId: input.teamRunId,
       taskId: input.record.taskId,
       taskLabel: input.record.taskLabel,
-      member: input.record.member,
+      target: input.record.target,
       delegator: input.record.delegator,
-      taskAgentInstance: input.record.taskAgentInstance,
-      targetAgentRunId: input.record.targetAgentRunId,
+      execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,
       pendingSubmissionId: input.record.pendingSubmissionId,
@@ -74,7 +80,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.record.member.memberPath,
+      sourcePath: sourcePathForRecord(input.record),
       eventType: "TASK_DELEGATION_STATUS_UPDATED",
       payload,
     });
@@ -91,10 +97,9 @@ export class TaskDelegationEventPublisher {
       teamRunId: input.teamRunId,
       taskId: input.record.taskId,
       taskLabel: input.record.taskLabel,
-      member: input.record.member,
+      target: input.record.target,
       delegator: input.record.delegator,
-      taskAgentInstance: input.record.taskAgentInstance,
-      targetAgentRunId: input.record.targetAgentRunId,
+      execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,
       submissionId: input.submission.submissionId,
@@ -105,7 +110,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.record.member.memberPath,
+      sourcePath: sourcePathForRecord(input.record),
       eventType: "TASK_DELEGATION_RESULT_SUBMITTED",
       payload,
     });
@@ -122,10 +127,9 @@ export class TaskDelegationEventPublisher {
       teamRunId: input.teamRunId,
       taskId: input.record.taskId,
       taskLabel: input.record.taskLabel,
-      member: input.record.member,
+      target: input.record.target,
       delegator: input.record.delegator,
-      taskAgentInstance: input.record.taskAgentInstance,
-      targetAgentRunId: input.record.targetAgentRunId,
+      execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,
       reviewId: input.review.reviewId,
@@ -138,7 +142,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.record.member.memberPath,
+      sourcePath: sourcePathForRecord(input.record),
       eventType: "TASK_DELEGATION_RESULT_REVIEWED",
       payload,
     });
@@ -151,15 +155,17 @@ export class TaskDelegationEventPublisher {
     eventType: TeamRunTaskDelegationEventPayload["eventType"];
     payload: unknown;
   }): void {
-    const eventPayload: TeamRunTaskDelegationEventPayload = {
-      eventType: input.eventType,
-      payload: input.payload,
-    };
     input.teamRun.publishEvent({
       eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
       teamRunId: input.teamRunId,
       sourcePath: input.sourcePath,
-      data: eventPayload,
+      data: {
+        eventType: input.eventType,
+        payload: {
+          ...(input.payload as Record<string, unknown>),
+          target_name: getTaskDelegationTargetName((input.payload as { target: TaskDelegationRecord["target"] }).target),
+        },
+      },
     });
   }
 }

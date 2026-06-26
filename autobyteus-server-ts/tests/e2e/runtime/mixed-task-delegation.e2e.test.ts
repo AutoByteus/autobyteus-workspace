@@ -254,20 +254,21 @@ const waitForSettledTaskAgentSnapshot = async (input: {
 };
 
 const extractTargetAgentRunIdFromActivation = (message: WsMessage): string => {
+  expect(message.payload).not.toHaveProperty("taskAgentInstance");
+  expect(message.payload).not.toHaveProperty("taskTeamInstance");
+  expect(message.payload).not.toHaveProperty("member");
   const tasks = Array.isArray(message.payload.tasks) ? message.payload.tasks : [];
   for (const task of tasks) {
     if (!task || typeof task !== "object" || Array.isArray(task)) continue;
-    const value = (task as Record<string, unknown>).targetAgentRunId ?? (task as Record<string, unknown>).target_agent_run_id;
+    const typed = task as Record<string, unknown>;
+    const value = typed.executionRunId ?? typed.execution_run_id;
     if (typeof value === "string" && value.trim()) return value;
   }
-  const taskAgentInstance = message.payload.taskAgentInstance;
-  if (taskAgentInstance && typeof taskAgentInstance === "object" && !Array.isArray(taskAgentInstance)) {
-    const taskAgentRunId = (taskAgentInstance as Record<string, unknown>).taskAgentRunId;
-    if (typeof taskAgentRunId === "string" && taskAgentRunId.trim()) {
-      return taskAgentRunId;
-    }
+  const flattenedTaskAgentRunId = message.payload.task_agent_run_id;
+  if (typeof flattenedTaskAgentRunId === "string" && flattenedTaskAgentRunId.trim()) {
+    return flattenedTaskAgentRunId;
   }
-  throw new Error(`Activation payload did not include target_agent_run_id: ${JSON.stringify(message.payload)}`);
+  throw new Error(`Activation payload did not include current task-agent execution run id: ${JSON.stringify(message.payload)}`);
 };
 
 describeLive("Live mixed-runtime task delegation e2e", () => {
@@ -389,16 +390,17 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     expect(JSON.stringify(delegateTool)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateTool)).not.toContain("completion_criteria");
     expect(delegateTool?.argumentSchema?.parameters.map((parameter) => parameter.name)).toEqual([
-      "member_name",
+      "target",
       "description",
       "reference_files",
     ]);
-    expect(delegateTool?.argumentSchema?.parameters.find((parameter) => parameter.name === "member_name"))
+    expect(delegateTool?.argumentSchema?.parameters.find((parameter) => parameter.name === "target"))
       .toMatchObject({ required: true });
     expect(delegateTool?.argumentSchema?.parameters.find((parameter) => parameter.name === "description"))
       .toMatchObject({ required: true });
     expect(delegateTool?.argumentSchema?.parameters.find((parameter) => parameter.name === "reference_files"))
       .toMatchObject({ required: false });
+    expect(JSON.stringify(delegateTool)).not.toContain("member_name");
   };
 
   const fetchModelIdentifier = async (runtimeKind: RuntimeKind, selector: (models: string[]) => string | null): Promise<string> => {
@@ -516,7 +518,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     expect(workerMember).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: codexModel });
 
     const delegateArgs = {
-      member_name: "worker",
+      target: { kind: "member", name: "worker" },
       description: `Handle this delegated validation task by submitting result message ${initialResultToken}. Result condition: call submit_task_result once with message="${initialResultToken}" and reference_files=[].`,
     };
     const connection = await openTeamSocket(teamRunId);
@@ -533,10 +535,17 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         targetMemberRouteKey: "coordinator",
         reason: "approved by mixed task delegation e2e",
         label: "coordinator delegate_task",
-        argumentPredicate: (args) =>
-          args.member_name === delegateArgs.member_name &&
-          args.description === delegateArgs.description &&
-          !Object.prototype.hasOwnProperty.call(args, "tasks"),
+        argumentPredicate: (args) => {
+          const target = args.target;
+          return target !== null &&
+            typeof target === "object" &&
+            !Array.isArray(target) &&
+            (target as Record<string, unknown>).kind === delegateArgs.target.kind &&
+            (target as Record<string, unknown>).name === delegateArgs.target.name &&
+            args.description === delegateArgs.description &&
+            !Object.prototype.hasOwnProperty.call(args, "member_name") &&
+            !Object.prototype.hasOwnProperty.call(args, "tasks");
+        },
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>

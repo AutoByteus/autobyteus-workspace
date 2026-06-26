@@ -47,7 +47,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: DELEGATE_TASK_TOOL_NAME,
     description:
-      "Delegate one ready-to-run task to an exact logical team member. Provide member_name, a complete task description, and optional reference_files. The framework starts one task-agent for this task; the task-agent later submits its result with submit_task_result.",
+      'Delegate one ready-to-run task to an explicit accountable target. Provide target={kind:"member"|"team", name}, a complete task description, and optional reference_files. Member targets start one task-agent; team targets start one task-scoped team run whose ingress coordinator receives the packet. The execution target later submits its result with submit_task_result.',
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
     parseInput: parseDelegateTaskInput,
     execute: (service, context, input) =>
@@ -56,7 +56,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: SUBMIT_TASK_RESULT_TOOL_NAME,
     description:
-      "Submit a reviewable result for the delegated task bound to the current task-agent context. Provide a non-empty message and optional reference_files. The system records the submission, moves the task to awaiting_review, and notifies the original delegator.",
+      "Submit a reviewable result for the delegated task bound to the current task-agent or task-team ingress context. Provide a non-empty message and optional reference_files. The system records the submission, moves the task to awaiting_review, and notifies the original delegator.",
     parameterSchema: buildTaskDelegationToolParameterSchema(SUBMIT_TASK_RESULT_TOOL_NAME),
     parseInput: parseSubmitTaskResultInput,
     execute: (service, context, input) =>
@@ -65,7 +65,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: REVIEW_TASK_RESULT_TOOL_NAME,
     description:
-      "Review the latest pending result submission for a delegated task as the original delegator. Use decision=accept to finalize and request safe settlement, or decision=request_revision with a non-empty message to send system revision instructions to the same task-agent.",
+      "Review the latest pending result submission for a delegated task as the original delegator. Use decision=accept to finalize and request safe settlement, or decision=request_revision with a non-empty message to send system revision instructions to the same task-agent or task-team execution instance.",
     parameterSchema: buildTaskDelegationToolParameterSchema(REVIEW_TASK_RESULT_TOOL_NAME),
     parseInput: parseReviewTaskResultInput,
     execute: (service, context, input) =>

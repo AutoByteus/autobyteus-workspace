@@ -6,6 +6,10 @@ import {
   type TeamRunEvent,
 } from "../../../domain/team-run-event.js";
 import {
+  cloneTaskTeamInstanceIdentity,
+  type TaskTeamInstanceIdentity,
+} from "../../../domain/task-team-instance.js";
+import {
   buildTeamMemberAddress,
   type TeamRepresentedSubTeam,
 } from "../../../domain/inter-agent-message-delivery.js";
@@ -112,6 +116,7 @@ export const prefixMixedSubTeamEvent = (input: {
   parentTeamRunId: string;
   sourcePrefix: string[];
   event: TeamRunEvent;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): TeamRunEvent => {
   const isAlreadyParentRooted = input.event.teamRunId === input.parentTeamRunId;
   const sourcePath = prefixPath(
@@ -139,6 +144,9 @@ export const prefixMixedSubTeamEvent = (input: {
     teamRunId: input.parentTeamRunId,
     sourcePath,
     data,
+    taskTeamInstance: input.taskTeamInstance
+      ? cloneTaskTeamInstanceIdentity(input.taskTeamInstance)
+      : input.event.taskTeamInstance ?? null,
     subTeamNodeName: input.sourcePrefix[input.sourcePrefix.length - 1] ?? input.event.subTeamNodeName ?? null,
   };
 };

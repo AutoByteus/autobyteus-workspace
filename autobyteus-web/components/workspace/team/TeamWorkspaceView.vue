@@ -35,7 +35,7 @@
     </div>
 
     <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
-      <TeamTaskAgentActivityBar
+      <TeamActiveTaskExecutionsBar
         :team-context="activeTeamContext"
         @select-member="setFocusedMember"
       />
@@ -112,7 +112,7 @@ import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/Self
 import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
 import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
 import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
-import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
+import TeamActiveTaskExecutionsBar from '~/components/workspace/team/TeamActiveTaskExecutionsBar.vue';
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import TokenUsageHeaderChip from '~/components/workspace/usage/TokenUsageHeaderChip.vue';
@@ -168,7 +168,11 @@ const showSharedComposer = computed(() => {
   if (!userMessageTarget.value) {
     return false;
   }
-  if (focusedMemberNode.value?.isTaskAgentInstance) {
+  if (
+    focusedMemberNode.value?.isTaskAgentInstance ||
+    focusedMemberNode.value?.isTaskTeamInstance ||
+    focusedMemberNode.value?.isTaskTeamChildProjection
+  ) {
     return false;
   }
   return Boolean(activeTeamContext.value) && (

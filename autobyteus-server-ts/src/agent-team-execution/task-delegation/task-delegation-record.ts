@@ -1,5 +1,10 @@
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
+import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
+import type { TaskExecutionInstance } from "./task-execution-instance.js";
+import type {
+  TaskDelegationContextMember,
+  TaskDelegationMemberIdentity,
+  TaskDelegationTarget,
+} from "./task-delegation-target.js";
 
 export const TASK_DELEGATION_LEDGER_STATUSES = [
   "not_started",
@@ -16,19 +21,12 @@ export const isTaskDelegationTerminalStatus = (
   status: TaskDelegationStatus,
 ): status is TaskDelegationTerminalStatus => status === "accepted";
 
-export type TaskDelegationMemberIdentity = {
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  runtimeKind?: RuntimeKind | null;
-};
-
 export type TaskDelegationCallerIdentity = TaskDelegationMemberIdentity & {
   taskAgentInstanceId?: string | null;
   taskAgentRunId?: string | null;
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 };
 
 export type TaskDelegationDelegatorIdentity = TaskDelegationCallerIdentity;
@@ -39,11 +37,16 @@ export type TaskDelegationContext = {
   teamName?: string | null;
   caller: TaskDelegationCallerIdentity;
   coordinatorMemberRouteKey?: string | null;
-  members: TaskDelegationMemberIdentity[];
+  members: TaskDelegationContextMember[];
+};
+
+export type DelegateTaskTargetInput = {
+  kind: "member" | "team";
+  name: string;
 };
 
 export type TaskDelegationTaskInput = {
-  member_name: string;
+  target: DelegateTaskTargetInput;
   description: string;
   reference_files?: string[];
 };
@@ -76,7 +79,7 @@ export type TaskResultSubmission = {
   message: string;
   referenceFiles: string[];
   submittedAt: string;
-  taskAgentRunId: string;
+  execution: TaskExecutionInstance;
 };
 
 export type TaskResultReview = {
@@ -99,6 +102,7 @@ export type TaskDelegationWarning = {
   task_id: string;
   target_member_route_key: string;
   target_task_agent_run_id?: string | null;
+  target_task_team_run_id?: string | null;
   message: string;
 };
 
@@ -107,6 +111,7 @@ export type TaskDelegationNotificationDeliveryOutcome = {
   delivered: boolean;
   targetMemberRouteKey: string;
   targetTaskAgentRunId?: string | null;
+  targetTaskTeamRunId?: string | null;
   warning: TaskDelegationWarning | null;
 };
 
@@ -115,11 +120,10 @@ export type TaskDelegationRecord = {
   taskLabel: string;
   description: string;
   status: TaskDelegationStatus;
-  member: TaskDelegationMemberIdentity;
+  target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
   referenceFiles: string[];
-  taskAgentInstance: TaskAgentInstanceIdentity | null;
-  targetAgentRunId: string | null;
+  execution: TaskExecutionInstance | null;
   delegatorReplyRecipientName: string | null;
   delegatorReplyTargetAgentRunId: string | null;
   pendingSubmissionId: string | null;
@@ -133,23 +137,26 @@ export type TaskDelegationRecord = {
 };
 
 export type TaskDelegationActivationResult = {
-  memberName: string;
+  target: { kind: TaskDelegationTarget["kind"]; name: string };
   accepted: boolean;
   task_id: string;
-  target_agent_run_id: string | null;
+  execution_kind: TaskExecutionInstance["kind"] | null;
+  task_agent_run_id: string | null;
+  task_team_run_id: string | null;
   message?: string | null;
 };
 
 export type TaskDelegationActivationPayload = {
   teamRunId: string;
-  member: TaskDelegationMemberIdentity;
-  taskAgentInstance: TaskAgentInstanceIdentity;
+  target: TaskDelegationTarget;
+  execution: TaskExecutionInstance;
   taskIds: string[];
   tasks: Array<{
     taskId: string;
     taskLabel: string;
     status: TaskDelegationStatus;
-    targetAgentRunId: string | null;
+    executionKind: TaskExecutionInstance["kind"];
+    executionRunId: string | null;
   }>;
   activatedAt: string;
 };
@@ -158,10 +165,9 @@ export type TaskDelegationStatusUpdatePayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
-  member: TaskDelegationMemberIdentity;
+  target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
-  taskAgentInstance: TaskAgentInstanceIdentity | null;
-  targetAgentRunId: string | null;
+  execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
   pendingSubmissionId: string | null;
@@ -175,9 +181,11 @@ export type TaskDelegationStatusUpdatePayload = {
 };
 
 export type DelegateTaskResult = {
-  member_name: string;
+  target: { kind: TaskDelegationTarget["kind"]; name: string };
   task_id: string;
-  target_agent_run_id: string | null;
+  execution_kind: TaskExecutionInstance["kind"] | null;
+  task_agent_run_id: string | null;
+  task_team_run_id: string | null;
   status: TaskDelegationStatus;
   activation_accepted: boolean;
   message: string | null;
@@ -187,10 +195,9 @@ export type TaskDelegationResultSubmittedPayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
-  member: TaskDelegationMemberIdentity;
+  target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
-  taskAgentInstance: TaskAgentInstanceIdentity | null;
-  targetAgentRunId: string | null;
+  execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
   submissionId: string;
@@ -203,10 +210,9 @@ export type TaskDelegationResultReviewedPayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
-  member: TaskDelegationMemberIdentity;
+  target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
-  taskAgentInstance: TaskAgentInstanceIdentity | null;
-  targetAgentRunId: string | null;
+  execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
   reviewId: string;
@@ -245,3 +251,5 @@ export class TaskDelegationError extends Error {
     this.name = "TaskDelegationError";
   }
 }
+
+export type { TaskDelegationMemberIdentity } from "./task-delegation-target.js";

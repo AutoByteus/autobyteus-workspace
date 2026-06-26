@@ -744,6 +744,7 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       null,
+      null,
     );
   });
 
@@ -793,6 +794,7 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       null,
+      null,
     );
     expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
       2,
@@ -803,6 +805,7 @@ describe("AgentTeamStreamHandler", () => {
       "inv-camel-route",
       false,
       "not allowed",
+      null,
       null,
     );
   });
@@ -843,7 +846,135 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       "task-agent-run-1",
+      null,
     );
+  });
+
+  it("routes task-team scoped approval commands with relative route selectors and run guards", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-route",
+          task_team_run_id: "task-team-run-1",
+          task_team_relative_member_route_key: "solution_designer",
+          task_agent_run_id: "nested-task-agent-run",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      {
+        kind: "route_key",
+        memberRouteKey: "solution_designer",
+      },
+      "inv-task-team-route",
+      true,
+      null,
+      "nested-task-agent-run",
+      "task-team-run-1",
+    );
+  });
+
+  it("routes task-team scoped denial commands with relative path selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.DENY_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-path",
+          taskTeamRunId: "task-team-run-2",
+          taskTeamRelativeMemberPath: ["review_lead"],
+          reason: "needs review",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      {
+        kind: "path",
+        memberPath: ["review_lead"],
+      },
+      "inv-task-team-path",
+      false,
+      "needs review",
+      null,
+      "task-team-run-2",
+    );
+  });
+
+  it("rejects task-team scoped approvals without relative child selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-structural-only",
+          task_team_run_id: "task-team-run-1",
+          member_route_key: "SoftwareEngineeringTeam/solution_designer",
+        },
+      }),
+    );
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.DENY_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-scalar",
+          task_team_run_id: "task-team-run-1",
+          target_member_name: "solution_designer",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    const errorMessages = getSentErrors(connection);
+    expect(errorMessages).toHaveLength(2);
+    expect(
+      errorMessages.every(
+        (message) => message.payload?.code === "INVALID_TARGET",
+      ),
+    ).toBe(true);
   });
 
   it("rejects every scalar tool approval target alias with invalid-target errors", async () => {

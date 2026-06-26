@@ -14,6 +14,10 @@ export class TaskDelegationRunRegistry {
 
   constructor(private readonly serviceOptions: TaskDelegationServiceOptions = {}) {}
 
+  getExisting(teamRunId: string): TaskDelegationService | null {
+    return this.entries.get(teamRunId.trim())?.service ?? null;
+  }
+
   getOrCreate(run: TeamRun): TaskDelegationService {
     const existing = this.entries.get(run.runId) ?? null;
     if (existing && existing.run === run && run.isActive()) {
