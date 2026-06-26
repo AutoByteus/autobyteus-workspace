@@ -9,6 +9,7 @@ import { GrokLLM } from './api/grok-llm.js';
 import { DeepSeekLLM } from './api/deepseek-llm.js';
 import { GeminiLLM } from './api/gemini-llm.js';
 import { KimiLLM } from './api/kimi-llm.js';
+import { createKimiK27CodeDefaultConfig } from './api/kimi-k2-7-code-policy.js';
 import { QwenLLM } from './api/qwen-llm.js';
 import { GlmLLM } from './api/glm-llm.js';
 import { MinimaxLLM } from './api/minimax-llm.js';
@@ -324,7 +325,9 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.7-code',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.19 }) })
+    defaultConfig: createKimiK27CodeDefaultConfig(
+      pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.19 }),
+    )
   },
   {
     name: 'kimi-k2.7-code-highspeed',
@@ -332,7 +335,9 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.7-code-highspeed',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.90, 8.0, { cachedInputReadTokenPricing: 0.38 }) })
+    defaultConfig: createKimiK27CodeDefaultConfig(
+      pricing(1.90, 8.0, { cachedInputReadTokenPricing: 0.38 }),
+    )
   },
   {
     name: 'qwen3.7-max',

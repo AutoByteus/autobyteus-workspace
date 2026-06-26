@@ -18,6 +18,7 @@ describe('supportedModelDefinitions', () => {
         'claude-opus-4.8',
         'grok-4.3',
         'kimi-k2.7-code',
+        'kimi-k2.7-code-highspeed',
         'qwen3-max',
         'glm-5.2',
       ].includes(definition.name)) {
@@ -71,6 +72,26 @@ describe('supportedModelDefinitions', () => {
 
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'kimi-k2.7-code', modelProvider: LLMProvider.KIMI }))
       .resolves.toMatchObject({ input_price_per_million: 0.95, output_price_per_million: 4, cached_input_read_price_per_million: 0.19 });
+  });
+
+  it('uses the shared fixed Kimi K2.7 Code policy for both official catalog rows', () => {
+    const standard = supportedModelDefinitions.find((definition) => definition.name === 'kimi-k2.7-code');
+    const highspeed = supportedModelDefinitions.find((definition) => definition.name === 'kimi-k2.7-code-highspeed');
+
+    expect(standard?.defaultConfig).toMatchObject({
+      temperature: 1,
+      topP: 0.95,
+      presencePenalty: 0,
+      frequencyPenalty: 0,
+      extraParams: { n: 1 },
+    });
+    expect(highspeed?.defaultConfig).toMatchObject({
+      temperature: 1,
+      topP: 0.95,
+      presencePenalty: 0,
+      frequencyPenalty: 0,
+      extraParams: { n: 1 },
+    });
   });
 
   it('encodes tiered and non-USD pricing without flattening provider-specific facts', async () => {
