@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery-stage handoff plus a README-guided local macOS Electron build for user testing. The user has now requested repository finalization and explicitly requested no new release/version; release publication, tagging, version bumping, and deployment are out of scope.
+Delivery-stage handoff plus a README-guided local macOS Electron build for user testing. The user first requested repository finalization without a release, then verified the finalized build and requested a new release. Release preparation is now in scope for version `1.3.78`.
 
 ## Handoff Summary
 
@@ -65,7 +65,7 @@ Delivery-stage handoff plus a README-guided local macOS Electron build for user 
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, or release commit is in scope. The user explicitly requested finalization with no new version.
+Release version `1.3.78` is now in scope after the user verified the finalized build and requested a new version. Release notes were added at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`.
 
 ## Repository Finalization
 
@@ -86,11 +86,11 @@ No version bump, tag, or release commit is in scope. The user explicitly request
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`.
-- Method: N/A for release/publication/deployment; a local macOS Electron build was performed only so the user can manually test the app.
-- Method reference / command: `autobyteus-web/README.md` Electron macOS build guidance, adapted to the worktree root as `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac`.
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Applicable: `Yes` — user requested a new version after verifying the finalized build.
+- Method: documented release helper from repo root.
+- Method reference / command: `pnpm release 1.3.78 -- --release-notes tickets/done/team-task-delegation-analysis/release-notes.md`.
+- Release/publication/deployment result: `Pending release helper execution`
+- Release notes handoff result: `Prepared` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-task-delegation-analysis/release-notes.md`
 - Blocker (if applicable): None.
 
 ## Local Electron Build For User Testing
@@ -123,7 +123,7 @@ No version bump, tag, or release commit is in scope. The user explicitly request
 
 ## Deployment Steps
 
-None performed. No deployment is required or requested.
+Release helper execution is pending for `v1.3.78`. The release tag will start the documented GitHub release workflows; no separate manual dispatch is planned.
 
 ## Environment Or Migration Notes
 
@@ -163,8 +163,8 @@ Known caveat: full frontend `nuxi typecheck` remains broad pre-existing debt out
 
 ## Rollback Criteria
 
-If a regression is discovered after finalization, revert merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a` from `personal` after preserving the archived ticket artifacts. Functional rollback should restore the prior member-target-only task-delegation behavior and previous task-agent-only frontend projection. Release/deployment rollback is not applicable because no release/deployment has been performed.
+If a regression is discovered after finalization, revert merge commit `6825c5f37aa9f8eeb224de958ceeb3b4c3c40b7a` from `personal` after preserving the archived ticket artifacts. Functional rollback should restore the prior member-target-only task-delegation behavior and previous task-agent-only frontend projection. If the `v1.3.78` release must be rolled back before users adopt it, remove or supersede the release/tag according to repository release policy and revert the release-version bump commit if needed.
 
 ## Final Status
 
-`Repository finalization complete. Ticket archived under tickets/done/team-task-delegation-analysis/. No release, version bump, tag, or deployment was performed.`
+`Repository finalization complete. User requested release after verification; release notes prepared and release helper execution pending for v1.3.78.`
