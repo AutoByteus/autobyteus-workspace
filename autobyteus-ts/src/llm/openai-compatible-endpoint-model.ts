@@ -1,4 +1,4 @@
-import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
+import { LLMConfig } from './utils/llm-config.js';
 import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
@@ -36,12 +36,7 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
       runtime: LLMRuntime.OPENAI_COMPATIBLE,
       llmClass: OpenAICompatibleEndpointLLM,
       hostUrl: endpoint.baseUrl,
-      defaultConfig: new LLMConfig({
-        pricingConfig: new TokenPricingConfig({
-          inputTokenPricing: 0.0,
-          outputTokenPricing: 0.0,
-        }),
-      }),
+      defaultConfig: new LLMConfig(),
       modelIdentifierOverride: modelId,
     });
 

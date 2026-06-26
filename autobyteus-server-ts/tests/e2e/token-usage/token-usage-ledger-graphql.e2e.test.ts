@@ -8,6 +8,7 @@ import { PrismaClient } from '@prisma/client';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
+import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 
 const prisma = new PrismaClient();
 const store = new TokenUsageLedgerStore();
@@ -19,23 +20,51 @@ const buildEvent = (input: {
   rootTeamRunId?: string | null;
   memberRouteKey?: string | null;
   observedAt: string;
-  inputTokens: number;
-  outputTokens: number;
+  inputTokenSemantic?: TokenUsageUpdatedPayload['input_token_semantic'];
+  grossInputTokens: number;
+  reportedInputTokens?: number | null;
+  standardInputTokens?: number | null;
+  cacheMissInputTokens?: number | null;
   cacheReadTokens?: number | null;
   cacheCreationTokens?: number | null;
+  cacheCreation5mTokens?: number | null;
+  cacheCreation1hTokens?: number | null;
+  cacheState?: TokenUsageUpdatedPayload['cache_state'];
+  outputTokens: number;
+  billableOutputTokens?: number | null;
   reasoningTokens?: number | null;
+  inputCost?: number | null;
+  standardInputCost?: number | null;
+  cacheReadInputCost?: number | null;
+  cacheCreationInputCost?: number | null;
+  cacheCreation5mInputCost?: number | null;
+  cacheCreation1hInputCost?: number | null;
+  outputCost?: number | null;
   reasoningCost?: number | null;
   totalCost: number | null;
-  status: 'estimated' | 'price_missing' | 'partial_price_missing';
+  status: TokenUsageUpdatedPayload['api_cost_status'];
+  pricingStatus?: TokenUsageUpdatedPayload['pricing_status'];
+  modelProvider?: string | null;
   model?: string;
+  runtimeKind?: string;
+  ingestionKind?: string;
   currency?: string | null;
-  latestContextInputTokens?: number | null;
-  effectiveContextBudgetTokens?: number | null;
-  contextPressurePercent?: number | null;
+  missingPriceDimensions?: string[];
+  pricingPolicyKey?: string | null;
+  selectedPricingTierId?: string | null;
+  latestPromptTokens?: number | null;
+  effectiveContextWindowTokens?: number | null;
+  contextWindowUsagePercent?: number | null;
 }) => {
   createdRunIds.add(input.runId);
   if (input.rootTeamRunId) createdTeamRunIds.add(input.rootTeamRunId);
-  const totalTokens = input.inputTokens + input.outputTokens;
+  const cacheReadTokens = input.cacheReadTokens ?? 0;
+  const cacheCreationTokens = input.cacheCreationTokens ?? ((input.cacheCreation5mTokens ?? 0) + (input.cacheCreation1hTokens ?? 0));
+  const standardInputTokens = input.standardInputTokens ?? Math.max(input.grossInputTokens - cacheReadTokens - cacheCreationTokens, 0);
+  const cacheMissInputTokens = input.cacheMissInputTokens ?? standardInputTokens;
+  const inputTokenSemantic = input.inputTokenSemantic ?? 'gross_includes_cache';
+  const reportedInputTokens = input.reportedInputTokens ?? (inputTokenSemantic === 'base_excludes_cache' ? standardInputTokens : input.grossInputTokens);
+  const totalTokens = input.grossInputTokens + input.outputTokens;
   return createTokenUsageUpdatedPayload({
     runId: input.runId,
     payload: {
@@ -45,30 +74,45 @@ const buildEvent = (input: {
       root_team_run_id: input.rootTeamRunId ?? null,
       member_agent_run_id: input.rootTeamRunId ? input.runId : null,
       member_route_key: input.memberRouteKey ?? null,
-      runtime_kind: 'codex_app_server',
-      ingestion_kind: 'codex_thread_token_usage',
+      runtime_kind: input.runtimeKind ?? 'codex_app_server',
+      ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
       usage_scope: 'per_turn',
-      model_provider: 'OPENAI',
+      model_provider: input.modelProvider ?? 'OPENAI',
       model_identifier: input.model ?? 'gpt-5.4-mini',
-      reported_input_tokens: input.inputTokens,
+      input_token_semantic: inputTokenSemantic,
+      reported_input_tokens: reportedInputTokens,
       reported_output_tokens: input.outputTokens,
-      reported_total_tokens: totalTokens,
-      accounting_input_tokens: input.inputTokens,
+      reported_total_tokens: (reportedInputTokens ?? input.grossInputTokens) + input.outputTokens,
+      accounting_input_tokens: input.grossInputTokens,
       accounting_output_tokens: input.outputTokens,
       accounting_total_tokens: totalTokens,
-      cache_read_input_tokens: input.cacheReadTokens ?? null,
-      cache_creation_input_tokens: input.cacheCreationTokens ?? null,
+      standard_input_tokens: standardInputTokens,
+      cache_miss_input_tokens: cacheMissInputTokens,
+      cache_read_input_tokens: cacheReadTokens,
+      cache_creation_input_tokens: cacheCreationTokens,
+      cache_creation_5m_input_tokens: input.cacheCreation5mTokens ?? 0,
+      cache_creation_1h_input_tokens: input.cacheCreation1hTokens ?? 0,
+      cache_state: input.cacheState ?? (cacheReadTokens > 0 || cacheCreationTokens > 0 ? 'positive' : 'not_reported'),
       reasoning_output_tokens: input.reasoningTokens ?? null,
-      pricing_status: input.status === 'estimated' ? 'trusted' : 'missing',
+      billable_output_tokens: input.billableOutputTokens ?? input.outputTokens,
+      pricing_status: input.pricingStatus ?? (input.status === 'local_no_api_bill' ? 'local_no_api_bill' : input.status === 'estimated' || input.status === 'partial_price_missing' ? 'trusted' : 'missing'),
       api_cost_status: input.status,
-      currency: input.currency ?? (input.totalCost === null ? null : 'USD'),
-      estimated_api_input_cost: input.totalCost === null ? null : input.totalCost / 2,
-      estimated_api_output_cost: input.totalCost === null ? null : input.totalCost / 2,
+      currency: input.currency ?? (input.totalCost === null || input.status === 'local_no_api_bill' ? null : 'USD'),
+      estimated_api_input_cost: input.inputCost ?? null,
+      estimated_api_standard_input_cost: input.standardInputCost ?? null,
+      estimated_api_cache_read_input_cost: input.cacheReadInputCost ?? null,
+      estimated_api_cache_creation_input_cost: input.cacheCreationInputCost ?? null,
+      estimated_api_cache_creation_5m_input_cost: input.cacheCreation5mInputCost ?? null,
+      estimated_api_cache_creation_1h_input_cost: input.cacheCreation1hInputCost ?? null,
+      estimated_api_output_cost: input.outputCost ?? null,
       estimated_api_reasoning_output_cost: input.reasoningCost ?? null,
       estimated_api_total_cost: input.totalCost,
-      latest_context_input_tokens: input.latestContextInputTokens ?? null,
-      effective_context_budget_tokens: input.effectiveContextBudgetTokens ?? null,
-      context_pressure_percent: input.contextPressurePercent ?? null,
+      missing_price_dimensions: input.missingPriceDimensions ?? [],
+      pricing_policy_key: input.pricingPolicyKey ?? null,
+      selected_pricing_tier_id: input.selectedPricingTierId ?? null,
+      latest_prompt_tokens: input.latestPromptTokens ?? null,
+      effective_context_window_tokens: input.effectiveContextWindowTokens ?? null,
+      context_window_usage_percent: input.contextWindowUsagePercent ?? null,
     },
   });
 };
@@ -104,7 +148,7 @@ describe('token usage ledger GraphQL projections', () => {
     return result.data as T;
   };
 
-  it('returns run/team/member summaries and settings statistics from ledger accounting fields', async () => {
+  it('returns expanded run/team/member summaries and settings statistics from ledger accounting fields', async () => {
     const suffix = randomUUID();
     const standaloneRunId = `graphql-standalone-${suffix}`;
     const teamRunId = `graphql-team-${suffix}`;
@@ -115,78 +159,99 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: standaloneRunId,
       observedAt: '2026-06-24T10:01:00.000Z',
-      inputTokens: 100,
-      outputTokens: 25,
-      cacheReadTokens: 40,
-      reasoningTokens: 7,
-      reasoningCost: 0.0007,
-      totalCost: 0.004,
+      grossInputTokens: 115_908,
+      standardInputTokens: 13_444,
+      cacheMissInputTokens: 13_444,
+      cacheReadTokens: 102_464,
+      outputTokens: 5_979,
+      reasoningTokens: 0,
+      inputCost: 0.31248,
+      standardInputCost: 0.107552,
+      cacheReadInputCost: 0.204928,
+      outputCost: 0.167412,
+      totalCost: 0.479892,
       status: 'estimated',
-      model: 'gpt-5.4-mini',
-      latestContextInputTokens: 100,
-      effectiveContextBudgetTokens: 1_000,
-      contextPressurePercent: 10,
+      model: 'glm-5.2',
+      modelProvider: 'GLM',
+      currency: 'CNY',
+      pricingPolicyKey: 'catalog:glm:glm-5.2:bigmodel-cn',
+      latestPromptTokens: 13_206,
+      effectiveContextWindowTokens: 1_000_000,
+      contextWindowUsagePercent: 1.3206,
     }));
     await store.appendTokenUsageEvent(buildEvent({
       runId: memberRunId,
       rootTeamRunId: teamRunId,
       memberRouteKey: 'worker',
       observedAt: '2026-06-24T10:02:00.000Z',
-      inputTokens: 30,
+      grossInputTokens: 30,
+      standardInputTokens: 30,
       outputTokens: 10,
       reasoningTokens: 3,
       totalCost: null,
       status: 'price_missing',
       model: 'unknown-model',
+      modelProvider: 'OPENAI_COMPATIBLE',
+      missingPriceDimensions: ['model_pricing'],
     }));
 
     const query = `
       query TokenUsageLedger($runId: String!, $teamRunId: String!, $memberRunId: String!, $start: DateTime!, $end: DateTime!) {
         getAgentRunTokenUsageSummary(runId: $runId) {
           runId
-          inputTokens
+          grossInputTokens
+          standardInputTokens
+          cacheMissInputTokens
+          cacheReadInputTokens
+          cacheCreationInputTokens
           outputTokens
-          totalTokens
           reasoningOutputTokens
+          billableOutputTokens
+          totalTokens
+          cacheReadInputTokenRate
+          standardInputTokenRate
+          cacheState
           estimatedApiInputCost
+          estimatedApiStandardInputCost
+          estimatedApiCacheReadInputCost
           estimatedApiOutputCost
-          estimatedApiReasoningOutputCost
           estimatedApiTotalCost
           currency
           apiCostStatus
-          latestContextInputTokens
-          effectiveContextBudgetTokens
-          contextPressurePercent
+          missingPriceDimensions
+          pricingPolicyKey
+          latestPromptTokens
+          effectiveContextWindowTokens
+          contextWindowUsagePercent
+          latestModelProvider
           latestRuntimeKind
           latestModelIdentifier
-          eventCount
+          usageReportCount
         }
         getTeamRunTokenUsageSummary(teamRunId: $teamRunId) {
           runId
           rootTeamRunId
-          inputTokens
+          grossInputTokens
+          standardInputTokens
           outputTokens
           totalTokens
           reasoningOutputTokens
-          estimatedApiInputCost
-          estimatedApiOutputCost
-          estimatedApiReasoningOutputCost
           estimatedApiTotalCost
           apiCostStatus
-          eventCount
+          missingPriceDimensions
+          usageReportCount
         }
         getTeamMemberTokenUsageSummary(teamRunId: $teamRunId, memberAgentRunId: $memberRunId) {
           runId
           rootTeamRunId
           memberAgentRunId
           memberRouteKey
+          grossInputTokens
           totalTokens
           reasoningOutputTokens
-          estimatedApiInputCost
-          estimatedApiOutputCost
-          estimatedApiReasoningOutputCost
           estimatedApiTotalCost
           apiCostStatus
+          missingPriceDimensions
         }
         totalCostInPeriod(startTime: $start, endTime: $end)
         usageStatisticsInPeriod(startTime: $start, endTime: $end) {
@@ -220,57 +285,71 @@ describe('token usage ledger GraphQL projections', () => {
 
     expect(result.getAgentRunTokenUsageSummary).toMatchObject({
       runId: standaloneRunId,
-      inputTokens: 100,
-      outputTokens: 25,
-      totalTokens: 125,
-      reasoningOutputTokens: 7,
-      estimatedApiInputCost: 0.002,
-      estimatedApiOutputCost: 0.002,
-      estimatedApiReasoningOutputCost: 0.0007,
-      estimatedApiTotalCost: 0.004,
-      currency: 'USD',
+      grossInputTokens: 115_908,
+      standardInputTokens: 13_444,
+      cacheMissInputTokens: 13_444,
+      cacheReadInputTokens: 102_464,
+      cacheCreationInputTokens: 0,
+      outputTokens: 5_979,
+      reasoningOutputTokens: 0,
+      billableOutputTokens: 5_979,
+      totalTokens: 121_887,
+      cacheState: 'positive',
+      estimatedApiInputCost: 0.31248,
+      estimatedApiStandardInputCost: 0.107552,
+      estimatedApiCacheReadInputCost: 0.204928,
+      estimatedApiOutputCost: 0.167412,
+      estimatedApiTotalCost: 0.479892,
+      currency: 'CNY',
       apiCostStatus: 'estimated',
-      latestContextInputTokens: 100,
-      effectiveContextBudgetTokens: 1000,
-      contextPressurePercent: 10,
+      missingPriceDimensions: [],
+      pricingPolicyKey: 'catalog:glm:glm-5.2:bigmodel-cn',
+      latestPromptTokens: 13_206,
+      effectiveContextWindowTokens: 1_000_000,
+      contextWindowUsagePercent: 1.3206,
+      latestModelProvider: 'GLM',
       latestRuntimeKind: 'codex_app_server',
-      latestModelIdentifier: 'gpt-5.4-mini',
-      eventCount: 1,
+      latestModelIdentifier: 'glm-5.2',
+      usageReportCount: 1,
     });
+    expect(result.getAgentRunTokenUsageSummary.cacheReadInputTokenRate).toBeCloseTo(102_464 / 115_908, 8);
+    expect(result.getAgentRunTokenUsageSummary.standardInputTokenRate).toBeCloseTo(13_444 / 115_908, 8);
+
     expect(result.getTeamRunTokenUsageSummary).toMatchObject({
       rootTeamRunId: teamRunId,
-      inputTokens: 30,
+      grossInputTokens: 30,
+      standardInputTokens: 30,
       outputTokens: 10,
       totalTokens: 40,
       reasoningOutputTokens: 3,
-      estimatedApiReasoningOutputCost: null,
       estimatedApiTotalCost: null,
       apiCostStatus: 'price_missing',
-      eventCount: 1,
+      missingPriceDimensions: ['model_pricing'],
+      usageReportCount: 1,
     });
     expect(result.getTeamMemberTokenUsageSummary).toMatchObject({
       runId: memberRunId,
       rootTeamRunId: teamRunId,
       memberAgentRunId: memberRunId,
       memberRouteKey: 'worker',
+      grossInputTokens: 30,
       totalTokens: 40,
       reasoningOutputTokens: 3,
-      estimatedApiReasoningOutputCost: null,
       estimatedApiTotalCost: null,
       apiCostStatus: 'price_missing',
+      missingPriceDimensions: ['model_pricing'],
     });
-    expect(result.totalCostInPeriod).toBe(0.004);
+    expect(result.totalCostInPeriod).toBe(0.479892);
     expect(result.usageStatisticsInPeriod).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        llmModel: 'gpt-5.4-mini',
-        promptTokens: 100,
-        assistantTokens: 25,
-        reasoningTokens: 7,
-        promptCost: 0.002,
-        assistantCost: 0.002,
-        reasoningCost: 0.0007,
-        totalCost: 0.004,
-        currency: 'USD',
+        llmModel: 'glm-5.2',
+        promptTokens: 115_908,
+        assistantTokens: 5_979,
+        reasoningTokens: 0,
+        promptCost: 0.31248,
+        assistantCost: 0.167412,
+        totalCost: 0.479892,
+        currency: 'CNY',
         apiCostStatus: 'estimated',
       }),
       expect.objectContaining({
@@ -278,7 +357,6 @@ describe('token usage ledger GraphQL projections', () => {
         promptTokens: 30,
         assistantTokens: 10,
         reasoningTokens: 3,
-        reasoningCost: null,
         totalCost: null,
         currency: null,
         apiCostStatus: 'price_missing',
@@ -292,11 +370,13 @@ describe('token usage ledger GraphQL projections', () => {
       runtime_kind: 'codex_app_server',
       ingestion_kind: 'codex_thread_token_usage',
       usage_scope: 'per_turn',
-      cache_read_input_tokens: 40,
-      reasoning_output_tokens: 7,
-      latest_context_input_tokens: 100,
-      effective_context_budget_tokens: 1_000,
-      context_pressure_percent: 10,
+      input_token_semantic: 'gross_includes_cache',
+      standard_input_tokens: 13_444,
+      cache_read_input_tokens: 102_464,
+      cache_state: 'positive',
+      latest_prompt_tokens: 13_206,
+      effective_context_window_tokens: 1_000_000,
+      context_window_usage_percent: 1.3206,
     });
   });
 
@@ -309,10 +389,12 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId,
       observedAt: '2040-06-24T10:01:00.000Z',
-      inputTokens: 100,
+      grossInputTokens: 100,
       outputTokens: 20,
       reasoningTokens: 4,
       reasoningCost: 0.0004,
+      inputCost: 0.001,
+      outputCost: 0.002,
       totalCost: 0.003,
       status: 'estimated',
       model: 'glm-5.2',
@@ -321,10 +403,12 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId,
       observedAt: '2040-06-24T10:02:00.000Z',
-      inputTokens: 200,
+      grossInputTokens: 200,
       outputTokens: 40,
       reasoningTokens: 8,
       reasoningCost: 0.004,
+      inputCost: 0.02,
+      outputCost: 0.04,
       totalCost: 0.06,
       status: 'estimated',
       model: 'glm-5.2',
@@ -335,7 +419,7 @@ describe('token usage ledger GraphQL projections', () => {
       query MixedCurrencyTokenUsage($runId: String!, $start: DateTime!, $end: DateTime!) {
         getAgentRunTokenUsageSummary(runId: $runId) {
           runId
-          inputTokens
+          grossInputTokens
           outputTokens
           totalTokens
           reasoningOutputTokens
@@ -374,7 +458,7 @@ describe('token usage ledger GraphQL projections', () => {
 
     expect(result.getAgentRunTokenUsageSummary).toMatchObject({
       runId,
-      inputTokens: 300,
+      grossInputTokens: 300,
       outputTokens: 60,
       totalTokens: 360,
       reasoningOutputTokens: 12,
@@ -402,68 +486,6 @@ describe('token usage ledger GraphQL projections', () => {
     ]));
   });
 
-  it('keeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list', async () => {
-    const previousDiscoveryEnv = {
-      OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
-      LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
-      AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
-    };
-    process.env.OLLAMA_HOSTS = ' ';
-    process.env.LMSTUDIO_HOSTS = ' ';
-    process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
 
-    const query = `
-      query AvailableModels {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider {
-            id
-          }
-          models {
-            modelIdentifier
-            name
-            value
-            canonicalName
-          }
-        }
-      }
-    `;
-
-    try {
-      const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          provider: { id: string };
-          models: Array<{
-            modelIdentifier: string;
-            name: string;
-            value: string;
-            canonicalName: string;
-          }>;
-        }>;
-      }>(query);
-
-      const minimaxModels = result.availableLlmProvidersWithModels
-        .filter((row) => row.provider.id === 'MINIMAX')
-        .flatMap((row) => row.models);
-      const identifiers = minimaxModels.map((model) => model.modelIdentifier);
-      const namesAndValues = minimaxModels.flatMap((model) => [
-        model.name,
-        model.value,
-        model.canonicalName,
-      ]);
-
-      expect(identifiers).toContain('minimax-m3');
-      expect(namesAndValues).toContain('MiniMax-M3');
-      expect(identifiers).not.toContain('minimax-m2.7');
-      expect(namesAndValues).not.toContain('MiniMax-M2.7');
-    } finally {
-      for (const [key, value] of Object.entries(previousDiscoveryEnv)) {
-        if (value === undefined) {
-          delete process.env[key];
-        } else {
-          process.env[key] = value;
-        }
-      }
-    }
-  }, 20_000);
 
 });

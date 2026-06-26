@@ -1,11 +1,13 @@
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
-import {
-  TokenPriceConfigProvider,
-  type TokenPriceConfig,
-} from "./token-price-config-provider.js";
+import { TokenPriceConfigProvider } from "./token-price-config-provider.js";
+import type {
+  ResolvedTokenPricingPolicy,
+  SelectedTokenPricingPolicy,
+} from "./token-pricing-policy.js";
 
 const costFor = (tokens: number | null, pricePerMillion: number | null, trusted: boolean): number | null => {
-  if (tokens === null || tokens <= 0) return tokens === 0 ? 0 : null;
+  if (tokens === null) return null;
+  if (tokens <= 0) return 0;
   if (!trusted || pricePerMillion === null) return null;
   return (tokens / 1_000_000) * pricePerMillion;
 };
@@ -15,70 +17,103 @@ const sumNullable = (values: Array<number | null>): number | null => {
   return present.length > 0 ? present.reduce((sum, value) => sum + value, 0) : null;
 };
 
-type SelectedPrice = TokenPriceConfig & { selected_tier_id?: string | null };
-
 const selectTier = (
-  price: TokenPriceConfig,
-  inputTokens: number | null,
-): { selectedPrice: SelectedPrice; tierInputMissing: boolean } => {
-  if (price.input_price_tiers.length === 0) {
-    return { selectedPrice: price, tierInputMissing: false };
+  policy: ResolvedTokenPricingPolicy,
+  grossInputTokens: number | null,
+): { selectedPolicy: SelectedTokenPricingPolicy; tierInputMissing: boolean } => {
+  if (policy.input_price_tiers.length === 0) {
+    return { selectedPolicy: policy, tierInputMissing: false };
   }
 
-  if (inputTokens === null) {
-    return { selectedPrice: price, tierInputMissing: true };
+  if (grossInputTokens === null) {
+    return { selectedPolicy: policy, tierInputMissing: true };
   }
 
-  const selected = price.input_price_tiers.find((tier) =>
-    tier.max_input_tokens === null || inputTokens <= tier.max_input_tokens
+  const selected = policy.input_price_tiers.find((tier) =>
+    tier.max_input_tokens === null || grossInputTokens <= tier.max_input_tokens
   );
-  if (!selected) return { selectedPrice: price, tierInputMissing: false };
+  if (!selected) return { selectedPolicy: policy, tierInputMissing: false };
 
   return {
-    selectedPrice: {
-      ...price,
+    selectedPolicy: {
+      ...policy,
       selected_tier_id: selected.tier_id,
       input_price_per_million: selected.input_price_per_million,
       output_price_per_million: selected.output_price_per_million,
       cached_input_read_price_per_million: selected.cached_input_read_price_per_million,
       cached_input_write_price_per_million: selected.cached_input_write_price_per_million,
+      cached_input_write_5m_price_per_million: selected.cached_input_write_5m_price_per_million,
+      cached_input_write_1h_price_per_million: selected.cached_input_write_1h_price_per_million,
       trusted_dimensions: selected.trusted_dimensions,
     },
     tierInputMissing: false,
   };
 };
 
+const hasPositiveTokens = (tokens: number | null): boolean => tokens !== null && tokens > 0;
+
+const mergeDimensions = (...dimensionGroups: Array<string[]>): string[] =>
+  Array.from(new Set(dimensionGroups.flat().filter(Boolean))).sort();
+
 export class TokenCostCalculator {
   constructor(private readonly priceProvider = new TokenPriceConfigProvider()) {}
 
   async enrichCost(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    const price = await this.priceProvider.resolvePrice(payload);
-    return this.applyPrice(payload, price);
+    const policy = await this.priceProvider.resolvePolicy(payload);
+    return this.applyPolicy(payload, policy);
   }
 
-  applyPrice(payload: TokenUsageUpdatedPayload, price: TokenPriceConfig): TokenUsageUpdatedPayload {
-    const inputTokens = payload.billable_input_tokens ?? payload.accounting_input_tokens;
-    const { selectedPrice, tierInputMissing } = selectTier(price, inputTokens);
-    const pricingStatus = selectedPrice.pricing_status;
-    const pricingMissingReason = selectedPrice.missing_reason;
+  applyPolicy(payload: TokenUsageUpdatedPayload, policy: ResolvedTokenPricingPolicy): TokenUsageUpdatedPayload {
+    const { selectedPolicy, tierInputMissing } = selectTier(policy, payload.accounting_input_tokens);
+    const basePriceFields = {
+      currency: selectedPolicy.currency,
+      input_price_per_million: selectedPolicy.input_price_per_million,
+      output_price_per_million: selectedPolicy.output_price_per_million,
+      cached_input_read_price_per_million: selectedPolicy.cached_input_read_price_per_million,
+      cached_input_write_price_per_million: selectedPolicy.cached_input_write_price_per_million,
+      cached_input_write_5m_price_per_million: selectedPolicy.cached_input_write_5m_price_per_million,
+      cached_input_write_1h_price_per_million: selectedPolicy.cached_input_write_1h_price_per_million,
+      pricing_source: selectedPolicy.source,
+      pricing_status: selectedPolicy.pricing_status,
+      pricing_snapshot_json: selectedPolicy,
+      pricing_policy_key: selectedPolicy.pricing_policy_key,
+      selected_pricing_tier_id: selectedPolicy.selected_tier_id ?? null,
+    };
 
-    if (pricingStatus !== "trusted") {
+    if (selectedPolicy.pricing_status === "local_no_api_bill") {
       return {
         ...payload,
+        ...basePriceFields,
         cost_basis: null,
-        currency: selectedPrice.currency,
-        input_price_per_million: selectedPrice.input_price_per_million,
-        output_price_per_million: selectedPrice.output_price_per_million,
-        cached_input_read_price_per_million: selectedPrice.cached_input_read_price_per_million,
-        cached_input_write_price_per_million: selectedPrice.cached_input_write_price_per_million,
-        pricing_source: selectedPrice.source,
-        pricing_status: pricingStatus,
-        pricing_missing_reason: pricingMissingReason,
-        pricing_snapshot_json: selectedPrice,
+        pricing_missing_reason: null,
+        missing_price_dimensions: [],
+        estimated_api_input_cost: 0,
+        estimated_api_standard_input_cost: 0,
+        estimated_api_cache_read_input_cost: null,
+        estimated_api_cache_creation_input_cost: null,
+        estimated_api_cache_creation_5m_input_cost: null,
+        estimated_api_cache_creation_1h_input_cost: null,
+        estimated_api_output_cost: 0,
+        estimated_api_reasoning_output_cost: null,
+        estimated_api_total_cost: 0,
+        api_cost_status: "local_no_api_bill",
+        cache_state: "unsupported_or_local",
+      };
+    }
+
+    if (selectedPolicy.pricing_status !== "trusted") {
+      return {
+        ...payload,
+        ...basePriceFields,
+        cost_basis: null,
+        pricing_missing_reason: selectedPolicy.missing_reason,
+        missing_price_dimensions: mergeDimensions(payload.missing_price_dimensions, [selectedPolicy.missing_reason ?? "pricing_policy"]),
         estimated_api_input_cost: null,
         estimated_api_standard_input_cost: null,
         estimated_api_cache_read_input_cost: null,
         estimated_api_cache_creation_input_cost: null,
+        estimated_api_cache_creation_5m_input_cost: null,
+        estimated_api_cache_creation_1h_input_cost: null,
         estimated_api_output_cost: null,
         estimated_api_reasoning_output_cost: null,
         estimated_api_total_cost: null,
@@ -86,77 +121,99 @@ export class TokenCostCalculator {
       };
     }
 
-    const cacheRead = payload.cache_read_input_tokens ?? 0;
-    const cacheCreation = payload.cache_creation_input_tokens ?? 0;
-    const standardInputTokens = inputTokens === null
+    const standardInputTokens = payload.standard_input_tokens;
+    const cacheReadTokens = payload.cache_read_input_tokens;
+    const cacheCreation5mTokens = payload.cache_creation_5m_input_tokens;
+    const cacheCreation1hTokens = payload.cache_creation_1h_input_tokens;
+    const subtypeCacheCreationTokens = (cacheCreation5mTokens ?? 0) + (cacheCreation1hTokens ?? 0);
+    const aggregateCacheCreationTokens = payload.cache_creation_input_tokens;
+    const genericCacheCreationTokens = aggregateCacheCreationTokens === null
       ? null
-      : Math.max(inputTokens - cacheRead - cacheCreation, 0);
+      : Math.max(aggregateCacheCreationTokens - subtypeCacheCreationTokens, 0);
     const outputTokens = payload.billable_output_tokens ?? payload.accounting_output_tokens;
-    const reasoningTokens = payload.reasoning_output_tokens ?? null;
+    const reasoningTokens = payload.reasoning_output_tokens;
 
     const standardInputCost = costFor(
       standardInputTokens,
-      selectedPrice.input_price_per_million,
-      selectedPrice.trusted_dimensions.input,
+      selectedPolicy.input_price_per_million,
+      selectedPolicy.trusted_dimensions.input,
     );
-    const cacheReadCost = cacheRead > 0
-      ? costFor(cacheRead, selectedPrice.cached_input_read_price_per_million, selectedPrice.trusted_dimensions.cached_input_read)
-      : null;
-    const cacheCreationCost = cacheCreation > 0
-      ? costFor(cacheCreation, selectedPrice.cached_input_write_price_per_million, selectedPrice.trusted_dimensions.cached_input_write)
-      : null;
+    const cacheReadCost = costFor(
+      cacheReadTokens,
+      selectedPolicy.cached_input_read_price_per_million,
+      selectedPolicy.trusted_dimensions.cached_input_read,
+    );
+    const cacheCreationGenericCost = costFor(
+      genericCacheCreationTokens,
+      selectedPolicy.cached_input_write_price_per_million,
+      selectedPolicy.trusted_dimensions.cached_input_write,
+    );
+    const cacheCreation5mCost = costFor(
+      cacheCreation5mTokens,
+      selectedPolicy.cached_input_write_5m_price_per_million,
+      selectedPolicy.trusted_dimensions.cached_input_write_5m,
+    );
+    const cacheCreation1hCost = costFor(
+      cacheCreation1hTokens,
+      selectedPolicy.cached_input_write_1h_price_per_million,
+      selectedPolicy.trusted_dimensions.cached_input_write_1h,
+    );
+    const cacheCreationCost = sumNullable([cacheCreationGenericCost, cacheCreation5mCost, cacheCreation1hCost]);
     const outputCost = costFor(
       outputTokens,
-      selectedPrice.output_price_per_million,
-      selectedPrice.trusted_dimensions.output,
+      selectedPolicy.output_price_per_million,
+      selectedPolicy.trusted_dimensions.output,
     );
     const reasoningCost = reasoningTokens !== null && reasoningTokens > 0
-      ? costFor(
-        reasoningTokens,
-        selectedPrice.output_price_per_million,
-        selectedPrice.trusted_dimensions.output,
-      )
+      ? costFor(reasoningTokens, selectedPolicy.output_price_per_million, selectedPolicy.trusted_dimensions.output)
       : null;
     const inputCost = sumNullable([standardInputCost, cacheReadCost, cacheCreationCost]);
     const totalCost = sumNullable([inputCost, outputCost]);
 
-    const hasMissingStandardInputCost =
-      standardInputTokens !== null && standardInputTokens > 0 && standardInputCost === null;
-    const hasMissingOutputCost = outputTokens !== null && outputTokens > 0 && outputCost === null;
-    const hasMissingReasoningCost = reasoningTokens !== null && reasoningTokens > 0 && reasoningCost === null;
-    const hasMissingCacheCost =
-      (cacheRead > 0 && cacheReadCost === null) ||
-      (cacheCreation > 0 && cacheCreationCost === null);
-    const apiCostStatus =
-      hasMissingStandardInputCost ||
-      hasMissingOutputCost ||
-      hasMissingReasoningCost ||
-      hasMissingCacheCost ||
-      tierInputMissing
-        ? "partial_price_missing"
-        : "estimated";
-    const missingReason = tierInputMissing
-      ? "tier_input_tokens_missing"
-      : apiCostStatus === "partial_price_missing"
-        ? "dimension_missing"
-        : pricingMissingReason;
+    const missingDimensions: string[] = [];
+    if (tierInputMissing) missingDimensions.push("pricing_tier_input_tokens");
+    if (hasPositiveTokens(payload.accounting_input_tokens) && standardInputTokens === null) {
+      missingDimensions.push("standard_input_tokens");
+    }
+    if (hasPositiveTokens(standardInputTokens) && standardInputCost === null) {
+      missingDimensions.push("standard_input_price");
+    }
+    if ((cacheReadTokens ?? 0) > 0 && cacheReadCost === null) {
+      missingDimensions.push("cache_read_input_price");
+    }
+    if ((genericCacheCreationTokens ?? 0) > 0 && cacheCreationGenericCost === null) {
+      missingDimensions.push("cache_creation_input_price");
+    }
+    if ((cacheCreation5mTokens ?? 0) > 0 && cacheCreation5mCost === null) {
+      missingDimensions.push("cache_creation_5m_input_price");
+    }
+    if ((cacheCreation1hTokens ?? 0) > 0 && cacheCreation1hCost === null) {
+      missingDimensions.push("cache_creation_1h_input_price");
+    }
+    if (hasPositiveTokens(outputTokens) && outputCost === null) {
+      missingDimensions.push("output_price");
+    }
+    if (hasPositiveTokens(reasoningTokens) && reasoningCost === null) {
+      missingDimensions.push("reasoning_output_price");
+    }
+
+    const allMissingDimensions = mergeDimensions(payload.missing_price_dimensions, missingDimensions);
+    const apiCostStatus = allMissingDimensions.length > 0 ? "partial_price_missing" : "estimated";
 
     return {
       ...payload,
+      ...basePriceFields,
       cost_basis: totalCost !== null ? "api_price_estimate" : null,
-      currency: selectedPrice.currency,
-      input_price_per_million: selectedPrice.input_price_per_million,
-      output_price_per_million: selectedPrice.output_price_per_million,
-      cached_input_read_price_per_million: selectedPrice.cached_input_read_price_per_million,
-      cached_input_write_price_per_million: selectedPrice.cached_input_write_price_per_million,
-      pricing_source: selectedPrice.source,
-      pricing_status: selectedPrice.pricing_status,
-      pricing_missing_reason: missingReason,
-      pricing_snapshot_json: selectedPrice,
+      pricing_missing_reason: apiCostStatus === "partial_price_missing"
+        ? "dimension_missing"
+        : selectedPolicy.missing_reason,
+      missing_price_dimensions: allMissingDimensions,
       estimated_api_input_cost: inputCost,
       estimated_api_standard_input_cost: standardInputCost,
-      estimated_api_cache_read_input_cost: cacheReadCost,
-      estimated_api_cache_creation_input_cost: cacheCreationCost,
+      estimated_api_cache_read_input_cost: (cacheReadTokens ?? 0) > 0 ? cacheReadCost : null,
+      estimated_api_cache_creation_input_cost: (aggregateCacheCreationTokens ?? 0) > 0 ? cacheCreationCost : null,
+      estimated_api_cache_creation_5m_input_cost: (cacheCreation5mTokens ?? 0) > 0 ? cacheCreation5mCost : null,
+      estimated_api_cache_creation_1h_input_cost: (cacheCreation1hTokens ?? 0) > 0 ? cacheCreation1hCost : null,
       estimated_api_output_cost: outputCost,
       estimated_api_reasoning_output_cost: reasoningCost,
       estimated_api_total_cost: totalCost,

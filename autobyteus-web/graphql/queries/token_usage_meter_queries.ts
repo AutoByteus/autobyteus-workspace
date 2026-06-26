@@ -10,23 +10,42 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
     memberRouteKey
     agentDefinitionId
     workspaceId
-    inputTokens
+    grossInputTokens
+    standardInputTokens
+    cacheMissInputTokens
+    cacheReadInputTokens
+    cacheCreationInputTokens
+    cacheCreation5mInputTokens
+    cacheCreation1hInputTokens
     outputTokens
-    totalTokens
     reasoningOutputTokens
+    billableOutputTokens
+    totalTokens
+    cacheReadInputTokenRate
+    standardInputTokenRate
+    cacheCreationInputTokenRate
+    cacheState
     estimatedApiInputCost
+    estimatedApiStandardInputCost
+    estimatedApiCacheReadInputCost
+    estimatedApiCacheCreationInputCost
+    estimatedApiCacheCreation5mInputCost
+    estimatedApiCacheCreation1hInputCost
     estimatedApiOutputCost
     estimatedApiReasoningOutputCost
     estimatedApiTotalCost
     currency
     apiCostStatus
-    latestContextInputTokens
-    effectiveContextBudgetTokens
-    contextPressurePercent
+    missingPriceDimensions
+    pricingPolicyKey
+    selectedPricingTierId
+    latestPromptTokens
+    effectiveContextWindowTokens
+    contextWindowUsagePercent
     latestModelProvider
     latestModelIdentifier
     latestRuntimeKind
-    eventCount
+    usageReportCount
     updatedAt
   }
 `;

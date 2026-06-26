@@ -24,6 +24,21 @@ export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
   | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] };
 
+const resolveLatestPromptTokens = (usage: LlmTokenUsageObservation): number | null => {
+  if (usage.input_tokens === null) return null;
+  if (usage.input_token_semantic === 'base_excludes_cache') {
+    return usage.input_tokens +
+      (usage.cache_read_input_tokens ?? 0) +
+      (usage.cache_creation_input_tokens ?? 0);
+  }
+  return usage.input_tokens;
+};
+
+const percentOf = (numerator: number | null, denominator: number | null | undefined): number | null => {
+  if (numerator === null || !denominator || denominator <= 0) return null;
+  return (numerator / denominator) * 100;
+};
+
 export class LlmPhase {
   async run(
     input: AgentInputPipelineResult,
@@ -221,6 +236,7 @@ export class LlmPhase {
     });
 
     if (tokenUsage) {
+      const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
       notifier?.notifyAgentTokenUsageUpdated({
         usage: tokenUsage,
         turn_id: activeTurnId,
@@ -228,7 +244,10 @@ export class LlmPhase {
         call_sequence: llmCallSequence,
         runtime_kind: 'autobyteus',
         ingestion_kind: 'autobyteus_llm_phase',
-        idempotency_key: `${agentId}:${llmCallId}`
+        idempotency_key: `${agentId}:${llmCallId}`,
+        latest_prompt_tokens: latestPromptTokens,
+        effective_context_window_tokens: requestTokenBudget?.effectiveContextCapacity ?? null,
+        context_window_usage_percent: percentOf(latestPromptTokens, requestTokenBudget?.effectiveContextCapacity)
       });
     }
 

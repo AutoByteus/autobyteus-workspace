@@ -43,11 +43,12 @@ const formatTokens = (value: number): string => {
 const costLabel = computed(() => {
   const current = summary.value;
   if (!current) return '';
-  if (current.estimatedApiTotalCost === null || current.apiCostStatus === 'price_missing') {
-    return t('shell.tokenUsage.unpriced');
-  }
+  if (current.apiCostStatus === 'local_no_api_bill') return t('shell.tokenUsage.priceStatusLocal');
+  if (current.apiCostStatus === 'mixed') return t('shell.tokenUsage.priceStatusMixed');
+  if (current.estimatedApiTotalCost === null || current.apiCostStatus === 'price_missing') return t('shell.tokenUsage.unpriced');
   const currency = current.currency || 'USD';
-  return `${new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 4 }).format(current.estimatedApiTotalCost)} ${t('shell.tokenUsage.headerEstimateSuffix')}`;
+  const formatted = new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 4 }).format(current.estimatedApiTotalCost);
+  return `${formatted} ${current.apiCostStatus === 'partial_price_missing' ? t('shell.tokenUsage.partialEstimateSuffix') : t('shell.tokenUsage.headerEstimateSuffix')}`;
 });
 
 const title = computed(() => summary.value

@@ -11,23 +11,42 @@ const summary = {
   memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
-  inputTokens: 1000,
+  grossInputTokens: 1000,
+  standardInputTokens: 700,
+  cacheMissInputTokens: 700,
+  cacheReadInputTokens: 300,
+  cacheCreationInputTokens: 0,
+  cacheCreation5mInputTokens: 0,
+  cacheCreation1hInputTokens: 0,
   outputTokens: 120,
+  billableOutputTokens: 153,
   totalTokens: 1153,
+  cacheReadInputTokenRate: 0.3,
+  standardInputTokenRate: 0.7,
+  cacheCreationInputTokenRate: 0,
+  cacheState: 'positive',
   reasoningOutputTokens: 33,
   estimatedApiInputCost: 0.002,
+  estimatedApiStandardInputCost: 0.0014,
+  estimatedApiCacheReadInputCost: 0.0006,
+  estimatedApiCacheCreationInputCost: null,
+  estimatedApiCacheCreation5mInputCost: null,
+  estimatedApiCacheCreation1hInputCost: null,
   estimatedApiOutputCost: 0.0012,
   estimatedApiReasoningOutputCost: 0.00033,
   estimatedApiTotalCost: 0.0032,
   currency: 'USD',
   apiCostStatus: 'estimated',
-  latestContextInputTokens: null,
-  effectiveContextBudgetTokens: null,
-  contextPressurePercent: null,
+  missingPriceDimensions: [],
+  pricingPolicyKey: 'catalog:openai:gpt-test',
+  selectedPricingTierId: null,
+  latestPromptTokens: 1000,
+  effectiveContextWindowTokens: 128000,
+  contextWindowUsagePercent: 0.78125,
   latestModelProvider: 'OPENAI',
   latestModelIdentifier: 'gpt-test',
   latestRuntimeKind: 'autobyteus',
-  eventCount: 1,
+  usageReportCount: 1,
   updatedAt: '2026-06-25T00:00:00.000Z',
 };
 
@@ -54,29 +73,56 @@ vi.mock('~/stores/tokenUsageMeterStore', () => ({
   }),
 }));
 
+const messages: Record<string, string> = {
+  'shell.tokenUsage.title': 'Token Meter',
+  'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
+  'shell.tokenUsage.currentPrompt': 'Current prompt',
+  'shell.tokenUsage.contextTokens': 'context tokens',
+  'shell.tokenUsage.grossInput': 'Gross input',
+  'shell.tokenUsage.output': 'Output',
+  'shell.tokenUsage.totalEstimate': 'Total estimate',
+  'shell.tokenUsage.tokensLabel': 'Tokens',
+  'shell.tokenUsage.tokenShortLabel': 'tok',
+  'shell.tokenUsage.costLabel': 'Cost',
+  'shell.tokenUsage.estimateLabel': 'Estimate',
+  'shell.tokenUsage.thinkingTokensIncluded': 'Thinking {tokens} tokens',
+  'shell.tokenUsage.thinkingTokensTooltip': 'Included in output tokens and estimated output cost.',
+  'shell.tokenUsage.cacheHitRate': 'Cache hit {percent}',
+  'shell.tokenUsage.cacheUnsupportedLocal': 'Local runtime; no provider cache bill',
+  'shell.tokenUsage.cacheNotReported': 'Usage reports no cache details',
+  'shell.tokenUsage.inputBreakdown': 'Input breakdown',
+  'shell.tokenUsage.uncachedInput': 'Uncached input',
+  'shell.tokenUsage.cacheHits': 'Cache hits',
+  'shell.tokenUsage.cacheWrites': 'Cache writes',
+  'shell.tokenUsage.totalInputCost': 'Total input cost',
+  'shell.tokenUsage.pricingDetails': 'Pricing details',
+  'shell.tokenUsage.priceStatus': 'Price status',
+  'shell.tokenUsage.priceStatusComplete': 'Estimated',
+  'shell.tokenUsage.priceStatusPartial': 'Partial estimate',
+  'shell.tokenUsage.priceStatusMissing': 'Price missing',
+  'shell.tokenUsage.priceStatusLocal': 'Local/no API bill',
+  'shell.tokenUsage.priceStatusMixed': 'Mixed',
+  'shell.tokenUsage.latestModel': 'Latest model:',
+  'shell.tokenUsage.runtime': 'Runtime:',
+  'shell.tokenUsage.usageReports': 'Usage reports',
+  'shell.tokenUsage.usageReportsTooltip': 'Server usage reports received for this summary.',
+  'shell.tokenUsage.usageReportsValue': '{count} reports',
+  'shell.tokenUsage.missingPriceDimensions': 'Missing price dimensions',
+  'shell.tokenUsage.unknown': 'unknown',
+  'shell.tokenUsage.unpriced': 'price missing',
+};
+
+const translate = (key: string, params?: Record<string, unknown>) => {
+  const template = messages[key] ?? key;
+  return Object.entries(params ?? {}).reduce(
+    (text, [param, value]) => text.replace(`{${param}}`, String(value)),
+    template,
+  );
+};
+
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
-    t: (key: string, params?: Record<string, unknown>) => {
-      const messages: Record<string, string> = {
-        'shell.tokenUsage.title': 'Token Meter',
-        'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
-        'shell.tokenUsage.input': 'Input',
-        'shell.tokenUsage.output': 'Output',
-        'shell.tokenUsage.total': 'Total',
-        'shell.tokenUsage.tokensLabel': 'Tokens',
-        'shell.tokenUsage.costLabel': 'Cost',
-        'shell.tokenUsage.estimateLabel': 'Estimate',
-        'shell.tokenUsage.thinkingTokensIncluded': `Thinking ${params?.tokens} tokens`,
-        'shell.tokenUsage.thinkingTokensTooltip': 'Included in output tokens and estimated output cost.',
-        'shell.tokenUsage.priceStatus': 'Price status',
-        'shell.tokenUsage.latestModel': 'Latest model:',
-        'shell.tokenUsage.runtime': 'Runtime:',
-        'shell.tokenUsage.events': 'Events:',
-        'shell.tokenUsage.unknown': 'unknown',
-        'shell.tokenUsage.unpriced': 'unpriced',
-      };
-      return messages[key] ?? key;
-    },
+    t: translate,
   }),
 }));
 
@@ -85,55 +131,35 @@ describe('TokenUsageMeterPanel', () => {
     currentSummary = summary;
   });
 
-  it('renders compact token cards with accessible price labels and an expandable thinking-token tip', async () => {
+  it('renders the approved Token Meter hierarchy with server-owned component values', () => {
     const wrapper = mount(TokenUsageMeterPanel, {
       global: {
         mocks: {
-          $t: (key: string) => ({
-            'shell.tokenUsage.title': 'Token Meter',
-            'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
-            'shell.tokenUsage.input': 'Input',
-            'shell.tokenUsage.output': 'Output',
-            'shell.tokenUsage.total': 'Total',
-            'shell.tokenUsage.tokensLabel': 'Tokens',
-            'shell.tokenUsage.costLabel': 'Cost',
-            'shell.tokenUsage.estimateLabel': 'Estimate',
-            'shell.tokenUsage.priceStatus': 'Price status',
-            'shell.tokenUsage.latestModel': 'Latest model:',
-            'shell.tokenUsage.runtime': 'Runtime:',
-            'shell.tokenUsage.events': 'Events:',
-          } as Record<string, string>)[key] ?? key,
+          $t: translate,
         },
       },
     });
 
     const text = wrapper.text();
-    expect(text).toContain('Input');
+    expect(text).toContain('Current prompt');
+    expect(text).toContain('Gross input');
     expect(text).toContain('Output');
-    expect(text).toContain('Total');
+    expect(text).toContain('Total estimate');
+    expect(text).toContain('Input breakdown');
+    expect(text).toContain('Uncached input');
+    expect(text).toContain('Cache hits');
+    expect(text).toContain('Pricing details');
+    expect(text).toContain('Usage reports');
     expect(text).toContain('Tokens');
-    expect(text).toContain('$0.002');
+    expect(text).toContain('$0.0020');
     expect(text).toContain('$0.0012');
     expect(text).toContain('$0.0032');
     expect(text).toContain('Thinking 33 tokens');
-    expect(text).toContain('Included in output tokens and estimated output cost.');
+    expect(text).toContain('Estimated');
+    expect(text).toContain('1 reports');
+    expect(text).not.toContain('Events');
 
-    const priceLabels = wrapper.findAll('[aria-label]').map((node) => node.attributes('aria-label'));
-    expect(priceLabels).toContain('Cost: $0.0020');
-    expect(priceLabels).toContain('Cost: $0.0012');
-    expect(priceLabels).toContain('Estimate: $0.0032');
-    expect(priceLabels).toContain('Thinking 33 tokens. Included in output tokens and estimated output cost.');
-
-    const thinkingDetails = wrapper.find('details');
-    const thinkingSummary = wrapper.find('summary');
-    expect(thinkingDetails.exists()).toBe(true);
-    expect(thinkingDetails.element.open).toBe(false);
-    expect(thinkingSummary.text()).toBe('Thinking 33 tokens');
-    expect(thinkingSummary.find('svg[aria-hidden="true"]').exists()).toBe(true);
-    expect(thinkingSummary.find('svg').classes()).toContain('group-open:rotate-180');
-    await thinkingSummary.trigger('click');
-
-    expect(thinkingDetails.element.open).toBe(true);
+    expect(wrapper.find('[title="Included in output tokens and estimated output cost."]').exists()).toBe(true);
   });
 
   it('omits the thinking-token subline when no reasoning tokens are present', () => {

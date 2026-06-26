@@ -1,0 +1,71 @@
+{
+  "provider": "deepseek",
+  "mode": "two-call",
+  "model": {
+    "name": "deepseek-v4-flash",
+    "value": "deepseek-v4-flash",
+    "provider": "DEEPSEEK"
+  },
+  "started_at": "2026-06-25T17:13:24.950Z",
+  "completed_at": "2026-06-25T17:13:27.750Z",
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "WARMUP",
+      "normalized_usage": {
+        "input_tokens": 9921,
+        "output_tokens": 3,
+        "total_tokens": 9924,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 9921,
+          "completion_tokens": 3,
+          "total_tokens": 9924,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 9921
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "PROBE",
+      "normalized_usage": {
+        "input_tokens": 9920,
+        "output_tokens": 2,
+        "total_tokens": 9922,
+        "cache_read_input_tokens": 9856,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 9920,
+          "completion_tokens": 2,
+          "total_tokens": 9922,
+          "prompt_tokens_details": {
+            "cached_tokens": 9856
+          },
+          "prompt_cache_hit_tokens": 9856,
+          "prompt_cache_miss_tokens": 64
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_gross_includes_cache"
+}

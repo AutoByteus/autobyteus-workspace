@@ -25,6 +25,9 @@ const firstRecord = (...values: unknown[]): Record<string, unknown> | null => {
   return null;
 };
 
+const percentOf = (numerator: number | null, denominator: number | null): number | null =>
+  numerator !== null && denominator !== null && denominator > 0 ? (numerator / denominator) * 100 : null;
+
 const hasTokenUsageShape = (record: Record<string, unknown>): boolean =>
   firstNonNegativeInt(
     record.input_tokens,
@@ -167,7 +170,26 @@ export const buildClaudeTokenUsageEvent = (input: {
     modelUsage?.cacheReadInputTokens,
     modelUsage?.cache_read_tokens,
   );
+  const cacheCreation5m = firstNonNegativeInt(
+    usage.cache_creation_5m_input_tokens,
+    usage.cacheCreation5mInputTokens,
+    modelUsage?.cache_creation_5m_input_tokens,
+    modelUsage?.cacheCreation5mInputTokens,
+  );
+  const cacheCreation1h = firstNonNegativeInt(
+    usage.cache_creation_1h_input_tokens,
+    usage.cacheCreation1hInputTokens,
+    modelUsage?.cache_creation_1h_input_tokens,
+    modelUsage?.cacheCreation1hInputTokens,
+  );
   const reasoningTokens = resolveThinkingTokens(usage, modelUsage);
+  const latestPromptTokens = inputTokens === null ? null : inputTokens + (cacheCreation ?? 0) + (cacheRead ?? 0);
+  const contextWindowTokens = firstNonNegativeInt(
+    modelUsage?.contextWindow,
+    modelUsage?.context_window,
+    usage.contextWindow,
+    usage.context_window,
+  );
   const model = asString(terminalResult.model) ?? asString(payload.model) ?? asString(usage.model) ?? modelUsageInfo.model ?? input.model;
   const eventKey = [input.runId, input.sessionId, input.turnId, model, inputTokens ?? "x", outputTokens ?? "x", totalTokens ?? "x"].join(":");
   const qualityFlags: string[] = [];
@@ -190,9 +212,19 @@ export const buildClaudeTokenUsageEvent = (input: {
       reported_input_tokens: inputTokens,
       reported_output_tokens: outputTokens,
       reported_total_tokens: totalTokens,
+      input_token_semantic: "base_excludes_cache",
+      cache_state: cacheRead === null && cacheCreation === null && cacheCreation5m === null && cacheCreation1h === null
+        ? "not_reported"
+        : ([cacheRead, cacheCreation, cacheCreation5m, cacheCreation1h].some((value) => (value ?? 0) > 0) ? "positive" : "zero_reported"),
+      standard_input_tokens: inputTokens,
       cache_creation_input_tokens: cacheCreation,
+      cache_creation_5m_input_tokens: cacheCreation5m,
+      cache_creation_1h_input_tokens: cacheCreation1h,
       cache_read_input_tokens: cacheRead,
       reasoning_output_tokens: reasoningTokens,
+      latest_prompt_tokens: latestPromptTokens,
+      effective_context_window_tokens: contextWindowTokens,
+      context_window_usage_percent: percentOf(latestPromptTokens, contextWindowTokens),
       raw_usage_json: cloneRecord(usage),
       raw_event_json: cloneRecord(payload),
       quality_flags: qualityFlags,

@@ -10,6 +10,9 @@ export class TokenUsageUpdatedData extends BaseStreamPayload {
   usage: LlmTokenUsageObservation;
   runtime_kind?: string;
   ingestion_kind?: string;
+  latest_prompt_tokens?: number | null;
+  effective_context_window_tokens?: number | null;
+  context_window_usage_percent?: number | null;
   raw_event_json?: Record<string, unknown> | null;
 
   constructor(data: Record<string, any>) {
@@ -26,6 +29,15 @@ export class TokenUsageUpdatedData extends BaseStreamPayload {
     this.call_sequence = typeof data.call_sequence === 'number' ? data.call_sequence : undefined;
     this.runtime_kind = typeof data.runtime_kind === 'string' ? data.runtime_kind : undefined;
     this.ingestion_kind = typeof data.ingestion_kind === 'string' ? data.ingestion_kind : undefined;
+    this.latest_prompt_tokens = typeof data.latest_prompt_tokens === 'number' || data.latest_prompt_tokens === null
+      ? data.latest_prompt_tokens
+      : undefined;
+    this.effective_context_window_tokens = typeof data.effective_context_window_tokens === 'number' || data.effective_context_window_tokens === null
+      ? data.effective_context_window_tokens
+      : undefined;
+    this.context_window_usage_percent = typeof data.context_window_usage_percent === 'number' || data.context_window_usage_percent === null
+      ? data.context_window_usage_percent
+      : undefined;
     this.raw_event_json = isRecord(data.raw_event_json) || data.raw_event_json === null ? data.raw_event_json : undefined;
   }
 }

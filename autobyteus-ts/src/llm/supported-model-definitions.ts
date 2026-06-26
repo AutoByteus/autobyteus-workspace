@@ -206,7 +206,11 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.8',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, { cachedInputReadTokenPricing: 0.5 }) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
+      cachedInputReadTokenPricing: 0.5,
+      cachedInputWrite5mTokenPricing: 6.25,
+      cachedInputWrite1hTokenPricing: 10.0,
+    }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },
   {
@@ -215,7 +219,11 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.7',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, { cachedInputReadTokenPricing: 0.5 }) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
+      cachedInputReadTokenPricing: 0.5,
+      cachedInputWrite5mTokenPricing: 6.25,
+      cachedInputWrite1hTokenPricing: 10.0,
+    }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },
   {
@@ -224,7 +232,11 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-4.6',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, { cachedInputReadTokenPricing: 0.3 }) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
+      cachedInputReadTokenPricing: 0.3,
+      cachedInputWrite5mTokenPricing: 3.75,
+      cachedInputWrite1hTokenPricing: 6.0,
+    }) }),
     configSchema: claudeSchema
   },
   {
@@ -258,19 +270,22 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.1-pro-preview',
     defaultConfig: new LLMConfig({
-      pricingConfig: pricing(2.0, 12.0, {
+      pricingConfig: pricing(2.25, 18.0, {
+        cachedInputReadTokenPricing: 0.225,
         inputTokenPricingTiers: [
           {
             tierId: 'prompt_le_200k',
             maxInputTokens: 200_000,
-            inputTokenPricing: 2.0,
-            outputTokenPricing: 12.0,
+            inputTokenPricing: 2.25,
+            outputTokenPricing: 18.0,
+            cachedInputReadTokenPricing: 0.225,
           },
           {
             tierId: 'prompt_gt_200k',
             maxInputTokens: null,
-            inputTokenPricing: 4.0,
-            outputTokenPricing: 18.0,
+            inputTokenPricing: 4.5,
+            outputTokenPricing: 27.0,
+            cachedInputReadTokenPricing: 0.45,
           },
         ],
       })
@@ -292,7 +307,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.5-flash',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0) }),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0, { cachedInputReadTokenPricing: 0.15 }) }),
     configSchema: geminiSchema
   },
   {
@@ -316,7 +331,8 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'kimi-k2.7-code-highspeed',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.7-code-highspeed'
+    canonicalName: 'kimi-k2.7-code-highspeed',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.90, 8.0, { cachedInputReadTokenPricing: 0.38 }) })
   },
   {
     name: 'qwen3.7-max',

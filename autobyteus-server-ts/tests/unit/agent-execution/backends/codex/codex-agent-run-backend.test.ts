@@ -8,8 +8,9 @@ import { CodexThreadEventName } from "../../../../../src/agent-execution/backend
 
 vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
   TokenPriceConfigProvider: class TokenPriceConfigProvider {
-    async resolvePrice() {
+    async resolvePolicy() {
       return {
+        pricing_policy_key: null,
         price_config_id: null,
         model_provider: null,
         model_identifier: null,
@@ -20,6 +21,8 @@ vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js",
         output_price_per_million: null,
         cached_input_read_price_per_million: null,
         cached_input_write_price_per_million: null,
+        cached_input_write_5m_price_per_million: null,
+        cached_input_write_1h_price_per_million: null,
         input_price_tiers: [],
         pricing_status: "missing",
         trusted_dimensions: {
@@ -27,6 +30,8 @@ vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js",
           output: false,
           cached_input_read: false,
           cached_input_write: false,
+          cached_input_write_5m: false,
+          cached_input_write_1h: false,
         },
         missing_reason: "test_unpriced",
         source: null,
@@ -235,9 +240,13 @@ describe("CodexAgentRunBackend", () => {
             reported_input_tokens: 10,
             reported_output_tokens: 5,
             reported_total_tokens: 15,
+            input_token_semantic: "gross_includes_cache",
             cache_read_input_tokens: 4,
+            cache_state: "positive",
             reasoning_output_tokens: 2,
-            effective_context_budget_tokens: 128000,
+            latest_prompt_tokens: 10,
+            effective_context_window_tokens: 128000,
+            context_window_usage_percent: 0.0078125,
             model_provider: "OPENAI",
             model_identifier: "gpt-5.4-mini",
             raw_usage_json: {

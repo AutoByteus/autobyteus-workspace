@@ -42,10 +42,11 @@ describe('supportedModelDefinitions', () => {
       currency: 'USD',
       input_price_per_million: 1.5,
       output_price_per_million: 9.0,
+      cached_input_read_price_per_million: 0.15,
       trusted_dimensions: {
         input: true,
         output: true,
-        cached_input_read: false,
+        cached_input_read: true,
         cached_input_write: false,
       },
     });
@@ -92,8 +93,20 @@ describe('supportedModelDefinitions', () => {
 
     const geminiPro = await LLMFactory.getModelPricingInfo({ modelIdentifier: 'gemini-3.1-pro-preview', modelProvider: LLMProvider.GEMINI });
     expect(geminiPro?.input_price_tiers).toEqual([
-      expect.objectContaining({ tier_id: 'prompt_le_200k', max_input_tokens: 200000, output_price_per_million: 12 }),
-      expect.objectContaining({ tier_id: 'prompt_gt_200k', max_input_tokens: null, output_price_per_million: 18 }),
+      expect.objectContaining({
+        tier_id: 'prompt_le_200k',
+        max_input_tokens: 200000,
+        input_price_per_million: 2.25,
+        output_price_per_million: 18,
+        cached_input_read_price_per_million: 0.225,
+      }),
+      expect.objectContaining({
+        tier_id: 'prompt_gt_200k',
+        max_input_tokens: null,
+        input_price_per_million: 4.5,
+        output_price_per_million: 27,
+        cached_input_read_price_per_million: 0.45,
+      }),
     ]);
 
     const glm = await LLMFactory.getModelPricingInfo({ modelIdentifier: 'glm-5.2', modelProvider: LLMProvider.GLM });

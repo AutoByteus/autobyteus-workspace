@@ -44,17 +44,24 @@ type WsMessage = {
 
 type RunSummary = {
   runId: string;
-  inputTokens: number;
+  grossInputTokens: number;
+  standardInputTokens: number;
+  cacheReadInputTokens: number;
   outputTokens: number;
+  billableOutputTokens: number;
   totalTokens: number;
   reasoningOutputTokens: number;
+  cacheState: string;
   estimatedApiReasoningOutputCost: number | null;
   estimatedApiTotalCost: number | null;
   currency: string | null;
   apiCostStatus: string;
+  latestPromptTokens: number | null;
+  effectiveContextWindowTokens: number | null;
+  contextWindowUsagePercent: number | null;
   latestModelIdentifier: string | null;
   latestRuntimeKind: string | null;
-  eventCount: number;
+  usageReportCount: number;
 };
 
 type UsageStatisticsRow = {
@@ -428,17 +435,24 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       query RunTokenUsage($runId: String!) {
         getAgentRunTokenUsageSummary(runId: $runId) {
           runId
-          inputTokens
+          grossInputTokens
+          standardInputTokens
+          cacheReadInputTokens
           outputTokens
+          billableOutputTokens
           totalTokens
           reasoningOutputTokens
+          cacheState
           estimatedApiReasoningOutputCost
           estimatedApiTotalCost
           currency
           apiCostStatus
+          latestPromptTokens
+          effectiveContextWindowTokens
+          contextWindowUsagePercent
           latestModelIdentifier
           latestRuntimeKind
-          eventCount
+          usageReportCount
         }
       }
     `;
@@ -472,7 +486,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
     waitForCondition(
       async () => {
         const summary = await getRunSummary(runId);
-        return summary.eventCount > 0 && summary.totalTokens > 0 ? summary : null;
+        return summary.usageReportCount > 0 && summary.totalTokens > 0 ? summary : null;
       },
       `persisted token usage summary for run '${runId}'`,
       GRAPHQL_PERSISTENCE_TIMEOUT_MS,
@@ -591,7 +605,9 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
             runtime_kind: spec.runtimeKind,
             ingestion_kind: spec.expectedIngestionKind,
           });
-          expect(tokenUsageMessage.payload).toHaveProperty("latest_context_input_tokens");
+          expect(tokenUsageMessage.payload).toHaveProperty("latest_prompt_tokens");
+          expect(tokenUsageMessage.payload).toHaveProperty("input_token_semantic");
+          expect(tokenUsageMessage.payload).toHaveProperty("cache_state");
           expect(asNumber(tokenUsageMessage.payload.reported_input_tokens)).not.toBeNull();
           expect(asNumber(tokenUsageMessage.payload.reported_output_tokens)).not.toBeNull();
           expect(asNumber(tokenUsageMessage.payload.accounting_input_tokens)).toBeGreaterThan(0);
@@ -611,11 +627,15 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
             latestRuntimeKind: spec.runtimeKind,
             latestModelIdentifier: llmModelIdentifier,
           });
-          expect(summary.inputTokens).toBeGreaterThan(0);
+          expect(summary.grossInputTokens).toBeGreaterThan(0);
+          expect(summary.standardInputTokens).toBeGreaterThanOrEqual(0);
+          expect(summary.cacheReadInputTokens).toBeGreaterThanOrEqual(0);
           expect(summary.outputTokens).toBeGreaterThan(0);
+          expect(summary.billableOutputTokens).toBeGreaterThanOrEqual(summary.outputTokens);
           expect(summary.totalTokens).toBeGreaterThan(0);
           expect(summary.reasoningOutputTokens).toBeGreaterThanOrEqual(0);
-          expect(summary.eventCount).toBeGreaterThan(0);
+          expect(summary.usageReportCount).toBeGreaterThan(0);
+          expect(["positive", "zero_reported", "not_reported", "unsupported_or_local", "unknown"]).toContain(summary.cacheState);
           expect(["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
 
           const usageWindowEnd = new Date(Date.now() + 5_000);
