@@ -260,7 +260,8 @@ server-side token usage accounting. Pricing metadata can include:
 - currency, including non-USD provider billing such as CNY-denominated GLM
   prices;
 - trusted input/output prices per million tokens;
-- optional trusted cache-read and cache-write prices;
+- optional trusted cache-read and cache-write prices, including provider
+  subtypes such as Anthropic 5-minute and 1-hour cache creation prices;
 - provider source/effective-date identifiers; and
 - input-token tier rows with tier-specific input/output/cache prices.
 
@@ -269,6 +270,15 @@ free. When provider pricing is regional, ambiguous, quota-specific, or otherwise
 not safely represented by a single catalog value, leave the pricing dimension
 missing and let server summaries surface `price_missing` or
 `partial_price_missing`.
+
+Pricing metadata is a policy input, not a frontend display shortcut. The server
+selects a pricing policy by provider/model/runtime and applies it to normalized
+component tokens (`standard_input`, `cache_read_input`, cache write subtypes,
+output, and reasoning/billable output). Custom OpenAI-compatible endpoints must
+not inherit trusted zero pricing by default; they need explicit trusted pricing
+or they surface `price_missing`. Local runtimes such as Ollama and LM Studio
+should use `local_no_api_bill` status when there is no provider API bill rather
+than pretending a remote paid model cost is `$0`.
 
 ## Validation and Secret Hygiene
 

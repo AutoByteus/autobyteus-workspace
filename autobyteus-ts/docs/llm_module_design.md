@@ -155,10 +155,21 @@ audio/TTS, and image models.
 Provider adapters surface authoritative provider/runtime usage through
 `LlmTokenUsageObservation`, carried on `ChunkResponse.usage` and
 `CompleteResponse.usage`. The observation keeps input/output/total tokens,
-usage scope, model identity, cache/reasoning token details where available, raw
-provider JSON, and quality flags. `LlmPhase` emits these observations as
-`TOKEN_USAGE_UPDATED` stream events; the server token-usage ledger owns canonical
-run/team identity, accounting deltas, cost calculation, and persistence.
+usage scope, model identity, provider input-token semantic
+(`gross_includes_cache`, `base_excludes_cache`, or `unknown`), cache reporting
+state, cache miss/read/write buckets, reasoning/billable output details where
+available, latest prompt/context-window hints, raw provider JSON, and quality
+flags. `LlmPhase` emits these observations as `TOKEN_USAGE_UPDATED` stream
+events; the server token-usage ledger owns canonical run/team identity,
+component-basis derivation, accounting deltas, cost calculation, GraphQL
+summaries, and persistence.
+
+Provider adapters must normalize what the provider reported, not what it costs.
+OpenAI-compatible/gross providers should report gross prompt/input plus cache
+read or miss buckets when available. Anthropic-style providers should mark
+`base_excludes_cache` so the server can derive gross input as base input plus
+cache read/write buckets. Local runtime estimates must never be used as
+persisted paid-provider accounting.
 
 `BaseLLM` still supports optional extensions that hook into the request/response
 lifecycle, but token accounting must not depend on an auto-registered extension
@@ -199,7 +210,8 @@ src/llm/
 - **`systemMessage`**: Default system prompt.
 - **`pricingConfig`**: Built-in catalog API-price metadata. It can carry
   currency, trusted input/output/cache-read/cache-write prices, provider
-  source/effective-date identifiers, and input-token tiers. Missing dimensions
+  source/effective-date identifiers, cache-write subtype prices, input-token
+  tiers, and local/no-bill or missing/placeholder status. Missing dimensions
   remain untrusted; server-side accounting decides whether estimated costs can
   be shown and must not treat constructor/default zero values as free pricing.
 - **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
