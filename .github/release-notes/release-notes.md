@@ -1,4 +1,7 @@
-## Fixes
-- Fixed Kimi `kimi-k2.7-code-highspeed` request construction so factory-created runs send provider-valid K2.7 fixed sampling values instead of the generic temperature default.
-- Preserved `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` as distinct official Kimi model IDs while sharing one K2.7 Code policy for fixed constraints.
-- Fixed raw run `llmConfig` composition so missing fields do not override model defaults, standard keys are handled as first-class config, and provider-specific extras still pass through safely.
+## What's New
+- Added team-targeted task delegation so a parent team can delegate work to a child team and review the returned result.
+- Added task-team execution visibility in the team workspace, including active task cards, scoped child activity, review actions, and cleanup after acceptance.
+
+## Improvements
+- Improved delegation routing so member targets and team targets are explicit and easier to understand.
+- Improved streaming identity for nested task-team runs so concurrent team work stays routed to the correct task view.
