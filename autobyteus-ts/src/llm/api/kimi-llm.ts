@@ -5,16 +5,16 @@ import { LLMProvider } from '../providers.js';
 import { Message, MessageRole } from '../utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { LLMInvocationOptions } from '../base.js';
+import {
+  KIMI_K2_7_CODE_ALLOWED_TOOL_CHOICES,
+  KIMI_K2_7_CODE_FIXED_CONSTRAINTS,
+  isKimiK27CodeModel,
+  isKimiK27FixedSamplingKey,
+} from './kimi-k2-7-code-policy.js';
 
 const KIMI_K2_6_MODEL = 'kimi-k2.6';
-const KIMI_K2_7_CODE_MODEL = 'kimi-k2.7-code';
 const KIMI_DEFAULT_TEMPERATURE = 1;
 const KIMI_TOOL_WORKFLOW_TEMPERATURE = 0.6;
-const KIMI_K2_7_CODE_TEMPERATURE = 1.0;
-const KIMI_K2_7_CODE_TOP_P = 0.95;
-const KIMI_K2_7_CODE_RESULT_COUNT = 1;
-const KIMI_K2_7_CODE_PENALTY = 0.0;
-const KIMI_K2_7_CODE_ALLOWED_TOOL_CHOICES = new Set(['auto', 'none']);
 
 function requestUsesToolWorkflow(messages: Message[], kwargs: Record<string, unknown>): boolean {
   if (Array.isArray(kwargs.tools) && kwargs.tools.length > 0) {
@@ -22,10 +22,6 @@ function requestUsesToolWorkflow(messages: Message[], kwargs: Record<string, unk
   }
 
   return messages.some((message) => message.role === MessageRole.TOOL || Boolean(message.tool_payload));
-}
-
-function isK2_7FixedSamplingKey(key: string): boolean {
-  return key === 'top_p' || key === 'n' || key === 'presence_penalty' || key === 'frequency_penalty';
 }
 
 export class KimiLLM extends OpenAICompatibleLLM {
@@ -49,7 +45,7 @@ export class KimiLLM extends OpenAICompatibleLLM {
       return this.normalizeK2_6Kwargs(messages, kwargs);
     }
 
-    if (this.model.value === KIMI_K2_7_CODE_MODEL) {
+    if (isKimiK27CodeModel(this.model.value)) {
       return this.normalizeK2_7CodeKwargs(kwargs);
     }
 
@@ -79,29 +75,29 @@ export class KimiLLM extends OpenAICompatibleLLM {
     const normalizedKwargs = { ...kwargs };
 
     delete normalizedKwargs.thinking;
-    normalizedKwargs.temperature = KIMI_K2_7_CODE_TEMPERATURE;
+    normalizedKwargs.temperature = KIMI_K2_7_CODE_FIXED_CONSTRAINTS.temperature;
 
     if (this.config.extraParams?.thinking !== undefined || kwargs.thinking !== undefined) {
       normalizedKwargs.thinking = { type: 'enabled' };
     }
 
     if (this.config.topP !== null || hasK2_7FixedSamplingKey(this.config.extraParams, kwargs, 'top_p')) {
-      normalizedKwargs.top_p = KIMI_K2_7_CODE_TOP_P;
+      normalizedKwargs.top_p = KIMI_K2_7_CODE_FIXED_CONSTRAINTS.topP;
     }
     if (hasK2_7FixedSamplingKey(this.config.extraParams, kwargs, 'n')) {
-      normalizedKwargs.n = KIMI_K2_7_CODE_RESULT_COUNT;
+      normalizedKwargs.n = KIMI_K2_7_CODE_FIXED_CONSTRAINTS.resultCount;
     }
     if (
       this.config.presencePenalty !== null ||
       hasK2_7FixedSamplingKey(this.config.extraParams, kwargs, 'presence_penalty')
     ) {
-      normalizedKwargs.presence_penalty = KIMI_K2_7_CODE_PENALTY;
+      normalizedKwargs.presence_penalty = KIMI_K2_7_CODE_FIXED_CONSTRAINTS.presencePenalty;
     }
     if (
       this.config.frequencyPenalty !== null ||
       hasK2_7FixedSamplingKey(this.config.extraParams, kwargs, 'frequency_penalty')
     ) {
-      normalizedKwargs.frequency_penalty = KIMI_K2_7_CODE_PENALTY;
+      normalizedKwargs.frequency_penalty = KIMI_K2_7_CODE_FIXED_CONSTRAINTS.frequencyPenalty;
     }
 
     if (
@@ -137,7 +133,7 @@ function hasK2_7FixedSamplingKey(
   kwargs: Record<string, unknown>,
   key: string
 ): boolean {
-  if (!isK2_7FixedSamplingKey(key)) return false;
+  if (!isKimiK27FixedSamplingKey(key)) return false;
   return (
     (extraParams?.[key] !== undefined && extraParams[key] !== null) ||
     (kwargs[key] !== undefined && kwargs[key] !== null)

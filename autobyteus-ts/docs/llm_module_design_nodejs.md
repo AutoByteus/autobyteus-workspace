@@ -57,8 +57,9 @@ Two OpenAI-style paths coexist:
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
   requests to Moonshot-safe temperature defaults and applies separate
-  `kimi-k2.7-code` fixed sampling/tool-choice constraints. `GlmLLM` maps the
-  flat GLM thinking schema to provider-native request fields.
+  fixed sampling/tool-choice constraints for both K2.7 Code official IDs:
+  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed`. `GlmLLM` maps the flat GLM
+  thinking schema to provider-native request fields.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -67,6 +68,35 @@ Two OpenAI-style paths coexist:
 
 Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
 provider gets its own `provider_id` and `provider_name`.
+
+### 3.3 Factory Config Composition
+
+`LLMFactory.createLLM(modelIdentifier, configInput?)` is the effective runtime
+config composition boundary for factory-created LLMs. It clones
+`LLMModel.defaultConfig` when the selected model defines one, otherwise it
+starts from a normal `LLMConfig`.
+
+The second argument has two meanings:
+
+- `LLMConfig` input is treated as an already-effective config and merged over
+  the model defaults.
+- Plain object input is treated as a sparse raw run/default-launch `llmConfig`.
+  Only keys that are explicitly present override defaults.
+
+The raw override applier maps standard keys such as `temperature`, `top_p`,
+`max_tokens`, penalties, and stop sequences into first-class `LLMConfig`
+fields. Missing fields preserve model defaults, unknown provider-specific keys
+flow into `extraParams`, and standard/reserved keys are filtered out of nested
+`extra_params` / `extraParams` containers so they cannot collide with
+first-class fields later. Server-side AutoByteus run assembly should pass raw
+persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
+record as `new LLMConfig({ extraParams: llmConfig })`.
+
+Provider/model invariants are enforced after this factory composition and
+before request construction. The Kimi K2.7 Code policy is the concrete example:
+both `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` seed fixed defaults from
+the catalog and are still normalized by `KimiLLM` before the OpenAI-compatible
+request builder runs.
 
 ## 4. Provider Implementations
 
@@ -137,8 +167,11 @@ The current latest-model support set is summarized in
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
-- Moonshot/Kimi `kimi-k2.6` general-purpose model and `kimi-k2.7-code`
-  coding/agentic model (verified 2026-06-16).
+- Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
+  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is
+  a distinct official provider identifier for the faster K2.7 Code route, not a
+  compatibility alias (standard K2.7 verified 2026-06-16; HighSpeed verified
+  2026-06-26).
 - Zhipu GLM `glm-5.2` (verified 2026-06-16).
 - MiniMax `minimax-m3` / `MiniMax-M3` (verified 2026-06-24). MiniMax M2.7 is
   removed and must not be retained as an alias.
@@ -161,8 +194,10 @@ Provider adapters own request-shape differences:
   thinking when tool workflows have no explicit thinking override. Kimi also
   normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
   workflows and `1` for non-tool requests, while preserving explicit
-  per-request temperature kwargs. For `kimi-k2.7-code`, it keeps thinking on and
-  normalizes fixed sampling/tool-choice fields to provider-valid values.
+  per-request temperature kwargs. For `kimi-k2.7-code` and
+  `kimi-k2.7-code-highspeed`, it keeps thinking on and normalizes fixed
+  sampling/tool-choice fields to provider-valid values through the shared Kimi
+  K2.7 policy.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
