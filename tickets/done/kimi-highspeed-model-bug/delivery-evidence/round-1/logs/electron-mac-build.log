@@ -288,7 +288,7 @@ isElectronBuild false
 ℹ .nuxt/dist/client/_nuxt/B2HIgSct.js                                  934.16 kB │ gzip:   258.20 kB
 ℹ .nuxt/dist/client/_nuxt/-4vZqWyu.js                                3,743.00 kB │ gzip: 1,204.75 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
@@ -581,7 +581,7 @@ isElectronBuild true
 ℹ .nuxt/dist/client/_nuxt/entry.Df70MkiF.js                             934.94 kB │ gzip:   258.57 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.yUCH4b2a.js        3,744.56 kB │ gzip: 1,205.72 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
