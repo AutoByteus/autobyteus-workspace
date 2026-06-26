@@ -1,0 +1,24 @@
+Electron macOS build artifacts for token-meter-team-member-focus
+
+Command:
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac
+
+Result: Passed (exit status 0)
+Build log:
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/tickets/token-meter-team-member-focus/delivery-evidence/round-1/logs/electron-mac-build.log
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/latest-mac.yml
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg.blockmap
+- /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip.blockmap
+
+Sizes:
+4.0K	autobyteus-web/electron-dist/latest-mac.yml
+400K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip.blockmap
+412K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg.blockmap
+384M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg
+385M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip
+1.2G	autobyteus-web/electron-dist/mac-arm64

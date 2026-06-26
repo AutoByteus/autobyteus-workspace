@@ -1,0 +1,7 @@
+{"ts":"2026-06-26T05:23:19.137Z","message":"goto","url":"http://127.0.0.1:3012/workspace?tokenMeterApiE2E=1"}
+{"ts":"2026-06-26T05:23:19.995Z","message":"solution-focus-pass","rowWidth":249}
+{"ts":"2026-06-26T05:23:20.054Z","message":"implementation-focus-pass"}
+{"ts":"2026-06-26T05:23:20.130Z","message":"non-leaf-focus-pass"}
+{"ts":"2026-06-26T05:23:20.188Z","message":"agent-header-pass"}
+{"ts":"2026-06-26T05:23:20.280Z","message":"zh-cn-token-pass"}
+{"ts":"2026-06-26T05:23:20.280Z","message":"browser-probe-pass"}

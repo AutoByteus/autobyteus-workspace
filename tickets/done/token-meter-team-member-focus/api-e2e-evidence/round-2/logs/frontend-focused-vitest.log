@@ -1,0 +1,58 @@
+Command: pnpm -C autobyteus-web test:nuxt components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts composables/__tests__/useRightSideTabs.spec.ts stores/__tests__/tokenUsageMeterStore.spec.ts --run
+Started: 2026-06-26T09:04:13+02:00
+
+> autobyteus@1.3.76 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts composables/__tests__/useRightSideTabs.spec.ts stores/__tests__/tokenUsageMeterStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-member-focus/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (5 tests) 6ms
+ ✓ composables/__tests__/useRightSideTabs.spec.ts (2 tests) 3ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (4 tests) 68ms
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts (7 tests) 55ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (13 tests) 72ms
+
+ Test Files  5 passed (5)
+      Tests  31 passed (31)
+   Start at  09:04:16
+   Duration  7.30s (transform 4.00s, setup 29.52s, collect 1.23s, tests 204ms, environment 1.59s, prepare 1.29s)
+
+Finished: 2026-06-26T09:04:24+02:00

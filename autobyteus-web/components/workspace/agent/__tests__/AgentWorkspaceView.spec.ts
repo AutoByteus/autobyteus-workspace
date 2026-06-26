@@ -129,6 +129,7 @@ describe('AgentWorkspaceView', () => {
         },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
+        TokenUsageHeaderChip: { template: '<div data-test="token-usage-header-chip" />' },
         WorkspaceHeaderActions: {
           template: `
             <div>
@@ -148,6 +149,11 @@ describe('AgentWorkspaceView', () => {
     const avatar = wrapper.find('img[alt="Story Agent avatar"]');
     expect(avatar.exists()).toBe(true);
     expect(avatar.attributes('src')).toBe('https://example.com/from-context.png');
+  });
+
+  it('does not render the token usage header chip', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
   });
 
   it('falls back to definition avatar URL in header when context avatar is missing', () => {
