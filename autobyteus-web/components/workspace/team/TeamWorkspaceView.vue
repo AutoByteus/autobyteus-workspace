@@ -21,11 +21,6 @@
       </div>
 
       <div class="flex items-center gap-3 flex-wrap justify-end">
-        <TeamWorkspaceModeSwitch
-          v-if="activeTeamContext"
-          :mode="currentMode"
-          @update:mode="setCurrentMode"
-        />
         <WorkspaceHeaderActions
           @new-agent="createNewTeamRun"
           @edit-config="openSelectedTeamConfig"
@@ -40,23 +35,11 @@
       />
 
       <div class="flex-grow min-h-0">
-        <AgentTeamEventMonitor v-if="currentMode === 'focus'">
+        <AgentTeamEventMonitor>
           <template #composerContext>
             <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
           </template>
         </AgentTeamEventMonitor>
-        <TeamGridView
-          v-else-if="currentMode === 'grid'"
-          :team-context="activeTeamContext"
-          :focused-member-route-key="rosterFocusedMemberRouteKey"
-          @select-member="setFocusedMember"
-        />
-        <TeamSpotlightView
-          v-else
-          :team-context="activeTeamContext"
-          :focused-member-route-key="rosterFocusedMemberRouteKey"
-          @select-member="setFocusedMember"
-        />
       </div>
 
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
@@ -101,7 +84,6 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
-import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
@@ -109,10 +91,7 @@ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
 import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
-import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
-import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
 import TeamActiveTaskExecutionsBar from '~/components/workspace/team/TeamActiveTaskExecutionsBar.vue';
-import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
@@ -124,7 +103,6 @@ const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
-const teamWorkspaceViewStore = useTeamWorkspaceViewStore();
 const headerAvatarLoadError = ref(false);
 const subteamDraft = ref('');
 const isSendingSubteamDraft = ref(false);
@@ -158,18 +136,9 @@ const rosterFocusedMemberNode = computed(() => {
   return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
 });
 
-const currentMode = computed<TeamWorkspaceViewMode>(() => {
-  return teamWorkspaceViewStore.getMode(activeTeamContext.value?.teamRunId);
-});
-
-const showSharedComposer = computed(() => {
-  if (!userMessageTarget.value) {
-    return false;
-  }
-  return Boolean(activeTeamContext.value) && (
-    currentMode.value !== 'focus' || focusedMemberNode.value?.memberKind === 'agent_team'
-  );
-});
+const showSharedComposer = computed(() => (
+  Boolean(activeTeamContext.value) && userMessageTarget.value?.node.memberKind === 'agent_team'
+));
 
 const headerStatus = computed(() => {
   return rosterFocusedMemberContext.value?.state.currentStatus
@@ -259,13 +228,6 @@ function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefine
   return activeExecutionFocusedMemberRouteKey.value;
 }
 
-const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
-  if (!activeTeamContext.value) {
-    return;
-  }
-  teamWorkspaceViewStore.setMode(activeTeamContext.value.teamRunId, mode);
-};
-
 const setFocusedMember = async (memberRouteKey: string) => {
   const teamRunId = activeTeamContext.value?.teamRunId;
   if (!teamRunId) {
@@ -309,14 +271,4 @@ onMounted(async () => {
   }
 });
 
-watch(
-  () => [activeTeamContext.value?.teamRunId, currentMode.value] as const,
-  ([teamRunId, mode]) => {
-    if (!teamRunId || mode === 'focus') {
-      return;
-    }
-    void teamContextsStore.ensureHistoricalMembersHydratedForView?.(teamRunId, mode);
-  },
-  { immediate: true },
-);
 </script>

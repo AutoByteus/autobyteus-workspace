@@ -1,0 +1,35 @@
+Electron local Linux build artifacts
+Generated: 2026-06-27T14:59:53+02:00
+Worktree: /home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification
+Branch: codex/focus-only-view-mode-simplification
+HEAD: efd5a10f1ea742e1e5255a21bfda814f7bdb9814
+Base: origin/personal@980e44d32015cf4e56c56e3a797f65da7734e9b0
+Command: AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:linux
+Log: /home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/delivery-logs/electron-linux-build-20260627T145515+0200.log
+
+Artifact: /home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.3.79.AppImage
+-rwxr-xr-x 1 ryan-ai ryan-ai 351M Jun 27 14:59 autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.3.79.AppImage
+autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.3.79.AppImage: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.18, stripped
+b1fc42a0840a013ce84c56b3d08b342332196ff379734beadd52b83536e224ba  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.3.79.AppImage
+
+Electron dist listing:
+autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.3.79.AppImage	358976 KB
+autobyteus-web/electron-dist/builder-debug.yml	4 KB
+autobyteus-web/electron-dist/latest-linux.yml	4 KB
+autobyteus-web/electron-dist/linux-unpacked/LICENSE.electron.txt	4 KB
+autobyteus-web/electron-dist/linux-unpacked/LICENSES.chromium.html	19540 KB
+autobyteus-web/electron-dist/linux-unpacked/autobyteus	212368 KB
+autobyteus-web/electron-dist/linux-unpacked/chrome-sandbox	16 KB
+autobyteus-web/electron-dist/linux-unpacked/chrome_100_percent.pak	120 KB
+autobyteus-web/electron-dist/linux-unpacked/chrome_200_percent.pak	196 KB
+autobyteus-web/electron-dist/linux-unpacked/chrome_crashpad_handler	1860 KB
+autobyteus-web/electron-dist/linux-unpacked/icudtl.dat	10624 KB
+autobyteus-web/electron-dist/linux-unpacked/libEGL.so	252 KB
+autobyteus-web/electron-dist/linux-unpacked/libGLESv2.so	6276 KB
+autobyteus-web/electron-dist/linux-unpacked/libffmpeg.so	2652 KB
+autobyteus-web/electron-dist/linux-unpacked/libvk_swiftshader.so	4532 KB
+autobyteus-web/electron-dist/linux-unpacked/libvulkan.so.1	2396 KB
+autobyteus-web/electron-dist/linux-unpacked/resources.pak	6896 KB
+autobyteus-web/electron-dist/linux-unpacked/snapshot_blob.bin	340 KB
+autobyteus-web/electron-dist/linux-unpacked/v8_context_snapshot.bin	708 KB
+autobyteus-web/electron-dist/linux-unpacked/vk_swiftshader_icd.json	4 KB

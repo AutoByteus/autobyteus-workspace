@@ -3,20 +3,14 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
-import { useTeamWorkspaceViewStore } from '~/stores/teamWorkspaceViewStore'
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers'
 
-const {
-  ensureHistoricalTeamMemberHydratedMock,
-  ensureHistoricalTeamMembersHydratedMock,
-} = vi.hoisted(() => ({
+const { ensureHistoricalTeamMemberHydratedMock } = vi.hoisted(() => ({
   ensureHistoricalTeamMemberHydratedMock: vi.fn().mockResolvedValue(undefined),
-  ensureHistoricalTeamMembersHydratedMock: vi.fn().mockResolvedValue(undefined),
 }))
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   ensureHistoricalTeamMemberHydrated: ensureHistoricalTeamMemberHydratedMock,
-  ensureHistoricalTeamMembersHydrated: ensureHistoricalTeamMembersHydratedMock,
 }))
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
@@ -307,33 +301,4 @@ describe('agentTeamContextsStore', () => {
     })
   })
 
-  describe('ensureHistoricalMembersHydratedForView', () => {
-    it('hydrates all missing members when a historical team enters a broader mode', async () => {
-      const store = useAgentTeamContextsStore()
-      const workspaceViewStore = useTeamWorkspaceViewStore()
-
-      store.addTeamContext(buildTeamContext({
-        teamRunId: 'team-history-2',
-        memberRouteKeys: ['member-a', 'member-b'],
-        focusedMemberRouteKey: 'member-a',
-        historicalHydration: {
-          createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-          memberMetadataByRouteKey: {} as any,
-          memberProjectionLoadStateByRouteKey: {
-            'member-a': 'loaded',
-            'member-b': 'unloaded',
-          },
-        },
-      }) as any)
-
-      workspaceViewStore.setMode('team-history-2', 'grid')
-      await store.ensureHistoricalMembersHydratedForView('team-history-2', 'grid')
-
-      expect(ensureHistoricalTeamMembersHydratedMock).toHaveBeenCalledWith({
-        teamContext: expect.objectContaining({ teamRunId: 'team-history-2' }),
-        memberRouteKeys: ['member-a', 'member-b'],
-      })
-    })
-  })
 })

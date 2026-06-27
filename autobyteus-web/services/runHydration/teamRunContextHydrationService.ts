@@ -525,19 +525,3 @@ export const ensureHistoricalTeamMemberHydrated = async (params: {
     historicalMemberHydrationRequests.delete(requestKey);
   }
 };
-
-export const ensureHistoricalTeamMembersHydrated = async (params: {
-  teamContext: AgentTeamContext;
-  memberRouteKeys: string[];
-}): Promise<void> => {
-  if (!params.teamContext.historicalHydration) {
-    return;
-  }
-
-  for (const memberRouteKey of params.memberRouteKeys) {
-    await ensureHistoricalTeamMemberHydrated({
-      teamContext: params.teamContext,
-      memberRouteKey,
-    });
-  }
-};

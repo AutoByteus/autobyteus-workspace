@@ -229,7 +229,6 @@ const {
           teamContext.focusedMemberRouteKey = memberName;
         }
       }),
-      ensureHistoricalMembersHydratedForView: vi.fn().mockResolvedValue(undefined),
     },
     selectionStoreMock: selection,
     agentRunConfigStoreMock: {

@@ -145,9 +145,9 @@ runtime task projection can receive ordinary chat through a typed
 `ConversationTargetAddress`; stop/interrupt dispatch resolves the
 active-execution command member at click time. That interrupt command member can
 intentionally differ from roster/history visual focus: for example, an
-all-offline historical team row can show `api_e2e_engineer` in
-Focus/Grid/Spotlight while interrupt safety remains on the active-execution
-command target. The frontend sends team
+all-offline historical team row can show `api_e2e_engineer` in the focus pane
+while interrupt safety remains on the active-execution command target. The
+frontend sends team
 `INTERRUPT_GENERATION` with
 `target_member_route_key` set to the active-execution command member route key
 and `target_member_run_id` set only as an optional member run-id guard. If there
@@ -185,11 +185,10 @@ drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
 `TeamActiveTaskExecutionsBar` renders task-agent and task-team nodes in an
-active task executions strip as concrete task children, and shows pending
-approvals on the appropriate task execution card when the runtime is waiting for
-tool approval. `TeamMemberMonitorTile` renders task-team roots with a task-team
-badge, lifecycle/timeline status, and scoped child rows instead of falling back
-to the structural conversation feed. Running and awaiting-acceptance task
+active task executions strip as concrete task children, shows pending approvals
+on task-agent cards when the runtime is waiting for tool approval, and uses
+task-team badges plus lifecycle/timeline status for task-team roots instead of
+falling back to the structural conversation feed. Running and awaiting-acceptance task
 executions must remain visible after active team reopen/hydration, even when
 server resume metadata only lists stable logical coordinator/member rows.
 Run-open hydration therefore restores concrete task executions from live
