@@ -20,7 +20,6 @@ const messages = {
   'skills.components.skills.SkillsList.clear_search': '清除搜索',
   'skills.components.skills.SkillsList.create_skill': '创造技能',
   'skills.components.skills.SkillsList.loading_skills': '技能加载中...',
-  'skills.components.skills.SkillsList.manage_and_create_file_based_capabilities': '为您的代理管理和创建基于文件的功能。',
   'skills.components.skills.SkillsList.manage_skill_sources': '管理技能来源',
   'skills.components.skills.SkillsList.no_skills_found': '没有找到技能',
   'skills.components.skills.SkillsList.search_skills': '搜索技巧...',

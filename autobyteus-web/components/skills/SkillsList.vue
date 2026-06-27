@@ -1,11 +1,7 @@
 <template>
   <div class="skills-page">
-    <div class="skills-header">
-      <div class="header-left">
-        <h2>{{ $t('skills.components.skills.SkillsList.title') }}</h2>
-        <p class="subtitle">{{ $t('skills.components.skills.SkillsList.manage_and_create_file_based_capabilities') }}</p>
-      </div>
-      <div class="header-actions">
+    <div class="skills-toolbar">
+      <div class="toolbar-actions">
         <div class="search-box">
           <Icon icon="heroicons:magnifying-glass" class="search-icon" />
           <input 
@@ -269,31 +265,12 @@ async function handleToggleDisable(skill: Skill) {
   flex-direction: column;
 }
 
-/* Header Styles */
-.skills-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2.5rem;
-  gap: 2rem;
-  flex-wrap: wrap;
+/* Toolbar Styles */
+.skills-toolbar {
+  margin-bottom: 1.5rem;
 }
 
-.header-left h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.025em;
-}
-
-.subtitle {
-  color: #6b7280;
-  font-size: 1rem;
-  margin: 0;
-}
-
-.header-actions {
+.toolbar-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -464,7 +441,7 @@ button {
 }
 
 .success-alert,
-.error-alert { padding: 0.75rem; border-radius: 6px; margin: -1rem 0 1.5rem; font-size: 0.875rem; }
+.error-alert { padding: 0.75rem; border-radius: 6px; margin: 0 0 1.5rem; font-size: 0.875rem; }
 .success-alert { background: #d1fae5; color: #065f46; }
 .error-alert { background: #fee2e2; color: #b91c1c; }
 .spinning { animation: spin 1s linear infinite; }
