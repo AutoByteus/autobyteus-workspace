@@ -66,7 +66,9 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.teamTotalLoading': 'Loading team total…',
   'shell.tokenUsage.teamTotalUnavailable': 'Team total is temporarily unavailable.',
   'shell.tokenUsage.inputCost': 'Input cost',
+  'shell.tokenUsage.inputCostShort': 'In',
   'shell.tokenUsage.outputCost': 'Output cost',
+  'shell.tokenUsage.outputCostShort': 'Out',
   'shell.tokenUsage.empty': 'No token usage has been reported for the active run yet.',
 };
 
@@ -261,6 +263,20 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Lead');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Reviewer');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
+    const teamSummary = wrapper.get('[data-test="team-token-usage-summary"]');
+    const tableScroll = teamSummary.get('[data-test="team-token-table-scroll"]');
+    const teamTable = teamSummary.get('[data-test="team-token-table"]');
+    expect(tableScroll.attributes('tabindex')).toBe('0');
+    expect(teamTable.findAll('thead th').map((heading) => heading.text())).toEqual([
+      'Member',
+      'Gross input',
+      'Output',
+      'Total tokens',
+      'Cost',
+    ]);
+    const initialTableRows = teamTable.find('tbody').findAll('tr');
+    expect(initialTableRows[initialTableRows.length - 1].attributes('data-test')).toBe('team-token-total-row');
+    expect(initialTableRows[initialTableRows.length - 1].text()).toContain('Team total');
     expect(wrapper.text()).not.toContain('Focused member');
     expect(wrapper.text()).not.toContain('Member tokens');
     expect(wrapper.text()).not.toContain('Member cost');
@@ -272,11 +288,15 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
     const rows = wrapper.findAll('[data-test="team-token-row"]');
     const reviewerRow = rows.find((row) => row.attributes('data-member-route-key') === 'reviewer');
+    expect(reviewerRow).toBeTruthy();
+    const reviewerCells = reviewerRow!.findAll('th, td');
     expect(reviewerRow?.attributes('data-focused')).toBe('true');
-    expect(reviewerRow?.text()).toContain('Gross input');
-    expect(reviewerRow?.text()).toContain('Output');
-    expect(reviewerRow?.text()).toContain('Total tokens');
-    expect(reviewerRow?.text()).toContain('Cost');
+    expect(reviewerCells).toHaveLength(5);
+    expect(reviewerCells[0].text()).toContain('Reviewer');
+    expect(reviewerCells[4].text()).toContain('$0.0222');
+    expect(reviewerRow?.text()).not.toContain('Gross input');
+    expect(reviewerRow?.text()).not.toContain('Total tokens');
+    expect(reviewerRow?.text()).not.toContain('Cost');
     expect(reviewerRow?.text()).toContain('Estimated');
   });
 
