@@ -1,6 +1,12 @@
+## What's New
+- Added a row-level **Remove from Workspaces** action so users can hide an unneeded filesystem workspace from the Workspaces sidebar without deleting files.
+- Added backend `removeWorkspace` and `workspaceRunHistory(workspaceId)` GraphQL semantics for registry-backed workspace removal and scoped history loading.
+
 ## Improvements
-- Simplified the team workspace to a single focused-member view by removing the unused Focus/Grid/Spotlight mode picker and alternate Grid/Spotlight layouts.
-- Kept focused subteam and task-team chat behavior on the normal shared composer using typed conversation-target addresses.
+- Workspaces sidebar rows now come from the registered workspace list instead of being recreated from every historical run root.
+- Workspace history now loads under a workspace when that row is expanded, keeping global/recent history separate from desktop workspace visibility.
+- Removing a workspace clears stale sidebar, selection, expansion, and file-explorer state while preserving files, memories, artifacts, and run/team history for later re-add.
 
 ## Fixes
-- Removed obsolete team workspace mode state, broad-mode hydration paths, stale mode-specific tests, and localization/docs references for the removed layouts.
+- Prevented removed or unregistered historical workspace roots from reappearing as top-level desktop Workspaces rows after refresh or restart.
+- Blocked workspace removal while active standalone or team runs still use that workspace, leaving the row visible with an actionable error.
