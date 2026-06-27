@@ -54,10 +54,11 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.unavailable': 'Token usage is temporarily unavailable for the focused run.',
   'shell.tokenUsage.focusUnavailable': 'Select a leaf team member to view focused token usage.',
   'shell.tokenUsage.teamHeading': 'Team',
-  'shell.tokenUsage.teamSubtitle': 'Per-member token and cost comparison. Focus a row for full detail above.',
+  'shell.tokenUsage.teamSubtitle': 'Per-member tokens with estimated API costs. Total cost is input cost plus output cost. Focus a row for full detail above.',
   'shell.tokenUsage.teamMember': 'Member',
   'shell.tokenUsage.focusedBadge': 'Focused',
   'shell.tokenUsage.totalTokens': 'Total tokens',
+  'shell.tokenUsage.totalMetric': 'Total',
   'shell.tokenUsage.teamTotal': 'Team total',
   'shell.tokenUsage.teamLoading': 'Loading token usage…',
   'shell.tokenUsage.teamUnavailable': 'Token usage unavailable.',
@@ -66,7 +67,9 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.teamTotalLoading': 'Loading team total…',
   'shell.tokenUsage.teamTotalUnavailable': 'Team total is temporarily unavailable.',
   'shell.tokenUsage.inputCost': 'Input cost',
+  'shell.tokenUsage.inputCostShort': 'In',
   'shell.tokenUsage.outputCost': 'Output cost',
+  'shell.tokenUsage.outputCostShort': 'Out',
   'shell.tokenUsage.empty': 'No token usage has been reported for the active run yet.',
 };
 
@@ -249,9 +252,39 @@ describe('TokenUsageMeterPanel', () => {
       currentStatus: AgentTeamStatus.Running,
       isSubscribed: false,
     } as any);
-    meterStore.upsertSummary(buildSummary({ runId: 'lead-run', rootTeamRunId: 'team-1', memberRouteKey: 'lead', grossInputTokens: 1111, outputTokens: 11, totalTokens: 1122, estimatedApiTotalCost: 0.0111 }));
-    meterStore.upsertSummary(buildSummary({ runId: 'reviewer-run', rootTeamRunId: 'team-1', memberRouteKey: 'reviewer', grossInputTokens: 2222, outputTokens: 22, totalTokens: 2244, estimatedApiTotalCost: 0.0222 }));
-    meterStore.teamSummaries['team-1'] = buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', grossInputTokens: 9000, outputTokens: 900, totalTokens: 9900, estimatedApiTotalCost: 0.099 });
+    meterStore.upsertSummary(buildSummary({
+      runId: 'lead-run',
+      rootTeamRunId: 'team-1',
+      memberRouteKey: 'lead',
+      grossInputTokens: 1111,
+      outputTokens: 11,
+      totalTokens: 1122,
+      estimatedApiInputCost: 0.0100,
+      estimatedApiOutputCost: null,
+      estimatedApiTotalCost: 0.0100,
+      apiCostStatus: 'partial_price_missing',
+    }));
+    meterStore.upsertSummary(buildSummary({
+      runId: 'reviewer-run',
+      rootTeamRunId: 'team-1',
+      memberRouteKey: 'reviewer',
+      grossInputTokens: 2222,
+      outputTokens: 22,
+      totalTokens: 2244,
+      estimatedApiInputCost: 0.0200,
+      estimatedApiOutputCost: 0.0022,
+      estimatedApiTotalCost: 0.0222,
+    }));
+    meterStore.teamSummaries['team-1'] = buildSummary({
+      runId: 'team-1',
+      rootTeamRunId: 'team-1',
+      grossInputTokens: 9000,
+      outputTokens: 900,
+      totalTokens: 9900,
+      estimatedApiInputCost: 0.0800,
+      estimatedApiOutputCost: 0.0190,
+      estimatedApiTotalCost: 0.099,
+    });
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();
@@ -261,6 +294,35 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Lead');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Reviewer');
     expect(wrapper.get('[data-test="team-token-usage-summary"]').text()).toContain('Team total');
+    const teamSummary = wrapper.get('[data-test="team-token-usage-summary"]');
+    expect(teamSummary.text()).toContain('Per-member tokens with estimated API costs.');
+    expect(teamSummary.text()).toContain('Total cost is input cost plus output cost.');
+    const tableScroll = teamSummary.get('[data-test="team-token-table-scroll"]');
+    const teamTable = teamSummary.get('[data-test="team-token-table"]');
+    expect(tableScroll.attributes('tabindex')).toBe('0');
+    expect(teamTable.findAll('thead th').map((heading) => heading.text())).toEqual([
+      'Member',
+      'Gross input',
+      'Output',
+      'Total',
+    ]);
+    expect(teamTable.findAll('thead th').some((heading) => heading.text() === 'Cost')).toBe(false);
+    const initialTableRows = teamTable.find('tbody').findAll('tr');
+    expect(initialTableRows[initialTableRows.length - 1].attributes('data-test')).toBe('team-token-total-row');
+    expect(initialTableRows[initialTableRows.length - 1].text()).toContain('Team total');
+    const totalCells = initialTableRows[initialTableRows.length - 1].findAll('th, td');
+    expect(totalCells).toHaveLength(4);
+    expect(totalCells[1].text()).toContain('9,000');
+    expect(totalCells[1].text()).toContain('$0.0800');
+    expect(totalCells[2].text()).toContain('900');
+    expect(totalCells[2].text()).toContain('$0.0190');
+    expect(totalCells[3].text()).toContain('9,900');
+    expect(totalCells[3].text()).toContain('$0.0990');
+    expect(totalCells[3].text()).not.toContain('Estimated');
+    const leadRow = teamTable.findAll('[data-test="team-token-row"]').find((row) => row.attributes('data-member-route-key') === 'lead');
+    expect(leadRow).toBeTruthy();
+    expect(leadRow!.text()).toContain('Partial estimate');
+    expect(leadRow!.text()).toContain('price missing');
     expect(wrapper.text()).not.toContain('Focused member');
     expect(wrapper.text()).not.toContain('Member tokens');
     expect(wrapper.text()).not.toContain('Member cost');
@@ -272,12 +334,23 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.get('[data-test="gross-input-card"]').text()).not.toContain('9,000');
     const rows = wrapper.findAll('[data-test="team-token-row"]');
     const reviewerRow = rows.find((row) => row.attributes('data-member-route-key') === 'reviewer');
+    expect(reviewerRow).toBeTruthy();
+    const reviewerCells = reviewerRow!.findAll('th, td');
     expect(reviewerRow?.attributes('data-focused')).toBe('true');
-    expect(reviewerRow?.text()).toContain('Gross input');
-    expect(reviewerRow?.text()).toContain('Output');
-    expect(reviewerRow?.text()).toContain('Total tokens');
-    expect(reviewerRow?.text()).toContain('Cost');
-    expect(reviewerRow?.text()).toContain('Estimated');
+    expect(reviewerCells).toHaveLength(4);
+    expect(reviewerCells[0].text()).toContain('Reviewer');
+    expect(reviewerCells[1].text()).toContain('2,222');
+    expect(reviewerCells[1].text()).toContain('$0.0200');
+    expect(reviewerCells[2].text()).toContain('22');
+    expect(reviewerCells[2].text()).toContain('$0.0022');
+    expect(reviewerCells[3].text()).toContain('2,244');
+    expect(reviewerCells[3].text()).toContain('$0.0222');
+    expect(reviewerCells[3].text()).not.toContain('Estimated');
+    expect(reviewerCells[3].get('.team-token-metric-cost-line').attributes('title')).toBe('$0.0222');
+    expect(reviewerRow?.text()).not.toContain('Gross input');
+    expect(reviewerRow?.text()).not.toContain('Total tokens');
+    expect(reviewerRow?.text()).not.toContain('Cost');
+    expect(reviewerRow?.text()).not.toContain('Estimated');
   });
 
   it('shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run', () => {

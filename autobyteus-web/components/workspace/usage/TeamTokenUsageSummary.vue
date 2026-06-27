@@ -7,119 +7,126 @@
       </div>
     </div>
 
-    <div class="team-token-list">
-      <div class="team-token-header">
-        <span>{{ $t('shell.tokenUsage.teamMember') }}</span>
-        <span>{{ $t('shell.tokenUsage.grossInput') }}</span>
-        <span>{{ $t('shell.tokenUsage.output') }}</span>
-        <span>{{ $t('shell.tokenUsage.totalTokens') }}</span>
-        <span>{{ $t('shell.tokenUsage.costLabel') }}</span>
-      </div>
+    <div
+      class="team-token-table-scroll"
+      data-test="team-token-table-scroll"
+      tabindex="0"
+      :aria-label="$t('shell.tokenUsage.teamHeading')"
+    >
+      <table class="team-token-table" data-test="team-token-table">
+        <colgroup>
+          <col class="team-token-column-member">
+          <col class="team-token-column-gross-input">
+          <col class="team-token-column-output">
+          <col class="team-token-column-total">
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">{{ $t('shell.tokenUsage.teamMember') }}</th>
+            <th scope="col">{{ $t('shell.tokenUsage.grossInput') }}</th>
+            <th scope="col">{{ $t('shell.tokenUsage.output') }}</th>
+            <th scope="col">{{ $t('shell.tokenUsage.totalMetric') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="rows.length === 0" class="team-token-state-row">
+            <td class="team-token-state-cell" colspan="4">
+              {{ $t('shell.tokenUsage.teamNoMembers') }}
+            </td>
+          </tr>
 
-      <div v-if="rows.length === 0" class="px-3 py-3 text-sm text-slate-500">
-        {{ $t('shell.tokenUsage.teamNoMembers') }}
-      </div>
-
-      <article
-        v-for="row in rows"
-        :key="row.memberRouteKey"
-        class="team-token-row"
-        :class="{ 'team-token-row-focused': row.isFocused }"
-        data-test="team-token-row"
-        :data-focused="row.isFocused ? 'true' : 'false'"
-        :data-member-route-key="row.memberRouteKey"
-      >
-        <div class="team-token-member-cell">
-          <div class="team-token-member-primary">
-            <p class="min-w-0 truncate font-semibold text-slate-900" :title="row.displayName">
-              {{ row.displayName }}
-            </p>
-            <span v-if="row.isFocused" class="team-token-focused-badge">
-              {{ $t('shell.tokenUsage.focusedBadge') }}
-            </span>
-          </div>
-          <p v-if="row.memberRouteKey !== row.displayName" class="team-token-route" :title="row.memberRouteKey">{{ row.memberRouteKey }}</p>
-        </div>
-
-        <template v-if="row.summary">
-          <div class="team-token-metric">
-            <p class="team-token-metric-label">{{ $t('shell.tokenUsage.grossInput') }}</p>
-            <p class="team-token-metric-value" :title="formatTokenDetail(row.summary.grossInputTokens)">{{ formatCompactInteger(row.summary.grossInputTokens) }}</p>
-          </div>
-          <div class="team-token-metric">
-            <p class="team-token-metric-label">{{ $t('shell.tokenUsage.output') }}</p>
-            <p class="team-token-metric-value" :title="formatTokenDetail(row.summary.outputTokens)">{{ formatCompactInteger(row.summary.outputTokens) }}</p>
-          </div>
-          <div class="team-token-metric">
-            <p class="team-token-metric-label">{{ $t('shell.tokenUsage.totalTokens') }}</p>
-            <p class="team-token-metric-value font-semibold text-slate-950" :title="formatTokenDetail(row.summary.totalTokens)">{{ formatCompactInteger(row.summary.totalTokens) }}</p>
-          </div>
-          <div class="team-token-metric team-token-cost-cell">
-            <p class="team-token-metric-label">{{ $t('shell.tokenUsage.costLabel') }}</p>
-            <p class="team-token-cost-value" :title="`${formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus)} · ${formatStatus(row.summary.apiCostStatus)}`">
-              <span class="team-token-cost-main">
-                <span>{{ formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus) }}</span>
-                <span :class="compactStatusClass(row.summary.apiCostStatus)">{{ formatStatus(row.summary.apiCostStatus) }}</span>
+          <tr
+            v-for="row in rows"
+            :key="row.memberRouteKey"
+            class="team-token-row"
+            :class="{ 'team-token-row-focused': row.isFocused }"
+            data-test="team-token-row"
+            :data-focused="row.isFocused ? 'true' : 'false'"
+            :data-member-route-key="row.memberRouteKey"
+          >
+            <th scope="row" class="team-token-member-cell">
+              <span class="team-token-member-primary">
+                <span class="team-token-member-name" :title="row.displayName">
+                  {{ row.displayName }}
+                </span>
+                <span v-if="row.isFocused" class="team-token-focused-badge">
+                  {{ $t('shell.tokenUsage.focusedBadge') }}
+                </span>
               </span>
-              <span class="team-token-cost-split">
-                {{ $t('shell.tokenUsage.inputCostShort') }} {{ formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus) }}
-                <span class="text-slate-300">·</span>
-                {{ $t('shell.tokenUsage.outputCostShort') }} {{ formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus) }}
-              </span>
-            </p>
-          </div>
-        </template>
+              <span v-if="row.memberRouteKey !== row.displayName" class="team-token-route" :title="row.memberRouteKey">{{ row.memberRouteKey }}</span>
+            </th>
 
-        <template v-else>
-          <div class="team-token-empty-cell">
-            <p class="text-sm text-slate-500">
+            <template v-if="row.summary">
+              <td class="team-token-metric-cell">
+                <span class="team-token-metric-primary" :title="formatTokenDetail(row.summary.grossInputTokens)">{{ formatCompactInteger(row.summary.grossInputTokens) }}</span>
+                <span class="team-token-metric-cost" :title="formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus)">
+                  {{ formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus) }}
+                </span>
+              </td>
+              <td class="team-token-metric-cell">
+                <span class="team-token-metric-primary" :title="formatTokenDetail(row.summary.outputTokens)">{{ formatCompactInteger(row.summary.outputTokens) }}</span>
+                <span class="team-token-metric-cost" :title="formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus)">
+                  {{ formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus) }}
+                </span>
+              </td>
+              <td class="team-token-metric-cell team-token-total-metric-cell">
+                <span class="team-token-metric-primary team-token-total-value" :title="formatTokenDetail(row.summary.totalTokens)">{{ formatCompactInteger(row.summary.totalTokens) }}</span>
+                <span class="team-token-metric-cost-line" :title="formatTotalCostTitle(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus)">
+                  <span class="team-token-metric-cost">
+                    {{ formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus) }}
+                  </span>
+                  <span v-if="shouldShowMetricStatus(row.summary.apiCostStatus)" class="team-token-metric-status">
+                    <span :class="compactStatusClass(row.summary.apiCostStatus)">{{ formatStatus(row.summary.apiCostStatus) }}</span>
+                  </span>
+                </span>
+              </td>
+            </template>
+
+            <td v-else class="team-token-empty-cell" colspan="3">
               <span v-if="row.loading">{{ $t('shell.tokenUsage.teamLoading') }}</span>
               <span v-else-if="row.error">{{ $t('shell.tokenUsage.teamUnavailable') }}</span>
               <span v-else>{{ $t('shell.tokenUsage.teamNoUsage') }}</span>
-            </p>
-          </div>
-        </template>
-      </article>
+            </td>
+          </tr>
 
-      <article
-        v-if="teamTotalSummary"
-        class="team-token-row team-token-total-row"
-        data-test="team-token-total-row"
-      >
-        <div class="team-token-member-cell">
-          <div class="team-token-member-primary">
-            <p class="min-w-0 truncate font-semibold text-slate-900">
-              {{ $t('shell.tokenUsage.teamTotal') }}
-            </p>
-          </div>
-        </div>
-        <div class="team-token-metric">
-          <p class="team-token-metric-label">{{ $t('shell.tokenUsage.grossInput') }}</p>
-          <p class="team-token-metric-value" :title="formatTokenDetail(teamTotalSummary.grossInputTokens)">{{ formatCompactInteger(teamTotalSummary.grossInputTokens) }}</p>
-        </div>
-        <div class="team-token-metric">
-          <p class="team-token-metric-label">{{ $t('shell.tokenUsage.output') }}</p>
-          <p class="team-token-metric-value" :title="formatTokenDetail(teamTotalSummary.outputTokens)">{{ formatCompactInteger(teamTotalSummary.outputTokens) }}</p>
-        </div>
-        <div class="team-token-metric">
-          <p class="team-token-metric-label">{{ $t('shell.tokenUsage.totalTokens') }}</p>
-          <p class="team-token-metric-value font-semibold text-slate-950" :title="formatTokenDetail(teamTotalSummary.totalTokens)">{{ formatCompactInteger(teamTotalSummary.totalTokens) }}</p>
-        </div>
-        <div class="team-token-metric team-token-cost-cell">
-          <p class="team-token-metric-label">{{ $t('shell.tokenUsage.costLabel') }}</p>
-          <p class="team-token-cost-value" :title="`${formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)} · ${formatStatus(teamTotalSummary.apiCostStatus)}`">
-            <span class="team-token-cost-main">
-              <span>{{ formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}</span>
-              <span :class="compactStatusClass(teamTotalSummary.apiCostStatus)">{{ formatStatus(teamTotalSummary.apiCostStatus) }}</span>
-            </span>
-            <span class="team-token-cost-split">
-              {{ $t('shell.tokenUsage.inputCostShort') }} {{ formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
-              <span class="text-slate-300">·</span>
-              {{ $t('shell.tokenUsage.outputCostShort') }} {{ formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
-            </span>
-          </p>
-        </div>
-      </article>
+          <tr
+            v-if="teamTotalSummary"
+            class="team-token-total-row"
+            data-test="team-token-total-row"
+          >
+            <th scope="row" class="team-token-member-cell">
+              <span class="team-token-member-primary">
+                <span class="team-token-member-name">
+                  {{ $t('shell.tokenUsage.teamTotal') }}
+                </span>
+              </span>
+            </th>
+            <td class="team-token-metric-cell">
+              <span class="team-token-metric-primary" :title="formatTokenDetail(teamTotalSummary.grossInputTokens)">{{ formatCompactInteger(teamTotalSummary.grossInputTokens) }}</span>
+              <span class="team-token-metric-cost" :title="formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                {{ formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+              </span>
+            </td>
+            <td class="team-token-metric-cell">
+              <span class="team-token-metric-primary" :title="formatTokenDetail(teamTotalSummary.outputTokens)">{{ formatCompactInteger(teamTotalSummary.outputTokens) }}</span>
+              <span class="team-token-metric-cost" :title="formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                {{ formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+              </span>
+            </td>
+            <td class="team-token-metric-cell team-token-total-metric-cell">
+              <span class="team-token-metric-primary team-token-total-value" :title="formatTokenDetail(teamTotalSummary.totalTokens)">{{ formatCompactInteger(teamTotalSummary.totalTokens) }}</span>
+              <span class="team-token-metric-cost-line" :title="formatTotalCostTitle(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                <span class="team-token-metric-cost">
+                  {{ formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+                </span>
+                <span v-if="shouldShowMetricStatus(teamTotalSummary.apiCostStatus)" class="team-token-metric-status">
+                  <span :class="compactStatusClass(teamTotalSummary.apiCostStatus)">{{ formatStatus(teamTotalSummary.apiCostStatus) }}</span>
+                </span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <p v-if="teamTotalLoading && !teamTotalSummary" class="mt-3 text-xs text-slate-500">
@@ -152,76 +159,112 @@ const {
 } = createTokenUsageFormatter(t);
 
 const compactStatusClass = (status: string): string => {
-  const base = 'inline-flex max-w-full text-[10px] font-semibold leading-tight';
+  const base = 'inline-flex max-w-full rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-tight';
   if (status === 'estimated') return `${base} text-emerald-700`;
   if (status === 'local_no_api_bill') return `${base} text-sky-700`;
   if (status === 'mixed') return `${base} text-slate-600`;
   return `${base} text-amber-700`;
 };
+
+const shouldShowMetricStatus = (status: string): boolean => status !== 'estimated';
+
+const formatTotalCostTitle = (
+  value: number | null,
+  currency: string | null,
+  status: string,
+): string => {
+  const cost = formatCost(value, currency, status);
+  return shouldShowMetricStatus(status) ? `${cost} · ${formatStatus(status)}` : cost;
+};
 </script>
 
 <style scoped>
-.team-token-usage-summary {
-  container-type: inline-size;
-}
-
-.team-token-list {
+.team-token-table-scroll {
   margin-top: 0.75rem;
-  --team-token-wide-columns: minmax(10rem, 1.35fr) minmax(6rem, 0.75fr) minmax(4.5rem, 0.55fr) minmax(6.5rem, 0.8fr) minmax(12.5rem, 1.15fr);
+  overflow-x: auto;
   border: 1px solid rgb(226 232 240);
   border-radius: 0.75rem;
+  background: white;
+  -webkit-overflow-scrolling: touch;
 }
 
-.team-token-header {
-  display: none;
+.team-token-table-scroll:focus-visible {
+  outline: 2px solid rgb(59 130 246 / 0.7);
+  outline-offset: 2px;
 }
 
-.team-token-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.25rem 0.65rem;
-  padding: 0.45rem 0.65rem;
-  border-top: 1px solid rgb(241 245 249);
+.team-token-table {
+  min-width: 42rem;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
   background: white;
 }
 
-.team-token-header + .team-token-row {
+.team-token-column-member {
+  width: 28%;
+}
+
+.team-token-column-gross-input {
+  width: 23%;
+}
+
+.team-token-column-output {
+  width: 20%;
+}
+
+.team-token-column-total {
+  width: 29%;
+}
+
+.team-token-table th,
+.team-token-table td {
+  padding: 0.55rem 0.75rem;
+  border-top: 1px solid rgb(241 245 249);
+  vertical-align: middle;
+}
+
+.team-token-table thead th {
   border-top: 0;
+  background: rgb(248 250 252);
+  color: rgb(100 116 139);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1rem;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.team-token-row:first-of-type {
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
+.team-token-table thead th:not(:first-child),
+.team-token-metric-cell {
+  text-align: right;
 }
 
-.team-token-row:last-child {
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-}
-
-.team-token-row-focused {
+.team-token-row-focused > th,
+.team-token-row-focused > td {
   background: rgb(239 246 255 / 0.65);
+}
+
+.team-token-row-focused > th:first-child {
   box-shadow: inset 3px 0 0 rgb(59 130 246 / 0.65);
 }
 
-.team-token-total-row {
-  background: rgb(248 250 252);
+.team-token-total-row > th,
+.team-token-total-row > td {
   border-top-color: rgb(226 232 240);
-}
-
-.team-token-member-cell,
-.team-token-empty-cell {
-  grid-column: 1 / -1;
+  background: rgb(248 250 252);
 }
 
 .team-token-member-cell {
-  display: flex;
   min-width: 0;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.15rem 0.75rem;
+  color: rgb(15 23 42);
   font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  text-align: left;
 }
 
 .team-token-member-primary {
@@ -232,197 +275,92 @@ const compactStatusClass = (status: string): string => {
   gap: 0.35rem;
 }
 
-.team-token-member-primary > p {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+.team-token-member-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .team-token-focused-badge {
   border-radius: 9999px;
   background: rgb(219 234 254);
   padding: 0.0625rem 0.4rem;
+  color: rgb(37 99 235);
   font-size: 0.625rem;
   font-weight: 700;
   line-height: 1.2;
-  color: rgb(37 99 235);
 }
 
 .team-token-route {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgb(100 116 139);
-  font-size: 0.6875rem;
-}
-
-.team-token-metric {
   display: block;
   min-width: 0;
-}
-
-.team-token-cost-cell {
-  grid-column: 1 / -1;
-  display: flex;
-  min-width: 0;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.team-token-metric-label {
-  flex: 0 1 auto;
   overflow: hidden;
+  color: rgb(100 116 139);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: rgb(100 116 139);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.25rem;
-  text-transform: uppercase;
 }
 
-.team-token-metric-value,
-.team-token-cost-value {
-  margin-top: 0.0625rem;
-  min-width: 0;
+.team-token-metric-primary,
+.team-token-metric-cost,
+.team-token-metric-cost-line {
   color: rgb(15 23 42);
-  font-size: 0.875rem;
   line-height: 1.25rem;
   font-variant-numeric: tabular-nums;
 }
 
-.team-token-metric-value {
+.team-token-metric-primary {
+  display: block;
   overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.team-token-cost-value {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 0.45rem;
+.team-token-total-value {
   font-weight: 700;
+  color: rgb(2 6 23);
 }
 
-.team-token-cost-main {
-  display: flex;
-  max-width: 100%;
-  min-width: 0;
-  align-items: baseline;
-  gap: 0.25rem;
-}
-
-.team-token-cost-main > span:first-child {
-  min-width: 0;
+.team-token-metric-cost {
+  display: block;
+  margin-top: -0.0625rem;
+  overflow: hidden;
+  color: rgb(100 116 139);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1rem;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.team-token-cost-split {
-  display: inline;
+.team-token-metric-cost-line {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0 0.35rem;
+}
+
+.team-token-metric-cost-line .team-token-metric-cost {
+  min-width: 0;
   margin-top: 0;
+}
+
+.team-token-metric-status {
+  min-width: 0;
+}
+
+.team-token-empty-cell,
+.team-token-state-cell {
   color: rgb(100 116 139);
-  font-size: 0.625rem;
-  font-weight: 500;
-  line-height: 1rem;
-  white-space: normal;
-}
-
-.team-token-empty-cell {
-  padding-top: 0.25rem;
-  border-top: 1px solid rgb(241 245 249);
-}
-
-@container (min-width: 34rem) {
-  .team-token-metric:not(.team-token-cost-cell) {
-    display: flex;
-    align-items: baseline;
-    gap: 0.35rem;
-  }
-
-  .team-token-metric:not(.team-token-cost-cell) .team-token-metric-value {
-    margin-top: 0;
-    flex: 1;
-  }
-}
-
-@container (min-width: 46rem) {
-  .team-token-header {
-    display: grid;
-    grid-template-columns: var(--team-token-wide-columns);
-    gap: 0.75rem;
-    padding: 0.45rem 0.75rem;
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
-    background: rgb(248 250 252);
-    color: rgb(100 116 139);
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .team-token-header span:not(:first-child) {
-    text-align: right;
-  }
-
-  .team-token-row {
-    grid-template-columns: var(--team-token-wide-columns);
-    align-items: center;
-    gap: 0.75rem;
-    padding-block: 0.5rem;
-  }
-
-  .team-token-row:first-of-type {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-
-  .team-token-member-cell,
-  .team-token-empty-cell {
-    grid-column: auto;
-  }
-
-  .team-token-cost-cell {
-    grid-column: auto;
-    display: block;
-  }
-
-  .team-token-empty-cell {
-    grid-column: span 4;
-  }
-
-  .team-token-metric {
-    display: block;
-    text-align: right;
-  }
-
-  .team-token-metric-value,
-  .team-token-cost-value {
-    margin-top: 0.0625rem;
-  }
-
-  .team-token-metric-label {
-    display: none;
-  }
-
-  .team-token-cost-value {
-    display: block;
-    text-align: right;
-  }
-
-  .team-token-cost-main {
-    justify-content: flex-end;
-  }
-
-  .team-token-cost-split {
-    display: block;
-    margin-top: -0.0625rem;
-    text-align: right;
-    white-space: nowrap;
-  }
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: left;
 }
 </style>
