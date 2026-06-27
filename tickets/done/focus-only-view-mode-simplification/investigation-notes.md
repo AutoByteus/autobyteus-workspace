@@ -28,7 +28,7 @@ Reference image path: `/home/ryan-ai/.autobyteus/server-data/memory/agent_teams/
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification`
-- Task Artifact Folder: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification`
+- Task Artifact Folder: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification`
 - Current Branch: `codex/focus-only-view-mode-simplification`
 - Current Worktree / Working Directory: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification`
 - Bootstrap Base Branch: `origin/personal`

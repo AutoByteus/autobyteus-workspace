@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/requirements.md`
-- Investigation notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/investigation-notes.md`
-- Design spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/design-spec.md`
-- Design review report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/design-review-report.md`
+- Requirements doc: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/requirements.md`
+- Investigation notes: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/investigation-notes.md`
+- Design spec: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/design-spec.md`
+- Design review report: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/design-review-report.md`
 
 ## What Changed
 
@@ -125,7 +125,7 @@ Resolution notes:
 
 Additional rework artifact:
 
-- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/implementation-integration-rework.md`
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/implementation-integration-rework.md`
 
 Additional implementation-scoped checks after resolving integration conflicts:
 
