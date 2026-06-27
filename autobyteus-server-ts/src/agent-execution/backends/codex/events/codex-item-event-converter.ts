@@ -9,7 +9,7 @@ import {
 } from "./codex-item-compaction-event-converter.js";
 import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
-import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
+import { createTerminalToolExecutionEvent } from "./codex-terminal-tool-execution-event.js";
 
 export type CodexItemEventConverterContext = CodexItemCompactionEventConverterContext & {
   createEvent: (
@@ -57,53 +57,6 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
 
 export const isCodexItemEventName = (codexEventName: string): boolean =>
   codexEventName.startsWith("item/");
-
-const createTerminalToolExecutionEvent = (
-  context: CodexItemEventConverterContext,
-  codexEventName: string,
-  payload: JsonObject,
-  fallbackToolName?: "run_bash" | "edit_file",
-): AgentRunEvent => {
-  const invocationId = context.resolveInvocationId(payload);
-  const turnId = context.resolveTurnId(payload);
-  const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
-  const serializedPayload = serializeCodexItemEventPayload(payload);
-  const toolArguments = context.resolveDynamicToolArguments(serializedPayload as JsonObject);
-  const hasToolArguments = Object.keys(toolArguments).length > 0;
-  const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
-  if (status === "declined") {
-    const reason = context.resolveToolDecisionReason(serializedPayload as JsonObject) ??
-      "Tool execution denied.";
-    return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
-      ...serializedPayload,
-      ...(invocationId ? { invocation_id: invocationId } : {}),
-      ...(turnId ? { turn_id: turnId } : {}),
-      ...(toolName ? { tool_name: toolName } : {}),
-      ...(hasToolArguments ? { arguments: toolArguments } : {}),
-      reason,
-      error: context.resolveToolError(serializedPayload as JsonObject),
-    });
-  }
-  const failed = context.isExecutionFailure(payload);
-  const eventType = failed
-    ? AgentRunEventType.TOOL_EXECUTION_FAILED
-    : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED;
-  return context.createEvent(codexEventName, eventType, {
-    ...serializedPayload,
-    ...(invocationId ? { invocation_id: invocationId } : {}),
-    ...(turnId ? { turn_id: turnId } : {}),
-    ...(toolName ? { tool_name: toolName } : {}),
-    ...(hasToolArguments ? { arguments: toolArguments } : {}),
-    ...(failed
-      ? { error: context.resolveToolError(serializedPayload as JsonObject) }
-      : {
-          result: normalizeBrowserMcpToolResult(
-            toolName,
-            context.resolveToolResult(serializedPayload as JsonObject),
-          ),
-        }),
-  });
-};
 
 const createDynamicToolSegmentStartEvent = (
   context: CodexItemEventConverterContext,

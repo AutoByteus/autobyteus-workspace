@@ -235,10 +235,29 @@ before emitting application-facing events. Provider/server-qualified names such
 as `autobyteus_agent_tools` and
 `mcp__autobyteus_agent_tools__delegate_task` normalize to canonical tool names
 such as `delegate_task`; bearer tokens, session ids, `Authorization`, and
-`http_headers` are sanitized from events, run history, and memory traces. MCP
-text-content result/error shapes remain preserved while family-specific result
-payloads stay owned by the underlying browser, media, task-delegation,
-communication, published-artifact, or configured MCP proxy service.
+`http_headers` are sanitized from events, run history, and memory traces.
+
+Source-confirmed MCP terminal result lanes use the general MCP effective-result
+projector before Activity, run history, and memory traces consume the result.
+Codex proves source eligibility from MCP item families or raw
+`mcp__server__tool` wire names; Claude proves it from raw MCP wire names or
+explicit provider MCP markers. The projector is intentionally not a value-only
+global unwrapping rule: non-MCP/source-unknown results that merely look like an
+MCP envelope stay unchanged.
+
+For successful source-confirmed MCP envelopes, application-facing
+`TOOL_EXECUTION_SUCCEEDED.payload.result` is the effective result, not the raw
+protocol envelope. Projection prefers non-null `structuredContent`, parses a
+single JSON text block or returns single plain text, joins multiple text blocks
+with `\n\n`, projects mixed/rich content as sanitized `{ items: [...] }`, and
+projects empty content to `null`. Top-level MCP protocol fields such as
+`content`, `structuredContent`, `_meta`, and `isError` must not appear in normal
+successful Activity results. If a source-confirmed MCP envelope has
+`isError: true`, converters emit `TOOL_EXECUTION_FAILED` with a deterministic
+`error` and no successful `result`. Browser, media, task-delegation,
+communication, published-artifact, and configured MCP proxy services continue to
+own their family-specific execution semantics; the projector only translates
+MCP protocol result envelopes into application-facing result/error payloads.
 
 Family-specific execution ownership stays below the Agent Tools MCP adapter:
 
@@ -257,15 +276,21 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
   round-trips that context through `initialCustomData.teamContext`; the payload
   must preserve typed `agent` / `agent_team` member rows, team-definition ids,
   and ingress/coordinator identity so local AutoByteus `delegate_task` calls can
-  resolve the same team targets advertised in server prompts.
+  resolve the same team targets advertised in server prompts. When these tools
+  are reached through Agent Tools MCP, the MCP route still returns standard text
+  content, but source-confirmed Codex and Claude lifecycle conversion projects
+  successful task results back to the parsed task-domain object.
 - `publish_artifacts` calls the published-artifact publication service for the
   active owning run and continues to drive published-artifact projection/events.
 - Configured MCP-origin tools use their registered AutoByteus names, including
-  any configured prefix, and preserve raw MCP result fields (`content`,
-  `isError`, `structuredContent`, `_meta`) when the remote MCP call returns
-  them.
+  any configured prefix. Their raw MCP result fields (`content`, `isError`,
+  `structuredContent`, `_meta`) remain protocol-boundary data at the MCP route /
+  provider boundary; source-confirmed Codex and Claude lifecycle events project
+  those envelopes to effective results or failed tool events before user-facing
+  Activity/history/memory surfaces consume them.
 
-Non-AutoByteus MCP tools and unknown provider names stay unchanged; converters
-must not rewrite unrelated MCP traffic.
+Non-MCP tools and source-unknown provider result lanes stay unchanged;
+converters must not rewrite unrelated traffic just because a result value is
+envelope-shaped.
 
 The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

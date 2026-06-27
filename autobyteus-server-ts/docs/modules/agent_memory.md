@@ -71,11 +71,15 @@ use canonical tool names such as `send_message_to`, `generate_image`,
 `delegate_task`, and `publish_artifacts`, preserve the provider invocation id
 as the tool-call id, and store the normalized application-facing result payload
 without provider/server-qualified tool names, MCP session ids, or bearer/header
-descriptor details. For families with a canonical public result contract, the
-stored result follows that contract rather than the raw MCP content envelope;
-for example browser `open_tab` records the direct browser result with
-`tab_id`, and media generation records `{ file_path }`. Unknown non-AutoByteus
-MCP results may still retain their provider result shape.
+descriptor details. For source-confirmed MCP terminal results, the stored
+result/error follows the same application-facing effective-result projection
+used by live Activity: non-null `structuredContent`, parsed single JSON text,
+plain text, joined multi-text, sanitized rich `{ items: [...] }`, empty `null`,
+or failed tool error for MCP `isError: true`. Raw MCP protocol envelope fields
+such as `content`, `structuredContent`, `_meta`, and `isError` are not stored as
+normal successful tool results. Non-MCP or source-unknown envelope-shaped values
+remain unchanged because the projector is only invoked after converter-level MCP
+source evidence.
 
 ## Memory Explorer Read Model
 
