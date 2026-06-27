@@ -155,10 +155,16 @@ activation, result/review history, stream projection, and settlement safety.
 The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
-   server-owned `MemberTeamContext`; `TaskDelegationToolRunRouter` binds the
-   tool call either to the active parent `TeamRun` or, for task-team ingress
-   result submission, to the active task-team child run registered for that
-   parent.
+   server-owned `MemberTeamContext`; AutoByteus native tool execution receives
+   the same context serialized through `initialCustomData.teamContext` with
+   typed member rows (`memberKind: "agent"` or `"agent_team"`), team definition
+   ids, coordinator/ingress identity, and runtime run ids preserved. That
+   serialized shape is normalized back into the task-delegation context before
+   tool execution, so model-visible team targets such as `BuildSquad` remain
+   resolvable when an AutoByteus coordinator calls `delegate_task`.
+   `TaskDelegationToolRunRouter` binds the tool call either to the active parent
+   `TeamRun` or, for task-team ingress result submission, to the active
+   task-team child run registered for that parent.
 2. `TaskDelegationService` creates one `not_started` ledger record, validates
    the explicit target object against the delegation target roster, and treats
    the submitted task as independent ready-to-run work. Delegation targets are
@@ -307,7 +313,13 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   run-history, team stream, or memory consumers see it; raw MCP provider/server
   names and bearer/header config details must not leak into application-facing
   events or create extra Activity rows.
-- AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
+- AutoByteus members participating in mixed teams receive server-managed
+  `teamContext` through `initialCustomData`. This context preserves the current
+  member identity plus typed member/team delegation roster entries so local
+  AutoByteus task-delegation wrappers can resolve the same visible team targets
+  advertised in the prompt. The bound server-owned `send_message_to` tool still
+  carries delivery through `MemberTeamContext` and `TeamRun` /
+  `MixedTeamManager`.
 - Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_task`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
   runtime-level provider policy. Codex App Server and Claude Agent SDK receive
