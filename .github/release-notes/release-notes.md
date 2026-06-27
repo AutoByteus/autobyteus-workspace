@@ -1,12 +1,18 @@
-## What's New
-- Added a row-level **Remove from Workspaces** action so users can hide an unneeded filesystem workspace from the Workspaces sidebar without deleting files.
-- Added backend `removeWorkspace` and `workspaceRunHistory(workspaceId)` GraphQL semantics for registry-backed workspace removal and scoped history loading.
+# Release Notes — Transient task Active Tasks UI
 
 ## Improvements
-- Workspaces sidebar rows now come from the registered workspace list instead of being recreated from every historical run root.
-- Workspace history now loads under a workspace when that row is expanded, keeping global/recent history separate from desktop workspace visibility.
-- Removing a workspace clears stale sidebar, selection, expansion, and file-explorer state while preserving files, memories, artifacts, and run/team history for later re-add.
 
-## Fixes
-- Prevented removed or unregistered historical workspace roots from reappearing as top-level desktop Workspaces rows after refresh or restart.
-- Blocked workspace removal while active standalone or team runs still use that workspace, leaving the row visible with an actionable error.
+- Moved delegated task agents and task teams out of the left workspace tree and center event area into the right-side Team tab under a dedicated `Active Tasks` section.
+- Added expandable active task rows with task status, target, task ID, and explicit `Agent run ID` / `Agent team run ID` details so multiple delegated tasks to the same role or team are distinguishable.
+- Kept task-team members available as focus/chat targets under active task-team rows without adding a complex phase or timeline dashboard.
+- Preserved pending approval controls for task agents in the new Active Tasks surface.
+
+## Cleanup
+
+- Removed the old center `TeamActiveTaskExecutionsBar` path so the center workspace stays focused on the selected conversation, event stream, and composer.
+- Filtered transient task-agent/task-team projection rows out of stable left navigation while keeping the underlying projections for routing, focus, and cleanup.
+
+## Documentation and Validation
+
+- Updated frontend architecture docs to describe the Team tab Active Tasks ownership and removed-center-bar boundary.
+- Validated with targeted frontend/server checks, server build typecheck, localization guard, real browser validation against a nested classroom team fixture, and a local macOS Electron test build.
