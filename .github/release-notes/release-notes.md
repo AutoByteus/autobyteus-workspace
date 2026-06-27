@@ -1,7 +1,9 @@
 ## What's New
-- Added team-targeted task delegation so a parent team can delegate work to a child team and review the returned result.
-- Added task-team execution visibility in the team workspace, including active task cards, scoped child activity, review actions, and cleanup after acceptance.
+- Added typed conversation targeting for team chats so messages can be sent from the normal composer to runtime task agents, task-team roots, and nested task-team members.
 
 ## Improvements
-- Improved delegation routing so member targets and team targets are explicit and easier to understand.
-- Improved streaming identity for nested task-team runs so concurrent team work stays routed to the correct task view.
+- Improved AutoByteus task-delegation context preservation so delegated subteams can be created, projected in the workspace, and addressed in follow-up chat.
+- Updated team WebSocket targeting to use canonical `conversation_target_address` payloads while keeping existing flat structural target compatibility.
+
+## Fixes
+- Fixed stale or malformed runtime chat targets falling back to structural or coordinator routes; invalid runtime targets now fail explicitly instead of posting to the wrong participant.
