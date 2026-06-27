@@ -238,13 +238,16 @@ interface WorkspaceInfo {
 | Action | Description |
 | --- | --- |
 | `createWorkspace()` | Creates/resolves metadata only. It does **not** acquire a file-explorer tree or start a persistent file watcher. |
-| `fetchAllWorkspaces()` | Loads workspace metadata on startup or backend-context reset. It does **not** acquire file-explorer trees or start live streams. |
+| `fetchAllWorkspaces()` | Loads visible workspace metadata from the backend workspace registry on startup or backend-context reset. It does **not** acquire file-explorer trees or start live streams. |
+| `removeWorkspace(workspaceId)` | Removes a registered filesystem workspace from the visible Workspaces registry after backend confirmation, then clears metadata, file-explorer tree/content/cache state, and live-session state for that workspace. It does not delete workspace files. |
 | `fetchFolderChildren()` | **[Lazy Load]** Fetches children for a folder when expanded or when a visible explorer refreshes open folders. |
 | `acquireFileExplorerLiveSession(workspaceId, consumerId)` | Registers one visible file explorer consumer. The first consumer opens one WebSocket/live watcher stream for the workspace and returns an idempotent release function. |
 | `releaseFileExplorerLiveSession(workspaceId, consumerId)` | Releases a visible consumer. The last release disconnects the WebSocket and lets the backend stop the watcher lease. |
 | `connectFileExplorerLiveStream()` / `disconnectFileExplorerLiveStream()` | Internal connection management used by the live-session API; components should not call these directly. |
 | `refreshFileExplorerSnapshot()` | Refreshes the root and currently open folders when a file explorer becomes visible so missed changes are reconciled before live events arrive. |
 | `handleFileSystemChange()` | Applies local mutation results and WebSocket tree changes, while consuming self-initiated mutation echoes from the stream. |
+
+Workspace removal is a workspace-list operation, not a file delete. Successful removal unregisters/hides the workspace row and disconnects local file-explorer state for that workspace, but the underlying directory and saved run/team history remain on disk. Loading the same root again re-registers the workspace and allows its preserved history to be displayed again.
 
 ### FileExplorerStore (fileExplorer.ts)
 

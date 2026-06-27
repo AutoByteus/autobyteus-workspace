@@ -31,6 +31,7 @@ export interface ProjectionWorkspaceGroup {
 }
 
 export interface ProjectionWorkspaceDescriptor {
+  workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
 }
@@ -61,6 +62,7 @@ export interface RunTreeAgentNode {
 }
 
 export interface RunTreeWorkspaceNode {
+  workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
   agents: RunTreeAgentNode[];
@@ -80,6 +82,7 @@ interface MutableAgentNode {
 }
 
 interface MutableWorkspaceNode {
+  workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
   agentsById: Map<string, MutableAgentNode>;
@@ -141,6 +144,7 @@ const dedupeAndSortRuns = (rows: RunTreeRow[]): RunTreeRow[] => {
 
 const ensureWorkspaceNode = (
   workspaceNodes: Map<string, MutableWorkspaceNode>,
+  workspaceId: string,
   workspaceRootPath: string,
   workspaceName: string,
 ): MutableWorkspaceNode => {
@@ -153,6 +157,7 @@ const ensureWorkspaceNode = (
   }
 
   const created: MutableWorkspaceNode = {
+    workspaceId,
     workspaceRootPath,
     workspaceName: workspaceName || FALLBACK_WORKSPACE_NAME,
     agentsById: new Map<string, MutableAgentNode>(),
@@ -198,6 +203,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
     }
     ensureWorkspaceNode(
       workspaceNodes,
+      workspace.workspaceId,
       normalizedRoot,
       workspace.workspaceName || FALLBACK_WORKSPACE_NAME,
     );
@@ -209,11 +215,10 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       continue;
     }
 
-    const workspaceNode = ensureWorkspaceNode(
-      workspaceNodes,
-      normalizedWorkspace,
-      workspace.workspaceName || FALLBACK_WORKSPACE_NAME,
-    );
+    const workspaceNode = workspaceNodes.get(normalizedWorkspace);
+    if (!workspaceNode) {
+      continue;
+    }
 
     for (const agent of workspace.agents) {
       const agentNode = ensureAgentNode(
@@ -245,11 +250,11 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       continue;
     }
 
-    const workspaceNode = ensureWorkspaceNode(
-      workspaceNodes,
-      normalizedWorkspace,
-      FALLBACK_WORKSPACE_NAME,
-    );
+    const workspaceNode = workspaceNodes.get(normalizedWorkspace);
+    if (!workspaceNode) {
+      console.warn(INVALID_DRAFT_WORKSPACE_WARNING, { runId: draft.runId });
+      continue;
+    }
 
     const agentNode = ensureAgentNode(
       workspaceNode,
@@ -287,6 +292,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       });
 
     return {
+      workspaceId: workspaceNode.workspaceId,
       workspaceRootPath: workspaceNode.workspaceRootPath,
       workspaceName: workspaceNode.workspaceName || FALLBACK_WORKSPACE_NAME,
       agents,

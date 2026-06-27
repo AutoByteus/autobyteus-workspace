@@ -4,7 +4,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
 
 describe("TeamRunService", () => {
   const createSubject = (activeRun: unknown = null) => {

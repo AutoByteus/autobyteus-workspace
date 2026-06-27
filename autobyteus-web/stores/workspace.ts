@@ -42,6 +42,7 @@ import {
 } from '~/stores/workspaceFileExplorerLiveActions'
 import type { FetchFolderChildrenOptions } from '~/stores/fileExplorerTreeActions'
 import type { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
+import { removeWorkspaceForStore } from '~/stores/workspaceRemovalActions'
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress'
 
 export interface WorkspaceInfo {
@@ -139,7 +140,6 @@ export const useWorkspaceStore = defineStore('workspace', {
         return;
       }
 
-      const fileExplorerStore = useFileExplorerStore();
       for (const [workspaceId, workspace] of Object.entries(this.workspaces)) {
         const normalizedWorkspaceRoot = normalizeRootPath(
           workspace.absolutePath
@@ -148,12 +148,28 @@ export const useWorkspaceStore = defineStore('workspace', {
             || workspace.workspaceConfig?.rootPath
             || null,
         );
-        if (normalizedWorkspaceRoot !== normalizedTarget) {
-          continue;
+        if (normalizedWorkspaceRoot === normalizedTarget) {
+          this.removeWorkspaceEntryById(workspaceId);
         }
-        this.clearFileExplorerLiveSessionForWorkspace(workspaceId);
-        fileExplorerStore.fileExplorerStateByWorkspace.delete(workspaceId);
-        delete this.workspaces[workspaceId];
+      }
+    },
+
+    removeWorkspaceEntryById(workspaceId: string) {
+      const workspace = this.workspaces[workspaceId];
+      const normalizedRoot = normalizeRootPath(
+        workspace?.workspaceRootPath
+          || workspace?.absolutePath
+          || workspace?.workspaceConfig?.root_path
+          || workspace?.workspaceConfig?.rootPath
+          || null,
+      );
+      this.clearFileExplorerLiveSessionForWorkspace(workspaceId);
+      useFileExplorerStore().fileExplorerStateByWorkspace.delete(workspaceId);
+      delete this.workspaces[workspaceId];
+      delete this.workspaceMetadataById[workspaceId];
+      delete this.workspaceMetadataLoadStateById[workspaceId];
+      if (normalizedRoot) {
+        delete this.workspaceMetadataIdsByRootPath[normalizedRoot];
       }
     },
 
@@ -189,6 +205,20 @@ export const useWorkspaceStore = defineStore('workspace', {
       } catch (e: any) {
         this.error = e;
         console.error('Error creating workspace metadata:', e);
+        throw e;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async removeWorkspace(workspaceId: string): Promise<{ workspaceRootPath: string | null; message: string }> {
+      this.loading = true;
+      this.error = null;
+      try {
+        return await removeWorkspaceForStore(this, workspaceId);
+      } catch (e: any) {
+        this.error = e;
+        console.error('Error removing workspace:', e);
         throw e;
       } finally {
         this.loading = false;

@@ -10,7 +10,11 @@ const flushReactiveUpdates = async () => {
   await nextTick();
 };
 
+const workspaceIdForRoot = (workspaceRootPath: string): string =>
+  workspaceRootPath === '/ws/a' ? 'workspace-a' : 'workspace-b';
+
 const buildAgentWorkspace = (workspaceRootPath = '/ws/a', runId = 'run-1') => ({
+  workspaceId: workspaceIdForRoot(workspaceRootPath),
   workspaceRootPath,
   workspaceName: workspaceRootPath === '/ws/a' ? 'Workspace A' : 'Workspace B',
   agents: [
@@ -117,16 +121,37 @@ describe('useWorkspaceHistoryTreeState', () => {
     state.teams = [buildTeamNode()];
     state.workspaceGroups = [buildTeamHistoryWorkspace()];
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(false);
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(false);
-    expect(treeState.isTeamDefinitionExpanded('/ws/a', 'team-def-1')).toBe(false);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(false);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
+    expect(treeState.isTeamDefinitionExpanded('workspace-a', 'team-def-1')).toBe(false);
     expect(treeState.isTeamExpanded('team-1')).toBe(false);
 
-    treeState.toggleWorkspace('/ws/a');
+    treeState.toggleWorkspace('workspace-a');
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(true);
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(false);
-    expect(treeState.isTeamDefinitionExpanded('/ws/a', 'team-def-1')).toBe(false);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
+    expect(treeState.isTeamDefinitionExpanded('workspace-a', 'team-def-1')).toBe(false);
+  });
+
+  it('prunes workspace expansion state for removed workspaces', () => {
+    const { state, treeState } = buildReactiveHarness();
+    state.nodes = [buildAgentWorkspace()];
+    state.teams = [buildTeamNode()];
+    state.workspaceGroups = [buildTeamHistoryWorkspace()];
+
+    treeState.toggleWorkspace('workspace-a');
+    treeState.toggleAgent('workspace-a', 'agent-def-1');
+    treeState.toggleTeamDefinition('workspace-a', 'team-def-1');
+
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(true);
+    expect(treeState.isTeamDefinitionExpanded('workspace-a', 'team-def-1')).toBe(true);
+
+    treeState.pruneWorkspace('workspace-a');
+
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(false);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
+    expect(treeState.isTeamDefinitionExpanded('workspace-a', 'team-def-1')).toBe(false);
   });
 
   it('reveals only the selected agent run ancestry', async () => {
@@ -140,16 +165,17 @@ describe('useWorkspaceHistoryTreeState', () => {
 
     await flushReactiveUpdates();
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(true);
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(true);
-    expect(treeState.isWorkspaceExpanded('/ws/b')).toBe(false);
-    expect(treeState.isAgentExpanded('/ws/b', 'agent-def-2')).toBe(false);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(true);
+    expect(treeState.isWorkspaceExpanded('workspace-b')).toBe(false);
+    expect(treeState.isAgentExpanded('workspace-b', 'agent-def-2')).toBe(false);
   });
 
   it('reveals selected team ancestry from the run-history store selected team source', async () => {
     const { state, treeState } = buildReactiveHarness();
     state.nodes = [
       {
+        workspaceId: 'workspace-a',
         workspaceRootPath: '/ws/a',
         workspaceName: 'Workspace A',
         agents: [],
@@ -161,8 +187,8 @@ describe('useWorkspaceHistoryTreeState', () => {
 
     await flushReactiveUpdates();
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(true);
-    expect(treeState.isTeamDefinitionExpanded('/ws/a', 'team-def-1')).toBe(true);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
+    expect(treeState.isTeamDefinitionExpanded('workspace-a', 'team-def-1')).toBe(true);
     expect(treeState.isTeamExpanded('team-1')).toBe(true);
   });
 
@@ -173,14 +199,14 @@ describe('useWorkspaceHistoryTreeState', () => {
 
     await flushReactiveUpdates();
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(false);
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(false);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(false);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
 
     state.nodes = [buildAgentWorkspace('/ws/a', 'run-1')];
     await flushReactiveUpdates();
 
-    expect(treeState.isWorkspaceExpanded('/ws/a')).toBe(true);
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(true);
+    expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(true);
   });
 
   it('does not re-open an already revealed selected path after manual collapse and quiet refresh', async () => {
@@ -190,14 +216,14 @@ describe('useWorkspaceHistoryTreeState', () => {
     selectionStore.selectedRunId = 'run-1';
 
     await flushReactiveUpdates();
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(true);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(true);
 
-    treeState.toggleAgent('/ws/a', 'agent-def-1');
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(false);
+    treeState.toggleAgent('workspace-a', 'agent-def-1');
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
 
     state.nodes = [buildAgentWorkspace('/ws/a', 'run-1')];
     await flushReactiveUpdates();
 
-    expect(treeState.isAgentExpanded('/ws/a', 'agent-def-1')).toBe(false);
+    expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
   });
 });

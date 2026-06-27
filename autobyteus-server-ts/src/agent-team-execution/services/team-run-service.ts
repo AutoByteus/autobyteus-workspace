@@ -13,7 +13,7 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-id-mapping-store.js";
+import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import {
   AgentMemoryLocationService,

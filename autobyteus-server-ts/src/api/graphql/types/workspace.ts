@@ -2,9 +2,7 @@ import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "ty
 import { GraphQLJSON } from "graphql-scalars";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { WorkspaceConverter } from "../converters/workspace-converter.js";
-import {
-  buildFilesystemWorkspaceId,
-} from "../../../workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../workspaces/workspace-registry-store.js";
 import {
   canonicalizeWorkspaceRootPath,
   workspaceDisplayNameFromRootPath,
@@ -48,6 +46,27 @@ export class CreateWorkspaceInput {
   rootPath!: string;
 }
 
+@InputType()
+export class RemoveWorkspaceInput {
+  @Field(() => String)
+  workspaceId!: string;
+}
+
+@ObjectType()
+export class RemoveWorkspaceResultInfo {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => String)
+  workspaceId!: string;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath!: string | null;
+}
+
 @Resolver()
 export class WorkspaceResolver {
   private get workspaceManager() {
@@ -58,9 +77,8 @@ export class WorkspaceResolver {
   async workspaces(): Promise<WorkspaceMetadataInfo[]> {
     try {
       await this.workspaceManager.getOrCreateTempWorkspace();
-      return this.workspaceManager
-        .getAllWorkspaces()
-        .map((workspace) => WorkspaceConverter.toGraphql(workspace));
+      const workspaces = await this.workspaceManager.listVisibleWorkspaces();
+      return workspaces.map((workspace) => WorkspaceConverter.toGraphql(workspace));
     } catch (error) {
       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
       throw new Error("Unable to fetch workspaces at this time.");
@@ -101,6 +119,24 @@ export class WorkspaceResolver {
     } catch (error) {
       logger.error(`Unexpected error creating workspace metadata: ${String(error)}`);
       throw new Error(String(error));
+    }
+  }
+
+  @Mutation(() => RemoveWorkspaceResultInfo)
+  async removeWorkspace(
+    @Arg("input", () => RemoveWorkspaceInput) input: RemoveWorkspaceInput,
+  ): Promise<RemoveWorkspaceResultInfo> {
+    logger.info("GraphQL mutation to remove registered workspace");
+    try {
+      return await this.workspaceManager.removeRegisteredWorkspace(input.workspaceId);
+    } catch (error) {
+      logger.error(`Unexpected error removing workspace: ${String(error)}`);
+      return {
+        success: false,
+        message: String(error),
+        workspaceId: input.workspaceId,
+        workspaceRootPath: null,
+      };
     }
   }
 }

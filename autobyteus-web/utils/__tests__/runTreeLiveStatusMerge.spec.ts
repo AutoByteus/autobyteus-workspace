@@ -5,6 +5,7 @@ import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const baseTree = (): RunTreeWorkspaceNode[] => [
   {
+    workspaceId: 'workspace-alpha',
     workspaceRootPath: '/ws/a',
     workspaceName: 'Alpha',
     agents: [

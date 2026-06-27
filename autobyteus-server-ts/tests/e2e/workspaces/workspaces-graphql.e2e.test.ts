@@ -6,9 +6,11 @@ import { createRequire } from "node:module";
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AppConfig } from "../../../src/config/app-config.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { canonicalizeWorkspaceRootPath } from "../../../src/workspaces/workspace-path-utils.js";
 const workspaceManager = getWorkspaceManager();
@@ -57,6 +59,26 @@ describe("Workspaces GraphQL e2e", () => {
   };
 
   afterEach(async () => {
+    try {
+      const registeredWorkspaces = await workspaceManager.listRegisteredFilesystemWorkspaces();
+      for (const workspace of registeredWorkspaces) {
+        const basePath = workspace.getBasePath();
+        const relativeToTemp = path.relative(tempRoot, basePath);
+        const isUnderTestRoot = relativeToTemp === "" || (
+          relativeToTemp.length > 0
+          && !relativeToTemp.startsWith("..")
+          && !path.isAbsolute(relativeToTemp)
+        );
+        if (isUnderTestRoot) {
+          await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
+        }
+      }
+    } catch {
+      // Some tests temporarily replace the app config with a narrow mock. Those
+      // scenarios do not create registered filesystem workspaces, so cleanup can
+      // safely continue with active workspace teardown below.
+    }
+
     const workspaces = workspaceManager.getAllWorkspaces();
     for (const workspace of workspaces) {
       if (!initialIds.has(workspace.workspaceId)) {
@@ -122,6 +144,166 @@ describe("Workspaces GraphQL e2e", () => {
     const found = listResult.workspaces.find((ws) => ws.workspaceId === newId);
     expect(found).toBeTruthy();
     expect(found?.absolutePath).toBe(rootPath);
+  });
+
+  it("removes a registered workspace from visibility, preserves files, and re-adds the same root", async () => {
+    const rootPath = path.join(tempRoot, "test_ws_root");
+    const filePath = path.join(rootPath, "keep.txt");
+    fs.writeFileSync(filePath, "preserved", "utf-8");
+
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          workspaceRootPath
+          absolutePath
+        }
+      }
+    `;
+    const removeMutation = `
+      mutation RemoveWorkspace($input: RemoveWorkspaceInput!) {
+        removeWorkspace(input: $input) {
+          success
+          message
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+    const listQuery = `
+      query GetWorkspaces {
+        workspaces {
+          workspaceId
+          workspaceRootPath
+          absolutePath
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: {
+        workspaceId: string;
+        workspaceRootPath: string;
+        absolutePath: string | null;
+      };
+    }>(createMutation, { input: { rootPath } });
+    const workspaceId = created.createWorkspace.workspaceId;
+
+    const removed = await execGraphql<{
+      removeWorkspace: {
+        success: boolean;
+        message: string;
+        workspaceId: string;
+        workspaceRootPath: string | null;
+      };
+    }>(removeMutation, { input: { workspaceId } });
+
+    expect(removed.removeWorkspace).toMatchObject({
+      success: true,
+      workspaceId,
+      workspaceRootPath: rootPath,
+    });
+    expect(removed.removeWorkspace.message).toContain("Files, memories, and run history were not deleted");
+    expect(fs.readFileSync(filePath, "utf-8")).toBe("preserved");
+
+    const afterRemoval = await execGraphql<{
+      workspaces: Array<{ workspaceId: string; workspaceRootPath: string | null }>;
+    }>(listQuery);
+    expect(afterRemoval.workspaces.some((workspace) => workspace.workspaceId === workspaceId)).toBe(false);
+    await expect(workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)).resolves.toBeNull();
+    expect(workspaceManager.getWorkspaceById(workspaceId)).toBeUndefined();
+
+    const recreated = await execGraphql<{
+      createWorkspace: { workspaceId: string; workspaceRootPath: string; absolutePath: string | null };
+    }>(createMutation, { input: { rootPath } });
+    expect(recreated.createWorkspace).toMatchObject({
+      workspaceId,
+      workspaceRootPath: rootPath,
+      absolutePath: rootPath,
+    });
+
+    const afterReadd = await execGraphql<{
+      workspaces: Array<{ workspaceId: string; workspaceRootPath: string | null }>;
+    }>(listQuery);
+    expect(afterReadd.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ workspaceId, workspaceRootPath: rootPath }),
+      ]),
+    );
+  });
+
+  it("keeps a workspace registered when removeWorkspace is blocked by an active standalone run", async () => {
+    const rootPath = path.join(tempRoot, "test_ws_root");
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+    const removeMutation = `
+      mutation RemoveWorkspace($input: RemoveWorkspaceInput!) {
+        removeWorkspace(input: $input) {
+          success
+          message
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+    const listQuery = `
+      query GetWorkspaces {
+        workspaces {
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: { workspaceId: string; workspaceRootPath: string };
+    }>(createMutation, { input: { rootPath } });
+    const workspaceId = created.createWorkspace.workspaceId;
+    const agentManagerSpy = vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({
+      listActiveRuns: () => ["run-active"],
+      getActiveRun: () => ({ config: { workspaceId } }),
+    } as any);
+    const teamManagerSpy = vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({
+      listActiveRuns: () => [],
+      getActiveRun: () => null,
+    } as any);
+
+    try {
+      const removed = await execGraphql<{
+        removeWorkspace: {
+          success: boolean;
+          message: string;
+          workspaceId: string;
+          workspaceRootPath: string | null;
+        };
+      }>(removeMutation, { input: { workspaceId } });
+
+      expect(removed.removeWorkspace).toMatchObject({
+        success: false,
+        workspaceId,
+        workspaceRootPath: rootPath,
+      });
+      expect(removed.removeWorkspace.message).toContain("Stop active agent or team runs");
+
+      const afterBlockedRemoval = await execGraphql<{
+        workspaces: Array<{ workspaceId: string; workspaceRootPath: string | null }>;
+      }>(listQuery);
+      expect(afterBlockedRemoval.workspaces).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ workspaceId, workspaceRootPath: rootPath }),
+        ]),
+      );
+      await expect(workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)).resolves.toBe(rootPath);
+    } finally {
+      agentManagerSpy.mockRestore();
+      teamManagerSpy.mockRestore();
+    }
   });
 
   it("returns workspace metadata from createWorkspace without acquiring file explorer", async () => {

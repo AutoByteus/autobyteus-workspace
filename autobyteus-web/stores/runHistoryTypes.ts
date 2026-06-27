@@ -198,6 +198,10 @@ export interface ListWorkspaceRunHistoryQueryData {
   listWorkspaceRunHistory: RunHistoryWorkspaceGroup[];
 }
 
+export interface GetWorkspaceRunHistoryQueryData {
+  workspaceRunHistory: RunHistoryWorkspaceGroup;
+}
+
 export interface TeamMemberRunProjectionPayload {
   agentRunId: string;
   conversation: RunProjectionConversationEntry[];

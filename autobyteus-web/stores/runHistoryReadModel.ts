@@ -59,6 +59,7 @@ const displayWorkspaceName = (workspaceRootPath: string): string => {
 
 export const resolveWorkspaceRootPath = (
   workspacesById: Record<string, {
+    workspaceRootPath?: string | null;
     absolutePath?: string | null;
     workspaceConfig?: { root_path?: string | null; rootPath?: string | null } | null;
   }>,
@@ -74,7 +75,8 @@ export const resolveWorkspaceRootPath = (
   }
 
   return normalizeRootPath(
-    workspace.absolutePath ||
+    workspace.workspaceRootPath ||
+      workspace.absolutePath ||
       workspace.workspaceConfig?.root_path ||
       workspace.workspaceConfig?.rootPath ||
       null,
@@ -107,8 +109,17 @@ const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus:
 export const buildRunHistoryTreeNodes = (params: {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   agentAvatarByDefinitionId: Record<string, string>;
-  allWorkspaces: Array<{ absolutePath?: string | null; name?: string | null }>;
+  allWorkspaces: Array<{
+    workspaceId: string;
+    workspaceRootPath?: string | null;
+    absolutePath?: string | null;
+    name?: string | null;
+    displayName?: string | null;
+    kind?: string | null;
+    isTemp?: boolean | null;
+  }>;
   workspacesById: Record<string, {
+    workspaceRootPath?: string | null;
     absolutePath?: string | null;
     workspaceConfig?: { root_path?: string | null; rootPath?: string | null } | null;
   }>;
@@ -126,7 +137,7 @@ export const buildRunHistoryTreeNodes = (params: {
     };
   }>;
 }): RunTreeWorkspaceNode[] => {
-  const workspaceDescriptors = new Map<string, string>();
+  const workspaceDescriptors = new Map<string, { workspaceId: string; workspaceName: string }>();
   const agentAvatarByDefinitionId = new Map<string, string>(
     Object.entries(params.agentAvatarByDefinitionId),
   );
@@ -139,28 +150,22 @@ export const buildRunHistoryTreeNodes = (params: {
     }
   }
 
-  for (const group of params.workspaceGroups) {
-    const normalizedRoot = normalizeRootPath(group.workspaceRootPath);
-    if (!normalizedRoot) {
-      continue;
-    }
-    workspaceDescriptors.set(
-      normalizedRoot,
-      group.workspaceName || displayWorkspaceName(normalizedRoot),
-    );
-  }
-
   for (const workspace of params.allWorkspaces) {
-    const normalizedRoot = normalizeRootPath(workspace.absolutePath || null);
-    if (!normalizedRoot) {
+    if (workspace.kind && workspace.kind !== 'filesystem') {
       continue;
     }
-    if (!workspaceDescriptors.has(normalizedRoot)) {
-      workspaceDescriptors.set(
-        normalizedRoot,
-        workspace.name || displayWorkspaceName(normalizedRoot),
-      );
+    if (workspace.isTemp) {
+      continue;
     }
+    const workspaceId = workspace.workspaceId?.trim();
+    const normalizedRoot = normalizeRootPath(workspace.workspaceRootPath || workspace.absolutePath || null);
+    if (!workspaceId || !normalizedRoot) {
+      continue;
+    }
+    workspaceDescriptors.set(normalizedRoot, {
+      workspaceId,
+      workspaceName: workspace.displayName || workspace.name || displayWorkspaceName(normalizedRoot),
+    });
   }
 
   const persistedWorkspaces = params.workspaceGroups.map((workspace) => ({
@@ -233,9 +238,10 @@ export const buildRunHistoryTreeNodes = (params: {
       agents: workspace.agentDefinitions,
     })),
     workspaceDescriptors: Array.from(workspaceDescriptors.entries()).map(
-      ([workspaceRootPath, workspaceName]) => ({
+      ([workspaceRootPath, descriptor]) => ({
+        workspaceId: descriptor.workspaceId,
         workspaceRootPath,
-        workspaceName,
+        workspaceName: descriptor.workspaceName,
       }),
     ),
     draftRuns,
@@ -248,6 +254,7 @@ export const buildRunHistoryTeamNodes = (params: {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   teamContexts: AgentTeamContext[];
   workspacesById: Record<string, {
+    workspaceRootPath?: string | null;
     absolutePath?: string | null;
     workspaceConfig?: { root_path?: string | null; rootPath?: string | null } | null;
   }>;

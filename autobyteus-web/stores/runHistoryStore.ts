@@ -46,6 +46,7 @@ import {
   deleteRunFromHistoryStore,
   deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
+import { fetchWorkspaceHistoryForStore, pruneWorkspaceHistoryForStore } from '~/stores/runHistoryWorkspaceHistoryActions';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -59,6 +60,8 @@ const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
     workspaceGroups: [] as RunHistoryWorkspaceGroup[],
+    workspaceHistoryLoadingById: {} as Record<string, boolean>,
+    workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,
     resumeConfigByRunId: {} as Record<string, RunResumeConfigPayload>,
     teamResumeConfigByTeamRunId: {} as Record<string, TeamRunResumeConfigPayload>,
@@ -417,6 +420,22 @@ export const useRunHistoryStore = defineStore('runHistory', {
       } catch {
         // No-op for best-effort refreshes.
       }
+    },
+
+    async fetchWorkspaceHistory(workspaceId: string, limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
+      await fetchWorkspaceHistoryForStore(this, workspaceId, limitPerAgent, options);
+    },
+
+    async refreshWorkspaceHistoryQuietly(workspaceId: string, limitPerAgent = 6): Promise<void> {
+      try {
+        await this.fetchWorkspaceHistory(workspaceId, limitPerAgent, { quiet: true });
+      } catch {
+        // No-op for best-effort refreshes.
+      }
+    },
+
+    pruneWorkspace(workspaceId: string, workspaceRootPath: string | null | undefined): void {
+      pruneWorkspaceHistoryForStore(this, workspaceId, workspaceRootPath);
     },
 
     getTreeNodes(): RunTreeWorkspaceNode[] {

@@ -50,6 +50,57 @@ export const ListWorkspaceRunHistory = gql`
   }
 `;
 
+
+export const GetWorkspaceRunHistory = gql`
+  query GetWorkspaceRunHistory($workspaceId: String!, $limitPerAgent: Int = 6) {
+    workspaceRunHistory(workspaceId: $workspaceId, limitPerAgent: $limitPerAgent) {
+      workspaceRootPath
+      workspaceName
+      agentDefinitions {
+        agentDefinitionId
+        agentName
+        runs {
+          runId
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          shouldConnectStream
+          statusSource
+        }
+      }
+      teamDefinitions {
+        teamDefinitionId
+        teamDefinitionName
+        runs {
+          teamRunId
+          teamDefinitionId
+          teamDefinitionName
+          coordinatorMemberRouteKey
+          workspaceRootPath
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          memberTree
+          members {
+            memberRouteKey
+            memberName
+            memberRunId
+            status
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GetRunProjection = gql`
   query GetRunProjection($runId: String!) {
     getRunProjection(runId: $runId) {
