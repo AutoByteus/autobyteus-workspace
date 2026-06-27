@@ -1,0 +1,7 @@
+{
+  "terminateAgentTeamRun": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "note": "Frontend/backend/Chrome runtime sessions were stopped after the live browser probe."
+}

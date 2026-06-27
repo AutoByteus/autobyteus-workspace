@@ -7,6 +7,7 @@ import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import { buildTeamMemberAddress, type InterAgentMessageDeliveryHandler, type ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import type { StartTaskTeamInstanceRequest } from "../../../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import { selectorFromMemberRouteKey, type TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import { TeamRunEventSourceType, type TeamRunStatusUpdateData } from "../../../domain/team-run-event.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
@@ -98,6 +99,17 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     const childRun = await this.ensureReady();
     return childRun.postMessage(message, selectorFromMemberRouteKey(this.options.request.identity.ingress.memberRouteKey));
+  }
+
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    if (address.segments.length === 0) {
+      return this.postMessage(message);
+    }
+    const childRun = await this.ensureReady();
+    return childRun.postMessageToConversationTarget(message, address);
   }
 
   async deliverInterMemberMessage(_request: ResolvedInterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {

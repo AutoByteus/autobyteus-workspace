@@ -59,20 +59,37 @@ names exist.
 | Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation tools. |
 ## Nested Member Identity And Commands
 
-- `TeamMemberSelector` is the domain/backend command identity:
+- `TeamMemberSelector` is the domain/backend structural member identity for
+  launch config matching and route-key/path-scoped control commands:
   - `{ kind: "path", memberPath: [...] }`
   - `{ kind: "route_key", memberRouteKey: "subteam/leaf" }`
 - `memberPath` / `memberRouteKey` are canonical for nested members.
-  Transport/GraphQL command inputs must provide explicit path or route-key
-  selector fields. Scalar target aliases such as `target_member_name`,
-  `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and
-  camelCase equivalents are rejected at the edge instead of normalized.
+  Transport/GraphQL command inputs that use `TeamMemberSelector` must provide
+  explicit path or route-key selector fields. Scalar target aliases such as
+  `target_member_name`, `target_agent_name`, command-side `agent_name`,
+  command-side `agent_id`, and camelCase equivalents are rejected at the edge
+  instead of normalized.
+- `ConversationTargetAddress` is the canonical user-chat target for team
+  WebSocket `SEND_MESSAGE`. It is a typed segment path rooted at the
+  WebSocket-bound parent team run:
+  - `member` selects a structural member by `memberRouteKey` or `memberPath`
+  - `task_team` selects one concrete delegated task-team execution by
+    `taskTeamRunId`
+  - `task_agent` selects one concrete delegated task-agent execution by
+    `taskAgentRunId`
+  Existing flat `target_member_path` / `target_member_route_key` send payloads
+  are parser-bound compatibility input only and normalize to a one-segment
+  `member` address. Runtime run ids must not be encoded into structural route
+  keys.
 - Top-level executable handles may be derived only from an already accepted
   `memberPath[0]` or first route-key segment. Bare names are never an
   authoritative public command selector.
-- Posting a message to a top-level subteam member creates/restores the child
-  `TeamRun` and posts to that child team's default/coordinator target. The
-  parent runtime does not choose an arbitrary flattened child leaf.
+- A terminal chat `member` segment that names a subteam creates/restores the
+  child `TeamRun` and posts to that child team's default/coordinator target.
+  `task_team` and `task_agent` segments route only to the exact runtime run id
+  supplied in the address. The parent runtime does not choose an arbitrary
+  flattened child leaf or fall back from a stale runtime id to a structural
+  template.
 - `TeamRun.postMessage(...)` defaults an omitted target to the configured
   coordinator route key or sole member route key when one exists. A remaining
   `null` target means a true team-level/no-target command and must not be
@@ -347,7 +364,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   must not derive a hidden fallback memory path.
 - Member memory recording is attached at the `AgentRunManager` layer for mixed team members; runtime-specific AgentRun backends keep their own provider-local runtime details below that boundary.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
-- Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
+- Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested `ConversationTargetAddress`.
 - Active-only team controls still use the active lookup path. `INTERRUPT_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
 - Team generation interrupt is intentionally member-scoped. `TeamRun.interruptMember(targetMemberRouteKey, targetMemberRunId?)` is the domain boundary; backend managers resolve the route key as the authoritative target and use the optional run id only as a stale-target guard. A missing target or route-key/run-id mismatch rejects without retargeting or falling back to a team-wide interrupt.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.

@@ -9,6 +9,7 @@ import type { Conversation } from '~/types/conversation';
 import type { ServerMessage } from './protocol';
 import type { TeamStreamIdentityPayload } from './protocol/teamStreamIdentityTypes';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 
 export interface TaskAgentStreamIdentity {
   taskAgentRunId: string;
@@ -23,6 +24,9 @@ export interface TaskAgentStreamIdentity {
   taskTeamRelativeMemberPath?: string[] | null;
   structuralSourceRouteKey?: string | null;
   structuralSourcePath?: string[] | null;
+  parentLogicalTeamRouteKey?: string | null;
+  parentLogicalTeamPath?: string[] | null;
+  conversationTargetSegments?: ConversationTargetSegment[] | null;
 }
 
 const taskAgentIdentityByContext = new WeakMap<AgentContext, TaskAgentStreamIdentity>();
@@ -32,6 +36,10 @@ const cloneTaskAgentIdentity = (identity: TaskAgentStreamIdentity): TaskAgentStr
   logicalMemberPath: [...identity.logicalMemberPath],
   taskTeamRelativeMemberPath: identity.taskTeamRelativeMemberPath ? [...identity.taskTeamRelativeMemberPath] : null,
   structuralSourcePath: identity.structuralSourcePath ? [...identity.structuralSourcePath] : null,
+  parentLogicalTeamPath: identity.parentLogicalTeamPath ? [...identity.parentLogicalTeamPath] : null,
+  conversationTargetSegments: identity.conversationTargetSegments
+    ? identity.conversationTargetSegments.map((segment) => ({ ...segment, ...(segment.kind === 'member' && segment.memberPath ? { memberPath: [...segment.memberPath] } : {}) }))
+    : null,
 });
 
 const setTaskAgentContextIdentity = (
@@ -48,6 +56,36 @@ export const getTaskAgentIdentityFromContext = (
   return identity ? cloneTaskAgentIdentity(identity) : null;
 };
 
+const hasScopedTaskTeamAncestry = (identity: TaskAgentStreamIdentity | null): boolean => Boolean(
+  identity?.parentTaskTeamRunId || identity?.conversationTargetSegments?.some((segment) => segment.kind === 'task_team'),
+);
+
+const mergeTaskAgentIdentity = (
+  existing: TaskAgentStreamIdentity | null,
+  incoming: TaskAgentStreamIdentity,
+): TaskAgentStreamIdentity => {
+  if (!hasScopedTaskTeamAncestry(existing) || hasScopedTaskTeamAncestry(incoming)) {
+    return incoming;
+  }
+  return {
+    ...incoming,
+    logicalMemberRouteKey: existing?.logicalMemberRouteKey ?? incoming.logicalMemberRouteKey,
+    logicalMemberPath: existing?.logicalMemberPath?.length ? [...existing.logicalMemberPath] : [...incoming.logicalMemberPath],
+    parentTaskTeamRunId: existing?.parentTaskTeamRunId ?? null,
+    parentTaskTeamInstanceId: existing?.parentTaskTeamInstanceId ?? null,
+    parentTaskId: existing?.parentTaskId ?? null,
+    taskTeamRelativeMemberRouteKey: existing?.taskTeamRelativeMemberRouteKey ?? null,
+    taskTeamRelativeMemberPath: existing?.taskTeamRelativeMemberPath ? [...existing.taskTeamRelativeMemberPath] : null,
+    structuralSourceRouteKey: existing?.structuralSourceRouteKey ?? null,
+    structuralSourcePath: existing?.structuralSourcePath ? [...existing.structuralSourcePath] : null,
+    parentLogicalTeamRouteKey: existing?.parentLogicalTeamRouteKey ?? null,
+    parentLogicalTeamPath: existing?.parentLogicalTeamPath ? [...existing.parentLogicalTeamPath] : null,
+    conversationTargetSegments: existing?.conversationTargetSegments
+      ? cloneTaskAgentIdentity(existing).conversationTargetSegments
+      : null,
+  };
+};
+
 const normalizeString = (value: unknown): string | null => (
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null
 );
@@ -61,6 +99,50 @@ const normalizePath = (value: unknown): string[] => (
 const routeKeyFromPath = (value: unknown): string | null => {
   const path = normalizePath(value);
   return path.length > 0 ? path.join('/') : null;
+};
+
+const trimRelativeSegmentsFromPath = (
+  sourcePath: readonly string[] | null | undefined,
+  relativePath: readonly string[] | null | undefined,
+): string[] => {
+  const source = Array.isArray(sourcePath) ? [...sourcePath] : [];
+  const relative = Array.isArray(relativePath) ? [...relativePath] : [];
+  if (source.length >= relative.length && relative.every((part, index) => source[source.length - relative.length + index] === part)) {
+    return source.slice(0, source.length - relative.length);
+  }
+  return [];
+};
+
+const buildConversationTargetSegments = (
+  identity: TaskAgentStreamIdentity,
+): ConversationTargetSegment[] | undefined => {
+  if (identity.conversationTargetSegments?.length) {
+    return identity.conversationTargetSegments.map((segment) => ({ ...segment, ...(segment.kind === 'member' && segment.memberPath ? { memberPath: [...segment.memberPath] } : {}) }));
+  }
+  if (!identity.taskAgentRunId) return undefined;
+  if (identity.parentTaskTeamRunId) {
+    const logicalTeamRouteKey =
+      identity.parentLogicalTeamRouteKey ??
+      routeKeyFromPath(identity.parentLogicalTeamPath) ??
+      routeKeyFromPath(trimRelativeSegmentsFromPath(identity.structuralSourcePath, identity.taskTeamRelativeMemberPath));
+    const relativeRouteKey =
+      identity.taskTeamRelativeMemberRouteKey ??
+      routeKeyFromPath(identity.taskTeamRelativeMemberPath);
+    if (!logicalTeamRouteKey || !relativeRouteKey) return undefined;
+    return [
+      { kind: 'member', memberRouteKey: logicalTeamRouteKey },
+      { kind: 'task_team', taskTeamRunId: identity.parentTaskTeamRunId },
+      { kind: 'member', memberRouteKey: relativeRouteKey },
+      { kind: 'task_agent', taskAgentRunId: identity.taskAgentRunId },
+    ];
+  }
+  const logicalMemberRouteKey = identity.logicalMemberRouteKey ?? routeKeyFromPath(identity.logicalMemberPath);
+  return logicalMemberRouteKey
+    ? [
+        { kind: 'member', memberRouteKey: logicalMemberRouteKey },
+        { kind: 'task_agent', taskAgentRunId: identity.taskAgentRunId },
+      ]
+    : undefined;
 };
 
 export const extractTaskAgentIdentity = (message: ServerMessage): TaskAgentStreamIdentity | null => {
@@ -224,6 +306,9 @@ const buildTaskAgentNode = (
     taskTeamRelativeMemberPath: identity.taskTeamRelativeMemberPath ? [...identity.taskTeamRelativeMemberPath] : null,
     structuralSourceRouteKey: identity.structuralSourceRouteKey ?? null,
     structuralSourcePath: identity.structuralSourcePath ? [...identity.structuralSourcePath] : null,
+    logicalTeamRouteKey: identity.parentLogicalTeamRouteKey ?? null,
+    logicalTeamPath: identity.parentLogicalTeamPath ? [...identity.parentLogicalTeamPath] : null,
+    conversationTargetSegments: buildConversationTargetSegments(identity),
   };
 };
 
@@ -233,10 +318,6 @@ const ensureTaskAgentNode = (
   context: AgentContext,
 ): AgentTeamMemberNode => {
   const existingNode = teamContext.memberNodesByRouteKey.get(identity.taskAgentRunId);
-  if (existingNode?.isTaskAgentInstance) {
-    return existingNode as AgentTeamMemberNode;
-  }
-
   const node = buildTaskAgentNode(teamContext, identity, context);
   teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskAgentRunId, node);
   teamContext.memberTree = insertTaskAgentNodeNearParent(
@@ -244,6 +325,9 @@ const ensureTaskAgentNode = (
     node,
     identity.logicalMemberRouteKey,
   );
+  if (existingNode?.isTaskAgentInstance) {
+    return node;
+  }
   return node;
 };
 
@@ -294,8 +378,9 @@ export const ensureTaskAgentContext = (
 ): AgentContext => {
   const existing = teamContext.leafAgentContextsByRouteKey.get(identity.taskAgentRunId) || null;
   if (existing) {
-    setTaskAgentContextIdentity(existing, identity);
-    ensureTaskAgentNode(teamContext, identity, existing);
+    const mergedIdentity = mergeTaskAgentIdentity(getTaskAgentIdentityFromContext(existing), identity);
+    setTaskAgentContextIdentity(existing, mergedIdentity);
+    ensureTaskAgentNode(teamContext, mergedIdentity, existing);
     return existing;
   }
 
@@ -318,10 +403,11 @@ export const ensureTaskAgentContext = (
     new AgentRunState(identity.taskAgentRunId, conversation),
   );
   context.isSubscribed = true;
-  setTaskAgentContextIdentity(context, identity);
+  const mergedIdentity = mergeTaskAgentIdentity(null, identity);
+  setTaskAgentContextIdentity(context, mergedIdentity);
 
   teamContext.leafAgentContextsByRouteKey = new Map(teamContext.leafAgentContextsByRouteKey).set(identity.taskAgentRunId, context);
-  ensureTaskAgentNode(teamContext, identity, context);
+  ensureTaskAgentNode(teamContext, mergedIdentity, context);
   return context;
 };
 

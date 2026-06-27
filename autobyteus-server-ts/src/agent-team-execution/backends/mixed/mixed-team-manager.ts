@@ -6,6 +6,7 @@ import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
 import type {
   InterAgentMessageDeliveryIntent,
 } from "../../domain/inter-agent-message-delivery.js";
@@ -32,6 +33,7 @@ import { MixedTeamMemberConfigResolver } from "./members/mixed-team-member-confi
 import { buildServerManagedMemberStatusSnapshots } from "../common/server-managed-team-member-projections.js";
 import { settleRegistryTeamMember } from "../common/team-member-lifecycle-commands.js";
 import { TeamMemberDeliveryCoordinator } from "./delivery/team-member-delivery-coordinator.js";
+import { MixedConversationTargetRouter } from "./conversation-target/mixed-conversation-target-router.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../task-delegation/task-agent-directory.js";
 import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRunDirectory } from "../../task-delegation/task-team-active-run-directory.js";
 
@@ -173,6 +175,20 @@ export class MixedTeamManager implements TeamManager {
     const result = await this.persistentMembers.getOrCreate(resolved).postMessage(message);
     this.publishTeamStatusIfChanged();
     return result;
+  }
+
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    const router = new MixedConversationTargetRouter({
+      getTeamContext: () => this.teamContext,
+      persistentMembers: this.persistentMembers,
+      taskAgentInstances: this.taskAgentInstances,
+      taskTeamInstances: this.taskTeamInstances,
+      notifyStatusChange: () => this.publishTeamStatusIfChanged(),
+    });
+    return router.postMessage(message, address);
   }
 
   async deliverInterAgentMessage(

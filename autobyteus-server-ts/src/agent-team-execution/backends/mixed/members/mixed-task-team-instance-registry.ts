@@ -1,6 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { StartTaskTeamInstanceRequest } from "../../../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
@@ -82,6 +83,18 @@ export class MixedTaskTeamInstanceRegistry {
   ): Promise<AgentOperationResult> {
     const resolved = this.resolve(logicalTeamRouteKey, taskTeamRunId);
     return "accepted" in resolved ? resolved : resolved.postMessage(message);
+  }
+
+  async postMessageToConversationTarget(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    remainingAddress: ConversationTargetAddress,
+    message: AgentInputUserMessage,
+  ): Promise<AgentOperationResult> {
+    const resolved = this.resolve(logicalTeamRouteKey, taskTeamRunId);
+    return "accepted" in resolved
+      ? resolved
+      : resolved.postMessageToConversationTarget(message, remainingAddress);
   }
 
   async settle(logicalTeamRouteKey: string, taskTeamRunId: string): Promise<AgentOperationResult> {

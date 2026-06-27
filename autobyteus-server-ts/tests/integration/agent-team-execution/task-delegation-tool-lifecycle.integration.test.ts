@@ -41,6 +41,7 @@ import {
   selectorToRouteKey,
   type TeamMemberSelector,
 } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { TaskDelegationRunRegistry } from "../../../src/agent-team-execution/task-delegation/task-delegation-run-registry.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
@@ -232,6 +233,10 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
         : null,
     });
     return this.postMessageResults.shift() ?? { accepted: true };
+  }
+
+  async postMessageToConversationTarget(_message: AgentInputUserMessage, _address: ConversationTargetAddress) {
+    return { accepted: true };
   }
 
   async deliverInterAgentMessage() { return { accepted: true }; }

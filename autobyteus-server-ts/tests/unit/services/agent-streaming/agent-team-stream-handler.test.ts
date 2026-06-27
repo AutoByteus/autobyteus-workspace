@@ -23,6 +23,7 @@ describe("AgentTeamStreamHandler", () => {
     }]),
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     context: {
@@ -393,10 +394,9 @@ describe("AgentTeamStreamHandler", () => {
       }),
     );
 
-    expect(teamRun.postMessage).toHaveBeenCalledTimes(1);
-    expect(teamRun.postMessage.mock.calls[0]?.[1]).toEqual({
-      kind: "route_key",
-      memberRouteKey: "worker-a",
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
+    expect(teamRun.postMessageToConversationTarget.mock.calls[0]?.[1]).toEqual({
+      segments: [{ kind: "member", memberRouteKey: "worker-a" }],
     });
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       teamRun,
@@ -441,20 +441,18 @@ describe("AgentTeamStreamHandler", () => {
       }),
     );
 
-    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
       1,
       expect.anything(),
       {
-        kind: "route_key",
-        memberRouteKey: "BuildSquad/review_lead",
+        segments: [{ kind: "member", memberRouteKey: "BuildSquad/review_lead" }],
       },
     );
-    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
       2,
       expect.anything(),
       {
-        kind: "path",
-        memberPath: ["BuildSquad", "qa_specialist"],
+        segments: [{ kind: "member", memberPath: ["BuildSquad", "qa_specialist"] }],
       },
     );
   });
@@ -502,7 +500,7 @@ describe("AgentTeamStreamHandler", () => {
       );
     }
 
-    expect(teamRun.postMessage).not.toHaveBeenCalled();
+    expect(teamRun.postMessageToConversationTarget).not.toHaveBeenCalled();
     expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
     const errorMessages = getSentErrors(connection);
     expect(errorMessages).toHaveLength(16);
@@ -518,7 +516,7 @@ describe("AgentTeamStreamHandler", () => {
       subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
     });
     const restoredRun = createTeamRun({
-      postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
       subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
     });
     const teamRunService = createTeamRunService(null, {
@@ -550,8 +548,8 @@ describe("AgentTeamStreamHandler", () => {
     );
 
     expect(teamRunService.resolveTeamRun).toHaveBeenCalledTimes(2);
-    expect(restoredRun.postMessage).toHaveBeenCalledTimes(1);
-    expect(initialRun.postMessage).not.toHaveBeenCalled();
+    expect(restoredRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
+    expect(initialRun.postMessageToConversationTarget).not.toHaveBeenCalled();
     expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       restoredRun,
