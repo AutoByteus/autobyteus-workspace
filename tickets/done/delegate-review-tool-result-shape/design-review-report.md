@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-spec.md`
 - Current Review Round: 3
 - Trigger: Rework after round-2 design review findings DR-001 and DR-002.
 - Prior Review Round Reviewed: Round 2 in this same canonical report path.

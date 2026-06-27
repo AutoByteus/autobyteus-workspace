@@ -29,7 +29,7 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteu
 - Started: `2026-06-27T15:35:24Z`
 - Finished: `2026-06-27T15:39:22Z`
 - Exit status: `0`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/electron-test-build-mac.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/electron-test-build-mac.log`
 
 ## Build Evidence
 

@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2, superseding the earlier task-delegation-specific execution report.
 - Trigger: Code-review pass for the Round-3 general, source-gated MCP effective-result projector.
 - Prior Round Reviewed: Yes. The prior canonical execution report was task-delegation-specific and is replaced by this round.
@@ -31,7 +31,7 @@ The approved behavior is a general MCP effective-result projection boundary for 
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -139,9 +139,9 @@ None as repository-resident durable coverage in this API/E2E round. The durable 
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/api-e2e-execution-coverage-report.md`
-- Existing full typecheck blocker log: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/api-e2e-execution-coverage-report.md`
+- Existing full typecheck blocker log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -256,7 +256,7 @@ None in the final execution set.
 
 ## Blocked
 
-- Full `pnpm run typecheck` remains blocked by the existing/configuration TS6059 issue recorded at `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
+- Full `pnpm run typecheck` remains blocked by the existing/configuration TS6059 issue recorded at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
 - The log shows `tsc -p tsconfig.json --noEmit` failing because `tsconfig.json` has `rootDir: "src"` while including `tests`; 492 TS6059 diagnostics were present. The shared pretypecheck builds completed successfully in that log.
 - This is not classified as a patch-specific API/E2E failure because the scoped build command `pnpm exec prisma generate --schema ./prisma/schema.prisma && pnpm exec tsc -p tsconfig.build.json --noEmit` passed.
 

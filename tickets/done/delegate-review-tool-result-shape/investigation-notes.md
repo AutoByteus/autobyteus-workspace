@@ -18,7 +18,7 @@ User asked: "on the backend, we support delegate task tool, and review task resu
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape
 - Current Branch: codex/delegate-review-tool-result-shape
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape
 - Bootstrap Base Branch: origin/personal

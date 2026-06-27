@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/requirements.md`
 - Current Review Round: 2
 - Trigger: Superseding Round-3 general MCP effective-result projector implementation handoff from `implementation_engineer`.
 - Prior Review Round Reviewed: Round 1 in this same canonical report path.
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: N/A for this current implementation-review entry point.
 - API / E2E Execution Started Yet: `No` for the current superseding implementation path.
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` — implementation-owned unit/converter regression coverage changed in this superseding implementation. API/E2E-authored durable coverage: `No`.
@@ -127,7 +127,7 @@ Validation observed during code review:
 - `pnpm exec vitest run tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` from `autobyteus-server-ts` — Passed (`3` files, `88` tests).
 - `pnpm exec prisma generate --schema ./prisma/schema.prisma && pnpm exec tsc -p tsconfig.build.json --noEmit` from `autobyteus-server-ts` — Passed.
 - `git diff --check` from the worktree root — Passed.
-- `pnpm run typecheck` from `autobyteus-server-ts` — Not rerun during this review because the handoff includes `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`; the log shows the existing TS6059 rootDir/include configuration failure where tests are included while `rootDir` is `src`, matching the known repository blocker and not isolating a patch-specific diagnostic.
+- `pnpm run typecheck` from `autobyteus-server-ts` — Not rerun during this review because the handoff includes `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`; the log shows the existing TS6059 rootDir/include configuration failure where tests are included while `rootDir` is `src`, matching the known repository blocker and not isolating a patch-specific diagnostic.
 
 ## Legacy / Backward-Compatibility Verdict
 

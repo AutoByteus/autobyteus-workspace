@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/design-review-report.md`
 
 ## What Changed
 
@@ -49,7 +49,7 @@
 
 - Rich/multimodal content is now deterministically represented as `{ items: [...] }`; richer UI rendering remains future work as accepted in the design review.
 - Source eligibility may need extension if Codex/Claude introduce a new MCP source marker or tool-name convention.
-- `pnpm run typecheck` remains blocked by the repository `autobyteus-server-ts/tsconfig.json` including `tests` while `rootDir` is `src`, producing TS6059 diagnostics before a full project typecheck can complete. The captured log is `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
+- `pnpm run typecheck` remains blocked by the repository `autobyteus-server-ts/tsconfig.json` including `tests` while `rootDir` is `src`, producing TS6059 diagnostics before a full project typecheck can complete. The captured log is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
 - The worktree still contains pre-existing durable docs edits from the superseded task-specific pass (`autobyteus-server-ts/docs/modules/...`). I did not perform delivery-owned docs sync in this implementation pass; those docs should be reconciled later against the general MCP projector behavior.
 
 ## Task Design Health Assessment Implementation Check
@@ -81,7 +81,7 @@
 - `pnpm exec vitest run tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` from `autobyteus-server-ts` — Passed (`3` files, `88` tests).
 - `pnpm exec prisma generate --schema ./prisma/schema.prisma && pnpm exec tsc -p tsconfig.build.json --noEmit && git diff --check` from `autobyteus-server-ts` — Passed.
 - `git diff --check` from the worktree root — Passed.
-- `pnpm run typecheck` from `autobyteus-server-ts` — Blocked by existing/configuration TS6059 rootDir diagnostics because `tsconfig.json` has `rootDir: "src"` and `include: ["src", "tests"]`; log captured at `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-review-tool-result-shape/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
+- `pnpm run typecheck` from `autobyteus-server-ts` — Blocked by existing/configuration TS6059 rootDir diagnostics because `tsconfig.json` has `rootDir: "src"` and `include: ["src", "tests"]`; log captured at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/delegate-review-tool-result-shape/server-typecheck.log`.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
