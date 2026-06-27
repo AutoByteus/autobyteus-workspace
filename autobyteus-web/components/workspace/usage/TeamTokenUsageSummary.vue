@@ -19,20 +19,18 @@
           <col class="team-token-column-gross-input">
           <col class="team-token-column-output">
           <col class="team-token-column-total">
-          <col class="team-token-column-cost">
         </colgroup>
         <thead>
           <tr>
             <th scope="col">{{ $t('shell.tokenUsage.teamMember') }}</th>
             <th scope="col">{{ $t('shell.tokenUsage.grossInput') }}</th>
             <th scope="col">{{ $t('shell.tokenUsage.output') }}</th>
-            <th scope="col">{{ $t('shell.tokenUsage.totalTokens') }}</th>
-            <th scope="col">{{ $t('shell.tokenUsage.costLabel') }}</th>
+            <th scope="col">{{ $t('shell.tokenUsage.totalMetric') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="rows.length === 0" class="team-token-state-row">
-            <td class="team-token-state-cell" colspan="5">
+            <td class="team-token-state-cell" colspan="4">
               {{ $t('shell.tokenUsage.teamNoMembers') }}
             </td>
           </tr>
@@ -60,30 +58,31 @@
 
             <template v-if="row.summary">
               <td class="team-token-metric-cell">
-                <span class="team-token-metric-value" :title="formatTokenDetail(row.summary.grossInputTokens)">{{ formatCompactInteger(row.summary.grossInputTokens) }}</span>
+                <span class="team-token-metric-primary" :title="formatTokenDetail(row.summary.grossInputTokens)">{{ formatCompactInteger(row.summary.grossInputTokens) }}</span>
+                <span class="team-token-metric-cost" :title="formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus)">
+                  {{ formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus) }}
+                </span>
               </td>
               <td class="team-token-metric-cell">
-                <span class="team-token-metric-value" :title="formatTokenDetail(row.summary.outputTokens)">{{ formatCompactInteger(row.summary.outputTokens) }}</span>
+                <span class="team-token-metric-primary" :title="formatTokenDetail(row.summary.outputTokens)">{{ formatCompactInteger(row.summary.outputTokens) }}</span>
+                <span class="team-token-metric-cost" :title="formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus)">
+                  {{ formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus) }}
+                </span>
               </td>
-              <td class="team-token-metric-cell">
-                <span class="team-token-metric-value team-token-total-value" :title="formatTokenDetail(row.summary.totalTokens)">{{ formatCompactInteger(row.summary.totalTokens) }}</span>
-              </td>
-              <td class="team-token-cost-cell">
-                <span class="team-token-cost-value" :title="`${formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus)} · ${formatStatus(row.summary.apiCostStatus)}`">
-                  <span class="team-token-cost-main">
-                    <span>{{ formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus) }}</span>
-                    <span :class="compactStatusClass(row.summary.apiCostStatus)">{{ formatStatus(row.summary.apiCostStatus) }}</span>
+              <td class="team-token-metric-cell team-token-total-metric-cell">
+                <span class="team-token-metric-primary team-token-total-value" :title="formatTokenDetail(row.summary.totalTokens)">{{ formatCompactInteger(row.summary.totalTokens) }}</span>
+                <span class="team-token-metric-cost-line" :title="formatTotalCostTitle(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus)">
+                  <span class="team-token-metric-cost">
+                    {{ formatCost(row.summary.estimatedApiTotalCost, row.summary.currency, row.summary.apiCostStatus) }}
                   </span>
-                  <span class="team-token-cost-split">
-                    {{ $t('shell.tokenUsage.inputCostShort') }} {{ formatCost(row.summary.estimatedApiInputCost, row.summary.currency, row.summary.apiCostStatus) }}
-                    <span class="text-slate-300">·</span>
-                    {{ $t('shell.tokenUsage.outputCostShort') }} {{ formatCost(row.summary.estimatedApiOutputCost, row.summary.currency, row.summary.apiCostStatus) }}
+                  <span v-if="shouldShowMetricStatus(row.summary.apiCostStatus)" class="team-token-metric-status">
+                    <span :class="compactStatusClass(row.summary.apiCostStatus)">{{ formatStatus(row.summary.apiCostStatus) }}</span>
                   </span>
                 </span>
               </td>
             </template>
 
-            <td v-else class="team-token-empty-cell" colspan="4">
+            <td v-else class="team-token-empty-cell" colspan="3">
               <span v-if="row.loading">{{ $t('shell.tokenUsage.teamLoading') }}</span>
               <span v-else-if="row.error">{{ $t('shell.tokenUsage.teamUnavailable') }}</span>
               <span v-else>{{ $t('shell.tokenUsage.teamNoUsage') }}</span>
@@ -103,24 +102,25 @@
               </span>
             </th>
             <td class="team-token-metric-cell">
-              <span class="team-token-metric-value" :title="formatTokenDetail(teamTotalSummary.grossInputTokens)">{{ formatCompactInteger(teamTotalSummary.grossInputTokens) }}</span>
+              <span class="team-token-metric-primary" :title="formatTokenDetail(teamTotalSummary.grossInputTokens)">{{ formatCompactInteger(teamTotalSummary.grossInputTokens) }}</span>
+              <span class="team-token-metric-cost" :title="formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                {{ formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+              </span>
             </td>
             <td class="team-token-metric-cell">
-              <span class="team-token-metric-value" :title="formatTokenDetail(teamTotalSummary.outputTokens)">{{ formatCompactInteger(teamTotalSummary.outputTokens) }}</span>
+              <span class="team-token-metric-primary" :title="formatTokenDetail(teamTotalSummary.outputTokens)">{{ formatCompactInteger(teamTotalSummary.outputTokens) }}</span>
+              <span class="team-token-metric-cost" :title="formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                {{ formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+              </span>
             </td>
-            <td class="team-token-metric-cell">
-              <span class="team-token-metric-value team-token-total-value" :title="formatTokenDetail(teamTotalSummary.totalTokens)">{{ formatCompactInteger(teamTotalSummary.totalTokens) }}</span>
-            </td>
-            <td class="team-token-cost-cell">
-              <span class="team-token-cost-value" :title="`${formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)} · ${formatStatus(teamTotalSummary.apiCostStatus)}`">
-                <span class="team-token-cost-main">
-                  <span>{{ formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}</span>
-                  <span :class="compactStatusClass(teamTotalSummary.apiCostStatus)">{{ formatStatus(teamTotalSummary.apiCostStatus) }}</span>
+            <td class="team-token-metric-cell team-token-total-metric-cell">
+              <span class="team-token-metric-primary team-token-total-value" :title="formatTokenDetail(teamTotalSummary.totalTokens)">{{ formatCompactInteger(teamTotalSummary.totalTokens) }}</span>
+              <span class="team-token-metric-cost-line" :title="formatTotalCostTitle(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus)">
+                <span class="team-token-metric-cost">
+                  {{ formatCost(teamTotalSummary.estimatedApiTotalCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
                 </span>
-                <span class="team-token-cost-split">
-                  {{ $t('shell.tokenUsage.inputCostShort') }} {{ formatCost(teamTotalSummary.estimatedApiInputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
-                  <span class="text-slate-300">·</span>
-                  {{ $t('shell.tokenUsage.outputCostShort') }} {{ formatCost(teamTotalSummary.estimatedApiOutputCost, teamTotalSummary.currency, teamTotalSummary.apiCostStatus) }}
+                <span v-if="shouldShowMetricStatus(teamTotalSummary.apiCostStatus)" class="team-token-metric-status">
+                  <span :class="compactStatusClass(teamTotalSummary.apiCostStatus)">{{ formatStatus(teamTotalSummary.apiCostStatus) }}</span>
                 </span>
               </span>
             </td>
@@ -159,11 +159,22 @@ const {
 } = createTokenUsageFormatter(t);
 
 const compactStatusClass = (status: string): string => {
-  const base = 'inline-flex max-w-full text-[10px] font-semibold leading-tight';
+  const base = 'inline-flex max-w-full rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-tight';
   if (status === 'estimated') return `${base} text-emerald-700`;
   if (status === 'local_no_api_bill') return `${base} text-sky-700`;
   if (status === 'mixed') return `${base} text-slate-600`;
   return `${base} text-amber-700`;
+};
+
+const shouldShowMetricStatus = (status: string): boolean => status !== 'estimated';
+
+const formatTotalCostTitle = (
+  value: number | null,
+  currency: string | null,
+  status: string,
+): string => {
+  const cost = formatCost(value, currency, status);
+  return shouldShowMetricStatus(status) ? `${cost} · ${formatStatus(status)}` : cost;
 };
 </script>
 
@@ -183,7 +194,7 @@ const compactStatusClass = (status: string): string => {
 }
 
 .team-token-table {
-  min-width: 48rem;
+  min-width: 42rem;
   width: 100%;
   table-layout: fixed;
   border-collapse: separate;
@@ -192,23 +203,19 @@ const compactStatusClass = (status: string): string => {
 }
 
 .team-token-column-member {
-  width: 24%;
+  width: 28%;
 }
 
 .team-token-column-gross-input {
-  width: 14%;
+  width: 23%;
 }
 
 .team-token-column-output {
-  width: 12%;
+  width: 20%;
 }
 
 .team-token-column-total {
-  width: 15%;
-}
-
-.team-token-column-cost {
-  width: 35%;
+  width: 29%;
 }
 
 .team-token-table th,
@@ -232,8 +239,7 @@ const compactStatusClass = (status: string): string => {
 }
 
 .team-token-table thead th:not(:first-child),
-.team-token-metric-cell,
-.team-token-cost-cell {
+.team-token-metric-cell {
   text-align: right;
 }
 
@@ -298,17 +304,19 @@ const compactStatusClass = (status: string): string => {
   white-space: nowrap;
 }
 
-.team-token-metric-value,
-.team-token-cost-value {
+.team-token-metric-primary,
+.team-token-metric-cost,
+.team-token-metric-cost-line {
   color: rgb(15 23 42);
-  font-size: 0.875rem;
   line-height: 1.25rem;
   font-variant-numeric: tabular-nums;
 }
 
-.team-token-metric-value {
+.team-token-metric-primary {
   display: block;
   overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -318,33 +326,34 @@ const compactStatusClass = (status: string): string => {
   color: rgb(2 6 23);
 }
 
-.team-token-cost-value {
-  display: block;
-  min-width: 0;
-  font-weight: 700;
-}
-
-.team-token-cost-main {
-  display: flex;
-  min-width: 0;
-  align-items: baseline;
-  justify-content: flex-end;
-  gap: 0.25rem;
-}
-
-.team-token-cost-main > span:first-child {
-  min-width: 0;
-  white-space: nowrap;
-}
-
-.team-token-cost-split {
+.team-token-metric-cost {
   display: block;
   margin-top: -0.0625rem;
+  overflow: hidden;
   color: rgb(100 116 139);
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: 0.6875rem;
+  font-weight: 600;
   line-height: 1rem;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.team-token-metric-cost-line {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0 0.35rem;
+}
+
+.team-token-metric-cost-line .team-token-metric-cost {
+  min-width: 0;
+  margin-top: 0;
+}
+
+.team-token-metric-status {
+  min-width: 0;
 }
 
 .team-token-empty-cell,
