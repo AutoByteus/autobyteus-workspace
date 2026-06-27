@@ -146,4 +146,4 @@ Completed on `2026-06-27`.
 - Version sync: `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` are both `1.3.80`; managed messaging manifest is synced to `v1.3.80`.
 - Local Linux Electron test AppImage was preserved outside the removed worktree at `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-local-builds/focus-only-view-mode-simplification/AutoByteus_personal_linux-x64-1.3.79.AppImage`.
 - Dedicated ticket worktree removed, worktrees pruned, local ticket branch deleted, and remote ticket branch deleted.
-- GitHub release workflows triggered by `v1.3.80`; at final observation, Desktop, Android APK, iOS, messaging-gateway, and server Docker workflows were in progress.
+- GitHub release workflows triggered by `v1.3.80`; at final observation, messaging-gateway was completed/success while Desktop, Android APK, iOS, and server Docker workflows were still in progress.

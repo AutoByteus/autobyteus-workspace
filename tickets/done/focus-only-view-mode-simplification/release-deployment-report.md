@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-User verified the local Linux Electron build and requested finalization plus a new version release. Delivery archived the ticket, finalized the repository through the recorded `personal` target-branch workflow, ran the documented release helper, pushed release tag `v1.3.80`, and cleaned up the dedicated ticket worktree/branches. The pushed release tag triggered the documented GitHub release workflows for desktop, Android APK, iOS, messaging-gateway, and server Docker; at final observation, all five workflows were still in progress.
+User verified the local Linux Electron build and requested finalization plus a new version release. Delivery archived the ticket, finalized the repository through the recorded `personal` target-branch workflow, ran the documented release helper, pushed release tag `v1.3.80`, and cleaned up the dedicated ticket worktree/branches. The pushed release tag triggered the documented GitHub release workflows for desktop, Android APK, iOS, messaging-gateway, and server Docker; at final observation, messaging-gateway had completed successfully and the other observed release workflows were still in progress.
 
 ## Handoff Summary
 
@@ -87,7 +87,7 @@ User verified the local Linux Electron build and requested finalization plus a n
   - Desktop Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118745
   - Android APK Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118744
   - iOS App Store Connect Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118747
-  - Release Messaging Gateway: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118751
+  - Release Messaging Gateway: `completed/success` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118751
   - Server Docker Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118755
 - Blocker (if applicable): N/A
 
