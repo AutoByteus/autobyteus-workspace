@@ -253,7 +253,11 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
   media files continue to project as generated-output file changes.
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext` and inherit the canonical ready-to-run/no-dependencies
-  guidance from the shared manifest/schema.
+  guidance from the shared manifest/schema. AutoByteus native execution
+  round-trips that context through `initialCustomData.teamContext`; the payload
+  must preserve typed `agent` / `agent_team` member rows, team-definition ids,
+  and ingress/coordinator identity so local AutoByteus `delegate_task` calls can
+  resolve the same team targets advertised in server prompts.
 - `publish_artifacts` calls the published-artifact publication service for the
   active owning run and continues to drive published-artifact projection/events.
 - Configured MCP-origin tools use their registered AutoByteus names, including

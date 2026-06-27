@@ -9,6 +9,7 @@ import type { TeamManager } from "../team-manager.js";
 import type { MixedTeamRunContextEnvelope } from "./mixed-team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -81,6 +82,21 @@ export class MixedTeamRunBackend implements TeamRunBackend {
       return await this.teamManager.postMessage(message, target, targetMemberRunId);
     } catch (error) {
       return buildCommandFailure("post team message", error);
+    }
+  }
+
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+
+    try {
+      return await this.teamManager.postMessageToConversationTarget(message, address);
+    } catch (error) {
+      return buildCommandFailure("post team conversation target message", error);
     }
   }
 

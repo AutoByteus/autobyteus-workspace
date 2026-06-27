@@ -22,6 +22,7 @@ import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
 import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import {
   getMemberTeamContextBuilder,
   type MemberTeamContextBuilder,
@@ -112,6 +113,17 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       this.publishCommandStatus("error", String(error));
       throw error;
     }
+  }
+
+  async postMessageToConversationTarget(
+    _message: AgentInputUserMessage,
+    _address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "INVALID_TARGET",
+      message: `Agent member '${this.context.memberRouteKey}' cannot contain child conversation target segments.`,
+    };
   }
 
   async deliverInterMemberMessage(

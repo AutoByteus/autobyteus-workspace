@@ -209,20 +209,26 @@ parent-boundary recipients such as `program_manager`.
 Team member focus has three related, intentionally separate meanings. Roster or
 history visual focus is the route key currently selected for display in the
 history tree, Focus pane, Grid, and Spotlight surfaces; it is resolved from the
-recursive `memberTree` and can point at inactive or all-offline logical members
-so users can inspect their saved member history. User-message target focus is
-the route key selected by `resolveTeamUserMessageTarget(...)` for the shared
-composer and text send path. It first preserves the valid roster-focused leaf or
+recursive `memberTree` plus task-execution projections and can point at inactive
+or all-offline logical members so users can inspect their saved member history.
+User-message target focus is the typed `ConversationTargetAddress` selected by
+`resolveTeamConversationTargetAddressResult(...)` for the shared composer and
+text send path. It first preserves the valid roster-focused structural leaf or
 subteam target, so the first message in a new/all-offline team can go directly
-to a focused non-coordinator member instead of falling back to the coordinator.
-Draft context files, finalized attachment ownership, optimistic local user
-messages, and outbound `SEND_MESSAGE.target_member_route_key` all use that same
-target. Missing or stale focused members fail validation instead of silently
-retargeting; the active-execution safety fallback is only used for task-agent
-only logical-member conversations that should not receive ordinary user chat.
-Active-execution command focus remains the safe runtime-control route key; it is
-normalized through the active runtime/member context so stale task-agent or
-inactive logical rows are not accidentally used as stop/interrupt targets.
+to a focused non-coordinator member instead of falling back to the coordinator;
+it also addresses runtime task-agent executions, task-team roots, and members
+inside task-team executions with explicit `task_agent` / `task_team` segments
+instead of encoding runtime ids into route-key strings. Draft context files,
+finalized attachment ownership, and optimistic local user messages use the
+resolver's local target key, while outbound team chat sends
+`SEND_MESSAGE.conversation_target_address` as the backend routing contract.
+Missing or stale focused members and incomplete runtime identity fail validation
+instead of silently retargeting; the active-execution safety fallback is only
+used for task-agent-only logical-member conversations that should not receive
+ordinary user chat. Active-execution command focus remains the safe
+runtime-control route key; it is normalized through the active runtime/member
+context so stale task-agent or inactive logical rows are not accidentally used
+as stop/interrupt targets.
 
 The active-execution routing contract also applies to the shared composer stop
 control. Team interrupt dispatch resolves the active-execution-focused member at

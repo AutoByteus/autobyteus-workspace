@@ -1,0 +1,695 @@
+{
+  "timestamp": "2026-06-27T07:46:43.903Z",
+  "frontendUrl": "http://127.0.0.1:13000/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56&workspaceExecutionMemberRouteKey=program_manager",
+  "chromeVersion": {
+    "Browser": "Chrome/149.0.7827.199",
+    "Protocol-Version": "1.3",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+    "V8-Version": "14.9.207.35",
+    "WebKit-Version": "537.36 (@5bbcd10e80dc2ae6cae531f4de2a9deb432369f8)",
+    "webSocketDebuggerUrl": "ws://127.0.0.1:19222/devtools/browser/6a7d5e93-dbf8-44e8-8481-0a7ee1fdd9a7"
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/workspace-loaded.png",
+  "seedPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/seed.json",
+  "teamRunId": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+  "modelIdentifier": "gpt-5.5",
+  "uiLoaded": {
+    "containsProgramManager": true,
+    "containsBuildSquad": true,
+    "containsFocusMode": true,
+    "bodyTextBefore": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nP\nParentDeliveryTeam-live_browser_1782546057252_dc2cab6d\n(1)\nNew - ParentDeliveryTeam-live_browser_1782546057252_dc2cab6d\n5m\nP\nprogram_manager\n5m\nB\nBuildSquad\nTEAM\n5m\nR\nreview_lead\n5m\nQ\nqa_specialist\n5m\nSettings\nP\nprogram_manager\nOffline\nFocus\nGrid\nSpotlight\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+    "bodyTextAfter": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nTEAMS\nP\nParentDeliveryTeam-live_browser_1782546057252_dc2cab6d\n(1)\nNew - ParentDeliveryTeam-live_browser_1782546057252_dc2cab6d\n5m\nP\nprogram_manager\n5m\nB\nBuildSquad\nTEAM\n5m\nR\nreview_lead\n5m\nQ\nqa_specialist\n5m\nSettings\nP\nprogram_manager\nOffline\nFocus\nGrid\nSpotlight\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files."
+  },
+  "probe": {
+    "connected": true,
+    "sentLabels": [
+      "stale task-agent A",
+      "stale task-agent B concurrent",
+      "stale task-team root",
+      "stale task-team child",
+      "nested runtime path serialization"
+    ],
+    "ids": {
+      "taskAgentA": "LIVE_BROWSER_1782546400823_TASK_AGENT_A",
+      "taskAgentB": "LIVE_BROWSER_1782546400823_TASK_AGENT_B",
+      "taskTeamRoot": "LIVE_BROWSER_1782546400823_TASK_TEAM_ROOT",
+      "taskTeamChild": "LIVE_BROWSER_1782546400823_TASK_TEAM_CHILD",
+      "taskTeamNestedA": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_A",
+      "taskTeamNestedB": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_B",
+      "nestedTaskAgent": "LIVE_BROWSER_1782546400823_NESTED_TASK_AGENT"
+    },
+    "rawInvalid": {
+      "messages": [
+        {
+          "type": "CONNECTED",
+          "payload": {
+            "team_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "session_id": "85d9d764-ed0f-437d-b9ad-dc422a10b7ef"
+          }
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_name": "program_manager",
+            "agent_id": "program_manager_live_browser_1782546057252_dc2ca_9d9f5fac0e6f483ab86475305355bffa",
+            "member_route_key": "program_manager",
+            "member_path": [
+              "program_manager"
+            ],
+            "source_route_key": "program_manager",
+            "source_path": [
+              "program_manager"
+            ]
+          }
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_name": "BuildSquad",
+            "agent_id": "buildsquad_live_browser_1782546057252_dc2cab6d_e57e8758e9b8461fba4d23fd122dad21",
+            "member_route_key": "BuildSquad",
+            "member_path": [
+              "BuildSquad"
+            ],
+            "source_route_key": "BuildSquad",
+            "source_path": [
+              "BuildSquad"
+            ]
+          }
+        },
+        {
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "offline",
+            "source_path": []
+          }
+        },
+        {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "member_path[1] must be a non-empty string."
+          }
+        }
+      ],
+      "error": {
+        "type": "ERROR",
+        "payload": {
+          "code": "INVALID_TARGET",
+          "message": "member_path[1] must be a non-empty string."
+        }
+      }
+    }
+  },
+  "websocket": {
+    "created": [
+      {
+        "requestId": "51336.1071",
+        "url": "ws://127.0.0.1:18000/ws/agent-team/parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+        "ts": 1782546398946
+      },
+      {
+        "requestId": "51336.1084",
+        "url": "ws://127.0.0.1:18000/ws/agent-team/parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+        "ts": 1782546400826
+      },
+      {
+        "requestId": "51336.1086",
+        "url": "ws://127.0.0.1:18000/ws/agent-team/parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+        "ts": 1782546401388
+      }
+    ],
+    "sentSendMessages": [
+      {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "LIVE_BROWSER_1782546400823 stale task-agent A",
+          "context_file_paths": [],
+          "image_urls": [],
+          "conversation_target_address": {
+            "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "segments": [
+              {
+                "kind": "member",
+                "member_route_key": "program_manager"
+              },
+              {
+                "kind": "task_agent",
+                "task_agent_run_id": "LIVE_BROWSER_1782546400823_TASK_AGENT_A"
+              }
+            ]
+          },
+          "message_id": "LIVE_BROWSER_1782546400823_stale_task-agent_A",
+          "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-agent_A"
+        }
+      },
+      {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "LIVE_BROWSER_1782546400823 stale task-agent B",
+          "context_file_paths": [],
+          "image_urls": [],
+          "conversation_target_address": {
+            "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "segments": [
+              {
+                "kind": "member",
+                "member_route_key": "program_manager"
+              },
+              {
+                "kind": "task_agent",
+                "task_agent_run_id": "LIVE_BROWSER_1782546400823_TASK_AGENT_B"
+              }
+            ]
+          },
+          "message_id": "LIVE_BROWSER_1782546400823_stale_task-agent_B",
+          "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-agent_B"
+        }
+      },
+      {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "LIVE_BROWSER_1782546400823 stale task-team root",
+          "context_file_paths": [],
+          "image_urls": [],
+          "conversation_target_address": {
+            "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "segments": [
+              {
+                "kind": "member",
+                "member_route_key": "BuildSquad"
+              },
+              {
+                "kind": "task_team",
+                "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_ROOT"
+              }
+            ]
+          },
+          "message_id": "LIVE_BROWSER_1782546400823_stale_task-team_root",
+          "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-team_root"
+        }
+      },
+      {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "LIVE_BROWSER_1782546400823 stale task-team child",
+          "context_file_paths": [],
+          "image_urls": [],
+          "conversation_target_address": {
+            "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "segments": [
+              {
+                "kind": "member",
+                "member_route_key": "BuildSquad"
+              },
+              {
+                "kind": "task_team",
+                "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_CHILD"
+              },
+              {
+                "kind": "member",
+                "member_route_key": "review_lead"
+              }
+            ]
+          },
+          "message_id": "LIVE_BROWSER_1782546400823_stale_task-team_child",
+          "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-team_child"
+        }
+      },
+      {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "LIVE_BROWSER_1782546400823 nested runtime path",
+          "context_file_paths": [],
+          "image_urls": [],
+          "conversation_target_address": {
+            "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+            "segments": [
+              {
+                "kind": "member",
+                "member_route_key": "BuildSquad"
+              },
+              {
+                "kind": "task_team",
+                "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_A"
+              },
+              {
+                "kind": "member",
+                "member_route_key": "NestedSquad"
+              },
+              {
+                "kind": "task_team",
+                "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_B"
+              },
+              {
+                "kind": "member",
+                "member_route_key": "api_engineer"
+              },
+              {
+                "kind": "task_agent",
+                "task_agent_run_id": "LIVE_BROWSER_1782546400823_NESTED_TASK_AGENT"
+              }
+            ]
+          },
+          "message_id": "LIVE_BROWSER_1782546400823_nested_runtime_path",
+          "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_nested_runtime_path"
+        }
+      }
+    ],
+    "errorMessages": [
+      {
+        "code": "INVALID_TARGET",
+        "message": "Task-agent run 'LIVE_BROWSER_1782546400823_TASK_AGENT_A' was not found."
+      },
+      {
+        "code": "INVALID_TARGET",
+        "message": "Task-agent run 'LIVE_BROWSER_1782546400823_TASK_AGENT_B' was not found."
+      },
+      {
+        "code": "INVALID_TARGET",
+        "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_ROOT' was not found."
+      },
+      {
+        "code": "INVALID_TARGET",
+        "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_CHILD' was not found."
+      },
+      {
+        "code": "INVALID_TARGET",
+        "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_A' was not found."
+      },
+      {
+        "code": "INVALID_TARGET",
+        "message": "member_path[1] must be a non-empty string."
+      }
+    ],
+    "allSentFrames": [
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 stale task-agent A",
+            "context_file_paths": [],
+            "image_urls": [],
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_route_key": "program_manager"
+                },
+                {
+                  "kind": "task_agent",
+                  "task_agent_run_id": "LIVE_BROWSER_1782546400823_TASK_AGENT_A"
+                }
+              ]
+            },
+            "message_id": "LIVE_BROWSER_1782546400823_stale_task-agent_A",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-agent_A"
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 stale task-agent B",
+            "context_file_paths": [],
+            "image_urls": [],
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_route_key": "program_manager"
+                },
+                {
+                  "kind": "task_agent",
+                  "task_agent_run_id": "LIVE_BROWSER_1782546400823_TASK_AGENT_B"
+                }
+              ]
+            },
+            "message_id": "LIVE_BROWSER_1782546400823_stale_task-agent_B",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-agent_B"
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 stale task-team root",
+            "context_file_paths": [],
+            "image_urls": [],
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_route_key": "BuildSquad"
+                },
+                {
+                  "kind": "task_team",
+                  "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_ROOT"
+                }
+              ]
+            },
+            "message_id": "LIVE_BROWSER_1782546400823_stale_task-team_root",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-team_root"
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 stale task-team child",
+            "context_file_paths": [],
+            "image_urls": [],
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_route_key": "BuildSquad"
+                },
+                {
+                  "kind": "task_team",
+                  "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_CHILD"
+                },
+                {
+                  "kind": "member",
+                  "member_route_key": "review_lead"
+                }
+              ]
+            },
+            "message_id": "LIVE_BROWSER_1782546400823_stale_task-team_child",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_stale_task-team_child"
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 nested runtime path",
+            "context_file_paths": [],
+            "image_urls": [],
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_route_key": "BuildSquad"
+                },
+                {
+                  "kind": "task_team",
+                  "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_A"
+                },
+                {
+                  "kind": "member",
+                  "member_route_key": "NestedSquad"
+                },
+                {
+                  "kind": "task_team",
+                  "task_team_run_id": "LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_B"
+                },
+                {
+                  "kind": "member",
+                  "member_route_key": "api_engineer"
+                },
+                {
+                  "kind": "task_agent",
+                  "task_agent_run_id": "LIVE_BROWSER_1782546400823_NESTED_TASK_AGENT"
+                }
+              ]
+            },
+            "message_id": "LIVE_BROWSER_1782546400823_nested_runtime_path",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823_nested_runtime_path"
+          }
+        }
+      },
+      {
+        "requestId": "51336.1086",
+        "parsed": {
+          "type": "SEND_MESSAGE",
+          "payload": {
+            "content": "LIVE_BROWSER_1782546400823 raw invalid blank member path",
+            "message_id": "LIVE_BROWSER_1782546400823_RAW_INVALID",
+            "dedupe_key": "live-browser:LIVE_BROWSER_1782546400823:raw-invalid",
+            "conversation_target_address": {
+              "parent_team_run_id": "parentdeliveryteam_live_browser_1782546057252_dc_c704d65ba69943adaf99de3b3c109b56",
+              "segments": [
+                {
+                  "kind": "member",
+                  "member_path": [
+                    "BuildSquad",
+                    ""
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "allReceivedErrors": [
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "Task-agent run 'LIVE_BROWSER_1782546400823_TASK_AGENT_A' was not found."
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "Task-agent run 'LIVE_BROWSER_1782546400823_TASK_AGENT_B' was not found."
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_ROOT' was not found."
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_CHILD' was not found."
+          }
+        }
+      },
+      {
+        "requestId": "51336.1084",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "Task-team run 'LIVE_BROWSER_1782546400823_TASK_TEAM_NESTED_A' was not found."
+          }
+        }
+      },
+      {
+        "requestId": "51336.1086",
+        "parsed": {
+          "type": "ERROR",
+          "payload": {
+            "code": "INVALID_TARGET",
+            "message": "member_path[1] must be a non-empty string."
+          }
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "frontendServiceConnected": true,
+    "capturedAllExpectedFrontendSendFrames": true,
+    "capturedTaskAgentAAddress": true,
+    "capturedTaskAgentBAddress": true,
+    "capturedTaskTeamRootAddress": true,
+    "capturedTaskTeamChildAddress": true,
+    "capturedNestedRuntimeAddress": true,
+    "receivedInvalidTargetErrorsForExpectedIds": true,
+    "rawInvalidBlankPathRejected": true,
+    "noFallbackRecordedInPersistentMemberProjection": true
+  },
+  "projections": {
+    "program_manager": {
+      "getTeamMemberRunProjection": {
+        "agentRunId": "program_manager_live_browser_1782546057252_dc2ca_9d9f5fac0e6f483ab86475305355bffa",
+        "conversation": [],
+        "summary": null
+      }
+    },
+    "BuildSquad/review_lead": {
+      "getTeamMemberRunProjection": {
+        "agentRunId": "review_lead_live_browser_1782546057252_dc2cab6d_cc978d74f3c546e0ac63d6220a984c2f",
+        "conversation": [],
+        "summary": null
+      }
+    }
+  },
+  "consoleEvents": [
+    {
+      "type": "debug",
+      "args": [
+        "[vite] connecting..."
+      ]
+    },
+    {
+      "type": "debug",
+      "args": [
+        "[vite] connected."
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "serverStore: Initializing server config"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "serverStore: Not in Electron environment. Skipping server initialization."
+      ]
+    },
+    {
+      "type": "info",
+      "args": [
+        "<Suspense> is an experimental feature and its API will likely change."
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "ServerLoading: Component mounted with status:",
+        "running"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "[useTerminalSession] Connecting to:",
+        "ws://127.0.0.1:18000/ws/terminal/8a73b1a1-f966-4aad-8d32-4dc61125653f"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "[useTerminalSession] Connected"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "Team WebSocket connected"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "[useTerminalSession] Disconnected:",
+        1005,
+        ""
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "serverStore: Checking server health at /rest/health"
+      ]
+    },
+    {
+      "type": "log",
+      "args": [
+        "Team WebSocket connected"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    },
+    {
+      "type": "warning",
+      "args": [
+        "No member context found for message, skipping"
+      ]
+    }
+  ],
+  "networkFailures": [],
+  "pass": true
+}

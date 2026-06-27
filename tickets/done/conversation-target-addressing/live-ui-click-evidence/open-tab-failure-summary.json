@@ -1,0 +1,42 @@
+{
+  "capturedAt": "2026-06-27T08:45:22.478Z",
+  "tool": "mcp__autobyteus_agent_tools.open_tab",
+  "backend": "http://127.0.0.1:18000",
+  "frontend": "http://127.0.0.1:13000",
+  "supportedRunId": "parentdeliveryteam_live_ui_click_supported_17825_52430aedf6714f948cf523aceeb12c8b",
+  "firstAttemptRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a",
+  "firstAttempt": {
+    "coordinatorRuntime": "codex_app_server",
+    "model": "gpt-5.5",
+    "result": "delegate_task was not exposed to the coordinator; task-team projection was not created."
+  },
+  "secondAttempt": {
+    "coordinatorRuntime": "autobyteus",
+    "coordinatorModel": "gpt-5.5",
+    "childRuntime": "codex_app_server",
+    "childModel": "gpt-5.5",
+    "uiAction": "Opened workspace with open_tab, typed delegate_task request in visible composer, clicked the visible Send message button.",
+    "capturedSendPayload": {
+      "type": "SEND_MESSAGE",
+      "websocketUrl": "ws://127.0.0.1:18000/ws/agent-team/parentdeliveryteam_live_ui_click_supported_17825_52430aedf6714f948cf523aceeb12c8b",
+      "conversation_target_address": {
+        "segments": [
+          { "kind": "member", "member_route_key": "program_manager" }
+        ]
+      }
+    },
+    "result": "delegate_task tool executed but failed before task-team activation.",
+    "errorCode": "TASK_TEAM_TARGET_NOT_FOUND",
+    "errorMessage": "Team target 'BuildSquad' was not found as a visible team in the current team run.",
+    "taskTeamBadgeCount": 0,
+    "taskTeamChildBadgeCount": 0
+  },
+  "sourceEvidence": {
+    "bugLikelyIn": [
+      "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts",
+      "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts"
+    ],
+    "why": "The AutoByteus runtime instruction/roster advertised BuildSquad as a delegate_task team target, but the native tool execution context serializes members without memberKind/teamDefinitionId/representative fields and reconstructs every member as a member target, so resolveTeamTarget cannot find a memberKind='agent_team' row at execution time."
+  },
+  "impactOnLiveClickTest": "Blocked before step 7: no live task-team projection appeared, so the required UI click on a task-team child member and follow-up composer send could not be performed honestly."
+}

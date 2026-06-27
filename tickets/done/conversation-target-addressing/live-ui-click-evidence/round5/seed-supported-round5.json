@@ -1,0 +1,140 @@
+{
+  "unique": "live_ui_click_supported_1782553007246_daa6a962",
+  "coordinatorModelIdentifier": "gpt-5.5",
+  "childModelIdentifier": "gpt-5.5",
+  "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target-round5/workspace-supported",
+  "createdAgentDefinitionIds": [
+    "program-manager-live-ui-click-supported-1782553007246-daa6a962",
+    "review-lead-live-ui-click-supported-1782553007246-daa6a962",
+    "qa-specialist-live-ui-click-supported-1782553007246-daa6a962"
+  ],
+  "createdTeamDefinitionIds": [
+    "buildsquad-live-ui-click-supported-1782553007246-daa6a962",
+    "parentdeliveryteam-live-ui-click-supported-1782553007246-daa6a962"
+  ],
+  "agents": {
+    "coordinator": {
+      "id": "program-manager-live-ui-click-supported-1782553007246-daa6a962",
+      "name": "program_manager_live_ui_click_supported_1782553007246_daa6a962"
+    },
+    "reviewLead": {
+      "id": "review-lead-live-ui-click-supported-1782553007246-daa6a962",
+      "name": "review_lead_live_ui_click_supported_1782553007246_daa6a962"
+    },
+    "qa": {
+      "id": "qa-specialist-live-ui-click-supported-1782553007246-daa6a962",
+      "name": "qa_specialist_live_ui_click_supported_1782553007246_daa6a962"
+    }
+  },
+  "childTeamDefinition": {
+    "id": "buildsquad-live-ui-click-supported-1782553007246-daa6a962",
+    "name": "BuildSquad_live_ui_click_supported_1782553007246_daa6a962"
+  },
+  "parentTeamDefinition": {
+    "id": "parentdeliveryteam-live-ui-click-supported-1782553007246-daa6a962",
+    "name": "ParentDeliveryTeam_live_ui_click_supported_1782553007246_daa6a962"
+  },
+  "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_d24a36f448d246b8ad5b97e31d2f28ea",
+  "run": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_d24a36f448d246b8ad5b97e31d2f28ea"
+  },
+  "resume": {
+    "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_d24a36f448d246b8ad5b97e31d2f28ea",
+    "isActive": true,
+    "metadata": {
+      "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_d24a36f448d246b8ad5b97e31d2f28ea",
+      "teamDefinitionId": "parentdeliveryteam-live-ui-click-supported-1782553007246-daa6a962",
+      "teamDefinitionName": "ParentDeliveryTeam_live_ui_click_supported_1782553007246_daa6a962",
+      "coordinatorMemberRouteKey": "program_manager",
+      "createdAt": "2026-06-27T09:36:47.294Z",
+      "archivedAt": null,
+      "memberTree": [
+        {
+          "memberKind": "agent",
+          "memberRouteKey": "program_manager",
+          "memberPath": [
+            "program_manager"
+          ],
+          "memberName": "program_manager",
+          "memberRunId": "program_manager_live_ui_click_supported_17825530_0ed342cc28504924ac16fe80a805e7c0",
+          "runtimeKind": "autobyteus",
+          "platformAgentRunId": null,
+          "agentDefinitionId": "program-manager-live-ui-click-supported-1782553007246-daa6a962",
+          "llmModelIdentifier": "gpt-5.5",
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "llmConfig": {
+            "temperature": 0,
+            "tool_choice": "required"
+          },
+          "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target-round5/workspace-supported",
+          "applicationExecutionContext": null,
+          "role": null,
+          "description": null
+        },
+        {
+          "memberKind": "agent_team",
+          "memberRouteKey": "BuildSquad",
+          "memberPath": [
+            "BuildSquad"
+          ],
+          "memberName": "BuildSquad",
+          "memberRunId": "buildsquad_live_ui_click_supported_1782553007246_4d43a78267e643069cb596f4d4aec1a5",
+          "teamDefinitionId": "buildsquad-live-ui-click-supported-1782553007246-daa6a962",
+          "teamRunId": "buildsquad_live_ui_click_supported_1782553007246_4d43a78267e643069cb596f4d4aec1a5",
+          "coordinatorMemberRouteKey": "BuildSquad/review_lead",
+          "memberTree": [
+            {
+              "memberKind": "agent",
+              "memberRouteKey": "BuildSquad/review_lead",
+              "memberPath": [
+                "BuildSquad",
+                "review_lead"
+              ],
+              "memberName": "review_lead",
+              "memberRunId": "review_lead_live_ui_click_supported_178255300724_2929ebcaffb442758a4b7d2fb6c2b46d",
+              "runtimeKind": "codex_app_server",
+              "platformAgentRunId": null,
+              "agentDefinitionId": "review-lead-live-ui-click-supported-1782553007246-daa6a962",
+              "llmModelIdentifier": "gpt-5.5",
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "llmConfig": null,
+              "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target-round5/workspace-supported",
+              "applicationExecutionContext": null,
+              "role": null,
+              "description": null
+            },
+            {
+              "memberKind": "agent",
+              "memberRouteKey": "BuildSquad/qa_specialist",
+              "memberPath": [
+                "BuildSquad",
+                "qa_specialist"
+              ],
+              "memberName": "qa_specialist",
+              "memberRunId": "qa_specialist_live_ui_click_supported_1782553007_f0ee7cee78844f14b196390bd54caba4",
+              "runtimeKind": "codex_app_server",
+              "platformAgentRunId": null,
+              "agentDefinitionId": "qa-specialist-live-ui-click-supported-1782553007246-daa6a962",
+              "llmModelIdentifier": "gpt-5.5",
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "llmConfig": null,
+              "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target-round5/workspace-supported",
+              "applicationExecutionContext": null,
+              "role": null,
+              "description": null
+            }
+          ],
+          "role": null,
+          "description": null
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-06-27T09:36:47.328Z",
+  "note": "Coordinator uses AutoByteus runtime because delegate_task is exposed there; task-team child members use codex_app_server gpt-5.5."
+}

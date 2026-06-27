@@ -11,6 +11,7 @@ import type {
   TeamMemberNode,
   TeamMemberNodeKind,
 } from '~/types/agent/AgentTeamContext';
+import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 import type { Conversation } from '~/types/conversation';
 import type { ServerMessage } from './protocol';
 import {
@@ -36,6 +37,7 @@ export interface TaskTeamChildMemberProjectionIdentity {
   scopedMemberRouteKey: string;
   memberKind: TeamMemberNodeKind;
   runtimeMemberRunId: string | null;
+  conversationTargetSegments?: ConversationTargetSegment[];
 }
 
 export type TaskTeamScopedMessageResolution =
@@ -110,6 +112,26 @@ const createChildAgentContext = (
   return context;
 };
 
+const cloneConversationTargetSegments = (
+  segments: readonly ConversationTargetSegment[] | null | undefined,
+): ConversationTargetSegment[] => (segments ?? []).map((segment) => ({
+  ...segment,
+  ...(segment.kind === 'member' && segment.memberPath ? { memberPath: [...segment.memberPath] } : {}),
+}));
+
+const buildTaskTeamRootConversationSegments = (
+  parentIdentity: TaskTeamExecutionProjectionIdentity,
+): ConversationTargetSegment[] => {
+  if (parentIdentity.conversationTargetSegments?.length) {
+    return cloneConversationTargetSegments(parentIdentity.conversationTargetSegments);
+  }
+  const logicalRouteKey = parentIdentity.logicalTeamRouteKey ?? buildRouteKeyFromPath(parentIdentity.logicalTeamPath) ?? '';
+  return [
+    { kind: 'member', memberRouteKey: logicalRouteKey },
+    { kind: 'task_team', taskTeamRunId: parentIdentity.taskTeamRunId },
+  ];
+};
+
 const cloneNode = (
   teamContext: AgentTeamContext,
   parentIdentity: TaskTeamExecutionProjectionIdentity,
@@ -120,6 +142,10 @@ const cloneNode = (
   const scopedMemberRouteKey = buildTaskTeamScopedChildRouteKey(parentIdentity.taskTeamRunId, relativeRouteKey);
   const scopedMemberPath = [parentIdentity.taskTeamRunId, ...relativePath];
   const structuralSourceRouteKey = structuralNode.memberRouteKey;
+  const conversationTargetSegments: ConversationTargetSegment[] = [
+    ...buildTaskTeamRootConversationSegments(parentIdentity),
+    { kind: 'member', memberRouteKey: relativeRouteKey },
+  ];
   const base = {
     memberKind: structuralNode.memberKind,
     memberName: structuralNode.memberName,
@@ -135,6 +161,7 @@ const cloneNode = (
     taskTeamRelativeMemberPath: relativePath,
     structuralSourceRouteKey,
     structuralSourcePath: [...structuralNode.memberPath],
+    conversationTargetSegments,
     role: structuralNode.role ?? null,
     description: structuralNode.description ?? null,
     currentStatus: null,
@@ -246,6 +273,12 @@ export const resolveTaskTeamScopedMessage = (
       scopedMemberRouteKey,
       memberKind,
       runtimeMemberRunId: normalizeProjectionString(payload.agent_id) ?? normalizeProjectionString(payload.agentId),
+      conversationTargetSegments: rootNode?.conversationTargetSegments
+        ? [
+            ...cloneConversationTargetSegments(rootNode.conversationTargetSegments),
+            { kind: 'member', memberRouteKey: relativeMemberRouteKey },
+          ]
+        : undefined,
     },
   };
 };

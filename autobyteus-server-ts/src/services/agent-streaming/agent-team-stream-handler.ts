@@ -27,13 +27,12 @@ import {
 import {
   INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE,
   INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE,
-  SEND_MESSAGE_INVALID_TARGET_MESSAGE,
   TEAM_COMMAND_INVALID_TARGET_CODE,
-  hasInvalidCommandSelectorFields,
   resolveInterruptGenerationTargetRunId,
   resolveInterruptGenerationTargetSelector,
-  resolveSendMessageTargetSelector,
+  hasInvalidCommandSelectorFields,
 } from "./team-command-selector-parser.js";
+import { resolveSendMessageConversationTargetAddress } from "./team-conversation-target-address-parser.js";
 import {
   TeamRuntimeStatusSnapshotService,
   getTeamRuntimeStatusSnapshotService,
@@ -295,10 +294,10 @@ export class AgentTeamStreamHandler {
   ): Promise<void> {
     const teamRunId = teamRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
-    const targetSelector = resolveSendMessageTargetSelector(payload);
-    if (hasInvalidCommandSelectorFields(payload)) {
-      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${SEND_MESSAGE_INVALID_TARGET_MESSAGE}`);
-      this.sendInvalidTarget(connection, SEND_MESSAGE_INVALID_TARGET_MESSAGE);
+    const targetAddress = resolveSendMessageConversationTargetAddress(payload, teamRunId);
+    if (!targetAddress.ok) {
+      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${targetAddress.message}`);
+      this.sendInvalidTarget(connection, targetAddress.message);
       return;
     }
 
@@ -332,11 +331,14 @@ export class AgentTeamStreamHandler {
       metadata,
     });
 
-    const result = await teamRun.postMessage(userMessage, targetSelector);
+    const result = await teamRun.postMessageToConversationTarget(userMessage, targetAddress.address);
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
+      if (this.isInvalidTargetResult(result.code)) {
+        this.sendInvalidTarget(connection, result.message ?? "SEND_MESSAGE target is invalid.");
+      }
       return;
     }
     await this.teamRunService.recordRunActivity(teamRun, {
@@ -438,6 +440,16 @@ export class AgentTeamStreamHandler {
     connection?.send(
       createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message).toJson(),
     );
+  }
+
+  private isInvalidTargetResult(code: string | null | undefined): boolean {
+    if (!code) {
+      return false;
+    }
+    return code.includes("TARGET") ||
+      code.includes("TASK_AGENT") ||
+      code.includes("TASK_TEAM") ||
+      code === "RUN_NOT_FOUND";
   }
 
   private scheduleMetadataRefresh(teamRunId: string, teamRun: TeamRun): void {

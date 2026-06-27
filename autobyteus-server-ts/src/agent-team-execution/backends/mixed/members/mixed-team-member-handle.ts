@@ -5,12 +5,17 @@ import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/i
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import type { TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
 import type { MixedTeamMemberContext } from "../mixed-team-run-context.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 
 export interface MixedTeamMemberHandle {
   readonly context: MixedTeamMemberContext;
   isActive(): boolean;
   getStatusSnapshot(): AgentStatusPayload;
   postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
+  postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult>;
   deliverInterMemberMessage(
     request: ResolvedInterAgentMessageDeliveryRequest,
     beforePublishMemberInput?: (() => void) | null,

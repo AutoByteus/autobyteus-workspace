@@ -15,6 +15,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { selectorToRouteKey, type TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
@@ -264,6 +265,10 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return { accepted: true, turnId: "turn-direct", memberRunId: "run-coordinator", memberName: "coordinator" };
   }
 
+  async postMessageToConversationTarget(_message: AgentInputUserMessage, _address: ConversationTargetAddress): Promise<AgentOperationResult> {
+    return { accepted: true };
+  }
+
   async deliverInterAgentMessage(request: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     expect(request.sender.participant.memberName).toBe("worker");
     expect(request.target).toEqual({ kind: "recipient_name", recipientName: "coordinator" });
@@ -286,6 +291,9 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   async settleMember(): Promise<AgentOperationResult> { return { accepted: true }; }
   async startTaskAgentInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
   async settleTaskAgentInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async startTaskTeamInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async postMessageToTaskTeamInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async settleTaskTeamInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
   async terminate(): Promise<AgentOperationResult> { this.active = false; return { accepted: true }; }
   publishEvent(event: TeamRunEvent): void { for (const listener of this.listeners) listener(event); }
 
