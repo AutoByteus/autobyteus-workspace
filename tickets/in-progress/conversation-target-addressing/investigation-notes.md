@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete.
-- Current Status: Requirements refined and approved; design spec produced and ready for architecture review.
+- Current Status: Design-impact rework after API/E2E live `open_tab` blocker; upstream artifacts amended for architecture review / implementation reroute.
 - Investigation Goal: Determine how current frontend/backend user chat addresses team members, why runtime task participants are not currently chat-addressable, and what address model best reflects the real participant tree.
 - Scope Classification (`Small`/`Medium`/`Large`): Medium-Large.
 - Scope Classification Rationale: The feature crosses frontend focus/composer behavior, websocket payload schema, server command parsing, domain runtime routing, mixed backend recursion, optimistic conversation state, and durable coverage.
@@ -14,6 +14,7 @@
   3. Existing backend primitives can route to task agents and task-team roots but lack a unified conversation address router.
   4. A fixed five-kind model is less faithful than a typed recursive participant path.
   5. Runtime segment kind is needed to distinguish structural member names from concrete task-team/task-agent run ids.
+  6. Live `open_tab` validation requires a real task-team projection; for this ticket the supported setup is an AutoByteus coordinator that exposes `delegate_task`, and its native task-delegation context must preserve visible `agent_team` descriptors.
 
 ## Request Context
 
@@ -72,6 +73,9 @@ The user explicitly clarified that there is no fundamental conceptual difference
 | 2026-06-27 | Other | User clarification in chat | Validate product model. | User confirmed the right model is the same route/path idea with segment kind disambiguating member vs task-team run vs task-agent run. | No |
 | 2026-06-27 | Code | Architecture-level current-state read of `TeamWorkspaceView.vue`, `agentTeamRunStore.ts`, `TeamStreamingService.ts`, `messageTypes.ts`, `team-command-selector-parser.ts`, `agent-team-stream-handler.ts`, `team-run.ts`, `team-run-backend.ts`, `team-manager.ts`, `mixed-team-manager.ts`, `mixed-task-team-instance-registry.ts`, `mixed-task-team-member-handle.ts`, `mixed-sub-team-member-handle.ts` | Produce design spec from approved requirements and real current code path. | Confirmed route-only frontend send path, structural-only server parser, `TeamRun` public boundary, partial task-agent/task-team backend primitives, and child-run handle boundaries that the router must reuse. | No |
 | 2026-06-27 | Doc | `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-spec.md` | Capture target design for downstream architecture review. | Design uses recursive `ConversationTargetAddress` segments, parser-level flat structural normalization, `TeamRun.postMessageToConversationTarget`, and mixed backend recursive router. | Architecture review |
+| 2026-06-27 | Trace | API/E2E message and artifacts: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `live-ui-click-open-tab-report.md`, `live-ui-click-evidence/open-tab-failure-summary.json`, `live-ui-click-evidence/open-tab-task-team-delegate-failure.png` | Investigate design-impact / requirement-gap escalation from live `open_tab` UI validation. | Real UI composer send to coordinator worked. Codex GPT-5.5 did not expose `delegate_task`. AutoByteus GPT-5.5 exposed/invoked `delegate_task`, but failed `TASK_TEAM_TARGET_NOT_FOUND` for advertised team target `BuildSquad`; no task-team projection appeared. | Yes — upstream requirements/design amended; route to architecture/implementation. |
+| 2026-06-27 | Code | `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts`; `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts`; `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts`; `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts` | Verify why AutoByteus could advertise a team target but tool execution could not resolve it. | `buildAutoByteusManagedTeamContext` serializes `members` as generic member rows only. `TaskDelegationInputResolver.resolveTeamTarget` requires `memberKind === 'agent_team'` and ingress metadata. The native parser can only reconstruct team targets if the serialized context preserves that metadata. | Yes — implementation must preserve typed team descriptors in native context or share the existing MemberTeamContext-to-task-delegation mapper. |
+| 2026-06-27 | Command | `git diff --name-status`; `git diff -- autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts`; `git show HEAD:...` | Check current worktree state after API/E2E diagnostic note. | No production-source diff remains in the task-delegation native context files. The committed source still serializes AutoByteus managed `members` as generic rows only and therefore does not fix the live blocker. | Yes — implementation owner should start from committed source and add builder/parser/tests intentionally. |
 
 ## Current Behavior / Current Flow
 
@@ -199,6 +203,15 @@ The websocket handler should not reach directly into task-agent/task-team regist
 - Design Status: Produced on 2026-06-27 for architecture review.
 - Design Summary: Recursive typed `ConversationTargetAddress` path; old flat structural selectors normalize at parser boundary; websocket handler delegates to `TeamRun.postMessageToConversationTarget`; mixed backend owns recursive segment traversal through existing member/task registries and child-run handles; frontend resolver builds addresses from focused projection metadata and uses a separate local target key.
 
+## Design-Impact Rework — Live Task-Team Projection Creation
+
+- Trigger: API/E2E live `open_tab` validation could not complete a real task-team-child click/send because no task-team projection could be created through the live frontend/backend path.
+- Decision: The conversation-target address model remains correct and unchanged. However, preserving an existing supported real task-team projection creation path is in scope as a no-regression and validation precondition for this ticket.
+- Runtime expectation: This ticket does **not** require Codex app-server coordinators to expose `delegate_task`. The approved live setup should use a runtime family that actually exposes task delegation in the local environment; the observed supported path is an AutoByteus native coordinator.
+- Required implementation clarification: For AutoByteus native execution, `customData.teamContext.members` must preserve `agent_team` descriptors with `memberKind`, `teamDefinitionId`, route/path/run identity, optional child/coordinator data, and ingress/representative identity. A team target advertised in the runtime prompt must be resolvable by `TaskDelegationInputResolver.resolveTeamTarget(...)` during tool execution.
+- Scope boundary: This does not redesign delegation lifecycle semantics, review/settlement behavior, or tool approval. It repairs/preserves the existing descriptor handoff that lets a visible team target become a real task-team projection.
+- Current worktree note: no production-source diff remains from the API/E2E diagnostic edit. Implementation should start from committed source and add the AutoByteus context builder/parser/test changes intentionally.
+
 ## Notes For Architect Reviewer
 
 - The approved model is a recursive typed participant path, not a fixed five-kind union.
@@ -209,3 +222,4 @@ The websocket handler should not reach directly into task-agent/task-team regist
   - `task_agent` = concrete task-agent run id under the previously selected agent member, terminal.
 - Keep old flat payloads as parser-level normalization only.
 - The main architecture-review risk is boundary bypass. The websocket handler must not know mixed backend registry details.
+- Review the design-impact rework section: the added requirement is to preserve supported task-team projection creation by carrying typed `agent_team` descriptors through AutoByteus native task-delegation context; it should remain a narrow no-regression/validation-enabling fix, not a redesign of task lifecycle semantics.

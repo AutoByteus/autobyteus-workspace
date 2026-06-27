@@ -2,158 +2,151 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/requirements.md`
-- Current Review Round: 4
-- Trigger: Supplemental API/E2E live full-stack browser proof after user challenged the previous lack of live browser evidence.
-- Prior Review Round Reviewed: 3
-- Latest Authoritative Round: 4
+- Current Review Round: 5
+- Trigger: Implementation rework after the live UI `open_tab` task-team creation blocker was routed upstream as design impact, solution/architecture rework passed, and the approved narrow AutoByteus/task-delegation context slice was implemented.
+- Prior Review Round Reviewed: 4
+- Latest Authoritative Round: 5
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-spec.md`
+- Design Impact Response Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-impact-response-live-task-team-creation.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/api-e2e-execution-coverage-report.md`
-- API / E2E Execution Started Yet: `Yes`
-- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No` — no new repository-resident durable coverage code changed since Round 3; only ticket evidence/report artifacts were added or updated. The durable coverage added in API/E2E Round 1 remains reviewed and approved by Round 3.
+- API / E2E Execution Started Yet: `Yes` — earlier API/E2E found the live UI blocker; after this implementation review API/E2E must resume and rerun the real supported AutoByteus `delegate_task`/`open_tab` click-through.
+- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` — implementation rework added focused unit coverage at `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts`; no API/E2E-authored durable coverage changed in this rework.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Initial implementation review | N/A | CR-001, CR-002 | Fail | No | Local implementation fixes required before API/E2E coverage starts. |
-| 2 | Local Fix rework | CR-001, CR-002 | None | Pass | No | Prior findings resolved; implementation ready for API/E2E coverage investigation/execution. |
-| 3 | API/E2E durable coverage added/updated | CR-001, CR-002 no-regression check | None | Pass | No | Coverage-code re-review passed; ready for delivery. |
-| 4 | Supplemental live browser evidence/report update | CR-001, CR-002 no-regression check; Round 3 coverage-code decision | None | Pass | Yes | Live backend + Nuxt + Chrome evidence reviewed; delivery can proceed with updated evidence package. |
+| 2 | Local Fix rework | CR-001, CR-002 | None | Pass | No | Prior findings resolved; implementation became ready for API/E2E coverage investigation/execution. |
+| 3 | API/E2E durable coverage added/updated | CR-001, CR-002 no-regression check | None | Pass | No | Coverage-code re-review passed; ready for delivery at that point. |
+| 4 | Supplemental live browser evidence/report update | CR-001, CR-002 no-regression check; Round 3 coverage-code decision | None | Pass | No | Later live UI `open_tab` validation exposed a separate design impact around real task-team creation. |
+| 5 | AutoByteus/task-delegation design-impact implementation rework | CR-001, CR-002 no-regression check; design-impact constraints | None | Pass | Yes | Narrow source rework follows approved boundaries; ready for API/E2E to resume live `open_tab` validation. |
 
 ## Review Scope
 
-Reviewed the API/E2E Round 2 supplemental live-browser evidence and updated coverage/execution artifacts. Scope was intentionally limited to the new/updated ticket evidence and its implications for the already-reviewed implementation and durable coverage code.
+Fresh review performed against the code-reviewer skill, canonical shared design principles, and the updated artifact chain, with emphasis on the user's requested design-principles check for both frontend/backend boundaries.
 
-New or updated evidence artifacts reviewed:
+Implementation rework source/test files reviewed:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-smoke-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/live-browser-smoke-output.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/seed.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/workspace-loaded.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-browser-evidence/cleanup.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-context-member-mapper.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts`
 
-Durable coverage code previously reviewed in Round 3 remains unchanged by this supplemental evidence update:
+Design-boundary no-regression checks performed:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/tests/unit/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.test.ts`
+- Confirmed the rework is contained inside AutoByteus native context serialization and task-delegation context normalization/conversion.
+- Confirmed no projection creation logic was added to websocket handler, frontend resolver, or mixed conversation target router.
+- Rechecked the approved DI-001 spine: `MemberTeamContext -> buildAutoByteusManagedTeamContext -> native customData.teamContext.members -> buildTaskDelegationToolContextFromNativeContext -> TaskDelegationInputResolver.resolveTeamTarget -> task-team run/projection creation -> frontend projection available for conversation targeting`.
+- Rechecked that ordinary chat targeting remains separate from task lifecycle creation and that `ConversationTargetAddress` frontend/backend design is unchanged by this fix.
 
-Evidence / checks performed during this re-review:
+Validation run by reviewer:
 
-- Reviewed live browser smoke report and execution report Round 2 PASS.
-- Inspected live evidence JSON: all reported assertions are `true`; browser-captured `SEND_MESSAGE` frames use canonical typed `conversation_target_address`; real backend returned `INVALID_TARGET` for stale runtime ids and blank nested `member_path`; persistent member projections remained empty for invalid sends.
-- Visually inspected `workspace-loaded.png`; it shows the real workspace loaded with seeded parent team, `program_manager`, `BuildSquad`, `review_lead`, and `qa_specialist` visible.
-- Reviewed cleanup evidence; seeded team run terminated successfully and runtime sessions were stopped.
+- PASS: `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+- PASS: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts --reporter=dot` — 6 files / 56 tests.
+- PASS: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts --reporter=dot` — 4 files / 23 tests.
+- PASS: `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamConversationTargetAddress.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --reporter=dot` — 3 files / 65 tests.
 - PASS: `git diff --check`.
-- NOT RERUN in Round 4: focused server/frontend suites, because no implementation source or durable coverage code changed after Round 3. Round 3 validation and API/E2E Round 2 execution evidence remain the authoritative executable evidence.
-
-Current worktree note: delivery-owned documentation files and delivery artifacts appear to have changed since the prior code-review handoff. Those are outside this coverage/evidence re-review scope and should be finalized by `delivery_engineer` against the latest integrated state.
+- PASS: direct trailing-whitespace check for the new untracked source/test files.
+- PASS: changed source implementation file size guard.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | CR-001 | High | Still Resolved / Stronger Evidence | Live browser evidence captured typed task-agent A/B, task-team root, task-team child, and nested runtime `conversation_target_address` payloads emitted by browser-executed frontend `TeamStreamingService` against the real backend websocket. This supports that frontend projection/address serialization uses typed runtime ancestry and does not regress to unscoped route-only targeting. | No implementation source changed in this supplemental round. |
-| 1 | CR-002 | Medium | Still Resolved / Stronger Evidence | Live browser evidence includes backend rejection of a raw websocket payload with blank nested `member_path`, returning `INVALID_TARGET` with `member_path[1] must be a non-empty string.` | No parser source changed in this supplemental round. |
-| 3 | Coverage-code re-review PASS | N/A | Still Valid | No new repository-resident durable coverage code changed after Round 3; supplemental artifacts add evidence only. | Round 3 durable coverage-code decision remains valid. |
+| 1 | CR-001 | High | Still Resolved | Focused frontend and server tests still pass. This rework did not alter the task-team scoped projection code; search confirmed no new task-team projection creation path in websocket handler/frontend resolver/mixed conversation router. | No regression. |
+| 1 | CR-002 | Medium | Still Resolved | Parser tests still pass, including malformed flat/nested member-path entry rejection. This rework did not loosen the conversation target parser. | No regression. |
+| 4 | Live UI task-team creation blocker | Design Impact, routed upstream after Round 4 | Resolved for code-review scope | Design impact response and architecture review approved a narrow AutoByteus/task-delegation context slice. Source now preserves typed `agent_team` rows with `teamDefinitionId` and ingress identity, and tests prove `BuildSquad` resolves through `TaskDelegationInputResolver`. | API/E2E must still rerun the live UI proof. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-No implementation source files and no repository-resident durable coverage code were changed by the supplemental live-browser update after Round 3. The source implementation audit from Round 2 and the coverage-code audit from Round 3 remain authoritative.
-
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| N/A — no implementation source files changed in supplemental API/E2E Round 2 | N/A | N/A | N/A | N/A | N/A | Pass | None. |
-
-### Supplemental Evidence Artifact Audit
-
-| Evidence Artifact | Ownership / Placement | Maintainability / Traceability Check | Evidence Value | Required Action |
-| --- | --- | --- | --- | --- |
-| `live-browser-smoke-report.md` | Pass — ticket-scoped temporary execution evidence. | Pass — summarizes setup, assertions, evidence files, cleanup, and limitations. | High — documents real backend + Nuxt + Chrome execution. | None. |
-| `live-browser-evidence/live-browser-smoke-output.json` | Pass — ticket evidence directory. | Pass — includes assertions, captured websocket frames, backend errors, UI load evidence, and projection state. | High — proves browser-emitted canonical typed payloads and backend invalid-target/no-fallback behavior. | None. |
-| `live-browser-evidence/seed.json` | Pass — ticket evidence directory. | Pass — records seeded team/run/model/tree context for reproducibility. | Medium — supports evidence traceability. | None. |
-| `live-browser-evidence/workspace-loaded.png` | Pass — ticket evidence directory. | Pass — visual proof of loaded seeded workspace. | Medium — supports real UI load claim. | None. |
-| `live-browser-evidence/cleanup.json` | Pass — ticket evidence directory. | Pass — records successful team termination and runtime stop note. | Medium — supports cleanup completeness. | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts` | 44 | Pass | Pass | Pass — owns serialization of `MemberTeamContext` into AutoByteus native managed context only. | Pass — AutoByteus backend adapter context builder. | Pass | None. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-context-member-mapper.ts` | 68 | Pass | Pass | Pass — owns focused `MemberTeamDescriptor -> TaskDelegationContextMember` conversion/cloning policy. | Pass — task-delegation-owned mapper, not a generic shared dumping ground. | Pass | None. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | 211 | Pass | Pass | Pass — owns native AutoByteus tool-context normalization/validation only. | Pass — native task-delegation adapter under task-delegation tools. | Pass | None. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts` | 74 | Pass | Pass | Pass — service remains focused and now reuses the mapper instead of duplicating conversion logic. | Pass — existing task-delegation service location. | Pass | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Live evidence reinforces the approved posture: typed recursive `ConversationTargetAddress`, parser-bound structural compatibility, no structural fallback for runtime errors. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Supplemental proof stretches the frontend/browser spine: real Nuxt workspace -> browser-executed `TeamStreamingService` -> real backend websocket -> backend parser/error response. | None. |
-| Ownership boundary preservation and clarity | Pass | Evidence shows frontend emits typed payloads and backend owns parsing/rejection. It does not introduce a new bypass or mixed-level dependency. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Live smoke evidence is temporary ticket evidence, not production or durable test indirection. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The smoke uses the real built backend, real Nuxt app, real Chrome, and existing frontend streaming service rather than creating alternative routing mechanisms. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Evidence exercises the existing address model; no new source structure was added. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Captured payloads use `member`, `task_team`, and `task_agent` typed segments; no fixed-kind or runtime-id route-key fallback is shown. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Runtime-target rejection is still backend-owned; frontend only serializes the typed address. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | No new code boundary was introduced. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Evidence/report artifacts are ticket-scoped and do not change source responsibilities. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No new source dependencies were introduced. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Browser proof exercises the public frontend/backend websocket boundary; backend internals remain behind `TeamRun`/router boundaries already reviewed. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Live browser artifacts live under the task ticket evidence directory. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One smoke report plus one evidence folder is appropriate for temporary evidence. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Captured browser frames show canonical `conversation_target_address` payloads with explicit parent team metadata and typed segments. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Artifact names clearly identify live browser smoke evidence. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No source or durable coverage code was added in this supplemental update. | None. |
-| Patch-on-patch complexity control | Pass | Supplemental update is evidence-only and does not patch implementation or durable coverage. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Cleanup evidence shows the seeded run was terminated and runtime sessions were stopped; no temporary repository scripts were retained. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Existing durable coverage remains approved; supplemental live browser proof closes the earlier confidence gap around real UI/backend wiring. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Temporary browser proof is recorded as evidence rather than promoted into brittle permanent test code. Durable regression coverage remains in focused repository tests. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | API/E2E Round 2 latest result is PASS with live browser evidence; no open review findings remain. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Evidence confirms invalid runtime targets return errors instead of structural fallback. Flat selector compatibility remains parser-bound per requirements. | None. |
-| No legacy code retention for old behavior | Pass | No route-only frontend resolver or fixed-kind runtime target source path was reintroduced. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Implementation handoff records the design-impact reroute and the reviewed root cause as missing invariant / boundary issue / shared-structure looseness. Rework matches that assessment. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DI-001 spine is preserved: `MemberTeamContext -> AutoByteus managed context -> native task-delegation parser -> TaskDelegationInputResolver -> task-team lifecycle/projection`. | None. |
+| Ownership boundary preservation and clarity | Pass | Builder serializes, parser normalizes/validates, resolver resolves, task-delegation lifecycle creates the task-team. Chat websocket/router/frontend do not manufacture projections. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Mapper is an off-spine conversion concern serving task-delegation context builders; it does not own lifecycle or routing. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Rework extends existing AutoByteus context builder and task-delegation context parser/service. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Duplicate descriptor conversion from native and direct tool contexts is centralized in `task-delegation-context-member-mapper.ts`. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Agent rows and `agent_team` rows remain specialized; `teamDefinitionId`, coordinator, child run, and ingress are team-only fields. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Conversion policy has one task-delegation mapper; team-target resolution remains in `TaskDelegationInputResolver`. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | New mapper owns non-trivial conversion, specialization, cloning, and null-normalization policy. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | No conversation-address handler/router/frontend source was expanded to cover task-team lifecycle creation. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Dependencies point from AutoByteus builder to task-delegation descriptor shape and from task-delegation service/parser to local mapper; no UI/websocket/mixed router dependency on task-delegation internals was introduced. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | The fix strengthens the authoritative task-delegation path instead of having UI/websocket/conversation router depend on both chat boundaries and lifecycle internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Files are placed under AutoByteus backend adapter and task-delegation tool ownership. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One focused mapper avoids duplication without creating a broad new module hierarchy. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Native `teamContext.members` now carries explicit `memberKind: 'agent' | 'agent_team'`; parser rejects missing/invalid kind and missing team metadata. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names clearly describe AutoByteus managed context building, task-delegation context member mapping, and native context normalization. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Previous duplicate conversion in `task-delegation-tool-service.ts` was removed and reused via mapper. | None. |
+| Patch-on-patch complexity control | Pass | Rework is a narrow bounded slice after design/architecture pass; it does not layer another workaround into chat routing. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Generic-only native member rows are no longer the steady-state serialization; missing-kind rows now fail rather than downgrade. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Unit tests prove `BuildSquad` survives as `agent_team`, resolves through `TaskDelegationInputResolver`, and missing-kind/missing-team-metadata failures are explicit. Existing parser/router/frontend suites still pass. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | New tests use focused domain fixtures and resolver behavior instead of fake frontend projection setup. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Implementation is ready for API/E2E to resume. Live `open_tab` proof is still downstream API/E2E work. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Rework replaces generic native rows with typed rows; no fallback silently converts malformed team rows into agents. | None. |
+| No legacy code retention for old behavior | Pass | Old generic-only AutoByteus native member representation is not retained as a valid steady-state for task-delegation team targets. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.5
-- Overall score (`/100`): 95
-- Score calculation note: Simple average across the ten mandatory categories. The review decision is based on no open blocking findings and all mandatory checks passing, not the numeric average alone.
+- Overall score (`/10`): 9.4
+- Overall score (`/100`): 94
+- Score calculation note: Simple average across the ten mandatory categories. The pass decision is based on mandatory checks and no open findings, not the numeric average alone.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Live evidence now covers the real frontend/backend/browser spine in addition to durable parser/router/websocket tests. | Persistent-member LLM response was intentionally not invoked. | Keep optional live LLM suites for model-runtime confidence when needed. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Browser proof exercises public boundaries without adding source bypasses. | Evidence focuses on serialization/rejection rather than successful live task runtime delivery to existing runtime instances. | If needed later, run opt-in live runtime suites with real task delegation. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.6 | Captured frames demonstrate canonical typed payloads for task-agent, task-team root/child, concurrent ids, and nested runtime paths. | Evidence uses stale runtime ids to prove rejection/no fallback rather than successful runtime delivery. | Durable tests already cover delivery paths; live runtime success remains optional environment-gated proof. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | Evidence artifacts are ticket-scoped; no source structure was changed. | Delivery-owned docs changes are present in the worktree but outside this review scope. | Delivery should reconcile docs/final handoff with this latest evidence. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Live payloads reinforce typed segments and parser strictness. | None blocking. | Continue preventing runtime ids from becoming structural route strings. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Evidence/report names are clear and traceable. | Long generated run ids make evidence noisy but unavoidable. | Keep summaries concise in delivery handoff. |
-| `7` | `API/E2E Readiness` | 9.6 | Latest API/E2E result is PASS with both durable coverage and live browser proof. | Full external live runtime suites remain environment-gated. | Delivery should record these residuals accurately. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.4 | Live backend rejects stale runtime ids and blank nested member path without structural fallback. | Does not prove successful live LLM-backed task-agent/task-team delivery. | Existing durable tests plus optional live runtime suites cover remaining confidence ladder. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Invalid runtime sends did not land in persistent member projections; no legacy structural fallback evidence. | Required flat selector normalization remains by requirement. | Keep flat support parser-bound only. |
-| `10` | `Cleanup Completeness` | 9.4 | Cleanup JSON records team termination and stopped sessions; no temporary repository source scripts remain. | `/tmp` probe script was temporary by report, not repository evidence. | Delivery can mention cleanup and retained evidence paths. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implementation follows the approved live task-team creation spine from `MemberTeamContext` to task-delegation resolver without moving lifecycle behavior into chat routing. | API/E2E still needs to prove the full live UI consequence after this code review. | Rerun the real AutoByteus `delegate_task`/child-click/composer-send flow. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Serialization, normalization, resolution, lifecycle creation, and chat targeting remain in separate owners. | The mapper introduces a cross-file conversion dependency, but it is correctly owned under task-delegation. | Keep mapper focused; do not promote it into a generic mixed-domain helper. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | `memberKind` is explicit; `agent_team` rows require `teamDefinitionId` and ingress; no generic target guessing was added. | Native parser still accepts missing/empty member paths by falling back to member name, preserving established context behavior. | If future requirements demand stricter path presence, make that a separate explicit requirement. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | The fix is in AutoByteus/task-delegation context files, not websocket/frontend/mixed conversation router files. | `task-delegation-autobyteus-context.ts` is near the 220-line pressure guard but still focused. | Split only if future native context variants add unrelated responsibilities. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Typed agent/team specialization replaced loose generic rows; reusable mapper removes duplicated conversion policy. | Optional team fields remain numerous because they model real task-team identity. | Keep optional fields team-specific and avoid widening agent rows. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Names are domain-specific and readable; error paths include precise `members[index].field` labels. | Some native context types are necessarily verbose. | Keep error names precise as native context validation grows. |
+| `7` | `API/E2E Readiness` | 9.2 | Source and focused tests are ready for API/E2E to resume the live path. | The reviewer did not run live backend/Nuxt/Chrome `open_tab`; that is explicitly API/E2E-owned. | API/E2E must retry the real supported AutoByteus projection creation and composer send. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Tests cover missing kind, missing team definition, missing ingress, and positive resolver behavior; existing address parser tests cover malformed chat paths. | New task-delegation context tests do not separately assert every malformed member-path variant, though the implementation validates path array entries. | Add direct malformed native member-path fixtures if this parser is expanded further. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Generic-only native rows are not kept as a valid team-target path; no fake projection or lifecycle fallback was added. | Required flat structural chat selector compatibility remains elsewhere by requirement, parser-bound only. | Continue keeping compatibility at parser boundaries only. |
+| `10` | `Cleanup Completeness` | 9.4 | Duplicate conversion code was removed from the service; no obsolete source helper remains in the changed slice. | Ticket contains prior delivery/API/E2E artifacts that delivery/API/E2E must reconcile after resumed validation. | API/E2E and delivery should update their artifacts after the resumed live proof. |
 
 ## Findings
 
-No open findings in Round 4.
+No open findings in Round 5.
 
-Resolved prior findings remain closed:
+Resolved / superseded items:
 
-- CR-001 — Still resolved; supplemental live browser proof strengthens frontend/backend address-serialization confidence.
-- CR-002 — Still resolved; supplemental live browser proof strengthens backend parser strictness confidence.
+- CR-001 — Still resolved; no regression in scoped task-agent/task-team frontend projection ancestry.
+- CR-002 — Still resolved; no regression in strict conversation-target member-path parsing.
+- Live UI `open_tab` design impact — Resolved for code-review scope by preserving typed AutoByteus native `agent_team` rows and validating them through task-delegation-owned context parsing. Downstream live validation remains required.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery with updated live browser evidence. |
-| Tests | Test quality is acceptable | Pass | Durable tests remain reviewed; supplemental live proof is appropriate temporary evidence. |
-| Tests | Test maintainability is acceptable | Pass | Temporary live browser proof was not promoted into brittle permanent code; durable regression tests remain focused. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings; delivery should incorporate updated evidence and residuals. |
+| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E to resume, not delivery. |
+| Tests | Test quality is acceptable | Pass | New task-delegation unit coverage proves the positive team-target resolution path and key malformed metadata failures; prior focused suites still pass. |
+| Tests | Test maintainability is acceptable | Pass | Tests exercise domain behavior and resolver output, not fake UI state. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open review findings; API/E2E has clear live validation scenarios from the design impact response and implementation handoff. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Live proof confirms stale runtime targets error instead of falling back to structural member delivery. |
-| No legacy old-behavior retention in changed scope | Pass | No route-only resolver/fixed-kind runtime source path was reintroduced. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No temporary repository source files/scripts remain from the live proof; cleanup evidence is recorded. |
+| No backward-compatibility mechanisms in changed scope | Pass | No generic-row compatibility branch silently preserves malformed task-team rows. |
+| No legacy old-behavior retention in changed scope | Pass | AutoByteus native context now emits typed task-delegation member rows; missing/invalid `memberKind` fails. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Duplicate descriptor mapping was removed from the service and centralized in the focused task-delegation mapper. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -164,8 +157,8 @@ Resolved prior findings remain closed:
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Delivery still owns final integrated docs sync/no-impact against the latest state. The worktree already shows delivery-owned docs changes; delivery should make sure those docs and final handoff reference the latest live browser evidence and residuals.
-- Files or areas likely affected: `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-server-ts/docs/modules/agent_team_execution.md`, `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/agent_teams.md`, `autobyteus-web/docs/settings.md`, plus delivery ticket artifacts.
+- Why: The implementation changes AutoByteus native task-delegation context shape and is tied to the live UI validation path. Delivery will need to reconcile durable docs/final handoff after API/E2E reruns and records the latest authoritative result.
+- Files or areas likely affected: task-delegation/native context design notes if any exist; existing docs areas already listed in implementation handoff (`agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_team_execution.md`, frontend agent execution/team docs) should be reviewed by delivery after API/E2E completes.
 
 ## Classification
 
@@ -173,19 +166,19 @@ Resolved prior findings remain closed:
 
 ## Recommended Recipient
 
-- `delivery_engineer`
+- `api_e2e_engineer`
 
-Routing note: Delivery should reconcile its docs/final handoff with the latest API/E2E Round 2 live browser evidence before finalization.
+Routing note: API/E2E should resume with the cumulative package and rerun the real supported AutoByteus `delegate_task` projection creation, task-team child click, composer send, and websocket `conversation_target_address` verification. Fake projection setup remains disallowed.
 
 ## Residual Risks
 
-- Full live LMStudio/Codex/Claude nested mixed-runtime E2E suites remain environment-gated and were not run.
-- The live browser proof intentionally did not send a persistent-member composer message that invokes the configured LLM; it targeted address serialization/routing/no-fallback behavior.
-- The worktree is currently behind tracked remote state; delivery owns the required integrated-state refresh and result recording.
-- Full web Nuxt typecheck remains a known broad baseline failure from prior review; no changed-file diagnostics were previously found for this task.
+- The live backend + Nuxt + Chrome `open_tab` click-through has not been rerun after this rework; it is the required next API/E2E gate.
+- Full external live runtime/model suites remain environment-gated.
+- Known broad `pnpm -C autobyteus-web exec nuxt typecheck` baseline failures remain outside this server-only rework; focused frontend tests passed.
+- Future expansion of native task-delegation context parsing should add direct malformed native member-path fixtures if path policy becomes more central.
 
 ## Latest Authoritative Result
 
-- Review Decision: Pass — proceed to delivery with updated live browser evidence.
-- Score Summary: 9.5/10 (95/100), with every mandatory category at or above the clean-pass threshold.
-- Notes: Supplemental live backend + Nuxt + Chrome evidence is credible, well recorded, and strengthens the design/validation confidence. No coverage Local Fix, design reroute, or requirement-gap reroute is needed.
+- Review Decision: Pass — proceed to API/E2E; do not proceed directly to delivery.
+- Score Summary: 9.4/10 (94/100), with every mandatory category at or above the clean-pass threshold.
+- Notes: The rework is a good design on both backend and frontend boundaries: backend task-delegation owners now preserve and validate typed team descriptors, frontend/chat targeting remains untouched and local-only where intended, and no boundary-bypassing projection creation was introduced.

@@ -5,36 +5,41 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-spec.md`
-- Current Review Round: 1
-- Trigger: Initial design handoff from `solution_designer` after user-approved recursive participant-path model.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Current-State Evidence Basis: Read the three upstream artifacts and inspected current code in `autobyteus-web/utils/teamUserMessageTarget.ts`, `autobyteus-web/stores/agentTeamRunStore.ts`, `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`, `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`, frontend task projection files, `autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts`, `agent-team-stream-handler.ts`, `agent-team-execution/domain/team-run.ts`, `backends/team-run-backend.ts`, `backends/team-manager.ts`, `backends/mixed/mixed-team-manager.ts`, `mixed-persistent-member-registry.ts`, `mixed-sub-team-member-handle.ts`, `mixed-task-team-member-handle.ts`, and `mixed-task-team-instance-registry.ts`.
+- Current Review Round: 2
+- Trigger: Design-impact re-review after API/E2E real `open_tab` validation proved no real task-team projection could be created; `solution_designer` amended requirements/design with the AutoByteus native task-delegation context-preservation slice.
+- Prior Review Round Reviewed: 1
+- Latest Authoritative Round: 2
+- Current-State Evidence Basis: Freshly reloaded `architecture-reviewer` skill, `design-principles.md`, the design-review template, and `design-examples.md` before reviewing. Re-read amended requirements, investigation notes, design spec, design-impact response, prior design review, implementation handoff, code review report, API/E2E coverage investigation, API/E2E execution report, live UI test plan/report/failure JSON, and screenshot evidence. Inspected current source in `autobyteus-managed-team-context-builder.ts`, `task-delegation-autobyteus-context.ts`, `task-delegation-tool-service.ts`, `task-delegation-input-resolver.ts`, `member-team-context.ts`, `task-delegation-target.ts`, task delegation native tools, and verified the conversation-address router/websocket path has no `delegate_task`/AutoByteus context dependency.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial design handoff | N/A | None | Pass | Yes | Design is actionable for implementation with residual risks already identified in the spec. |
+| 1 | Initial design handoff | N/A | None | Pass | No | Recursive `ConversationTargetAddress` design passed for initial implementation. |
+| 2 | Design-impact handoff for live task-team projection creation | Round 1 had no open findings; original boundary risks rechecked against amended scope | None | Pass | Yes | Narrow AutoByteus native task-delegation context-preservation slice is ready for implementation rework. |
 
 ## Reviewed Design Spec
 
-The design replaces flat structural-only chat routing with a recursive typed `ConversationTargetAddress` rooted at the websocket-bound `TeamRun`. It keeps existing structural route/path payloads only as parser-normalized input, adds a `TeamRun.postMessageToConversationTarget` boundary, places mixed structural/runtime traversal behind the mixed backend, and changes frontend focus resolution from route-only to address-based resolution plus a separate local target key.
+Round 2 reviewed the original recursive conversation-target design plus the amendment titled `Design-Impact Amendment — Supported Live Task-Team Projection Creation` and the response artifact `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-impact-response-live-task-team-creation.md`.
+
+The original design remains intact: ordinary chat uses typed recursive `ConversationTargetAddress` segments behind `TeamRun.postMessageToConversationTarget`; task lifecycle commands remain separate.
+
+The amended slice adds one validation-enabling no-regression requirement: AutoByteus native coordinators that expose `delegate_task` and advertise visible team targets must preserve typed `agent_team` descriptor metadata into native tool execution, so `TaskDelegationInputResolver.resolveTeamTarget(...)` can resolve an advertised team such as `BuildSquad` and create a real task-team projection for the live UI child-click/send validation.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Design spec declares feature + behavior change + targeted refactor. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Classifies Missing Invariant + Boundary Or Ownership Issue + Shared Structure Looseness, backed by frontend route-only focus, parser structural-only selectors, and split backend task primitives. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Refactor needed now is explicit; lifecycle/tool approval reuse is intentionally deferred. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | New parser, domain type, `TeamRun` boundary, mixed router, frontend resolver, projection metadata, and local-key changes are mapped to files and migration steps. | None. |
+| Assessment is present for the current task posture | Pass | Original design health assessment remains present. The amendment explicitly classifies the new slice as a narrow validation-enabling no-regression fix, not a replacement for the conversation-address model. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Source evidence shows `buildAutoByteusManagedTeamContext(...)` serializes generic member rows only, while `resolveTeamTarget(...)` requires `memberKind === 'agent_team'` plus ingress metadata. Live evidence shows `BuildSquad` was advertised but failed with `TASK_TEAM_TARGET_NOT_FOUND`. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The amendment requires extending/reusing existing task-delegation context mapping for AutoByteus native custom data. It explicitly does not require Codex app-server `delegate_task` exposure or broader lifecycle redesign. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Required files/boundaries are named: AutoByteus managed context builder, native task-delegation context parser, optional focused mapper near task-delegation context code, and tests. Boundary rules forbid conversation-router pollution and fake frontend projections. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | Initial round. |
+| 1 | N/A | N/A | No open prior design findings | Round 1 findings section was `None`; original boundary risks were rechecked and are still controlled by amendment boundary rules. | Round 2 creates no new design findings. |
 
 ## Spine Inventory Verdict
 
@@ -45,166 +50,153 @@ The design replaces flat structural-only chat routing with a recursive typed `Co
 | DS-003 | Mixed backend segment traversal | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 | Return/event projection after delivery | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 | Frontend focus-to-address resolution | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DI-001 | AutoByteus native live task-team projection creation precondition | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+Round 2 DI-001 spine evaluated from the amended design and source evidence:
+
+`MemberTeamContext -> buildAutoByteusManagedTeamContext -> native customData.teamContext.members -> buildTaskDelegationToolContextFromNativeContext -> TaskDelegationToolService / TaskDelegationInputResolver.resolveTeamTarget -> task-team run/projection creation -> frontend projection available for DS-001 chat targeting`
+
+This matches the design examples' good shapes for team-run orchestration and adapter boundaries: the runtime tool context adapter serves the task-delegation owner; it does not become the conversation-address router.
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Frontend team workspace target resolution | Pass | Pass | Pass | Pass | Existing route-only utility is replaced/renamed rather than expanded into a mixed semantic catch-all. |
-| Frontend streaming protocol | Pass | Pass | Pass | Pass | Transport serialization remains separate from addressability decisions. |
-| Backend agent-streaming parser | Pass | Pass | Pass | Pass | Parser owns alias/legacy normalization and scalar/ambiguity rejection only. |
-| Team execution domain / `TeamRun` | Pass | Pass | Pass | Pass | Correct public authoritative boundary for websocket caller. |
-| Mixed backend conversation routing | Pass | Pass | Pass | Pass | New internal router is justified because no current owner composes structural, task-agent, and task-team traversal. |
-| Mixed registries and handles | Pass | Pass | Pass | Pass | Design extends existing handles instead of bypassing lifecycle/readiness boundaries. |
-| Task lifecycle/tool approval routing | Pass | Pass | Pass | Pass | Correctly left separate from ordinary chat semantics. |
+| Conversation-address frontend/backend routing | Pass | Pass | Pass | Pass | Amendment correctly leaves this unchanged. |
+| AutoByteus managed agent backend context | Pass | Pass | Pass | Pass | `buildAutoByteusManagedTeamContext(...)` is the correct owner for native `customData.teamContext` serialization. |
+| Task-delegation native context adapter | Pass | Pass | Pass | Pass | `task-delegation-autobyteus-context.ts` is the correct owner for normalizing native custom data into `TaskDelegationToolContext`. |
+| Task-delegation descriptor mapping | Pass | Pass | Pass | Pass | Reusing/extracting focused conversion from `MemberTeamDescriptor` to `TaskDelegationContextMember` is sound and avoids duplicated policy. |
+| Task-delegation input resolver | Pass | Pass | Pass | Pass | Existing `resolveTeamTarget(...)` invariant remains authoritative; the amendment feeds it correct data rather than weakening it. |
+| API/E2E live UI validation | Pass | Pass | Pass | Pass | No fake projection setup is approved; real runtime projection creation remains the validation path. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Conversation address/segment model | Pass | Pass | Pass | Pass | Backend domain and frontend type mirrors are explicit; parser/protocol mapping is separate. |
-| Member selector route/path normalization | Pass | Pass | Pass | Pass | Reuses existing selector helpers instead of duplicating route/path equivalence. |
-| Frontend local target key | Pass | Pass | Pass | Pass | Separated from backend structural route keys. |
-| Mixed recursive traversal policy | Pass | Pass | Pass | Pass | Centralized under `MixedConversationTargetRouter`, not duplicated in handler/store. |
+| `ConversationTargetAddress` | Pass | Pass | Pass | Pass | Unchanged and not reused for lifecycle commands. |
+| `MemberTeamDescriptor -> TaskDelegationContextMember` conversion | Pass | Pass | Pass | Pass | Design explicitly allows a focused mapper near task-delegation context code if direct and native contexts would otherwise duplicate conversion. |
+| Native AutoByteus `teamContext.members` descriptor shape | Pass | Pass | Pass | Pass | Should become typed enough to preserve agent/team distinction rather than generic rows. |
+| Team-target ingress identity | Pass | Pass | Pass | Pass | Required because `resolveTeamTarget(...)` already rejects team targets with no ingress. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ConversationTargetAddress` | Pass | Pass | Pass | Pass | Segment kind determines id semantics; parent run id is validation/debug only and cannot redirect. |
-| `member` segment selector | Pass | Pass | Pass | Pass | Route key/path equivalence is existing selector semantics; malformed/mixed/ambiguous input is required to be rejected or normalized at parser/domain boundaries. |
-| `task_team` segment | Pass | Pass | Pass | N/A | Runtime id is typed and not encoded into structural route strings. |
-| `task_agent` segment | Pass | Pass | Pass | N/A | Terminal semantics are explicit. |
-| Frontend `conversationTargetKey` | Pass | Pass | Pass | N/A | Explicitly frontend-only opaque key; not a backend route. |
+| `ConversationTargetAddress` | Pass | Pass | Pass | Pass | Original typed segment model remains tight. |
+| AutoByteus native member descriptor rows | Pass | Pass | Pass | Pass | Required agent rows and team rows have specialized fields; this avoids the current loose generic-row shape. |
+| `TaskDelegationMemberIdentity` / `TaskDelegationTeamIdentity` | Pass | Pass | Pass | Pass | Existing specialization is correct; design preserves it instead of downgrading team rows to agents. |
+| Ingress/representative identity | Pass | Pass | Pass | N/A | Field meaning is singular: the member used to start or route into the delegated team. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Fixed-kind address draft | Pass | Pass | Pass | Pass | Replaced by recursive segments. |
-| Route-only frontend target as authoritative chat target | Pass | Pass | Pass | Pass | Replaced by address resolver plus local target key. |
-| Runtime projection composer rejection | Pass | Pass | Pass | Pass | Replaced by addressability-based decision. |
-| Structural-only `SEND_MESSAGE` internal route | Pass | Pass | Pass | Pass | Flat selectors normalize to address and then share one routing path. |
-| Runtime ids in route-key slash strings | Pass | Pass | Pass | Pass | Explicitly forbidden. |
-| Store variables that imply runtime local keys are member route keys | Pass | Pass | Pass | Pass | Renamed at store layer; wider upload API rename can be deferred safely. |
+| Generic-only native `teamContext.members` rows as the steady-state representation | Pass | Pass | Pass | Pass | Replaced by typed agent/team descriptors emitted by the AutoByteus builder and normalized by the native task-delegation adapter. |
+| Fake frontend projection setup for API/E2E | Pass | Pass | Pass | Pass | Explicitly forbidden. |
+| Conversation router handling task-team projection creation | Pass | Pass | Pass | Pass | Explicitly forbidden; lifecycle stays in task delegation. |
+| Requirement for Codex app-server coordinators to expose `delegate_task` | Pass | Pass | Pass | Pass | Explicitly out of scope; validation uses a runtime family that exposes delegation. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/domain/conversation-target-address.ts` | Pass | Pass | Pass | Pass | Domain model/helpers only. |
-| `autobyteus-server-ts/src/services/agent-streaming/team-conversation-target-address-parser.ts` | Pass | Pass | Pass | Pass | Transport normalization only. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.ts` | Pass | Pass | Pass | Pass | Mixed backend traversal only. |
-| `TeamRun`, `TeamRunBackend`, `TeamManager` interfaces | Pass | Pass | N/A | Pass | Add public/contract method without exposing internals. |
-| Mixed registries/handles | Pass | Pass | N/A | Pass | Add child-address entry methods that preserve lifecycle ownership. |
-| `autobyteus-web/types/agent/ConversationTargetAddress.ts` | Pass | Pass | Pass | Pass | Frontend address/resolution types. |
-| `autobyteus-web/utils/teamConversationTargetAddress.ts` | Pass | Pass | Pass | Pass | Focused node to address/local key/reason. |
-| Frontend projection files | Pass | Pass | N/A | Pass | Store/derive segment metadata only; no backend routing decisions. |
-| `TeamStreamingService.ts` and protocol message types | Pass | Pass | N/A | Pass | Serialization/schema only. |
-| `agentTeamRunStore.ts` and `TeamWorkspaceView.vue` | Pass | Pass | N/A | Pass | Orchestration and UI visibility/labeling remain separate from route traversal. |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts` | Pass | Pass | Pass | Pass | Correct source of native AutoByteus team custom data. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | Pass | Pass | Pass | Pass | Correct native-context-to-tool-context adapter. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts` or focused mapper near task-delegation context code | Pass | Pass | Pass | Pass | Extraction is optional but properly scoped if needed to avoid duplicate descriptor conversion. |
+| `TaskDelegationInputResolver.resolveTeamTarget(...)` | Pass | Pass | N/A | Pass | Existing invariant remains correct; no weakening required. |
+| Conversation-address router / websocket handler files | Pass | Pass | N/A | Pass | Design keeps the new lifecycle-context fix out of these files. |
+| Focused tests under existing task-delegation test areas | Pass | Pass | N/A | Pass | Tests should prove team descriptor preservation and malformed metadata rejection. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Websocket handler -> `TeamRun` | Pass | Pass | Pass | Pass | Handler must not reach mixed registries/directories. |
-| `TeamRun` -> backend contract | Pass | Pass | Pass | Pass | Correct facade-to-backend dependency. |
-| Mixed router -> registries/handles | Pass | Pass | Pass | Pass | Router uses internal owned mechanisms, not global child-run bypass. |
-| Task-team/subteam handles -> child `TeamRun` | Pass | Pass | Pass | Pass | Ensures child lifecycle/event binding remains encapsulated. |
-| Frontend store/UI -> resolver/service | Pass | Pass | Pass | Pass | Store/UI do not hand-build runtime segments in multiple places. |
-| Task lifecycle/tool approval commands | Pass | Pass | Pass | Pass | Kept separate from ordinary chat address. |
+| AutoByteus backend factory / context builder | Pass | Pass | Pass | Pass | May serialize `MemberTeamContext` into native custom data; must not own task resolution. |
+| Native task-delegation context parser | Pass | Pass | Pass | Pass | May normalize custom data into `TaskDelegationToolContext`; must not start teams itself. |
+| Task-delegation service/resolver | Pass | Pass | Pass | Pass | Owns target resolution and lifecycle path; should receive correct typed descriptors. |
+| Conversation-address websocket handler/router | Pass | Pass | Pass | Pass | Must not manufacture projections or call task-delegation internals for validation. |
+| API/E2E | Pass | Pass | Pass | Pass | Must use real projection creation, not fake UI state. |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `TeamRun.postMessageToConversationTarget` | Pass | Pass | Pass | Pass | Satisfies Authoritative Boundary Rule for websocket send. |
-| `TeamConversationTargetAddressParser` | Pass | Pass | Pass | Pass | Parser boundary prevents handler from owning schema details. |
-| `MixedConversationTargetRouter` | Pass | Pass | Pass | Pass | Internal traversal owner. |
-| `MixedTaskTeamInstanceRegistry` | Pass | Pass | Pass | Pass | Owns run-id/logical-team mismatch validation and handle lookup. |
-| `MixedTaskTeamMemberHandle` | Pass | Pass | Pass | Pass | Child run readiness/restoration stays inside handle. |
-| `MixedSubTeamMemberHandle` | Pass | Pass | Pass | Pass | Structural child-team entry uses existing boundary. |
-| `ConversationTargetAddressResolver` | Pass | Pass | Pass | Pass | Centralizes frontend projection metadata interpretation. |
+| `TeamRun.postMessageToConversationTarget` | Pass | Pass | Pass | Pass | Still authoritative for ordinary chat; amendment does not bypass it. |
+| AutoByteus native context builder | Pass | Pass | Pass | Pass | Owns serialization only; no resolver logic. |
+| `buildTaskDelegationToolContextFromNativeContext` | Pass | Pass | Pass | Pass | Owns native-context normalization only; returns typed task-delegation context. |
+| `TaskDelegationInputResolver.resolveTeamTarget(...)` | Pass | Pass | Pass | Pass | Continues to enforce visible team + ingress requirements. |
+| Mixed task-team activation/projection path | Pass | Pass | Pass | Pass | Existing lifecycle path creates the real projection; no fake frontend state. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `TeamStreamingService.sendMessage(content, address, ...)` | Pass | Pass | Pass | Low | Pass |
-| `resolveTeamConversationTargetAddress(...)` | Pass | Pass | Pass | Low | Pass |
-| `resolveSendMessageConversationTargetAddress(payload, sessionTeamRunId)` | Pass | Pass | Pass | Low | Pass |
-| `TeamRun.postMessageToConversationTarget(message, address)` | Pass | Pass | Pass | Low | Pass |
-| `TeamRunBackend.postMessageToConversationTarget` | Pass | Pass | Pass | Low | Pass |
-| `TeamManager.postMessageToConversationTarget` | Pass | Pass | Pass | Low | Pass |
-| `MixedConversationTargetRouter.postMessage` | Pass | Pass | Pass | Low | Pass |
-| `MixedTaskTeamInstanceRegistry.postMessageToConversationTarget(...)` | Pass | Pass | Pass | Low | Pass |
-| `MixedTaskTeamMemberHandle.postMessageToConversationTarget(...)` | Pass | Pass | Pass | Low | Pass |
-| `MixedSubTeamMemberHandle.postMessageToConversationTarget(...)` | Pass | Pass | Pass | Low | Pass |
-| Existing `TeamRun.postMessage(message, selector, targetMemberRunId)` | Pass | Medium | Medium | Medium | Pass | Acceptable only as retained non-new-chat/internal structural API; design forbids use for new websocket chat path. |
+| `AutoByteusManagedTeamContext.members` | Pass | Pass | Pass | Low | Pass |
+| `buildAutoByteusManagedTeamContext(memberTeamContext)` | Pass | Pass | Pass | Low | Pass |
+| `buildTaskDelegationToolContextFromNativeContext(context)` | Pass | Pass | Pass | Low | Pass |
+| `buildTaskDelegationToolContextFromMemberTeamContext(memberTeamContext)` / focused mapper | Pass | Pass | Pass | Low | Pass |
+| `TaskDelegationInputResolver.resolveTeamTarget(context, teamName)` | Pass | Pass | Pass | Low | Pass |
+| `ConversationTargetAddress` chat interfaces | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-team-execution/domain` address type | Pass | Pass | Low | Pass | Domain-level team execution concept. |
-| `services/agent-streaming` parser | Pass | Pass | Medium | Pass | Medium risk controlled by explicit no-traversal rule. |
-| `backends/mixed/conversation-target/` | Pass | Pass | Low | Pass | Compact folder is justified by bounded local traversal flow. |
-| `autobyteus-web/utils/teamConversationTargetAddress.ts` | Pass | Pass | Low | Pass | Existing frontend utility area is appropriate. |
-| Frontend projection files | Pass | Pass | Medium | Pass | Medium risk controlled by metadata-only responsibility. |
+| `agent-execution/backends/autobyteus` context builder | Pass | Pass | Low | Pass | Backend adapter serialization concern. |
+| `agent-tools/task-delegation` native context parser | Pass | Pass | Low | Pass | Task-delegation tool context concern. |
+| Optional focused task-delegation descriptor mapper | Pass | Pass | Medium | Pass | Medium risk only if made generic; design explicitly says keep it near task-delegation context code. |
+| Conversation-target folders/files | Pass | Pass | Low | Pass | Amendment should not touch them for task-team projection creation. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Structural selector normalization | Pass | Pass | N/A | Pass | Reuse existing route/path helper area. |
-| Websocket command parsing | Pass | Pass | N/A | Pass | Extend existing parser area. |
-| Public runtime command boundary | Pass | Pass | N/A | Pass | Extend `TeamRun` and backend contracts. |
-| Mixed runtime routing | Pass | Pass | Pass | Pass | New internal router is justified by missing recursive owner. |
-| Frontend focus target resolution | Pass | Pass | Pass | Pass | Replacing route-only resolver is justified. |
-| Task lifecycle/tool approval | Pass | Pass | N/A | Pass | Leave unchanged. |
+| Native AutoByteus context serialization | Pass | Pass | N/A | Pass | Extend existing builder. |
+| Native task-delegation context normalization | Pass | Pass | N/A | Pass | Extend existing parser. |
+| Descriptor conversion policy | Pass | Pass | Pass | Pass | Extract only if needed to avoid duplication; keep under task-delegation ownership. |
+| Live task-team projection creation | Pass | Pass | N/A | Pass | Reuse existing `delegate_task` lifecycle; no new projection factory. |
+| Conversation-address routing | Pass | Pass | N/A | Pass | Reuse unchanged; no lifecycle semantics added. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| Existing flat structural `SEND_MESSAGE` payloads | Yes, parser-bound input compatibility only | Pass | Pass | Not an internal dual route; normalizes immediately. |
-| Fixed-kind runtime address draft | No | Pass | Pass | Explicitly rejected. |
-| Runtime ids in structural route strings | No | Pass | Pass | Explicitly forbidden. |
-| Task lifecycle/tool approval selector reuse | No for ordinary chat | Pass | Pass | Kept separate. |
-| Runtime composer hidden behavior | No for addressable nodes | Pass | Pass | Replaced by addressability. |
+| Native generic-only member rows | No as steady-state target | Pass | Pass | Implementation should emit typed rows and clearly reject malformed team descriptors rather than silently downgrading them. |
+| Codex app-server `delegate_task` exposure | No | Pass | Pass | Not required by this ticket. |
+| Fake task-team projections | No | Pass | Pass | Explicitly rejected. |
+| Ordinary chat/task lifecycle mixing | No | Pass | Pass | Design keeps lifecycle creation separate from chat targeting. |
+| Existing flat structural chat selector compatibility | Yes, parser-bound input compatibility only | Pass | Pass | Unchanged from Round 1. |
 
 ## Migration / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Backend domain/parser/boundary/router sequence | Pass | Pass | Pass | Pass |
-| Mixed registry/handle extension | Pass | Pass | Pass | Pass |
-| Websocket handler transition | Pass | Pass | Pass | Pass |
-| Frontend type/resolver/projection/store/UI transition | Pass | Pass | Pass | Pass |
-| Coverage update sequence | Pass | Pass | Pass | Pass |
+| AutoByteus builder typed descriptor emission | Pass | Pass | Pass | Pass |
+| Native context parser normalization and validation | Pass | Pass | Pass | Pass |
+| Optional focused mapper extraction | Pass | Pass | Pass | Pass |
+| Tests for team target resolution and malformed metadata | Pass | Pass | Pass | Pass |
+| API/E2E rerun of real `open_tab` click-through | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime target payload | Yes | Pass | Pass | Pass | Good and bad examples clarify typed runtime ids vs route strings. |
-| Old structural payload normalization | Yes | Pass | Pass | Pass | Clarifies no dual internal route. |
-| Child task-team entry | Yes | Pass | Pass | Pass | Clarifies handle boundary. |
-| Frontend task-team child target | Yes | Pass | Pass | Pass | Clarifies UI keys vs backend addresses. |
-| Nested task-team path | Yes | Pass | Pass | Pass | Shows recursive model advantage. |
+| Original runtime target payload | Yes | Pass | Pass | Pass | Existing examples remain good. |
+| Child task-team entry through handles | Yes | Pass | Pass | Pass | Existing examples remain good. |
+| Native typed team descriptor preservation | Yes | Pass | Pass | Pass | Amendment lists required agent/team row fields and the avoided generic-row failure shape; implementation may add focused test fixtures as executable examples. |
+| Live UI validation path | Yes | Pass | Pass | Pass | Live test plan/report and design-impact response clearly distinguish real projection creation from fake projection setup. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Full inherited projection segments for nested-nested task-team paths | Without full ancestry, frontend cannot construct arbitrary recursive runtime addresses. | Implementation must store/propagate `conversationTargetSegments` on projections and cover it with tests. | Covered by design; no upstream rework required. |
-| Optimistic local insertion for team/task-team default targets | Current store assumes concrete leaf `AgentContext`. | Implementation must defer optimistic insertion or implement explicit non-leaf placement as specified. | Covered by design; no upstream rework required. |
-| Structural subteam path remainder preservation | Deep structural member and structural+runtime routing can drop remainders if only top-level is resolved. | Implementation must add child-address entry through `MixedSubTeamMemberHandle` and test deep paths. | Covered by design; no upstream rework required. |
-| Context-file owner API naming | Existing names imply `memberRouteKey`. | Use `conversationTargetKey`/`targetUploadKey` in store; endpoint rename may be deferred if key is opaque. | Covered by design; residual naming risk. |
+| Parser policy for malformed/missing `memberKind` on native rows | Avoid silently converting an advertised team target into an agent row again. | Implementation must validate typed rows and fail malformed team metadata clearly, as stated in the amendment. | Covered by design; enforce in implementation/tests. |
+| Ingress/representative completeness | `resolveTeamTarget(...)` requires ingress to start a task-team run. | Builder/parser must preserve representative/ingress identity for team rows. | Covered by design; enforce in implementation/tests. |
+| Real `open_tab` child click/send | User specifically required honest live UI proof. | API/E2E must rerun after implementation/code review. | Covered by design; downstream validation required. |
 
 ## Review Decision
 
-- `Pass`: the design is ready for implementation.
+- `Pass`: the amended design is ready for implementation rework.
 
 ## Findings
 
@@ -212,7 +204,7 @@ None.
 
 ## Classification
 
-N/A — pass; no design-impact, requirement-gap, or unclear findings are open.
+N/A — pass; no design-impact, requirement-gap, or unclear findings remain open after the amendment.
 
 ## Recommended Recipient
 
@@ -220,13 +212,13 @@ N/A — pass; no design-impact, requirement-gap, or unclear findings are open.
 
 ## Residual Risks
 
-- Implementation must keep `AgentTeamStreamHandler` thin: parser plus `TeamRun.postMessageToConversationTarget` only. Any direct mixed registry or active-run directory access would violate the reviewed boundary.
-- The normalized domain/member segment shape must not permit ambiguous selector state to leak past parser/domain helpers. If both route key and path appear and disagree, reject rather than choose silently.
-- Frontend projection metadata should prefer stored full segment prefixes for nested runtime paths; one-level reconstruction is acceptable only as a bounded fallback.
-- Local `conversationTargetKey` must remain frontend-only and must not become a backend route-string encoding.
-- Durable coverage needs to include concurrent task-agent/task-team run ids and no-fallback invalid runtime targets because those are the primary ambiguity stress cases.
+- Implementation must keep this fix inside AutoByteus/task-delegation context boundaries; do not add projection creation logic to the conversation-address websocket handler, frontend resolver, or mixed conversation router.
+- The native context parser must not silently downgrade malformed or missing-kind team descriptors to agent/member rows. Missing team metadata should fail with explicit task-delegation context/target errors.
+- The optional mapper extraction should stay focused under task-delegation ownership; avoid a generic cross-domain helper that becomes a mixed descriptor dumping ground.
+- Durable tests should prove both the positive `BuildSquad`-as-`agent_team` resolution path and negative malformed/missing team metadata path.
+- After implementation and code review, API/E2E must rerun the real `open_tab` task-team projection creation, child click, and composer send. Existing synthetic/service-level browser proof is not a substitute for that requested path.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Notes: Design is ready for implementation. Proceed with the cumulative package and preserve the boundary constraints called out above.
+- Notes: The amended slice is narrow, evidence-backed, and correctly placed under existing AutoByteus/task-delegation context boundaries. It preserves ordinary chat/lifecycle separation and does not pollute the conversation-address router.

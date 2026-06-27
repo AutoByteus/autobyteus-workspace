@@ -218,3 +218,152 @@ No failure classification needed; latest authoritative result is Pass. Because A
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
 - Notes: API/E2E execution passed, including supplemental live browser full-stack proof. Route back to code review is required because durable test coverage was added/updated after the prior code review.
+
+---
+
+## Round 3 Real `open_tab` UI Execution Amendment
+
+### Trigger
+
+User explicitly rejected synthetic/fake validation and required a real browser test using `open_tab`: start backend/frontend from README flow, create simple live test data, click a member inside a task-team projection, send through the frontend composer, and verify the actual target payload.
+
+### Setup
+
+- Backend: `http://127.0.0.1:18000`, built server, isolated data dir `/tmp/autobyteus-live-ui-click-conversation-target`.
+- Frontend: `http://127.0.0.1:13000`, Nuxt dev server from README flow. Started with `NUXT_TEST=true` to avoid Nuxt dev `#app-manifest` blank-page failure while still serving the real app.
+- Browser: `mcp__autobyteus_agent_tools.open_tab`.
+- Test plan: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-test-plan.md`.
+
+### Executed Open-Tab Attempts
+
+| Attempt | Seed / Run | UI Action | Result |
+| --- | --- | --- | --- |
+| 1 | `codex_app_server` coordinator + child members, all `gpt-5.5`; seed `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/seed.json` | Opened workspace with `open_tab`, typed delegate request in visible composer, clicked Send. Captured browser WebSocket `SEND_MESSAGE` to coordinator. | Coordinator responded `delegate_task is not exposed`; no task-team projection appeared. |
+| 2 | AutoByteus coordinator `gpt-5.5`; child members `codex_app_server` / `gpt-5.5`; seed `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/seed-supported.json` | Opened workspace with `open_tab`, typed delegate request in visible composer, clicked Send. Captured browser WebSocket `SEND_MESSAGE` to coordinator. | Coordinator invoked `delegate_task`, but backend returned `TASK_TEAM_TARGET_NOT_FOUND`: `Team target 'BuildSquad' was not found as a visible team in the current team run.` No task-team projection appeared. |
+
+### Evidence
+
+- Open-tab live UI report: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-open-tab-report.md`
+- Failure summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/open-tab-failure-summary.json`
+- Screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/open-tab-task-team-delegate-failure.png`
+
+### Failure Classification
+
+Local Fix / implementation defect. The real UI path advertises `BuildSquad` as a `delegate_task` team target in the AutoByteus runtime instruction, but tool execution cannot resolve it. Static inspection points to native context serialization dropping team descriptor fields before task-delegation tool execution:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts`
+
+### Latest Authoritative Result Amendment
+
+- Previous result: `Pass` based on durable tests plus CDP service-level browser proof.
+- Latest result after required real `open_tab` UI test: `Fail / Blocked for live task-team-child click-through`.
+- The final requested child-click/send was **not performed** because no real task-team projection was created. Performing it without a task-team projection would be fake.
+- Recommended recipient: `implementation_engineer` for local fix before API/E2E retries the real UI click-through.
+
+### Round 3 Cleanup
+
+- Terminated both live UI seeded team runs successfully. Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/cleanup.json`.
+- Stopped the Nuxt frontend session and backend session after evidence capture.
+
+---
+
+## Round 3 Classification Correction / Source-Boundary Note
+
+The latest authoritative API/E2E status remains `Fail / Blocked for live task-team-child click-through`, but the reroute recipient is corrected to `solution_designer`, not `implementation_engineer`, because the live blocker exposes a design/scope gap in how this task should create a real selectable task-team projection for UI validation.
+
+### Corrected Classification
+
+- Classification: `Design Impact / Requirement Gap`
+- Corrected recipient: `solution_designer`
+- Reason: The UI test requirement is to click a child member inside a real task-team projection and send through the real frontend composer. The live system never produced that projection:
+  - Codex GPT-5.5 coordinator path: `delegate_task` was not exposed.
+  - AutoByteus GPT-5.5 coordinator path: `BuildSquad` was advertised as a team target, but `delegate_task` failed with `TASK_TEAM_TARGET_NOT_FOUND`.
+- Therefore API/E2E needs an upstream decision: either make real task-team creation/exposure part of this task's design scope, or provide an approved alternate real setup method. I will not fake the child click by manufacturing UI state.
+
+### Source-Code Boundary
+
+- An accidental partial production-source edit made during diagnosis was reverted.
+- Current non-ticket production source diff after revert: none.
+- API/E2E remains limited to validation artifacts, durable test coverage, temporary probes/evidence, and routing.
+
+
+---
+
+## Round 6 Real `open_tab` UI Re-Execution — PASS
+
+### Trigger
+
+Code review Round 5 passed the implementation rework for the prior live task-team creation blocker. API/E2E resumed after local computer shutdown and reran the real supported AutoByteus `delegate_task` / `open_tab` path required by solution design and the user.
+
+### Latest Authoritative Result
+
+- Result: `Pass`
+- Supersedes: Round 3 `Fail / Blocked for live task-team-child click-through`.
+- Durable repository-resident coverage added/updated/removed during this Round 6 re-execution: `No`.
+- Required next recipient: `delivery_engineer`, because code review Round 5 already reviewed the implementation and durable coverage state, and API/E2E only added execution artifacts/evidence after that review.
+
+### Real Setup
+
+- Backend: real built server at `http://127.0.0.1:18000`, isolated data dir `/tmp/autobyteus-live-ui-click-conversation-target-round6`.
+- Frontend: real Nuxt dev server at `http://127.0.0.1:13000`.
+- Browser: `mcp__autobyteus_agent_tools.open_tab`, tab `789007`.
+- Seed: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/seed-supported-round6.json`.
+- Team run: `parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4`.
+- Task-team run created by real `delegate_task`: `buildsquad_d4d716d6f06145fca3a1958b598229e4`.
+- Child agent run receiving ordinary chat: `review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f`.
+
+### Scenario Executed
+
+1. Built the server successfully: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/server-build.log`.
+2. Started backend and frontend from the real app processes; an initial incorrect Nuxt command was stopped and the accidental `autobyteus-web/--host` temp directory was removed before final execution.
+3. Seeded an AutoByteus native `program_manager` coordinator exposing `delegate_task` and a visible `BuildSquad` team target.
+4. Opened the real workspace with `open_tab`.
+5. Installed browser-side WebSocket capture before sends.
+6. Used the visible composer to send a delegation instruction to `program_manager`; captured the real `SEND_MESSAGE` payload with `conversation_target_address.segments = [{ kind: "member", member_route_key: "program_manager" }]`.
+7. Waited for the real UI projection `BuildSquad · task_0001` / `buildsquad_d4d716d6f06145fca3a1958b598229e4` to appear active.
+8. Clicked the real projected `review_lead` child member, not the structural `BuildSquad/review_lead` row.
+9. Used the visible composer to send `LIVE_UI_ROUND6_CHILD_CHAT_1782553528825`.
+10. Captured the real child-target WebSocket payload:
+
+```json
+{
+  "segments": [
+    { "kind": "member", "member_route_key": "BuildSquad" },
+    { "kind": "task_team", "task_team_run_id": "buildsquad_d4d716d6f06145fca3a1958b598229e4" },
+    { "kind": "member", "member_route_key": "review_lead" }
+  ]
+}
+```
+
+11. Verified backend no-fallback evidence: `CodexSendTurnStart` for `review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f` has `contentPreview: 'LIVE_UI_ROUND6_CHILD_CHAT_1782553528825'`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/review-lead-raw-traces.jsonl` contains the same user token under the task-team run directory. The backend log scan in `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-success-summary.json` records no `TASK_TEAM_TARGET_NOT_FOUND` recurrence.
+
+### Round 6 Evidence Artifacts
+
+- Open-tab report: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-open-tab-report.md`
+- Success summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-success-summary.json`
+- Browser WebSocket capture: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-ws-capture.json`
+- Page state assertions: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-page-state.json`
+- Backend evidence excerpt: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/backend-evidence-excerpt.log`
+- Review-lead raw traces: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/review-lead-raw-traces.jsonl`
+- Program-manager raw traces: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/program-manager-raw-traces.jsonl`
+- Team run metadata before cleanup: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/team-run-metadata-before-cleanup.json`
+- Screenshots:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-task-team-projection.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-child-send.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-final-state.png`
+
+### Failed / Blocked
+
+None in Round 6.
+
+### Not Tested / Out Of Scope Remaining
+
+- The Codex app-server coordinator path still is not required to expose `delegate_task`; solution design explicitly directed the live validation to use AutoByteus native coordinator support.
+- Broad Nuxt typecheck remains a known existing/unrelated baseline from code review and was not used as the Round 6 gate.
+
+### Cleanup
+
+Cleanup completed: team run termination succeeded, tab `789007` was closed, and ports `18000`/`13000` had no remaining listeners. Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/cleanup.json`.
+
+- Final consistency checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/final-consistency-checks.log`

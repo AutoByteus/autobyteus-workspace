@@ -113,3 +113,111 @@ Implementation-handoff `Legacy / Compatibility Removal Check` is clean: no compa
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
 - Notes: Existing durable coverage is valid but API/E2E residual risks justify narrow additional durable coverage at the websocket boundary and router no-fallback/concurrent-id boundary. A supplemental live browser probe is also planned/executed as temporary evidence because the user requested higher confidence from a running backend/frontend setup. No source implementation change is planned unless tests expose a defect.
+
+---
+
+## Round 2 Live `open_tab` Investigation Amendment
+
+User requested an honest real browser click-through using `open_tab`, not a synthetic/browser-service-only proof. The temporary validation plan was expanded to require actual frontend composer sends and an actual UI task-team child click.
+
+### Additional Temporary Scenario
+
+| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven / Intended | Decision |
+| --- | --- | --- | --- |
+| TEMP-004 | Start real backend and frontend, open with `mcp__autobyteus_agent_tools.open_tab`, seed a parent team and use the visible frontend composer to request `delegate_task` to `BuildSquad`, wait for task-team projection, click `review_lead`, and send from the visible composer | Intended to prove true UI task-team child targeting through typed `conversation_target_address` | Executed but blocked before child click. Real UI send to coordinator succeeded; task-team creation failed. |
+
+### New Reroute Trigger
+
+| Issue | Classification | Evidence | Recommended Recipient |
+| --- | --- | --- | --- |
+| Real UI task-team creation is blocked. Codex GPT-5.5 coordinator did not expose `delegate_task`; AutoByteus GPT-5.5 coordinator advertised `BuildSquad` as a team target and invoked `delegate_task`, but tool execution failed with `TASK_TEAM_TARGET_NOT_FOUND` for the advertised team. Static inspection indicates the native AutoByteus managed team context drops `memberKind: "agent_team"` and team metadata before `buildTaskDelegationToolContextFromNativeContext`, so `resolveTeamTarget` cannot see any team rows at execution time. | Local Fix / implementation defect | `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-open-tab-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/open-tab-failure-summary.json`; source paths `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts` and `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | `implementation_engineer` |
+
+### Investigation Decision Amendment
+
+- Proceed To Final Pass: `No`
+- Reroute Required Before Live UI Completion: `Yes`
+- Reason: The required live task-team projection cannot currently be created through the real UI/backend path, so clicking a task-team child and verifying its composer payload would be fake.
+
+---
+
+## Round 3 Classification Correction / Design-Impact Escalation
+
+After the real `open_tab` UI test exposed that no task-team projection can be created through the live frontend/backend path, the classification is corrected from a narrow `Local Fix` to `Design Impact / Requirement Gap` for upstream decision.
+
+### Why This Is A Design-Impact Question
+
+- The approved conversation-target-addressing validation target assumes a real task-team projection can exist in the UI so API/E2E can click a task-team child member and send through the visible composer.
+- The live path to create that projection is ambiguous or broken across runtime families:
+  - With a Codex GPT-5.5 coordinator, the coordinator reported that `delegate_task` was not exposed.
+  - With an AutoByteus GPT-5.5 coordinator, the runtime instruction advertised `BuildSquad` as a team target, but the `delegate_task` execution failed with `TASK_TEAM_TARGET_NOT_FOUND` for that advertised target.
+- Static inspection indicates the AutoByteus native task-delegation execution context serializes only generic member rows, dropping `memberKind: "agent_team"` and team-target metadata before `resolveTeamTarget(...)`. That looks implementation-adjacent, but it also raises a design/scope question: should this task own real UI task-team creation semantics, or should API/E2E be given another approved real projection setup path?
+- As API/E2E validation engineer, I will not change production source code to resolve this. Any accidental local production-source edit made while diagnosing was reverted before this escalation.
+
+### Corrected Reroute Decision
+
+| Issue | Classification | Evidence | Recommended Recipient |
+| --- | --- | --- | --- |
+| Real UI task-team child click-through cannot be completed because the live frontend/backend path cannot create the required task-team projection. The design needs to decide whether fixing real `delegate_task` team-target creation/exposure is in scope for conversation-target-addressing, or define an approved alternate real setup path that is not fake. | Design Impact / Requirement Gap | `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-open-tab-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/open-tab-failure-summary.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/open-tab-task-team-delegate-failure.png`; source inspection of `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts` and `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | `solution_designer` |
+
+### Corrected Investigation Decision
+
+- Proceed To Final Pass: `No`
+- Reroute Required Before Live UI Completion: `Yes`
+- Corrected Recipient: `solution_designer`
+- Source-Code Boundary: No production source changes remain from API/E2E. Validation changes are limited to durable test coverage and ticket/evidence artifacts.
+
+---
+
+## Round 4 Re-Entry Investigation Amendment — After Code Review Round 5
+
+### Trigger
+
+Code review Round 5 passed the implementation rework for the prior live `open_tab` blocker. API/E2E is resuming from the amended package, including:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/design-impact-response-live-task-team-creation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/code-review-report.md`
+
+### Updated Requirement / Design Basis
+
+The solution-design decision is now explicit:
+
+- Real UI task-team creation through a supported runtime is in scope as a validation precondition and no-regression check.
+- Codex app-server coordinators are not required to expose `delegate_task`; the live UI validation should use an AutoByteus native coordinator that exposes the tool in this local setup.
+- No fake frontend projection setup is approved.
+- AutoByteus native task-delegation context must preserve typed `agent_team` rows so advertised team targets such as `BuildSquad` can be resolved by `TaskDelegationInputResolver.resolveTeamTarget(...)`.
+
+### Existing Coverage Decision Update
+
+| Path / Scenario | Prior Decision | New Evidence | Updated Decision | Action |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts` | New after prior API/E2E blocker | Code review Round 5 PASS says it proves `BuildSquad` survives as `agent_team`, resolves through `TaskDelegationInputResolver`, and rejects missing/invalid team metadata. | Still Valid | Treat as reviewed implementation-unit evidence; do not edit in API/E2E unless live evidence exposes a coverage gap. |
+| Live `open_tab` AutoByteus supported path | Previously blocked at `TASK_TEAM_TARGET_NOT_FOUND` | Code review Round 5 PASS says typed native context preservation has been implemented and reviewed. | Needs Re-Execution | Rerun real backend + frontend + `open_tab`: visible composer delegates to `BuildSquad`, wait for real task-team projection, click child member, send visible composer message, verify actual websocket/backend address and no fallback. |
+
+### Re-Execution Plan
+
+1. Use the existing ticket seed script for the supported AutoByteus coordinator path; update only temporary/evidence artifacts if needed.
+2. Start the real built backend on `127.0.0.1:18000` with isolated data.
+3. Start the real Nuxt frontend on `127.0.0.1:13000`.
+4. Open the real workspace with `mcp__autobyteus_agent_tools.open_tab`.
+5. Install browser-side WebSocket capture via `run_script` before user sends.
+6. Send the delegation request through the visible composer and wait for a real task-team projection.
+7. Click `review_lead` inside the real task-team projection, send a unique ordinary chat token through the visible composer, and capture the actual `SEND_MESSAGE` payload.
+8. Verify the captured payload contains recursive typed segments for the child target and does not fall back to a structural-only member route.
+9. Record backend-visible evidence and cleanup seeded runs/processes.
+
+### Investigation Decision
+
+- Proceed To API/E2E Re-Execution: `Yes`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed In This Re-Execution: `No` unless the live run exposes a coverage defect.
+- Reroute Required Before Re-Execution: `No`
+
+
+### Round 4 Re-Execution Outcome Note
+
+The planned post-Code Review Round 5 real `open_tab` re-execution completed in Round 6 and passed. Evidence is recorded in:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-open-tab-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-success-summary.json`
+
+No repository-resident durable coverage was added, updated, or removed during the Round 6 re-execution.

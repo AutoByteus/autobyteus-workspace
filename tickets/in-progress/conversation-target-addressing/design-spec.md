@@ -35,6 +35,8 @@ Current structural selector reality:
 
 Current ownership / fragmentation problems:
 
+API/E2E live `open_tab` validation later exposed a validation-enabling no-regression gap outside the conversation-address router itself: a real AutoByteus coordinator could advertise `BuildSquad` as a team `delegate_task` target, but tool execution could not resolve the same team target because AutoByteus native `customData.teamContext.members` did not preserve `agent_team` descriptor metadata. This does not invalidate the recursive address design, but it must be repaired or an honest live task-team-child click/send cannot be completed.
+
 - There is no owner for interpreting a recursive conversation target across structural and runtime boundaries.
 - Frontend target resolution is route-only and blocks displayed runtime participants even when enough identity is present.
 - The websocket protocol has only flat structural selector fields.
@@ -147,6 +149,10 @@ Example addresses:
 - Intentional deferrals and residual risk, if any:
   - Task lifecycle commands and tool approval targets are intentionally left on their current command-specific selector model. Reusing `ConversationTargetAddress` for those commands may be a future design, but it is out of scope because ordinary chat must not alter lifecycle state.
   - If context-file upload owner endpoint names remain `memberRouteKey`, treat the value as an opaque frontend upload owner key for this ticket; a wider upload API rename is not required for correct routing. The store-level variable should still be renamed to `conversationTargetKey` / `targetUploadKey` to avoid semantic leakage.
+- Design-impact amendment after live `open_tab` API/E2E:
+  - Classification: narrow validation-enabling no-regression fix, not a replacement for the conversation-address model.
+  - Decision: supported live task-team projection creation is in scope because AC-006 through AC-010 and the user-requested UI click-through require a real projection. The ticket does not require every runtime family to expose `delegate_task`; Codex app-server non-exposure is not a task blocker by itself. AutoByteus native runtimes that do expose and advertise `delegate_task` team targets must preserve typed team descriptors into tool execution.
+  - Refactor response: extend/reuse the existing task-delegation context mapping so AutoByteus native `customData.teamContext.members` carries the same semantic member/team identity as `buildTaskDelegationToolContextFromMemberTeamContext`, including `agent_team` metadata and ingress identity.
 
 ## Terminology
 
@@ -532,6 +538,41 @@ Folder note: The new backend router deserves a small `conversation-target/` fold
 
 Layering is explanatory only; the governing boundary is `TeamRun`, and the routing owner is the mixed backend router behind it.
 
+
+## Design-Impact Amendment — Supported Live Task-Team Projection Creation
+
+### Decision
+
+Real UI task-team creation through a supported `delegate_task` runtime is in scope as a no-regression and validation precondition for conversation-target-addressing. It is **not** a redesign of task lifecycle semantics. The address model remains `ConversationTargetAddress`.
+
+The approved live validation runtime expectation is:
+
+- Codex app-server coordinators are not required by this ticket to expose `delegate_task`.
+- AutoByteus native coordinators that do expose `delegate_task` and advertise visible team targets must carry enough team descriptor metadata into native tool execution for those advertised targets to resolve.
+
+### Current Failure Shape
+
+`buildAutoByteusManagedTeamContext(...)` serializes `members` as generic rows containing only `memberName`, `memberPath`, `memberRouteKey`, and `memberRunId`. `TaskDelegationInputResolver.resolveTeamTarget(...)` can only resolve team targets from context members whose `memberKind === 'agent_team'` and that have ingress identity. Therefore an AutoByteus prompt can advertise `BuildSquad` from rich `MemberTeamContext`, while the `delegate_task` tool execution sees no team rows and returns `TASK_TEAM_TARGET_NOT_FOUND`.
+
+### Required Design Response
+
+Add or complete a narrow task-delegation context-preservation slice:
+
+| File / Boundary | Required Responsibility | Notes |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.ts` | Serialize `MemberTeamContext.members` with typed member descriptors. Agent rows carry `memberKind: 'agent'`, route/path/run identity, `runtimeKind`, role, and description. Team rows carry `memberKind: 'agent_team'`, route/path/run identity, `teamDefinitionId`, optional `childTeamRunId`, optional `coordinatorMemberRouteKey`, role/description, and `representative`/`ingress` identity. | The builder is the source of native `customData.teamContext`; dropping fields here breaks all native task-delegation tools. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | Normalize the typed native rows into `TaskDelegationContextMember` values without defaulting missing `memberKind` on visible team rows to agents. Validate malformed team descriptors with explicit task-delegation context errors. | Start from committed source and add the typed-row normalization intentionally; no diagnostic edit is approved implicitly. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts` or a new focused mapper near task-delegation context code | Avoid duplicated member/team descriptor conversion policy by extracting a pure mapper if both direct `MemberTeamContext` tools and AutoByteus native customData need the same shape. | Do not create a generic helper detached from task-delegation ownership. |
+| Tests under `autobyteus-server-ts/tests/unit/...` and/or existing task-delegation integration tests | Prove an AutoByteus native context containing `BuildSquad` as an `agent_team` lets `delegate_task` resolve the team target and create/start a task-team path; prove malformed/missing team metadata fails clearly. | API/E2E should rerun the real `open_tab` click-through after implementation/code review. |
+
+### Boundary Rules
+
+- Do not add routing logic to the conversation-address websocket handler to manufacture projections.
+- Do not create fake frontend task-team projection state for API/E2E.
+- Do not require Codex app-server task delegation exposure for this ticket.
+- Do not broaden ordinary chat into task lifecycle operations. The fix preserves task-delegation context identity so an existing lifecycle path can create the real runtime projection used by the chat-addressing UI.
+- Implementation should start from committed source; no production-source diagnostic diff is approved merely because it may have existed during API/E2E investigation.
+
 ## Migration / Refactor Sequence
 
 1. Add backend domain address types in `conversation-target-address.ts` with normalization helpers for member segments and debug strings.
@@ -568,6 +609,7 @@ Layering is explanatory only; the governing boundary is `TeamRun`, and the routi
 12. Update `TeamStreamingService.sendMessage` and protocol types to emit `conversation_target_address`.
 13. Remove obsolete route-only assumptions/tests and add required unit/integration coverage.
 14. Run targeted frontend/backend tests, then downstream API/E2E coverage investigation should decide broader executable coverage.
+15. Rework after live `open_tab` blocker: preserve typed visible team descriptors in AutoByteus native task-delegation context, add focused unit/integration coverage for advertised team target resolution, then rerun code review and API/E2E real UI click-through.
 
 ## Key Tradeoffs
 
@@ -584,6 +626,7 @@ Layering is explanatory only; the governing boundary is `TeamRun`, and the routi
 - Structural nested member routing through subteams may require tightening existing mixed backend traversal so path remainders are not lost. Mitigation: add child-address methods on `MixedSubTeamMemberHandle` and tests for deep structural and structural+runtime paths.
 - Ambiguous payload aliases could accidentally create two authorities. Mitigation: reject nested+flat mixed payloads and document canonical snake_case emission.
 - Context-file owner naming may remain route-key-oriented. Mitigation: use `conversationTargetKey` / `targetUploadKey` at the store layer and avoid treating that key as a backend route.
+- AutoByteus native task-delegation context may advertise visible team targets from rich prompt context but execute tools with narrowed generic member rows. Mitigation: preserve typed `agent_team` descriptors and ingress metadata through `buildAutoByteusManagedTeamContext` and native context normalization.
 
 ## Guidance For Implementation
 
