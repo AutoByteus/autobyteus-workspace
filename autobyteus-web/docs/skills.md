@@ -55,6 +55,12 @@ The skills page uses component-based navigation (not URL query parameters):
 | `list` (default) | SkillsList  | Browse available skills        |
 | `detail`         | SkillDetail | View/edit files within a skill |
 
+The list view starts directly with the search/action toolbar (`Search skills`,
+`Sources`, `Reload`, and `Create Skill`) and then renders alerts plus the skill
+card grid. It intentionally does not render a duplicate page-level `Skills`
+heading or explanatory subtitle in the main content because the sidebar already
+communicates the active top-level module.
+
 
 ## Skill Detail Header
 
@@ -166,7 +172,7 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 
 > **Note:** File operations (view, edit, save) are now handled by the generic `FileExplorerStore` via the skill's transient workspace.
 
-The Skills list header exposes a localized **Reload** action backed by the
+The Skills list toolbar exposes a localized **Reload** action backed by the
 GraphQL `reloadSkillCatalog` mutation. Reload updates card metadata such as
 description, file count, added skills, removed skills, and source counts after
 external file edits. The button has its own `reloading` state and success/error

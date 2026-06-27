@@ -1,7 +1,6 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const skillMessages = {
-  'skills.components.skills.SkillsList.title': 'Skills',
   'skills.components.skills.SkillsList.sources': 'Sources',
   'skills.components.skills.SkillsList.reload': 'Reload',
   'skills.components.skills.SkillsList.reloading': 'Reloading...',
