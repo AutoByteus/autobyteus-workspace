@@ -1,0 +1,395 @@
+{
+  "url": "http://127.0.0.1:3079/__api-e2e-focus-only-team",
+  "screenshotPath": "/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/api-e2e-focus-only-browser-harness.png",
+  "checks": [
+    {
+      "name": "initial header shows focused structural subteam",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "no Focus/Grid/Spotlight mode buttons are rendered",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "body has no Grid or Spotlight product mode labels",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "agent team focus monitor is rendered",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "subteam-focused composer textarea is visible",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "active task-agent and task-team cards are visible",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "header has non-overlapping title and actions",
+      "pass": true,
+      "details": {
+        "title": "Review Subteam",
+        "bodyIncludesGrid": false,
+        "bodyIncludesSpotlight": false,
+        "bodyText": " API/E2E temporary focus-only team workspace harness, integrated target-address flow no-submissionRSReview SubteamIdleActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamReview Subteamreview_subteamStudentreview_subteam/studentReplying to:Review SubteamSend to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/trans",
+        "modeButtons": [],
+        "hasTextarea": true,
+        "monitorPresent": true,
+        "taskAgentCardText": "Task agentProfessor task task_0001team-focus-harness__professor__task_0001Running",
+        "taskTeamCardText": "Task teamBuild Team Tasktask-team-run-1runningRunning",
+        "headerRect": {
+          "x": 145,
+          "y": 59,
+          "width": 1150,
+          "height": 57,
+          "right": 1295,
+          "bottom": 116
+        },
+        "titleRect": {
+          "x": 205,
+          "y": 75,
+          "width": 134.140625,
+          "height": 24,
+          "right": 339.140625,
+          "bottom": 99
+        },
+        "actionGroupRect": {
+          "x": 1195,
+          "y": 67,
+          "width": 84,
+          "height": 40,
+          "right": 1279,
+          "bottom": 107
+        }
+      }
+    },
+    {
+      "name": "structural subteam composer submits typed subteam target address",
+      "pass": true,
+      "details": {
+        "logText": "{\"text\":\"hello structural subteam from browser probe\",\"attachmentCount\":0,\"focused\":\"review_subteam\",\"targetKind\":\"subteam\",\"memberRouteKey\":\"review_subteam\",\"localTargetKey\":\"review_subteam\",\"displayLabel\":\"Review Subteam\",\"address\":{\"segments\":[{\"kind\":\"member\",\"memberRouteKey\":\"review_subteam\"}]},\"conversationTargetKey\":\"member:review_subteam\",\"contextRunId\":null}",
+        "submission": {
+          "text": "hello structural subteam from browser probe",
+          "attachmentCount": 0,
+          "focused": "review_subteam",
+          "targetKind": "subteam",
+          "memberRouteKey": "review_subteam",
+          "localTargetKey": "review_subteam",
+          "displayLabel": "Review Subteam",
+          "address": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "review_subteam"
+              }
+            ]
+          },
+          "conversationTargetKey": "member:review_subteam",
+          "contextRunId": null
+        },
+        "textareaValue": ""
+      }
+    },
+    {
+      "name": "subteam child button updates header/focus monitor to Student",
+      "pass": true,
+      "details": {
+        "title": "Student",
+        "hasAgentMonitor": true,
+        "modeButtons": []
+      }
+    },
+    {
+      "name": "task-agent card updates header/focus monitor to concrete task agent",
+      "pass": true,
+      "details": {
+        "title": "Professor task task_0001",
+        "hasTaskCard": true,
+        "hasAgentMonitor": true,
+        "modeButtons": []
+      }
+    },
+    {
+      "name": "task-team card updates header and shows shared composer",
+      "pass": true,
+      "details": {
+        "title": "Build Team Task",
+        "text": " API/E2E temporary focus-only team workspace harness, integrated target-address flow {\"text\":\"hello structural subteam from browser probe\",\"attachmentCount\":0,\"focused\":\"review_subteam\",\"targetKind\":\"subteam\",\"memberRouteKey\":\"review_subteam\",\"localTargetKey\":\"review_subteam\",\"displayLabel\":\"Review Subteam\",\"address\":{\"segments\":[{\"kind\":\"member\",\"memberRouteKey\":\"review_subteam\"}]},\"conversationTargetKey\":\"member:review_subteam\",\"contextRunId\":null}BTBuild Team TaskRunningActive task executions2Task agentProfessor task task_0001team-focus-harness__professor__task_0001RunningTask teamBuild Team Tasktask-team-run-1runningRunningFocused subteamBuild Team Tasktask-team-run-1Replying to:Build Team Task (task team)Send to subteam[[]]window.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"/graphql\",restBaseUrl:\"/rest\",defaultNodeBaseUrl:\"http://localhost:8000\",agentWsEndpoint:\"ws://localhost:8000/ws/agent\",teamWsEndpoint:\"ws://localhost:8000/ws/agent-team\",graphqlWsEndpoint:\"ws://localhost:8000/graphql\",terminalWsEndpoint:\"ws://localhost:8000/ws/terminal\",fileExplorerWsEndpoint:\"ws://localhost:8000/ws/file-explorer\",mobileRemoteAccessBuild:false,googleSpeechApiKey:\"\",showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://localhost:8000/ws/transcribe\",constraints:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}},app:{baseURL:\"/\",buildId:\"dev\",buildAssetsDir:\"/_nuxt/\",cdnURL:\"\"}}\n[{\"serverRendered\":1},false]",
+        "hasTextarea": true,
+        "modeButtons": []
+      }
+    },
+    {
+      "name": "task-team shared composer submits typed task-team target address",
+      "pass": true,
+      "details": {
+        "logText": "{\"text\":\"hello task team typed target from browser probe\",\"attachmentCount\":0,\"focused\":\"task-team-run-1\",\"targetKind\":\"task_team\",\"memberRouteKey\":\"task-team-run-1\",\"localTargetKey\":\"task-team-run-1\",\"displayLabel\":\"Build Team Task (task team)\",\"address\":{\"segments\":[{\"kind\":\"member\",\"memberRouteKey\":\"BuildSquad\"},{\"kind\":\"task_team\",\"taskTeamRunId\":\"task-team-run-1\"}]},\"conversationTargetKey\":\"member:BuildSquad|task_team:task-team-run-1\",\"contextRunId\":null}",
+        "submissions": [
+          {
+            "text": "hello structural subteam from browser probe",
+            "attachmentCount": 0,
+            "focused": "review_subteam",
+            "targetKind": "subteam",
+            "memberRouteKey": "review_subteam",
+            "localTargetKey": "review_subteam",
+            "displayLabel": "Review Subteam",
+            "address": {
+              "segments": [
+                {
+                  "kind": "member",
+                  "memberRouteKey": "review_subteam"
+                }
+              ]
+            },
+            "conversationTargetKey": "member:review_subteam",
+            "contextRunId": null
+          },
+          {
+            "text": "hello task team typed target from browser probe",
+            "attachmentCount": 0,
+            "focused": "task-team-run-1",
+            "targetKind": "task_team",
+            "memberRouteKey": "task-team-run-1",
+            "localTargetKey": "task-team-run-1",
+            "displayLabel": "Build Team Task (task team)",
+            "address": {
+              "segments": [
+                {
+                  "kind": "member",
+                  "memberRouteKey": "BuildSquad"
+                },
+                {
+                  "kind": "task_team",
+                  "taskTeamRunId": "task-team-run-1"
+                }
+              ]
+            },
+            "conversationTargetKey": "member:BuildSquad|task_team:task-team-run-1",
+            "contextRunId": null
+          }
+        ],
+        "textareaValue": ""
+      }
+    }
+  ],
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+  "viewport": {
+    "width": 1440,
+    "height": 980
+  },
+  "timestamp": "2026-06-27T11:26:47.714Z",
+  "head": "efd5a10f1ea742e1e5255a21bfda814f7bdb9814",
+  "base": "origin/personal@980e44d32015cf4e56c56e3a797f65da7734e9b0"
+}
