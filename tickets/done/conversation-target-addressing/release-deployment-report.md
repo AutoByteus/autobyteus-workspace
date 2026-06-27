@@ -4,7 +4,7 @@
 
 User verified the local unsigned Electron build and requested finalization plus a new version release. Delivery archived the ticket, finalized the repository through the recorded `personal` target-branch workflow, ran the documented release helper, pushed release tag `v1.3.79`, and cleaned up the dedicated ticket worktree/branches.
 
-The pushed release tag triggered the documented GitHub release workflows for desktop, Android APK, iOS, messaging-gateway, and server Docker. Those workflows were in progress at the final delivery observation.
+The pushed release tag triggered the documented GitHub release workflows for desktop, Android APK, iOS, messaging-gateway, and server Docker. At the final delivery observation, Android APK and messaging-gateway workflows had completed successfully; desktop, iOS, and server Docker workflows were still in progress.
 
 ## Handoff Summary
 
@@ -93,8 +93,8 @@ The pushed release tag triggered the documented GitHub release workflows for des
 - Triggered workflow runs observed:
   - Desktop Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399916
   - iOS App Store Connect Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399880
-  - Release Messaging Gateway: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399870
-  - Android APK Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399869
+  - Release Messaging Gateway: `completed/success` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399870
+  - Android APK Release: `completed/success` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399869
   - Server Docker Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399868
 - Blocker (if applicable): N/A for local finalization/release trigger. External workflow completion remains asynchronous.
 

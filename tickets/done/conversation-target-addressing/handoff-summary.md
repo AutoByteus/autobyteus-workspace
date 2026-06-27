@@ -4,7 +4,7 @@
 
 Completed. User verification was received, the ticket was archived, the finalized ticket branch was merged into `personal`, `personal` was pushed, release version `v1.3.79` was created and pushed through the documented release helper, and the dedicated ticket worktree/branches were cleaned up.
 
-Release workflows were triggered by the pushed `v1.3.79` tag and were in progress at the final delivery observation.
+Release workflows were triggered by the pushed `v1.3.79` tag. At the final delivery observation, Android APK and messaging-gateway workflows had completed successfully; desktop, iOS, and server Docker workflows were still in progress.
 
 ## Verification Reference
 
@@ -109,4 +109,4 @@ Release workflows were triggered by the pushed `v1.3.79` tag and were in progres
 
 - Full external live LMStudio/Codex/Claude nested mixed-runtime E2E suites remain environment-gated and were not run.
 - Full web Nuxt typecheck remains a known broad baseline failure unrelated to changed files, as recorded by code review; delivery did not rerun it.
-- GitHub release workflows were triggered and in progress at handoff; external workflow completion/public App Store review is outside the local finalization step.
+- GitHub release workflows were triggered; Android APK and messaging-gateway workflows were successful at final observation, while desktop, iOS, and server Docker remained in progress. External workflow completion/public App Store review is outside the local finalization step.
