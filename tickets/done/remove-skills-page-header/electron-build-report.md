@@ -78,3 +78,7 @@ Additional generated updater/package metadata:
 ## Repository State
 
 No repository finalization was performed. The build generated ignored local artifacts under `node_modules`, package `dist` outputs, `autobyteus-web/resources`, and `autobyteus-web/electron-dist`. `git status --short --branch --untracked-files=normal` still shows only the expected tracked source/doc changes plus the ticket artifact folder.
+
+## Post-Finalization Artifact Note
+
+After the user verified the local build, repository finalization removed the dedicated ticket worktree. The generated local DMG/ZIP/app files under `autobyteus-web/electron-dist/` were removed with that cleanup. This report and `electron-build-command-output.log` preserve the build evidence.

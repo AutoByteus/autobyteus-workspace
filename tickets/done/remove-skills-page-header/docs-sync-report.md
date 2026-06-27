@@ -6,7 +6,7 @@
 - Trigger: API/E2E passed and handed delivery a residual docs impact: `autobyteus-web/docs/skills.md` still referred to the removed “Skills list header”.
 - Bootstrap base reference: `origin/personal` / `personal` at `820bce3145206b561459e6977bf6580a8088152c`.
 - Integrated base reference used for docs sync: `origin/personal` at `820bce3145206b561459e6977bf6580a8088152c`; `git fetch origin --prune` showed the tracked base had not advanced, so no merge/rebase was required.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/delivery-command-output.log` records `HEAD...origin/personal` as `0 0`, `git diff --check` passing, and the obsolete header/key/doc phrase search returning no matches.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/delivery-command-output.log` records `HEAD...origin/personal` as `0 0`, `git diff --check` passing, and the obsolete header/key/doc phrase search returning no matches.
 
 ## Why Docs Were Updated
 
@@ -30,8 +30,8 @@
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Skills list toolbar-first layout | The Skills list mode intentionally begins with the search/action toolbar and omits a duplicate page-level heading/subtitle because the active sidebar item already communicates the module. | `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/design-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/api-e2e-execution-coverage-report.md` | `autobyteus-web/docs/skills.md` |
-| Skills Reload action ownership | Reload remains a localized toolbar action backed by `reloadSkillCatalog`; only the old header ownership wording changed. | `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/investigation-notes.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skills-page-header/tickets/done/remove-skills-page-header/implementation-handoff.md` | `autobyteus-web/docs/skills.md` |
+| Skills list toolbar-first layout | The Skills list mode intentionally begins with the search/action toolbar and omits a duplicate page-level heading/subtitle because the active sidebar item already communicates the module. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/design-spec.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/api-e2e-execution-coverage-report.md` | `autobyteus-web/docs/skills.md` |
+| Skills Reload action ownership | Reload remains a localized toolbar action backed by `reloadSkillCatalog`; only the old header ownership wording changed. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/investigation-notes.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-skills-page-header/implementation-handoff.md` | `autobyteus-web/docs/skills.md` |
 
 ## Removed / Replaced Components Recorded
 
