@@ -10,6 +10,11 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
   'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
+  'workspace.components.workspace.team.TeamActiveTasksSection.active_tasks': 'Active Tasks',
+  'workspace.components.workspace.team.TeamActiveTasksSection.active_count': 'Active',
+  'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
+  'workspace.components.workspace.team.TeamActiveTasksSection.task_agent': 'Task Agent',
+  'workspace.components.workspace.team.TeamActiveTasksSection.task_team': 'Task Team',
 };
 
 const TeamCommunicationPanelStub = defineComponent({
@@ -153,6 +158,7 @@ describe('TeamOverviewPanel.vue', () => {
     expect(wrapper.text()).not.toContain('Task Plan');
     expect(wrapper.text()).not.toContain('No task plan yet');
     expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('0 Active');
     expect(wrapper.find('[data-test="team-communication-panel"]').isVisible()).toBe(true);
   });
 

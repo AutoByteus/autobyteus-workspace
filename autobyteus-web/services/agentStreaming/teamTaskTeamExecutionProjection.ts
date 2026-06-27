@@ -5,6 +5,8 @@ import type { ServerMessage } from './protocol';
 import {
   buildRouteKeyFromPath,
   buildTaskExecutionTimelineEntry,
+  applyTaskDelegationProjectionDetails,
+  extractTaskDelegationProjectionDetails,
   normalizeProjectionPath,
   normalizeProjectionString,
   normalizeTaskExecutionStatusFromPayload,
@@ -193,6 +195,10 @@ export const ensureTaskTeamExecutionProjection = (
     conversationTargetSegments: buildTaskTeamRootConversationSegments(identity),
     taskExecutionStatus: existing?.taskExecutionStatus ?? initialStatus,
     taskTimeline: existing?.taskTimeline ? [...existing.taskTimeline] : [],
+    taskLabel: existing?.taskLabel ?? null,
+    taskDescription: existing?.taskDescription ?? null,
+    taskTargetKind: existing?.taskTargetKind ?? null,
+    taskTargetName: existing?.taskTargetName ?? null,
   };
 
   teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskTeamRunId, node);
@@ -214,6 +220,7 @@ export const updateTaskTeamExecutionProjectionFromEvent = (
   const eventType = normalizeProjectionString(payload.event_type) ?? normalizeProjectionString(payload.eventType) ?? message.type;
   const status = normalizeTaskExecutionStatusFromPayload(eventType, payload.status, payload.decision ?? payload.review_decision);
   const node = ensureTaskTeamExecutionProjection(teamContext, identity, status);
+  applyTaskDelegationProjectionDetails(node, extractTaskDelegationProjectionDetails(message));
   node.taskExecutionStatus = status;
   node.currentStatus = statusToAgentStatus(status);
   node.taskTimeline = [

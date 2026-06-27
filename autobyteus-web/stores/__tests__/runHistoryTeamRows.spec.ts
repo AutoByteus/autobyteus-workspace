@@ -4,7 +4,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
 
 describe('runHistoryTeamRows', () => {
-  it('builds live context rows from the full structured member tree without active-execution filtering', () => {
+  it('builds stable live context rows while filtering transient task-run projections', () => {
     const routeKeys = [
       'solution_designer',
       'architecture_reviewer',
@@ -13,12 +13,50 @@ describe('runHistoryTeamRows', () => {
       'api_e2e_engineer',
       'delivery_engineer',
     ];
+    const taskAgentNode = {
+      memberKind: 'agent',
+      memberName: 'implementation_engineer · task_0001',
+      displayName: 'implementation_engineer · task_0001',
+      memberPath: ['implementation_engineer', 'task-agent-run-1'],
+      memberRouteKey: 'task-agent-run-1',
+      memberRunId: 'task-agent-run-1',
+      agentDefinitionId: 'implementation_engineer-def',
+      isTaskAgentInstance: true,
+      taskAgentRunId: 'task-agent-run-1',
+      taskId: 'task_0001',
+      logicalMemberRouteKey: 'implementation_engineer',
+    };
+    const taskTeamChildNode = {
+      memberKind: 'agent',
+      memberName: 'implementation_engineer',
+      displayName: 'implementation_engineer',
+      memberPath: ['task-team-run-1', 'implementation_engineer'],
+      memberRouteKey: 'task-team-run-1/implementation_engineer',
+      memberRunId: null,
+      agentDefinitionId: 'implementation_engineer-def',
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+    };
+    const taskTeamNode = {
+      memberKind: 'agent_team',
+      memberName: 'software_engineering_team · task_0002',
+      displayName: 'software_engineering_team · task_0002',
+      memberPath: ['task-team-run-1'],
+      memberRouteKey: 'task-team-run-1',
+      memberRunId: 'task-team-run-1',
+      teamDefinitionId: 'software-team-def',
+      children: [taskTeamChildNode],
+      isTaskTeamInstance: true,
+      taskTeamRunId: 'task-team-run-1',
+      taskId: 'task_0002',
+    };
     const teamContext = {
       teamRunId: 'team-software-engineering-1',
       currentStatus: AgentTeamStatus.Running,
       coordinatorMemberRouteKey: 'solution_designer',
       focusedMemberRouteKey: 'solution_designer',
-      memberTree: routeKeys.map((memberRouteKey) => ({
+      memberTree: [
+        ...routeKeys.map((memberRouteKey) => ({
         memberKind: 'agent',
         memberName: memberRouteKey,
         displayName: memberRouteKey,
@@ -26,7 +64,10 @@ describe('runHistoryTeamRows', () => {
         memberRouteKey,
         memberRunId: `${memberRouteKey}-run`,
         agentDefinitionId: `${memberRouteKey}-def`,
-      })),
+        })),
+        taskAgentNode,
+        taskTeamNode,
+      ],
       leafAgentContextsByRouteKey: new Map([
         [
           'solution_designer',
@@ -54,6 +95,8 @@ describe('runHistoryTeamRows', () => {
 
     expect(rows.map((row) => row.memberRouteKey)).toEqual(routeKeys);
     expect(rows.map((row) => row.displayName)).toEqual(routeKeys);
+    expect(rows.flatMap((row) => [row.memberRouteKey, ...row.children.map((child) => child.memberRouteKey)])).not.toContain('task-agent-run-1');
+    expect(rows.flatMap((row) => [row.memberRouteKey, ...row.children.map((child) => child.memberRouteKey)])).not.toContain('task-team-run-1');
     expect(rows[0]?.currentStatus).toBe(AgentStatus.Running);
     expect(rows.slice(1).every((row) => row.currentStatus === AgentStatus.Offline)).toBe(true);
   });

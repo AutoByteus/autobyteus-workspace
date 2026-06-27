@@ -3,6 +3,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ServerMessage } from './protocol';
 import {
   ensureTaskAgentContext,
+  applyTaskAgentDelegationDetails,
   extractTaskAgentIdentity,
   type TaskAgentStreamIdentity,
 } from './teamTaskAgentContextProjection';
@@ -19,6 +20,7 @@ import {
   updateTaskTeamChildStatus,
   type TaskTeamChildMemberProjectionIdentity,
 } from './teamTaskTeamChildProjection';
+import { extractTaskDelegationProjectionDetails } from './teamTaskExecutionProjection';
 
 export type TaskExecutionProjectionMessageResult =
   | { outcome: 'continue'; taskAgentIdentity?: TaskAgentStreamIdentity | null }
@@ -113,6 +115,11 @@ const handleTaskTeamScopedProjectionMessage = (
   if (taskAgentIdentity) {
     const scopedTaskAgentIdentity = toScopedTaskAgentIdentity(taskAgentIdentity, scoped.identity);
     const taskAgentContext = ensureTaskAgentContext(teamContext, scopedTaskAgentIdentity);
+    applyTaskAgentDelegationDetails(
+      teamContext,
+      scopedTaskAgentIdentity.taskAgentRunId,
+      extractTaskDelegationProjectionDetails(message),
+    );
     return {
       outcome: 'memberContext',
       context: taskAgentContext,
@@ -155,6 +162,11 @@ export const handleTaskExecutionProjectionMessage = (
     const taskAgentIdentity = extractTaskAgentIdentity(message);
     if (taskAgentIdentity) {
       ensureTaskAgentContext(teamContext, taskAgentIdentity);
+      applyTaskAgentDelegationDetails(
+        teamContext,
+        taskAgentIdentity.taskAgentRunId,
+        extractTaskDelegationProjectionDetails(message),
+      );
       return { outcome: 'handled', taskAgentIdentity };
     }
     return { outcome: 'handled' };

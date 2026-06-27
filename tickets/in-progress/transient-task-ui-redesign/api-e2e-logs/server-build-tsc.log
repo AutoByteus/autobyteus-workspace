@@ -1,0 +1,2 @@
+COMMAND: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+EXIT_CODE: 0

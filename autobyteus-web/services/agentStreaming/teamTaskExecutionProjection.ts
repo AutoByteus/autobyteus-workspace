@@ -1,4 +1,5 @@
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { ServerMessage } from './protocol';
 
 export type TaskExecutionProjectionStatus =
   | 'starting'
@@ -17,6 +18,15 @@ export interface TaskExecutionTimelineEntry {
   label: string;
   createdAt: string;
   message?: string | null;
+}
+
+export interface TaskDelegationProjectionDetails {
+  taskId: string | null;
+  taskLabel: string | null;
+  taskDescription: string | null;
+  taskTargetKind: string | null;
+  taskTargetName: string | null;
+  taskExecutionStatus: TaskExecutionProjectionStatus;
 }
 
 export const buildTaskTeamScopedChildRouteKey = (
@@ -42,6 +52,112 @@ export const normalizeProjectionPath = (value: unknown): string[] => (
 export const normalizeProjectionString = (value: unknown): string | null => (
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null
 );
+
+const asProjectionRecord = (value: unknown): Record<string, unknown> => (
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {}
+);
+
+const extractTaskArrayEntry = (
+  tasks: unknown,
+  taskId: string | null,
+): Record<string, unknown> => {
+  if (!Array.isArray(tasks)) {
+    return {};
+  }
+  const taskRecords = tasks.map(asProjectionRecord).filter((task) => Object.keys(task).length > 0);
+  if (!taskRecords.length) {
+    return {};
+  }
+  if (!taskId) {
+    return taskRecords[0] ?? {};
+  }
+  return taskRecords.find((task) => (
+    normalizeProjectionString(task.taskId) === taskId ||
+    normalizeProjectionString(task.task_id) === taskId
+  )) ?? taskRecords[0] ?? {};
+};
+
+const extractTargetName = (target: Record<string, unknown>, targetKind: string | null): string | null => {
+  if (targetKind === 'member') {
+    const member = asProjectionRecord(target.member);
+    return normalizeProjectionString(member.memberName)
+      ?? normalizeProjectionString(member.member_name)
+      ?? normalizeProjectionString(member.name)
+      ?? normalizeProjectionString(member.memberRouteKey)
+      ?? normalizeProjectionString(member.member_route_key);
+  }
+  if (targetKind === 'team') {
+    const team = asProjectionRecord(target.team);
+    return normalizeProjectionString(team.memberName)
+      ?? normalizeProjectionString(team.member_name)
+      ?? normalizeProjectionString(team.name)
+      ?? normalizeProjectionString(team.memberRouteKey)
+      ?? normalizeProjectionString(team.member_route_key);
+  }
+  return null;
+};
+
+export const extractTaskDelegationProjectionDetails = (
+  message: ServerMessage,
+): TaskDelegationProjectionDetails | null => {
+  if (message.type !== 'TASK_DELEGATION_EVENT') {
+    return null;
+  }
+  const payload = 'payload' in message ? asProjectionRecord(message.payload) : {};
+  if (!Object.keys(payload).length) {
+    return null;
+  }
+
+  const taskId = normalizeProjectionString(payload.task_id) ?? normalizeProjectionString(payload.taskId);
+  const taskEntry = extractTaskArrayEntry(payload.tasks, taskId);
+  const target = asProjectionRecord(payload.target);
+  const targetKind = normalizeProjectionString(payload.target_kind)
+    ?? normalizeProjectionString(payload.targetKind)
+    ?? normalizeProjectionString(target.kind);
+  const eventType = normalizeProjectionString(payload.event_type)
+    ?? normalizeProjectionString(payload.eventType)
+    ?? message.type;
+
+  return {
+    taskId: taskId ?? normalizeProjectionString(taskEntry.taskId) ?? normalizeProjectionString(taskEntry.task_id),
+    taskLabel: normalizeProjectionString(payload.taskLabel)
+      ?? normalizeProjectionString(payload.task_label)
+      ?? normalizeProjectionString(taskEntry.taskLabel)
+      ?? normalizeProjectionString(taskEntry.task_label),
+    taskDescription: normalizeProjectionString(payload.description)
+      ?? normalizeProjectionString(payload.taskDescription)
+      ?? normalizeProjectionString(payload.task_description)
+      ?? normalizeProjectionString(taskEntry.description)
+      ?? normalizeProjectionString(taskEntry.taskDescription)
+      ?? normalizeProjectionString(taskEntry.task_description),
+    taskTargetKind: targetKind,
+    taskTargetName: normalizeProjectionString(payload.target_name)
+      ?? normalizeProjectionString(payload.targetName)
+      ?? extractTargetName(target, targetKind),
+    taskExecutionStatus: normalizeTaskExecutionStatusFromPayload(
+      eventType,
+      taskEntry.status ?? payload.status,
+      payload.decision ?? payload.review_decision,
+    ),
+  };
+};
+
+export const applyTaskDelegationProjectionDetails = (
+  node: TeamMemberNode,
+  details: TaskDelegationProjectionDetails | null,
+): void => {
+  if (!details) {
+    return;
+  }
+  node.taskId = details.taskId ?? node.taskId ?? null;
+  node.taskLabel = details.taskLabel ?? node.taskLabel ?? null;
+  node.taskDescription = details.taskDescription ?? node.taskDescription ?? null;
+  node.taskTargetKind = details.taskTargetKind ?? node.taskTargetKind ?? null;
+  node.taskTargetName = details.taskTargetName ?? node.taskTargetName ?? null;
+  node.taskExecutionStatus = details.taskExecutionStatus ?? node.taskExecutionStatus ?? null;
+};
 
 export const isTaskTeamProjectionNode = (node: TeamMemberNode | null | undefined): boolean => Boolean(
   node?.memberKind === 'agent_team' && node.isTaskTeamInstance,

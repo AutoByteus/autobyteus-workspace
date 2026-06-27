@@ -33,6 +33,14 @@ export interface TeamMemberNodeBase {
   logicalTeamPath?: string[] | null;
   taskExecutionStatus?: TaskExecutionProjectionStatus | null;
   taskTimeline?: TaskExecutionTimelineEntry[];
+  /** Delegated task label from the task delegation event contract. */
+  taskLabel?: string | null;
+  /** Delegated task description from TaskDelegationRecord.description. */
+  taskDescription?: string | null;
+  /** Display-only delegated task target kind. */
+  taskTargetKind?: 'member' | 'team' | string | null;
+  /** Display-only delegated task target name. */
+  taskTargetName?: string | null;
   /** True for cloned child member nodes scoped under a concrete task-team execution. */
   isTaskTeamChildProjection?: boolean;
   parentTaskTeamRunId?: string | null;

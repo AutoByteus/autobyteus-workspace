@@ -10,6 +10,10 @@ import type { ServerMessage } from './protocol';
 import type { TeamStreamIdentityPayload } from './protocol/teamStreamIdentityTypes';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
+import {
+  applyTaskDelegationProjectionDetails,
+  type TaskDelegationProjectionDetails,
+} from './teamTaskExecutionProjection';
 
 export interface TaskAgentStreamIdentity {
   taskAgentRunId: string;
@@ -276,6 +280,7 @@ const buildTaskAgentNode = (
   teamContext: AgentTeamContext,
   identity: TaskAgentStreamIdentity,
   context: AgentContext,
+  existingNode: TeamMemberNode | null = null,
 ): AgentTeamMemberNode => {
   const logicalContext = identity.logicalMemberRouteKey
     ? teamContext.leafAgentContextsByRouteKey.get(identity.logicalMemberRouteKey) || null
@@ -309,6 +314,11 @@ const buildTaskAgentNode = (
     logicalTeamRouteKey: identity.parentLogicalTeamRouteKey ?? null,
     logicalTeamPath: identity.parentLogicalTeamPath ? [...identity.parentLogicalTeamPath] : null,
     conversationTargetSegments: buildConversationTargetSegments(identity),
+    taskExecutionStatus: existingNode?.taskExecutionStatus ?? null,
+    taskLabel: existingNode?.taskLabel ?? null,
+    taskDescription: existingNode?.taskDescription ?? null,
+    taskTargetKind: existingNode?.taskTargetKind ?? null,
+    taskTargetName: existingNode?.taskTargetName ?? null,
   };
 };
 
@@ -318,7 +328,7 @@ const ensureTaskAgentNode = (
   context: AgentContext,
 ): AgentTeamMemberNode => {
   const existingNode = teamContext.memberNodesByRouteKey.get(identity.taskAgentRunId);
-  const node = buildTaskAgentNode(teamContext, identity, context);
+  const node = buildTaskAgentNode(teamContext, identity, context, existingNode ?? null);
   teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskAgentRunId, node);
   teamContext.memberTree = insertTaskAgentNodeNearParent(
     removeTaskAgentNodeFromTree(teamContext.memberTree, identity.taskAgentRunId),
@@ -328,6 +338,20 @@ const ensureTaskAgentNode = (
   if (existingNode?.isTaskAgentInstance) {
     return node;
   }
+  return node;
+};
+
+export const applyTaskAgentDelegationDetails = (
+  teamContext: AgentTeamContext,
+  taskAgentRunId: string,
+  details: TaskDelegationProjectionDetails | null,
+): AgentTeamMemberNode | null => {
+  const node = teamContext.memberNodesByRouteKey.get(taskAgentRunId) ?? null;
+  if (!node?.isTaskAgentInstance || node.memberKind !== 'agent') {
+    return null;
+  }
+  applyTaskDelegationProjectionDetails(node, details);
+  teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(node.memberRouteKey, node);
   return node;
 };
 
