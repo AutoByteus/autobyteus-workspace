@@ -12,10 +12,10 @@
 
 ## Current Delivery State
 
-- Delivery status: `User verified; finalization and release requested`
+- Delivery status: `Finalized and released`
 - Ticket archive status: archived under `tickets/done/focus-only-view-mode-simplification/`
-- Commit/push/merge status: pending finalization in this delivery round after explicit user verification.
-- Release/deployment status: user requested a new version release; planned release version is `v1.3.80` using ticket release notes at `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/release-notes.md`.
+- Commit/push/merge status: completed. Ticket branch commit `60297cc98c5e`, merge commit `7e34cdb48943`, and release commit `6e49226b769d` are pushed to `origin/personal`.
+- Release/deployment status: release `v1.3.80` committed, tagged, and pushed using ticket release notes at `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/done/focus-only-view-mode-simplification/release-notes.md`.
 
 ## Initial Delivery Integration Refresh
 
@@ -130,3 +130,20 @@ This is a local Linux x64 test build only. It did not push, tag, publish, create
 ## Finalization Status
 
 Finalization is in progress. Before the final commit, delivery refreshed `origin/personal`; it remained at `980e44d32015cf4e56c56e3a797f65da7734e9b0`, already contained by the ticket branch, so no renewed verification was required.
+
+## Finalization Completed
+
+Completed on `2026-06-27`.
+
+- Final target refresh after user verification: `origin/personal` remained at `980e44d32015cf4e56c56e3a797f65da7734e9b0`; no renewed verification was required.
+- Ticket archived under `tickets/done/focus-only-view-mode-simplification/` before the final ticket-branch commit.
+- Ticket branch final commit: `60297cc98c5eb7f1634efa1a0d24ebf8c2795fd9` (`Finalize focus-only team workspace simplification`).
+- Ticket branch push: completed, then remote branch deleted after merge.
+- Merge into `personal`: `7e34cdb489430bf8c153a0cb80abf1bceb90e11e` (`Merge focus-only team workspace simplification into personal`).
+- Release helper command: `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`.
+- Release commit: `6e49226b769d1dcc3f8636685bc8bb2bb354986a` (`chore(release): bump workspace release version to 1.3.80`).
+- Release tag: `v1.3.80` pushed.
+- Version sync: `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` are both `1.3.80`; managed messaging manifest is synced to `v1.3.80`.
+- Local Linux Electron test AppImage was preserved outside the removed worktree at `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-local-builds/focus-only-view-mode-simplification/AutoByteus_personal_linux-x64-1.3.79.AppImage`.
+- Dedicated ticket worktree removed, worktrees pruned, local ticket branch deleted, and remote ticket branch deleted.
+- GitHub release workflows triggered by `v1.3.80`; at final observation, Desktop, Android APK, iOS, messaging-gateway, and server Docker workflows were in progress.

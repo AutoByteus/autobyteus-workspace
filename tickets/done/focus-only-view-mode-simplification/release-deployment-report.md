@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-User verified the local Linux Electron build and requested finalization plus a new version release. Delivery archived the ticket before final commit and is finalizing through the recorded `personal` target-branch workflow. Release target is `v1.3.80`.
+User verified the local Linux Electron build and requested finalization plus a new version release. Delivery archived the ticket, finalized the repository through the recorded `personal` target-branch workflow, ran the documented release helper, pushed release tag `v1.3.80`, and cleaned up the dedicated ticket worktree/branches. The pushed release tag triggered the documented GitHub release workflows for desktop, Android APK, iOS, messaging-gateway, and server Docker; at final observation, all five workflows were still in progress.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `tickets/done/focus-only-view-mode-simplification/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records the latest-base integration, docs sync, API/E2E Round 2 validation, cumulative artifacts, and the user-verification hold.
+- Notes: Handoff summary records the latest-base integration, docs sync, API/E2E Round 2 validation, local Electron test build, user verification, repository finalization, release `v1.3.80`, and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -49,25 +49,30 @@ User verified the local Linux Electron build and requested finalization plus a n
 ## Version / Tag / Release Commit
 
 - Release requested: `Yes`
-- Planned release version: `v1.3.80`
+- Release requested: `Yes`
+- Release version: `v1.3.80`
 - Release notes artifact: `tickets/done/focus-only-view-mode-simplification/release-notes.md`
-- Release helper command planned after repository finalization: `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`
+- Curated GitHub release notes: `.github/release-notes/release-notes.md`
+- Release helper command: `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`
+- Release commit result: `Completed` — `6e49226b769d` (`chore(release): bump workspace release version to 1.3.80`)
+- Release tag result: `Completed` — pushed tag `v1.3.80`
+- Version sync result: `Completed` — `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` are both `1.3.80`; managed messaging manifest synced to `v1.3.80`.
 
 ## Repository Finalization
 
 - Bootstrap context source: Requirements/API-E2E handoff recorded target `origin/personal` / `personal`.
 - Ticket branch: `codex/focus-only-view-mode-simplification`
-- Ticket branch commit result: `Pending in this delivery round`
-- Ticket branch push result: `Pending in this delivery round`
+- Ticket branch commit result: `Completed` — final archive/source/docs commit `60297cc98c5e`.
+- Ticket branch push result: `Completed` — pushed `codex/focus-only-view-mode-simplification` before merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; final refresh found `origin/personal` unchanged at `980e44d32015cf4e56c56e3a797f65da7734e9b0`.
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed - target unchanged and already contained in ticket branch`
-- Target branch update result: `Not attempted`
-- Merge into target result: `Not attempted`
-- Push target branch result: `Not attempted`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` fast-forwarded to `origin/personal@980e44d32015cf4e56c56e3a797f65da7734e9b0` before merge.
+- Merge into target result: `Completed` — merge commit `7e34cdb48943`.
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` before release; release helper pushed it again with release commit `6e49226b769d`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -75,18 +80,25 @@ User verified the local Linux Electron build and requested finalization plus a n
 - Applicable: `Yes`
 - Method: `Repository release helper`
 - Method reference / command: `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`
-- Release/publication/deployment result: `Pending in this delivery round`
-- Release notes handoff result: `Prepared`
+- Release/publication/deployment result: `Completed locally and pushed` — branch `personal` and tag `v1.3.80` pushed.
+- Release notes handoff result: `Completed`
+- Release helper log: `tickets/done/focus-only-view-mode-simplification/delivery-logs/release-helper-1.3.80-20260627T150723+0200.log`
+- Triggered workflow runs observed:
+  - Desktop Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118745
+  - Android APK Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118744
+  - iOS App Store Connect Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118747
+  - Release Messaging Gateway: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118751
+  - Server Docker Release: `in_progress` at final observation — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290118755
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification`
-- Worktree cleanup result: `Blocked`
-- Worktree prune result: `Blocked`
-- Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is not safe until after user verification, repository finalization, and any applicable release/publication/deployment work.
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -98,7 +110,7 @@ User verified the local Linux Electron build and requested finalization plus a n
 
 - Release notes artifact created before release: `tickets/done/focus-only-view-mode-simplification/release-notes.md`
 - Archived release notes artifact used for release/publication: `tickets/done/focus-only-view-mode-simplification/release-notes.md`
-- Release notes status: `Updated`
+- Release notes status: `Used by release helper and synced to .github/release-notes/release-notes.md`
 
 ## User-Requested Local Electron Build
 
@@ -114,7 +126,7 @@ User verified the local Linux Electron build and requested finalization plus a n
 
 ## Deployment Steps
 
-Planned: push tag `v1.3.80` through `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`; GitHub Actions release workflows should start automatically from the tag push.
+Pushed tag `v1.3.80`; GitHub Actions release workflows started automatically from the tag push. External workflow completion is asynchronous after local finalization.
 
 ## Environment Or Migration Notes
 
@@ -135,12 +147,14 @@ Integrated validation evidence from API/E2E Round 2:
 - `pnpm -C autobyteus-web build` — Passed; Vite emitted large-chunk warnings only.
 - Temporary browser probe — Passed all 12 checks; JSON and screenshot saved under the ticket folder.
 - Delivery post-artifact whitespace check: `git diff --check` — Passed.
-- User-requested local Electron Linux build: `AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:linux` — Passed; AppImage produced for local testing.
+- User-requested local Electron Linux build: `AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:linux` — Passed; AppImage produced for local testing and preserved at `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-local-builds/focus-only-view-mode-simplification/AutoByteus_personal_linux-x64-1.3.79.AppImage`.
+- PASS: `pnpm release 1.3.80 -- --release-notes tickets/done/focus-only-view-mode-simplification/release-notes.md`
+- PASS: post-release version/manifest check confirmed web and messaging-gateway package versions `1.3.80`; managed messaging manifest release tag `v1.3.80`.
 
 ## Rollback Criteria
 
-Before finalization, if user verification finds the focus-only team workspace regressed, keep the branch unfinalized and route the issue to the appropriate owner. After finalization, revert the final merge if the removal of team workspace modes causes a release-blocking UI regression that cannot be fixed forward quickly.
+If release workflows fail, use the workflow-specific failure logs for the next targeted fix or manual recovery. If the focus-only team workspace causes production regressions after release, revert the merge/commit that introduced the simplification or publish a forward fix in a follow-up patch release.
 
 ## Final Status
 
-`Finalization in progress` — user verification received; repository finalization and release are being executed.
+Completed: ticket archived under `tickets/done/focus-only-view-mode-simplification/`, repository finalized into `personal`, release `v1.3.80` committed/tagged/pushed, GitHub release workflows triggered, local Linux test build preserved outside the removed worktree, and dedicated ticket worktree plus local/remote ticket branches cleaned up.
