@@ -23,6 +23,7 @@ import {
 import type { TeamStatusPayload } from "./team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
+import type { ConversationTargetAddress } from "./conversation-target-address.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -92,6 +93,13 @@ export class TeamRun {
       this.resolvePostMessageTarget(target),
       targetMemberRunId,
     );
+  }
+
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    return this.backend.postMessageToConversationTarget(message, address);
   }
 
   async deliverInterAgentMessage(

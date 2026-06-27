@@ -94,7 +94,7 @@ import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self
 import TeamActiveTaskExecutionsBar from '~/components/workspace/team/TeamActiveTaskExecutionsBar.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
+import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -117,7 +117,7 @@ const rosterFocusedMemberRouteKey = computed(() =>
 const userMessageTarget = computed(() => {
   const team = activeTeamContext.value;
   return team
-    ? resolveTeamUserMessageTarget(team, {
+    ? resolveTeamConversationTargetAddress(team, {
       allowSubteam: true,
       allowActiveExecutionSafetyFallback: true,
     })
@@ -136,19 +136,9 @@ const rosterFocusedMemberNode = computed(() => {
   return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
 });
 
-const showSharedComposer = computed(() => {
-  if (!userMessageTarget.value) {
-    return false;
-  }
-  if (
-    focusedMemberNode.value?.isTaskAgentInstance ||
-    focusedMemberNode.value?.isTaskTeamInstance ||
-    focusedMemberNode.value?.isTaskTeamChildProjection
-  ) {
-    return false;
-  }
-  return Boolean(activeTeamContext.value) && focusedMemberNode.value?.memberKind === 'agent_team';
-});
+const showSharedComposer = computed(() => (
+  Boolean(activeTeamContext.value) && userMessageTarget.value?.node.memberKind === 'agent_team'
+));
 
 const headerStatus = computed(() => {
   return rosterFocusedMemberContext.value?.state.currentStatus
@@ -181,8 +171,9 @@ const composerTargetTitle = computed(() => {
     return headerTitle.value;
   }
 
-  return target.node.displayName
-    || getMemberDisplayName(target.memberRouteKey, target.context)
+  return target.displayLabel
+    || target.node.displayName
+    || getMemberDisplayName(target.localTargetKey, target.context)
     || team.config.teamDefinitionName
     || 'Team';
 });

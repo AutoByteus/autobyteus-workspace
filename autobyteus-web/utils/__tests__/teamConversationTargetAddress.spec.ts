@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
-  resolveTeamUserMessageTarget,
-  resolveTeamUserMessageTargetResult,
-} from '../teamUserMessageTarget';
+  resolveTeamConversationTargetAddress,
+  resolveTeamConversationTargetAddressResult,
+} from '../teamConversationTargetAddress';
 
 const buildAgentNode = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
   memberKind: 'agent' as const,
@@ -15,7 +15,7 @@ const buildAgentNode = (memberRouteKey: string, overrides: Record<string, any> =
   ...overrides,
 });
 
-const buildSubteamNode = (memberRouteKey: string, children: any[] = []) => ({
+const buildSubteamNode = (memberRouteKey: string, children: any[] = [], overrides: Record<string, any> = {}) => ({
   memberKind: 'agent_team' as const,
   memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
   displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
@@ -23,6 +23,7 @@ const buildSubteamNode = (memberRouteKey: string, children: any[] = []) => ({
   memberRouteKey,
   teamDefinitionId: `${memberRouteKey}-team-def`,
   children,
+  ...overrides,
 });
 
 const buildContext = (runId: string, status = AgentStatus.Offline, messages: any[] = []) => ({
@@ -83,7 +84,7 @@ const taskAgentWorkPacket = {
   timestamp: new Date('2026-06-12T00:00:00.000Z'),
 };
 
-describe('teamUserMessageTarget', () => {
+describe('teamConversationTargetAddress', () => {
   it('resolves a focused offline non-coordinator leaf as the user-message target', () => {
     const teamContext = buildTeamContext({
       focusedMemberRouteKey: 'code_reviewer',
@@ -94,9 +95,12 @@ describe('teamUserMessageTarget', () => {
       },
     });
 
-    const target = resolveTeamUserMessageTarget(teamContext);
+    const target = resolveTeamConversationTargetAddress(teamContext);
 
     expect(target?.memberRouteKey).toBe('code_reviewer');
+    expect(target?.address).toEqual({
+      segments: [{ kind: 'member', memberRouteKey: 'code_reviewer' }],
+    });
     expect(target?.context?.state.runId).toBe('team-1::code_reviewer');
     expect(target?.source).toBe('focused_member');
   });
@@ -111,7 +115,7 @@ describe('teamUserMessageTarget', () => {
       },
     });
 
-    expect(resolveTeamUserMessageTarget(teamContext)?.memberRouteKey).toBe('solution_designer');
+    expect(resolveTeamConversationTargetAddress(teamContext)?.memberRouteKey).toBe('solution_designer');
   });
 
   it('reports stale focus instead of inventing a coordinator target', () => {
@@ -123,7 +127,7 @@ describe('teamUserMessageTarget', () => {
       },
     });
 
-    const resolution = resolveTeamUserMessageTargetResult(teamContext);
+    const resolution = resolveTeamConversationTargetAddressResult(teamContext);
 
     expect(resolution.target).toBeNull();
     expect(resolution.focusedMemberRouteKey).toBe('missing_member');
@@ -142,9 +146,9 @@ describe('teamUserMessageTarget', () => {
       },
     });
 
-    expect(resolveTeamUserMessageTargetResult(teamContext).reason).toBe('subteam_without_leaf_context');
+    expect(resolveTeamConversationTargetAddressResult(teamContext).reason).toBe('subteam_without_leaf_context');
 
-    const target = resolveTeamUserMessageTarget(teamContext, { allowSubteam: true });
+    const target = resolveTeamConversationTargetAddress(teamContext, { allowSubteam: true });
     expect(target).toMatchObject({
       memberRouteKey: 'BuildSquad',
       context: null,
@@ -170,10 +174,86 @@ describe('teamUserMessageTarget', () => {
       coordinatorMemberRouteKey: 'coordinator',
     });
 
-    const target = resolveTeamUserMessageTarget(teamContext, { allowActiveExecutionSafetyFallback: true });
+    const target = resolveTeamConversationTargetAddress(teamContext, { allowActiveExecutionSafetyFallback: true });
 
     expect(target?.memberRouteKey).toBe('team-1__worker__task_0001');
+    expect(target?.address).toEqual({
+      segments: [
+        { kind: 'member', memberRouteKey: 'worker' },
+        { kind: 'task_agent', taskAgentRunId: 'team-1__worker__task_0001' },
+      ],
+    });
     expect(target?.source).toBe('focused_member');
+  });
+
+  it('resolves task-team roots and scoped child projections with typed runtime segments', () => {
+    const taskTeamRoot = buildSubteamNode('task-team-run-1', [], {
+      isTaskTeamInstance: true,
+      taskTeamRunId: 'task-team-run-1',
+      logicalTeamRouteKey: 'BuildSquad',
+      logicalTeamPath: ['BuildSquad'],
+    });
+    const taskTeamChild = buildAgentNode('task-team-run-1/review_lead', {
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+      taskTeamRelativeMemberRouteKey: 'review_lead',
+      taskTeamRelativeMemberPath: ['review_lead'],
+      logicalTeamRouteKey: 'BuildSquad',
+      structuralSourcePath: ['BuildSquad', 'review_lead'],
+    });
+    taskTeamRoot.children = [taskTeamChild];
+    const teamContext = buildTeamContext({
+      focusedMemberRouteKey: 'task-team-run-1',
+      memberTree: [buildSubteamNode('BuildSquad'), taskTeamRoot],
+      memberContexts: {
+        'task-team-run-1/review_lead': buildContext('task-team-run-1/review_lead', AgentStatus.Running),
+      },
+    });
+
+    expect(resolveTeamConversationTargetAddress(teamContext, { allowSubteam: true })?.address).toEqual({
+      segments: [
+        { kind: 'member', memberRouteKey: 'BuildSquad' },
+        { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+      ],
+    });
+
+    teamContext.focusedMemberRouteKey = 'task-team-run-1/review_lead';
+    expect(resolveTeamConversationTargetAddress(teamContext, { allowSubteam: true })?.address).toEqual({
+      segments: [
+        { kind: 'member', memberRouteKey: 'BuildSquad' },
+        { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+        { kind: 'member', memberRouteKey: 'review_lead' },
+      ],
+    });
+  });
+
+  it('prefers stored full conversation target segments for nested task-agent projections', () => {
+    const nestedSegments = [
+      { kind: 'member', memberRouteKey: 'BuildSquad' },
+      { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+      { kind: 'member', memberRouteKey: 'NestedSquad' },
+      { kind: 'task_team', taskTeamRunId: 'task-team-run-2' },
+      { kind: 'member', memberRouteKey: 'implementer' },
+      { kind: 'task_agent', taskAgentRunId: 'task-agent-run-2' },
+    ];
+    const nestedTaskAgent = buildAgentNode('task-team-run-1/NestedSquad/task-team-run-2/implementer/task-agent-run-2', {
+      isTaskAgentInstance: true,
+      taskAgentRunId: 'task-agent-run-2',
+      logicalMemberRouteKey: 'implementer',
+      parentTaskTeamRunId: 'task-team-run-2',
+      conversationTargetSegments: nestedSegments,
+    });
+    const teamContext = buildTeamContext({
+      focusedMemberRouteKey: nestedTaskAgent.memberRouteKey,
+      memberTree: [buildSubteamNode('BuildSquad'), nestedTaskAgent],
+      memberContexts: {
+        [nestedTaskAgent.memberRouteKey]: buildContext('task-agent-run-2', AgentStatus.Running),
+      },
+    });
+
+    expect(resolveTeamConversationTargetAddress(teamContext, { allowSubteam: true })?.address).toEqual({
+      segments: nestedSegments,
+    });
   });
 
   it('falls back through active-execution safety only for task-agent-only logical parents', () => {
@@ -186,9 +266,9 @@ describe('teamUserMessageTarget', () => {
       },
     });
 
-    expect(resolveTeamUserMessageTargetResult(teamContext).reason).toBe('task_agent_only_logical_member');
+    expect(resolveTeamConversationTargetAddressResult(teamContext).reason).toBe('task_agent_only_logical_member');
 
-    const target = resolveTeamUserMessageTarget(teamContext, { allowActiveExecutionSafetyFallback: true });
+    const target = resolveTeamConversationTargetAddress(teamContext, { allowActiveExecutionSafetyFallback: true });
     expect(target).toMatchObject({
       memberRouteKey: 'coordinator',
       source: 'active_execution_safety_fallback',

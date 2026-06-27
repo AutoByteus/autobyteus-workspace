@@ -88,7 +88,7 @@ Do not report API, E2E, or broader executable checks as passed in this artifact.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings. Node emitted the existing module-type warning for `localization/audit/migrationScopes.ts`.
 - `pnpm -C autobyteus-web build` — Passed. Vite emitted large-chunk warnings.
-- `git diff --check` — Passed.
+- `git diff --check origin/personal...HEAD` — Passed after the merge commit.
 - Static cleanup search: `rg -n "TeamGridView|TeamSpotlightView|TeamWorkspaceModeSwitch|teamWorkspaceViewStore|TeamWorkspaceViewMode|ensureHistoricalMembersHydratedForView|TeamMemberMonitorTile" autobyteus-web --glob '!node_modules/**' --glob '!autobyteus-web/tickets/**' --glob '!tickets/**' --glob '!docs/**' --glob '!.nuxt/**' --glob '!.output/**' --glob '!dist/**' --glob '!coverage/**' || true` — No active matches.
 - Static cleanup search: `rg -n "spotlight|Spotlight|Focus/Grid/Spotlight" autobyteus-web --glob '!node_modules/**' --glob '!autobyteus-web/tickets/done/**' --glob '!tickets/done/**' --glob '!.nuxt/**' --glob '!.output/**' --glob '!dist/**' --glob '!coverage/**' || true` — No active matches.
 
@@ -103,3 +103,40 @@ Do not report API, E2E, or broader executable checks as passed in this artifact.
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. API/E2E coverage investigation and execution remain required downstream after code review. This implementation did not run browser/E2E validation or classify API/E2E coverage.
+
+
+## Delivery Integration Local-Fix Addendum (2026-06-27)
+
+Delivery rerouted a `Local Fix` after `origin/personal` advanced to `980e44d32015cf4e56c56e3a797f65da7734e9b0` and the required latest-base merge conflicted with this ticket. The local checkpoint before merge was `7425b952f54082bec3646ba8ffb5a7a22bcbbbab`.
+
+Resolved conflicts:
+
+- `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`
+- `autobyteus-web/docs/agent_execution_architecture.md`
+- `autobyteus-web/docs/agent_teams.md`
+- `autobyteus-web/docs/settings.md`
+
+Resolution notes:
+
+- Preserved clean-cut focus-only behavior: no mode picker, no `currentMode`, no Grid/Spotlight branches, no mode store, and no broader-mode hydration path were reintroduced.
+- Preserved latest `ConversationTargetAddress` behavior from `origin/personal`: `TeamWorkspaceView.vue` uses `resolveTeamConversationTargetAddress(...)`, typed target labels/local target keys, and the docs retain typed conversation-target-addressing terminology.
+- The shared composer now remains focus-only and appears for resolved typed `agent_team` targets, covering structural subteams and task-team/subteam-style targets without restoring `currentMode !== 'focus'`.
+- Active docs now combine focus-only wording (`focus pane`) with the latest typed target-addressing contract and contain no current Grid/Spotlight product-mode claims.
+
+Additional rework artifact:
+
+- `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-focus-only-view-mode-simplification/tickets/focus-only-view-mode-simplification/implementation-integration-rework.md`
+
+Additional implementation-scoped checks after resolving integration conflicts:
+
+- `pnpm install --frozen-lockfile --prefer-offline` — Passed.
+- `pnpm -C autobyteus-web exec nuxi prepare` — Passed.
+- `pnpm -C autobyteus-web test:nuxt components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamActiveTaskExecutionsBar.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts utils/__tests__/teamConversationTargetAddress.spec.ts tests/integration/app-font-size-fixed-px-audit.integration.test.ts --run` — Passed: 9 files / 105 tests.
+- `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
+- `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing module-type warning observed.
+- `git diff --check origin/personal...HEAD` — Passed after the merge commit.
+- Static removed-artifact cleanup search — Passed with no active matches outside excluded archival/build areas.
+- Static `spotlight` / `Spotlight` / `Focus/Grid/Spotlight` cleanup search — Passed with no active matches outside excluded archival/build areas.
+- `pnpm -C autobyteus-web build` — Passed; Vite emitted existing large-chunk warnings.
+
+Because source/docs changed after the prior code review and API/E2E pass, this integrated local fix is routed back to `code_reviewer` before coverage/delivery resumes.

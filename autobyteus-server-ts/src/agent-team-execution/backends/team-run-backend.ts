@@ -9,6 +9,7 @@ import type { AgentStatusPayload } from "../../agent-execution/domain/agent-stat
 import type { TeamStatusPayload } from "../domain/team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
 
 export interface TeamRunBackend {
   readonly runId: string;
@@ -23,6 +24,10 @@ export interface TeamRunBackend {
     message: AgentInputUserMessage,
     target?: TeamMemberSelector | null,
     targetMemberRunId?: string | null,
+  ): Promise<AgentOperationResult>;
+  postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
