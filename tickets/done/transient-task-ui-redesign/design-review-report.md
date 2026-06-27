@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review request from `solution_designer` for transient task UI redesign.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-spec.md` against the requirements, investigation notes, UX recommendation, shared design principles, and current code paths.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-spec.md` against the requirements, investigation notes, UX recommendation, shared design principles, and current code paths.
 
 The design correctly treats the issue as an ownership split rather than a styling fix: live task-run projections can remain in `AgentTeamContext.memberTree` for routing/focus, while the left navigation receives a stable filtered projection and the right-side Team tab receives the active delegated-task UI.
 

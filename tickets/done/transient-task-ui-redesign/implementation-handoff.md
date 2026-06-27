@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-review-report.md`
 
 ## What Changed
 

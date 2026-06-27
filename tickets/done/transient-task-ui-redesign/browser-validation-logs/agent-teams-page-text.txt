@@ -1,0 +1,657 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+church
+enpal-smart-energy-companion
+german_online_practice
+normy_job_search
+reonic_hackerthon
+temp_workspace
+Settings
+Reload
+Create Team
+BS
+Bible Study Group
+
+一个中文优先的三人查经小组，围绕单节或短段经文进行真实的小组式来回讨论，直到形成更深入的共同理解。
+
+faith-and-teaching
+Run
+View Details
+→
+S
+study_leader
+C
+careful_reader
+C
+context_guide
+
+Coordinator
+
+study_leader
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+CO
+Clara Ocean Friends
+
+Clara Ocean Friends story creation team
+
+children-storybook-production
+Run
+View Details
+→
+C
+ClaraStoryOrchestrator
+C
+ClaraStorybookBuilder
+
+Coordinator
+
+ClaraStoryOrchestrator
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+JS
+Job Search Application Team
+
+A three-specialist team for resume-led job discovery, candidate tracking, user-approved application preparation, and approved job application submission.
+
+career-and-jobs
+Run
+View Details
+→
+C
+career_profile_strategist
+J
+job_opportunity_scout
+A
+application_specialist
+
+Coordinator
+
+career_profile_strategist
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+MT
+Marketing Team
+
+Coordinates platform-native drafting, review, publishing, and research across LinkedIn, X, Xiaohongshu, and Weixin Official Account.
+
+marketing-and-publishing
+Run
+View Details
+→
+M
+marketing_coordinator
+L
+linkedin_marketer
+X
+x_marketer
+X
+xiaohongshu_marketer
++1 more
+
+Coordinator
+
+marketing_coordinator
+
+Members
+
+5
+
+Nested Teams
+
+0
+
+Movie Maker
+
+cinematic stage play generation team
+
+cinematic stage play generation team
+Run
+View Details
+→
+S
+storyboard_designer
+I
+image_generator
+A
+audio_generator
+V
+video_assembler
+
+Coordinator
+
+storyboard_designer
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+NC
+Nested Classroom Test Team
+
+Minimal nested-team fixture for testing delegate_task to an agent-team target.
+
+testing
+Run
+View Details
+→
+T
+Teacher
+S
+StudentStudyGroup
+TEAM
+
+Coordinator
+
+Teacher
+
+Members
+
+2
+
+Nested Teams
+
+1
+
+PR
+Presentation_Chemie
+
+Presentation
+
+Presentation
+Run
+View Details
+→
+S
+SlideDesigner Agent
+S
+SlideNarrator Agent
+S
+SlideImageGenerator Agent
+
+Coordinator
+
+SlideNarrator Agent
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+SM
+Socratic Math Team
+
+Socratic Math Team
+
+Socratic Math Team
+Run
+View Details
+→
+S
+SocraticMathTeacher
+G
+GeniusMathResolver
+A
+AnimationDeveloper
+
+Coordinator
+
+SocraticMathTeacher
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+VT
+Video Tutorial Creation Team
+
+Create narrated software tutorial videos from source screen recordings.
+
+VideoTutorialCreationTeam
+Run
+View Details
+→
+T
+TutorialVoiceoverWriter
+T
+TutorialVideoAssembler
+
+Coordinator
+
+TutorialVoiceoverWriter
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+AW
+Article Writing Team
+
+A two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.
+
+writing-and-editing
+Run
+View Details
+→
+A
+article_writer
+A
+article_reviewer
+
+Coordinator
+
+article_writer
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+CS
+Classroom Simulation Team
+
+A teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.
+
+education-simulation
+Run
+View Details
+→
+P
+professor
+S
+student
+
+Coordinator
+
+professor
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+DT
+Data2Story Team
+
+A verifiable data-journalism newsroom team that turns datasets into traceable multimodal articles with evidence viewers.
+
+data-journalism
+Run
+View Details
+→
+D
+data_detective
+D
+data_analyst
+N
+narrative_editor
+V
+visual_designer
++3 more
+
+Coordinator
+
+data_detective
+
+Members
+
+7
+
+Nested Teams
+
+0
+
+KC
+Kids Coloring Story Team
+
+A child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.
+
+creative-media
+Run
+View Details
+→
+S
+story_activity_designer
+C
+coloring_page_illustrator
+C
+child_experience_reviewer
+P
+printable_pack_producer
+
+Coordinator
+
+story_activity_designer
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+MV
+Manga Video Studio Team
+
+A story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.
+
+creative-media
+Run
+View Details
+→
+M
+manga_showrunner
+S
+storyboard_director
+M
+manga_illustrator
+V
+voice_video_producer
+
+Coordinator
+
+manga_showrunner
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+NP
+Narrated Presentation Video Team
+
+A slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.
+
+creative-media
+Run
+View Details
+→
+P
+presentation_director
+N
+narration_script_reviewer
+S
+slide_video_producer
+
+Coordinator
+
+presentation_director
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+NO
+Northstar Operating Company
+
+A realistic fictional SaaS company simulation with an executive leadership team and nested department organizations.
+
+business-simulation
+Run
+View Details
+→
+C
+ceo
+C
+chief_of_staff
+C
+cto
+C
+cpo
++9 more
+
+Coordinator
+
+ceo
+
+Members
+
+13
+
+Nested Teams
+
+5
+
+RE
+Research Engineering Team
+
+A lean research-engineering team for research, implementation-plan handoff contracts, minimal implementation, run execution, validation evidence, and iterative research decisions.
+
+research-engineering
+Run
+View Details
+→
+R
+research_scientist
+I
+implementation_engineer
+
+Coordinator
+
+research_scientist
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+RT
+Research To Deck Team
+
+A three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.
+
+content-and-presentations
+Run
+View Details
+→
+D
+deep_researcher
+I
+infographic_powerpoint_designer
+D
+deck_reviewer
+
+Coordinator
+
+deep_researcher
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+SE
+Software Engineering Team
+
+A lightweight self-operating software engineering team for upstream solution design, implementation, API/E2E coverage investigation and execution, review, documentation sync, and final handoff.
+
+software-engineering
+Run
+View Details
+→
+S
+solution_designer
+A
+architecture_reviewer
+I
+implementation_engineer
+C
+code_reviewer
++2 more
+
+Coordinator
+
+solution_designer
+
+Members
+
+6
+
+Nested Teams
+
+0
+
+SP
+Software Product Promo Video Team
+
+A product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.
+
+creative-media
+Run
+View Details
+→
+P
+promo_director
+V
+visual_director
+V
+visual_reviewer
+P
+promo_video_producer
+
+Coordinator
+
+promo_director
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+ST
+STORM Team
+
+A Stanford STORM-inspired knowledge curation team for researching a topic, mining perspectives, asking retrieval-grounded questions, synthesizing an outline, and writing a cited article.
+
+research-writing
+Run
+View Details
+→
+T
+topic_research_coordinator
+P
+perspective_miner
+E
+expert_interviewer
+O
+outline_architect
++2 more
+
+Coordinator
+
+topic_research_coordinator
+
+Members
+
+6
+
+Nested Teams
+
+0
+
+BS
+Brief Studio Team
+
+Coordinates a researcher and writer to produce one reviewable brief.
+
+Writing
+Application-owned
+
+Application: Brief Studio · application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fapplication-execution-resource-naming%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+
+Run
+View Details
+→
+R
+researcher
+W
+writer
+
+Coordinator
+
+researcher
+
+Members
+
+2
+
+Nested Teams
+
+0

@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/requirements.md`
 - Current Review Round: 1
 - Trigger: Initial implementation handoff from `implementation_engineer` for transient task UI redesign.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: N/A
 - API / E2E Execution Started Yet: `No`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`

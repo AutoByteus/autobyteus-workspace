@@ -1,0 +1,1219 @@
+{
+    "data": {
+        "listWorkspaceRunHistory": [
+            {
+                "workspaceRootPath": "/Users/normy/church/2026-05-25-roma-fuqi-church",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_company_operation",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_mcps",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_private_mcps",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_software-engineering-team_f15e5400",
+                                "summary": "We have a ticket that we currently have a work tree which is for a ticket which is about to creat...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-05T04:00:51.038Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_software-engineering-team_3abbe76c",
+                                "summary": "could you please first pull the latest main of the repo, and then in the server docker, we have d...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T15:10:56.467Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/tmp/autobyteus-classroom-readme-e8bc4d35",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "classroomsimulation",
+                        "teamDefinitionName": "ClassRoomSimulation",
+                        "runs": [
+                            {
+                                "teamRunId": "team_classroomsimulation_ff5394b9",
+                                "summary": "give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-03T18:26:35.585Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-com-workspace",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_software-engineering-team_d25af1e8",
+                                "summary": "our mobile user experience is not clean. Basically the UI contains so much redundant text, you kn...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-05-22T03:52:06.555Z",
+                                "createdAt": "2026-05-22T03:38:08.265Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_e7b709bd",
+                                "summary": "i would like to have a feature to record how many users downloaded my product. I meant no duplica...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-18T03:39:49.382Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-marketing-workspace",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "marketing-team",
+                        "teamDefinitionName": "Marketing Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_marketing-team_2160e41c",
+                                "summary": "understand what i have in the workspace and publish a post on linkedin for my productg",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-03T13:28:12.189Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-social-media",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "video-tutorial-creation-team",
+                        "teamDefinitionName": "Video Tutorial Creation Team",
+                        "runs": [
+                            {
+                                "teamRunId": "video_tutorial_creation_team_a6397f7dfa8a4bbb8aca1e6add7a188e",
+                                "summary": "/Users/normy/Desktop/token_statistics_with_intro.mp4 \u6211\u521a\u521a\u5c31\u662f\u8fd9\u4e2a\u89c6\u9891\u662f\u6211\u521a\u521a\u5f55\u7684,\u5173\u4e8e\u5c31\u662f\u6211\u9996\u5148\u662f\u9009\u4e86\u6211\u4eec\u81ea\u5df1\u7684AutoByteus ru...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-26T10:15:31.504Z"
+                            },
+                            {
+                                "teamRunId": "video_tutorial_creation_team_9be81fc3d96349b4b2e91ed482b46a99",
+                                "summary": "/Users/normy/Desktop/vertical_view_dell_trimmed.mp4 Let me describe what I did in this video. Bas...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T04:54:23.090Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_aaf34cb0",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_classroom_simulation_no_audio_t...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-04T11:45:51.608Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_48955b3c",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus-software-engineering-agent-team...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-03T08:55:49.542Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_6b5033e8",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus-software-engineering-agent-team...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-03T04:14:11.602Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_4b502088",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-01T13:54:23.978Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_ceb0ba67",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-01T13:20:28.775Z",
+                                "createdAt": "2026-06-01T13:09:16.519Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_67c9e6d6",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-01T04:24:15.527Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_f6e241d4",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-01T04:23:54.848Z",
+                                "createdAt": "2026-06-01T04:23:08.743Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_0f103349",
+                                "summary": "lease work on the first part of the video/Users/normy/autobyteus_org/autobyteus-tutorial-videos/s...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-29T10:49:30.424Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_460fe47d",
+                                "summary": "Please work on the first part of the video/Users/normy/autobyteus_org/autobyteus-tutorial-videos/...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-05-29T10:52:15.400Z",
+                                "createdAt": "2026-05-29T10:45:53.532Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_86103bc2",
+                                "summary": "Please work on the first part of the video/Users/normy/autobyteus_org/autobyteus-tutorial-videos/...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-05-29T10:52:16.707Z",
+                                "createdAt": "2026-05-29T08:44:20.330Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_dae552c8",
+                                "summary": "Please work on the first part of the video/Users/normy/autobyteus_org/autobyteus-tutorial-videos/...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-05-29T08:44:22.686Z",
+                                "createdAt": "2026-05-29T08:40:50.430Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_8a776d92",
+                                "summary": "Please work on the first part of the video/Users/normy/autobyteus_org/autobyteus-tutorial-videos/...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-05-29T08:40:47.633Z",
+                                "createdAt": "2026-05-29T08:40:04.640Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_7660f5d0",
+                                "summary": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-29T08:21:40.721Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_126ccfe8",
+                                "summary": "You are the TutorialVoiceoverWriter. Use the local `tutorial-voiceover-writer` skill as the autho...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-24T09:34:07.481Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_11aee19d",
+                                "summary": "You are the TutorialVoiceoverWriter. Use the local `tutorial-voiceover-writer` skill as the autho...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-20T03:52:28.651Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_86c9f635",
+                                "summary": "You are the TutorialVoiceoverWriter. Use the local `tutorial-voiceover-writer` skill as the autho...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-19T19:39:57.884Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "research-to-deck-team",
+                        "teamDefinitionName": "Research To Deck Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_research-to-deck-team_54b7ce98",
+                                "summary": "normy has build quite. a few websites, for example https://galavion.de/ is the chemistry learning...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-29T06:52:58.591Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "software_engineering_team_f5eb38a7cab0490987f04d4cf22e40a8",
+                                "summary": "Our application support, if you look at the code base, we have Android, also have iOS. Currently,...",
+                                "status": "idle",
+                                "isActive": true,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T16:08:44.623Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_287a570b6a5f489eb3ae9dca6e6e2839",
+                                "summary": "if you read the cache rate for codex app server, 99 percent, its way too high dont you think its ...",
+                                "status": "idle",
+                                "isActive": true,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T15:55:35.093Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_057fd30efa5f4bd3843c744698ee7699",
+                                "summary": "currently in autobyteus-ts, we support compression, could you please have a look how compression ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T14:35:14.232Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_e2210a289d9745ec8e6df4589dd77331",
+                                "summary": "Currently, if you look at our front and back and our project, basically support task agent and th...",
+                                "status": "running",
+                                "isActive": true,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T14:28:27.799Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+                                "summary": "on the backend, we support delegate task tool, and review task result tool, could you have a look...",
+                                "status": "idle",
+                                "isActive": true,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T13:18:47.533Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_cf4a90aca58e4386a4a197a5ee57c986",
+                                "summary": "i feel like our frontend responsiblitiy is actually quite bad. if you look at it. But of course a...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-24T04:32:15.204Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_6db396af9c3a4c538809b362822387d8",
+                                "summary": "On our application have like an Apple on deploy GitHub pipeline, but I don't know why it doesn't ...",
+                                "status": "idle",
+                                "isActive": true,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-23T10:47:13.611Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_e2e314a69d30427b8e665118e3b2a962",
+                                "summary": "currently autobyteus can be used as mcp gateway, but if you look at this \"http://127.0.0.1:29695/...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-22T04:09:01.629Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_cd878b1dbbf34882837899d34becb959",
+                                "summary": "currently As you can see that the local tools and mcp server are two like manual items under sett...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-18T12:02:25.895Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_ebc178c464944374b7e22d9066873f6b",
+                                "summary": "when i use add mcp server, and then after i add the mcp server, i click the preview tools, then t...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-17T07:31:44.301Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_82067a80c660491db9a9b4bd86bdd2e7",
+                                "summary": "please analyse this ticket /Users/normy/autobyteus_org/autobyteus-worktrees/claude-code-cli-runti...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T07:50:03.388Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_b8abf03c",
+                                "summary": "i currently have a bug, if you start the frontend against teh backend servers tarted by teh elect...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-02T19:12:55.357Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_9d74beaa",
+                                "summary": "i would like to integrate the antigravity cli as another runtime. currently we have AutoByteus, C...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-02T03:59:22.451Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_fa10eacd",
+                                "summary": "Can you search on the internet that are there any, it's like more like a MCP gateway, you know, i...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-01T09:03:47.347Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_c23502de",
+                                "summary": "could you check whether the send message to the target support \"user\", this tool, the reason is t...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-31T06:20:37.934Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_41c3adaa",
+                                "summary": "Currently in the project we have designed the application framework. So please understand how it ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-29T10:56:15.358Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "article-writing-team",
+                        "teamDefinitionName": "Article Writing Team",
+                        "runs": [
+                            {
+                                "teamRunId": "article_writing_team_22573bf71de54bedb1542efe7623270d",
+                                "summary": "our server currently has a decent architecture, it is even able to behave like one mcp gateway no...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T18:35:31.159Z"
+                            },
+                            {
+                                "teamRunId": "article_writing_team_27510ef02cb3403e92090c73394f1900",
+                                "summary": "Please understand that in our codebase, how multi-agent, agent team, multi-agent, agent team are ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-14T09:43:59.992Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/bible",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "narrated-presentation-video-team",
+                        "teamDefinitionName": "Narrated Presentation Video Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_narrated-presentation-video-team_0b3730b8",
+                                "summary": "\u5728\u5ba2\u897f\u9a6c\u5c3c\u7977\u544a 32 \u4ed6\u4eec\u6765\u5230\u4e00\u4e2a\u5730\u65b9\uff0c\u540d\u53eb\u5ba2\u897f\u9a6c\u5c3c\uff0c\u8036\u7a23\u5bf9\u95e8\u5f92\u8bf4\uff1a\u201c\u4f60\u4eec\u5750\u5728\u8fd9\u91cc\uff0c\u7b49\u6211\u7977\u544a\u3002\u201d 33 \u4e8e\u662f\u5e26\u7740\u5f7c\u5f97\u3001\u96c5\u5404\u3001\u7ea6\u7ff0\u540c\u53bb\uff0c\u5c31\u60ca\u6050\u8d77\u6765\uff0c\u6781\u5176\u96be\u8fc7\uff0c 34 \u5bf9\u4ed6\u4eec\u8bf4\uff1a\u201c\u6211\u5fc3\u91cc\u751a\u662f\u5fe7\u4f24\uff0c\u51e0...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-02T06:30:02.125Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/church/bible_children_manga_book",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "kids-coloring-story-team",
+                        "teamDefinitionName": "Kids Coloring Story Team",
+                        "runs": [
+                            {
+                                "teamRunId": "kids_coloring_story_team_cf45301f22524f129b8eb4575bca730a",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5 \u6700\u597d\u662f\u6709\u5c0f\u52a8\u7269\u7684\uff0c\u4e0d\u7528\u7279\u522b\u62d8\u8c28",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-26T12:47:59.558Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_8d4a8140c8b44ba39ce7e886f175fe2e",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-26T11:39:12.157Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_676ed2cd71e947c59f972ef24e762310",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-26T11:37:21.301Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_0dfdd9eca69e468dbc18268567e27608",
+                                "summary": "You \u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-17T17:25:41.062Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_a27e00b26ca443fd88384ec42b4893f6",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T18:03:07.894Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_04be3d1f705642c9bd79c3222e2e3f98",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-15T16:35:43.039Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_fe532f9ee3904aa888142fa3bc8c0992",
+                                "summary": "\u9009\u4e00\u4e2a\u5723\u7ecf\u4e2d\u7684\u6545\u4e8b\uff0c\u8ba9\u5b69\u5b50\u53ef\u4ee5\u5b66\u4e60\u7684\uff0c\u751a\u81f3\u662f\u5c0f\u6545\u4e8b\u90fd\u53ef\u4ee5",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-15T10:02:21.234Z"
+                            },
+                            {
+                                "teamRunId": "kids_coloring_story_team_1bfad7f804a94704b59e3efad08e0873",
+                                "summary": "\u675c\u752b\u5199\u8bd7",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-12T16:44:45.836Z"
+                            },
+                            {
+                                "teamRunId": "team_kids-coloring-story-team_7103b96b",
+                                "summary": "\u5e2e\u6211\u505a\u4e00\u4e2a\u674e\u767d\u5199\u8bd7\u7684\u5c0f\u6545\u4e8b",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T04:57:19.327Z"
+                            },
+                            {
+                                "teamRunId": "team_kids-coloring-story-team_8751f977",
+                                "summary": "the story is David and Golia",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-08T07:26:29.261Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/church",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "research-to-deck-team",
+                        "teamDefinitionName": "Research To Deck Team",
+                        "runs": [
+                            {
+                                "teamRunId": "research_to_deck_team_b562390b612b46539e09f20e2bd8a44f",
+                                "summary": "please analase this /Users/normy/reonic_hackerthon/enpal-smart-energy-companion-ai-trader-homepag...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-21T11:15:29.977Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "software_engineering_team_de7e484910c2457f92101b5b811391a5",
+                                "summary": "/Users/normy/Downloads/enpal-track-dataset.zip i just got some dataset for enpal, analyse the dat...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-21T05:52:26.969Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_9075ca1c7ef2426b8251e0c42f333223",
+                                "summary": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion/applications/enpal-smart-energy-compa...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-21T05:35:17.493Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_d19f9284643b44178d2a608e9d0e0951",
+                                "summary": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion/applications/enpal-smart-energy-compa...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T18:03:47.872Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_5e905d02ea294f2d8eb606c893084fbe",
+                                "summary": "when i start the app, i got the following problem pnpm --dir applications/enpal-smart-energy-comp...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T17:52:39.540Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_ca5e24426784489d88117c6373709f33",
+                                "summary": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion/applications/enpal-smart-energy-compa...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T15:32:09.710Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_f32403d8c5474621b82d647c815a0add",
+                                "summary": "work on this ticket /Users/normy/reonic_hackerthon/enpal-smart-energy-companion/tickets/device-da...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-20T15:43:57.886Z",
+                                "createdAt": "2026-06-20T13:44:05.318Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/normy_projects/german_online_practice",
+                "teamDefinitions": []
+            },
+            {
+                "workspaceRootPath": "/Users/normy/autobyteus_org/mlx-qwen3-mtp",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "research-engineering-team",
+                        "teamDefinitionName": "Research Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_research-engineering-team_c031bed2",
+                                "summary": "Can Qwen 3.x MTP on MLX materially beat LM Studio\u2019s Qwen 4-bit speed on Mac M1, where the current...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-22T08:28:29.993Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/reonic_hackerthon",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "software_engineering_team_8ca7207aa0ed4e93b8e2cd20c102340c",
+                                "summary": "### Enpal \u2013 The Smart Energy Companion **\ud83c\udfc6 Track Prize: AI voice recording device (worth 200\u20ac)**...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-20T13:50:25.436Z",
+                                "createdAt": "2026-06-20T09:49:02.749Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_76e5acc1ce244b9687638ae07071e12a",
+                                "summary": "### Cloover \u2013 **The household energy transition planner** **\ud83c\udfc6 Track Prize: AirPods and Powerbank...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T09:48:15.654Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_4b20f73ff8384ecfa3cfb080b330a331",
+                                "summary": "extract all the content in the image, and tell me what it is about",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T09:44:54.333Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_10ec683e3d9d4218979a9606285a0dc7",
+                                "summary": "### Reonic \u2013 AI-Powered Marketing to Enable Renewable Installers **\ud83c\udfc6 Track Prize: Reonic Car pac...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-20T09:39:59.146Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+                "teamDefinitions": [
+                    {
+                        "teamDefinitionId": "nested-classroom-test",
+                        "teamDefinitionName": "Nested Classroom Test Team",
+                        "runs": [
+                            {
+                                "teamRunId": "nested_classroom_test_team_b181ad5c9dfa425196e9d6db982bb0c4",
+                                "summary": "give a hard middle school geometry question to student team, and the team must ask human approval...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-27T16:38:26.823Z",
+                                "createdAt": "2026-06-27T10:11:19.974Z"
+                            },
+                            {
+                                "teamRunId": "nested_classroom_test_team_80af15b0051f45f997bd9315cdb40c3e",
+                                "summary": "give a hard middle school gemometry question to the team, teh team must ask huma approve before s...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T10:10:39.539Z"
+                            },
+                            {
+                                "teamRunId": "nested_classroom_test_team_ba93ea8ee7e24d198703acc87d15e686",
+                                "summary": "lets go give student team a hard middle school geometry question to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T08:18:47.581Z"
+                            },
+                            {
+                                "teamRunId": "nested_classroom_test_team_4181f58ad7554688baaa2a9018edd915",
+                                "summary": "lets go give student team a hard middle school geometry question to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-27T08:17:01.944Z"
+                            },
+                            {
+                                "teamRunId": "nested_classroom_test_team_f134a0d8c2d84db28e75edede7725e36",
+                                "summary": "give student team a middle school math problem to solve.",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-26T13:52:05.584Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "bible-study-group",
+                        "teamDefinitionName": "Bible Study Group",
+                        "runs": [
+                            {
+                                "teamRunId": "bible_study_group_6dd3e4a997ed4720a83413158bf087a8",
+                                "summary": "\u4ee5\u5f17\u6240\u4e66 6\uff0c \u6211\u89c9\u5f97\u67e5\u7ecf\u6709\u4e2a\u5f88\u91cd\u8981\u7684\u4e1c\u897f\u5c31\u662f\u8981\u628a\u5386\u53f2\u80cc\u666f\u67e5\u6e05\u695a\uff0c\u624d\u6709\u5bf9\u4e66\u91cc\u9762\u6709\u597d\u7684\u7406\u89e3",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-23T17:46:07.510Z"
+                            },
+                            {
+                                "teamRunId": "team_bible-study-group_7c809b51",
+                                "summary": "\u4ee5\u5f17\u6240\u4e66 4",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T14:55:36.307Z"
+                            },
+                            {
+                                "teamRunId": "team_bible-study-group_150afc59",
+                                "summary": "\u56e0\u6b64\uff0c\u6211\u4fdd\u7f57\u2014\u2014\u4e3a\u4f60\u4eec\u5916\u90a6\u4eba\u505a\u4e86\u57fa\u7763\u8036\u7a23\u88ab\u56da\u7684\uff0c\u66ff\u4f60\u4eec\u7948\u7977[a]\u3002 2 \u8c05\u5fc5\u4f60\u4eec\u66fe\u542c\u89c1\u795e\u8d50\u6069\u7ed9\u6211\uff0c\u5c06\u5173\u5207\u4f60\u4eec\u7684\u804c\u5206\u6258\u4ed8\u6211\uff0c 3 \u7528\u542f\u793a\u4f7f\u6211\u77e5\u9053\u798f\u97f3\u7684\u5965\u79d8\uff0c\u6b63\u5982\u6211\u4ee5\u524d\u7565\u7565\u5199\u8fc7\u7684\u3002 4 \u4f60\u4eec\u5ff5\u4e86\uff0c\u5c31...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-19T18:15:07.655Z"
+                            },
+                            {
+                                "teamRunId": "team_bible-study-group_9e0619d9",
+                                "summary": "\u4ee5\u4f5b\u6240\u4e66\u7b2c2\u7ae0",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-12T18:09:01.012Z"
+                            },
+                            {
+                                "teamRunId": "team_bible-study-group_5fdfb93c",
+                                "summary": "\u4ee5\u4f5b\u6240\u4e66\u7b2c\u4e00\u7ae0",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-05T18:31:24.624Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "data2story-team",
+                        "teamDefinitionName": "Data2Story Team",
+                        "runs": [
+                            {
+                                "teamRunId": "data2story_team_75dd56720c1e49ef8148664d715c3a7c",
+                                "summary": "work on this /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/data2story-team/examples/p...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-17T11:40:04.095Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "northstar-operating-company",
+                        "teamDefinitionName": "Northstar Operating Company",
+                        "runs": [
+                            {
+                                "teamRunId": "northstar_operating_company_3d332b96162245ed88873edaef13c861",
+                                "summary": "send a message to cfo to ask this years cost",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T18:10:19.057Z"
+                            },
+                            {
+                                "teamRunId": "northstar_operating_company_2964e392e24b49d988502eece683eea6",
+                                "summary": "the task is to get this years annual revenu",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T18:19:03.680Z"
+                            },
+                            {
+                                "teamRunId": "team_northstar-operating-company_6af4b5ba",
+                                "summary": "ask finance to give you this years financial situation",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-19T13:44:11.693Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "software-engineering-team",
+                        "teamDefinitionName": "Software Engineering Team",
+                        "runs": [
+                            {
+                                "teamRunId": "software_engineering_team_457c4641caa749ae838a4197ffde2dd2",
+                                "summary": "hello",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T17:11:46.561Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_6b9ab51c7bf640639de5e827a6ef4924",
+                                "summary": "create a website to sell sushi, and you create those features. since its demo, you can decide. no...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-13T07:39:30.756Z",
+                                "createdAt": "2026-06-12T17:05:22.999Z"
+                            },
+                            {
+                                "teamRunId": "software_engineering_team_d20b5e11c83b4eb28a702eda96c9a3a0",
+                                "summary": "create a jet game in html, you only do design. put in your own folder. This is not a git repo. so...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-12T16:56:19.155Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_5f2eec12",
+                                "summary": "You create a html based schoolbag ecommerce website, since its only for demo, so you fancy stuff....",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T04:07:43.151Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_866ec110",
+                                "summary": "create a html based shoe ecommerce website, since its only for demo, so you fancy stuff. you desi...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T04:07:24.187Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_5ecc1027",
+                                "summary": "create a very simple jet game in html, you follow your skill. the purpose is i wann test whethe r...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T04:04:50.098Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_84813e88",
+                                "summary": "hello",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T10:42:46.754Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_6a1b9910",
+                                "summary": "create a jet game in html, you are solution designer, you dont write code. you use your skill to ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-09T03:14:28.434Z",
+                                "createdAt": "2026-06-09T03:06:16.749Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_edbbe55c",
+                                "summary": "create a small jet game in html",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": "2026-06-06T19:14:11.117Z",
+                                "createdAt": "2026-06-06T19:13:19.271Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_01a0f635",
+                                "summary": "create a really nice jet stricking game using the tehnicnogy you feel most suitable for",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-06T08:57:20.814Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_e296a744",
+                                "summary": "create a shoes shopping demo website, using nuxt ssr thanks. you decide the features. no need to ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-05T05:25:38.129Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_1d82e959",
+                                "summary": "**[User Requirement]** develop a website to sell kleber(glues) using nuxt ssr. you design the fea...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-09T20:24:05.209Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_cf98b5e0",
+                                "summary": "**[User Requirement]** create a animal toys shopping website, you design the features, because it...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-09T20:17:04.262Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_dacafd83",
+                                "summary": "**[User Requirement]** create a shoes shopping website, you design the features, because its for ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-09T16:19:20.723Z"
+                            },
+                            {
+                                "teamRunId": "team_software-engineering-team_2ce060ac",
+                                "summary": "**[User Requirement]** create a fruit shopping website, you design the features, because its for ...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-09T14:17:04.014Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "video-tutorial-creation-team",
+                        "teamDefinitionName": "Video Tutorial Creation Team",
+                        "runs": [
+                            {
+                                "teamRunId": "video_tutorial_creation_team_672532ad5e89436d8b18c7db029efac0",
+                                "summary": "what tools do you have",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T16:58:06.128Z"
+                            },
+                            {
+                                "teamRunId": "video_tutorial_creation_team_5dea0d861f144ab1adad1076db246e46",
+                                "summary": "what tools do you have",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T16:57:48.289Z"
+                            },
+                            {
+                                "teamRunId": "video_tutorial_creation_team_086f8fb9bbc84365b5d3a0e9789988fd",
+                                "summary": "what tools do you have",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T16:57:35.325Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_0669514b",
+                                "summary": "**[User Requirement]** do it for this video /Users/normy/Desktop/autobyteus-software-enginnering-...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-06T07:37:24.556Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_42755d5b",
+                                "summary": "**[User Requirement]** do it for this video /Users/normy/Desktop/autobyteus-software-enginnering-...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-06T07:33:53.229Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_e2014c0f",
+                                "summary": "You are the TutorialVoiceoverWriter. Use the local `tutorial-voiceover-writer` skill as the autho...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-25T14:47:33.008Z"
+                            },
+                            {
+                                "teamRunId": "team_video-tutorial-creation-team_d07fa91b",
+                                "summary": "You are the TutorialVoiceoverWriter. Use the local `tutorial-voiceover-writer` skill as the autho...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-04-24T07:23:16.201Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "classroom-simulation-team",
+                        "teamDefinitionName": "Classroom Simulation Team",
+                        "runs": [
+                            {
+                                "teamRunId": "classroom_simulation_team_e5bac2438c8d4947b529317dedce85a8",
+                                "summary": "give student a middle school math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T11:55:14.429Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_abd1020109e243219f2b5faf85621209",
+                                "summary": "give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-16T10:08:51.093Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_df338d2bb32d4731964baf036c58ce44",
+                                "summary": "give student a hard middle school math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-14T08:38:21.664Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_be1d03f8870e483db293623270481bf7",
+                                "summary": "give student a hard middle school math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-14T08:34:42.628Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_0570c10a498940d49843301f0d1f7275",
+                                "summary": "give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-14T08:33:30.430Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_5b7d242f7d004c82847982b3addbffce",
+                                "summary": "give student a hard middle school geomtry problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T19:56:50.129Z"
+                            },
+                            {
+                                "teamRunId": "classroom_simulation_team_1a7bfb88911249a990981fd3043be6d4",
+                                "summary": "can you see this image?",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T19:40:27.268Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_61726e73",
+                                "summary": "give student a hard middle school math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T04:20:55.618Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_b452ba70",
+                                "summary": "give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-11T04:19:26.543Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_13f94509",
+                                "summary": "hello, give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-10T07:24:46.451Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_87e33386",
+                                "summary": "hello, give student a hard middle school geometry problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T03:01:37.814Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_92ee3fa4",
+                                "summary": "give student a hard math problem to solve thanks",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-09T02:46:37.073Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_1f1bdd5a",
+                                "summary": "give student a hard math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-08T13:22:20.889Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_d454da58",
+                                "summary": "give student a hard middle school geometry math problem to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-08T13:18:01.116Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_4e682a83",
+                                "summary": "give student a hard math question to solve",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-08T13:13:31.565Z"
+                            },
+                            {
+                                "teamRunId": "team_classroom-simulation-team_128395f8",
+                                "summary": "\u7ed9\u8fd9\u4f4d\u540c\u5b66\u51fa\u4e00\u9053\u6570\u5b66\u521d\u4e2d\u51e0\u4f55\u9898\uff0c\u8003\u8003\u4ed6\u7684\u6c34\u5e73",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-04T11:12:26.842Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "job-search-application-team",
+                        "teamDefinitionName": "Job Search Application Team",
+                        "runs": [
+                            {
+                                "teamRunId": "job_search_application_team_80f1046e117f40e8acee8fbde3eabe87",
+                                "summary": "i need to find a job in Berlin for her /Users/normy/Downloads/Normy-Wang-Resume.pdf She also buil...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-06-15T10:09:12.436Z"
+                            }
+                        ]
+                    },
+                    {
+                        "teamDefinitionId": "marketing-team",
+                        "teamDefinitionName": "Marketing Team",
+                        "runs": [
+                            {
+                                "teamRunId": "team_marketing-team_cf2fc2cb",
+                                "summary": "hello",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-31T11:10:50.546Z"
+                            },
+                            {
+                                "teamRunId": "team_marketing-team_288046b8",
+                                "summary": "Can you please just help me write a linking post? Basically, if you look at the image, that the i...",
+                                "status": "offline",
+                                "isActive": false,
+                                "terminatedAt": null,
+                                "createdAt": "2026-05-18T10:06:50.605Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "workspaceRootPath": "/Users/normy/wechat-workspace",
+                "teamDefinitions": []
+            }
+        ]
+    }
+}

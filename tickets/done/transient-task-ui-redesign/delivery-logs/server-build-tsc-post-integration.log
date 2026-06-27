@@ -1,0 +1,5 @@
+== server-build-tsc-post-integration ==
+Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+Started: 2026-06-27T16:13:42Z
+Finished: 2026-06-27T16:13:46Z
+Exit code: 0

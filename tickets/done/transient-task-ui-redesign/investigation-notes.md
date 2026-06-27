@@ -24,7 +24,7 @@ User reports that transient task agents and task agent teams currently appear im
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/in-progress/transient-task-ui-redesign`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/tickets/done/transient-task-ui-redesign`
 - Current Branch: `codex/transient-task-ui-redesign`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign`
 - Bootstrap Base Branch: `origin/personal`

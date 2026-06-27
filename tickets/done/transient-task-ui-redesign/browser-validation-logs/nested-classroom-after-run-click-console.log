@@ -1,0 +1,14 @@
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE info <Suspense> is an experimental feature and its API will likely change.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE log serverStore: Checking server health at /rest/health
+CONSOLE log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+CONSOLE log [Workspace] Connecting to file system changes for workspace: temp_ws_default
+CONSOLE log [FileExplorerStreaming] Connecting to ws://127.0.0.1:29695/ws/file-explorer/temp_ws_default...
+CONSOLE log [FileExplorerStreaming] WebSocket connected
+CONSOLE log [FileExplorerStreaming] Session established: 9b937300-43f2-4101-b7d6-6939b0013414
+CONSOLE log [Workspace] Connected to file system changes: 9b937300-43f2-4101-b7d6-6939b0013414
+CONSOLE log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
