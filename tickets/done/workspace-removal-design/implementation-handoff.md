@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/design-review-report.md`
-- Code review report / Local Fix trigger: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/code-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/design-review-report.md`
+- Code review report / Local Fix trigger: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/code-review-report.md`
 
 ## What Changed
 
@@ -165,7 +165,7 @@ Suggested focus for code review and API/E2E coverage investigation:
 
 During delivery's mandatory latest-base refresh, `git merge --no-edit origin/personal` conflicted in `autobyteus-web/stores/workspace.ts` after checkpoint commit `19828ad2`. The conflict was resolved by keeping the workspace-removal `removeWorkspaceForStore` import and latest-base `resolveTeamConversationTargetAddress` import/usage, removing obsolete `resolveTeamUserMessageTarget` and conflict markers.
 
-Additional artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/implementation-delivery-local-fix.md`.
+Additional artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/implementation-delivery-local-fix.md`.
 
 Delivery-local focused checks after the merge-conflict fix:
 

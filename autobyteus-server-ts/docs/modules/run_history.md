@@ -29,7 +29,8 @@
 
 Workspace + agent operations:
 
-- `listWorkspaceRunHistory`
+- `listWorkspaceRunHistory(limitPerAgent)` for global/default history grouping, such as recent-history style surfaces. It is not the authority for desktop top-level workspace rows.
+- `workspaceRunHistory(workspaceId, limitPerAgent)` for history under one registered workspace. The resolver first resolves `workspaceId` through the workspace registry and rejects missing, unregistered, or removed workspaces.
 - `getRunProjection`
 - `getAgentRunResumeConfig`
 - `archiveStoredRun`
@@ -73,6 +74,14 @@ Permanent delete remains a separate destructive action. `deleteStoredRun` and
 history index entries instead of only hiding the row. The current product slice
 does not expose an archived-list or unarchive GraphQL/UI path; archived data
 remains retained on disk for future recovery tooling.
+
+## Workspace Registry Interaction
+
+Run history is retained independently of workspace-list visibility. Removing a workspace from Workspaces deletes the workspace registry entry only; it does not delete `memory/run_history_index.json`, `memory/team_run_history_index.json`, run/team metadata directories, raw traces, artifacts, or generated files.
+
+Top-level desktop workspace rows should come from the workspace registry via the `workspaces()` query. Historical run/team records for an unregistered or removed root must not recreate a top-level workspace row. When a registered workspace row is expanded, the frontend calls `workspaceRunHistory(workspaceId, limitPerAgent)` so history is loaded for that registry-resolved root. Re-adding the same root restores the deterministic workspace id and allows the preserved history for that root to be shown again.
+
+`listWorkspaceRunHistory(limitPerAgent)` still returns grouped history across roots for global/recent-history consumers that intentionally need that broader view. Those consumers should not be treated as workspace-list authorities.
 
 ## Standalone Status Projection And Prepared Identities
 

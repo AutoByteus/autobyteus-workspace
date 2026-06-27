@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` after user-approved requirements.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

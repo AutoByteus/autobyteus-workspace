@@ -8,7 +8,7 @@ Delivery started the mandatory latest-base refresh for `workspace-removal-design
 
 Delivery blocker report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design/release-deployment-report.md`
 
 ## Resolution
 

@@ -275,10 +275,15 @@ from `useWorkspaceHistoryTreeState(...)`, and
 `WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
 current expansion state.
 
-- Workspace rows default collapsed after history loads, so the initial tree
-  shows workspace names only.
-- Expanding a workspace reveals the next-level standalone-agent groups and
-  team-definition groups for that workspace.
+- Top-level workspace rows come from `workspaceStore.allWorkspaces`, which is
+  loaded from the backend `workspaces()` query and its registered/visible
+  workspace list. History-only roots for unregistered or removed workspaces do
+  not create desktop top-level workspace rows.
+- Workspace rows default collapsed, so the initial tree shows workspace names
+  only.
+- Expanding a workspace calls the workspace-scoped history path for that
+  workspace id and reveals the next-level standalone-agent groups and
+  team-definition groups for that registered workspace.
 - Standalone run rows and team-run rows stay collapsed until the user expands
   the specific agent group or team-definition group.
 - Team-definition group rows and individual team-run rows use the same compact
@@ -290,6 +295,8 @@ current expansion state.
   history refreshes while the history panel remains mounted.
 - Newly added workspaces are explicitly opened after creation so the add flow
   still lands the user in the workspace they just created.
+- Quiet refreshes update already-loaded workspace history without falling back
+  to a global history fetch that can mark unrelated active contexts offline.
 
 When an existing run or team run is selected before its history ancestry is
 visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
@@ -306,6 +313,14 @@ and Focus display even when the member is offline or has no active runtime
 context. Live/hydrated team-context merges must preserve the persisted history
 row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
+
+### Workspace Removal From The Sidebar
+
+`WorkspaceHistoryWorkspaceSection.vue` exposes a row-specific **Remove from Workspaces** action for removable filesystem workspace rows. The action is associated with the exact workspace row, is available through hover/focus/touch-visible affordances, and does not toggle row expansion when clicked.
+
+Removal always asks for confirmation and uses non-destructive copy: workspace files, memories, artifacts, and stored run/team history are not deleted. On confirm, `workspaceStore.removeWorkspace(workspaceId)` calls the backend `removeWorkspace` mutation. Successful removal unregisters the workspace, removes the row immediately, prunes cached workspace history and expansion state, clears selected run/team rows that belonged to the removed workspace, and clears file-explorer metadata/live state for that workspace. Failed removal leaves the row and selection intact and shows the backend error. Active standalone or team runs block removal until the user stops active work.
+
+Re-adding or loading the same root later restores the same deterministic workspace id and lets the preserved history for that root appear again when the workspace is expanded. Temporary draft rows, archive actions, permanent history delete actions, and transient skill/temp workspace cleanup remain separate flows.
 
 ### Workspace History Archive And Delete Actions
 

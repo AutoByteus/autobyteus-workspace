@@ -24,7 +24,7 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/s
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/done/workspace-removal-design`.
 - Current Branch: `codex/workspace-removal-design`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design`.
 - Bootstrap Base Branch: `origin/personal` (remote default HEAD branch is `personal`).
