@@ -216,3 +216,26 @@ Proceeding to archive ticket, final commit, ticket branch push, target branch me
 ## Post-Release Status Update
 
 This report was updated after the release helper completed. It is intentionally committed after the `v1.3.81` tag, so the tag points at the release-version commit while `personal` also records final ticket/release status.
+
+## Release Workflow Trigger Evidence
+
+The `v1.3.81` tag push triggered the expected GitHub Actions release workflows. At the time of delivery status recording, all were `in_progress`:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290359814
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290359817
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290359825
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290359826
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28290359837
+
+## Post-Finalization Cleanup Completion
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design`
+- Worktree cleanup result: `Completed` — generated build artifacts required forced cleanup/prune, and the path is now removed.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — deleted `codex/workspace-removal-design` locally after merge.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/workspace-removal-design` after `personal` contained the merge.
+- Blocker (if applicable): N/A
+
+## Final Delivery Status
+
+`Completed` — ticket finalized, merged into `personal`, release `v1.3.81` created and pushed, release workflows triggered, cleanup completed.
