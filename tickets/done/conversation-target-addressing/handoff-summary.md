@@ -2,7 +2,9 @@
 
 ## Status
 
-User verification received. Ticket has been archived for repository finalization, and a new personal release is requested. The planned release version is `v1.3.79`, following the repository release helper documented in `README.md`.
+Completed. User verification was received, the ticket was archived, the finalized ticket branch was merged into `personal`, `personal` was pushed, release version `v1.3.79` was created and pushed through the documented release helper, and the dedicated ticket worktree/branches were cleaned up.
+
+Release workflows were triggered by the pushed `v1.3.79` tag and were in progress at the final delivery observation.
 
 ## Verification Reference
 
@@ -12,19 +14,24 @@ User verification received. Ticket has been archived for repository finalization
   - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
   - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.78.dmg`
   - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.78.zip`
+- Note: those local test-build paths were removed during post-finalization dedicated worktree cleanup; the durable release path is the pushed `v1.3.79` tag and GitHub release workflows.
 
-## Branch / Integration State
+## Branch / Integration / Finalization State
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing`
+- Archived ticket path: `tickets/done/conversation-target-addressing/`
 - Ticket branch: `codex/conversation-target-addressing`
 - Recorded base/finalization target: `origin/personal` / `personal`
 - Bootstrap base: `origin/personal` at `820bce314520`
 - Latest tracked base checked before finalization: `origin/personal` at `7b61278ca90a`
 - Latest base advancement integrated before user verification: Yes — 4 commits (`62175991`, `310aba09`, `e90c9cae`, `7b61278c`)
 - Local checkpoint commit before latest integration: `1b7312e35889` (`checkpoint: conversation target live UI evidence before delivery refresh`)
-- Latest integration merge commit: `2fa908b6ade5`
-- Merge-base after latest integration: `7b61278ca90a`
-- Target refresh after user verification: completed; no additional `origin/personal` advancement beyond `7b61278ca90a` was found before archiving.
+- Latest integration merge commit on ticket branch: `2fa908b6ade5`
+- Final ticket archive commit: `f485b3178173`
+- Merge into `personal`: `3be84f49216c`
+- Release commit on `personal`: `bc4582f62a48`
+- Release tag: `v1.3.79`
+- Target branch pushed: Yes — `origin/personal` updated through `bc4582f62a48`
+- Ticket branch cleanup: local and remote `codex/conversation-target-addressing` removed after merge/release.
 
 ## Delivered Behavior Summary
 
@@ -72,22 +79,34 @@ User verification received. Ticket has been archived for repository finalization
 ## Delivery Verification
 
 - PASS: `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
-- PASS: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/team-conversation-target-address-parser.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts --reporter=dot` — 6 files / 56 tests.
-- PASS: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts --reporter=dot` — 4 files / 23 tests.
-- PASS: `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamConversationTargetAddress.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --reporter=dot` — 3 files / 65 tests.
+- PASS: focused server conversation/AutoByteus suite — 6 files / 56 tests.
+- PASS: focused task-delegation suite — 4 files / 23 tests.
+- PASS: focused frontend suite — 3 files / 65 tests.
 - PASS: `git diff --check`
 - PASS: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac` — local unsigned macOS ARM64 Electron test package rebuilt after latest base integration.
 - PASS: stale long-lived docs/source scan for removed route-only resolver / route-key-only team send wording returned no matches outside ticket artifacts.
 - PASS: duplicate frontend docs remain in sync: `diff -q autobyteus-web/docs/agent_execution_architecture.md autobyteus-web/docs/settings.md`
 
-## Release Notes
+## Release
 
-- Created: `tickets/done/conversation-target-addressing/release-notes.md`
-- Planned release version: `v1.3.79`
-- Release helper: `pnpm release 1.3.79 -- --release-notes tickets/done/conversation-target-addressing/release-notes.md`
+- Release notes: `tickets/done/conversation-target-addressing/release-notes.md`
+- Curated GitHub release notes synced to `.github/release-notes/release-notes.md` by the release helper.
+- Release helper command: `pnpm release 1.3.79 -- --release-notes tickets/done/conversation-target-addressing/release-notes.md`
+- Release commit: `bc4582f62a48`
+- Release tag: `v1.3.79`
+- Versions after release helper:
+  - `autobyteus-web/package.json`: `1.3.79`
+  - `autobyteus-message-gateway/package.json`: `1.3.79`
+  - managed messaging manifest synced to `v1.3.79`
+- Workflow runs observed after tag push:
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399916
+  - iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399880
+  - Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399870
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399869
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28286399868
 
 ## Residuals / Not Run
 
 - Full external live LMStudio/Codex/Claude nested mixed-runtime E2E suites remain environment-gated and were not run.
 - Full web Nuxt typecheck remains a known broad baseline failure unrelated to changed files, as recorded by code review; delivery did not rerun it.
-- The pre-verification Electron build was unsigned/local and not notarized; release signing/notarization is delegated to the documented GitHub release workflows triggered by the version tag.
+- GitHub release workflows were triggered and in progress at handoff; external workflow completion/public App Store review is outside the local finalization step.
