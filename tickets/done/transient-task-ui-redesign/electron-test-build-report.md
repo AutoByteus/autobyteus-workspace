@@ -81,4 +81,4 @@ Artifact sizes observed:
 - For easiest testing, open the DMG and launch/copy `AutoByteus.app`, or launch the app bundle directly from `electron-dist/mac-arm64/AutoByteus.app`.
 - Because this is unsigned/not notarized, macOS Gatekeeper may require right-click → Open or a security confirmation. This is expected for the local test build and does not indicate a packaging failure.
 - The Electron app uses the embedded backend on `http://127.0.0.1:29695` and the existing desktop data directory `~/.autobyteus/server-data`.
-- Final repository finalization remains paused until explicit user verification.
+- Final repository finalization later completed after explicit user verification; the dedicated ticket worktree containing the ephemeral local build artifacts was removed during cleanup. Durable evidence is retained in this report and the build log.
