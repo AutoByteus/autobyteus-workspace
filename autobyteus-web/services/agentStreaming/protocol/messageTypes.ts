@@ -16,6 +16,7 @@ export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayloa
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
+import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
 export type { TaskAgentIdentityPayload, TaskTeamIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
@@ -375,12 +376,23 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
+  conversation_target_address?: ConversationTargetAddressPayload;
+  conversationTargetAddress?: ConversationTargetAddress;
   target_member_route_key?: string;
   target_member_path?: string[];
   targetMemberRouteKey?: string;
   targetMemberPath?: string[];
   message_id?: string;
   dedupe_key?: string;
+}
+
+export interface ConversationTargetAddressPayload {
+  parent_team_run_id?: string | null;
+  segments: Array<
+    | { kind: 'member'; member_route_key?: string; member_path?: string[] }
+    | { kind: 'task_team'; task_team_run_id: string }
+    | { kind: 'task_agent'; task_agent_run_id: string }
+  >;
 }
 
 export interface ToolActionPayload {

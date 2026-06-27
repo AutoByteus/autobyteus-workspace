@@ -1,4 +1,10 @@
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import {
+  cloneTaskTeamInstanceIdentity,
+  type TaskTeamInstanceIdentity,
+} from "../../../agent-team-execution/domain/task-team-instance.js";
+import type { TaskDelegationContextMember } from "../../../agent-team-execution/task-delegation/task-delegation-target.js";
+import { toTaskDelegationContextMember } from "../../../agent-tools/task-delegation/task-delegation-context-member-mapper.js";
 
 export type AutoByteusManagedTeamContext = {
   teamRunId: string;
@@ -12,13 +18,9 @@ export type AutoByteusManagedTeamContext = {
   taskAgentRunId?: string | null;
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
   coordinatorMemberRouteKey: string | null;
-  members: Array<{
-    memberName: string;
-    memberPath: string[];
-    memberRouteKey: string;
-    memberRunId: string;
-  }>;
+  members: TaskDelegationContextMember[];
 };
 
 export const buildAutoByteusManagedTeamContext = (
@@ -36,11 +38,9 @@ export const buildAutoByteusManagedTeamContext = (
   taskId: memberTeamContext.taskAgentInstance?.taskId ?? null,
   logicalMemberRouteKey:
     memberTeamContext.taskAgentInstance?.logicalMember.memberRouteKey ?? null,
+  taskTeamInstance: memberTeamContext.taskTeamInstance
+    ? cloneTaskTeamInstanceIdentity(memberTeamContext.taskTeamInstance)
+    : null,
   coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
-  members: memberTeamContext.members.map((member) => ({
-    memberName: member.memberName,
-    memberPath: [...member.memberPath],
-    memberRouteKey: member.memberRouteKey,
-    memberRunId: member.memberRunId,
-  })),
+  members: memberTeamContext.members.map(toTaskDelegationContextMember),
 });

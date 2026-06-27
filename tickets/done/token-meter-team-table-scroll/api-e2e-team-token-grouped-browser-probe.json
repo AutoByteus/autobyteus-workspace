@@ -1,0 +1,107 @@
+{
+  "result": "pass",
+  "url": "http://127.0.0.1:5173/",
+  "tmpRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-table-scroll/tickets/in-progress/token-meter-team-table-scroll/.tmp-token-table-grouped-browser-probe-1782550332079",
+  "initial": {
+    "headers": [
+      "Member",
+      "Gross input",
+      "Output",
+      "Total"
+    ],
+    "allHeaderText": "Member|Gross input|Output|Total",
+    "colCount": 4,
+    "rowCellCounts": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2,
+      2,
+      2
+    ],
+    "subtitle": "Per-member tokens with estimated API costs. Total cost is input cost plus output cost. Focus a row for full detail above.",
+    "scrollClientWidth": 358,
+    "scrollScrollWidth": 672,
+    "tableOffsetWidth": 672,
+    "maxScrollLeft": 314,
+    "documentScrollWidth": 420,
+    "bodyScrollWidth": 420,
+    "viewportWidth": 420,
+    "shellClientWidth": 376,
+    "shellScrollWidth": 376,
+    "wrapperOverflowX": "auto",
+    "tableMinWidth": "672px"
+  },
+  "afterScroll": {
+    "actualScrollLeft": 314,
+    "maxScrollLeft": 314,
+    "totalVisibleAtRightEdge": true,
+    "reviewerCellTexts": [
+      "ReviewerFocusedreviewer",
+      "2,222$0.0200",
+      "22$0.0022",
+      "2,244$0.0222"
+    ],
+    "reviewerTotalTitle": "$0.0222",
+    "reviewerMetricText": "2,222$0.0200 22$0.0022 2,244$0.0222",
+    "partialCellTexts": [
+      "Lead partiallead-partial",
+      "1,111$0.0100",
+      "11Price missing",
+      "1,122$0.0100Partial estimate"
+    ],
+    "missingCellTexts": [
+      "Missing pricemissing-price",
+      "333Price missing",
+      "3Price missing",
+      "336Price missingPrice missing"
+    ],
+    "localCellTexts": [
+      "Local modellocal-model",
+      "444Local / no API bill",
+      "4Local / no API bill",
+      "448Local / no API billLocal / no API bill"
+    ],
+    "mixedCellTexts": [
+      "Mixed providersmixed-providers",
+      "555Mixed currencies/providers",
+      "5Mixed currencies/providers",
+      "560Mixed currencies/providersMixed currencies/providers"
+    ],
+    "zeroCellTexts": [
+      "Zero usagezero-usage",
+      "0$0.0000",
+      "0$0.0000",
+      "0$0.0000"
+    ],
+    "focusedRowData": "true",
+    "focusedBadgeText": "Focused",
+    "focusedBackground": "rgba(239, 246, 255, 0.65)",
+    "loadingText": "Loading memberloading-memberLoading token usage…",
+    "loadingColspan": "3",
+    "unavailableText": "Unavailable memberunavailable-memberToken usage unavailable.",
+    "unavailableColspan": "3",
+    "noUsageText": "No usage memberno-usage-memberNo token usage has been reported yet.",
+    "noUsageColspan": "3",
+    "finalRowTest": "team-token-total-row",
+    "finalRowTexts": [
+      "Team total",
+      "9,000$0.0800",
+      "900$0.0190",
+      "9,900$0.0990"
+    ],
+    "finalRowCellCount": 4,
+    "tableRowCount": 10,
+    "memberRowCount": 9,
+    "anyCostHeader": false,
+    "anyStandaloneCostClass": false
+  },
+  "screenshots": {
+    "fullScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-table-scroll/tickets/in-progress/token-meter-team-table-scroll/api-e2e-team-token-grouped-narrow-scroll-full.png",
+    "regionScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-team-table-scroll/tickets/in-progress/token-meter-team-table-scroll/api-e2e-team-token-grouped-narrow-scroll-region.png"
+  },
+  "failures": []
+}

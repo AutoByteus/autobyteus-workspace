@@ -1,0 +1,29 @@
+{
+  "terminatedAt": "2026-06-27T08:47:19.277Z",
+  "results": [
+    {
+      "teamRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a",
+      "result": {
+        "httpStatus": 200,
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    },
+    {
+      "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_52430aedf6714f948cf523aceeb12c8b",
+      "result": {
+        "httpStatus": 200,
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    }
+  ]
+}

@@ -160,6 +160,18 @@ Suggested focus for code review and API/E2E coverage investigation:
 - Historical open/restore:
   - Opening a preserved historical run/team for a removed root should only create a visible Workspaces row if that action intentionally loads/re-adds the workspace.
 
+
+## Delivery Local Fix Note
+
+During delivery's mandatory latest-base refresh, `git merge --no-edit origin/personal` conflicted in `autobyteus-web/stores/workspace.ts` after checkpoint commit `19828ad2`. The conflict was resolved by keeping the workspace-removal `removeWorkspaceForStore` import and latest-base `resolveTeamConversationTargetAddress` import/usage, removing obsolete `resolveTeamUserMessageTarget` and conflict markers.
+
+Additional artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-removal-design/tickets/in-progress/workspace-removal-design/implementation-delivery-local-fix.md`.
+
+Delivery-local focused checks after the merge-conflict fix:
+
+- `git diff --check` — passed.
+- `pnpm -C autobyteus-web exec vitest --run stores/__tests__/workspaceStore.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts utils/__tests__/teamConversationTargetAddress.spec.ts` — passed, 5 files / 122 tests.
+
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. Implementation completed local unit/build/component/store checks only. API/E2E coverage investigation, durable coverage decisions, realistic execution, and final pass/fail classification remain owned by `api_e2e_engineer` after code review.

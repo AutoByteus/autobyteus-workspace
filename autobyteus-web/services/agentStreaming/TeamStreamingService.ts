@@ -15,6 +15,7 @@ import {
   type ServerMessage,
   type TeamClientMessage,
   type InterruptGenerationPayload,
+  type ConversationTargetAddressPayload,
 } from './protocol';
 import {
   handleTeamCommunicationMessage,
@@ -32,6 +33,10 @@ import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDisp
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import type {
+  ConversationTargetAddress,
+  ConversationTargetSegment,
+} from '~/types/agent/ConversationTargetAddress';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -58,6 +63,29 @@ export interface TeamInterruptGenerationTarget {
   targetMemberRouteKey: string;
   targetMemberRunId?: string | null;
 }
+
+const toConversationTargetSegmentPayload = (
+  segment: ConversationTargetSegment,
+): ConversationTargetAddressPayload['segments'][number] => {
+  if (segment.kind === 'member') {
+    return {
+      kind: 'member',
+      ...(segment.memberRouteKey ? { member_route_key: segment.memberRouteKey } : {}),
+      ...(segment.memberPath ? { member_path: [...segment.memberPath] } : {}),
+    };
+  }
+  if (segment.kind === 'task_team') {
+    return { kind: 'task_team', task_team_run_id: segment.taskTeamRunId };
+  }
+  return { kind: 'task_agent', task_agent_run_id: segment.taskAgentRunId };
+};
+
+const toConversationTargetAddressPayload = (
+  address: ConversationTargetAddress,
+): ConversationTargetAddressPayload => ({
+  ...(address.parentTeamRunId ? { parent_team_run_id: address.parentTeamRunId } : {}),
+  segments: address.segments.map(toConversationTargetSegmentPayload),
+});
 
 export class TeamStreamingService {
   private wsClient: IWebSocketClient;
@@ -116,7 +144,7 @@ export class TeamStreamingService {
 
   sendMessage(
     content: string,
-    targetMemberRouteKey?: string,
+    conversationTargetAddress: ConversationTargetAddress,
     contextFilePaths?: string[],
     imageUrls?: string[],
     identity?: { messageId?: string; dedupeKey?: string },
@@ -127,7 +155,7 @@ export class TeamStreamingService {
         content,
         context_file_paths: contextFilePaths,
         image_urls: imageUrls,
-        target_member_route_key: targetMemberRouteKey,
+        conversation_target_address: toConversationTargetAddressPayload(conversationTargetAddress),
         message_id: identity?.messageId,
         dedupe_key: identity?.dedupeKey,
       },

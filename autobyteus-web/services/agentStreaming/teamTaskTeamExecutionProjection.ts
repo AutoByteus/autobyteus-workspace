@@ -1,5 +1,6 @@
 import type { AgentTeamContext, SubTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 import type { ServerMessage } from './protocol';
 import {
   buildRouteKeyFromPath,
@@ -22,6 +23,7 @@ export interface TaskTeamExecutionProjectionIdentity {
   taskId: string | null;
   logicalTeamRouteKey: string | null;
   logicalTeamPath: string[];
+  conversationTargetSegments?: ConversationTargetSegment[];
 }
 
 const payloadFor = (message: ServerMessage): Record<string, unknown> | null => (
@@ -117,6 +119,28 @@ const isOfflineRuntimeStatus = (rawStatus: unknown): boolean => (
   normalizeProjectionString(rawStatus)?.toLowerCase().replace(/[-\s]+/g, '_') === 'offline'
 );
 
+const cloneConversationTargetSegments = (
+  segments: readonly ConversationTargetSegment[] | null | undefined,
+): ConversationTargetSegment[] => (segments ?? []).map((segment) => ({
+  ...segment,
+  ...(segment.kind === 'member' && segment.memberPath ? { memberPath: [...segment.memberPath] } : {}),
+}));
+
+const buildTaskTeamRootConversationSegments = (
+  identity: TaskTeamExecutionProjectionIdentity,
+): ConversationTargetSegment[] | undefined => {
+  if (identity.conversationTargetSegments?.length) {
+    return cloneConversationTargetSegments(identity.conversationTargetSegments);
+  }
+  const logicalTeamRouteKey = identity.logicalTeamRouteKey ?? buildRouteKeyFromPath(identity.logicalTeamPath);
+  return logicalTeamRouteKey
+    ? [
+        { kind: 'member', memberRouteKey: logicalTeamRouteKey },
+        { kind: 'task_team', taskTeamRunId: identity.taskTeamRunId },
+      ]
+    : undefined;
+};
+
 export const extractTaskTeamIdentity = (message: ServerMessage): TaskTeamExecutionProjectionIdentity | null => {
   const payload = payloadFor(message);
   if (!payload) return null;
@@ -166,6 +190,7 @@ export const ensureTaskTeamExecutionProjection = (
     taskId: identity.taskId,
     logicalTeamRouteKey: identity.logicalTeamRouteKey,
     logicalTeamPath: [...identity.logicalTeamPath],
+    conversationTargetSegments: buildTaskTeamRootConversationSegments(identity),
     taskExecutionStatus: existing?.taskExecutionStatus ?? initialStatus,
     taskTimeline: existing?.taskTimeline ? [...existing.taskTimeline] : [],
   };

@@ -257,19 +257,57 @@ Team connection establishment remains restore-aware through the team service:
 3. If no active runtime exists, the service attempts to restore the persisted run.
 4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
 
-For team runs, the command target is a `TeamMemberSelector` normalized at the
-WebSocket edge from explicit path/route fields only:
+For team runs, `SEND_MESSAGE` targets are normalized at the WebSocket edge to a
+`ConversationTargetAddress`, a typed segment path rooted at the WebSocket-bound
+parent team run. The canonical payload is `conversation_target_address` (camel
+alias `conversationTargetAddress` is accepted):
+
+```json
+{
+  "type": "SEND_MESSAGE",
+  "payload": {
+    "content": "Please inspect this result.",
+    "conversation_target_address": {
+      "parent_team_run_id": "optional-parent-team-run-id-guard",
+      "segments": [
+        { "kind": "member", "member_route_key": "research" },
+        { "kind": "task_team", "task_team_run_id": "task-team-run-id" },
+        { "kind": "member", "member_route_key": "writer" },
+        { "kind": "task_agent", "task_agent_run_id": "task-agent-run-id" }
+      ]
+    }
+  }
+}
+```
+
+Segment rules:
+
+- the first segment must be `member`;
+- `member` selects a structural member by `member_route_key` /
+  `memberRouteKey` or `member_path` / `memberPath`;
+- `task_team` selects one concrete delegated task-team execution by
+  `task_team_run_id` / `taskTeamRunId` and must follow a member segment;
+- `task_agent` selects one concrete delegated task-agent execution by
+  `task_agent_run_id` / `taskAgentRunId`, must follow a member segment, and must
+  be terminal.
+
+Existing structural payloads remain accepted only as parser-bound compatibility
+input and normalize to a one-segment `member` conversation address:
 
 - `target_member_path` / `targetMemberPath`: array of path segments, for
   example `["research", "writer"]`
 - `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
   example `research/writer`
 
-Scalar command target aliases are not accepted. Payloads containing
-`target_member_name`, `targetMemberName`, `target_agent_name`,
-`targetAgentName`, command-side `agent_name`, command-side `agentName`,
-command-side `agent_id`, command-side `agentId`, or `member_name`/`memberName`
-as a target must fail with an invalid-target response.
+Clients must not mix a nested `conversation_target_address` with flat
+`target_member_*` selectors. Scalar command target aliases are not accepted.
+Payloads containing `target_member_name`, `targetMemberName`,
+`target_agent_name`, `targetAgentName`, command-side `agent_name`,
+command-side `agentName`, command-side `agent_id`, command-side `agentId`, or
+`member_name`/`memberName` as a target must fail with an invalid-target
+response. A stale, inactive, malformed, or mismatched runtime segment also fails
+as an invalid target and must not fall back to a structural member or the
+coordinator.
 
 Control commands remain active-only:
 

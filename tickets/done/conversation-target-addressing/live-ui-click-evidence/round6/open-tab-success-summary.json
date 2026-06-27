@@ -1,0 +1,89 @@
+{
+  "capturedAt": "2026-06-27T09:51:58.579864+00:00",
+  "result": "PASS",
+  "tool": "mcp__autobyteus_agent_tools.open_tab with run_script instrumentation",
+  "backend": "http://127.0.0.1:18000",
+  "frontend": "http://127.0.0.1:13000",
+  "dataDir": "/tmp/autobyteus-live-ui-click-conversation-target-round6",
+  "teamRunId": "parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4",
+  "taskTeamRunId": "buildsquad_d4d716d6f06145fca3a1958b598229e4",
+  "childAgentRunId": "review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f",
+  "childToken": "LIVE_UI_ROUND6_CHILD_CHAT_1782553528825",
+  "delegation": {
+    "fromVisibleComposer": true,
+    "targetMember": "program_manager",
+    "browserSendAddressSegments": [
+      {
+        "kind": "member",
+        "member_route_key": "program_manager"
+      }
+    ],
+    "toolResult": {
+      "target": {
+        "kind": "team",
+        "name": "BuildSquad"
+      },
+      "task_id": "task_0001",
+      "execution_kind": "task_team",
+      "task_team_run_id": "buildsquad_d4d716d6f06145fca3a1958b598229e4",
+      "status": "active",
+      "activation_accepted": true
+    }
+  },
+  "projection": {
+    "appearedInRealUi": true,
+    "taskLabel": "BuildSquad \u00b7 task_0001",
+    "status": "active",
+    "clickedChildMember": "review_lead",
+    "clickedChildDataTest": "workspace-team-member-parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4-buildsquad_d4d716d6f06145fca3a1958b598229e4/review_lead"
+  },
+  "childComposerSend": {
+    "fromVisibleComposer": true,
+    "content": "LIVE_UI_ROUND6_CHILD_CHAT_1782553528825",
+    "browserSendAddressSegments": [
+      {
+        "kind": "member",
+        "member_route_key": "BuildSquad"
+      },
+      {
+        "kind": "task_team",
+        "task_team_run_id": "buildsquad_d4d716d6f06145fca3a1958b598229e4"
+      },
+      {
+        "kind": "member",
+        "member_route_key": "review_lead"
+      }
+    ],
+    "dedupe_key": "member_input:parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4:buildsquad_d4d716d6f06145fca3a1958b598229e4/review_lead:client_ef807c4d-684b-475f-b462-29e95be12e76"
+  },
+  "backendNoFallbackEvidence": {
+    "childTokenPostedToAgentRun": "review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f",
+    "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/review-lead-raw-traces.jsonl",
+    "backendExcerptPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/backend-evidence-excerpt.log",
+    "taskTeamTargetNotFoundPresentInBackendLog": false,
+    "notes": "Backend log has CodexSendTurnStart for the review_lead task-team child run with the child token; the same token appears in the review_lead raw trace under the task-team run directory."
+  },
+  "artifacts": {
+    "seed": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/seed-supported-round6.json",
+    "serverBuildLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/server-build.log",
+    "backendLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/backend.log",
+    "frontendLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/frontend.log",
+    "websocketCapture": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-ws-capture.json",
+    "pageState": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-page-state.json",
+    "projectionScreenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-task-team-projection.png",
+    "childSendScreenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-child-send.png",
+    "finalScreenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-final-state.png",
+    "teamRunMetadataBeforeCleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/team-run-metadata-before-cleanup.json",
+    "programManagerRawTraces": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/program-manager-raw-traces.jsonl",
+    "reviewLeadRawTraces": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/review-lead-raw-traces.jsonl"
+  },
+  "cleanup": {
+    "artifact": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/cleanup.json",
+    "teamRunTermination": "success",
+    "browserTabClosed": true,
+    "portsCleared": [
+      "127.0.0.1:18000",
+      "127.0.0.1:13000"
+    ]
+  }
+}

@@ -464,7 +464,9 @@ describe('agentTeamRunStore', () => {
     expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
     expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
     expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', 'professor', [], [], expect.objectContaining({
+    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', {
+      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
+    }, [], [], expect.objectContaining({
       messageId: expect.stringMatching(/^client_/),
       dedupeKey: expect.stringContaining('member_input:'),
     }));
@@ -561,7 +563,7 @@ describe('agentTeamRunStore', () => {
     });
     expect(mockSendMessage).toHaveBeenCalledWith(
       'please review this implementation',
-      'code_reviewer',
+      { segments: [{ kind: 'member', memberRouteKey: 'code_reviewer' }] },
       ['/tmp/spec.md'],
       [],
       expect.objectContaining({
@@ -667,7 +669,7 @@ describe('agentTeamRunStore', () => {
     });
     expect(mockSendMessage).toHaveBeenCalledWith(
       'send to active execution',
-      'coordinator',
+      { segments: [{ kind: 'member', memberRouteKey: 'coordinator' }] },
       [],
       [],
       expect.objectContaining({
@@ -814,7 +816,9 @@ describe('agentTeamRunStore', () => {
     );
     expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-restore-1');
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-restore-1');
-    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', 'professor', [], [], expect.objectContaining({
+    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', {
+      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
+    }, [], [], expect.objectContaining({
       messageId: expect.stringMatching(/^client_/),
       dedupeKey: expect.stringContaining('member_input:'),
     }));
@@ -938,7 +942,9 @@ describe('agentTeamRunStore', () => {
 
     expect(mockConnect).toHaveBeenCalledTimes(2);
     expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', 'professor', [], [], expect.objectContaining({
+    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', {
+      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
+    }, [], [], expect.objectContaining({
       messageId: expect.stringMatching(/^client_/),
       dedupeKey: expect.stringContaining('member_input:'),
     }));
@@ -1151,7 +1157,9 @@ describe('agentTeamRunStore', () => {
       'team-1',
     );
     expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-1');
-    expect(mockSendMessage).toHaveBeenCalledWith('launch', 'professor', [], [], expect.objectContaining({
+    expect(mockSendMessage).toHaveBeenCalledWith('launch', {
+      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
+    }, [], [], expect.objectContaining({
       messageId: expect.stringMatching(/^client_/),
       dedupeKey: expect.stringContaining('member_input:'),
     }));
@@ -1292,7 +1300,7 @@ describe('agentTeamRunStore', () => {
     expect(mockConnect).toHaveBeenCalledWith('team-classroom-real', teamContext);
     expect(mockSendMessage).toHaveBeenCalledWith(
       'give student a hard math problem to solve',
-      'professor',
+      { segments: [{ kind: 'member', memberRouteKey: 'professor' }] },
       [],
       [],
       expect.objectContaining({
@@ -1431,7 +1439,9 @@ describe('agentTeamRunStore', () => {
         },
       }),
     );
-    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', 'Nested Group/Leaf A', [], [], expect.objectContaining({
+    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', {
+      segments: [{ kind: 'member', memberRouteKey: 'Nested Group/Leaf A' }],
+    }, [], [], expect.objectContaining({
       messageId: expect.stringMatching(/^client_/),
       dedupeKey: expect.stringContaining('member_input:'),
     }));

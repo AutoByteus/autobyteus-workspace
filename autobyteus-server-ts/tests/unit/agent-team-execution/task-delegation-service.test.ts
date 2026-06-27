@@ -20,6 +20,7 @@ import {
   type TeamRunTaskDelegationEventPayload,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import { TaskDelegationService } from "../../../src/agent-team-execution/task-delegation/task-delegation-service.js";
 import {
@@ -56,6 +57,9 @@ class FakeTeamRunBackend implements TeamRunBackend {
   async postMessage(message: AgentInputUserMessage, target?: TeamMemberSelector | null, targetMemberRunId?: string | null): Promise<AgentOperationResult> {
     this.postedMessages.push({ message, target, targetMemberRunId });
     return this.postMessageResults.shift() ?? { accepted: true };
+  }
+  async postMessageToConversationTarget(_message: AgentInputUserMessage, _address: ConversationTargetAddress): Promise<AgentOperationResult> {
+    return { accepted: true };
   }
   async deliverInterAgentMessage(_request: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> { return { accepted: true }; }
   async approveToolInvocation(): Promise<AgentOperationResult> { return { accepted: true }; }

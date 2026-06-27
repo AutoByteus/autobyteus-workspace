@@ -115,7 +115,7 @@ import TeamActiveTaskExecutionsBar from '~/components/workspace/team/TeamActiveT
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
+import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -139,7 +139,7 @@ const rosterFocusedMemberRouteKey = computed(() =>
 const userMessageTarget = computed(() => {
   const team = activeTeamContext.value;
   return team
-    ? resolveTeamUserMessageTarget(team, {
+    ? resolveTeamConversationTargetAddress(team, {
       allowSubteam: true,
       allowActiveExecutionSafetyFallback: true,
     })
@@ -164,13 +164,6 @@ const currentMode = computed<TeamWorkspaceViewMode>(() => {
 
 const showSharedComposer = computed(() => {
   if (!userMessageTarget.value) {
-    return false;
-  }
-  if (
-    focusedMemberNode.value?.isTaskAgentInstance ||
-    focusedMemberNode.value?.isTaskTeamInstance ||
-    focusedMemberNode.value?.isTaskTeamChildProjection
-  ) {
     return false;
   }
   return Boolean(activeTeamContext.value) && (
@@ -209,8 +202,9 @@ const composerTargetTitle = computed(() => {
     return headerTitle.value;
   }
 
-  return target.node.displayName
-    || getMemberDisplayName(target.memberRouteKey, target.context)
+  return target.displayLabel
+    || target.node.displayName
+    || getMemberDisplayName(target.localTargetKey, target.context)
     || team.config.teamDefinitionName
     || 'Team';
 });

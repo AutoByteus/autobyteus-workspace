@@ -20,16 +20,26 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
 - Team aggregate status uses active-work precedence: `running` wins first, then `initializing`, then `error`, then `idle`, otherwise `offline`; this keeps stale member/native errors from hiding active startup or running work while still surfacing terminal errors when no member is active.
 - Successful single-agent termination emits a terminal `AGENT_STATUS { status: "offline", can_interrupt: false, agent_id }` to existing subscribers before the run stream is torn down, so live clients do not have to infer termination only from socket close or a later history refresh.
 - Single-agent `SEND_MESSAGE` is the recoverable chat command and must include `message_id` plus `dedupe_key`. The stream handler routes it through `AgentRunCommandCoordinator`, which owns idempotency, command-level `initializing`/`error` overlays, prepared-run activation or historical restore, runtime forwarding, and activity recording. The handler sends `AGENT_COMMAND_ACK` for accepted, duplicate, rejected, and failed outcomes; the acknowledgement may include the current status payload. When the coordinator materializes/restores an active runtime, the handler binds the existing WebSocket session to that runtime stream. Restored runtime readiness or a restored status snapshot does not replace the command overlay by itself; visible replacement waits for command-correlated evidence such as `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error events after handoff, or coordinator failure handling.
-- Team `SEND_MESSAGE` remains team-container owned: the team handler resolves/rebinds the team run as needed, normalizes the member target, and records activity after acceptance.
-- Team `SEND_MESSAGE` payloads are normalized to `TeamMemberSelector` at the
-  WebSocket edge from `target_member_path` or `target_member_route_key` only.
-  Scalar target aliases such as `target_member_name`, `target_agent_name`,
+- Team `SEND_MESSAGE` remains team-container owned: the team handler resolves/rebinds the team run as needed, normalizes the conversation target, dispatches through the `TeamRun.postMessageToConversationTarget(...)` boundary, and records activity after acceptance.
+- Team `SEND_MESSAGE` payloads are normalized to `ConversationTargetAddress` at
+  the WebSocket edge. The canonical payload is `conversation_target_address` (or
+  `conversationTargetAddress`) with a non-empty `segments` array rooted at the
+  WebSocket-bound parent team run. Segment kinds are `member`
+  (`member_route_key`/`member_path`), `task_team` (`task_team_run_id`), and
+  `task_agent` (`task_agent_run_id`). Existing flat structural selectors
+  `target_member_path` / `targetMemberPath` and `target_member_route_key` /
+  `targetMemberRouteKey` are accepted only as compatibility input and normalize
+  to a one-segment `member` address; flat selectors must not be mixed with a
+  nested conversation address.
+- Scalar target aliases such as `target_member_name`, `target_agent_name`,
   command-side `agent_name`, command-side `agent_id`, and camelCase equivalents
-  are rejected with invalid-target errors.
-- When a valid explicit team `SEND_MESSAGE` target is supplied, the backend
-  preserves that selector and lets the team backend lazily start/post to that
-  member. Coordinator fallback applies only when the client omits a member
-  target, not when it supplies a focused non-coordinator route key.
+  are rejected with invalid-target errors. Missing, malformed, mismatched,
+  stale, or inactive runtime segments are invalid targets and must not fall back
+  to structural route keys or the coordinator.
+- When a valid team `SEND_MESSAGE` target is supplied, the backend preserves the
+  typed path and lets the mixed backend traverse structural members and exact
+  runtime task-team/task-agent run ids before lazily starting/posting to the
+  addressed participant.
 - Non-send control commands (`INTERRUPT_GENERATION`, `APPROVE_TOOL`, and `DENY_TOOL`) stay active-only. They use the current in-memory runtime lookup and do not restore stopped runs as a side effect, so stale control commands cannot accidentally resurrect a stopped run.
 - Team tool approvals must target the emitted `source_path` /
   `source_route_key` or `member_path` / `member_route_key` for the requesting

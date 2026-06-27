@@ -45,6 +45,16 @@ const toScopedTaskAgentIdentity = (
   taskTeamRelativeMemberPath: [...childIdentity.relativeMemberPath],
   structuralSourceRouteKey: childIdentity.structuralSourceRouteKey,
   structuralSourcePath: [...childIdentity.structuralSourcePath],
+  parentLogicalTeamRouteKey: childIdentity.logicalTeamRouteKey,
+  parentLogicalTeamPath: [...childIdentity.logicalTeamPath],
+  conversationTargetSegments: [
+    ...(childIdentity.conversationTargetSegments ?? [
+      { kind: 'member' as const, memberRouteKey: childIdentity.logicalTeamRouteKey ?? childIdentity.logicalTeamPath.join('/') },
+      { kind: 'task_team' as const, taskTeamRunId: childIdentity.parentTaskTeamRunId },
+      { kind: 'member' as const, memberRouteKey: childIdentity.relativeMemberRouteKey },
+    ]),
+    { kind: 'task_agent' as const, taskAgentRunId: taskAgentIdentity.taskAgentRunId },
+  ],
 });
 
 const ensureRootForScopedChild = (
@@ -60,32 +70,18 @@ const ensureRootForScopedChild = (
     taskId: identity.parentTaskId,
     logicalTeamRouteKey: identity.logicalTeamRouteKey,
     logicalTeamPath: [...identity.logicalTeamPath],
+    conversationTargetSegments: identity.conversationTargetSegments
+      ? identity.conversationTargetSegments.slice(0, 2)
+      : undefined,
   }, 'active');
 };
 
-export const handleTaskExecutionProjectionMessage = (
+const handleTaskTeamScopedProjectionMessage = (
   teamContext: AgentTeamContext,
   message: ServerMessage,
-): TaskExecutionProjectionMessageResult => {
-  if (message.type === 'TASK_DELEGATION_EVENT') {
-    const taskTeamIdentity = extractTaskTeamIdentity(message);
-    if (taskTeamIdentity) {
-      const updated = updateTaskTeamExecutionProjectionFromEvent(teamContext, message);
-      return {
-        outcome: 'handled',
-        cleanupTaskTeamRunId: updated?.shouldCleanup ? updated.node.taskTeamRunId : null,
-      };
-    }
-    const taskAgentIdentity = extractTaskAgentIdentity(message);
-    if (taskAgentIdentity) {
-      ensureTaskAgentContext(teamContext, taskAgentIdentity);
-      return { outcome: 'handled', taskAgentIdentity };
-    }
-    return { outcome: 'handled' };
-  }
-
+): TaskExecutionProjectionMessageResult | null => {
   if (!hasTaskTeamScopedFields(message)) {
-    return { outcome: 'continue' };
+    return null;
   }
 
   const scoped = resolveTaskTeamScopedMessage(teamContext, message);
@@ -128,4 +124,41 @@ export const handleTaskExecutionProjectionMessage = (
     return { outcome: 'memberContext', context: childProjection.context };
   }
   return { outcome: 'handled' };
+};
+
+export const handleTaskExecutionProjectionMessage = (
+  teamContext: AgentTeamContext,
+  message: ServerMessage,
+): TaskExecutionProjectionMessageResult => {
+  if (message.type === 'TASK_DELEGATION_EVENT') {
+    const taskTeamIdentity = extractTaskTeamIdentity(message);
+    if (taskTeamIdentity) {
+      const updated = updateTaskTeamExecutionProjectionFromEvent(teamContext, message);
+      return {
+        outcome: 'handled',
+        cleanupTaskTeamRunId: updated?.shouldCleanup ? updated.node.taskTeamRunId : null,
+      };
+    }
+
+    const scopedResult = handleTaskTeamScopedProjectionMessage(teamContext, message);
+    if (scopedResult) {
+      if (scopedResult.outcome === 'memberContext') {
+        return {
+          outcome: 'handled',
+          taskAgentIdentity: scopedResult.taskAgentIdentity,
+          cleanupTaskTeamRunId: scopedResult.cleanupTaskTeamRunId,
+        };
+      }
+      return scopedResult;
+    }
+
+    const taskAgentIdentity = extractTaskAgentIdentity(message);
+    if (taskAgentIdentity) {
+      ensureTaskAgentContext(teamContext, taskAgentIdentity);
+      return { outcome: 'handled', taskAgentIdentity };
+    }
+    return { outcome: 'handled' };
+  }
+
+  return handleTaskTeamScopedProjectionMessage(teamContext, message) ?? { outcome: 'continue' };
 };

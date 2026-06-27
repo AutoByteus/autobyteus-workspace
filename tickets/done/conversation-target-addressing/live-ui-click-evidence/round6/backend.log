@@ -1,0 +1,1505 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts
+App data directory: /tmp/autobyteus-live-ui-click-conversation-target-round6
+AppConfig instance created.
+Config file path: /tmp/autobyteus-live-ui-click-conversation-target-round6/.env
+Loading environment from: /tmp/autobyteus-live-ui-click-conversation-target-round6/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-live-ui-click-conversation-target-round6/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:18000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:18000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-live-ui-click-conversation-target-round6
+DB DIRECTORY: /tmp/autobyteus-live-ui-click-conversation-target-round6/db
+LOGS DIRECTORY: /tmp/autobyteus-live-ui-click-conversation-target-round6/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-live-ui-click-conversation-target-round6/download
+MEMORY DIRECTORY: /tmp/autobyteus-live-ui-click-conversation-target-round6/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-live-ui-click-conversation-target-round6/db/production.db"
+
+SQLite database production.db created at file:/tmp/autobyteus-live-ui-click-conversation-target-round6/db/production.db
+
+15 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:60198) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 18 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-06-27T09:40:40.395Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1782553240473,"pid":60198,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:18000"}
+[2026-06-27T09:40:40.473Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18000
+[2026-06-27T09:40:40.474Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:18000
+Creating temp workspace at: /tmp/autobyteus-live-ui-click-conversation-target-round6/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-live-ui-click-conversation-target-round6/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-live-ui-click-conversation-target-round6/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-06-27T09:40:40.503Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=150
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=176
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51740.
+Autobyteus audio models from https://localhost:51740: gemini-2.5-pro-tts-rpa@localhost:51740, gemini-2.5-flash-tts-rpa@localhost:51740, gemini-3.1-flash-tts-rpa@localhost:51740, qwen-tts-rpa@localhost:51740
+Autobyteus audio discovery summary for https://localhost:51740: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=27
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=26
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-06-27T09:40:40.591Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+Pre-loaded 28 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=110
+Finished Autobyteus image model discovery. Total models registered: 18
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=119
+Finished Autobyteus audio model discovery. Total models registered: 12
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 10
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 111
+Successfully fetched 143 models from LLMFactory.
+LLM models cache populated with 143 items.
+Pre-loaded 143 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 24 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=18
+Image models by runtime: api=6, autobyteus=18
+Image models cache populated with 24 items.
+Pre-loaded 24 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 16 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=12
+Audio models by runtime: api=4, autobyteus=12
+Audio models cache populated with 16 items.
+Pre-loaded 16 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID program-manager-live-ui-click-supported-1782553282480-d240169b.
+Agent Definition created successfully with ID: program-manager-live-ui-click-supported-1782553282480-d240169b
+In-memory cache: Added new agent definition with ID review-lead-live-ui-click-supported-1782553282480-d240169b.
+Agent Definition created successfully with ID: review-lead-live-ui-click-supported-1782553282480-d240169b
+In-memory cache: Added new agent definition with ID qa-specialist-live-ui-click-supported-1782553282480-d240169b.
+Agent Definition created successfully with ID: qa-specialist-live-ui-click-supported-1782553282480-d240169b
+[2026-06-27T09:41:22.496Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID buildsquad-live-ui-click-supported-1782553282480-d240169b.
+Agent Team Definition created successfully with ID: buildsquad-live-ui-click-supported-1782553282480-d240169b
+[2026-06-27T09:41:22.500Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID parentdeliveryteam-live-ui-click-supported-1782553282480-d240169b.
+Agent Team Definition created successfully with ID: parentdeliveryteam-live-ui-click-supported-1782553282480-d240169b
+Creating new workspace for rootPath: /tmp/autobyteus-live-ui-click-conversation-target-round6/workspace-supported
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-live-ui-click-conversation-target-round6/workspace-supported.
+Created and registered workspace ID: agent_ws_c09030db333cd61cfa7980bb8f6de06f3d845f00b67f9a755ce106baa8054e13
+Successfully created mixed team run 'parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4'.
+Agent team websocket attached for team run parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Created agent session 45b8be55-a577-409a-938f-7fe821ec4cb2 for run parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Agent Team WebSocket connected: session=45b8be55-a577-409a-938f-7fe821ec4cb2, run=parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Terminal WebSocket disconnected: 1d59692e-2adb-4908-9b79-ec2642017d5c
+Closed PTY session 1d59692e-2adb-4908-9b79-ec2642017d5c
+Terminal session startup aborted: 1d59692e-2adb-4908-9b79-ec2642017d5c
+Closed agent session 45b8be55-a577-409a-938f-7fe821ec4cb2
+Agent Team WebSocket disconnected: 45b8be55-a577-409a-938f-7fe821ec4cb2
+Created terminal session cc6bf7e6-4079-49f5-9ed7-ba14d6d264ee using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: cc6bf7e6-4079-49f5-9ed7-ba14d6d264ee
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Created agent session 112728b6-6d95-4edb-8bd4-ac2add829efe for run parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Agent Team WebSocket connected: session=112728b6-6d95-4edb-8bd4-ac2add829efe, run=parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4
+Closed PTY session cc6bf7e6-4079-49f5-9ed7-ba14d6d264ee
+Terminal WebSocket disconnected: cc6bf7e6-4079-49f5-9ed7-ba14d6d264ee
+Resolved system prompt from fresh definition instructions for AgentDefinition program-manager-live-ui-click-supported-1782553282480-d240169b.
+MediaStorageService initialized. Media root: /tmp/autobyteus-live-ui-click-conversation-target-round6/media
+AgentRuntimeState initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': LLM instance 'OpenAILLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' with config: 'program_manager_live_ui_click_supported_1782553282480_d240169b'.
+AgentWorker initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'.
+Registered AgentContext for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Context registered.
+Agent facade initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' created and stored successfully.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' requesting runtime to start.
+AgentRuntime for 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Starting worker.
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Starting...
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' asyncRun(): Starting.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Runtime init completed (event store initialized).
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Runtime init completed (status deriver initialized).
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Runtime init completed (AgentEventInbox initialized).
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' to become idle (timeout: 30s)...
+AgentEventStream (ID: 4e87d2a7-85b0-469d-aded-ada33ae54268) initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Subscribed to notifier.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Bootstrapper starting direct lifecycle execution.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Executing McpServerPrewarmingStep.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Executing SystemPromptProcessingStep.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Skill access mode is NONE. Skipping injection.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Final processed system prompt configured on LLM instance. Final length: 2295.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Final processed system prompt:
+---
+## Team Instruction
+The program manager delegates one task to BuildSquad through delegate_task; BuildSquad remains active for follow-up chat.
+
+## Agent Instruction
+You are a deterministic live UI test coordinator. If the user asks you to call delegate_task with exact JSON arguments, call delegate_task exactly once with those exact arguments and do not call any other tool. Do not explore the filesystem. After delegate_task returns, do not delegate additional tasks. Keep any plain text response under one short sentence.
+
+## Runtime Instruction
+Current team member: program_manager
+Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.
+
+You can delegate tasks with delegate_task:
+- BuildSquad — team target; ingress coordinator: review_lead; accountable owner: BuildSquad
+
+Task delegation protocol
+- Use `delegate_task` to assign one bounded ready-to-run task to an explicit target object: `{ target: { kind: "member" | "team", name }, description, reference_files? }`.
+- Member targets are physical current-team agent members. Team targets are visible current-team teams/subteams; the team is accountable and the listed ingress coordinator receives the initial packet.
+- To assign multiple independent tasks, call `delegate_task` separately for each task.
+- Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.
+- Activated task-agent or task-team executions receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.
+- Task execution targets submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional `reference_files`.
+- The original delegator reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty message and are delivered by the system to the same execution instance.
+- `send_message_to` remains ordinary agent message delivery only. Do not use it for task result submission, revision requests, acceptance, or finalization.
+- After the original delegator accepts the task, the framework settles or exits the final task execution after safe gates confirm no delegated work remains for that execution.
+---
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' initialized successfully. Entering main event scheduler loop.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' has become idle.
+AgentEventStream (ID: 4e87d2a7-85b0-469d-aded-ada33ae54268) for 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: e6e78009-b1da-482a-9887-d8192ef74470) initialized for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Subscribed to notifier.
+Successfully created autobyteus agent run 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'.
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': UserInputContextBuildingProcessor completed. Final content length: 438
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57',
+  prompt_tokens: 771,
+  effective_total_context_tokens: 1050000,
+  context_derived_input_cap_tokens: 922000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 922000,
+  reserved_output_tokens: 128000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 921744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 737395,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'remoteControl/status/changed',
+  matchesThread: true,
+  threadId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'remoteControl/status/changed',
+  listenerCount: 0,
+  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+}
+Successfully created codex_app_server agent run 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f'.
+[CodexSendTurnStart] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  startupStatus: 'ready',
+  contentPreview: 'Your team has been activated as accountable task target team:BuildSquad for the delegated task below. This task-scoped team run exits after acceptance and safe '
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'thread' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/started',
+  listenerCount: 1,
+  paramKeys: [ 'thread' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'warning',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'message' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'warning',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'message' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexSendTurnResponse] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  turnId: '019f0877-b698-7a43-a813-08d34452e906',
+  payloadType: 'object',
+  payloadKeys: [ 'turn' ]
+}
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': UserInputContextBuildingProcessor completed. Final content length: 56
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/settings/updated',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'threadSettings' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/settings/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'threadSettings' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/started',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'mcpServer/startupStatus/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'account/rateLimits/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexSendTurnStart] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  startupStatus: 'ready',
+  contentPreview: 'LIVE_UI_ROUND6_CHILD_CHAT_1782553528825'
+}
+[CodexSendTurnResponse] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  turnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  payloadType: 'object',
+  payloadKeys: [ 'turn' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/started',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexAppServerNotificationSkipped] {
+  method: 'account/rateLimits/updated',
+  threadCount: 1,
+  reason: 'client_global_notification',
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexAppServerNotification] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/completed',
+  matchesThread: true,
+  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+  method: 'turn/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+AgentEventStream (ID: e6e78009-b1da-482a-9887-d8192ef74470) for 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'. Attempting graceful shutdown.
+Agent 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Stop requested.
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' asyncRun() loop has finished.
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Running shutdown sequence on worker loop.
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Shutdown resource cleanup completed successfully.
+AgentWorker 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Shutdown sequence completed.
+AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Unregistered AgentContext for agent_id 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57'.
+AgentRuntime for 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57': Context unregistered.
+AgentRuntime for 'program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57' stop() method completed.
+Closed agent session 112728b6-6d95-4edb-8bd4-ac2add829efe
+Agent Team WebSocket disconnected: 112728b6-6d95-4edb-8bd4-ac2add829efe

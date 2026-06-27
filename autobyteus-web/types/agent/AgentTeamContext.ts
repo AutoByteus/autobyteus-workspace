@@ -8,6 +8,7 @@ import type {
   TaskExecutionProjectionStatus,
   TaskExecutionTimelineEntry,
 } from '~/services/agentStreaming/teamTaskExecutionProjection';
+import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 
 export type TeamMemberNodeKind = 'agent' | 'agent_team';
 
@@ -41,6 +42,8 @@ export interface TeamMemberNodeBase {
   taskTeamRelativeMemberPath?: string[] | null;
   structuralSourceRouteKey?: string | null;
   structuralSourcePath?: string[] | null;
+  /** Frontend-owned canonical conversation path for runtime projections. Not a backend route string. */
+  conversationTargetSegments?: ConversationTargetSegment[];
   /** Backend-owned canonical status for structural/non-leaf members. */
   currentStatus?: AgentStatus | null;
   role?: string | null;
