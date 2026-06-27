@@ -72,12 +72,22 @@ const {
 
   const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
 
+  const workspaceIdFromRoot = (workspaceRootPath: string | null | undefined): string =>
+    `workspace:${workspaceRootPath || 'unknown'}`;
+
+  const normalizeWorkspaceNode = (workspace: any): any => ({
+    ...workspace,
+    workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+  });
+
   const state = {
     loading: false,
     error: null as string | null,
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
     workspaceGroups: [] as any[],
+    workspaceHistoryLoadingById: {} as Record<string, boolean>,
+    workspaceHistoryErrorById: {} as Record<string, string | null>,
     teamNodesByWorkspace: {} as Record<string, any[]>,
     nodes: [
       {
@@ -143,9 +153,18 @@ const {
       get workspaceGroups() {
         return state.workspaceGroups;
       },
+      get workspaceHistoryLoadingById() {
+        return state.workspaceHistoryLoadingById;
+      },
+      get workspaceHistoryErrorById() {
+        return state.workspaceHistoryErrorById;
+      },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
-      getTreeNodes: vi.fn(() => state.nodes),
+      fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
+      refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
+      pruneWorkspace: vi.fn(),
+      getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
         if (!workspaceRootPath) {
           return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
@@ -169,6 +188,7 @@ const {
         },
       },
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
+      removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
     },
     selectionStoreMock: {
       selectedType: null as string | null,
@@ -266,6 +286,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
     runHistoryState.selectedTeamRunId = null;
+    runHistoryState.workspaceHistoryLoadingById = {};
+    runHistoryState.workspaceHistoryErrorById = {};
     runHistoryState.nodes = [
       {
         workspaceRootPath: '/ws/a',
@@ -370,9 +392,17 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       `[data-test="workspace-row"][data-workspace-root="${workspaceRootPath}"]`,
     );
     if (workspaceRow.attributes('aria-expanded') !== 'true') {
-      await workspaceRow.trigger('click');
+      await workspaceRow.get('button').trigger('click');
       await flushPromises();
     }
+  };
+
+  const getRemoveWorkspaceButton = (wrapper: any) => {
+    const button = wrapper.findAll('button').find((candidate: any) =>
+      candidate.attributes('title')?.toLowerCase() === 'remove from workspaces',
+    );
+    expect(button).toBeTruthy();
+    return button!;
   };
 
   const expandAgentGroup = async (
@@ -403,12 +433,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     }
   };
 
-  it('loads workspace list and history tree on mount', async () => {
+  it('loads workspace list without eager history tree on mount', async () => {
     mountComponent();
     await flushPromises();
 
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
-    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.fetchTree).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
   });
 
   it('renders workspace rows collapsed by default', async () => {
@@ -419,6 +450,121 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.text()).not.toContain('SuperAgent');
     expect(wrapper.text()).not.toContain('Describe messaging bindings');
     expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('fetches scoped workspace history when a workspace row is expanded', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    await wrapper
+      .get('[data-test="workspace-row"][data-workspace-root="/ws/a"]')
+      .get('button')
+      .trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.fetchWorkspaceHistory).toHaveBeenCalledWith('workspace:/ws/a');
+    expect(runHistoryStoreMock.fetchTree).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
+  });
+
+  it('renders scoped workspace history loading, error, and empty states', async () => {
+    runHistoryState.workspaceHistoryLoadingById = { 'workspace:/ws/a': true };
+    let wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.text()).toContain('Loading workspace history');
+    wrapper.unmount();
+
+    runHistoryState.workspaceHistoryLoadingById = {};
+    runHistoryState.workspaceHistoryErrorById = { 'workspace:/ws/a': 'Could not load workspace history.' };
+    wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.text()).toContain('Could not load workspace history.');
+    wrapper.unmount();
+
+    runHistoryState.workspaceHistoryErrorById = {};
+    runHistoryState.nodes = [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [],
+      },
+    ];
+    wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.text()).toContain('No task history in this workspace');
+  });
+
+  it('opens workspace removal confirmation from the row action without expanding the row', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    const vm = wrapper.vm as any;
+
+    await getRemoveWorkspaceButton(wrapper).trigger('click');
+    await flushPromises();
+
+    expect(vm.showRemoveWorkspaceConfirmation).toBe(true);
+    expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('cancels workspace removal without mutating workspace or history state', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    const vm = wrapper.vm as any;
+
+    await getRemoveWorkspaceButton(wrapper).trigger('click');
+    await flushPromises();
+    expect(vm.showRemoveWorkspaceConfirmation).toBe(true);
+
+    await wrapper.get('[data-test="delete-confirmation-cancel"]').trigger('click');
+    await flushPromises();
+
+    expect(workspaceStoreMock.removeWorkspace).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.pruneWorkspace).not.toHaveBeenCalled();
+    expect(vm.showRemoveWorkspaceConfirmation).toBe(false);
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').exists()).toBe(true);
+  });
+
+  it('confirms workspace removal and prunes history plus expansion state after success', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
+
+    await getRemoveWorkspaceButton(wrapper).trigger('click');
+    await flushPromises();
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(workspaceStoreMock.removeWorkspace).toHaveBeenCalledWith('workspace:/ws/a');
+    expect(runHistoryStoreMock.pruneWorkspace).toHaveBeenCalledWith('workspace:/ws/a', '/ws/a');
+    expect(addToastMock).toHaveBeenCalledWith('removed', 'success');
+    expect((wrapper.vm as any).showRemoveWorkspaceConfirmation).toBe(false);
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('keeps the workspace visible and reports an error when workspace removal fails', async () => {
+    workspaceStoreMock.removeWorkspace.mockRejectedValueOnce(
+      new Error('Stop active runs before removing this workspace.'),
+    );
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    await getRemoveWorkspaceButton(wrapper).trigger('click');
+    await flushPromises();
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(workspaceStoreMock.removeWorkspace).toHaveBeenCalledWith('workspace:/ws/a');
+    expect(runHistoryStoreMock.pruneWorkspace).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith(
+      'Stop active runs before removing this workspace.',
+      'error',
+    );
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').exists()).toBe(true);
   });
 
   it('shows groups after opening a workspace but keeps run histories collapsed', async () => {
@@ -518,17 +664,22 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.find('[data-test="workspace-team-member-team-1-super_agent"]').exists()).toBe(true);
   });
 
-  it('refreshes run history quietly on the background interval while mounted', async () => {
+  it('refreshes expanded workspace history quietly on the background interval while mounted', async () => {
     vi.useFakeTimers();
     try {
       const wrapper = mountComponent();
       await Promise.resolve();
       await vi.advanceTimersByTimeAsync(0);
+      const workspaceRow = wrapper.get('[data-test="workspace-row"][data-workspace-root="/ws/a"]');
+      await workspaceRow.get('button').trigger('click');
+      await Promise.resolve();
+      await vi.advanceTimersByTimeAsync(0);
 
-      expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).not.toHaveBeenCalled();
 
       await vi.advanceTimersByTimeAsync(5000);
-      expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+      expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).toHaveBeenCalledWith('workspace:/ws/a');
       wrapper.unmount();
     } finally {
       vi.useRealTimers();

@@ -2,7 +2,7 @@ import path from 'node:path';
 import {
   WorkspaceFileExplorer,
 } from '../file-explorer/file-explorer.js';
-import { buildFilesystemWorkspaceId } from './workspace-id-mapping-store.js';
+import { buildFilesystemWorkspaceId } from './workspace-registry-store.js';
 import type { WorkspaceInput } from './workspace-input.js';
 import type { WorkspaceKind, WorkspaceMetadata } from './workspace-metadata.js';
 import {

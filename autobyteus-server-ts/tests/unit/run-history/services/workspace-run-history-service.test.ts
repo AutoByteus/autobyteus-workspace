@@ -154,4 +154,137 @@ describe("WorkspaceRunHistoryService", () => {
       }),
     ]);
   });
+
+  it("returns only the requested canonical workspace history group", async () => {
+    const agentRunHistoryService = {
+      listRunHistory: vi.fn(async () => [
+        {
+          workspaceRootPath: "/ws/a/.",
+          workspaceName: "Workspace A",
+          agents: [
+            {
+              agentDefinitionId: "agent-a",
+              agentName: "Agent A",
+              runs: [
+                {
+                  runId: "run-a",
+                  summary: "scoped agent",
+                  createdAt: "2026-03-26T10:00:00.000Z",
+                  archivedAt: null,
+                  terminatedAt: null,
+                  status: "offline",
+                  isActive: false,
+                  shouldConnectStream: false,
+                  statusSource: "INACTIVE",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          workspaceRootPath: "/ws/b",
+          workspaceName: "Workspace B",
+          agents: [
+            {
+              agentDefinitionId: "agent-b",
+              agentName: "Agent B",
+              runs: [
+                {
+                  runId: "run-b",
+                  summary: "other workspace",
+                  createdAt: "2026-03-26T10:30:00.000Z",
+                  archivedAt: null,
+                  terminatedAt: null,
+                  status: "offline",
+                  isActive: false,
+                  shouldConnectStream: false,
+                  statusSource: "INACTIVE",
+                },
+              ],
+            },
+          ],
+        },
+      ]),
+    } as any;
+    const teamRunHistoryService = {
+      listTeamRunHistory: vi.fn(async () => [
+        {
+          teamRunId: "team-a",
+          teamDefinitionId: "team-def-a",
+          teamDefinitionName: "Team A",
+          coordinatorMemberRouteKey: "coordinator",
+          workspaceRootPath: "/ws/a",
+          summary: "scoped team",
+          createdAt: "2026-03-26T11:00:00.000Z",
+          archivedAt: null,
+          terminatedAt: null,
+          status: "offline",
+          isActive: false,
+          memberTree: [],
+          members: [],
+        },
+        {
+          teamRunId: "team-b",
+          teamDefinitionId: "team-def-b",
+          teamDefinitionName: "Team B",
+          coordinatorMemberRouteKey: "coordinator",
+          workspaceRootPath: "/ws/b",
+          summary: "other team",
+          createdAt: "2026-03-26T11:30:00.000Z",
+          archivedAt: null,
+          terminatedAt: null,
+          status: "offline",
+          isActive: false,
+          memberTree: [],
+          members: [],
+        },
+      ]),
+    } as any;
+    const service = new WorkspaceRunHistoryService({
+      agentRunHistoryService,
+      teamRunHistoryService,
+    });
+
+    const result = await service.getWorkspaceRunHistory("/ws/a");
+
+    expect(agentRunHistoryService.listRunHistory).toHaveBeenCalledWith(6);
+    expect(result).toMatchObject({
+      workspaceRootPath: "/ws/a",
+      workspaceName: "Workspace A",
+      agentDefinitions: [
+        expect.objectContaining({
+          agentDefinitionId: "agent-a",
+          runs: [expect.objectContaining({ runId: "run-a" })],
+        }),
+      ],
+      teamDefinitions: [
+        expect.objectContaining({
+          teamDefinitionId: "team-def-a",
+          runs: [expect.objectContaining({ teamRunId: "team-a" })],
+        }),
+      ],
+    });
+    expect(JSON.stringify(result)).not.toContain("run-b");
+    expect(JSON.stringify(result)).not.toContain("team-b");
+  });
+
+  it("returns an empty scoped history group for a registered workspace with no history", async () => {
+    const service = new WorkspaceRunHistoryService({
+      agentRunHistoryService: {
+        listRunHistory: vi.fn(async () => []),
+      } as any,
+      teamRunHistoryService: {
+        listTeamRunHistory: vi.fn(async () => []),
+      } as any,
+    });
+
+    const result = await service.getWorkspaceRunHistory("/ws/empty", 2);
+
+    expect(result).toEqual({
+      workspaceRootPath: "/ws/empty",
+      workspaceName: "empty",
+      agentDefinitions: [],
+      teamDefinitions: [],
+    });
+  });
 });

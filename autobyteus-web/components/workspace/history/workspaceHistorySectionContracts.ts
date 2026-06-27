@@ -1,7 +1,7 @@
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import type { RunTreeRow } from '~/utils/runTreeProjection';
+import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
@@ -12,13 +12,16 @@ export interface WorkspaceHistorySectionState {
   isTeamDeleting: (teamRunId: string) => boolean;
   isRunArchiving: (runId: string) => boolean;
   isTeamArchiving: (teamRunId: string) => boolean;
+  isWorkspaceRemoving: (workspaceId: string) => boolean;
+  isWorkspaceHistoryLoading: (workspaceId: string) => boolean;
+  workspaceHistoryError: (workspaceId: string) => string | null;
   formatRelativeTime: (isoTime: string) => string;
-  isWorkspaceExpanded: (workspaceRootPath: string) => boolean;
-  toggleWorkspace: (workspaceRootPath: string) => void;
-  isAgentExpanded: (workspaceRootPath: string, agentDefinitionId: string) => boolean;
-  toggleAgent: (workspaceRootPath: string, agentDefinitionId: string) => void;
-  isTeamDefinitionExpanded: (workspaceRootPath: string, groupKey: string) => boolean;
-  toggleTeamDefinition: (workspaceRootPath: string, groupKey: string) => void;
+  isWorkspaceExpanded: (workspaceId: string) => boolean;
+  toggleWorkspace: (workspaceNode: RunTreeWorkspaceNode) => Promise<void> | void;
+  isAgentExpanded: (workspaceId: string, agentDefinitionId: string) => boolean;
+  toggleAgent: (workspaceId: string, agentDefinitionId: string) => void;
+  isTeamDefinitionExpanded: (workspaceId: string, groupKey: string) => boolean;
+  toggleTeamDefinition: (workspaceId: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
   runStatusClass: (status: AgentStatus) => string;
   teamStatusClass: (status: AgentTeamStatus) => string;
@@ -49,6 +52,7 @@ export interface WorkspaceHistoryAvatarBindings {
 }
 
 export interface WorkspaceHistorySectionActions {
+  onRemoveWorkspace: (workspace: RunTreeWorkspaceNode) => Promise<void> | void;
   onCreateRun: (workspaceRootPath: string, agentDefinitionId: string) => Promise<void> | void;
   onSelectRun: (run: RunTreeRow) => Promise<void> | void;
   onTerminateRun: (runId: string) => Promise<void> | void;

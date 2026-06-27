@@ -14,6 +14,7 @@ import { getAgentRunHistoryService } from "../../../run-history/services/agent-r
 import { getAgentRunViewProjectionService } from "../../../run-history/services/agent-run-view-projection-service.js";
 import { getAgentRunResumeConfigService } from "../../../run-history/services/agent-run-resume-config-service.js";
 import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
+import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -265,6 +266,7 @@ class ArchiveStoredRunMutationResult {
 export class RunHistoryResolver {
   private agentRunHistoryService = getAgentRunHistoryService();
   private workspaceRunHistoryService = getWorkspaceRunHistoryService();
+  private workspaceManager = getWorkspaceManager();
   private agentRunProjectionService = getAgentRunViewProjectionService();
   private agentRunResumeConfigService = getAgentRunResumeConfigService();
 
@@ -273,6 +275,21 @@ export class RunHistoryResolver {
     @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
   ): Promise<WorkspaceRunHistoryGroupObject[]> {
     return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
+  }
+
+  @Query(() => WorkspaceRunHistoryGroupObject)
+  async workspaceRunHistory(
+    @Arg("workspaceId", () => String) workspaceId: string,
+    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+  ): Promise<WorkspaceRunHistoryGroupObject> {
+    const workspaceRootPath = await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId);
+    if (!workspaceRootPath) {
+      throw new Error(`Registered workspace '${workspaceId}' was not found.`);
+    }
+    return this.workspaceRunHistoryService.getWorkspaceRunHistory(
+      workspaceRootPath,
+      limitPerAgent,
+    );
   }
 
   @Query(() => RunProjectionPayload)

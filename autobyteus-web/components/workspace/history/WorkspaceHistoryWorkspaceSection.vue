@@ -1,25 +1,49 @@
 <template>
   <section class="rounded-md">
-    <button
-      type="button"
-      class="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+    <div
+      class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50"
       data-test="workspace-row"
+      :data-workspace-id="workspaceNode.workspaceId"
       :data-workspace-root="workspaceNode.workspaceRootPath"
-      :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceRootPath)"
-      @click="state.toggleWorkspace(workspaceNode.workspaceRootPath)"
+      :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceId)"
     >
-      <Icon
-        icon="heroicons:chevron-down-20-solid"
-        class="mr-1.5 h-4 w-4 text-gray-400 transition-transform"
-        :class="state.isWorkspaceExpanded(workspaceNode.workspaceRootPath) ? 'rotate-0' : '-rotate-90'"
-      />
-      <Icon icon="heroicons:folder-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
-      <span class="truncate">{{ workspaceNode.workspaceName }}</span>
-    </button>
+      <button
+        type="button"
+        class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left"
+        :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceId)"
+        @click="state.toggleWorkspace(workspaceNode)"
+      >
+        <Icon
+          icon="heroicons:chevron-down-20-solid"
+          class="mr-1.5 h-4 w-4 text-gray-400 transition-transform"
+          :class="state.isWorkspaceExpanded(workspaceNode.workspaceId) ? 'rotate-0' : '-rotate-90'"
+        />
+        <Icon icon="heroicons:folder-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
+        <span class="truncate">{{ workspaceNode.workspaceName }}</span>
+      </button>
+      <button
+        type="button"
+        class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+        :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_from_workspaces')"
+        :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_from_workspaces')"
+        :disabled="state.isWorkspaceRemoving(workspaceNode.workspaceId)"
+        @click.stop="actions.onRemoveWorkspace(workspaceNode)"
+      >
+        <Icon icon="heroicons:x-mark-20-solid" class="h-4 w-4" />
+      </button>
+    </div>
 
-    <div v-if="state.isWorkspaceExpanded(workspaceNode.workspaceRootPath)" class="ml-2 mt-0.5 space-y-1">
+    <div v-if="state.isWorkspaceExpanded(workspaceNode.workspaceId)" class="ml-2 mt-0.5 space-y-1">
       <div
-        v-if="workspaceNode.agents.length === 0 && workspaceTeams.length === 0"
+        v-if="state.isWorkspaceHistoryLoading(workspaceNode.workspaceId)"
+        class="px-3 py-1 text-xs text-gray-400"
+      >{{$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.loading_workspace_history')}}</div>
+      <div
+        v-else-if="state.workspaceHistoryError(workspaceNode.workspaceId)"
+        class="px-3 py-1 text-xs text-red-500"
+      >{{ state.workspaceHistoryError(workspaceNode.workspaceId) }}</div>
+      <div
+        v-else-if="workspaceNode.agents.length === 0 && workspaceTeams.length === 0"
         class="px-3 py-1 text-xs text-gray-400"
       >{{ $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_task_history_in_this_workspace') }}</div>
 
@@ -37,13 +61,13 @@
             data-test="workspace-agent-row"
             :data-workspace-root="workspaceNode.workspaceRootPath"
             :data-agent-definition-id="agentNode.agentDefinitionId"
-            :aria-expanded="state.isAgentExpanded(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
-            @click="state.toggleAgent(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
+            :aria-expanded="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
+            @click="state.toggleAgent(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
           >
             <Icon
               icon="heroicons:chevron-down-20-solid"
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
-              :class="state.isAgentExpanded(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
+              :class="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
             />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
@@ -72,7 +96,7 @@
         </div>
 
         <div
-          v-if="state.isAgentExpanded(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
+          v-if="state.isAgentExpanded(workspaceNode.workspaceId, agentNode.agentDefinitionId)"
           class="ml-3 space-y-0.5"
         >
           <button
@@ -159,13 +183,13 @@
             type="button"
             class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
             :data-test="`workspace-team-definition-row-${group.key}`"
-            :aria-expanded="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key)"
-            @click="state.toggleTeamDefinition(workspaceNode.workspaceRootPath, group.key)"
+            :aria-expanded="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key)"
+            @click="state.toggleTeamDefinition(workspaceNode.workspaceId, group.key)"
           >
             <Icon
               icon="heroicons:chevron-down-20-solid"
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
-              :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key) ? 'rotate-0' : '-rotate-90'"
+              :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
             <span
               class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
@@ -187,7 +211,7 @@
             <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
           </button>
 
-          <div v-if="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key)" class="ml-3 mt-0.5 space-y-0.5">
+          <div v-if="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key)" class="ml-3 mt-0.5 space-y-0.5">
             <div
               v-for="team in group.runs"
               :key="team.teamRunId"

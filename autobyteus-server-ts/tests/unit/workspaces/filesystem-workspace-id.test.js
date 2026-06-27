@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { WorkspaceConfig } from "autobyteus-ts";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
 describe("FileSystemWorkspace ID", () => {
     it("derives a deterministic workspaceId from the normalized root path", () => {
         const config = new WorkspaceConfig({ rootPath: "/tmp/autobyteus-workspace" });

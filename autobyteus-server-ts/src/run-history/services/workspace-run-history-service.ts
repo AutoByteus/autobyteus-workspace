@@ -8,6 +8,7 @@ import {
   getAgentRunHistoryService,
   type AgentRunHistoryService,
 } from "./agent-run-history-service.js";
+import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import {
   getTeamRunHistoryService,
   type TeamRunHistoryService,
@@ -70,45 +71,26 @@ export class WorkspaceRunHistoryService {
       this.teamRunHistoryService.listTeamRunHistory(),
     ]);
 
-    const grouped = new Map<string, WorkspaceRunHistoryGroup>();
-
-    for (const workspaceGroup of agentWorkspaceGroups) {
-      grouped.set(workspaceGroup.workspaceRootPath, {
-        workspaceRootPath: workspaceGroup.workspaceRootPath,
-        workspaceName: workspaceGroup.workspaceName,
-        agentDefinitions: workspaceGroup.agents,
-        teamDefinitions: [],
-      });
-    }
-
-    const teamRunsByWorkspace = new Map<string, TeamRunHistoryItem[]>();
-    for (const teamRun of teamRuns) {
-      const workspaceRootPath = normalizeWorkspaceRootPath(teamRun.workspaceRootPath);
-      const existingRuns = teamRunsByWorkspace.get(workspaceRootPath);
-      if (existingRuns) {
-        existingRuns.push(teamRun);
-      } else {
-        teamRunsByWorkspace.set(workspaceRootPath, [teamRun]);
-      }
-
-      if (!grouped.has(workspaceRootPath)) {
-        grouped.set(workspaceRootPath, {
-          workspaceRootPath,
-          workspaceName: workspaceNameFromRootPath(workspaceRootPath),
-          agentDefinitions: [],
-          teamDefinitions: [],
-        });
-      }
-    }
-
-    return Array.from(grouped.values())
-      .map((workspaceGroup) => ({
-        ...workspaceGroup,
-        teamDefinitions: groupTeamRunsByDefinition(
-          teamRunsByWorkspace.get(workspaceGroup.workspaceRootPath) ?? [],
-        ),
-      }))
+    return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns)
       .sort((a, b) => a.workspaceName.localeCompare(b.workspaceName));
+  }
+
+  async getWorkspaceRunHistory(
+    workspaceRootPath: string,
+    limitPerAgent = 6,
+  ): Promise<WorkspaceRunHistoryGroup> {
+    const canonicalRootPath = canonicalizeWorkspaceRootPath(workspaceRootPath);
+    const [agentWorkspaceGroups, teamRuns] = await Promise.all([
+      this.agentRunHistoryService.listRunHistory(limitPerAgent),
+      this.teamRunHistoryService.listTeamRunHistory(),
+    ]);
+
+    return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns, canonicalRootPath)[0] ?? {
+      workspaceRootPath: canonicalRootPath,
+      workspaceName: workspaceNameFromRootPath(canonicalRootPath),
+      agentDefinitions: [],
+      teamDefinitions: [],
+    };
   }
 }
 
@@ -119,6 +101,73 @@ export const getWorkspaceRunHistoryService = (): WorkspaceRunHistoryService => {
     cachedWorkspaceRunHistoryService = new WorkspaceRunHistoryService();
   }
   return cachedWorkspaceRunHistoryService;
+};
+
+
+const buildWorkspaceGroups = (
+  agentWorkspaceGroups: Array<{
+    workspaceRootPath: string;
+    workspaceName: string;
+    agents: RunHistoryAgentGroup[];
+  }>,
+  teamRuns: TeamRunHistoryItem[],
+  onlyWorkspaceRootPath: string | null = null,
+): WorkspaceRunHistoryGroup[] => {
+  const grouped = new Map<string, WorkspaceRunHistoryGroup>();
+
+  const shouldInclude = (workspaceRootPath: string): boolean =>
+    !onlyWorkspaceRootPath || workspaceRootPath === onlyWorkspaceRootPath;
+
+  for (const workspaceGroup of agentWorkspaceGroups) {
+    const workspaceRootPath = canonicalWorkspaceRootForHistory(workspaceGroup.workspaceRootPath);
+    if (!shouldInclude(workspaceRootPath)) {
+      continue;
+    }
+    grouped.set(workspaceRootPath, {
+      workspaceRootPath,
+      workspaceName: workspaceGroup.workspaceName || workspaceNameFromRootPath(workspaceRootPath),
+      agentDefinitions: workspaceGroup.agents,
+      teamDefinitions: [],
+    });
+  }
+
+  const teamRunsByWorkspace = new Map<string, TeamRunHistoryItem[]>();
+  for (const teamRun of teamRuns) {
+    const workspaceRootPath = canonicalWorkspaceRootForHistory(teamRun.workspaceRootPath);
+    if (!shouldInclude(workspaceRootPath)) {
+      continue;
+    }
+    const existingRuns = teamRunsByWorkspace.get(workspaceRootPath);
+    if (existingRuns) {
+      existingRuns.push(teamRun);
+    } else {
+      teamRunsByWorkspace.set(workspaceRootPath, [teamRun]);
+    }
+
+    if (!grouped.has(workspaceRootPath)) {
+      grouped.set(workspaceRootPath, {
+        workspaceRootPath,
+        workspaceName: workspaceNameFromRootPath(workspaceRootPath),
+        agentDefinitions: [],
+        teamDefinitions: [],
+      });
+    }
+  }
+
+  return Array.from(grouped.values()).map((workspaceGroup) => ({
+    ...workspaceGroup,
+    teamDefinitions: groupTeamRunsByDefinition(
+      teamRunsByWorkspace.get(workspaceGroup.workspaceRootPath) ?? [],
+    ),
+  }));
+};
+
+const canonicalWorkspaceRootForHistory = (value: string | null | undefined): string => {
+  const normalized = normalizeWorkspaceRootPath(value);
+  if (normalized === UNASSIGNED_TEAM_WORKSPACE_KEY) {
+    return normalized;
+  }
+  return canonicalizeWorkspaceRootPath(normalized);
 };
 
 const groupTeamRunsByDefinition = (

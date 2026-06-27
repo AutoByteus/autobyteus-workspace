@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
 
 describe("FileSystemWorkspace ID", () => {
   it("derives a deterministic workspaceId from the normalized root path", () => {

@@ -6,7 +6,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
 import { TempWorkspace } from "../../../src/workspaces/temp-workspace.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
 
 vi.mock("../../../src/file-explorer/file-name-indexer.js", () => ({
   FileNameIndexer: class {
@@ -141,6 +141,28 @@ describe("WorkspaceManager", () => {
     expect(recreated.workspaceId).toBe(buildFilesystemWorkspaceId(rootPath));
     expect(recreated.getBasePath()).toBe(rootPath);
     expect(manager.getWorkspaceById(workspaceId)).toBe(recreated);
+  });
+
+  it("removes a registered workspace entry without deleting workspace files", async () => {
+    const rootPath = createTempRoot();
+    const filePath = path.join(rootPath, "keep.txt");
+    fs.writeFileSync(filePath, "preserved", "utf-8");
+    const workspace = await manager.createWorkspace({ rootPath });
+
+    const result = await manager.removeRegisteredWorkspace(workspace.workspaceId);
+
+    expect(result).toMatchObject({
+      success: true,
+      workspaceId: workspace.workspaceId,
+      workspaceRootPath: rootPath,
+    });
+    expect(manager.getWorkspaceById(workspace.workspaceId)).toBeUndefined();
+    expect(await manager.getRegisteredWorkspaceRootPath(workspace.workspaceId)).toBeNull();
+    expect(await manager.listRegisteredFilesystemWorkspaces()).toEqual([]);
+    expect(fs.readFileSync(filePath, "utf-8")).toBe("preserved");
+    await expect(manager.getOrCreateWorkspace(workspace.workspaceId)).rejects.toThrow(
+      `Workspace '${workspace.workspaceId}' not found`,
+    );
   });
 
   it("recreates the temp workspace from its stable workspace ID", async () => {

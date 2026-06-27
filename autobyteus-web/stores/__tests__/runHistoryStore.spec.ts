@@ -268,6 +268,7 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   ListWorkspaceRunHistory: 'ListWorkspaceRunHistory',
+  GetWorkspaceRunHistory: 'GetWorkspaceRunHistory',
   GetRunProjection: 'GetRunProjection',
   GetRunFileChanges: 'GetRunFileChanges',
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
@@ -607,6 +608,62 @@ describe('runHistoryStore', () => {
       }],
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
+  });
+
+  it('fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace', async () => {
+    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables: Record<string, unknown> }) => {
+      expect(query).toBe('GetWorkspaceRunHistory');
+      expect(variables).toEqual({ workspaceId: 'ws-a', limitPerAgent: 6 });
+      return {
+        data: {
+          workspaceRunHistory: buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a',
+            workspaceName: 'a',
+            agents: [],
+            teamRuns: [],
+          }),
+        },
+        errors: [],
+      };
+    });
+
+    const activeAgentContext = {
+      config: { workspaceId: 'ws-b', agentDefinitionId: 'agent-def-1' },
+      state: {
+        currentStatus: 'running',
+        conversation: { messages: [] },
+      },
+      isSubscribed: true,
+    };
+    const activeTeamMemberContext = {
+      config: { workspaceId: 'ws-b', agentDefinitionId: 'agent-def-1' },
+      state: {
+        currentStatus: 'running',
+        conversation: { messages: [] },
+      },
+    };
+    const activeTeamContext = {
+      teamRunId: 'team-b-active',
+      currentStatus: 'running',
+      isSubscribed: true,
+      config: { workspaceId: 'ws-b', isLocked: true },
+      leafAgentContextsByRouteKey: new Map([
+        ['member_b', activeTeamMemberContext],
+      ]),
+    };
+    agentContextsStoreMock.runs.set('run-b-active', activeAgentContext);
+    teamContextsStoreMock.teams.set('team-b-active', activeTeamContext);
+
+    const store = useRunHistoryStore();
+    await store.fetchWorkspaceHistory('ws-a');
+
+    expect(store.workspaceGroups).toHaveLength(1);
+    expect(store.workspaceGroups[0]?.workspaceRootPath).toBe('/ws/a');
+    expect(agentRunStoreMock.disconnectAgentStream).not.toHaveBeenCalled();
+    expect(agentTeamRunStoreMock.disconnectTeamStream).not.toHaveBeenCalled();
+    expect(activeAgentContext.state.currentStatus).toBe('running');
+    expect(activeTeamContext.currentStatus).toBe('running');
+    expect(activeTeamMemberContext.state.currentStatus).toBe('running');
   });
 
   it('preserves backend member-scoped statuses when refreshing an active running team', async () => {
@@ -1512,10 +1569,94 @@ describe('runHistoryStore', () => {
     expect(alphaAgent?.runs[1]?.source).toBe('history');
 
     expect(nodes[1]).toEqual({
+      workspaceId: 'ws-2',
       workspaceRootPath: '/ws/b',
       workspaceName: 'Beta',
       agents: [],
     });
+  });
+
+  it('pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-removed',
+                summary: 'Removed workspace run',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/b',
+        workspaceName: 'Beta',
+        agents: [],
+        teamRuns: [],
+      }),
+    ];
+    store.selectedRunId = 'run-removed';
+    selectionStoreMock.selectedType = 'agent';
+    selectionStoreMock.selectedRunId = 'run-removed';
+
+    store.pruneWorkspace('ws-a', '/ws/a');
+
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedRunId).toBeNull();
+    expect(store.workspaceGroups.map((group) => group.workspaceRootPath)).toEqual(['/ws/b']);
+  });
+
+  it('pruneWorkspace clears global team selection when the selected team belongs to the removed workspace', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        agents: [],
+        teamRuns: [
+          {
+            teamRunId: 'team-removed',
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            workspaceRootPath: '/ws/a',
+            summary: 'Removed workspace team',
+            lastActivityAt: '2026-01-01T00:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            deleteLifecycle: 'READY',
+            isActive: false,
+            members: [],
+          },
+        ],
+      }),
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/b',
+        workspaceName: 'Beta',
+        agents: [],
+        teamRuns: [],
+      }),
+    ];
+    store.selectedTeamRunId = 'team-removed';
+    store.selectedTeamMemberRouteKey = 'super_agent';
+    selectionStoreMock.selectedType = 'team';
+    selectionStoreMock.selectedRunId = 'team-removed';
+
+    store.pruneWorkspace('ws-a', '/ws/a');
+
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedTeamRunId).toBeNull();
+    expect(store.selectedTeamMemberRouteKey).toBeNull();
+    expect(store.workspaceGroups.map((group) => group.workspaceRootPath)).toEqual(['/ws/b']);
   });
 
   it('overlays persisted run status with matching live context only', () => {

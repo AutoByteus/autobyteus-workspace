@@ -47,7 +47,7 @@ interface RunHistoryOpenOptions {
   selectionMode?: RunHistorySelectionMode;
 }
 
-interface RunHistoryFetchStoreLike {
+export interface RunHistoryFetchStoreLike {
   loading: boolean;
   error: string | null;
   workspaceGroups: RunHistoryWorkspaceGroup[];
@@ -150,7 +150,7 @@ const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
   return teamContext?.members instanceof Map ? teamContext.members : new Map();
 };
 
-const reconcileDiscoveredActiveRuns = async (
+export const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
   const activeAgentRunById = listActiveAgentRuns(store.workspaceGroups);
