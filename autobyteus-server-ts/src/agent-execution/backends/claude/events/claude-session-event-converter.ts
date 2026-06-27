@@ -8,6 +8,14 @@ import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-s
 import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { normalizeClaudeMediaToolResult } from "../media/claude-media-tool-result-normalizer.js";
+import {
+  projectMcpToolResultForApplication,
+  type McpEffectiveResultSource,
+} from "../../../../agent-tools/mcp/mcp-effective-tool-result-projector.js";
+import {
+  hasExplicitProviderMcpMarker,
+  isMcpWireToolName,
+} from "../../../../agent-tools/mcp/mcp-tool-source.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
@@ -71,6 +79,69 @@ const buildErrorPayload = (payload: Record<string, unknown>): Record<string, unk
   code: asString(payload.code) ?? "RUNTIME_ERROR",
   message: asString(payload.message) ?? "Claude runtime emitted an error.",
 });
+
+type ClaudeProjectedToolResult = {
+  result: unknown;
+  mcpErrorMessage: string | null;
+};
+
+const omitResultField = (
+  payload: Record<string, unknown>,
+): Record<string, unknown> => {
+  const { result: _result, ...rest } = payload;
+  return rest;
+};
+
+const resolveClaudeMcpResultSource = (
+  payload: Record<string, unknown>,
+  rawToolName: string | null,
+  canonicalToolName: string | null,
+): McpEffectiveResultSource | null => {
+  if (isMcpWireToolName(rawToolName)) {
+    return {
+      kind: "mcp_tool_result",
+      provider: "claude",
+      evidence: "provider_mcp_wire_tool_name",
+      rawToolName,
+      canonicalToolName,
+    };
+  }
+  if (hasExplicitProviderMcpMarker(payload)) {
+    return {
+      kind: "mcp_tool_result",
+      provider: "claude",
+      evidence: "explicit_provider_mcp_marker",
+      rawToolName,
+      canonicalToolName,
+    };
+  }
+  return null;
+};
+
+const resolveClaudeProjectedToolResult = (
+  payload: Record<string, unknown>,
+  rawToolName: string | null,
+  canonicalToolName: string | null,
+): ClaudeProjectedToolResult => {
+  const rawResult = payload.result ?? null;
+  const source = resolveClaudeMcpResultSource(payload, rawToolName, canonicalToolName);
+  const projection = source
+    ? projectMcpToolResultForApplication(rawResult, source)
+    : null;
+  const effectiveResult = projection?.matched ? projection.result : rawResult;
+  const browserNormalizedResult = normalizeClaudeBrowserToolResult(
+    canonicalToolName,
+    effectiveResult,
+  );
+  const mediaNormalizedResult = normalizeClaudeMediaToolResult(
+    canonicalToolName,
+    browserNormalizedResult,
+  );
+  return {
+    result: mediaNormalizedResult,
+    mcpErrorMessage: projection?.isError ? projection.errorMessage : null,
+  };
+};
 
 export const deriveClaudeAgentRunStatusHint = (
   claudeEventName: string,
@@ -238,21 +309,29 @@ export class ClaudeSessionEventConverter {
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED: {
         const invocationId = resolveInvocationId(payload);
+        const rawToolName = asString(payload.tool_name);
         const toolName = resolveToolName(payload);
         const error = asString(payload.error);
         const hasArguments = Object.prototype.hasOwnProperty.call(payload, "arguments");
-        const browserNormalizedResult = normalizeClaudeBrowserToolResult(toolName, payload.result ?? null);
-        const result = normalizeClaudeMediaToolResult(toolName, browserNormalizedResult);
+        const projectedToolResult = resolveClaudeProjectedToolResult(
+          payload,
+          rawToolName,
+          toolName,
+        );
+        const failureError = error ?? projectedToolResult.mcpErrorMessage;
+        const serializedPayload = failureError
+          ? omitResultField(serializePayload(payload))
+          : serializePayload(payload);
         return [this.createEvent(
           claudeEventName,
-          error
+          failureError
             ? AgentRunEventType.TOOL_EXECUTION_FAILED
             : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
           {
-            ...serializePayload(payload),
+            ...serializedPayload,
             ...(invocationId ? { invocation_id: invocationId } : {}),
             ...(toolName ? { tool_name: toolName } : {}),
-            ...(error ? { error } : { result }),
+            ...(failureError ? { error: failureError } : { result: projectedToolResult.result }),
             ...(hasArguments ? { arguments: resolveToolArguments(payload) } : {}),
           },
         )];

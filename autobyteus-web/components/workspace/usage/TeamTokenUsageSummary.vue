@@ -166,7 +166,7 @@ const compactStatusClass = (status: string): string => {
   return `${base} text-amber-700`;
 };
 
-const shouldShowMetricStatus = (status: string): boolean => status !== 'estimated';
+const shouldShowMetricStatus = (status: string): boolean => status === 'partial_price_missing';
 
 const formatTotalCostTitle = (
   value: number | null,
@@ -194,8 +194,8 @@ const formatTotalCostTitle = (
 }
 
 .team-token-table {
-  min-width: 42rem;
-  width: 100%;
+  min-width: 38rem;
+  width: min(100%, 45rem);
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
@@ -203,24 +203,18 @@ const formatTotalCostTitle = (
 }
 
 .team-token-column-member {
-  width: 28%;
+  width: 36%;
 }
 
-.team-token-column-gross-input {
-  width: 23%;
-}
-
-.team-token-column-output {
-  width: 20%;
-}
-
+.team-token-column-gross-input,
+.team-token-column-output,
 .team-token-column-total {
-  width: 29%;
+  width: 21.333%;
 }
 
 .team-token-table th,
 .team-token-table td {
-  padding: 0.55rem 0.75rem;
+  padding: 0.55rem 0.5rem;
   border-top: 1px solid rgb(241 245 249);
   vertical-align: middle;
 }
@@ -240,7 +234,7 @@ const formatTotalCostTitle = (
 
 .team-token-table thead th:not(:first-child),
 .team-token-metric-cell {
-  text-align: right;
+  text-align: center;
 }
 
 .team-token-row-focused > th,
@@ -343,7 +337,7 @@ const formatTotalCostTitle = (
   min-width: 0;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0 0.35rem;
 }
 
