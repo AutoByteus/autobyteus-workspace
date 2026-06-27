@@ -247,6 +247,6 @@ describe('AgentTeamEventMonitor.vue', () => {
     });
 
     expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).exists()).toBe(false);
-    expect(wrapper.text()).toContain('workspace.components.workspace.team.TeamMemberMonitorTile.no_activity_yet');
+    expect(wrapper.text()).toContain('workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet');
   });
 });

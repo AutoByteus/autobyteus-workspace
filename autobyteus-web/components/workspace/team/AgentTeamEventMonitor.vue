@@ -46,7 +46,7 @@
          <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the') }}</p>
       </div>
       <div v-else>
-        <p>{{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.no_activity_yet') }}</p>
+        <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet') }}</p>
       </div>
     </div>
   </div>

@@ -86,18 +86,8 @@ const messages = {
     "代表",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "当前聚焦的子团队",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
-    "子团队成员",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
-    "任务智能体",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_badge":
-    "任务团队",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_scoped_badge":
-    "任务范围",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_status":
-    "任务团队状态",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
-    "成员",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
+    "还没有活动。",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "团队名册",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":

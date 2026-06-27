@@ -87,18 +87,8 @@ const messages = {
     "Represents",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "Focused subteam",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
-    "Subteam members",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
-    "Task agent",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_badge":
-    "Task team",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_scoped_badge":
-    "Task scoped",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_team_status":
-    "Task-team status",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
-    "Member",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
+    "No activity yet.",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "Team roster",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
