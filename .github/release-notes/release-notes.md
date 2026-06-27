@@ -1,9 +1,6 @@
-## What's New
-- Added typed conversation targeting for team chats so messages can be sent from the normal composer to runtime task agents, task-team roots, and nested task-team members.
-
 ## Improvements
-- Improved AutoByteus task-delegation context preservation so delegated subteams can be created, projected in the workspace, and addressed in follow-up chat.
-- Updated team WebSocket targeting to use canonical `conversation_target_address` payloads while keeping existing flat structural target compatibility.
+- Simplified the team workspace to a single focused-member view by removing the unused Focus/Grid/Spotlight mode picker and alternate Grid/Spotlight layouts.
+- Kept focused subteam and task-team chat behavior on the normal shared composer using typed conversation-target addresses.
 
 ## Fixes
-- Fixed stale or malformed runtime chat targets falling back to structural or coordinator routes; invalid runtime targets now fail explicitly instead of posting to the wrong participant.
+- Removed obsolete team workspace mode state, broad-mode hydration paths, stale mode-specific tests, and localization/docs references for the removed layouts.
