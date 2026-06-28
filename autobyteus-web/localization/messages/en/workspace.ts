@@ -101,14 +101,37 @@ const messages = {
     "Task agent",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.active_task_executions":
-    "Active task executions",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_agent_badge":
-    "Task agent",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_team_badge":
-    "Task team",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.approval_required":
+  "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
+    "Active Tasks",
+  "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
+    "Active",
+  "workspace.components.workspace.team.TeamActiveTasksSection.empty":
+    "No active delegated tasks",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
+    "Task Agent",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_team":
+    "Task Team",
+  "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
     "Approval required",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task": "Task",
+  "workspace.components.workspace.team.TeamActiveTasksSection.status": "Status",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target": "Target",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
+    "Task ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
+    "Agent run ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
+    "Agent team run ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_member":
+    "member",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_team":
+    "team",
+  "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
+    "Task description unavailable",
+  "workspace.components.workspace.team.TeamActiveTasksSection.open_conversation":
+    "Open conversation",
+  "workspace.components.workspace.team.TeamActiveTasksSection.members":
+    "Members",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

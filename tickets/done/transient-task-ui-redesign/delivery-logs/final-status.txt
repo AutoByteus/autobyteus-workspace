@@ -1,0 +1,9 @@
+Delivery integration check status: PASS
+Cleanup verification:
+absent node_modules
+absent autobyteus-web/node_modules
+absent autobyteus-web/.nuxt
+absent autobyteus-server-ts/node_modules
+absent autobyteus-ts/node_modules
+absent autobyteus-application-sdk-contracts/node_modules
+absent autobyteus-application-backend-sdk/node_modules

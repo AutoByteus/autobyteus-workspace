@@ -1,0 +1,375 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+church
+enpal-smart-energy-companion
+german_online_practice
+normy_job_search
+reonic_hackerthon
+temp_workspace
+Settings
+Team Definition
+Nested Classroom Test Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+ Team Members Override (3)
+Teacher
+Coordinator
+Runtime Override
+Use global runtime default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model Override
+Use global model (default)
+Auto-execute: Use global
+StudentStudyGroup
+TEAM
+StudentStudyGroup
+student_one
+
+StudentStudyGroup / student_one
+
+Runtime Override
+Use global runtime default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model Override
+Use global model (default)
+Auto-execute: Use global
+student_two
+
+StudentStudyGroup / student_two
+
+Runtime Override
+Use global runtime default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model Override
+Use global model (default)
+Auto-execute: Use global
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Skill Access
+Configured skills only (Recommended)
+All installed skills
+No skills
+
+Controls which skills team members are allowed to use.
+
+Run Team
+
+A default team model is required before running this team.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+.agents
+.claude
+.codex
+agent_memory_research
+assets
+autobyteus_software_eng_team
+bible-discussion
+bible-learning
+bible-study-group
+brief-studio
+classroom-runs
+codex
+compaction-origin-personal-refresh-20260410-125349
+compaction-worktree-backup-20260410-123853
+demo-website
+dictionary_append_manifest_test
+dictionary_bootstrap_test
+dictionary_manifest_test
+dictionary_no_history_test
+dictionary_profile_reuse_test
+dictionary_profile_test
+dictionary_simple_test
+dictionary_skill_final_sim
+dictionary_skill_final_strict_clean
+dictionary_skill_strict_sim
+dictionary_skill_strict_sim2
+dictionary-word-audio-merken-test
+docx_render
+jet-shooter-fancy
+jet-striker-velocity
+job-search-normy-wang-berlin-20260615
+linkedin-posts
+medium-import
+neon-overdrive
+nuxt-vue-demo
+openclaw-paper
+output
+outputs
+paul-authority-clarification-20260310
+pdf_images
+pdf_pages
+pdf_preview
+pdf_preview_updated
+qa_previews
+qwen36-mtp-m1-research
+real-compaction-origin-personal-refresh-20260411-132647
+real-compaction-origin-personal-refresh-20260411-185003
+schoolbag-ecommerce-demo
+shoe-ecommerce-demo
+shoes-shopping-demo
+shoes-shopping-nuxt
+sky_blaze_aces
+sushi-ecommerce-demo
+test_dictionary_agent
+test_dictionary_agent2
+test_dictionary_agent3
+tickets
+tmp
+video_continuation_test
+video_tutorial_jobs
+word_segments
+worterbuch_audio
+2026-cost-decision-log.md
+A valid string for 'output_file_path'
+ae-manager-cs-expansion-support-validation-input-2026-06-18.md
+ae-manager-enterprise-tranche-sfdc-validation-input-2026-06-19.md
+airplane_game.html
+akiyama.pdf
+akiyama.txt
+article.md
+atom_simulation.py
+autobyteus_record_1.transcript.md
+autobyteus_record_2.transcript.md
+autobyteus_record_3.transcript.md
+brief-studio-handshake-host.html
+build_membership_certificate.py
+build_people_ops_backfill_pending_export.py
+CFO_Financial_Snapshot_Draft.md
+cfo-cloud-ai-first-review-position-2026-06-17.md
+cfo-gtm-finance-validation-decision-2026-06-18.md
+cfo-gtm-spend-to-pipeline-finance-position-2026-06-17.md
+claim_evidence_ledger.md
+cloud_ai_cost_review_inputs_infra_security_2026-06-16.md
+cloud-ai-controller-evidence-source-package-2026-06-21-v0.md
+cloud-ai-cost-review-action-log-2026-06-17-v0-vpeng.md
+cloud-ai-cost-review-action-log-template-2026-06-16.md
+cloud-ai-cost-review-weekly-2026-06-17.ics
+cloud-ai-cost-review-weekly-2026-06-17.md
+cloud-ai-source-backed-input-tracker-2026-06-21.md
+convert_pdf.py
+coo-cloud-ai-controller-validation-response-2026-06-18.md
+coo-cloud-ai-cost-review-prep-2026-06-17.md
+coo-cro-support-capacity-readout-template-2026-06-16.md
+coo-final-support-capacity-lock-2026-06-21.md
+coo-fy2026-cost-governance-operating-plan.md
+coo-fy2026-cost-plan-operating-baseline-2026-06-18.md
+coo-review-notes-cloud-ai-2026-06-17.md
+CRM_PS_Attach_Rate_Data_Q4.md
+cro-cfo-gtm-spend-to-pipeline-decision-prep-2026-06-17.md
+cro-enterprise-conversion-expansion-reallocation-plan-2026-06-17.md
+cro-final-gtm-support-readout-2026-06-21.md
+cro-fy2026-cost-addendum-action-plan-2026-06-16.md
+cro-gtm-redeployment-tightened-packet-2026-06-21.md
+cro-gtm-spend-to-pipeline-exec-recommendation-draft-2026-06-21.md
+cs-cro-cfo-lock-update-after-ae-validation-2026-06-19.md
+cs-expansion-tranche-opportunity-list-2026-06-19-v0.md
+cs-support-capacity-v0-delivery-packet-2026-06-19.md
+cut_words.sh
+data-pull-to-vp-finance.md
+demand-gen-sdr-outbound-reserve-input-2026-06-19.md
+dog_image.png
+dog_test.png
+dog_with_text.png
+dog.png
+edited_test_image.png
+engineering-side-cloud-ai-vendor-inventory-cto-inputs-2026-06-16.md
+engineering-vendor-commitment-inventory-inputs-2026-06-16.md
+even_odd.pdf
+evidence_extract.md
+exec-meeting-brief-2026-06-16.md
+fancy_dog_with_text.png
+fancy_dog.png
+fancy_jet_autopilot_game.html
+fancy_jet_warrior.html
+fibonacci.py
+fibonacci.test.ts
+fibonacci.ts
+financial-status-snapshot-Q2-2025.md
+flp.pdf
+follow_up_tracking.md
+fy2025_deal_A_counteroffer_8percent.md
+fy2025_deal_A_prepay_analysis.md
+fy2025-revenue-snapshot.md
+fy2026_support_capacity_data_request.md
+fy2026_support_capacity_minimum_extract_template.csv
+fy2026_support_cloud_ai_linkage_extract_template.csv
+fy2026-cost-plan-ceo-ready-2026-06-18.md
+fy2026-q2-cost-planning.md
+fy2026-vendor-commitment-inventory-template.csv
+fy2026-vendor-commitment-inventory-template.md
+game.html
+hard_math_problem.md
+hard_math_problem.txt
+index.html
+infra-security-ai-provider-security-terms-response-2026-06-19.md
+infra-security-platform-alignment-addendum-2026-06-19.md
+infra-security-source-backed-inputs-2026-06-19.md
+infra-security-vendor-inventory-feed-2026-06-19.csv
+investigation-notes.md
+jet_blaze_reign.html
+jet_game.html
+jet_name.html
+jet_shooter_command.html
+jet_shooter_deluxe.html
+jet_shooter_fresh.html
+jet_shooter_game.html
+jet_shooter_v2.html
+jet_shooter.html
+jet_striker_elite.html
+jet_striker.html
+jet-game.html
+jet-shooter.html
+jet-striker.html
+linkedin_antigravity_autobyteus_direction_post.txt
+linkedin_embedded_browser_mobile_view_post.txt
+linkedin_nested_agent_teams_post.txt
+list_files.sh
+llmProviderConfig.DlZ6XvKN.js
+make_membership_versions.py
+math_problem.md
+math_problem.txt
+math_solution.md
+math_solution.txt
+membership_certificate_agape.html
+membership_certificate_agape.png
+Mitgliedschaftsbescheinigung_Agape_Gemeinde_Berlin.docx
+Mitgliedschaftsbescheinigung_Agape_Gemeinde_Berlin.pdf
+names_list.txt
+neon_jet_strike.html
+online_pitch_opportunities_before_may20_2026.md
+ops-owned-vendor-commitment-inventory-v0-2026-06-16.csv
+partnerships-partner-cosell-input-2026-06-19.md
+people-backfill-governance-input-2026-06-16.md
+PS_Active_Engagements.csv
+PS_Attach_Rate_Demand_Side_Package.md
+PS_Backlog_Unscheduled.csv
+PS_Revenue_Miss_Data_Pull.md
+ps_revenue_miss_findings_coo.md
+ps_revenue_miss_root_cause_assessment.md
+PS_Revenue_Variance_Memo.md
+PS-revenue-CEO-memo-June25.md
+PS-Revenue-Miss-Scoping-Hypothesis-One-Pager.md
+PS-revenue-root-cause-assessment-draft.md
+Q2_PS_Attach_Data_DRAFT_2025-06-16.md
+qa-release-risk-gates-cloud-ai-readout-2026-06-21.md
+rabbit_cabbit_game.html
+rabbit_tutorial_game.html
+README.md
+real-backend-inspect.png
+requirements-doc.md
+research_notes.md
+results.txt
+revenue_summary_draft.md
+revenue-cs-support-capacity-coordination-tracker-2026-06-16.md
+revenue-cs-support-capacity-data-request-2026-06-16.md
+sample_edited_image.png
+sample_generated_image.png
+sample.html
+SH001
+SH001B
+sh001c
+sh001d
+SH002
+SH008
+SH008B
+SH009
+simple_jet_strike_game.html
+sky_strike.html
+slide_extraction.md
+slow_real_conversation_home_occupied_repeat.wav
+slow_real_conversation_home_occupied.wav
+small_dog.png
+small-dog-test.png
+someone_home_louder_conversation_20260525.wav
+someone_home_louder_conversation_repeat.wav
+someone_home_louder_conversation_repeat2.wav
+someone_home_louder_conversation_repeat3.wav
+someone_home_louder_conversation_repeat5.wav
+someone_home_louder_conversation.wav
+someone_home_message.wav
+source_dossier.md
+speech_test.wav
+support-50-ticket-audit-coding-template-2026-06-16.csv
+target_feasibility_assessment.md
+test_fibonacci.py
+test_generated_image.png
+test_image.png
+test_speech.mp3
+test-generated-image.png
+test.txt
+tmp_ab05.wav
+tmp_ab13.wav
+tmp_fini_gemini.wav
+tmp_kuno_gemini.wav
+tmp_pdf_enhance_final.wav
+tmp_pdf_enhance_render.wav
+tmp_pdf_enhance_start.wav
+tmp_pdf_refine_final.wav
+tmp_pdf_refine_start.wav
+tmp_pdf_status_final.wav
+tmp_pdf_status_toolcheck.wav
+tmp_test_fini.wav
+VP-Marketing-Decision-Memo.md
+vp-sales-final-lock-recommendation-gtm-support-2026-06-20.md
+vp-sales-gtm-redeployment-proof-packet-2026-06-20.md
+vp-sales-gtm-spend-to-pipeline-readout-2026-06-17.md
+vp-sales-gtm-tranche-lock-plan-2026-06-19.md
+vp-sales-support-capacity-v0-delivery-plan-2026-06-19.md
+weekly-cost-governance-readout-2026-06-18.md
+write_app.py
+x_agent_orchestration_posts_summary_2026-05-06.md
+zunaechst_sentence.wav
+zunaechst_silencedetect.txt
+No file selected
+
+Select a file from the explorer to view or edit its content.

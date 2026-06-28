@@ -184,23 +184,31 @@ frontend clones scoped child member nodes/contexts under the task-team root and
 drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
-`TeamActiveTaskExecutionsBar` renders task-agent and task-team nodes in an
-active task executions strip as concrete task children, shows pending approvals
-on task-agent cards when the runtime is waiting for tool approval, and uses
-task-team badges plus lifecycle/timeline status for task-team roots instead of
-falling back to the structural conversation feed. Running and awaiting-acceptance task
-executions must remain visible after active team reopen/hydration, even when
-server resume metadata only lists stable logical coordinator/member rows.
-Run-open hydration therefore restores concrete task executions from live
-projection/identity instead of collapsing them into the logical member or team
-parent. Stream routing is projection-first: task-team root/scoped child identity
-wins before task-agent identity, then exact logical route/path identity, then
-compatible run-id fallback. The frontend must not recreate the removed
-`isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
-as a routing authority. After delegator acceptance and backend settlement or
-offline cleanup, the frontend removes the transient task execution root, scoped
-children, and nested task-agent projections while preserving the structural
-member/team topology and the history that records the delegated task completion.
+The right-side Team tab owns delegated task visibility through its `Active Tasks`
+section instead of a center active-task strip. `TeamActiveTasksSection` and
+`TeamActiveTaskRow` derive task-agent and task-team entries from the transient
+projection nodes in `AgentTeamContext`, while `runHistoryTeamRows` filters those
+task-scoped nodes out of stable left navigation. Active task rows show the
+delegated task description, status, target, task ID, and the explicit `Agent run
+ID` or `Agent team run ID` label; task-team members are focus targets, not a
+phase/timeline dashboard. Task-agent rows keep pending approval controls when
+the runtime is waiting for tool approval. The center workspace remains the
+focused conversation/event/composer surface and must not render
+`TeamActiveTaskExecutionsBar` or any replacement center list.
+
+Running and awaiting-acceptance task executions must remain visible in Team →
+Active Tasks after active team reopen/hydration, even when server resume
+metadata only lists stable logical coordinator/member rows. Run-open hydration
+therefore restores concrete task executions from live projection/identity
+instead of collapsing them into the logical member or team parent. Stream
+routing is projection-first: task-team root/scoped child identity wins before
+task-agent identity, then exact logical route/path identity, then compatible
+run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
+generated-run-id heuristic or any other run-id-format parser as a routing
+authority. After delegator acceptance and backend settlement or offline cleanup,
+the frontend removes the transient task execution root, scoped children, and
+nested task-agent projections while preserving the structural member/team
+topology and the history that records the delegated task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

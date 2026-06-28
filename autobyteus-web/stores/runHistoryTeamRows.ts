@@ -97,6 +97,10 @@ const buildRowsFromMetadataTree = (
 export const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
   rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
 
+const isTransientTaskProjectionNode = (node: TeamMemberNode): boolean => Boolean(
+  node.isTaskAgentInstance || node.isTaskTeamInstance || node.isTaskTeamChildProjection,
+);
+
 export const buildTeamRowsFromHistoryItem = (
   team: TeamRunHistoryItem,
 ): TeamMemberTreeRow[] => {
@@ -136,7 +140,7 @@ export const buildTeamRowsFromContext = (
     }));
 
   const visit = (nodes: AgentTeamContext['memberTree']): TeamMemberTreeRow[] =>
-    nodes.map((node) => {
+    nodes.filter((node) => !isTransientTaskProjectionNode(node)).map((node) => {
       if (node.memberKind === 'agent_team') {
         const currentStatus = normalizeAgentRuntimeStatus(teamContext.currentStatus);
         return {

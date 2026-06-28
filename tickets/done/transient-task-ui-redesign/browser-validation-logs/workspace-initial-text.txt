@@ -1,0 +1,43 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+church
+enpal-smart-energy-companion
+german_online_practice
+normy_job_search
+reonic_hackerthon
+temp_workspace
+Settings
+
+Select or run an agent/team to begin.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh
+ -s /bin/zsh`.
+For more details, please visit https://support.appl
+e.com/kb/HT208050.
+~ $

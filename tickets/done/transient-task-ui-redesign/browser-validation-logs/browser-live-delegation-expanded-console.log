@@ -1,0 +1,25 @@
+[debug] [vite] connecting...
+[debug] [vite] connected.
+[log] serverStore: Initializing server config
+[log] serverStore: Not in Electron environment. Skipping server initialization.
+[info] <Suspense> is an experimental feature and its API will likely change.
+[log] ServerLoading: Component mounted with status: running
+[log] Workspace.vue: Mounted. Fetching server settings and loading profiles...
+[log] [useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/c3233d4a-74b6-4e33-9d15-68051ee54a1b
+[log] [useTerminalSession] Connected
+[log] serverStore: Checking server health at /rest/health
+[log] [useTerminalSession] Disconnected: 1005
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping
+[log] Agent WebSocket connected
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping
+[log] Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping
+[log] Team WebSocket connected
+[warning] No member context found for message, skipping

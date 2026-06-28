@@ -29,11 +29,6 @@
     </div>
 
     <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
-      <TeamActiveTaskExecutionsBar
-        :team-context="activeTeamContext"
-        @select-member="setFocusedMember"
-      />
-
       <div class="flex-grow min-h-0">
         <AgentTeamEventMonitor>
           <template #composerContext>
@@ -91,7 +86,6 @@ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
 import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
-import TeamActiveTaskExecutionsBar from '~/components/workspace/team/TeamActiveTaskExecutionsBar.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
@@ -227,14 +221,6 @@ function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefine
 
   return activeExecutionFocusedMemberRouteKey.value;
 }
-
-const setFocusedMember = async (memberRouteKey: string) => {
-  const teamRunId = activeTeamContext.value?.teamRunId;
-  if (!teamRunId) {
-    return;
-  }
-  await teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
-};
 
 const sendSubteamMessage = async () => {
   const text = subteamDraft.value.trim();

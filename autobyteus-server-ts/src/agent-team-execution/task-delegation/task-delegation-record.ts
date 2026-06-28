@@ -154,6 +154,7 @@ export type TaskDelegationActivationPayload = {
   tasks: Array<{
     taskId: string;
     taskLabel: string;
+    description: string;
     status: TaskDelegationStatus;
     executionKind: TaskExecutionInstance["kind"];
     executionRunId: string | null;
@@ -165,6 +166,7 @@ export type TaskDelegationStatusUpdatePayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
+  description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
   execution: TaskExecutionInstance | null;
@@ -195,6 +197,7 @@ export type TaskDelegationResultSubmittedPayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
+  description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
   execution: TaskExecutionInstance | null;
@@ -210,6 +213,7 @@ export type TaskDelegationResultReviewedPayload = {
   teamRunId: string;
   taskId: string;
   taskLabel: string;
+  description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
   execution: TaskExecutionInstance | null;

@@ -332,9 +332,14 @@ describe("TaskDelegationService", () => {
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["mark", "task", "completed"].join("_"));
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["accept", "task"].join("_"));
 
-    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string }> }>;
+    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string }> }>;
     expect(activated).toHaveLength(2);
-    expect(activated[0]!.tasks[0]).toMatchObject({ executionKind: "task_agent", executionRunId: "worker_00000000000000000000000000000001", status: "active" });
+    expect(activated[0]!.tasks[0]).toMatchObject({
+      executionKind: "task_agent",
+      executionRunId: "worker_00000000000000000000000000000001",
+      status: "active",
+      description: "Draft the implementation note.",
+    });
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")?.taskId).toBe("task_0001");
   });
 
@@ -380,13 +385,14 @@ describe("TaskDelegationService", () => {
     expect(start.message.content).toContain("Your team has been activated as accountable task target team:design_team");
     expect(start.message.content).toContain(`Task-team run ID: ${start.identity.taskTeamRunId}`);
 
-    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ target: { kind: string }; tasks: Array<{ executionKind: string; executionRunId: string }> }>;
+    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ target: { kind: string }; tasks: Array<{ executionKind: string; executionRunId: string; description: string }> }>;
     expect(activated[0]).toMatchObject({
       target: { kind: "team" },
       tasks: [
         expect.objectContaining({
           executionKind: "task_team",
           executionRunId: start.identity.taskTeamRunId,
+          description: "Coordinate the design review.",
         }),
       ],
     });
@@ -487,8 +493,8 @@ describe("TaskDelegationService", () => {
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(2);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
-      expect.objectContaining({ reviewId: "task_0001_review_0001", reviewedSubmissionId: "task_0001_submission_0001", status: "active" }),
-      expect.objectContaining({ reviewId: "task_0001_review_0002", reviewedSubmissionId: "task_0001_submission_0002", status: "accepted" }),
+      expect.objectContaining({ reviewId: "task_0001_review_0001", reviewedSubmissionId: "task_0001_submission_0001", status: "active", description: "Do work." }),
+      expect.objectContaining({ reviewId: "task_0001_review_0002", reviewedSubmissionId: "task_0001_submission_0002", status: "accepted", description: "Do work." }),
     ]);
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")?.taskId).toBe("task_0001");
 

@@ -326,6 +326,7 @@ describe('TeamWorkspaceView', () => {
   it('renders the focused monitor directly', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('[data-test="team-event-monitor"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-active-task-executions-bar"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
   });
 

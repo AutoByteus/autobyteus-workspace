@@ -1,0 +1,102 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+church
+enpal-smart-energy-companion
+german_online_practice
+normy_job_search
+reonic_hackerthon
+temp_workspace
+A
+AudioTranscriber
+(2)
+C
+Codex
+(6)
+DA
+Daily Assistant
+(6)
+MC
+Memory Compactor
+(6)
+PD
+PPT Designer
+(1)
+RE
+research engineer
+(1)
+SS
+Skill Self-Evolver
+(5)
+TEAMS
+NC
+Nested Classroom Test Team
+(5)
+give a hard middle school geometry question to student team, and the team must ask human approval...
+6h
+give a hard middle school gemometry question to the team, teh team must ask huma approve before s...
+6h
+lets go give student team a hard middle school geometry question to solve
+8h
+lets go give student team a hard middle school geometry question to solve
+8h
+give student team a middle school math problem to solve.
+1d
+BS
+Bible Study Group
+(5)
+DT
+Data2Story Team
+(1)
+NO
+Northstar Operating Company
+(3)
+SE
+Software Engineering Team
+(15)
+VT
+Video Tutorial Creation Team
+(7)
+CS
+Classroom Simulation Team
+(16)
+JS
+Job Search Application Team
+(1)
+MT
+Marketing Team
+(2)
+Settings
+
+Select or run an agent/team to begin.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh
+ -s /bin/zsh`.
+For more details, please visit https://support.appl
+e.com/kb/HT208050.
+~ $
