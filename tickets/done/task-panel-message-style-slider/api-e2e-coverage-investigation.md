@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review-passed package for frontend Team tab task split resize and task reference preview cleanup.
 - Prior Investigation Reviewed: N/A

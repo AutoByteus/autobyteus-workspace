@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: Execute API/E2E/executable coverage after code review pass for Team tab task split resize and task reference preview cleanup.
 - Prior Round Reviewed: N/A
@@ -26,7 +26,7 @@ Execution followed the Round 1 coverage investigation. This was a frontend-only 
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -69,7 +69,7 @@ Evidence: static scan for `back_to_task`, `backLabel`, `back-label`, task refere
 
 ## Platform / Runtime Targets
 
-- Host: macOS local worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider`.
+- Host: macOS local worktree at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Shell: `bash`.
 - Package manager/runtime from repository dependencies: `pnpm`, Nuxt/Vitest.
 - Test environment: Nuxt test environment with `happy-dom`; not Electron/native packaging.
@@ -113,8 +113,8 @@ Out of scope / not required:
 
 The isolated task worktree did not have local dependency installs. For execution only, temporary symlinks were created:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/node_modules` -> `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/node_modules` -> `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/node_modules`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules` -> `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/node_modules` -> `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/node_modules`
 
 Then `pnpm exec nuxi prepare` generated Nuxt test artifacts for the run. Temporary symlinks and generated `.nuxt` / `.nuxtrc` were removed during cleanup.
 
@@ -138,11 +138,11 @@ None in this API/E2E round. Reviewed durable coverage already existed from the i
 
 ## Other Execution Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/api-e2e-localization-guard.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/api-e2e-legacy-back-scan.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/api-e2e-nuxi-prepare.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/api-e2e-team-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/api-e2e-git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/api-e2e-localization-guard.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/api-e2e-legacy-back-scan.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/api-e2e-nuxi-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/api-e2e-team-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/api-e2e-git-diff-check.log`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -201,10 +201,10 @@ None.
 
 ## Cleanup Performed
 
-- Removed temporary `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/node_modules` symlink.
-- Removed temporary `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/node_modules` symlink.
-- Removed generated `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/.nuxt`.
-- Removed generated `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/.nuxtrc`.
+- Removed temporary `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules` symlink.
+- Removed temporary `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/node_modules` symlink.
+- Removed generated `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/.nuxt`.
+- Removed generated `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/.nuxtrc`.
 
 ## Classification
 
@@ -223,7 +223,7 @@ Reason: API/E2E/executable validation passed and no repository-resident durable 
 
 ## Evidence / Notes
 
-Primary evidence logs are stored under `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/logs/`.
+Primary evidence logs are stored under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/`.
 
 The full Team component suite passed despite benign repeated test-environment warnings: `Warning: KaTeX doesn't work in quirks mode...`. These warnings existed during the test run but did not fail or affect the in-scope assertions.
 

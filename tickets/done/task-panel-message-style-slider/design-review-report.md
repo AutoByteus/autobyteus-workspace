@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-spec.md`
 - Current Review Round: 1
 - Trigger: Architecture review request from `solution_designer` for Team tab task slider / task reference back-button removal design.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

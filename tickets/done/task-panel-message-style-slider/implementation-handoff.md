@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/design-review-report.md`
 
 ## What Changed
 
@@ -18,13 +18,13 @@
 
 ## Key Files Or Areas
 
-- Added: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/composables/useHorizontalSplitResize.ts`
-- Modified: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue`
-- Modified: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
-- Modified: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue`
-- Modified: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue`
-- Modified tests: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
-- Modified locale catalogs: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/localization/messages/en/workspace.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web/localization/messages/zh-CN/workspace.ts`
+- Added: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/useHorizontalSplitResize.ts`
+- Modified: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue`
+- Modified: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
+- Modified: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue`
+- Modified: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue`
+- Modified tests: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
+- Modified locale catalogs: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/workspace.ts`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/workspace.ts`
 
 ## Important Assumptions
 
@@ -64,11 +64,11 @@
 
 ## Local Implementation Checks Run
 
-- `cd /Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web && node ./scripts/guard-localization-boundary.mjs`
+- `cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web && node ./scripts/guard-localization-boundary.mjs`
   - Result: Passed.
 - `git diff --check`
   - Result: Passed; no whitespace errors reported.
-- `cd /Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/autobyteus-web && pnpm exec nuxi prepare && NUXT_TEST=true pnpm exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
+- `cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web && pnpm exec nuxi prepare && NUXT_TEST=true pnpm exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
   - Result: Passed with temporary dependency symlinks described above.
   - Evidence: 3 test files passed, 17 tests passed.
 - `rg -n "back_to_task|backLabel|back-label|@back=|\\(e: 'back'\\)" autobyteus-web/components/workspace/team autobyteus-web/localization/messages/en/workspace.ts autobyteus-web/localization/messages/zh-CN/workspace.ts || true`

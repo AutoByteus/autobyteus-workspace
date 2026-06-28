@@ -26,10 +26,10 @@ Reference screenshots:
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider/tickets/done/task-panel-message-style-slider`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider`
 - Current Branch: `codex/task-panel-message-style-slider`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin personal --prune` succeeded on 2026-06-28.
 - Task Branch: `codex/task-panel-message-style-slider`
@@ -45,7 +45,7 @@ Reference screenshots:
 | 2026-06-28 | Command | `pwd; git rev-parse --show-toplevel; git status --short --branch; git remote -v; git branch --show-current` in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` | Bootstrap environment discovery | Shared checkout is git repo on branch `personal`, tracking `origin/personal`, with unrelated untracked files. | No |
 | 2026-06-28 | Command | `git remote show origin` | Resolve base branch | Remote HEAD branch is `personal`. | No |
 | 2026-06-28 | Command | `git fetch origin personal --prune` | Refresh tracked remote base before creating worktree | Fetch succeeded. | No |
-| 2026-06-28 | Command | `git worktree add -b codex/task-panel-message-style-slider /Users/normy/autobyteus_org/autobyteus-worktrees/task-panel-message-style-slider origin/personal` | Create dedicated task worktree/branch | Worktree created at commit `0a332ab6`; branch tracks `origin/personal`. | No |
+| 2026-06-28 | Command | `git worktree add -b codex/task-panel-message-style-slider /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task worktree/branch | Worktree created at commit `0a332ab6`; branch tracks `origin/personal`. | No |
 | 2026-06-28 | Data | User-provided screenshots listed in Request Context | Understand reported behavior | Task pane lacks message-like resize affordance; task file preview shows redundant `Back to task`. | No |
 | 2026-06-28 | Command | `rg -n "Back to task|back to task|Tasks|Messages|reference file|referenceFile|Reference" autobyteus-web/components autobyteus-web/composables autobyteus-web/pages autobyteus-web/stores autobyteus-web/__tests__` | Find affected frontend paths | Located Team tab components and task/message reference viewer tests. | No |
 | 2026-06-28 | Code | `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Identify parent owner for Team tab sections | Parent toggles `messages` and `activeTasks`, passes team context to task section and focused-member identity to message panel. | No |
