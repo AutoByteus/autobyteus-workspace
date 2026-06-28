@@ -1,12 +1,7 @@
-# Release Notes: Codex Token Usage Accounting
+# Release Notes
 
-## Fixes
+## Team Tab Tasks
 
-- Fixed Codex Token Meter accounting so multi-update/tool-heavy turns keep every provider token-usage increment instead of losing earlier same-turn updates.
-- Corrected Codex cumulative token snapshots so first observed snapshots do not charge historical thread totals, while later snapshots reconcile input, cache, output, and thinking-token deltas exactly once.
-- Updated runtime token usage validation so provider-emitted model identity is preserved through GraphQL summaries and statistics.
-
-## Improvements
-
-- Renamed the Token Meter context-size label to `Latest prompt` and clarified that gross input/cache-hit values are cumulative run totals.
-- Preserved Claude Agent SDK `usage` versus `modelUsage` divergence diagnostics without changing Claude terminal-result accounting behavior.
+- Added a message-style draggable divider to the Team tab Active Tasks section so the task list/detail split can be resized.
+- Updated task reference previews to behave like message reference previews: clicking a reference opens the file directly in the detail pane, and reselecting the task row returns to the task body without a redundant `Back to task` button.
+- Preserved existing Team Messages resizing and reference-preview behavior while sharing the split-resize implementation.
