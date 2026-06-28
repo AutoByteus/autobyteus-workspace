@@ -4,11 +4,12 @@ import { useFileExplorerStore } from '../fileExplorer';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
 
 const mutateMock = vi.fn();
+const queryMock = vi.fn();
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(() => ({
     mutate: mutateMock,
-    query: vi.fn(),
+    query: queryMock,
   })),
 }));
 
@@ -131,5 +132,60 @@ describe('fileExplorerStore', () => {
     expect(workspaceState.openFiles.map((file) => file.path)).toEqual(['outside.md']);
     expect(workspaceState.activeFile).toBe('outside.md');
     expect(workspaceState.tree.children.map((child) => child.path)).toEqual(['outside.md']);
+  });
+
+  it('loads folder children into the tree when the backend returns a valid folder payload', async () => {
+    const store = useFileExplorerStore();
+    const workspaceId = 'ws-folder-load';
+
+    queryMock.mockResolvedValue({
+      data: {
+        folderChildren: JSON.stringify({
+          id: 'root',
+          name: 'Workspace',
+          path: '',
+          is_file: false,
+          children: [
+            { id: 'file-1', name: 'README.md', path: 'README.md', is_file: true, children: [] },
+          ],
+        }),
+      },
+      errors: [],
+    });
+
+    await store.fetchFolderChildren(workspaceId, '');
+
+    const workspaceState = store._getWorkspaceState(workspaceId)!;
+    expect(workspaceState.tree.name).toBe('Workspace');
+    expect(workspaceState.tree.children.map((child) => child.path)).toEqual(['README.md']);
+    expect(workspaceState.nodeIdToNode['file-1']).toBeDefined();
+  });
+
+  it('throws folder-children GraphQL errors instead of converting them to an empty tree', async () => {
+    const store = useFileExplorerStore();
+
+    queryMock.mockResolvedValue({
+      data: {},
+      errors: [{ message: 'Workspace root is unavailable' }],
+    });
+
+    await expect(store.fetchFolderChildren('ws-graphql-error', '')).rejects.toThrow(
+      'Workspace root is unavailable',
+    );
+  });
+
+  it('throws folder-children payload errors instead of converting them to an empty tree', async () => {
+    const store = useFileExplorerStore();
+
+    queryMock.mockResolvedValue({
+      data: {
+        folderChildren: JSON.stringify({ error: 'Workspace not found' }),
+      },
+      errors: [],
+    });
+
+    await expect(store.fetchFolderChildren('ws-payload-error', '')).rejects.toThrow(
+      'Workspace not found',
+    );
   });
 });

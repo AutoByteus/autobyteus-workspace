@@ -67,6 +67,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
   const explorer = useWorkspaceFileExplorer(activeWorkspaceId);
   let resolutionSequence = 0;
   let releaseLiveSession: (() => void) | null = null;
+  let rootLoadAbortController: AbortController | null = null;
 
   const context = computed(() => unref(contextRef));
   const requestedRootPath = computed(() => contextWorkspaceRoot(context.value));
@@ -128,6 +129,11 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
     releaseLiveSession = null;
   };
 
+  const abortCurrentRootLoad = () => {
+    rootLoadAbortController?.abort();
+    rootLoadAbortController = null;
+  };
+
   const resolveContextWorkspaceMetadata = async (): Promise<WorkspaceMetadata | null> => {
     const current = context.value;
     const rootPath = requestedRootPath.value;
@@ -156,10 +162,14 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
     const root = requestedRootPath.value;
     const directId = requestedWorkspaceId.value;
     const key = `${current?.kind || 'none'}:${directId || ''}:${root}`;
+    if (resolvingKey.value === key) return;
+
     const sequence = ++resolutionSequence;
+    abortCurrentRootLoad();
     releaseCurrentLiveSession();
     activeWorkspaceId.value = '';
     activeWorkspaceMetadata.value = null;
+    resolvingKey.value = null;
     workspaceResolutionError.value = null;
     folderLoadingByPath.value = {};
     folderErrorByPath.value = {};
@@ -178,7 +188,6 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
     try {
       const metadata = await resolveContextWorkspaceMetadata();
       if (sequence !== resolutionSequence) return;
-      activeWorkspaceMetadata.value = metadata;
       if (!metadata) {
         workspaceResolutionError.value = `Workspace at ${root} could not be resolved.`;
         return;
@@ -186,24 +195,31 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
 
       const registered = await workspaceStore.ensureWorkspaceMetadata(metadata);
       if (sequence !== resolutionSequence) return;
-      activeWorkspaceId.value = registered.workspaceId;
-      activeWorkspaceMetadata.value = workspaceStore.registerWorkspaceInfoMetadata(registered) || metadata;
+      const registeredMetadata = workspaceStore.registerWorkspaceInfoMetadata(registered) || metadata;
       const existingState = fileExplorerStore._getWorkspaceState(registered.workspaceId);
       const hasSeededTree = Boolean(
         existingState?.tree
           && (existingState.tree.children.length > 0 || existingState.tree.name !== registered.workspaceId),
       );
       if (!hasSeededTree) {
-        await fileExplorerStore.fetchFolderChildren(registered.workspaceId, '');
+        rootLoadAbortController = new AbortController();
+        await fileExplorerStore.fetchFolderChildren(registered.workspaceId, '', {
+          signal: rootLoadAbortController.signal,
+        });
       }
+      if (sequence !== resolutionSequence) return;
+      activeWorkspaceMetadata.value = registeredMetadata;
+      activeWorkspaceId.value = registered.workspaceId;
     } catch (error) {
       if (sequence === resolutionSequence) {
         activeWorkspaceId.value = '';
+        activeWorkspaceMetadata.value = null;
         workspaceResolutionError.value = formatError(error);
       }
     } finally {
       if (sequence === resolutionSequence && resolvingKey.value === key) {
         resolvingKey.value = null;
+        rootLoadAbortController = null;
       }
     }
   }
@@ -305,6 +321,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
   onBeforeUnmount(() => {
     ++resolutionSequence;
     resolvingKey.value = null;
+    abortCurrentRootLoad();
     releaseCurrentLiveSession();
   });
 

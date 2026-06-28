@@ -3,7 +3,7 @@
     <header class="shrink-0 border-b border-slate-200 bg-white px-5 py-4">
       <h2 class="text-xl font-bold text-slate-950">{{ workspaceTitle }}</h2>
       <p class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
-      <div class="mt-3 flex items-center gap-2" data-testid="mobile-files-primary-controls">
+      <div v-if="activeWorkspace" class="mt-3 flex items-center gap-2" data-testid="mobile-files-primary-controls">
         <input
           v-model="search"
           class="min-w-0 flex-1 rounded-2xl border border-slate-300 px-4 py-3 text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
@@ -19,7 +19,7 @@
           Filters
         </button>
       </div>
-      <div v-if="showFilters" class="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-3" data-testid="mobile-files-advanced-filters">
+      <div v-if="activeWorkspace && showFilters" class="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-3" data-testid="mobile-files-advanced-filters">
         <button
           v-for="filter in discoveryFilters"
           :key="filter.id"
@@ -41,15 +41,18 @@
           {{ deepSearch ? 'Workspace search on' : 'Search full workspace' }}
         </button>
       </div>
-      <p v-if="attachNotice" class="mt-3 rounded-2xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800" data-testid="mobile-files-attach-notice">
+      <p v-if="activeWorkspace && attachNotice" class="mt-3 rounded-2xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800" data-testid="mobile-files-attach-notice">
         {{ attachNotice }}
       </p>
     </header>
 
     <div class="min-h-0 flex-1 overflow-y-auto p-5">
-      <div v-if="!activeWorkspace" class="rounded-3xl border border-dashed border-slate-300 p-6 text-center" data-testid="mobile-files-no-workspace">
-        <p class="font-semibold text-slate-900">{{ unavailableTitle }}</p>
-        <p class="mt-2 text-sm text-slate-500">{{ unavailableDetail }}</p>
+      <div v-if="!activeWorkspace" class="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-sm" data-testid="mobile-files-no-workspace">
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-2xl" aria-hidden="true">
+          {{ unavailableIcon }}
+        </div>
+        <p class="mt-4 font-semibold text-slate-900">{{ unavailableTitle }}</p>
+        <p class="mt-2 break-words text-sm text-slate-500">{{ unavailableDetail }}</p>
         <div class="mt-4 flex flex-wrap justify-center gap-2">
           <button
             v-if="canChooseWorkspace"
@@ -118,7 +121,7 @@
             </span>
           </button>
         </div>
-        <div v-else class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500" data-testid="mobile-files-empty">
+        <div v-else class="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 shadow-sm" data-testid="mobile-files-empty">
           {{ emptyMessage }}
         </div>
       </template>
@@ -245,6 +248,7 @@ const unavailableTitle = computed(() => {
   if (mobileExplorer.resolutionStatus.value === 'no-workspace-context') return 'Choose a workspace';
   return 'Choose a workspace';
 });
+const unavailableIcon = computed(() => mobileExplorer.resolutionStatus.value === 'resolving' ? '⏳' : '📁');
 const unavailableDetail = computed(() => {
   if (mobileExplorer.resolutionStatus.value === 'resolving') {
     return 'Resolving the selected context workspace before showing files.';
@@ -259,7 +263,11 @@ const unavailableDetail = computed(() => {
 });
 const canChooseWorkspace = computed(() => mobileExplorer.resolutionStatus.value !== 'resolving');
 const canRetryWorkspaceResolution = computed(() => mobileExplorer.resolutionStatus.value === 'unresolved');
-const emptyMessage = computed(() => workspaceSearchMode.value ? 'No files matched the workspace search.' : 'No files match this view.');
+const emptyMessage = computed(() => {
+  if (workspaceSearchMode.value) return 'No files matched the workspace search.';
+  if (search.value.trim() || activeDiscoveryFilter.value !== 'all') return 'No files match this view.';
+  return 'This folder is empty.';
+});
 const previewFileState = computed(() => previewNode.value ? mobileExplorer.getOpenFileState(previewNode.value.path) : null);
 const previewOpenError = computed(() => previewNode.value ? mobileExplorer.getFileOpenError(previewNode.value.path) : null);
 const isSearchLoading = mobileExplorer.isSearchLoading;
