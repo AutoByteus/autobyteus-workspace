@@ -16,7 +16,6 @@ vi.mock('~/utils/fileExplorer/fileUtils', () => ({
 }));
 
 const labels: Record<string, string> = {
-  'workspace.components.workspace.team.TeamActiveTasksSection.back_to_task': 'Back to task',
   'workspace.components.workspace.team.TeamCommunicationPanel.loading_reference': 'Loading reference file...',
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable': 'Reference file unavailable',
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': 'The file may have been deleted, moved, or become unreadable.',
@@ -63,7 +62,7 @@ describe('TeamTaskReferenceViewer.vue', () => {
     document.body.innerHTML = '';
   });
 
-  it('fetches task reference bytes from the task-owned content route and emits Back', async () => {
+  it('fetches task reference bytes from the task-owned content route without rendering task back navigation', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({
       status: 200,
       ok: true,
@@ -78,8 +77,6 @@ describe('TeamTaskReferenceViewer.vue', () => {
       expect.objectContaining({ cache: 'no-store' }),
     );
     expect(wrapper.get('[data-test="content"]').text()).toBe('# Design');
-
-    await wrapper.get('[data-test="team-reference-viewer-back"]').trigger('click');
-    expect(wrapper.emitted('back')).toHaveLength(1);
+    expect(wrapper.find('[data-test="team-reference-viewer-back"]').exists()).toBe(false);
   });
 });

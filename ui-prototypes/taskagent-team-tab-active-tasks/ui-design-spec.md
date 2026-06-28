@@ -66,6 +66,7 @@ Active Tasks                                  2 tasks     v
 Rules:
 - The section, not each row, owns selection and right-pane mode.
 - Only the selected task shows nested reference rows in the left navigator.
+- The task navigator width is user-adjustable through a vertical divider that follows the same drag/clamp pattern as Messages.
 - The right task detail does not duplicate reference rows by default.
 - Clicking a nested reference row switches the entire right pane to reference preview.
 
@@ -132,7 +133,7 @@ Rules:
 When the user clicks a task reference filename in the left navigator:
 
 ```text
-[← Back to task]  design-spec.md                         [Open]
+design-spec.md                                           [Open]
 
 # Design Spec
 ...
@@ -141,7 +142,7 @@ When the user clicks a task reference filename in the left navigator:
 Rules:
 - The whole right pane switches to file preview, matching Messages.
 - The selected reference row remains highlighted on the left.
-- A clear Back to task action returns to the selected task body.
+- Do not render a task-specific `Back to task` button/control; selecting the task row again clears the reference selection and returns to the selected task body.
 - Loading, unavailable, unsupported, and permission/error states are handled inside the preview pane.
 - The preview uses shared FileViewer-style behavior where possible.
 
@@ -189,7 +190,7 @@ Task fetch/projection missing refs:
 
 Reference preview error:
 - keep selected file highlighted on the left.
-- show a concise error and Back to task.
+- show a concise error; selecting the task row returns to task detail.
 
 ## 12) Implementation Guardrails
 
@@ -197,6 +198,7 @@ Must do:
 - preserve exact user-visible Messages behavior,
 - use task-owned data for task references,
 - use shared reference presentation/viewer primitives only where Messages visible output remains identical,
+- keep task and message split-pane resizing on shared drag/clamp behavior,
 - keep task and message route identities explicit,
 - run Electron-backed UI and visually inspect the final result.
 
@@ -216,10 +218,12 @@ Must not do:
 - Team tab default: Messages open with left Activity-style chevron and unchanged content/reference UI; Active Tasks collapsed.
 - Active Tasks header count reads naturally: `2 tasks`, not `2 Active`.
 - Chevrons visually match Activity placement.
+- Active Tasks split exposes a draggable vertical divider and clamps the task navigator to usable widths like Messages.
 - Selecting a task highlights it and shows only its reference rows nested below it on the left.
 - Individual-target right detail is clean: compact target/status/Focus header, task body, collapsed Technical details, no task-kind badge.
 - Group/team-target right detail is clean: compact target/status/Focus header, task body, visible member Focus rows, collapsed Technical details, no task-kind badge.
 - Clicking a left reference row switches the whole right pane to file preview.
 - Task reference preview visually matches the Messages reference experience without changing Messages itself.
+- Task reference preview has no task-specific `Back to task` button; reselecting the task row returns to task detail.
 - Waiting/blocked status is calm and status-only.
 - No approval buttons appear in Active Tasks.

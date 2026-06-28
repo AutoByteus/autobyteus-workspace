@@ -24,7 +24,6 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable': 'Task description unavailable',
   'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
-  'workspace.components.workspace.team.TeamActiveTasksSection.back_to_task': 'Back to task',
   'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
   'workspace.components.workspace.team.TeamActiveTasksSection.select_task': 'Select a task to read it.',
   'workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',

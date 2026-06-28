@@ -3,8 +3,6 @@
     :reference="reference"
     :content-url="contentUrl"
     :refresh-signal="refreshSignal"
-    :back-label="$t('workspace.components.workspace.team.TeamActiveTasksSection.back_to_task')"
-    @back="$emit('back')"
   />
 </template>
 
@@ -19,10 +17,6 @@ const props = defineProps<{
   taskId: string;
   reference: TeamReferenceFile;
   refreshSignal?: number;
-}>();
-
-defineEmits<{
-  (e: 'back'): void;
 }>();
 
 const windowNodeContextStore = useWindowNodeContextStore();

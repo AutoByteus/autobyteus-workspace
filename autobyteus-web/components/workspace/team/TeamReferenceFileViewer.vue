@@ -7,15 +7,6 @@
     >
       <div class="flex min-h-[45px] flex-shrink-0 items-center justify-between border-b border-gray-100 bg-white px-3 py-2">
         <div class="flex min-w-0 items-center gap-2">
-          <button
-            v-if="backLabel"
-            type="button"
-            data-test="team-reference-viewer-back"
-            class="shrink-0 rounded-md px-2 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-            @click="$emit('back')"
-          >
-            {{ backLabel }}
-          </button>
           <div class="min-w-0">
             <div class="truncate text-xs font-semibold text-gray-800">{{ fileName }}</div>
             <div class="truncate text-[0.6875rem] text-gray-500">{{ reference.path }}</div>
@@ -97,11 +88,6 @@ const props = defineProps<{
   contentUrl: string;
   refreshSignal?: number;
   disableRichTextPreview?: boolean;
-  backLabel?: string | null;
-}>();
-
-defineEmits<{
-  (e: 'back'): void;
 }>();
 
 const fileType = ref<FileDataType>('Text');

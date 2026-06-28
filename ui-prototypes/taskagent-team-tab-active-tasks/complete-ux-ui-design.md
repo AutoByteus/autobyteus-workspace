@@ -85,6 +85,7 @@ Rules:
 2. System opens Active Tasks and collapses Messages.
 3. System shows a split master/detail layout.
 4. System selects the first active task by default if no task is selected.
+5. System exposes a draggable vertical divider between the task navigator and selected-content pane.
 
 Visible shape:
 
@@ -98,7 +99,8 @@ v Active Tasks                                  2 tasks
 
 Rules:
 
-- Left pane is task/reference navigation.
+- Left pane is task/reference navigation and has a user-adjustable width.
+- The divider between the left navigator and right content pane uses the same drag/clamp interaction pattern as Messages.
 - Right pane is selected content: task body by default, reference file preview after a reference click.
 - The layout should visually rhyme with Messages without modifying Messages content/reference behavior.
 
@@ -213,12 +215,12 @@ Rules:
 1. User clicks a file row under the selected task in the left navigator.
 2. System highlights the selected file row.
 3. The whole right pane switches from task detail to reference preview, just like Messages.
-4. User can read the file, switch raw/preview mode where supported, maximize, or return to the task body.
+4. User can read the file, switch raw/preview mode where supported, maximize, or return to the task body by selecting the task row again.
 
 Visible shape:
 
 ```text
-requirements.md                         [Back to task] [Open/maximize]
+requirements.md                                      [Open/maximize]
 /Users/.../requirements.md
 ──────────────────────────────────────────────────────
 # Requirements
@@ -228,7 +230,7 @@ requirements.md                         [Back to task] [Open/maximize]
 Rules:
 
 - Use the same `FileViewer`-style behavior and polish as Messages references.
-- Back action returns to the selected task body.
+- Do not render a task-specific `Back to task` button/control; selecting the task row again returns to the selected task body.
 - Reference preview is read-only.
 - Missing/unreadable reference shows a clear unavailable/error state and keeps the user in context.
 
@@ -340,7 +342,7 @@ This task reference cannot be read from the current environment.
 | `T-004` | Select task item | Active Tasks split | Task detail | Left task selection moves; right pane shows compact header, task body, member rows if TaskTeam. |
 | `T-005` | Select TaskTeam item | Task detail | TaskTeam detail | Shows compact TaskTeam header, task body, member focus rows. |
 | `T-006` | Click left-navigator reference row | Task detail | Reference preview | File row selected; whole right pane shows loading then content/error. |
-| `T-007` | Click Back to task | Reference preview | Task detail | Right pane returns to selected task body. |
+| `T-007` | Click selected task row | Reference preview | Task detail | Right pane returns to selected task body. |
 | `T-008` | Click Focus target/member | Task detail | Same task detail | Workspace focus updates; selected task remains visible. |
 | `T-009` | Toggle Technical details | Task detail | Same task detail | Secondary IDs/provenance open/close below primary content. |
 | `T-010` | Task waits for approval/action | Any task detail | Same task detail | Calm status/notice appears; no approval controls in Active Tasks. |
@@ -350,6 +352,7 @@ This task reference cannot be read from the current environment.
 - Messages opens by default with Activity-style left chevron; Messages content/reference behavior remains unchanged.
 - Messages and Active Tasks headers use leading Activity-style chevrons and right-side counts.
 - Active Tasks opens as Messages-like split view.
+- Active Tasks split has a draggable vertical divider whose width behavior matches Messages.
 - Task item click selects for reading only.
 - Right task detail uses label-light content: no required visible `Task brief` or `Reference files` headings.
 - Task kind is not shown as a visible badge/label in primary UI.
@@ -359,7 +362,7 @@ This task reference cannot be read from the current environment.
 - Visible Focus button text is generic `Focus`.
 - Reference rows appear under the selected task in the left navigator, like Messages.
 - Right task detail does not duplicate reference rows by default.
-- Clicking a left-navigator reference row switches the whole right pane to read-only file preview with Back/maximize behavior.
+- Clicking a left-navigator reference row switches the whole right pane to read-only file preview with no task-specific Back button; clicking the task row returns to task detail.
 - TaskTeam detail includes member focus rows.
 - Active Tasks never renders Approve/Deny controls.
 - Technical details is collapsed, secondary, and never the reference-file access point.

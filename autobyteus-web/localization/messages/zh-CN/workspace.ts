@@ -114,8 +114,6 @@ const messages = {
     "聚焦团队",
   "workspace.components.workspace.team.TeamActiveTasksSection.focus":
     "聚焦",
-  "workspace.components.workspace.team.TeamActiveTasksSection.back_to_task":
-    "返回任务",
   "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
     "技术详情",
   "workspace.components.workspace.team.TeamActiveTasksSection.select_task":

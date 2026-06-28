@@ -115,8 +115,6 @@ const messages = {
     "Focus team",
   "workspace.components.workspace.team.TeamActiveTasksSection.focus":
     "Focus",
-  "workspace.components.workspace.team.TeamActiveTasksSection.back_to_task":
-    "Back to task",
   "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
     "Technical details",
   "workspace.components.workspace.team.TeamActiveTasksSection.select_task":
