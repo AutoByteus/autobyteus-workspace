@@ -104,10 +104,10 @@ Finalization and release completed for `task-panel-message-style-slider`. The ve
 Latest observed workflow status from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/gh-run-list-v1.3.85-final-observed.json`:
 
 - Server Docker Release — run `28332288719` — `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288719
-- Release Messaging Gateway — run `28332288711` — `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288711
+- Release Messaging Gateway — run `28332288711` — `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288711
 - iOS App Store Connect Release — run `28332288710` — `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288710
 - Desktop Release — run `28332288686` — `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288686
-- Android APK Release — run `28332288684` — `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288684
+- Android APK Release — run `28332288684` — `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28332288684
 
 ## Post-Finalization Cleanup
 
@@ -170,4 +170,4 @@ Rollback or create a follow-up fix if post-finalization/release verification sho
 
 ## Final Status
 
-Completed. The verified Team tab Active Tasks UI improvement is merged to `personal`, released as `v1.3.85`, tag-triggered workflows have been initiated, and the dedicated ticket worktree plus local/remote ticket branches were cleaned up. Latest observed release workflows were still in progress when this report was updated.
+Completed. The verified Team tab Active Tasks UI improvement is merged to `personal`, released as `v1.3.85`, tag-triggered workflows have been initiated, and the dedicated ticket worktree plus local/remote ticket branches were cleaned up. Latest observed release workflows: Android APK and Messaging Gateway completed successfully; Desktop, iOS, and Server Docker were still in progress when this report was updated.

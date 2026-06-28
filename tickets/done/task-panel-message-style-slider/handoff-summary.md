@@ -55,7 +55,7 @@ Evidence from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ticket
 
 Latest observed GitHub Actions status for tag `v1.3.85` is recorded at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-panel-message-style-slider/logs/gh-run-list-v1.3.85-final-observed.json`.
 
-At observation time, these tag-triggered workflows had started and were still `in_progress`:
+At final observation time, these tag-triggered workflows had started; Android APK and Messaging Gateway had completed successfully while Desktop, iOS, and Server Docker were still `in_progress`:
 
 - Server Docker Release — run `28332288719`
 - Release Messaging Gateway — run `28332288711`
