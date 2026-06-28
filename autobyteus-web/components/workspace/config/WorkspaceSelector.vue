@@ -86,7 +86,7 @@
     </div>
     
     <!-- Helper Text Area -->
-    <div class="mt-2.5 min-h-[1.5em]">
+    <div v-if="showHelperTextArea" class="mt-2.5">
       <p v-if="workspaceLocked && !error" class="text-sm text-amber-600 flex items-center">
         <span class="i-heroicons-lock-closed-20-solid h-5 w-5 mr-2 flex-shrink-0"></span>
         {{ workspaceLockedMessageToUse }}
@@ -96,27 +96,16 @@
         <span class="i-heroicons-exclamation-circle-20-solid h-5 w-5 mr-2 flex-shrink-0"></span>
         {{ error }}
       </p>
-
-      <p v-else-if="showPendingNewPathMessage" class="text-sm text-gray-600 flex items-center">
-        <span class="i-heroicons-information-circle-20-solid h-5 w-5 mr-2 flex-shrink-0"></span>
-        Path will be loaded when you run: {{ trimmedPendingPath }}
-      </p>
       
       <p v-else-if="showSuccessMessage" class="text-sm text-green-600 flex items-center font-medium">
         <span class="i-heroicons-check-circle-20-solid h-5 w-5 mr-2 flex-shrink-0 text-green-500"></span>
         {{ successMessage }}
       </p>
       
-      <p v-else class="text-sm text-gray-500 flex items-center">
-        <template v-if="mode === 'existing'">
-          <span v-if="existingDisabled" class="text-amber-600 flex items-center">
-            <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
-          <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
-        </template>
-        <template v-else>
-          {{ canBrowseForFolder ? 'Browse for a folder or enter path manually.' : 'Enter a path, then click Run to load the workspace.' }}
-          <span class="i-heroicons-information-circle-20-solid h-4 w-4 ml-1.5 text-gray-400 cursor-help" title="Path must be an absolute file system path"></span>
-        </template>
+      <p v-else-if="mode === 'existing'" class="text-sm text-gray-500 flex items-center">
+        <span v-if="existingDisabled" class="text-amber-600 flex items-center">
+          <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
+        <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
       </p>
     </div>
   </div>
@@ -200,14 +189,15 @@ const selectedWorkspace = computed(() => {
   return workspaceStore.workspaces[props.workspaceId] || null;
 });
 const trimmedPendingPath = computed(() => tempPath.value.trim());
-const showPendingNewPathMessage = computed(() =>
-  !isInteractionDisabled.value &&
-  mode.value === 'new' &&
-  Boolean(trimmedPendingPath.value),
-);
 const showSuccessMessage = computed(() =>
   Boolean(successMessage.value) &&
   (mode.value === 'existing' || isInteractionDisabled.value),
+);
+const showHelperTextArea = computed(() =>
+  workspaceLocked.value ||
+  Boolean(props.error) ||
+  showSuccessMessage.value ||
+  mode.value === 'existing',
 );
 const emitWorkspaceInput = () => {
   emit('workspace-input-change', {
