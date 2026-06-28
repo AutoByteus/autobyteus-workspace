@@ -5,8 +5,8 @@
 - Ticket: `workspace-run-visibility-analysis`
 - Trigger: API/E2E pass for workspace run visibility and New-workspace Run-load behavior.
 - Bootstrap base reference: `origin/personal` @ `aef6e851` (`docs(ticket): record transient task UI release completion`).
-- Integrated base reference used for docs sync: `origin/personal` @ `aef6e851` after `git fetch origin personal` on 2026-06-28; ticket branch ahead/behind vs `origin/personal` was `0/0`, so no base commits were integrated.
-- Post-integration verification reference: No post-merge rerun required because no base commits were integrated and reviewed/API-E2E-passed implementation state remained on the latest tracked base. Delivery docs edits were checked with `git diff --check` -> pass.
+- Integrated base reference used for docs sync: latest `origin/personal` @ `c30f5061` (`docs(ticket): record mobile files finalization`) after a second delivery refresh on 2026-06-28. The initially current base (`aef6e851`) advanced while delivery docs were being written, so I created local checkpoint `c1e8b3b4` and merged `origin/personal` into the ticket branch, producing integrated handoff state `fa692a02`.
+- Post-integration verification reference: `git diff --check` -> pass; initial focused web Vitest attempt exposed missing generated Nuxt types after temporary cleanup; `pnpm -C autobyteus-web exec nuxi prepare` regenerated `.nuxt`, and focused web Vitest rerun passed (`7` files / `149` tests). Evidence is under `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-run-visibility-analysis/tickets/done/workspace-run-visibility-analysis/delivery-evidence/`.
 
 ## Why Docs Were Updated
 
@@ -60,7 +60,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed on the latest tracked `origin/personal` state. No requirement gap, design impact, or local implementation blocker was found during docs sync.
+- Notes: Docs sync completed and was rechecked after merging the latest tracked `origin/personal` state (`c30f5061`) into the ticket branch. No requirement gap, design impact, or local implementation blocker was found during docs sync.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
