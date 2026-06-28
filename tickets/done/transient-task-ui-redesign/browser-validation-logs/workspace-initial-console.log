@@ -1,0 +1,10 @@
+[debug] [vite] connecting...
+[debug] [vite] connected.
+[log] serverStore: Initializing server config
+[log] serverStore: Not in Electron environment. Skipping server initialization.
+[info] <Suspense> is an experimental feature and its API will likely change.
+[log] ServerLoading: Component mounted with status: running
+[log] Workspace.vue: Mounted. Fetching server settings and loading profiles...
+[log] [useTerminalSession] Connecting to: ws://127.0.0.1:29695/ws/terminal/31530fef-a614-4262-b18f-88b970c631ba
+[log] [useTerminalSession] Connected
+[log] serverStore: Checking server health at /rest/health

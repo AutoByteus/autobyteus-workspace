@@ -1,0 +1,86 @@
+COMMAND: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (0 test)
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts (0 test)
+ ✓ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (10 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts ]
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts [ tests/unit/agent-team-execution/task-delegation-service.test.ts ]
+Error: Cannot find package 'axios' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/autobyteus-ts/src/clients/autobyteus-client.ts'
+ ❯ ../autobyteus-ts/src/clients/autobyteus-client.ts:7:1
+      5| import { Readable } from 'node:stream';
+      6| import { fileURLToPath, URL } from 'node:url';
+      7| import axios, { AxiosError, AxiosInstance } from 'axios';
+       | ^
+      8| import { getMimeType, isBase64, mediaSourceToDataUri } from '../llm/ut…
+      9| import {
+ ❯ ../autobyteus-ts/src/clients/index.ts:1:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  10 passed (10)
+   Start at  18:07:15
+   Duration  969ms (transform 271ms, setup 30ms, import 21ms, tests 5ms, environment 0ms)
+
+EXIT_CODE: 1

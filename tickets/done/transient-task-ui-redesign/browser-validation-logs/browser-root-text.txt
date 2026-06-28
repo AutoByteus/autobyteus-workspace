@@ -1,0 +1,734 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+church
+enpal-smart-energy-companion
+german_online_practice
+normy_job_search
+reonic_hackerthon
+temp_workspace
+Settings
+Reload
+Create Agent
+Featured agents
+DA
+Daily Assistant
+
+General Agent
+
+Tools 19
+run_bash
+read_url
+search_web
++16
+Skills 1
+shell-first-operating-practice
+Run
+View Details
+→
+CO
+Codex
+
+Codex
+
+Tools 24
+close_tab
+dom_snapshot
+list_tabs
++21
+Skills 1
+software-engineering-workflow-skill
+Run
+View Details
+→
+Individual agents
+49 agents
+AU
+AudioGenerator
+
+An AI agent that converts text scripts into high-quality spoken audio.
+
+Tools 1
+GenerateSpeech
+Skills 0
+None
+Run
+View Details
+→
+AU
+AudioTranscriber
+
+Transcribes audio recordings into one timestamped Markdown transcript file.
+
+Tools 3
+run_bash
+write_file
+read_media_file
+Skills 1
+audio-transcriber
+Run
+View Details
+→
+CS
+Chapter Slide Planner
+
+Plans chapter-level teaching slides as a structured raw JSON package.
+
+Tools 2
+write_file
+assign_task_to
+Skills 0
+None
+Run
+View Details
+→
+CC
+Chemistry Concept Visualizer
+
+Chemistry Concept Visualizer
+
+Tools 1
+FileWriter
+Skills 0
+None
+Run
+View Details
+→
+CH
+Chemistry homework grader
+
+Chemistry homework grader
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+CT
+Chemistry Teacher Germany
+
+Chemistry Teacher Germany
+
+Tools 4
+FileWriter
+read_pdf_pages
+pdf_metadata
++1
+Skills 0
+None
+Run
+View Details
+→
+CS
+Cinematic Storybook Director
+
+Cinematic Storybook Director
+
+Tools 1
+write_file
+Skills 0
+None
+Run
+View Details
+→
+CO
+Clara’s Ocean Friends Story Creator
+
+Clara’s Ocean Friends Story Creator
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+CA
+coding agent
+
+coding agent
+
+Tools 4
+patch_file
+read_file
+write_file
++1
+Skills 0
+None
+Run
+View Details
+→
+DM
+database manager
+
+dsb
+
+Tools 10
+read_query
+write_query
+create_table
++7
+Skills 0
+None
+Run
+View Details
+→
+DW
+Dictionary Word Audio
+
+Generates dictionary-style audio clips for individual words by creating one clear paused speech recording and cutting it into per-word files.
+
+Tools 5
+generate_speech
+get_media_duration
+run_bash
++2
+Skills 1
+dictionary-word-audio
+Run
+View Details
+→
+GR
+Gemini RPA PPT designer
+
+PPT Designer
+
+Tools 2
+generate_image
+edit_image
+Skills 0
+None
+Run
+View Details
+→
+ID
+Image Designer
+
+Image Designer
+
+Tools 2
+edit_image
+generate_image
+Skills 0
+None
+Run
+View Details
+→
+IC
+Infographics Creator
+
+Infographics Creator
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+KI
+Kid_Story_Teller
+
+Kid_Story_Teller
+
+Tools 3
+write_file
+generate_image
+generate_speech
+Skills 0
+None
+Run
+View Details
+→
+MT
+MCP Tool Manager
+
+An agent designed to manage Model Context Protocol (MCP) server configurations and discover their tools.
+
+Tools 6
+ApplyMcpServerConfigurations
+DeleteMcpServerConfiguration
+DiscoverMcpServerTools
++3
+Skills 0
+None
+Run
+View Details
+→
+ME
+Media Editor
+
+Media Editor
+
+Tools 35
+edit_image
+generate_image
+generate_speech
++32
+Skills 0
+None
+Run
+View Details
+→
+MC
+Memory Compactor
+
+Summarizes earlier work so the same agent can continue later.
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+NI
+niuzhirui_production_db_manager
+
+niuzhirui_production_db_manager
+
+Tools 10
+read_query
+write_query
+create_table
++7
+Skills 0
+None
+Run
+View Details
+→
+PR
+Paper Research Assistant
+
+Searches for research papers, retrieves supplied papers, reads paper details, and answers grounded user questions from the paper content.
+
+Tools 16
+edit_file
+read_file
+write_file
++13
+Skills 1
+paper-research-assistant
+Run
+View Details
+→
+PP
+Pitch Practice Investor
+
+Simulates a startup investor for spoken pitch practice after studying user-provided startup materials.
+
+Tools 1
+speak
+Skills 0
+None
+Run
+View Details
+→
+PC
+PPT Creator
+
+PPT Creator
+
+Tools 4
+generate_image
+create_ppt_from_images
+replace_slide_with_image
++1
+Skills 0
+None
+Run
+View Details
+→
+PD
+PPT Designer
+
+Designs narrative-first slide decks using the bundled ppt-designer skill.
+
+Tools 2
+generate_image
+edit_image
+Skills 1
+ppt-designer
+Run
+View Details
+→
+PD
+Presentation Designer
+
+Presentation Designer
+
+Tools 5
+generate_image
+create_ppt_from_images
+run_bash
++2
+Skills 1
+presentation-designer
+Run
+View Details
+→
+PR
+Professor
+
+Professor
+
+Tools 6
+send_message_to
+edit_file
+insert_in_file
++3
+Skills 0
+None
+Run
+View Details
+→
+PM
+project manager
+
+demo project manager
+
+Tools 2
+CreateTask
+CreateTasks
+Skills 0
+None
+Run
+View Details
+→
+PG
+prompt generator
+
+prompt generator
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+PM
+prompt manager
+
+prompt manager
+
+Tools 8
+activate_prompt
+create_prompt
+delete_prompt
++5
+Skills 0
+None
+Run
+View Details
+→
+PU
+Publisher
+
+Publisher on wechat, xiaohongshu, tiktok and youtube short
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+RE
+ReflectionCards
+
+ReflectionCards
+
+Tools 3
+write_file
+generate_image
+generate_speech
+Skills 0
+None
+Run
+View Details
+→
+RS
+Reflective Storyteller
+
+Reflective Storyteller
+
+Tools 3
+write_file
+generate_image
+generate_speech
+Skills 0
+None
+Run
+View Details
+→
+RE
+requirement
+
+nks
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+RE
+requirement engineer
+
+requirement engineer
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+RE
+research engineer
+
+Standalone research engineer that owns investigation, source discovery, continuous notes, implementation when needed, validation, analysis, and next-loop decisions.
+
+Tools 17
+edit_file
+read_file
+write_file
++14
+Skills 1
+research-engineer
+Run
+View Details
+→
+RD
+Resume Designer
+
+Creates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs.
+
+Tools 16
+edit_file
+read_file
+write_file
++13
+Skills 1
+resume-designer
+Run
+View Details
+→
+SS
+Skill Self-Evolver
+
+Retrospectively improves configured durable skill packages from target-worker work evidence.
+
+Tools 2
+run_bash
+send_message_to
+Skills 1
+retrospective-skill-coach
+Run
+View Details
+→
+SL
+SlideImageGenerator
+
+SlideImageGenerator
+
+Tools 3
+send_message_to
+read_file
+write_file
+Skills 0
+None
+Run
+View Details
+→
+SL
+SlideNarrator
+
+SlideNarrator
+
+Tools 3
+read_file
+write_file
+assign_task_to
+Skills 0
+None
+Run
+View Details
+→
+software architect
+
+Ryan is senior software architect
+
+Tools 0
+None
+Skills 0
+None
+Run
+View Details
+→
+Software Developer
+
+Software Developer
+
+Tools 4
+edit_file
+read_file
+write_file
++1
+Skills 1
+software-engineering-workflow-skill
+Run
+View Details
+→
+ST
+Software Tutorial Video Maker
+
+Turns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg.
+
+Tools 4
+read_file
+write_file
+run_bash
++1
+Skills 1
+software-tutorial-video-maker
+Run
+View Details
+→
+ST
+Student
+
+Student
+
+Tools 6
+send_message_to
+edit_file
+insert_in_file
++3
+Skills 0
+None
+Run
+View Details
+→
+TU
+TutorialVideoCreator
+
+An agent that transforms a series of screenshots into a polished tutorial video. It analyzes and orders the images, writes a script, generates a voiceover, and compiles everything into a final video file.
+
+Tools 7
+FileWriter
+BashExecutor
+GenerateSpeech
++4
+Skills 0
+None
+Run
+View Details
+→
+VS
+video subtitle burn in engineer
+
+Owns subtitle generation for existing recordings by normalizing media, transcribing audio, saving timestamped transcript artifacts, generating subtitle files, and producing subtitled videos.
+
+Tools 4
+read_file
+write_file
+run_bash
++1
+Skills 1
+video-subtitle-burn-in
+Run
+View Details
+→
+VB
+Visual Book Storyteller
+
+Visual Book Storyteller
+
+Tools 4
+generate_image
+generate_speech
+write_file
++1
+Skills 0
+None
+Run
+View Details
+→
+VD
+Visual Dialogue Weaver
+
+Visual Dialogue Weaver
+
+Tools 4
+write_file
+read_media_file
+generate_speech
++1
+Skills 0
+None
+Run
+View Details
+→
+VI
+VisualStoryteller
+
+This agent writes stories by breaking them down into scenes. For each scene, it provides a narrative description and a detailed prompt for an accompanying image. It does not use any tools.
+
+Tools 3
+generate_image
+generate_speech
+write_file
+Skills 0
+None
+Run
+View Details
+→
+WO
+WeChat Official Account Article Writer
+
+WeChat Official Account Article Writer
+
+Tools 1
+write_file
+Skills 0
+None
+Run
+View Details
+→
+WL
+Weixin Linux desktop operator
+
+Safely operates the Ubuntu desktop Weixin client for verified group messaging, link sharing, image sharing, and setup checks after explicit user approval.
+
+Tools 13
+close_tab
+dom_snapshot
+list_tabs
++10
+Skills 1
+weixin-linux-desktop-operator
+Run
+View Details
+→

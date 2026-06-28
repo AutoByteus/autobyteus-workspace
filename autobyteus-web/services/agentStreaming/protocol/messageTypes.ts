@@ -217,7 +217,16 @@ export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
     | string;
   teamRunId?: string;
   taskId?: string;
+  task_id?: string;
   taskIds?: string[];
+  taskLabel?: string;
+  task_label?: string;
+  description?: string;
+  taskDescription?: string;
+  task_description?: string;
+  target_name?: string;
+  targetName?: string;
+  target?: Record<string, any>;
   status?: string;
   message?: string | null;
   [key: string]: any;

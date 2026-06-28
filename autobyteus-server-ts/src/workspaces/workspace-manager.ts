@@ -138,6 +138,25 @@ export class WorkspaceManager {
     return this.workspaceRegistryStore.getRootPathByWorkspaceId(workspaceId);
   }
 
+  async getWorkspaceRootPathForHistory(workspaceId: string): Promise<string | null> {
+    const normalizedWorkspaceId = workspaceId.trim();
+    if (!normalizedWorkspaceId) {
+      return null;
+    }
+
+    const registeredRootPath = await this.getRegisteredWorkspaceRootPath(normalizedWorkspaceId);
+    if (registeredRootPath) {
+      return registeredRootPath;
+    }
+
+    if (normalizedWorkspaceId === TempWorkspace.TEMP_WORKSPACE_ID) {
+      const tempWorkspace = await this.getOrCreateTempWorkspace();
+      return tempWorkspace.getBasePath();
+    }
+
+    return null;
+  }
+
   async removeRegisteredWorkspace(workspaceId: string): Promise<RemoveWorkspaceResult> {
     const normalizedWorkspaceId = workspaceId.trim();
     if (!normalizedWorkspaceId.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {

@@ -145,6 +145,14 @@ describe("AgentRunEventMessageMapper", () => {
         eventType: "TASK_DELEGATION_ACTIVATED",
         payload: {
           taskId: "task_0001_top_level",
+          description: "Implement the websocket projection.",
+          tasks: [
+            {
+              taskId: "task_0001",
+              taskLabel: "Task 1",
+              description: "Implement the websocket projection.",
+            },
+          ],
           target: {
             kind: "member",
             member: {
@@ -171,6 +179,14 @@ describe("AgentRunEventMessageMapper", () => {
     expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
     expect(message.payload).toEqual(expect.objectContaining({
       event_type: "TASK_DELEGATION_ACTIVATED",
+      description: "Implement the websocket projection.",
+      tasks: [
+        {
+          taskId: "task_0001",
+          taskLabel: "Task 1",
+          description: "Implement the websocket projection.",
+        },
+      ],
       execution_kind: "task_agent",
       task_agent_instance_id: "task-agent-instance-1",
       task_agent_run_id: "task-agent-run-1",

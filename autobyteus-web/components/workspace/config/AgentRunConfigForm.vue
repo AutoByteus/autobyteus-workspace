@@ -35,7 +35,7 @@
         :workspace-locked="workspaceLocked"
         workspace-locked-message="Workspace is fixed for existing runs."
         @select-existing="handleSelectExisting"
-        @load-new="handleLoadNew"
+        @workspace-input-change="handleWorkspaceInputChange"
       />
     </div>
 
@@ -126,7 +126,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select-existing', workspaceId: string): void;
-  (e: 'load-new', path: string): void;
+  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void;
 }>();
 
 const workspaceLocked = computed(() => props.workspaceLocked === true)
@@ -169,8 +169,8 @@ const handleSelectExisting = (workspaceId: string) => {
   emit('select-existing', workspaceId)
 }
 
-const handleLoadNew = (path: string) => {
+const handleWorkspaceInputChange = (input: { mode: 'existing' | 'new'; pendingPath: string }) => {
   if (isFormReadOnly.value) return
-  emit('load-new', path)
+  emit('workspace-input-change', input)
 }
 </script>

@@ -137,6 +137,39 @@ describe('MobileFiles', () => {
     expect(wrapper.text()).not.toContain('leaked.txt');
   });
 
+  it('keeps workspace inactive on root load failure and retries into a successful file list', async () => {
+    const workspaceStore = useWorkspaceStore();
+    const fileExplorerStore = useFileExplorerStore();
+    workspaceStore.workspaces['workspace-1'] = makeWorkspace();
+    const acquireLiveSession = vi.spyOn(workspaceStore, 'acquireFileExplorerLiveSession').mockReturnValue(vi.fn());
+    const fetchFolderChildren = vi.spyOn(fileExplorerStore, 'fetchFolderChildren');
+    fetchFolderChildren.mockRejectedValueOnce(new Error('Workspace root is unavailable'));
+    fetchFolderChildren.mockImplementationOnce(async (workspaceId, folderPath) => {
+      expect(workspaceId).toBe('workspace-1');
+      expect(folderPath).toBe('');
+      const root = new TreeNode('project', '', false, [
+        new TreeNode('README.md', 'README.md', true, [], 'file-readme', true),
+      ], 'root', true);
+      seedWorkspaceTree(workspaceId, root);
+    });
+
+    const wrapper = mountSubject(workspaceContext);
+    await flushPromises();
+
+    const unavailable = wrapper.get('[data-testid="mobile-files-no-workspace"]');
+    expect(unavailable.text()).toContain('Workspace unavailable');
+    expect(unavailable.text()).toContain('Workspace root is unavailable');
+    expect(wrapper.find('[data-testid="mobile-files-list"]').exists()).toBe(false);
+    expect(acquireLiveSession).not.toHaveBeenCalled();
+
+    await wrapper.get('[data-testid="mobile-files-retry-workspace"]').trigger('click');
+    await flushPromises();
+
+    expect(fetchFolderChildren).toHaveBeenCalledTimes(2);
+    expect(wrapper.get('[data-testid="mobile-files-list"]').text()).toContain('README.md');
+    expect(acquireLiveSession).toHaveBeenCalledWith('workspace-1', 'mobile-files:workspace-1');
+  });
+
   it('uses workspace-wide file search results instead of only filtering the loaded tree', async () => {
     vi.useFakeTimers();
     const root = new TreeNode('project', '', false, [

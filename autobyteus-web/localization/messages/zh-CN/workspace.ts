@@ -100,14 +100,37 @@ const messages = {
     "任务智能体",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.active_task_executions":
-    "活跃任务执行",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_agent_badge":
+  "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
+    "活跃任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
+    "活跃",
+  "workspace.components.workspace.team.TeamActiveTasksSection.empty":
+    "暂无活跃委派任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
     "任务智能体",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.task_team_badge":
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_team":
     "任务团队",
-  "workspace.components.workspace.team.TeamActiveTaskExecutionsBar.approval_required":
+  "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
     "需要审批",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task": "任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.status": "状态",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target": "目标",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
+    "任务 ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
+    "智能体运行 ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
+    "智能体团队运行 ID",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_member":
+    "成员",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_team":
+    "团队",
+  "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
+    "任务描述不可用",
+  "workspace.components.workspace.team.TeamActiveTasksSection.open_conversation":
+    "打开会话",
+  "workspace.components.workspace.team.TeamActiveTasksSection.members":
+    "成员",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

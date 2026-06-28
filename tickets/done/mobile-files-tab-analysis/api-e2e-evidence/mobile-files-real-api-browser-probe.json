@@ -1,0 +1,208 @@
+{
+  "startedAt": "2026-06-28T04:25:02.076Z",
+  "scenarios": {
+    "realWorkspace": {
+      "result": "pass",
+      "rootListed": [
+        "README.md",
+        "src"
+      ],
+      "lazyFolderListed": [
+        "main.ts"
+      ],
+      "previewText": "API E2E README"
+    },
+    "transientRootRetry": {
+      "result": "pass",
+      "interceptedFirstRootCall": true,
+      "unavailableTextContains": [
+        "Workspace unavailable",
+        "Transient root unavailable"
+      ],
+      "retryListed": [
+        "README.md"
+      ]
+    },
+    "selectedRunMissingRoot": {
+      "result": "pass",
+      "unavailableTextContains": [
+        "Workspace unavailable",
+        "Folder not found"
+      ],
+      "noFallbackWorkspaceContent": true
+    }
+  },
+  "graphqlCalls": [
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 5
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": ""
+      }
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": ""
+      }
+    },
+    {
+      "operationName": "GetFileContent",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "filePath": "README.md"
+      }
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": "src"
+      }
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 5
+      },
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": ""
+      },
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": ""
+      },
+      "transientProbe": true
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+        "folderPath": ""
+      },
+      "transientProbe": true
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 5
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "api-e2e-missing-root-run"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "api-e2e-missing-root-run"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "api-e2e-missing-root-run"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mobile-files-missing-1782620702094"
+      }
+    },
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mobile-files-missing-1782620702094"
+        }
+      }
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_ffd5a8d6563ab6b2ef9513ded21c31a920e5dfd1a792a4b40f9a3ca18c706bd0",
+        "folderPath": ""
+      }
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/real-workspace-root-list.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/real-workspace-preview.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/real-workspace-lazy-folder.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/transient-root-unavailable.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/transient-root-retry-success.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/selected-run-missing-root-unavailable.png"
+  ],
+  "assets": {
+    "generatedIndexPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/autobyteus-web/dist/public/index.html",
+    "generatedIndexSha256": "5f668ca40c51f52fcfb330b00de53324d20c27638288a7441754aab9f583471a",
+    "servedMobileStatus": 200,
+    "servedMobileContentType": "text/html",
+    "servedMobileSha256": "5f668ca40c51f52fcfb330b00de53324d20c27638288a7441754aab9f583471a",
+    "servedMobileHasNuxtAssets": true
+  },
+  "baseUrl": "http://127.0.0.1:58081",
+  "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mobile-files-api-e2e-workspace-x3fNaC",
+  "workspaceLabel": "autobyteus-mobile-files-api-e2e-workspace-x3fNaC",
+  "missingRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mobile-files-missing-1782620702094",
+  "workspaceId": "agent_ws_f21a585960282ae9403472b46097ecc18113103f35f4c54e58e45a7d50d183eb",
+  "finishedAt": "2026-06-28T04:25:06.266Z"
+}

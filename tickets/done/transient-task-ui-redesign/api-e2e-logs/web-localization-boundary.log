@@ -1,0 +1,7 @@
+COMMAND: pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.3.81 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/transient-task-ui-redesign/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+EXIT_CODE: 0

@@ -184,23 +184,31 @@ frontend clones scoped child member nodes/contexts under the task-team root and
 drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
-`TeamActiveTaskExecutionsBar` renders task-agent and task-team nodes in an
-active task executions strip as concrete task children, shows pending approvals
-on task-agent cards when the runtime is waiting for tool approval, and uses
-task-team badges plus lifecycle/timeline status for task-team roots instead of
-falling back to the structural conversation feed. Running and awaiting-acceptance task
-executions must remain visible after active team reopen/hydration, even when
-server resume metadata only lists stable logical coordinator/member rows.
-Run-open hydration therefore restores concrete task executions from live
-projection/identity instead of collapsing them into the logical member or team
-parent. Stream routing is projection-first: task-team root/scoped child identity
-wins before task-agent identity, then exact logical route/path identity, then
-compatible run-id fallback. The frontend must not recreate the removed
-`isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
-as a routing authority. After delegator acceptance and backend settlement or
-offline cleanup, the frontend removes the transient task execution root, scoped
-children, and nested task-agent projections while preserving the structural
-member/team topology and the history that records the delegated task completion.
+The right-side Team tab owns delegated task visibility through its `Active Tasks`
+section instead of a center active-task strip. `TeamActiveTasksSection` and
+`TeamActiveTaskRow` derive task-agent and task-team entries from the transient
+projection nodes in `AgentTeamContext`, while `runHistoryTeamRows` filters those
+task-scoped nodes out of stable left navigation. Active task rows show the
+delegated task description, status, target, task ID, and the explicit `Agent run
+ID` or `Agent team run ID` label; task-team members are focus targets, not a
+phase/timeline dashboard. Task-agent rows keep pending approval controls when
+the runtime is waiting for tool approval. The center workspace remains the
+focused conversation/event/composer surface and must not render
+`TeamActiveTaskExecutionsBar` or any replacement center list.
+
+Running and awaiting-acceptance task executions must remain visible in Team →
+Active Tasks after active team reopen/hydration, even when server resume
+metadata only lists stable logical coordinator/member rows. Run-open hydration
+therefore restores concrete task executions from live projection/identity
+instead of collapsing them into the logical member or team parent. Stream
+routing is projection-first: task-team root/scoped child identity wins before
+task-agent identity, then exact logical route/path identity, then compatible
+run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
+generated-run-id heuristic or any other run-id-format parser as a routing
+authority. After delegator acceptance and backend settlement or offline cleanup,
+the frontend removes the transient task execution root, scoped children, and
+nested task-agent projections while preserving the structural member/team
+topology and the history that records the delegated task completion.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -277,13 +285,27 @@ current expansion state.
 
 - Top-level workspace rows come from `workspaceStore.allWorkspaces`, which is
   loaded from the backend `workspaces()` query and its registered/visible
-  workspace list. History-only roots for unregistered or removed workspaces do
-  not create desktop top-level workspace rows.
+  workspace list. The run-history read model accepts registered filesystem
+  workspaces and the fixed default temp workspace (`temp_ws_default`) as run
+  workspace descriptors, ignores unrelated transient descriptors such as skill
+  workspaces, and does not let history-only roots for unregistered or removed
+  workspaces create desktop top-level rows.
+- If multiple visible descriptors resolve to the same normalized root, the tree
+  renders one workspace row for that root. The fixed temp descriptor wins over a
+  same-root filesystem descriptor so the default temp workspace stays
+  non-removable.
 - Workspace rows default collapsed, so the initial tree shows workspace names
   only.
 - Expanding a workspace calls the workspace-scoped history path for that
   workspace id and reveals the next-level standalone-agent groups and
-  team-definition groups for that registered workspace.
+  team-definition groups for that visible workspace. Registered filesystem ids
+  resolve through the backend workspace registry; `temp_ws_default` resolves
+  through the temp workspace lifecycle.
+- Local standalone run rows are projected under their visible workspace
+  descriptor even after a draft run is promoted from a `temp-...` id to its
+  permanent run id, then deduplicated when backend history catches up. Local
+  draft/live rows without a matching visible workspace descriptor are ignored
+  instead of creating their own top-level workspace.
 - Standalone run rows and team-run rows stay collapsed until the user expands
   the specific agent group or team-definition group.
 - Team-definition group rows and individual team-run rows use the same compact
@@ -316,7 +338,7 @@ highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace Removal From The Sidebar
 
-`WorkspaceHistoryWorkspaceSection.vue` exposes a row-specific **Remove from Workspaces** action for removable filesystem workspace rows. The action is associated with the exact workspace row, is available through hover/focus/touch-visible affordances, and does not toggle row expansion when clicked.
+`WorkspaceHistoryWorkspaceSection.vue` exposes a row-specific **Remove from Workspaces** action for removable filesystem workspace rows. The action is associated with the exact workspace row, is available through hover/focus/touch-visible affordances, and does not toggle row expansion when clicked. Temp workspace rows, including `temp_ws_default`, are visible run workspaces but are not removable and must not render this action.
 
 Removal always asks for confirmation and uses non-destructive copy: workspace files, memories, artifacts, and stored run/team history are not deleted. On confirm, `workspaceStore.removeWorkspace(workspaceId)` calls the backend `removeWorkspace` mutation. Successful removal unregisters the workspace, removes the row immediately, prunes cached workspace history and expansion state, clears selected run/team rows that belonged to the removed workspace, and clears file-explorer metadata/live state for that workspace. Failed removal leaves the row and selection intact and shows the backend error. Active standalone or team runs block removal until the user stops active work.
 
@@ -357,6 +379,28 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 5. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
 This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
+
+### Editable Run Workspace Selection
+
+For editable single-agent and team launches,
+`components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
+not a separate workspace-loading step. Existing mode emits the selected visible
+workspace id immediately. New mode keeps only a pending absolute path and emits
+that pending path to `RunConfigPanel.vue`; it does not render a user-facing
+**Load** button, pressing Enter in the path input does not preload the
+workspace, and the helper copy must indicate that the path will be loaded when
+the user runs the agent or team.
+
+`RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
+with a non-empty pending path, **Run Agent** / **Run Team** first calls the
+workspace creation/registration path, updates the active launch config with the
+registered workspace metadata, and only then creates the local standalone or
+team run. The pending New path takes precedence over any previously selected
+workspace. If registration fails or the New path is blank, no run is created and
+the workspace error is shown in the config panel. While this submit-time load is
+in progress, duplicate run clicks are blocked; the Run button is otherwise
+allowed to be enabled before any explicit preload when the pending path and the
+rest of the launch config are valid.
 
 ### Existing Run Configuration Inspection
 

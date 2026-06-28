@@ -1,0 +1,58 @@
+{
+  "route": "http://127.0.0.1:3010/mobile",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 2,
+    "isMobile": true
+  },
+  "browser": "Google Chrome via playwright-core because in-app Browser was unavailable",
+  "states": {
+    "noContextText": "📁\n\nChoose a workspace\n\nFiles stay focused on one selected workspace, run, or team run at a time.\n\nChoose workspace",
+    "unavailableText": "📁\n\nWorkspace unavailable\n\nVisual root unavailable\n\nChoose workspace\nRetry",
+    "currentFolderText": "Visual Workspace",
+    "listText": "📁\nsrc\nsrc\nTap to load folder contents\n📄\nREADME.md\nREADME.md",
+    "previewTextSnippet": "Back\n\nREADME.md\n\nREADME.md\n\nAttach\nVisual README\n\nThe mobile Files preview loaded through the workspace file API.",
+    "loadingText": "⏳\n\nLoading workspace files\n\nResolving the selected context workspace before showing files.",
+    "emptyText": "This folder is empty."
+  },
+  "folderChildrenCalls": 3,
+  "graphqlRequests": [
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "visual-ws",
+        "folderPath": ""
+      }
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "visual-ws",
+        "folderPath": ""
+      }
+    },
+    {
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "visual-ws",
+        "folderPath": ""
+      }
+    },
+    {
+      "operationName": "GetFileContent",
+      "variables": {
+        "workspaceId": "visual-ws",
+        "filePath": "README.md"
+      }
+    }
+  ],
+  "screenshots": [
+    "mobile-files-no-context.png",
+    "mobile-files-unavailable.png",
+    "mobile-files-list.png",
+    "mobile-files-preview.png",
+    "mobile-files-loading.png",
+    "mobile-files-empty.png"
+  ]
+}
