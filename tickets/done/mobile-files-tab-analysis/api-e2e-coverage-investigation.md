@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review pass for the mobile Files tab ticket; proceed to API/E2E coverage investigation and execution.
 - Prior Investigation Reviewed: N/A

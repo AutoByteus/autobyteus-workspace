@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-review-report.md`
 
 ## What Changed
 
@@ -37,7 +37,7 @@
 - `autobyteus-web/components/mobile/MobileFiles.vue`
 - `autobyteus-web/stores/__tests__/fileExplorerStore.spec.ts`
 - `autobyteus-web/components/mobile/__tests__/MobileFiles.spec.ts`
-- Visual evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence`
+- Visual evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence`
 
 ## Important Assumptions
 
@@ -91,14 +91,14 @@
 
 ## Browser / Visual Validation Evidence
 
-- Evidence summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/visual-validation-summary.json`
+- Evidence summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/visual-validation-summary.json`
 - Screenshots:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-no-context.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-loading.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-unavailable.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-empty.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-list.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence/mobile-files-preview.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-no-context.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-loading.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-unavailable.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-empty.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-list.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence/mobile-files-preview.png`
 - Covered states: no-context/choose-workspace, loading/resolving, root unavailable with Retry, empty folder, successful list, and read-only preview.
 - UI quality result: states were visually acceptable after the refinements; no additional UI changes were needed after screenshot inspection.
 

@@ -22,7 +22,7 @@ User reports that the application has Android and iOS support and that the Files
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis
 - Current Branch: codex/mobile-files-tab-analysis
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis
 - Bootstrap Base Branch: origin/personal

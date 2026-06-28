@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/requirements-doc.md`
 - Current Review Round: 1
 - Trigger: Implementation handoff from `implementation_engineer` for mobile Files tab fix.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: N/A
 - API / E2E Execution Started Yet: `No`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`
@@ -53,7 +53,7 @@ Implementation-provided evidence reviewed:
 - `pnpm install --frozen-lockfile` — passed per handoff.
 - `pnpm --dir autobyteus-web exec nuxt prepare` — passed per handoff.
 - `pnpm --dir autobyteus-web build:mobile-web` — passed per handoff.
-- Browser-style visual validation summary and screenshots under `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/visual-evidence`.
+- Browser-style visual validation summary and screenshots under `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/visual-evidence`.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 

@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: Code-review pass for mobile Files tab implementation.
 - Prior Round Reviewed: N/A
@@ -26,7 +26,7 @@ Execution followed the coverage investigation decisions: retain the already code
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -84,9 +84,9 @@ Execution followed the coverage investigation decisions: retain the already code
 
 | Scenario ID | Behavior / Boundary | Execution Surface | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| APIE2E-001 | Durable frontend store/component/mobile route coverage | Web Vitest | Pass: 9 files / 57 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/web-focused-vitest.log` |
-| APIE2E-002 | Real backend file explorer GraphQL/path-boundary and remote-access route behavior | Server Vitest | Pass after setup remediation: 3 files / 7 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e-rerun.log` |
-| APIE2E-003 | Served `/mobile` asset freshness | Mobile build + Fastify static route | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/mobile-web-build.log`; browser probe JSON asset hashes |
+| APIE2E-001 | Durable frontend store/component/mobile route coverage | Web Vitest | Pass: 9 files / 57 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/web-focused-vitest.log` |
+| APIE2E-002 | Real backend file explorer GraphQL/path-boundary and remote-access route behavior | Server Vitest | Pass after setup remediation: 3 files / 7 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e-rerun.log` |
+| APIE2E-003 | Served `/mobile` asset freshness | Mobile build + Fastify static route | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/mobile-web-build.log`; browser probe JSON asset hashes |
 | APIE2E-004 | Real `/mobile` workspace root listing, lazy folder, file preview | Temporary browser/real GraphQL probe | Pass | Browser probe JSON + screenshots `real-workspace-*` |
 | APIE2E-005 | Transient root `folderChildren` failure -> retryable unavailable -> retry success | Temporary browser/real GraphQL probe with one intercepted root payload error | Pass | Browser probe JSON + screenshots `transient-root-*` |
 | APIE2E-006 | Selected run with missing workspace root does not fallback; shows retryable unavailable | Temporary browser/real GraphQL probe with seeded run history missing root | Pass | Browser probe JSON + screenshot `selected-run-missing-root-unavailable.png` |
@@ -140,21 +140,21 @@ No repository-resident durable tests were implemented or updated in API/E2E. A t
 
 ## Other Execution Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/web-focused-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e.log` (initial setup failure)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/server-prisma-generate.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e-rerun.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/mobile-web-build.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.json`
-- Screenshots under `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/`:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/web-focused-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e.log` (initial setup failure)
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/server-prisma-generate.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/server-file-remote-e2e-rerun.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/mobile-web-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.json`
+- Screenshots under `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/browser-probe-screenshots/`:
   - `real-workspace-root-list.png`
   - `real-workspace-preview.png`
   - `real-workspace-lazy-folder.png`
   - `transient-root-unavailable.png`
   - `transient-root-retry-success.png`
   - `selected-run-missing-root-unavailable.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/git-diff-check.log`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -229,7 +229,7 @@ No failure classification applies; API/E2E passed.
 
 ## Evidence / Notes
 
-The browser probe recorded these scenario results in `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.json`:
+The browser probe recorded these scenario results in `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-files-tab-analysis/tickets/done/mobile-files-tab-analysis/api-e2e-evidence/mobile-files-real-api-browser-probe.json`:
 
 - `realWorkspace.result = pass`
 - `transientRootRetry.result = pass`
