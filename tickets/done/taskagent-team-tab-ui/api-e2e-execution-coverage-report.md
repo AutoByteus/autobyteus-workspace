@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`
 - Current Execution Round: 3
 - Trigger: User requested an actual browser/Electron-backed validation pass after Round 2 clarified that the Focus + send-message workflow was proven in Vue/Vitest rather than a browser.
 - Prior Round Reviewed: Yes. Rounds 1 and 2 were reviewed; Round 2 added durable Focus + send-message workflow coverage but did not exercise Chrome/Nuxt/Electron-backend runtime.
@@ -41,7 +41,7 @@ This is a real Chrome/Nuxt browser execution configured against the Electron bac
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -142,7 +142,7 @@ Round 1 evidence remains part of the cumulative package for server/API/static/bu
 
 ## Execution Setup / Environment
 
-Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence`
+Evidence directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence`
 
 Round 2 commands executed from `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui`:
 
@@ -167,7 +167,7 @@ Round 3 commands/probes executed from `/Users/normy/autobyteus_org/autobyteus-wo
 
 Added:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
 
 Coverage provided:
 
@@ -186,7 +186,7 @@ Round 3 did not add, update, or remove durable repository-resident coverage. The
 
 - Repository-resident durable coverage added, updated, or removed this round: `No` for Round 3.
 - Repository-resident durable coverage added, updated, or removed after the earlier code review in the cumulative API/E2E package: `Yes` from Round 2.
-- Paths added or updated since earlier code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
+- Paths added or updated since earlier code review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
 - Paths removed: N/A
 - If cumulative `Yes`, returned through `code_reviewer` before delivery: `Pending / this handoff routes to code_reviewer`
 - Post-API/E2E coverage code review artifact: pending
@@ -195,26 +195,26 @@ Round 3 did not add, update, or remove durable repository-resident coverage. The
 
 Round 3 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-electron-backend-health.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-electron-backend-task-node-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-frontend-dev-session.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-probe.mjs`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-ready.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-tasks-open.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-task-agent-focus-send.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-task-team-member-focus-send.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-temp-fixture-cleanup.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-electron-backend-health.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-electron-backend-task-node-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-frontend-dev-session.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-probe.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-ready.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-tasks-open.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-task-agent-focus-send.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-browser-task-team-member-focus-send.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-temp-fixture-cleanup.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round3-git-diff-check.log`
 
 Round 2 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/focus-send-workflow-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-web-targeted-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-git-diff-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-web-boundary-guard.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-localization-boundary-guard.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-localization-literals-audit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/focus-send-workflow-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-web-targeted-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-web-boundary-guard.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-localization-boundary-guard.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/round2-localization-literals-audit.log`
 
 Round 1 evidence remains in the same directory and is still relevant for server/API/build/static validation.
 
@@ -230,7 +230,7 @@ The Playwright probe script is retained under `tickets/.../api-e2e-evidence/roun
 
 Round 2 did not leave temporary execution scaffolding. The new workflow test from Round 2 is durable repository-resident coverage.
 
-Round 1 temporary server route probe was removed after execution; cleanup evidence remains at `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/temp-probe-cleanup.log`.
+Round 1 temporary server route probe was removed after execution; cleanup evidence remains at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/temp-probe-cleanup.log`.
 
 ## Dependencies Mocked Or Emulated
 

@@ -4,7 +4,7 @@
 
 Implementation paused because the user clarified that the existing Team tab Messages content/reference UX is excellent and must not change from the user's perspective. Internal reuse/refactoring for references is acceptable only when invisible to the user. The Messages section header chevron is explicitly exempt and should move to the Activity-style left position.
 
-Requirement-gap source: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
+Requirement-gap source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
 
 ## Decision
 
@@ -55,15 +55,15 @@ Implementation handoff must include:
 
 ## Still-Relevant Upstream Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
-- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-spec.md`
-- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
-- UX journey: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
-- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
-- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
-- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
-- This rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-messages-visible-ux-unchanged.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-spec.md`
+- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
+- UX journey: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
+- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
+- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
+- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
+- This rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-messages-visible-ux-unchanged.md`
 
 ## Recommended Reroute
 

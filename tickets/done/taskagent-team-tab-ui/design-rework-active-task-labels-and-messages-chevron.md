@@ -7,7 +7,7 @@ Round 3 visual validation raised two UX clarifications:
 1. Visible `Task Agent` / `Task Team` labels make Active Tasks feel more cluttered because target names, status, task body, references, and Focus controls already communicate the subject.
 2. The Messages section header still needs the Activity-style left chevron; the previous Messages freeze was intended to protect message content/reference UX, not keep the old header chevron placement.
 
-Gap source: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
+Gap source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
 
 ## Decisions
 
@@ -37,15 +37,15 @@ Implementation handoff must verify:
 
 ## Still-Relevant Upstream Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
-- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-spec.md`
-- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
-- UX journey: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
-- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
-- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
-- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
-- This rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-active-task-labels-and-messages-chevron.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-spec.md`
+- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
+- UX journey: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
+- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
+- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
+- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
+- This rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-active-task-labels-and-messages-chevron.md`
 
 ## Recommended Reroute
 

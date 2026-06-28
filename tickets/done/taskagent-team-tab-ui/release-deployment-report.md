@@ -6,7 +6,7 @@ Finalized delivery for `taskagent-team-tab-ui` after explicit user verification.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/handoff-summary.md`
 - Handoff summary status: `Finalized`
 - Notes: Updated after latest-base merge, post-integration checks, docs sync, release-notes preparation, Round 3 coverage-code re-review PASS, Round 4 browser/Electron evidence re-review PASS, resumed tracked-base confirmations, resumed workflow verification, the user-requested local Electron build, explicit user completion, ticket archival, and no-release finalization.
 
@@ -28,23 +28,23 @@ Finalized delivery for `taskagent-team-tab-ui` after explicit user verification.
 
 Post-integration evidence:
 
-- `git diff --check origin/personal` after integration: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-git-diff-check.log` — passed.
-- Web targeted Vitest: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-targeted-vitest.log` — passed, 7 files / 35 tests.
-- Server targeted Vitest: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-targeted-vitest.log` — passed, 3 files / 16 tests.
-- Web boundary guard: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-boundary-guard.log` — passed.
-- Localization boundary guard: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-localization-boundary-guard.log` — passed.
-- Localization literal audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-localization-literals-audit.log` — passed with zero unresolved findings.
-- Server build tsconfig no-emit: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-tsconfig-build-noemit.log` — passed.
-- Server build: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-build.log` — passed.
-- Web production build: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-build.log` — passed with existing large-chunk warning.
-- Post-docs-sync diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-docs-sync-git-diff-check.log` — passed.
+- `git diff --check origin/personal` after integration: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-git-diff-check.log` — passed.
+- Web targeted Vitest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-targeted-vitest.log` — passed, 7 files / 35 tests.
+- Server targeted Vitest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-targeted-vitest.log` — passed, 3 files / 16 tests.
+- Web boundary guard: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-boundary-guard.log` — passed.
+- Localization boundary guard: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-localization-boundary-guard.log` — passed.
+- Localization literal audit: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-localization-literals-audit.log` — passed with zero unresolved findings.
+- Server build tsconfig no-emit: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-tsconfig-build-noemit.log` — passed.
+- Server build: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-server-build.log` — passed.
+- Web production build: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-integration-web-build.log` — passed with existing large-chunk warning.
+- Post-docs-sync diff check: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-docs-sync-git-diff-check.log` — passed.
 
 
 ## Delivery Re-entry After Coverage-Code Re-review
 
 - Re-entry source: `code_reviewer` Round 3 PASS after API/E2E Round 2 added durable workflow coverage.
-- Updated code-review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/code-review-report.md`
-- New durable coverage artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
+- Updated code-review artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/code-review-report.md`
+- New durable coverage artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
 - Latest tracked remote base checked on re-entry: `origin/personal` @ `2a9aa85ec3ca3d12f3193769b5c16c6cec3cc3ab` (`docs(ticket): record token cache rate release finalization`)
 - Base advanced since previous delivery refresh: `No`
 - New base commits integrated during re-entry: `No`
@@ -55,16 +55,16 @@ Post-integration evidence:
 
 Re-entry evidence:
 
-- `git diff --check origin/personal`: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-git-diff-check.log` — passed.
-- Combined Team/projection web Vitest including `TeamFocusSendWorkflow.spec.ts`: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-web-targeted-vitest.log` — passed, 8 files / 37 tests.
-- `git diff --check origin/personal` after re-entry docs/evidence reconciliation: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-docs-diff-check.log` — passed.
+- `git diff --check origin/personal`: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-git-diff-check.log` — passed.
+- Combined Team/projection web Vitest including `TeamFocusSendWorkflow.spec.ts`: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-web-targeted-vitest.log` — passed, 8 files / 37 tests.
+- `git diff --check origin/personal` after re-entry docs/evidence reconciliation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-post-rereview-docs-diff-check.log` — passed.
 
 
 ## Second Delivery Re-entry After Browser/Electron Evidence Re-review
 
 - Re-entry source: `code_reviewer` Round 4 PASS after API/E2E Round 3 added browser/Electron-backed validation evidence.
-- Updated code-review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/code-review-report.md`
-- API/E2E Round 3 evidence artifacts include browser probe logs/screenshots and backend health/task-node probe logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/`.
+- Updated code-review artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/code-review-report.md`
+- API/E2E Round 3 evidence artifacts include browser probe logs/screenshots and backend health/task-node probe logs under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-evidence/`.
 - New durable repository-resident coverage or production source after Round 3 code review: `No`
 - Temporary browser fixture state: `Removed`; `autobyteus-web/pages/__api_e2e_focus_send_browser.vue` is absent.
 - Latest tracked remote base checked on Round 4 re-entry: `origin/personal` @ `2a9aa85ec3ca3d12f3193769b5c16c6cec3cc3ab` (`docs(ticket): record token cache rate release finalization`)
@@ -78,21 +78,21 @@ Re-entry evidence:
 
 Round 4 re-entry evidence:
 
-- `git diff --check origin/personal`: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-post-review-git-diff-check.log` — passed.
-- Focus/send workflow Vitest: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-focus-send-workflow-vitest.log` — passed, 1 file / 2 tests.
-- `git diff --check origin/personal` after Round 4 docs/evidence reconciliation: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-docs-diff-check.log` — passed.
+- `git diff --check origin/personal`: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-post-review-git-diff-check.log` — passed.
+- Focus/send workflow Vitest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-focus-send-workflow-vitest.log` — passed, 1 file / 2 tests.
+- `git diff --check origin/personal` after Round 4 docs/evidence reconciliation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/resume-round4-docs-diff-check.log` — passed.
 
 ## Local Electron Build For User Testing
 
 - Trigger: User requested reading the README and building Electron so they could test locally.
-- README consulted: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/README.md`.
+- README consulted: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`.
 - Build command source: README macOS desktop build instructions (`pnpm build:electron:mac`) plus README-documented local verbose/no-notarization flags.
 - Command result: `Passed` (exit code 0).
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-mac.log`.
-- Artifact manifest: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-artifacts.md`.
-- Post-build docs/evidence diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-electron-build-docs-diff-check.log` — passed.
-- Distribution directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist`.
-- Testable artifacts:
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-mac.log`.
+- Artifact manifest: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-artifacts.md`.
+- Post-build docs/evidence diff check: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-electron-build-docs-diff-check.log` — passed.
+- Pre-cleanup local distribution directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist`.
+- Testable artifacts generated before final cleanup:
   - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.84.dmg`
   - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.84.zip`
   - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
@@ -102,13 +102,13 @@ Round 4 re-entry evidence:
 ## Finalization Target Refresh After User Verification
 
 - User completion/verification reference: User message on 2026-06-28: "the task is done. lets finalize the ticket, no need to release a new version. follow finalization guidelines".
-- Refresh command evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-target-refresh.log`.
+- Refresh command evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-target-refresh.log`.
 - Latest tracked remote target after user verification: `origin/personal` @ `2a9aa85ec3ca3d12f3193769b5c16c6cec3cc3ab` (`docs(ticket): record token cache rate release finalization`).
 - Target advanced beyond user-verified handoff state: `No`.
 - Delivery-owned edits protected before re-integration: `Not needed`; no new target commits were available to integrate.
 - Re-integration before final merge: `Not needed`.
 - Renewed verification required: `No`; the final user-facing handoff state did not materially change after verification.
-- Final archive/report diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-git-diff-check.log` — passed.
+- Final archive/report diff check: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-git-diff-check.log` — passed.
 
 ## User Verification
 
@@ -120,33 +120,33 @@ Round 4 re-entry evidence:
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/docs-sync-report.md`
 - Docs sync result: `Updated`; re-entries after workflow coverage and browser/Electron evidence introduced no additional product-doc change beyond the existing Team tab Tasks/Focus documentation.
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/docs/agent_execution_architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/docs/agent_artifacts.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/docs/content_rendering.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/docs/modules/agent_team_execution.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/docs/modules/agent_artifacts.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/content_rendering.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_team_execution.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_artifacts.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui`
 
 ## Version / Tag / Release Commit
 
 - Version bump: `Not performed` — user explicitly requested no new version/release.
 - Tag: `Not created`.
 - Release commit: `Not created`.
-- Prepared release notes artifact retained for audit only: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/release-notes.md`.
+- Prepared release notes artifact retained for audit only: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/release-notes.md`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
 - Ticket branch: `codex/taskagent-team-tab-ui`
 - Ticket branch commit result: `Completed` — final ticket branch commit created from archived ticket state and reviewed implementation changes.
 - Ticket branch push result: `Completed` — pushed to `origin/codex/taskagent-team-tab-ui` before target merge.
@@ -158,6 +158,8 @@ Round 4 re-entry evidence:
 - Target branch update result: `Completed` — local `personal` was refreshed from `origin/personal` before merge.
 - Merge into target result: `Completed` — ticket branch merged into `personal`.
 - Push target branch result: `Completed` — updated `personal` pushed to `origin/personal`.
+- Post-merge archive path normalization: `Completed` — archived report paths were normalized to the final `personal` worktree after dedicated ticket worktree cleanup.
+- Post-cleanup path-normalization diff check: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-post-cleanup-path-normalization-diff-check.log` — passed.
 - Repository finalization status: `Completed`
 - Blocker (if applicable): None.
 
@@ -187,7 +189,7 @@ Round 4 re-entry evidence:
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/release-notes.md`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/release-notes.md`
 - Archived release notes artifact used for release/publication: N/A; no release/publication was requested or run.
 - Release notes status: `Updated`
 
@@ -201,15 +203,15 @@ No database migration, installer, updater, or deployment environment change is r
 
 ## Verification Checks
 
-- API/E2E pass before delivery, Round 2 workflow coverage update, and Round 3 browser/Electron evidence update: see `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-execution-coverage-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`.
-- Latest code-review PASS after coverage/evidence re-reviews: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/code-review-report.md` (Round 4 PASS, 9.3/10).
+- API/E2E pass before delivery, Round 2 workflow coverage update, and Round 3 browser/Electron evidence update: see `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-execution-coverage-report.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/api-e2e-coverage-investigation.md`.
+- Latest code-review PASS after coverage/evidence re-reviews: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/code-review-report.md` (Round 4 PASS, 9.3/10).
 - Delivery post-integration checks: all evidence listed in the Initial Delivery Integration Refresh section passed.
 - Delivery re-entry checks after Round 3 code-review PASS: resumed diff check and combined Team/projection web Vitest evidence listed in the Delivery Re-entry section passed.
 - Delivery re-entry checks after Round 4 code-review PASS: resumed diff check, focused workflow Vitest, and docs/evidence diff check listed in the Second Delivery Re-entry section passed.
-- Local Electron build for user testing passed and produced the DMG/ZIP/app bundle listed in `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-artifacts.md`. Post-build `git diff --check origin/personal` passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-electron-build-docs-diff-check.log`.
+- Local Electron build for user testing passed and produced the DMG/ZIP/app bundle listed in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-artifacts.md`. Post-build `git diff --check origin/personal` passed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/post-electron-build-docs-diff-check.log`.
 - Docs sync diff check: `git diff --check origin/personal` passed after docs sync and release-note/handoff artifact creation.
-- Finalization target refresh after user verification passed with no new base integration required: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-target-refresh.log`.
-- Final archive/report diff check passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-git-diff-check.log`.
+- Finalization target refresh after user verification passed with no new base integration required: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-target-refresh.log`.
+- Final archive/report diff check passed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/finalization-git-diff-check.log`.
 
 ## Rollback Criteria
 

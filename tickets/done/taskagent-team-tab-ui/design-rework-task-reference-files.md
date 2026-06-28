@@ -4,9 +4,9 @@
 
 During implementation/live UI feedback, the user asked whether delegated tasks account for task-level reference files and task arguments. The user also emphasized that the existing Messages UI handles reference files extremely well: references are clean rows, clickable, and previewable in the right pane. This exposed a gap in the reviewed design: Active Tasks had visual polish work, but the task data path still dropped delegated-task reference files and task arguments, and the UX needed to be redesigned around the Messages mental model.
 
-Requirement-gap source: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
+Requirement-gap source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
 
-Canonical UX source: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
+Canonical UX source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
 
 ## Final UX Decision
 
@@ -75,17 +75,17 @@ Updated UI artifacts:
 
 ## Still-Relevant Upstream Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
-- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-spec.md`
-- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
-- UX journey: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
-- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
-- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
-- Original design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-review-report.md`
-- Current implementation handoff before this gap: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/implementation-handoff.md`
-- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
-- This rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-task-reference-files.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-spec.md`
+- Canonical UX/UI design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
+- UX journey: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
+- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
+- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
+- Original design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-review-report.md`
+- Current implementation handoff before this gap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/implementation-handoff.md`
+- Requirement-gap artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
+- This rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-task-reference-files.md`
 
 ## Additional Rework: Messages Frozen Baseline
 

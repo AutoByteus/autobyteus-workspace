@@ -28,7 +28,7 @@ During implementation feedback, a requirement gap was identified: delegated task
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui`.
 - Current Branch: `codex/taskagent-team-tab-ui`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui`.
 - Bootstrap Base Branch: `origin/personal`.

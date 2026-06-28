@@ -447,7 +447,7 @@ Layering is descriptive only; ownership boundaries above are authoritative.
 ## Guidance For Implementation
 
 - Work only in `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui`.
-- Treat `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md` as the canonical visible UX source.
+- Treat `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md` as the canonical visible UX source.
 - Preserve the existing user-visible Messages section exactly; internal reuse is allowed only when invisible to users.
 - Apply the Activity-style left chevron to both Messages and Active Tasks section headers; the earlier both-section chevron requirement remains valid for headers.
 - Preserve Messages list/detail/reference content exactly; only the Messages section header disclosure placement changes.

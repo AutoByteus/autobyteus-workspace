@@ -9,7 +9,7 @@
 - Source worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui`
 - Ticket branch: `codex/taskagent-team-tab-ui`
 - Current HEAD at build time: `9921d4bf036521a0e23b87ebd046dbbcfd4bebd7` (`Merge remote-tracking branch 'origin/personal' into codex/taskagent-team-tab-ui`) plus current uncommitted ticket/delivery working-tree changes.
-- README consulted: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/README.md` (`Desktop Application Build` / `macOS Build With Logs (No Notarization)` sections).
+- README consulted: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` (`Desktop Application Build` / `macOS Build With Logs (No Notarization)` sections).
 - Distribution directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/electron-dist`
 
 ## Command Run
@@ -52,7 +52,7 @@ cd333ee615d5cc6a8d8ea954ebcd82714f8d9edb84bdfdc24dd5eade0d984951  /Users/normy/a
 
 ## Evidence
 
-- Full build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-mac.log`
+- Full build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-mac.log`
 - Build log tail records `Build completed` with the DMG, ZIP, and blockmap paths.
 - The build log records `skipped macOS code signing  reason=identity explicitly is set to null`.
 

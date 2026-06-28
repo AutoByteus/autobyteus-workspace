@@ -2,20 +2,20 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-review-report.md`
-- Canonical UX: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
-- UX journey: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
-- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
-- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
-- Task refs gap: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
-- Task refs rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-task-reference-files.md`
-- Messages content freeze gap: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
-- Messages content freeze rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-messages-visible-ux-unchanged.md`
-- Active task labels / Messages chevron gap: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
-- Active task labels / Messages chevron rework summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/design-rework-active-task-labels-and-messages-chevron.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-review-report.md`
+- Canonical UX: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`
+- UX journey: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`
+- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`
+- UI implementation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
+- Task refs gap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-task-reference-files.md`
+- Task refs rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-task-reference-files.md`
+- Messages content freeze gap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-messages-visible-ux-unchanged.md`
+- Messages content freeze rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-messages-visible-ux-unchanged.md`
+- Active task labels / Messages chevron gap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/requirement-gap-active-task-labels-and-messages-chevron.md`
+- Active task labels / Messages chevron rework summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/design-rework-active-task-labels-and-messages-chevron.md`
 
 ## What Changed
 
@@ -37,37 +37,37 @@
 ## Key Files Or Areas
 
 Backend:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-file.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-event-publisher.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/src/api/rest/task-delegation.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-file.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-event-publisher.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/rest/task-delegation.ts`
 
 Frontend:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/TeamActiveTaskRow.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/utils/teamActiveTaskEntries.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/utils/teamReferences/referenceFilePresentation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/utils/teamReferences/teamReferenceFileModel.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/services/agentStreaming/teamTaskExecutionProjection.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/localization/messages/en/workspace.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/localization/messages/zh-CN/workspace.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTaskRow.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamActiveTaskEntries.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamReferences/referenceFilePresentation.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamReferences/teamReferenceFileModel.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/teamTaskExecutionProjection.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/workspace.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/workspace.ts`
 
 Tests:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-server-ts/tests/unit/api/task-delegation-route.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/api/task-delegation-route.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
 - Existing Messages regression tests were kept passing: `TeamCommunicationPanel.spec.ts`, `TeamCommunicationReferenceViewer.spec.ts`.
 
 ## Important Assumptions
@@ -184,18 +184,18 @@ Result: no approval controls/API calls. Only `isWaitingStatus` contains `approva
 Post-copy screenshots after visible header text changed to `Tasks`:
 
 - Default Team tab: Messages open with left chevron; `Tasks` collapsed with left chevron and right-side `2 tasks`; Messages list/detail remains baseline:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-team-tab-default-tasks-left-chevron.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-team-tab-default-tasks-left-chevron.png`
 - Expanded `Tasks` master/detail: no visible `Task Agent` / `Task Team` labels, no raw task IDs in primary rows, generic `Focus`, references under selected task in the left navigator:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-tasks-label-light-master-detail.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-tasks-label-light-master-detail.png`
 - Team-task detail: useful/low-emphasis `Awaiting review` status, calm waiting notice, generic member `Focus` rows, no visible task-kind labels:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-tasks-team-member-focus.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/visual-validation/postcopy-tasks-team-member-focus.png`
 
 Round 4 reference-preview screenshots from the same actual-component fixture before the final copy-only `Active Tasks` -> `Tasks` label change; reference viewer/code path did not change after these captures:
 
 - Messages reference preview baseline, used to verify frozen Messages content/reference behavior:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/visual-validation/round4-messages-reference-preview-baseline.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/visual-validation/round4-messages-reference-preview-baseline.png`
 - Task reference preview: selected task reference switches the whole right pane to file preview using task-owned route identity:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/tickets/done/taskagent-team-tab-ui/visual-validation/round4-task-reference-preview.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/taskagent-team-tab-ui/visual-validation/round4-task-reference-preview.png`
 
 Observed during validation:
 - Both section headers use left SVG chevrons and right-side metadata; no trailing text chevrons after counts.
