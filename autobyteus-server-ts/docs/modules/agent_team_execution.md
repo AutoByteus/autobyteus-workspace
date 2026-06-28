@@ -229,6 +229,29 @@ Events emitted by members inside a task-team child run also carry
 `task_team_relative_member_route_key` so clients route scoped child events by
 `task_team_run_id` instead of guessing from the structural team route.
 
+Task-delegation events also carry the UI-facing task metadata required by the
+right-side Team tab `Tasks` section: normalized `taskId`/label/description,
+target identity, status, execution kind/run id, `referenceFiles`, and the
+original normalized `taskArguments`. `referenceFiles` are task-owned rows
+derived from the ledger record's explicit `reference_files`; they are not Team
+Communication message references and must not use message ids or message
+reference routes. `TaskDelegationService.resolveTaskReference(...)` is the
+ledger-side authority for `taskId + referenceId`, while
+`TaskDelegationReferenceContentService` resolves readable local content for an
+active parent team run.
+
+The REST content route for a selected task reference is:
+
+```text
+GET /team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content
+```
+
+The route serves content through `TaskDelegationReferenceContentService` with
+`cache-control: no-store`. Missing/unavailable references map to `404`, invalid
+stored reference paths map to `400`, unreadable paths map to `403`, and callers
+must continue to treat `teamRunId + taskId + referenceId` as the explicit task
+subject identity.
+
 ### Task Delegation Validation Notes
 
 Durable deterministic coverage lives in the task-delegation integration/unit

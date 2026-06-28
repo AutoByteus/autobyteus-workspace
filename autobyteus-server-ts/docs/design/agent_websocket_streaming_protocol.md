@@ -155,6 +155,10 @@ Content route ownership stays split:
 - Team Communication reference rows use
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`
   after resolving persisted `teamRunId + messageId + referenceId` identity.
+- Task-delegation reference rows use
+  `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`
+  after resolving active task-owned `teamRunId + taskId + referenceId`
+  identity.
 
 The focused frontend member decides whether a message is shown in the sent or
 received Team Communication perspective; sender/receiver identity is metadata on
@@ -180,6 +184,10 @@ Team events expose path-aware member identity:
   `task_team_relative_member_path` / `task_team_relative_member_route_key` so
   clients can route nested status, transcript, and tool lifecycle messages to
   the scoped child projection without mutating the structural subteam node.
+- `TASK_DELEGATION_EVENT` payloads carry task-owned UI metadata such as
+  task description/status/target, `referenceFiles`, and normalized
+  `taskArguments` so the Team tab Tasks projection does not scrape Team
+  Communication messages or raw tool-call text.
 - `sub_team_node_name` is a deprecated display alias only and must not be used
   as routing identity.
 

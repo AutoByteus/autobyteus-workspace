@@ -1,0 +1,21 @@
+Opening browser fixture: http://127.0.0.1:3000/__api_e2e_focus_send_browser
+[browser:debug] [vite] connecting...
+[browser:debug] [vite] connected.
+[browser:log] serverStore: Initializing server config
+[browser:log] serverStore: Not in Electron environment. Skipping server initialization.
+[browser:info] <Suspense> is an experimental feature and its API will likely change.
+[browser:log] ServerLoading: Component mounted with status: running
+backend url: Electron backend: http://127.0.0.1:29695
+initial focused route: coordinator
+Opening Tasks section
+Clicking task-agent primary Focus
+task-agent focused route: team-run__worker__task_0001
+task-agent active run id: task-agent-run-1
+after task-agent send snapshot: {"focusedRouteKey":"team-run__worker__task_0001","activeRunId":"task-agent-run-1","focusedMessageTexts":["Browser task-agent focus send round 3"],"sentMessages":[{"text":"Browser task-agent focus send round 3","address":{"segments":[{"kind":"member","memberRouteKey":"worker"},{"kind":"task_agent","taskAgentRunId":"task-agent-run-1"}]},"contextFilePaths":[],"imageUrls":[],"meta":{"messageId":"client_c149fd66-1118-45e7-93b1-0828317a770d","dedupeKey":"member_input:team-browser-round3-1:team-run__worker__task_0001:client_c149fd66-1118-45e7-93b1-0828317a770d"}}]}
+sent[0] address: {"segments":[{"kind":"member","memberRouteKey":"worker"},{"kind":"task_agent","taskAgentRunId":"task-agent-run-1"}]}
+Selecting task-team row and clicking member Focus
+task-team member focused route: task-team-run-1/solution_designer
+task-team member active run id: task-team-run-1::solution_designer
+after task-team member send snapshot: {"focusedRouteKey":"task-team-run-1/solution_designer","activeRunId":"task-team-run-1::solution_designer","focusedMessageTexts":["Browser task-team member focus send round 3"],"sentMessages":[{"text":"Browser task-agent focus send round 3","address":{"segments":[{"kind":"member","memberRouteKey":"worker"},{"kind":"task_agent","taskAgentRunId":"task-agent-run-1"}]},"contextFilePaths":[],"imageUrls":[],"meta":{"messageId":"client_c149fd66-1118-45e7-93b1-0828317a770d","dedupeKey":"member_input:team-browser-round3-1:team-run__worker__task_0001:client_c149fd66-1118-45e7-93b1-0828317a770d"}},{"text":"Browser task-team member focus send round 3","address":{"segments":[{"kind":"member","memberRouteKey":"SoftwareEngineeringTeam"},{"kind":"task_team","taskTeamRunId":"task-team-run-1"},{"kind":"member","memberRouteKey":"solution_designer"}]},"contextFilePaths":[],"imageUrls":[],"meta":{"messageId":"client_f32ff8cb-424a-4fd6-b5e8-a8d8250caa2c","dedupeKey":"member_input:team-browser-round3-1:task-team-run-1/solution_designer:client_f32ff8cb-424a-4fd6-b5e8-a8d8250caa2c"}}]}
+sent[1] address: {"segments":[{"kind":"member","memberRouteKey":"SoftwareEngineeringTeam"},{"kind":"task_team","taskTeamRunId":"task-team-run-1"},{"kind":"member","memberRouteKey":"solution_designer"}]}
+PASS Round 3 browser probe
