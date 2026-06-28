@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, version bump, tag, or deployment is in scope before user verification. This report records delivery-stage integration refresh, docs sync, verification hold, and pending finalization steps.
+Workspace run visibility/New-workspace launch fix finalized to `personal` and released as `v1.3.83`. The release helper bumped workspace package versions, synced curated release notes, updated the managed messaging release manifest, committed the release version, created the annotated release tag, and pushed both `personal` and `v1.3.83`.
 
 ## Handoff Summary
 
@@ -59,23 +59,31 @@ Post-integration evidence:
 
 ## Version / Tag / Release Commit
 
-Release requested by user after verification. Planned version: `1.3.83` (current packages and latest tag are `1.3.82`). Release notes added to the archived ticket and will be passed to `pnpm release 1.3.83 -- --release-notes tickets/done/workspace-run-visibility-analysis/release-notes.md` after repository finalization.
+- Previous package/tag version: `1.3.82` / `v1.3.82`
+- New release version: `1.3.83`
+- Release commit: `30149f16`
+- Annotated tag: `v1.3.83`
+- Tag object: `8baf9356`
+- Tag target commit: `30149f16`
+- Updated versions: `autobyteus-web/package.json` = `1.3.83`; `autobyteus-message-gateway/package.json` = `1.3.83`
+- Curated release notes synced to: `.github/release-notes/release-notes.md`
+- Managed messaging release manifest synced for: `v1.3.83`
 
 ## Repository Finalization
 
 - Bootstrap context source: Upstream task package recorded branch `codex/workspace-run-visibility-analysis` and tracked base `origin/personal`.
 - Ticket branch: `codex/workspace-run-visibility-analysis`
-- Ticket branch commit result: Local checkpoint commit completed (`c1e8b3b4`); final ticket commit pending user verification and ticket archival.
-- Ticket branch push result: Not started; pending user verification.
+- Ticket branch commit result: `Completed` — checkpoint `c1e8b3b4`, merge commits `fa692a02`/`755c52f1`, and archive/finalization commit `99683499`.
+- Ticket branch push result: `Completed` — pushed `origin/codex/workspace-run-visibility-analysis` before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A; user verification not yet received.
-- Delivery-owned edits protected before re-integration: `Completed` for the pre-handoff integration via checkpoint `c1e8b3b4`; will be rechecked before final merge after user verification.
-- Re-integration before final merge result: `Not needed` yet; will refresh `origin/personal` again after user verification.
-- Target branch update result: Not started.
-- Merge into target result: Not started.
-- Push target branch result: Not started.
-- Repository finalization status: `In progress`
+- Target advanced after user verification: `Yes` — `origin/personal` advanced to `5bd29cfb` with an iOS privacy-policy doc before final merge.
+- Delivery-owned edits protected before re-integration: `Completed` — post-verification delivery artifacts were stashed before merging `origin/personal` at `5bd29cfb`, then restored.
+- Re-integration before final merge result: `Completed` — merge commit `755c52f1`, no conflicts; final focused checks passed.
+- Target branch update result: `Completed` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` fast-forwarded `personal` to `5bd29cfb` before merging the ticket branch.
+- Merge into target result: `Completed` — fast-forward merge of `codex/workspace-run-visibility-analysis` into `personal`, advancing to `99683499`.
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` after ticket merge and again through the release helper at `30149f16`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None at artifact update time.
 
 ## Local Electron Build For User Testing
@@ -95,20 +103,20 @@ The build skipped macOS code signing because the signing identity was explicitly
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
-- Method: `Documented Command`
+- Method: `Release Script`
 - Method reference / command: `pnpm release 1.3.83 -- --release-notes tickets/done/workspace-run-visibility-analysis/release-notes.md`
-- Release/publication/deployment result: `Pending`
-- Release notes handoff result: `Pending`
+- Release/publication/deployment result: `Completed` for local release preparation and push; tag-triggered GitHub workflows were initiated by pushing `v1.3.83`.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-run-visibility-analysis`
-- Worktree cleanup result: `Blocked` pending repository finalization.
-- Worktree prune result: `Blocked` pending repository finalization.
-- Local ticket branch cleanup result: `Blocked` pending repository finalization.
-- Remote branch cleanup result: `Not required` at this stage.
-- Blocker (if applicable): User verification and finalization not complete.
+- Worktree cleanup result: `Completed` — dedicated ticket worktree removed after copying the user-requested local macOS build artifacts to `/Users/normy/autobyteus_org/autobyteus-local-release-artifacts/workspace-run-visibility-analysis-v1.3.83/`.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` — deleted local `codex/workspace-run-visibility-analysis`.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/workspace-run-visibility-analysis`.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -118,13 +126,27 @@ The build skipped macOS code signing because the signing identity was explicitly
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: Created after user explicitly requested release; user verification had already been received.
+- Release notes artifact created before verification: `No` — release entered scope in the verification/finalization request; notes were created before ticket archival/release execution.
 - Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-run-visibility-analysis/tickets/done/workspace-run-visibility-analysis/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-N/A. No deployment is in scope for this ticket before user verification.
+- Pushed finalized ticket branch to `origin/codex/workspace-run-visibility-analysis`.
+- Fast-forward merged the ticket branch into `personal` and pushed `origin/personal`.
+- Ran `pnpm release 1.3.83 -- --release-notes tickets/done/workspace-run-visibility-analysis/release-notes.md`.
+- Release helper pushed `personal` and annotated tag `v1.3.83`, starting the repository tag-triggered release workflows.
+- No `release:manual-dispatch` was run, per README guidance.
+
+## Tag-Triggered Workflow Runs
+
+Observed via `gh run list` after tag push; all were `in_progress` at the time of final report update:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28312563996
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28312564015
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28312564002
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28312564006
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28312564000
 
 ## Environment Or Migration Notes
 
@@ -146,4 +168,4 @@ Before finalization, rollback is simply not merging/pushing the ticket branch an
 
 ## Final Status
 
-User verification received. Final repository archival, push/merge, and release are in progress.
+Completed. The workspace run visibility/New-workspace launch fix is merged to `personal`, released as `v1.3.83`, and the dedicated ticket worktree plus local/remote ticket branches were cleaned up. Official release artifacts are being produced by the tag-triggered GitHub workflows.
