@@ -1,0 +1,33 @@
+# post-integration frontend token usage component and localization checks
+2026-06-28T08:15:41Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-web
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > renders the approved Token Meter hierarchy with server-owned component values 24ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > omits the thinking-token subline when no reasoning tokens are present 4ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > uses the focused team member as primary and keeps aggregate usage only in the Team section 15ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts > TokenUsageMeterPanel > shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run 6ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  10:15:46
+   Duration  4.90s (transform 2.58s, setup 4.12s, collect 125ms, tests 48ms, environment 202ms, prepare 165ms)
+
+
+> autobyteus@1.3.83 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

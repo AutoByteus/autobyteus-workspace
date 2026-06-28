@@ -77,22 +77,32 @@ future callers should not depend on raw JSON for supported fields.
 
 Codex App Server emits raw `thread/tokenUsage/updated` notifications with
 `tokenUsage.last`, `tokenUsage.total`, and `tokenUsage.modelContextWindow`.
-`resolveCodexThreadTokenUsage(...)` owns this mapping:
+`tokenUsage.total` is treated as the authoritative cumulative thread snapshot
+when present, while `tokenUsage.last` is preserved as provider-delta metadata
+for the current update. `resolveCodexThreadTokenUsage(...)` owns this mapping:
 
-- prefer `last` as a `per_turn` delta when present;
-- fall back to `total` as a `cumulative_snapshot` with a stable
-  `snapshot_series_key` when `last` is absent;
+- prefer `total` as a `cumulative_snapshot` with stable
+  `snapshot_series_key=codex_thread:<thread-id>`;
+- use `last` as a fallback `per_call` delta only when Codex omits `total`, and
+  flag that fallback with `codex_cumulative_total_missing_used_provider_delta`;
+- attach `last` token fields to the raw event as reconciliation metadata so the
+  first cumulative snapshot can be baselined from the provider delta instead of
+  charging historical thread totals, and later total movement can be compared
+  against the provider-reported delta;
 - mark Codex input semantics as `gross_includes_cache`;
 - map `inputTokens`, `outputTokens`, and `totalTokens` to reported token fields,
-  with the per-call gross input also becoming `latest_prompt_tokens`;
+  with the latest provider-delta gross input becoming `latest_prompt_tokens`;
 - map `cachedInputTokens` to first-class `cache_read_input_tokens`;
 - map `reasoningOutputTokens` to first-class `reasoning_output_tokens`; and
 - map `modelContextWindow` to `effective_context_window_tokens`.
 
-The raw Codex payload is still preserved for audit/debugging, but cache,
-reasoning, and context fields must not be raw-only. Durable DS-007 coverage
-asserts these fields persist in `token_usage_ledger_events`, surface through
-GraphQL summaries where exposed, and update the live token meter store state.
+Codex token-usage updates are dispatched as they arrive, including multiple
+updates for one active `turnId`; they must not wait behind a single pending
+turn-id map entry that could overwrite an earlier update. The raw Codex payload
+is still preserved for audit/debugging, but cache, reasoning, and context fields
+must not be raw-only. Durable coverage asserts these fields persist in
+`token_usage_ledger_events`, surface through GraphQL summaries where exposed,
+and update the live token meter store state.
 
 ### Claude Agent SDK
 
@@ -111,6 +121,10 @@ If a future SDK result exposes numeric thinking details such as
 `reasoning_output_tokens`. If the SDK emits thinking content but no numeric
 thinking-token count, `reasoning_output_tokens` stays null; the UI should show
 accurate output totals/cost without a thinking-token subline.
+When both `result.usage` and `modelUsage` are present, the mapper preserves the
+raw terminal result and flags comparable token divergence with
+`claude_usage_model_usage_mismatch`; it does not switch Claude to Codex-style
+cumulative accounting.
 
 ## Ledger Semantics
 
@@ -152,7 +166,7 @@ deltas:
   billable output tokens so output-price estimates include provider-billed
   thinking, while reasoning remains a visible output sub-breakdown instead of
   being double-counted in token totals.
-- Component, cache, reasoning, billable-output, and current-prompt fields are
+- Component, cache, reasoning, billable-output, and latest-prompt fields are
   delta-normalized for cumulative snapshots just like the primary
   input/output/total fields.
 - `usage_scope` is `per_call`, `per_turn`, or `cumulative_snapshot`.
@@ -232,13 +246,13 @@ The frontend treats token usage as display-only state:
 - live `TOKEN_USAGE_UPDATED` WebSocket events update `tokenUsageMeterStore`;
 - reopening/focusing runs hydrates from the GraphQL summary queries;
 - `TokenUsageHeaderChip` and the right-side `Token` tab render tokens, nullable
-  estimated API costs, price status, model/runtime metadata, current prompt
+  estimated API costs, price status, model/runtime metadata, latest prompt
   context pressure, and focused-member totals;
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
-  `Current prompt`, `Gross input`, `Output`, `Total estimate`,
+  `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
   `Input breakdown`, and `Pricing details`.
 - `Gross input` is cumulative input sent to providers. It may include discounted
-  cache-hit tokens and must not be labeled as full-price input or as the current
+  cache-hit tokens and must not be labeled as full-price input or as the latest
   active context size.
 - `Input breakdown` renders server-owned `standardInputTokens`,
   `cacheReadInputTokens`, cache-write tokens, cache hit rate, and component input
@@ -250,7 +264,7 @@ The frontend treats token usage as display-only state:
 - The Output card shows reasoning/thinking tokens only when the server summary
   reports positive `reasoningOutputTokens`; those tokens are already included in
   output tokens and estimated output cost.
-- Unknown current-prompt/context-window pressure is hidden rather than rendered
+- Unknown latest-prompt/context-window pressure is hidden rather than rendered
   as a noisy empty card. Context pressure appears only when a numeric percentage
   and effective context window are present;
 - the frontend does not compute authoritative accounting deltas or model prices.
@@ -271,7 +285,8 @@ That run emitted `grossInputTokens=10248`, `standardInputTokens=5256`,
 `cacheReadInputTokens=4992`, `cacheState=positive`,
 `estimatedApiTotalCost=0.029076 USD`, `latestPromptTokens=10248`,
 `effectiveContextWindowTokens=258400`, `contextWindowUsagePercent≈3.97`, and
-`usageReportCount=1`; the captured UI showed `Current prompt`, `Gross input`,
+`usageReportCount=1`; the current UI presents that context-size metric as
+`Latest prompt` beside `Gross input`,
 `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and `Usage
 reports` rather than ambiguous primary `Input` / raw `events` labels.
 
@@ -282,7 +297,7 @@ input, provider-specific component semantics, local/no-bill, custom missing
 price, mixed-currency aggregate behavior, model-list regressions, and the
 runtime-native Codex/Claude field baseline. Frontend store/component tests cover
 live update aggregation, GraphQL hydration replacement, Token Meter hierarchy,
-cache-aware input rows, price-status labels, reasoning-output display, current
+cache-aware input rows, price-status labels, reasoning-output display, latest
 prompt fields, and the right-side tab label.
 
 ## Runtime E2E Coverage
@@ -306,7 +321,9 @@ the expected runtime/ingestion kind, waits for idle, and verifies ledger-backed
 GraphQL summary/statistics projections using the current field names:
 `grossInputTokens`, component cache fields, `latestPromptTokens`,
 `effectiveContextWindowTokens`, `contextWindowUsagePercent`, and
-`usageReportCount`.
+`usageReportCount`. Model identity assertions compare GraphQL summaries and
+statistics with the emitted `TOKEN_USAGE_UPDATED.model_identifier`, not a launch
+alias that a runtime may resolve to a provider-specific model id.
 
 With `RUN_RUNTIME_TOKEN_USAGE_E2E` unset, the suite remains safely skipped by
 design.
