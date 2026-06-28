@@ -17,7 +17,6 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.focus_agent': 'Focus agent',
   'workspace.components.workspace.team.TeamActiveTasksSection.focus_team': 'Focus team',
   'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
-  'workspace.components.workspace.team.TeamActiveTasksSection.back_to_task': 'Back to task',
   'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
   'workspace.components.workspace.team.TeamActiveTasksSection.select_task': 'Select a task to read it.',
   'workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
@@ -153,7 +152,7 @@ const mountSubject = (teamContext = buildTeamContext(), props: Record<string, un
       },
       TeamTaskReferenceViewer: {
         props: ['teamRunId', 'taskId', 'reference'],
-        template: '<div data-test="task-reference-viewer"><button data-test="viewer-back" @click="$emit(\'back\')">Back</button><span>{{ teamRunId }}</span><span>{{ taskId }}</span><span>{{ reference.path }}</span></div>',
+        template: '<div data-test="task-reference-viewer"><span>{{ teamRunId }}</span><span>{{ taskId }}</span><span>{{ reference.path }}</span></div>',
       },
     },
     mocks: {
@@ -218,9 +217,32 @@ describe('TeamActiveTasksSection', () => {
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('team-run');
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('task_0002');
     expect(wrapper.find('[data-test="active-task-task-body"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="viewer-back"]').exists()).toBe(false);
 
-    await wrapper.get('[data-test="viewer-back"]').trigger('click');
+    await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
+  });
+
+  it('adds a message-style horizontal split resize handle for the task navigator', async () => {
+    const wrapper = mountSubject();
+    const navigator = wrapper.get('[data-test="team-active-tasks-navigator"]');
+    const handle = wrapper.get('[data-test="team-active-tasks-resize-handle"]');
+
+    expect(handle.attributes('role')).toBe('separator');
+    expect(handle.attributes('aria-orientation')).toBe('vertical');
+    expect(navigator.attributes('style')).toContain('width: 248px');
+
+    await handle.trigger('mousedown', { clientX: 200 });
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 500 }));
+    await wrapper.vm.$nextTick();
+    expect(navigator.attributes('style')).toContain('width: 360px');
+    window.dispatchEvent(new MouseEvent('mouseup'));
+
+    await handle.trigger('mousedown', { clientX: 500 });
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 100 }));
+    await wrapper.vm.$nextTick();
+    expect(navigator.attributes('style')).toContain('width: 168px');
+    window.dispatchEvent(new MouseEvent('mouseup'));
   });
 
   it('selects tasks for reading without focusing; explicit focus buttons emit focus requests', async () => {

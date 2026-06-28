@@ -42,7 +42,11 @@
       </div>
 
       <div v-else class="flex h-full min-h-0 overflow-hidden" data-test="team-active-tasks-split">
-        <aside class="min-h-0 w-[15.5rem] shrink-0 overflow-y-auto border-r border-slate-200 pb-2" data-test="team-active-tasks-navigator">
+        <aside
+          class="min-h-0 shrink-0 overflow-y-auto border-r border-slate-200 pb-2"
+          :style="{ width: `${leftPaneWidth}px` }"
+          data-test="team-active-tasks-navigator"
+        >
           <TeamActiveTaskRow
             v-for="entry in activeTaskEntries"
             :key="entry.node.memberRouteKey"
@@ -54,6 +58,14 @@
           />
         </aside>
 
+        <div
+          class="w-1 shrink-0 cursor-col-resize bg-gray-100 transition-colors hover:bg-blue-200"
+          role="separator"
+          aria-orientation="vertical"
+          data-test="team-active-tasks-resize-handle"
+          @mousedown="startResize"
+        />
+
         <main class="min-h-0 min-w-0 flex-1 overflow-hidden" data-test="active-task-detail-pane">
           <div v-if="selectedEntry && selectedReference && selectedEntry.taskId" class="h-full" data-test="active-task-reference-preview">
             <TeamTaskReferenceViewer
@@ -61,7 +73,6 @@
               :task-id="selectedEntry.taskId"
               :reference="selectedReference"
               :refresh-signal="referenceRefreshSignal"
-              @back="selectedReferenceId = null"
             />
           </div>
 
@@ -148,6 +159,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveActiveTaskEntries, type ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import TeamActiveTaskRow from '~/components/workspace/team/TeamActiveTaskRow.vue';
@@ -168,6 +180,11 @@ const emit = defineEmits<{
 const selectedTaskRouteKey = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const referenceRefreshSignal = ref(0);
+const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
+  initialWidth: 248,
+  minWidth: 168,
+  maxWidth: 360,
+});
 const activeTaskEntries = computed<ActiveTaskEntry[]>(() => deriveActiveTaskEntries(props.teamContext));
 const selectedEntry = computed(() => activeTaskEntries.value.find((entry) => entry.node.memberRouteKey === selectedTaskRouteKey.value) ?? null);
 const selectedReference = computed(() => selectedEntry.value?.taskReferenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) ?? null);

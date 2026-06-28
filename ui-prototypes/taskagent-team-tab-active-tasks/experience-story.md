@@ -6,11 +6,11 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 ## 2) Main Journey
 1. User opens the Team tab. System shows `screen_id: team_tab_default`: Messages is open by default with an Activity-style left chevron and unchanged list/detail/reference content, and Active Tasks is collapsed by default.
 2. User scans Messages. System keeps the existing Messages list, nested reference rows, detail pane, and reference preview behavior unchanged.
-3. User opens Active Tasks. System shows `screen_id: active_tasks_master_detail`: a leading chevron header, a human count such as `2 tasks`, a left task navigator, and a right selected-content pane.
+3. User opens Active Tasks. System shows `screen_id: active_tasks_master_detail`: a leading chevron header, a human count such as `2 tasks`, a resizable left task navigator, a vertical divider, and a right selected-content pane.
 4. User selects a TaskAgent task. System shows `screen_id: task_agent_detail`: the selected task is highlighted on the left; if it has reference files, those references appear nested directly under the selected task in the left navigator; the right pane shows the task body with a compact task header and Focus action.
 5. User selects a TaskTeam task. System shows `screen_id: task_team_detail`: references, if any, appear under the selected team task on the left; the right pane shows the task body, compact team status/focus header, member Focus rows, and collapsed Technical details.
 6. User clicks a task reference filename in the left navigator. System shows `screen_id: task_reference_preview`: the reference row is highlighted and the whole right pane switches to a read-only file preview, like Messages.
-7. User clicks Back to task or reselects the task row. System returns to `task_agent_detail` or `task_team_detail` with the same task selected.
+7. User reselects the task row. System returns to `task_agent_detail` or `task_team_detail` with the same task selected.
 8. User clicks `Focus` on a target/member. System focuses the requested target in the main workspace while preserving the current Team tab selection.
 
 ## 3) Cognitive Load Criteria
@@ -48,6 +48,7 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
   - Left task navigator with active delegated tasks.
   - First task selected by default when no previous selection exists.
   - References nested under the selected task only, when files exist.
+  - A draggable vertical divider between the task navigator and the right selected-content pane.
   - Right pane showing selected task detail, not duplicate reference rows.
 - User can do:
   - `select_task`: select another task row.
@@ -116,15 +117,13 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 - User sees:
   - The selected reference row highlighted under its task in the left navigator.
   - Whole right pane replaced by file preview content.
-  - File name, file type affordance, loading/error state, and a small way to return to task detail.
+  - File name, file type affordance, and loading/error state without a task-specific Back button.
 - User can do:
-  - `return_to_task`: return to the selected task body.
+  - `select_task`: reselect the task row to return to the selected task body, or select another task row.
   - `select_another_reference`: preview a different reference under the same selected task.
-  - `select_task`: select another task row.
 - System behavior:
-  - when `return_to_task` -> right pane returns to the selected task body -> go to `task_agent_detail` or `task_team_detail`.
+  - when `select_task` -> reference selection clears and right pane shows the selected task body.
   - when `select_another_reference` -> right pane loads and displays that file -> remain on `task_reference_preview`.
-  - when `select_task` -> reference selection clears and right pane shows the new task body.
 - Cognitive objective: give reference files the same efficient reading experience as message references.
 - Cognition controls:
   - chunking: preview replaces task detail instead of competing with it.
@@ -135,7 +134,7 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 ## 5) Alternate And Error Paths
 - If Active Tasks has no active tasks, show a calm empty state such as `No active delegated tasks` and keep the header count `0 tasks`; user can continue using Messages.
 - If a task has no reference files, show no nested reference rows and no empty reference block in the right detail.
-- If a reference file is unavailable, keep the selected reference row highlighted and show a recoverable preview error with Back to task.
+- If a reference file is unavailable, keep the selected reference row highlighted and show a recoverable preview error; reselecting the task row returns to task detail.
 - If a task is waiting for user approval/input/action, show a calm status such as `Waiting approval`, `Waiting input`, or `Waiting action`; do not show Approve/Deny buttons in Active Tasks.
 - If focus target is unavailable, keep the task selected and show a non-blocking focus failure message.
 - If task metadata arrives without reference files due to an old backend payload, render the task body normally and omit reference rows; do not infer files from Messages.
@@ -149,7 +148,7 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 | `T-004` | `select_task` TaskAgent | `active_tasks_master_detail` | `task_agent_detail` | Left task selected; references, if any, appear nested under it; right pane shows task body. |
 | `T-005` | `select_task` TaskTeam | `active_tasks_master_detail` | `task_team_detail` | Left team task selected; references nested under it; right pane shows body, team focus, member focus rows. |
 | `T-006` | `select_task_reference` | `task_agent_detail` or `task_team_detail` | `task_reference_preview` | Reference row highlighted; whole right pane switches to loading then file content/error. |
-| `T-007` | `return_to_task` | `task_reference_preview` | `task_agent_detail` or `task_team_detail` | Right pane returns to selected task body. |
+| `T-007` | `select_task` on the selected task row | `task_reference_preview` | `task_agent_detail` or `task_team_detail` | Right pane returns to selected task body. |
 | `T-008` | `focus_agent` | `task_agent_detail` | `task_agent_detail` | Workspace focuses agent; Team tab selection remains. |
 | `T-009` | `focus_team` | `task_team_detail` | `task_team_detail` | Workspace focuses team; Team tab selection remains. |
 | `T-010` | `focus_member` | `task_team_detail` | `task_team_detail` | Workspace focuses member; Team tab selection remains. |

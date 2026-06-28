@@ -159,9 +159,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
+import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type {
   TeamCommunicationMemberKind,
@@ -190,8 +191,11 @@ const selectedMessageId = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const selectedType = ref<'message' | 'reference'>('message');
 const referenceRefreshSignal = ref(0);
-const leftPaneWidth = ref(232);
-let removeResizeListeners: (() => void) | null = null;
+const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
+  initialWidth: 232,
+  minWidth: 168,
+  maxWidth: 360,
+});
 
 const focusedParticipantSelector = computed<TeamCommunicationParticipantSelector>(() => ({
   memberRunId: props.focusedMemberRunId ?? null,
@@ -277,29 +281,6 @@ const selectReference = (
   selectedType.value = 'reference';
 };
 
-const stopResize = () => {
-  removeResizeListeners?.();
-  removeResizeListeners = null;
-};
-
-const startResize = (event: MouseEvent) => {
-  if (typeof window === 'undefined') return;
-  event.preventDefault();
-  const startX = event.clientX;
-  const startWidth = leftPaneWidth.value;
-  const onMove = (moveEvent: MouseEvent) => {
-    const nextWidth = Math.min(360, Math.max(168, startWidth + moveEvent.clientX - startX));
-    leftPaneWidth.value = nextWidth;
-  };
-  const onUp = () => stopResize();
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp, { once: true });
-  removeResizeListeners = () => {
-    window.removeEventListener('mousemove', onMove);
-    window.removeEventListener('mouseup', onUp);
-  };
-};
-
 watch(
   () => displayMessages.value.map((message) => message.messageId).join('\n'),
   () => {
@@ -317,8 +298,6 @@ watch(
   },
   { immediate: true },
 );
-
-onBeforeUnmount(() => stopResize());
 </script>
 
 <style scoped>
