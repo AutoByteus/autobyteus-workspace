@@ -5,7 +5,7 @@
 - Ticket: `codex-token-cache-rate-statistics`
 - Branch: `codex/codex-token-cache-rate-statistics`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics`
-- Current delivery state: User verified the local Electron build and requested finalization plus a new version release; ticket is archived under `tickets/done`, with repository finalization/release in progress.
+- Current delivery state: Finalization and release complete; merged to `personal`, released as `v1.3.84`, workflows triggered, and ticket worktree/branches cleaned up.
 
 ## Upstream Artifact Package
 
@@ -89,4 +89,15 @@ User-requested local Electron build after the later `origin/personal` refresh:
 
 - Verified by user: `Yes`
 - Verification/finalization reference: user message on 2026-06-28, `i tested. it works. no finalize and release a new version. follow finalization guidelines` (interpreted as verified completion plus request to finalize and release a new version).
-- Release requested: `Yes`, next patch version planned as `1.3.84`.
+- Release requested: `Yes`; released as `v1.3.84` with release commit `31ac18d11f3205a276cabb33403105d6d90f58c1` and tag object `944f6fa126daedf485e68607c3433eadd3c3de87`.
+
+## Final Release And Cleanup
+
+- Merged to `personal`: `8504b8d9e05d5dba6e80e0b947bb7598ff20cb1d`
+- Release version: `1.3.84`
+- Release commit: `31ac18d11f3205a276cabb33403105d6d90f58c1`
+- Tag: `v1.3.84` (`944f6fa126daedf485e68607c3433eadd3c3de87` -> `31ac18d11f3205a276cabb33403105d6d90f58c1`)
+- Release log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-token-cache-rate-statistics/delivery-evidence/release-v1.3.84.log`
+- Workflow observation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-token-cache-rate-statistics/delivery-evidence/gh-run-list-v1.3.84-final-observed.json`
+- Cleanup log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-token-cache-rate-statistics/final-cleanup.log`
+- Preserved local Electron test artifacts: `/Users/normy/autobyteus_org/autobyteus-local-release-artifacts/codex-token-cache-rate-statistics-v1.3.84`
