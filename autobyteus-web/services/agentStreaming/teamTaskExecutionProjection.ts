@@ -1,4 +1,6 @@
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
+import { normalizeTeamReferenceFiles } from '~/utils/teamReferences/teamReferenceFileModel';
 import type { ServerMessage } from './protocol';
 
 export type TaskExecutionProjectionStatus =
@@ -24,6 +26,8 @@ export interface TaskDelegationProjectionDetails {
   taskId: string | null;
   taskLabel: string | null;
   taskDescription: string | null;
+  taskReferenceFiles: TeamReferenceFile[];
+  taskArguments: Record<string, unknown> | null;
   taskTargetKind: string | null;
   taskTargetName: string | null;
   taskExecutionStatus: TaskExecutionProjectionStatus;
@@ -79,6 +83,38 @@ const extractTaskArrayEntry = (
   )) ?? taskRecords[0] ?? {};
 };
 
+const extractReferenceFiles = (
+  payload: Record<string, unknown>,
+  taskEntry: Record<string, unknown>,
+): TeamReferenceFile[] => {
+  const timestamp = normalizeProjectionString(payload.updatedAt)
+    ?? normalizeProjectionString(payload.updated_at)
+    ?? normalizeProjectionString(payload.createdAt)
+    ?? normalizeProjectionString(payload.created_at)
+    ?? new Date().toISOString();
+  const rawReferences = payload.taskReferenceFiles
+    ?? payload.task_reference_files
+    ?? payload.referenceFiles
+    ?? payload.reference_files
+    ?? taskEntry.taskReferenceFiles
+    ?? taskEntry.task_reference_files
+    ?? taskEntry.referenceFiles
+    ?? taskEntry.reference_files;
+  return normalizeTeamReferenceFiles(rawReferences, timestamp);
+};
+
+const extractTaskArguments = (
+  payload: Record<string, unknown>,
+  taskEntry: Record<string, unknown>,
+): Record<string, unknown> | null => {
+  const candidate = payload.taskArguments
+    ?? payload.task_arguments
+    ?? taskEntry.taskArguments
+    ?? taskEntry.task_arguments;
+  const record = asProjectionRecord(candidate);
+  return Object.keys(record).length > 0 ? record : null;
+};
+
 const extractTargetName = (target: Record<string, unknown>, targetKind: string | null): string | null => {
   if (targetKind === 'member') {
     const member = asProjectionRecord(target.member);
@@ -132,6 +168,8 @@ export const extractTaskDelegationProjectionDetails = (
       ?? normalizeProjectionString(taskEntry.description)
       ?? normalizeProjectionString(taskEntry.taskDescription)
       ?? normalizeProjectionString(taskEntry.task_description),
+    taskReferenceFiles: extractReferenceFiles(payload, taskEntry),
+    taskArguments: extractTaskArguments(payload, taskEntry),
     taskTargetKind: targetKind,
     taskTargetName: normalizeProjectionString(payload.target_name)
       ?? normalizeProjectionString(payload.targetName)
@@ -154,6 +192,8 @@ export const applyTaskDelegationProjectionDetails = (
   node.taskId = details.taskId ?? node.taskId ?? null;
   node.taskLabel = details.taskLabel ?? node.taskLabel ?? null;
   node.taskDescription = details.taskDescription ?? node.taskDescription ?? null;
+  node.taskReferenceFiles = details.taskReferenceFiles.length ? details.taskReferenceFiles.map((reference) => ({ ...reference })) : (node.taskReferenceFiles ?? []);
+  node.taskArguments = details.taskArguments ?? node.taskArguments ?? null;
   node.taskTargetKind = details.taskTargetKind ?? node.taskTargetKind ?? null;
   node.taskTargetName = details.taskTargetName ?? node.taskTargetName ?? null;
   node.taskExecutionStatus = details.taskExecutionStatus ?? node.taskExecutionStatus ?? null;

@@ -9,6 +9,7 @@ import type {
   TaskExecutionTimelineEntry,
 } from '~/services/agentStreaming/teamTaskExecutionProjection';
 import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 
 export type TeamMemberNodeKind = 'agent' | 'agent_team';
 
@@ -37,6 +38,10 @@ export interface TeamMemberNodeBase {
   taskLabel?: string | null;
   /** Delegated task description from TaskDelegationRecord.description. */
   taskDescription?: string | null;
+  /** Task-owned reference files from the delegated task record. */
+  taskReferenceFiles?: TeamReferenceFile[];
+  /** Normalized original delegate_task input/provenance. */
+  taskArguments?: Record<string, unknown> | null;
   /** Display-only delegated task target kind. */
   taskTargetKind?: 'member' | 'team' | string | null;
   /** Display-only delegated task target name. */

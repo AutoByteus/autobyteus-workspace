@@ -1,4 +1,5 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
@@ -14,11 +15,14 @@ export interface ActiveTaskEntry {
   kind: ActiveTaskEntryKind;
   node: TeamMemberNode;
   context: AgentContext | null;
+  teamRunId: string;
   targetDisplayName: string;
   taskId: string | null;
   taskLabel: string | null;
   shortTaskDisambiguator: string;
   taskDescription: string | null;
+  taskReferenceFiles: TeamReferenceFile[];
+  taskArguments: Record<string, unknown> | null;
   taskTargetKind: string | null;
   taskTargetName: string | null;
   runId: string | null;
@@ -112,11 +116,14 @@ export const deriveActiveTaskEntries = (
       kind: isTaskTeam ? 'task_team' : 'task_agent',
       node,
       context,
+      teamRunId: teamContext.teamRunId,
       targetDisplayName: taskTargetName,
       taskId,
       taskLabel,
       shortTaskDisambiguator: idPreview(disambiguator),
       taskDescription: node.taskDescription?.trim() || null,
+      taskReferenceFiles: node.taskReferenceFiles ? node.taskReferenceFiles.map((reference) => ({ ...reference })) : [],
+      taskArguments: node.taskArguments ?? null,
       taskTargetKind,
       taskTargetName,
       runId,
