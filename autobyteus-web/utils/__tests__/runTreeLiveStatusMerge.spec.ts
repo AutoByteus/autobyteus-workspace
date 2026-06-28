@@ -8,6 +8,8 @@ const baseTree = (): RunTreeWorkspaceNode[] => [
     workspaceId: 'workspace-alpha',
     workspaceRootPath: '/ws/a',
     workspaceName: 'Alpha',
+    workspaceKind: 'filesystem',
+    canRemoveFromWorkspaces: true,
     agents: [
       {
         agentDefinitionId: 'agent-1',

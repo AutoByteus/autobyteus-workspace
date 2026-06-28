@@ -6,7 +6,7 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 
 const listWorkspaceRunHistoryMock = vi.fn();
 const getWorkspaceRunHistoryMock = vi.fn();
-const getRegisteredWorkspaceRootPathMock = vi.fn();
+const getWorkspaceRootPathForHistoryMock = vi.fn();
 
 vi.mock("../../../src/run-history/services/workspace-run-history-service.js", async () => {
   const actual = await vi.importActual<
@@ -30,7 +30,7 @@ vi.mock("../../../src/workspaces/workspace-manager.js", async () => {
   return {
     ...actual,
     getWorkspaceManager: () => ({
-      getRegisteredWorkspaceRootPath: getRegisteredWorkspaceRootPathMock,
+      getWorkspaceRootPathForHistory: getWorkspaceRootPathForHistoryMock,
     }),
   };
 });
@@ -252,7 +252,7 @@ describe("Workspace run history GraphQL e2e", () => {
   });
 
   it("returns scoped history for a registered workspace id", async () => {
-    getRegisteredWorkspaceRootPathMock.mockResolvedValue("/ws/a");
+    getWorkspaceRootPathForHistoryMock.mockResolvedValue("/ws/a");
     getWorkspaceRunHistoryMock.mockResolvedValue({
       workspaceRootPath: "/ws/a",
       workspaceName: "workspace-a",
@@ -310,7 +310,7 @@ describe("Workspace run history GraphQL e2e", () => {
       limitPerAgent: 3,
     });
 
-    expect(getRegisteredWorkspaceRootPathMock).toHaveBeenCalledWith("ws-registered");
+    expect(getWorkspaceRootPathForHistoryMock).toHaveBeenCalledWith("ws-registered");
     expect(getWorkspaceRunHistoryMock).toHaveBeenCalledWith("/ws/a", 3);
     expect(result.workspaceRunHistory).toEqual({
       workspaceRootPath: "/ws/a",
@@ -330,8 +330,42 @@ describe("Workspace run history GraphQL e2e", () => {
     });
   });
 
+  it("returns scoped history for the default temp workspace id", async () => {
+    getWorkspaceRootPathForHistoryMock.mockResolvedValue("/tmp/autobyteus-temp");
+    getWorkspaceRunHistoryMock.mockResolvedValue({
+      workspaceRootPath: "/tmp/autobyteus-temp",
+      workspaceName: "Temp Workspace",
+      agentDefinitions: [],
+      teamDefinitions: [],
+    });
+
+    const result = await execGraphql<{
+      workspaceRunHistory: {
+        workspaceRootPath: string;
+        workspaceName: string;
+      };
+    }>(`
+      query WorkspaceRunHistory($workspaceId: String!, $limitPerAgent: Int!) {
+        workspaceRunHistory(workspaceId: $workspaceId, limitPerAgent: $limitPerAgent) {
+          workspaceRootPath
+          workspaceName
+        }
+      }
+    `, {
+      workspaceId: "temp_ws_default",
+      limitPerAgent: 6,
+    });
+
+    expect(getWorkspaceRootPathForHistoryMock).toHaveBeenCalledWith("temp_ws_default");
+    expect(getWorkspaceRunHistoryMock).toHaveBeenCalledWith("/tmp/autobyteus-temp", 6);
+    expect(result.workspaceRunHistory).toEqual({
+      workspaceRootPath: "/tmp/autobyteus-temp",
+      workspaceName: "Temp Workspace",
+    });
+  });
+
   it("rejects workspaceRunHistory for a missing or removed workspace id", async () => {
-    getRegisteredWorkspaceRootPathMock.mockResolvedValue(null);
+    getWorkspaceRootPathForHistoryMock.mockResolvedValue(null);
 
     const result = await runGraphql(`
       query RemovedWorkspaceHistory {
@@ -341,11 +375,11 @@ describe("Workspace run history GraphQL e2e", () => {
       }
     `);
 
-    expect(getRegisteredWorkspaceRootPathMock).toHaveBeenCalledWith("ws-removed");
+    expect(getWorkspaceRootPathForHistoryMock).toHaveBeenCalledWith("ws-removed");
     expect(getWorkspaceRunHistoryMock).not.toHaveBeenCalled();
     expect((result.errors ?? []).map((error) => error.message)).toEqual(
       expect.arrayContaining([
-        expect.stringContaining("Registered workspace 'ws-removed' was not found."),
+        expect.stringContaining("Workspace 'ws-removed' was not found or is not visible for run history."),
       ]),
     );
   });

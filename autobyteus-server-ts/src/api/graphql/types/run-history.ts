@@ -282,9 +282,9 @@ export class RunHistoryResolver {
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
   ): Promise<WorkspaceRunHistoryGroupObject> {
-    const workspaceRootPath = await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId);
+    const workspaceRootPath = await this.workspaceManager.getWorkspaceRootPathForHistory(workspaceId);
     if (!workspaceRootPath) {
-      throw new Error(`Registered workspace '${workspaceId}' was not found.`);
+      throw new Error(`Workspace '${workspaceId}' was not found or is not visible for run history.`);
     }
     return this.workspaceRunHistoryService.getWorkspaceRunHistory(
       workspaceRootPath,

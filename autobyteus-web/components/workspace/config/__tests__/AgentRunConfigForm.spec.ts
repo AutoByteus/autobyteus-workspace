@@ -10,7 +10,7 @@ vi.mock('../WorkspaceSelector.vue', () => ({
     name: 'WorkspaceSelector',
     template: '<div class="workspace-selector-stub"></div>',
     props: ['workspaceId', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
-    emits: ['select-existing', 'load-new'],
+    emits: ['select-existing', 'workspace-input-change'],
   },
 }))
 

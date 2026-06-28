@@ -9,7 +9,8 @@ import type {
 } from '~/stores/runHistoryTypes';
 import {
   buildRunTreeProjection,
-  type DraftRunSnapshot,
+  type LocalRunSnapshot,
+  type ProjectionWorkspaceDescriptor,
   type ProjectionRunKnownStatus,
   type RunTreeWorkspaceNode,
 } from '~/utils/runTreeProjection';
@@ -32,6 +33,7 @@ import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
 
 export const UNASSIGNED_TEAM_WORKSPACE_KEY = 'unassigned-team-workspace';
 export const UNASSIGNED_TEAM_WORKSPACE_LABEL = 'Unassigned Team Workspace';
+export const TEMP_WORKSPACE_ID = 'temp_ws_default';
 
 export const normalizeRootPath = (value: string | null | undefined): string => {
   const source = (value || '').trim();
@@ -106,6 +108,77 @@ const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus:
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
 };
 
+type WorkspaceDescriptorCandidate = ProjectionWorkspaceDescriptor & {
+  isFixedTempWorkspace: boolean;
+};
+
+const resolveVisibleRunWorkspaceDescriptor = (workspace: {
+  workspaceId: string;
+  workspaceRootPath?: string | null;
+  absolutePath?: string | null;
+  name?: string | null;
+  displayName?: string | null;
+  kind?: string | null;
+  isTemp?: boolean | null;
+}): WorkspaceDescriptorCandidate | null => {
+  const workspaceId = workspace.workspaceId?.trim();
+  const normalizedRoot = normalizeRootPath(workspace.workspaceRootPath || workspace.absolutePath || null);
+  if (!workspaceId || !normalizedRoot) {
+    return null;
+  }
+
+  const isFixedTempWorkspace = workspaceId === TEMP_WORKSPACE_ID;
+  const isTempWorkspace = workspace.kind === 'temp' || workspace.isTemp === true || isFixedTempWorkspace;
+  const isFilesystemWorkspace = !workspace.kind || workspace.kind === 'filesystem';
+
+  if (!isFilesystemWorkspace && !isTempWorkspace) {
+    return null;
+  }
+
+  return {
+    workspaceId,
+    workspaceRootPath: normalizedRoot,
+    workspaceName: workspace.displayName || workspace.name || displayWorkspaceName(normalizedRoot),
+    workspaceKind: isTempWorkspace ? 'temp' : 'filesystem',
+    canRemoveFromWorkspaces: isFilesystemWorkspace && !isTempWorkspace,
+    isFixedTempWorkspace,
+  };
+};
+
+const buildVisibleRunWorkspaceDescriptors = (
+  workspaces: Array<{
+    workspaceId: string;
+    workspaceRootPath?: string | null;
+    absolutePath?: string | null;
+    name?: string | null;
+    displayName?: string | null;
+    kind?: string | null;
+    isTemp?: boolean | null;
+  }>,
+): ProjectionWorkspaceDescriptor[] => {
+  const workspaceDescriptors = new Map<string, WorkspaceDescriptorCandidate>();
+
+  for (const workspace of workspaces) {
+    const descriptor = resolveVisibleRunWorkspaceDescriptor(workspace);
+    if (!descriptor) {
+      continue;
+    }
+
+    const existing = workspaceDescriptors.get(descriptor.workspaceRootPath);
+    if (!existing || descriptor.isFixedTempWorkspace) {
+      workspaceDescriptors.set(descriptor.workspaceRootPath, descriptor);
+    }
+  }
+
+  return Array.from(workspaceDescriptors.values()).map((descriptor) => ({
+    workspaceId: descriptor.workspaceId,
+    workspaceRootPath: descriptor.workspaceRootPath,
+    workspaceName: descriptor.workspaceName,
+    workspaceKind: descriptor.workspaceKind,
+    canRemoveFromWorkspaces: descriptor.canRemoveFromWorkspaces,
+  }));
+};
+
 export const buildRunHistoryTreeNodes = (params: {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   agentAvatarByDefinitionId: Record<string, string>;
@@ -137,7 +210,6 @@ export const buildRunHistoryTreeNodes = (params: {
     };
   }>;
 }): RunTreeWorkspaceNode[] => {
-  const workspaceDescriptors = new Map<string, { workspaceId: string; workspaceName: string }>();
   const agentAvatarByDefinitionId = new Map<string, string>(
     Object.entries(params.agentAvatarByDefinitionId),
   );
@@ -150,23 +222,7 @@ export const buildRunHistoryTreeNodes = (params: {
     }
   }
 
-  for (const workspace of params.allWorkspaces) {
-    if (workspace.kind && workspace.kind !== 'filesystem') {
-      continue;
-    }
-    if (workspace.isTemp) {
-      continue;
-    }
-    const workspaceId = workspace.workspaceId?.trim();
-    const normalizedRoot = normalizeRootPath(workspace.workspaceRootPath || workspace.absolutePath || null);
-    if (!workspaceId || !normalizedRoot) {
-      continue;
-    }
-    workspaceDescriptors.set(normalizedRoot, {
-      workspaceId,
-      workspaceName: workspace.displayName || workspace.name || displayWorkspaceName(normalizedRoot),
-    });
-  }
+  const workspaceDescriptors = buildVisibleRunWorkspaceDescriptors(params.allWorkspaces);
 
   const persistedWorkspaces = params.workspaceGroups.map((workspace) => ({
     ...workspace,
@@ -189,12 +245,8 @@ export const buildRunHistoryTreeNodes = (params: {
     })),
   }));
 
-  const draftRuns: DraftRunSnapshot[] = [];
+  const localRuns: LocalRunSnapshot[] = [];
   for (const [runId, context] of params.agentContexts.entries()) {
-    if (!runId.startsWith(DRAFT_RUN_ID_PREFIX)) {
-      continue;
-    }
-
     const workspaceRootPath =
       context.config.workspaceMetadata?.workspaceRootPath ||
       resolveWorkspaceRootPath(
@@ -214,7 +266,7 @@ export const buildRunHistoryTreeNodes = (params: {
       agentAvatarByDefinitionId.get(context.config.agentDefinitionId) ||
       null;
 
-    draftRuns.push({
+    localRuns.push({
       runId,
       workspaceRootPath,
       agentDefinitionId: context.config.agentDefinitionId,
@@ -228,6 +280,7 @@ export const buildRunHistoryTreeNodes = (params: {
       currentStatus,
       lastKnownStatus,
       isActive,
+      source: runId.startsWith(DRAFT_RUN_ID_PREFIX) ? 'draft' : 'local',
     });
   }
 
@@ -237,14 +290,8 @@ export const buildRunHistoryTreeNodes = (params: {
       workspaceName: workspace.workspaceName,
       agents: workspace.agentDefinitions,
     })),
-    workspaceDescriptors: Array.from(workspaceDescriptors.entries()).map(
-      ([workspaceRootPath, descriptor]) => ({
-        workspaceId: descriptor.workspaceId,
-        workspaceRootPath,
-        workspaceName: descriptor.workspaceName,
-      }),
-    ),
-    draftRuns,
+    workspaceDescriptors,
+    localRuns,
   });
 
   return mergeRunTreeWithLiveContexts(projectedTree, params.agentContexts);

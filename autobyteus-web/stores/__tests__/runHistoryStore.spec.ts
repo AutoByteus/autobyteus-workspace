@@ -141,7 +141,15 @@ const {
     },
     workspaceStoreMock: {
       workspacesFetched: true,
-      allWorkspaces: [] as Array<{ workspaceId: string; absolutePath: string; name?: string }>,
+      allWorkspaces: [] as Array<{
+        workspaceId: string;
+        absolutePath: string;
+        workspaceRootPath?: string;
+        name?: string;
+        displayName?: string;
+        kind?: string;
+        isTemp?: boolean;
+      }>,
       workspaces: {} as Record<string, any>,
       workspaceMetadataById: {} as Record<string, any>,
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
@@ -663,6 +671,191 @@ describe('runHistoryStore', () => {
     expect(activeAgentContext.state.currentStatus).toBe('running');
     expect(activeTeamContext.currentStatus).toBe('running');
     expect(activeTeamMemberContext.state.currentStatus).toBe('running');
+  });
+
+  it('projects backend-visible temp workspace descriptors as non-removable roots with local drafts', () => {
+    workspaceStoreMock.allWorkspaces = [
+      {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Temp Workspace',
+        kind: 'temp',
+        isTemp: true,
+      },
+    ];
+    workspaceStoreMock.workspaces = {
+      temp_ws_default: {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        workspaceConfig: { root_path: '/tmp/autobyteus-temp' },
+      },
+    };
+    agentContextsStoreMock.runs.set('temp-123', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'temp_ws_default',
+        workspaceMetadata: { workspaceRootPath: '/tmp/autobyteus-temp' },
+      },
+      state: {
+        currentStatus: 'offline',
+        conversation: {
+          id: 'temp-123',
+          messages: [],
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    const nodes = store.getTreeNodes();
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      workspaceId: 'temp_ws_default',
+      workspaceName: 'Temp Workspace',
+      workspaceKind: 'temp',
+      canRemoveFromWorkspaces: false,
+    });
+    expect(nodes[0]?.agents[0]?.runs[0]).toMatchObject({
+      runId: 'temp-123',
+      source: 'draft',
+      isDraft: true,
+    });
+  });
+
+  it('prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root', () => {
+    workspaceStoreMock.allWorkspaces = [
+      {
+        workspaceId: 'agent_ws_duplicate',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Registered duplicate',
+        kind: 'filesystem',
+        isTemp: false,
+      },
+      {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Temp Workspace',
+        kind: 'temp',
+        isTemp: true,
+      },
+    ];
+
+    const store = useRunHistoryStore();
+    const nodes = store.getTreeNodes();
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      workspaceId: 'temp_ws_default',
+      workspaceName: 'Temp Workspace',
+      workspaceKind: 'temp',
+      canRemoveFromWorkspaces: false,
+    });
+  });
+
+  it('keeps permanent local standalone contexts visible until history reconciliation dedupes them', () => {
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A' },
+    ];
+    workspaceStoreMock.workspaces = {
+      'ws-1': {
+        workspaceId: 'ws-1',
+        absolutePath: '/ws/a',
+        workspaceRootPath: '/ws/a',
+        workspaceConfig: { root_path: '/ws/a' },
+      },
+    };
+    agentContextsStoreMock.runs.set('run-permanent', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'ws-1',
+        workspaceMetadata: { workspaceRootPath: '/ws/a' },
+      },
+      state: {
+        currentStatus: 'running',
+        conversation: {
+          id: 'run-permanent',
+          messages: [],
+          createdAt: '2026-01-02T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    let rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      runId: 'run-permanent',
+      source: 'local',
+      isDraft: false,
+    });
+
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-permanent',
+                summary: 'Persisted row',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                status: 'offline',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+
+    rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      runId: 'run-permanent',
+      source: 'history',
+      summary: 'Persisted row',
+    });
+  });
+
+  it('does not project history-only removed workspace roots without visible descriptors', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/removed',
+        workspaceName: 'Removed',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-removed',
+                summary: 'Removed root history',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                status: 'offline',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+
+    expect(store.getTreeNodes()).toEqual([]);
   });
 
   it('preserves backend member-scoped statuses when refreshing an active running team', async () => {
@@ -1571,6 +1764,8 @@ describe('runHistoryStore', () => {
       workspaceId: 'ws-2',
       workspaceRootPath: '/ws/b',
       workspaceName: 'Beta',
+      workspaceKind: 'filesystem',
+      canRemoveFromWorkspaces: true,
       agents: [],
     });
   });
