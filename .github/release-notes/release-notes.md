@@ -1,10 +1,12 @@
-## What's New
-- New workspace paths entered from the run configuration are now loaded automatically when you click **Run Agent** or **Run Team**.
-
-## Improvements
-- The default Temp Workspace now appears in the Workspaces sidebar for fresh installs and reveals newly started runs immediately.
-- Temp workspace rows remain visible for run history while staying protected from **Remove from Workspaces** actions.
+# Release Notes: Codex Token Usage Accounting
 
 ## Fixes
-- Fixed fresh/empty-state runs opening in the center pane without appearing in the Workspaces sidebar.
-- Fixed New workspace mode accidentally launching against the previously selected workspace when the path had not been preloaded.
+
+- Fixed Codex Token Meter accounting so multi-update/tool-heavy turns keep every provider token-usage increment instead of losing earlier same-turn updates.
+- Corrected Codex cumulative token snapshots so first observed snapshots do not charge historical thread totals, while later snapshots reconcile input, cache, output, and thinking-token deltas exactly once.
+- Updated runtime token usage validation so provider-emitted model identity is preserved through GraphQL summaries and statistics.
+
+## Improvements
+
+- Renamed the Token Meter context-size label to `Latest prompt` and clarified that gross input/cache-hit values are cumulative run totals.
+- Preserved Claude Agent SDK `usage` versus `modelUsage` divergence diagnostics without changing Claude terminal-result accounting behavior.
