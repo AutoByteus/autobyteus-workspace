@@ -34,6 +34,10 @@ The GraphQL `workspaces()` query is the canonical visible workspace-list source 
 
 Run history is not an authority for top-level workspace visibility. A historical run under an unregistered or removed workspace root must not recreate a top-level workspace row by itself.
 
+The fixed default temp workspace (`temp_ws_default`) is a visible run workspace
+when returned by `workspaces()`. It may be shown in run-history/workspace UI, but
+it is not a removable registry entry.
+
 ## Remove From Workspaces
 
 `removeWorkspace(input: { workspaceId })` removes a registered filesystem workspace from the visible workspace registry. It is intentionally non-destructive:
@@ -50,6 +54,12 @@ Re-adding/loading the same root later creates the same deterministic workspace i
 
 ## Workspace History Boundary
 
-Workspace-specific run-history lookup uses the registry boundary. `workspaceRunHistory(workspaceId, limitPerAgent)` resolves `workspaceId` through `WorkspaceManager.getRegisteredWorkspaceRootPath(...)` before reading history for that root; missing, unregistered, or removed filesystem workspace ids are rejected.
+Workspace-specific run-history lookup uses the visible-workspace boundary.
+`workspaceRunHistory(workspaceId, limitPerAgent)` resolves `workspaceId` through
+`WorkspaceManager.getWorkspaceRootPathForHistory(...)` before reading history
+for that root. Registered filesystem workspace ids resolve through the registry,
+and the fixed default temp workspace id resolves through the temp workspace
+lifecycle. Missing, unregistered, removed filesystem, and unrelated transient
+workspace ids are rejected.
 
 The broader `listWorkspaceRunHistory(limitPerAgent)` query remains available for global/recent-history style surfaces, but desktop top-level Workspaces rows should be derived from `workspaces()`, not from all historical workspace groups.

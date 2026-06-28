@@ -10,7 +10,7 @@
         <section v-if="primarySummary" class="space-y-4" data-test="token-usage-primary">
           <section v-if="hasCurrentPrompt(primarySummary)" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="flex flex-wrap items-baseline justify-between gap-3">
-              <h3 class="text-sm font-semibold text-slate-900">{{ $t('shell.tokenUsage.currentPrompt') }}</h3>
+              <h3 class="text-sm font-semibold text-slate-900" :title="t('shell.tokenUsage.latestPromptTooltip')">{{ $t('shell.tokenUsage.latestPrompt') }}</h3>
               <span class="text-sm font-semibold tabular-nums text-slate-900">{{ formatPercent(primarySummary.contextWindowUsagePercent) }}</span>
             </div>
             <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
@@ -25,17 +25,17 @@
 
           <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));">
             <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" data-test="gross-input-card">
-              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{ $t('shell.tokenUsage.grossInput') }}</p>
+              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500" :title="t('shell.tokenUsage.runTotalMetricTooltip')">{{ $t('shell.tokenUsage.grossInput') }}</p>
               <p class="mt-2 text-2xl font-semibold tabular-nums text-slate-950" :title="formatTokenDetail(primarySummary.grossInputTokens)">
                 {{ formatCompactInteger(primarySummary.grossInputTokens) }}
                 <span class="text-xs font-medium text-slate-500">{{ $t('shell.tokenUsage.tokensLabel') }}</span>
               </p>
-              <p class="mt-2 text-xs font-medium text-blue-700">{{ cacheSubline(primarySummary) }}</p>
+              <p class="mt-2 text-xs font-medium text-blue-700" :title="t('shell.tokenUsage.cacheHitTooltip')">{{ cacheSubline(primarySummary) }}</p>
               <p class="mt-1 text-sm text-slate-600">{{ $t('shell.tokenUsage.costLabel') }} <strong class="tabular-nums text-slate-800">{{ formatCost(primarySummary.estimatedApiInputCost, primarySummary.currency, primarySummary.apiCostStatus) }}</strong></p>
             </article>
 
             <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" data-test="output-card">
-              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{ $t('shell.tokenUsage.output') }}</p>
+              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500" :title="t('shell.tokenUsage.runTotalMetricTooltip')">{{ $t('shell.tokenUsage.output') }}</p>
               <p class="mt-2 text-2xl font-semibold tabular-nums text-slate-950" :title="formatTokenDetail(primarySummary.outputTokens)">
                 {{ formatCompactInteger(primarySummary.outputTokens) }}
                 <span class="text-xs font-medium text-slate-500">{{ $t('shell.tokenUsage.tokensLabel') }}</span>
@@ -47,7 +47,7 @@
             </article>
 
             <article class="rounded-2xl border border-blue-200 bg-blue-50/50 p-4 shadow-sm" data-test="total-estimate-card">
-              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{ $t('shell.tokenUsage.totalEstimate') }}</p>
+              <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500" :title="t('shell.tokenUsage.runTotalEstimateTooltip')">{{ $t('shell.tokenUsage.totalEstimate') }}</p>
               <p class="mt-2 text-2xl font-semibold tabular-nums text-slate-950" :title="formatTokenDetail(primarySummary.totalTokens)">
                 {{ formatCompactInteger(primarySummary.totalTokens) }}
                 <span class="text-xs font-medium text-slate-500">{{ $t('shell.tokenUsage.tokensLabel') }}</span>

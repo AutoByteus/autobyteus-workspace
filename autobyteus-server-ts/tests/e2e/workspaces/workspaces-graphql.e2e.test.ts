@@ -453,6 +453,35 @@ describe("Workspaces GraphQL e2e", () => {
     expect(found?.isTemp).toBe(true);
   });
 
+  it("rejects removing the default temp workspace", async () => {
+    const removeMutation = `
+      mutation RemoveWorkspace($input: RemoveWorkspaceInput!) {
+        removeWorkspace(input: $input) {
+          success
+          message
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+
+    const removed = await execGraphql<{
+      removeWorkspace: {
+        success: boolean;
+        message: string;
+        workspaceId: string;
+        workspaceRootPath: string | null;
+      };
+    }>(removeMutation, { input: { workspaceId: "temp_ws_default" } });
+
+    expect(removed.removeWorkspace).toMatchObject({
+      success: false,
+      workspaceId: "temp_ws_default",
+      workspaceRootPath: null,
+    });
+    expect(removed.removeWorkspace.message).toContain("Only registered filesystem workspaces");
+  });
+
   it("creates and lists the temp workspace using the configured relative override under app data dir", async () => {
     const appDataDir = path.join(tempRoot, "server-data");
     const expectedTempRoot = path.join(appDataDir, "isolated-temp-workspace");

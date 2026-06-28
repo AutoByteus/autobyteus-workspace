@@ -16,7 +16,11 @@ import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 const messages: Record<string, string> = {
   'shell.tokenUsage.title': 'Token Meter',
   'shell.tokenUsage.subtitle': 'Live server-accounted usage and estimated API price.',
-  'shell.tokenUsage.currentPrompt': 'Current prompt',
+  'shell.tokenUsage.latestPrompt': 'Latest prompt',
+  'shell.tokenUsage.latestPromptTooltip': 'Latest provider prompt/current context; not a run total.',
+  'shell.tokenUsage.runTotalMetricTooltip': 'Cumulative for this Autobyteus run.',
+  'shell.tokenUsage.cacheHitTooltip': 'Run-total cached input divided by run-total gross input.',
+  'shell.tokenUsage.runTotalEstimateTooltip': 'Cumulative token total and estimated API cost for this Autobyteus run.',
   'shell.tokenUsage.contextTokens': 'context tokens',
   'shell.tokenUsage.grossInput': 'Gross input',
   'shell.tokenUsage.output': 'Output',
@@ -195,7 +199,7 @@ describe('TokenUsageMeterPanel', () => {
     const wrapper = mountPanel();
     const primaryText = wrapper.get('[data-test="token-usage-primary"]').text();
 
-    expect(primaryText).toContain('Current prompt');
+    expect(primaryText).toContain('Latest prompt');
     expect(primaryText).toContain('Gross input');
     expect(primaryText).toContain('Output');
     expect(primaryText).toContain('Total estimate');
@@ -213,6 +217,8 @@ describe('TokenUsageMeterPanel', () => {
     expect(primaryText).toContain('1 reports');
     expect(primaryText).not.toContain('Events');
     expect(wrapper.find('[title="Included in output tokens and estimated output cost."]').exists()).toBe(true);
+    expect(wrapper.find('[title="Latest provider prompt/current context; not a run total."]').exists()).toBe(true);
+    expect(wrapper.find('[title="Run-total cached input divided by run-total gross input."]').exists()).toBe(true);
   });
 
   it('omits the thinking-token subline when no reasoning tokens are present', () => {

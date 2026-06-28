@@ -1,0 +1,166 @@
+{
+  "createdAt": "2026-06-27T16:19:29.297886+00:00",
+  "probe": "codex_cache_rate_live_probe_synthesis",
+  "purpose": "Experimentally test whether 99%+ Codex app-server cache-hit rates are plausible under realistic repeated long-prefix turns.",
+  "method": "Create a temporary Codex app-server agent with a long stable instruction prefix, send short repeated turns, send one turn with a large novel user suffix, then send another short turn. Capture raw TOKEN_USAGE_UPDATED events and server summary.",
+  "result": "High 99%+ per-turn cache-read rates reproduced live. The rate is low on first unique prompt, jumps above 99% for repeated stable-prefix turns, drops when a large novel suffix is introduced, and recovers above 99% on the next turn once that suffix becomes part of the cached prefix.",
+  "evidences": [
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-27T16-15-33-657Z-codex-cache-rate-live-probe.json",
+      "model": "gpt-5.4-mini",
+      "runId": "codex_cache_rate_live_probe_a683314c_dce0_462c_b13ac5bf08bb4ebaa4ddc1636cc15f35",
+      "promptShape": {
+        "instruction_line_count": 1800,
+        "novel_user_suffix_line_count": 450,
+        "turns": [
+          "turn_1_warmup_unique_large_static_prefix",
+          "turn_2_same_static_prefix_short_delta",
+          "turn_3_same_static_prefix_short_delta",
+          "turn_4_large_new_user_suffix",
+          "turn_5_after_novel_suffix_recovery_short_delta"
+        ]
+      },
+      "captures": [
+        {
+          "label": "turn_1_warmup_unique_large_static_prefix",
+          "inputTokens": 103878,
+          "cachedInputTokens": 4480,
+          "standardInputTokens": 99398,
+          "cacheRatePercent": 4.313,
+          "uncachedRatePercent": 95.687
+        },
+        {
+          "label": "turn_2_same_static_prefix_short_delta",
+          "inputTokens": 103893,
+          "cachedInputTokens": 103808,
+          "standardInputTokens": 85,
+          "cacheRatePercent": 99.918,
+          "uncachedRatePercent": 0.082
+        },
+        {
+          "label": "turn_3_same_static_prefix_short_delta",
+          "inputTokens": 103908,
+          "cachedInputTokens": 103808,
+          "standardInputTokens": 100,
+          "cacheRatePercent": 99.904,
+          "uncachedRatePercent": 0.096
+        },
+        {
+          "label": "turn_4_large_new_user_suffix",
+          "inputTokens": 122394,
+          "cachedInputTokens": 103808,
+          "standardInputTokens": 18586,
+          "cacheRatePercent": 84.815,
+          "uncachedRatePercent": 15.185
+        },
+        {
+          "label": "turn_5_after_novel_suffix_recovery_short_delta",
+          "inputTokens": 122409,
+          "cachedInputTokens": 122240,
+          "standardInputTokens": 169,
+          "cacheRatePercent": 99.862,
+          "uncachedRatePercent": 0.138
+        }
+      ],
+      "summary": {
+        "runId": "codex_cache_rate_live_probe_a683314c_dce0_462c_b13ac5bf08bb4ebaa4ddc1636cc15f35",
+        "grossInputTokens": 556482,
+        "standardInputTokens": 118338,
+        "cacheReadInputTokens": 438144,
+        "outputTokens": 172,
+        "totalTokens": 556654,
+        "cacheReadInputTokenRate": 0.7873462214411248,
+        "standardInputTokenRate": 0.2126537785588752,
+        "cacheState": "positive",
+        "estimatedApiTotalCost": 0.1223883,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "latestPromptTokens": 122409,
+        "effectiveContextWindowTokens": 258400,
+        "contextWindowUsagePercent": 47.3719040247678,
+        "latestModelIdentifier": "gpt-5.4-mini",
+        "latestRuntimeKind": "codex_app_server",
+        "usageReportCount": 5
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-27T16-16-36-489Z-codex-cache-rate-live-probe.json",
+      "model": "gpt-5.5",
+      "runId": "codex_cache_rate_live_probe_75a50c5f_60bb_41f8_7be8c6a8d91f49a29bf7fef7f7700747",
+      "promptShape": {
+        "instruction_line_count": 900,
+        "novel_user_suffix_line_count": 220,
+        "turns": [
+          "turn_1_warmup_unique_large_static_prefix",
+          "turn_2_same_static_prefix_short_delta",
+          "turn_3_same_static_prefix_short_delta",
+          "turn_4_large_new_user_suffix",
+          "turn_5_after_novel_suffix_recovery_short_delta"
+        ]
+      },
+      "captures": [
+        {
+          "label": "turn_1_warmup_unique_large_static_prefix",
+          "inputTokens": 61176,
+          "cachedInputTokens": 4992,
+          "standardInputTokens": 56184,
+          "cacheRatePercent": 8.16,
+          "uncachedRatePercent": 91.84
+        },
+        {
+          "label": "turn_2_same_static_prefix_short_delta",
+          "inputTokens": 61191,
+          "cachedInputTokens": 60800,
+          "standardInputTokens": 391,
+          "cacheRatePercent": 99.361,
+          "uncachedRatePercent": 0.639
+        },
+        {
+          "label": "turn_3_same_static_prefix_short_delta",
+          "inputTokens": 61206,
+          "cachedInputTokens": 60800,
+          "standardInputTokens": 406,
+          "cacheRatePercent": 99.337,
+          "uncachedRatePercent": 0.663
+        },
+        {
+          "label": "turn_4_large_new_user_suffix",
+          "inputTokens": 71142,
+          "cachedInputTokens": 60800,
+          "standardInputTokens": 10342,
+          "cacheRatePercent": 85.463,
+          "uncachedRatePercent": 14.537
+        },
+        {
+          "label": "turn_5_after_novel_suffix_recovery_short_delta",
+          "inputTokens": 71157,
+          "cachedInputTokens": 71040,
+          "standardInputTokens": 117,
+          "cacheRatePercent": 99.836,
+          "uncachedRatePercent": 0.164
+        }
+      ],
+      "summary": {
+        "runId": "codex_cache_rate_live_probe_75a50c5f_60bb_41f8_7be8c6a8d91f49a29bf7fef7f7700747",
+        "grossInputTokens": 325872,
+        "standardInputTokens": 67440,
+        "cacheReadInputTokens": 258432,
+        "outputTokens": 25,
+        "totalTokens": 325897,
+        "cacheReadInputTokenRate": 0.7930475769627339,
+        "standardInputTokenRate": 0.20695242303726616,
+        "cacheState": "positive",
+        "estimatedApiTotalCost": 0.46716599999999997,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "latestPromptTokens": 71157,
+        "effectiveContextWindowTokens": 258400,
+        "contextWindowUsagePercent": 27.5375386996904,
+        "latestModelIdentifier": "gpt-5.5",
+        "latestRuntimeKind": "codex_app_server",
+        "usageReportCount": 5
+      }
+    }
+  ],
+  "conclusion": "The screenshot-like 99.8% value is not impossible and is consistent with provider prompt-cache prefix reuse. The local Autobyteus Token Meter is displaying Codex app-server raw cachedInputTokens/inputTokens lineage rather than fabricating the rate."
+}

@@ -1,0 +1,157 @@
+# post-integration focused backend token usage tests
+2026-06-28T08:15:27Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > auto-accepts MCP tool approvals when autoExecuteTools is enabled 3ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits approval events for MCP tool calls and answers with the MCP elicitation action 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits a local MCP completion event when a pending MCP tool call completes 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > auto-accepts terminal approvals when autoExecuteTools is enabled 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution 54ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > gates file-change approvals in manual mode and returns decline on denial 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > gates dynamic tools in manual mode until approval 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > claims manual dynamic approvals before awaited handler execution 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > denies dynamic tools in manual mode without invoking the handler 0ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes the configured Codex serviceTier to turn/start
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > executes dynamic tools immediately when autoExecuteTools is enabled 52ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > grants permission requests automatically in auto mode 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > grants permission requests automatically for team members in auto mode 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > queues permission requests in manual mode and grants only after approval 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > denies permission requests in manual mode with a no-grant response 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread approval identity > stores Codex terminal approvals by exact item id while keeping approvalId as metadata 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes the configured Codex serviceTier to turn/start 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > queues Codex cumulative snapshot updates immediately without waiting for idle 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > maps Codex app-server total fields into cumulative snapshots and last fields into provider-delta metadata 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > queues multiple same-turn cumulative advancements instead of overwriting by turn id 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > keeps late token usage as an immediately consumable cumulative snapshot after turn completion 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > flags provider-delta metadata missing when a Codex cumulative total has no last payload 0ms
+stdout | tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:18003) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts > CodexAgentRunBackend > returns the accepted platform run id from the codex thread
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts > CodexAgentRunBackend > returns the accepted platform run id from the codex thread 4ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts > CodexAgentRunBackend > returns a runtime command failure when the codex thread sendTurn throws 1ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts > CodexAgentRunBackend > dispatches idle lifecycle events even when token usage updates were observed earlier 27ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts > CodexAgentRunBackend > emits normalized token usage events for late token usage updates after idle 12ms
+stdout | tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses provider-delta metadata as the first cumulative snapshot baseline 4ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > uses cumulative movement after a previous snapshot and flags provider-delta mismatch 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > delta-normalizes cumulative cost-affecting fields and keeps source cumulative fields for restarted lookups 1ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears every calculator-consumed field for regressed cumulative snapshots 2ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts > TokenUsageSnapshotDeltaNormalizer > clears cost-affecting fields when a cumulative snapshot lacks a series key 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts > buildClaudeTokenUsageEvent > extracts terminal result usage with cache buckets and raw payload preservation 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts > buildClaudeTokenUsageEvent > ignores assistant chunks and uses only terminal result usage/modelUsage for accounting 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts > buildClaudeTokenUsageEvent > maps future numeric Claude thinking-token details as reasoning output sub-breakdown 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts > buildClaudeTokenUsageEvent > flags usage versus modelUsage token divergence without changing selected usage source 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts > buildClaudeTokenUsageEvent > uses modelUsage/model_usage variants and flags missing reported dimensions 0ms
+
+ Test Files  4 passed (4)
+      Tests  36 passed (36)
+   Start at  10:15:27
+   Duration  6.38s (transform 3.15s, setup 50ms, import 5.26s, tests 179ms, environment 0ms)
+

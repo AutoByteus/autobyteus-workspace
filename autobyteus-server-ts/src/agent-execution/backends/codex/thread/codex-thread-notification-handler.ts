@@ -77,7 +77,7 @@ export const handleAppServerNotification = (
         `Run '${codexThread.runId}': Codex token-usage update for turn '${turnId}' did not include usable token counts.`,
       );
     } else {
-      codexThread.recordTurnTokenUsage(turnId, usage);
+      codexThread.recordTokenUsageUpdate(usage);
     }
   }
 

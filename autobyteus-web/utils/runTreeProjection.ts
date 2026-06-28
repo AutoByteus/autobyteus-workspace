@@ -6,7 +6,8 @@ import {
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 
 export type ProjectionRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
-export type RunTreeRowSource = 'history' | 'draft';
+export type RunTreeRowSource = 'history' | 'draft' | 'local';
+export type ProjectionWorkspaceKind = 'filesystem' | 'temp';
 
 export interface ProjectionRunItem {
   runId: string;
@@ -34,9 +35,11 @@ export interface ProjectionWorkspaceDescriptor {
   workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
+  workspaceKind: ProjectionWorkspaceKind;
+  canRemoveFromWorkspaces: boolean;
 }
 
-export interface DraftRunSnapshot {
+export interface LocalRunSnapshot {
   runId: string;
   workspaceRootPath: string;
   agentDefinitionId: string;
@@ -47,6 +50,7 @@ export interface DraftRunSnapshot {
   currentStatus: AgentStatus;
   lastKnownStatus: ProjectionRunKnownStatus;
   isActive: boolean;
+  source: Extract<RunTreeRowSource, 'draft' | 'local'>;
 }
 
 export interface RunTreeRow extends ProjectionRunItem {
@@ -65,13 +69,15 @@ export interface RunTreeWorkspaceNode {
   workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
+  workspaceKind: ProjectionWorkspaceKind;
+  canRemoveFromWorkspaces: boolean;
   agents: RunTreeAgentNode[];
 }
 
 interface BuildRunTreeProjectionInput {
   persistedWorkspaces: ProjectionWorkspaceGroup[];
   workspaceDescriptors: ProjectionWorkspaceDescriptor[];
-  draftRuns: DraftRunSnapshot[];
+  localRuns: LocalRunSnapshot[];
 }
 
 interface MutableAgentNode {
@@ -85,6 +91,8 @@ interface MutableWorkspaceNode {
   workspaceId: string;
   workspaceRootPath: string;
   workspaceName: string;
+  workspaceKind: ProjectionWorkspaceKind;
+  canRemoveFromWorkspaces: boolean;
   agentsById: Map<string, MutableAgentNode>;
 }
 
@@ -119,6 +127,12 @@ const compareRuns = (a: RunTreeRow, b: RunTreeRow): number => {
   return a.runId.localeCompare(b.runId);
 };
 
+const sourcePriority = (source: RunTreeRowSource): number => {
+  if (source === 'history') return 3;
+  if (source === 'local') return 2;
+  return 1;
+};
+
 const dedupeAndSortRuns = (rows: RunTreeRow[]): RunTreeRow[] => {
   const byRunId = new Map<string, RunTreeRow>();
 
@@ -129,7 +143,7 @@ const dedupeAndSortRuns = (rows: RunTreeRow[]): RunTreeRow[] => {
       continue;
     }
 
-    if (existing.source === 'draft' && row.source === 'history') {
+    if (sourcePriority(row.source) > sourcePriority(existing.source)) {
       byRunId.set(row.runId, row);
       continue;
     }
@@ -147,11 +161,18 @@ const ensureWorkspaceNode = (
   workspaceId: string,
   workspaceRootPath: string,
   workspaceName: string,
+  workspaceKind: ProjectionWorkspaceKind,
+  canRemoveFromWorkspaces: boolean,
 ): MutableWorkspaceNode => {
   const existing = workspaceNodes.get(workspaceRootPath);
   if (existing) {
     if (!existing.workspaceName && workspaceName) {
       existing.workspaceName = workspaceName;
+    }
+    if (existing.canRemoveFromWorkspaces && !canRemoveFromWorkspaces) {
+      existing.workspaceId = workspaceId;
+      existing.workspaceKind = workspaceKind;
+      existing.canRemoveFromWorkspaces = canRemoveFromWorkspaces;
     }
     return existing;
   }
@@ -160,6 +181,8 @@ const ensureWorkspaceNode = (
     workspaceId,
     workspaceRootPath,
     workspaceName: workspaceName || FALLBACK_WORKSPACE_NAME,
+    workspaceKind,
+    canRemoveFromWorkspaces,
     agentsById: new Map<string, MutableAgentNode>(),
   };
   workspaceNodes.set(workspaceRootPath, created);
@@ -206,6 +229,8 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       workspace.workspaceId,
       normalizedRoot,
       workspace.workspaceName || FALLBACK_WORKSPACE_NAME,
+      workspace.workspaceKind,
+      workspace.canRemoveFromWorkspaces,
     );
   }
 
@@ -243,35 +268,35 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
     }
   }
 
-  for (const draft of input.draftRuns) {
-    const normalizedWorkspace = normalizeRootPath(draft.workspaceRootPath);
+  for (const localRun of input.localRuns) {
+    const normalizedWorkspace = normalizeRootPath(localRun.workspaceRootPath);
     if (!normalizedWorkspace) {
-      console.warn(INVALID_DRAFT_WORKSPACE_WARNING, { runId: draft.runId });
+      console.warn(INVALID_DRAFT_WORKSPACE_WARNING, { runId: localRun.runId });
       continue;
     }
 
     const workspaceNode = workspaceNodes.get(normalizedWorkspace);
     if (!workspaceNode) {
-      console.warn(INVALID_DRAFT_WORKSPACE_WARNING, { runId: draft.runId });
+      console.warn(INVALID_DRAFT_WORKSPACE_WARNING, { runId: localRun.runId });
       continue;
     }
 
     const agentNode = ensureAgentNode(
       workspaceNode,
-      draft.agentDefinitionId,
-      draft.agentName || FALLBACK_AGENT_NAME,
-      draft.agentAvatarUrl ?? null,
+      localRun.agentDefinitionId,
+      localRun.agentName || FALLBACK_AGENT_NAME,
+      localRun.agentAvatarUrl ?? null,
     );
 
     agentNode.runs.push({
-      runId: draft.runId,
-      summary: draft.summary,
-      lastActivityAt: draft.lastActivityAt,
-      currentStatus: draft.currentStatus,
-      lastKnownStatus: draft.lastKnownStatus,
-      isActive: draft.isActive,
-      source: 'draft',
-      isDraft: true,
+      runId: localRun.runId,
+      summary: localRun.summary,
+      lastActivityAt: localRun.lastActivityAt,
+      currentStatus: localRun.currentStatus,
+      lastKnownStatus: localRun.lastKnownStatus,
+      isActive: localRun.isActive,
+      source: localRun.source,
+      isDraft: localRun.source === 'draft',
     });
   }
 
@@ -295,6 +320,8 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       workspaceId: workspaceNode.workspaceId,
       workspaceRootPath: workspaceNode.workspaceRootPath,
       workspaceName: workspaceNode.workspaceName || FALLBACK_WORKSPACE_NAME,
+      workspaceKind: workspaceNode.workspaceKind,
+      canRemoveFromWorkspaces: workspaceNode.canRemoveFromWorkspaces,
       agents,
     };
   });

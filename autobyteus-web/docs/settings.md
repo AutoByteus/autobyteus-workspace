@@ -285,13 +285,27 @@ current expansion state.
 
 - Top-level workspace rows come from `workspaceStore.allWorkspaces`, which is
   loaded from the backend `workspaces()` query and its registered/visible
-  workspace list. History-only roots for unregistered or removed workspaces do
-  not create desktop top-level workspace rows.
+  workspace list. The run-history read model accepts registered filesystem
+  workspaces and the fixed default temp workspace (`temp_ws_default`) as run
+  workspace descriptors, ignores unrelated transient descriptors such as skill
+  workspaces, and does not let history-only roots for unregistered or removed
+  workspaces create desktop top-level rows.
+- If multiple visible descriptors resolve to the same normalized root, the tree
+  renders one workspace row for that root. The fixed temp descriptor wins over a
+  same-root filesystem descriptor so the default temp workspace stays
+  non-removable.
 - Workspace rows default collapsed, so the initial tree shows workspace names
   only.
 - Expanding a workspace calls the workspace-scoped history path for that
   workspace id and reveals the next-level standalone-agent groups and
-  team-definition groups for that registered workspace.
+  team-definition groups for that visible workspace. Registered filesystem ids
+  resolve through the backend workspace registry; `temp_ws_default` resolves
+  through the temp workspace lifecycle.
+- Local standalone run rows are projected under their visible workspace
+  descriptor even after a draft run is promoted from a `temp-...` id to its
+  permanent run id, then deduplicated when backend history catches up. Local
+  draft/live rows without a matching visible workspace descriptor are ignored
+  instead of creating their own top-level workspace.
 - Standalone run rows and team-run rows stay collapsed until the user expands
   the specific agent group or team-definition group.
 - Team-definition group rows and individual team-run rows use the same compact
@@ -324,7 +338,7 @@ highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace Removal From The Sidebar
 
-`WorkspaceHistoryWorkspaceSection.vue` exposes a row-specific **Remove from Workspaces** action for removable filesystem workspace rows. The action is associated with the exact workspace row, is available through hover/focus/touch-visible affordances, and does not toggle row expansion when clicked.
+`WorkspaceHistoryWorkspaceSection.vue` exposes a row-specific **Remove from Workspaces** action for removable filesystem workspace rows. The action is associated with the exact workspace row, is available through hover/focus/touch-visible affordances, and does not toggle row expansion when clicked. Temp workspace rows, including `temp_ws_default`, are visible run workspaces but are not removable and must not render this action.
 
 Removal always asks for confirmation and uses non-destructive copy: workspace files, memories, artifacts, and stored run/team history are not deleted. On confirm, `workspaceStore.removeWorkspace(workspaceId)` calls the backend `removeWorkspace` mutation. Successful removal unregisters the workspace, removes the row immediately, prunes cached workspace history and expansion state, clears selected run/team rows that belonged to the removed workspace, and clears file-explorer metadata/live state for that workspace. Failed removal leaves the row and selection intact and shows the backend error. Active standalone or team runs block removal until the user stops active work.
 
@@ -365,6 +379,28 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 5. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
 This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
+
+### Editable Run Workspace Selection
+
+For editable single-agent and team launches,
+`components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
+not a separate workspace-loading step. Existing mode emits the selected visible
+workspace id immediately. New mode keeps only a pending absolute path and emits
+that pending path to `RunConfigPanel.vue`; it does not render a user-facing
+**Load** button, pressing Enter in the path input does not preload the
+workspace, and the helper copy must indicate that the path will be loaded when
+the user runs the agent or team.
+
+`RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
+with a non-empty pending path, **Run Agent** / **Run Team** first calls the
+workspace creation/registration path, updates the active launch config with the
+registered workspace metadata, and only then creates the local standalone or
+team run. The pending New path takes precedence over any previously selected
+workspace. If registration fails or the New path is blank, no run is created and
+the workspace error is shown in the config panel. While this submit-time load is
+in progress, duplicate run clicks are blocked; the Run button is otherwise
+allowed to be enabled before any explicit preload when the pending path and the
+rest of the launch config are valid.
 
 ### Existing Run Configuration Inspection
 
@@ -603,16 +639,16 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
     - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
-    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Current prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, and `Pricing details`) and never imports provider pricing metadata or recalculates model prices.
+    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, and `Pricing details`) and never imports provider pricing metadata or recalculates model prices.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
-    - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the current prompt progress bar.
+    - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
     - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost.
-    - Unknown current-prompt/context-window pressure is intentionally hidden; the current prompt block renders only when both a numeric pressure percentage and effective context window are present.
-    - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, reasoning-token, model/runtime, usage-report, and current-prompt display where present.
-    - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, latest runtime/ingestion/model metadata, and current prompt/context-window fields used by the token meter.
-    - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, and runtime field names, plus frontend store/component tests for live aggregation, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, cache-aware rows, price-status labels, localization catalog coverage, and current prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
+    - Unknown latest-prompt/context-window pressure is intentionally hidden; the latest prompt block renders only when both a numeric pressure percentage and effective context window are present.
+    - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, reasoning-token, model/runtime, usage-report, and latest-prompt display where present.
+    - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter.
+    - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, and runtime field names, plus frontend store/component tests for live aggregation, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
 5.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
 

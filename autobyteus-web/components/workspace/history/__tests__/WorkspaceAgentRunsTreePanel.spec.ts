@@ -78,6 +78,8 @@ const {
   const normalizeWorkspaceNode = (workspace: any): any => ({
     ...workspace,
     workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+    workspaceKind: workspace.workspaceKind ?? 'filesystem',
+    canRemoveFromWorkspaces: workspace.canRemoveFromWorkspaces ?? true,
   });
 
   const state = {
@@ -508,6 +510,25 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(vm.showRemoveWorkspaceConfirmation).toBe(true);
     expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
     expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('does not render remove action for non-removable temp workspace rows', async () => {
+    runHistoryState.nodes = [
+      {
+        workspaceId: 'temp_ws_default',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        workspaceName: 'Temp Workspace',
+        workspaceKind: 'temp',
+        canRemoveFromWorkspaces: false,
+        agents: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('Temp Workspace');
+    expect(wrapper.find('button[title="Remove from Workspaces"]').exists()).toBe(false);
   });
 
   it('cancels workspace removal without mutating workspace or history state', async () => {

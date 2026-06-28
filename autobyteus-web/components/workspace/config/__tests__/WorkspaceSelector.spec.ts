@@ -140,6 +140,7 @@ describe('WorkspaceSelector', () => {
     expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
     expect(wrapper.emitted('select-existing')).toBeFalsy();
     expect((wrapper.find('input[type="text"]').element as HTMLInputElement).value).toBe('/tmp/LockedProject');
+    expect(wrapper.text()).toContain('Workspace is fixed for this run.');
   });
 
   it('auto-selects temp workspace again when workspace selection resets to empty', async () => {
@@ -235,6 +236,10 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     expect(mockShowFolderDialog).toHaveBeenCalled();
+    expect(wrapper.emitted('load-new')).toBeFalsy();
+    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
+      { mode: 'new', pendingPath: '/selected/folder/path' },
+    ]);
   });
 
   it('does not update path when dialog is canceled', async () => {
@@ -267,7 +272,7 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.emitted('load-new')).toBeFalsy();
   });
 
-  it('emits load-new when Load button is clicked with path', async () => {
+  it('emits pending workspace input while typing without a Load action', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
 
     const wrapper = mount(WorkspaceSelector, {
@@ -277,14 +282,33 @@ describe('WorkspaceSelector', () => {
 
     const input = wrapper.find('input[type="text"]');
     await input.setValue('/test/workspace/path');
-
-    const loadButton = wrapper.find('button[title="Load workspace"]');
-    await loadButton.trigger('click');
     await flushPromises();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.emitted('load-new')).toBeTruthy();
-    expect(wrapper.emitted('load-new')![0]).toEqual(['/test/workspace/path']);
+    expect(wrapper.find('button[title="Load workspace"]').exists()).toBe(false);
+    expect(wrapper.emitted('load-new')).toBeFalsy();
+    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
+      { mode: 'new', pendingPath: '/test/workspace/path' },
+    ]);
+    expect(wrapper.text()).not.toContain('Path will be loaded when you run');
+    expect(wrapper.text()).not.toContain('/test/workspace/path');
+  });
+
+  it('does not invoke a hidden preload flow when Enter is pressed in New mode', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: defaultProps,
+    });
+    await wrapper.vm.$nextTick();
+
+    const input = wrapper.find('input[type="text"]');
+    await input.setValue('/test/workspace/path');
+    await input.trigger('keydown.enter');
+    await flushPromises();
+
+    expect(wrapper.emitted('load-new')).toBeFalsy();
+    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
+      { mode: 'new', pendingPath: '/test/workspace/path' },
+    ]);
   });
 
   it('disables Browse button when isLoading is true', async () => {
@@ -317,7 +341,7 @@ describe('WorkspaceSelector', () => {
     expect(browseButton.attributes('disabled')).toBeDefined();
   });
 
-  it('shows helper text for Electron mode', async () => {
+  it('does not show normal New-mode helper text for Electron mode', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = true;
     (window as any).electronAPI = {
       showFolderDialog: vi.fn(),
@@ -328,10 +352,11 @@ describe('WorkspaceSelector', () => {
     });
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.text()).toContain('Browse for a folder or enter path manually.');
+    expect(wrapper.text()).not.toContain('Browse for a folder or enter path manually.');
+    expect(wrapper.text()).not.toContain('Enter a path, then click Run to load the workspace.');
   });
 
-  it('shows helper text for browser mode', async () => {
+  it('does not show normal New-mode helper text for browser mode', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
 
     const wrapper = mount(WorkspaceSelector, {
@@ -339,6 +364,19 @@ describe('WorkspaceSelector', () => {
     });
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.text()).toContain('Enter path to load a new workspace.');
+    expect(wrapper.text()).not.toContain('Enter a path, then click Run to load the workspace.');
+    expect(wrapper.text()).not.toContain('Browse for a folder or enter path manually.');
+  });
+
+  it('keeps error feedback visible below the New workspace path field', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        error: 'Workspace path is invalid',
+      },
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.text()).toContain('Workspace path is invalid');
   });
 });

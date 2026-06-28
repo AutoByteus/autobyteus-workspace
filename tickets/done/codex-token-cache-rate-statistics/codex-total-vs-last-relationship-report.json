@@ -1,0 +1,426 @@
+{
+  "createdAt": "2026-06-28T04:19:28.119509+00:00",
+  "relationshipUnderTest": "For consecutive captured Codex tokenUsage updates, tokenUsage.total delta should equal tokenUsage.last for the later update when no update is missing between captures.",
+  "fieldMatchSummary": {
+    "inputTokens": {
+      "comparablePairs": 7,
+      "matches": 7,
+      "mismatches": 0
+    },
+    "cachedInputTokens": {
+      "comparablePairs": 7,
+      "matches": 7,
+      "mismatches": 0
+    },
+    "outputTokens": {
+      "comparablePairs": 7,
+      "matches": 7,
+      "mismatches": 0
+    },
+    "reasoningOutputTokens": {
+      "comparablePairs": 7,
+      "matches": 7,
+      "mismatches": 0
+    },
+    "totalTokens": {
+      "comparablePairs": 7,
+      "matches": 7,
+      "mismatches": 0
+    }
+  },
+  "records": [
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-55-50-007Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+      "callIndex": 0,
+      "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 10847,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10860
+      },
+      "total": {
+        "inputTokens": 10847,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10860
+      },
+      "deltaFromPreviousCapturedUpdate": null,
+      "deltaMatchesLast": null
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-55-50-007Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+      "callIndex": 1,
+      "turnId": "019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 11038,
+        "cachedInputTokens": 10624,
+        "outputTokens": 86,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11124
+      },
+      "total": {
+        "inputTokens": 21885,
+        "cachedInputTokens": 15616,
+        "outputTokens": 99,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 21984
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 11038,
+        "cachedInputTokens": 10624,
+        "outputTokens": 86,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11124
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "callIndex": 0,
+      "turnId": "019f0c5f-e36e-7ac2-a654-8eac1c0af70a",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 10353,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10366
+      },
+      "total": {
+        "inputTokens": 10353,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10366
+      },
+      "deltaFromPreviousCapturedUpdate": null,
+      "deltaMatchesLast": null
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "callIndex": 1,
+      "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 10546,
+        "cachedInputTokens": 10112,
+        "outputTokens": 87,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10633
+      },
+      "total": {
+        "inputTokens": 20899,
+        "cachedInputTokens": 15104,
+        "outputTokens": 100,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 20999
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 10546,
+        "cachedInputTokens": 10112,
+        "outputTokens": 87,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10633
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "callIndex": 2,
+      "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 10691,
+        "cachedInputTokens": 10112,
+        "outputTokens": 87,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10778
+      },
+      "total": {
+        "inputTokens": 31590,
+        "cachedInputTokens": 25216,
+        "outputTokens": 187,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 31777
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 10691,
+        "cachedInputTokens": 10112,
+        "outputTokens": 87,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10778
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "callIndex": 3,
+      "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": false,
+      "last": {
+        "inputTokens": 10836,
+        "cachedInputTokens": 4992,
+        "outputTokens": 28,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10864
+      },
+      "total": {
+        "inputTokens": 42426,
+        "cachedInputTokens": 30208,
+        "outputTokens": 215,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 42641
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 10836,
+        "cachedInputTokens": 4992,
+        "outputTokens": 28,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10864
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "callIndex": 0,
+      "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": true,
+      "last": {
+        "inputTokens": 10851,
+        "cachedInputTokens": 4992,
+        "outputTokens": 15,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10866
+      },
+      "total": {
+        "inputTokens": 10851,
+        "cachedInputTokens": 4992,
+        "outputTokens": 15,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10866
+      },
+      "deltaFromPreviousCapturedUpdate": null,
+      "deltaMatchesLast": null
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "callIndex": 1,
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": true,
+      "last": {
+        "inputTokens": 11050,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11139
+      },
+      "total": {
+        "inputTokens": 21901,
+        "cachedInputTokens": 15616,
+        "outputTokens": 104,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 22005
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 11050,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11139
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "callIndex": 2,
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": true,
+      "last": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "total": {
+        "inputTokens": 33101,
+        "cachedInputTokens": 26240,
+        "outputTokens": 193,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 33294
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "callIndex": 3,
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "capturesFullNormalizedUsage": true,
+      "last": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "total": {
+        "inputTokens": 44450,
+        "cachedInputTokens": 37376,
+        "outputTokens": 225,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 44675
+      },
+      "deltaFromPreviousCapturedUpdate": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "deltaMatchesLast": {
+        "inputTokens": true,
+        "cachedInputTokens": true,
+        "outputTokens": true,
+        "reasoningOutputTokens": true,
+        "totalTokens": true
+      }
+    }
+  ],
+  "sameTurnOverwriteGroups": [
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+      "callCountForTurn": 3,
+      "hadPendingBeforeCount": 2,
+      "sumOfLastAcrossReceivedSameTurnUpdates": {
+        "inputTokens": 32073,
+        "cachedInputTokens": 25216,
+        "outputTokens": 202,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 32275
+      },
+      "finalLastOnlyPersistedShape": {
+        "inputTokens": 10836,
+        "cachedInputTokens": 4992,
+        "outputTokens": 28,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10864
+      },
+      "lostIfOnlyFinalLastPersisted": {
+        "inputTokens": 21237,
+        "cachedInputTokens": 20224,
+        "outputTokens": 174,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 21411
+      }
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "callCountForTurn": 3,
+      "hadPendingBeforeCount": 2,
+      "sumOfLastAcrossReceivedSameTurnUpdates": {
+        "inputTokens": 33599,
+        "cachedInputTokens": 32384,
+        "outputTokens": 210,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 33809
+      },
+      "finalLastOnlyPersistedShape": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "lostIfOnlyFinalLastPersisted": {
+        "inputTokens": 22250,
+        "cachedInputTokens": 21248,
+        "outputTokens": 178,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 22428
+      }
+    }
+  ],
+  "conclusion": "In captured live probes, consecutive tokenUsage.total deltas match tokenUsage.last for every comparable field, including output and reasoning where present. This supports the model that total is cumulative and last is the per-update increment. The accounting loss comes from persisting only the final same-turn last update instead of accumulating all received last increments or deriving deltas from total."
+}

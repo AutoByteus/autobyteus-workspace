@@ -22,6 +22,7 @@
         <span class="truncate">{{ workspaceNode.workspaceName }}</span>
       </button>
       <button
+        v-if="workspaceNode.canRemoveFromWorkspaces"
         type="button"
         class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
         :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_from_workspaces')"

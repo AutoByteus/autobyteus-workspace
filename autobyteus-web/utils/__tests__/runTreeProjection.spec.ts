@@ -12,6 +12,8 @@ describe('buildRunTreeProjection', () => {
           workspaceId: 'workspace-a',
           workspaceRootPath: '/ws/a',
           workspaceName: 'Alpha',
+          workspaceKind: 'filesystem',
+          canRemoveFromWorkspaces: true,
         },
       ],
       persistedWorkspaces: [
@@ -56,7 +58,7 @@ describe('buildRunTreeProjection', () => {
           ],
         },
       ],
-      draftRuns: [
+      localRuns: [
         {
           runId: 'temp-removed',
           workspaceRootPath: '/ws/removed',
@@ -67,6 +69,7 @@ describe('buildRunTreeProjection', () => {
           currentStatus: AgentStatus.Idle,
           lastKnownStatus: 'ACTIVE',
           isActive: true,
+          source: 'draft',
         },
       ],
     });
@@ -86,5 +89,73 @@ describe('buildRunTreeProjection', () => {
     );
 
     warnSpy.mockRestore();
+  });
+
+  it('dedupes local rows under descriptors and lets history replace local context rows', () => {
+    const nodes = buildRunTreeProjection({
+      workspaceDescriptors: [
+        {
+          workspaceId: 'workspace-a',
+          workspaceRootPath: '/ws/a',
+          workspaceName: 'Alpha',
+          workspaceKind: 'filesystem',
+          canRemoveFromWorkspaces: true,
+        },
+      ],
+      persistedWorkspaces: [
+        {
+          workspaceRootPath: '/ws/a',
+          workspaceName: 'Alpha from history',
+          agents: [
+            {
+              agentDefinitionId: 'agent-a',
+              agentName: 'Agent A',
+              runs: [
+                {
+                  runId: 'run-permanent',
+                  summary: 'history row',
+                  lastActivityAt: '2026-01-02T00:00:00.000Z',
+                  currentStatus: AgentStatus.Offline,
+                  lastKnownStatus: 'IDLE',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      localRuns: [
+        {
+          runId: 'run-permanent',
+          workspaceRootPath: '/ws/a',
+          agentDefinitionId: 'agent-a',
+          agentName: 'Agent A',
+          summary: 'local row',
+          lastActivityAt: '2026-01-03T00:00:00.000Z',
+          currentStatus: AgentStatus.Running,
+          lastKnownStatus: 'ACTIVE',
+          isActive: true,
+          source: 'local',
+        },
+        {
+          runId: 'run-local-only',
+          workspaceRootPath: '/ws/a',
+          agentDefinitionId: 'agent-a',
+          agentName: 'Agent A',
+          summary: 'local only',
+          lastActivityAt: '2026-01-04T00:00:00.000Z',
+          currentStatus: AgentStatus.Running,
+          lastKnownStatus: 'ACTIVE',
+          isActive: true,
+          source: 'local',
+        },
+      ],
+    });
+
+    const rows = nodes[0]?.agents[0]?.runs ?? [];
+    expect(rows.map((row) => [row.runId, row.source, row.summary])).toEqual([
+      ['run-local-only', 'local', 'local only'],
+      ['run-permanent', 'history', 'history row'],
+    ]);
   });
 });
