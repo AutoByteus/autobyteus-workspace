@@ -613,6 +613,10 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           expect(asNumber(tokenUsageMessage.payload.accounting_input_tokens)).toBeGreaterThan(0);
           expect(asNumber(tokenUsageMessage.payload.accounting_output_tokens)).toBeGreaterThan(0);
           expect(asNumber(tokenUsageMessage.payload.accounting_total_tokens)).toBeGreaterThan(0);
+          const emittedModelIdentifier = typeof tokenUsageMessage.payload.model_identifier === "string" &&
+            tokenUsageMessage.payload.model_identifier.trim().length > 0
+            ? tokenUsageMessage.payload.model_identifier
+            : llmModelIdentifier;
 
           await waitForMessageAfter(
             messages,
@@ -625,7 +629,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           expect(summary).toMatchObject({
             runId,
             latestRuntimeKind: spec.runtimeKind,
-            latestModelIdentifier: llmModelIdentifier,
+            latestModelIdentifier: emittedModelIdentifier,
           });
           expect(summary.grossInputTokens).toBeGreaterThan(0);
           expect(summary.standardInputTokens).toBeGreaterThanOrEqual(0);
@@ -642,13 +646,13 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           const statistics = await queryStatistics(usageWindowStart, usageWindowEnd);
           expect(statistics).toEqual(expect.arrayContaining([
             expect.objectContaining({
-              llmModel: llmModelIdentifier,
+              llmModel: emittedModelIdentifier,
               promptTokens: expect.any(Number),
               assistantTokens: expect.any(Number),
               apiCostStatus: summary.apiCostStatus,
             }),
           ]));
-          const runtimeStats = statistics.find((row) => row.llmModel === llmModelIdentifier);
+          const runtimeStats = statistics.find((row) => row.llmModel === emittedModelIdentifier);
           expect(runtimeStats?.promptTokens).toBeGreaterThan(0);
           expect(runtimeStats?.assistantTokens).toBeGreaterThan(0);
           expect(runtimeStats?.reasoningTokens).toBeGreaterThanOrEqual(0);

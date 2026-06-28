@@ -1,5 +1,15 @@
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+import { resolveTokenUsageComponentBasis } from "../domain/token-usage-component-basis.js";
 import { TokenUsageLedgerStore } from "../providers/token-usage-ledger-store.js";
+import {
+  asCumulativeSnapshotTokenValue,
+  cumulativeSnapshotTokenFields,
+  readCumulativeSnapshotProviderDeltaTokens,
+  readCumulativeSnapshotSourceTokens,
+  withCumulativeSnapshotSourceTokens,
+  type CumulativeSnapshotTokenField,
+  type CumulativeSnapshotTokenRecord,
+} from "./cumulative-snapshot-reconciliation-metadata.js";
 
 const keyFor = (runId: string, seriesKey: string): string => `${runId}::${seriesKey}`;
 const delta = (current: number | null, previous: number | null): number | null => {
@@ -10,75 +20,34 @@ const delta = (current: number | null, previous: number | null): number | null =
 const hasRegression = (...values: Array<number | null>): boolean =>
   values.some((value) => value !== null && value < 0);
 
-const cumulativeSnapshotSourceTokensKey = "autobyteus_cumulative_snapshot_source_tokens";
-
-const cumulativeSourceTokenFields = [
-  "reported_input_tokens",
-  "reported_output_tokens",
-  "reported_total_tokens",
-  "accounting_input_tokens",
-  "accounting_output_tokens",
-  "accounting_total_tokens",
-  "standard_input_tokens",
-  "cache_miss_input_tokens",
-  "cache_read_input_tokens",
-  "cache_creation_input_tokens",
-  "cache_creation_5m_input_tokens",
-  "cache_creation_1h_input_tokens",
-  "reasoning_output_tokens",
-  "billable_input_tokens",
-  "billable_output_tokens",
-] as const;
-
-type CumulativeSourceTokenField = typeof cumulativeSourceTokenFields[number];
-
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
     : null;
 
-const asNonNegativeInt = (value: unknown): number | null =>
-  typeof value === "number" && Number.isFinite(value) && value >= 0 ? Math.trunc(value) : null;
-
-const cumulativeSourceTokensFrom = (payload: TokenUsageUpdatedPayload): Record<CumulativeSourceTokenField, number | null> => {
-  const tokens = {} as Record<CumulativeSourceTokenField, number | null>;
-  for (const field of cumulativeSourceTokenFields) {
-    tokens[field] = payload[field];
-  }
-  return tokens;
-};
-
 const rawTokenValue = (
   record: Record<string, unknown> | null,
-  field: CumulativeSourceTokenField,
+  field: CumulativeSnapshotTokenField,
 ): number | null => {
   if (!record) return null;
-  const direct = asNonNegativeInt(record[field]);
+  const direct = asCumulativeSnapshotTokenValue(record[field]);
   if (direct !== null) return direct;
   const usage = asRecord(record["usage"]);
-  return asNonNegativeInt(usage?.[field]);
+  return asCumulativeSnapshotTokenValue(usage?.[field]);
 };
 
 const previousCumulativeTokenValue = (
   previous: TokenUsageUpdatedPayload | null,
-  field: CumulativeSourceTokenField,
+  field: CumulativeSnapshotTokenField,
 ): number | null => {
   if (!previous) return null;
   const rawEvent = asRecord(previous.raw_event_json);
-  const sourceTokens = asRecord(rawEvent?.[cumulativeSnapshotSourceTokensKey]);
-  return asNonNegativeInt(sourceTokens?.[field])
+  const sourceTokens = readCumulativeSnapshotSourceTokens(rawEvent);
+  return sourceTokens?.[field]
     ?? rawTokenValue(rawEvent, field)
     ?? rawTokenValue(asRecord(previous.raw_usage_json), field)
-    ?? asNonNegativeInt(previous[field]);
+    ?? asCumulativeSnapshotTokenValue(previous[field]);
 };
-
-const withCumulativeSourceTokens = (payload: TokenUsageUpdatedPayload): TokenUsageUpdatedPayload => ({
-  ...payload,
-  raw_event_json: {
-    ...(payload.raw_event_json ?? {}),
-    [cumulativeSnapshotSourceTokensKey]: cumulativeSourceTokensFrom(payload),
-  },
-});
 
 const clearCostAffectingTokenFields = (payload: TokenUsageUpdatedPayload): TokenUsageUpdatedPayload => ({
   ...payload,
@@ -95,6 +64,78 @@ const clearCostAffectingTokenFields = (payload: TokenUsageUpdatedPayload): Token
   billable_input_tokens: null,
   billable_output_tokens: null,
 });
+
+const hasProviderDeltaMismatch = (
+  deltas: CumulativeSnapshotTokenRecord,
+  providerDelta: CumulativeSnapshotTokenRecord | null,
+): boolean => {
+  if (!providerDelta) return false;
+  return cumulativeSnapshotTokenFields.some((field) => {
+    const computed = deltas[field];
+    const provider = providerDelta[field];
+    if (computed === null && provider === null) return false;
+    return computed !== provider;
+  });
+};
+
+const resolveProviderDeltaComponentBasis = (
+  payload: TokenUsageUpdatedPayload,
+  providerDelta: CumulativeSnapshotTokenRecord,
+): CumulativeSnapshotTokenRecord => {
+  const basis = resolveTokenUsageComponentBasis({
+    runtime_kind: payload.runtime_kind,
+    input_token_semantic: payload.input_token_semantic,
+    reported_input_tokens: providerDelta.reported_input_tokens,
+    reported_output_tokens: providerDelta.reported_output_tokens,
+    accounting_input_tokens: providerDelta.accounting_input_tokens,
+    standard_input_tokens: providerDelta.standard_input_tokens,
+    cache_miss_input_tokens: providerDelta.cache_miss_input_tokens,
+    cache_read_input_tokens: providerDelta.cache_read_input_tokens,
+    cache_creation_input_tokens: providerDelta.cache_creation_input_tokens,
+    cache_creation_5m_input_tokens: providerDelta.cache_creation_5m_input_tokens,
+    cache_creation_1h_input_tokens: providerDelta.cache_creation_1h_input_tokens,
+    cache_state: payload.cache_state,
+    billable_output_tokens: providerDelta.billable_output_tokens,
+  });
+
+  return {
+    ...providerDelta,
+    accounting_input_tokens: basis.accounting_input_tokens,
+    accounting_output_tokens: basis.accounting_output_tokens,
+    accounting_total_tokens: basis.accounting_total_tokens,
+    standard_input_tokens: basis.standard_input_tokens,
+    cache_miss_input_tokens: basis.cache_miss_input_tokens,
+    cache_creation_input_tokens: basis.cache_creation_input_tokens,
+    billable_input_tokens: basis.billable_input_tokens,
+    billable_output_tokens: basis.billable_output_tokens,
+  };
+};
+
+const payloadWithTokenRecord = (
+  payload: TokenUsageUpdatedPayload,
+  tokens: CumulativeSnapshotTokenRecord,
+): TokenUsageUpdatedPayload => ({
+  ...payload,
+  reported_input_tokens: tokens.reported_input_tokens,
+  reported_output_tokens: tokens.reported_output_tokens,
+  reported_total_tokens: tokens.reported_total_tokens,
+  accounting_input_tokens: tokens.accounting_input_tokens,
+  accounting_output_tokens: tokens.accounting_output_tokens,
+  accounting_total_tokens: tokens.accounting_total_tokens,
+  standard_input_tokens: tokens.standard_input_tokens,
+  cache_miss_input_tokens: tokens.cache_miss_input_tokens,
+  cache_read_input_tokens: tokens.cache_read_input_tokens,
+  cache_creation_input_tokens: tokens.cache_creation_input_tokens,
+  cache_creation_5m_input_tokens: tokens.cache_creation_5m_input_tokens,
+  cache_creation_1h_input_tokens: tokens.cache_creation_1h_input_tokens,
+  reasoning_output_tokens: tokens.reasoning_output_tokens,
+  billable_input_tokens: tokens.billable_input_tokens,
+  billable_output_tokens: tokens.billable_output_tokens,
+});
+
+const isCodexCumulativeSnapshot = (payload: TokenUsageUpdatedPayload): boolean =>
+  payload.runtime_kind === "codex_app_server" ||
+  payload.ingestion_kind === "codex_thread_token_usage";
 
 export class TokenUsageSnapshotDeltaNormalizer {
   private readonly latestSnapshotBySeries = new Map<string, TokenUsageUpdatedPayload>();
@@ -129,15 +170,19 @@ export class TokenUsageSnapshotDeltaNormalizer {
         runId: payload.run_id,
         snapshotSeriesKey: payload.snapshot_series_key,
       });
-    const sourceSnapshot = withCumulativeSourceTokens(payload);
-    const deltas = Object.fromEntries(cumulativeSourceTokenFields.map((field) => [
+    const sourceSnapshot = withCumulativeSnapshotSourceTokens(payload);
+    const providerDelta = readCumulativeSnapshotProviderDeltaTokens(payload);
+    const providerAccountingDelta = providerDelta
+      ? resolveProviderDeltaComponentBasis(payload, providerDelta)
+      : null;
+    const deltas = Object.fromEntries(cumulativeSnapshotTokenFields.map((field) => [
       field,
       delta(payload[field], previousCumulativeTokenValue(previous, field)),
-    ])) as Record<CumulativeSourceTokenField, number | null>;
+    ])) as CumulativeSnapshotTokenRecord;
     const qualityFlags = [...payload.quality_flags];
 
-    if (!previous) {
-      qualityFlags.push("first_cumulative_snapshot_assumed_run_origin");
+    if (previous && hasProviderDeltaMismatch(deltas, providerAccountingDelta)) {
+      qualityFlags.push("cumulative_snapshot_provider_delta_mismatch");
     }
 
     if (hasRegression(...Object.values(deltas))) {
@@ -151,26 +196,38 @@ export class TokenUsageSnapshotDeltaNormalizer {
       return regressed;
     }
 
-    const normalized = this.withMeterDeltas({
+    if (!previous && providerAccountingDelta) {
+      qualityFlags.push("first_cumulative_snapshot_baselined_from_provider_delta");
+      const normalized = this.withMeterDeltas(payloadWithTokenRecord({
+        ...sourceSnapshot,
+        previous_snapshot_event_id: null,
+        quality_flags: Array.from(new Set(qualityFlags)),
+      }, providerAccountingDelta));
+      this.latestSnapshotBySeries.set(seriesKey, sourceSnapshot);
+      this.normalizedByIdempotencyKey.set(payload.idempotency_key, normalized);
+      return normalized;
+    }
+
+    if (!previous && !providerAccountingDelta) {
+      qualityFlags.push("cumulative_snapshot_provider_delta_missing");
+      if (isCodexCumulativeSnapshot(payload)) {
+        const missingProviderDelta = this.withMeterDeltas(clearCostAffectingTokenFields({
+          ...sourceSnapshot,
+          previous_snapshot_event_id: null,
+          quality_flags: Array.from(new Set(qualityFlags)),
+        }));
+        this.latestSnapshotBySeries.set(seriesKey, sourceSnapshot);
+        this.normalizedByIdempotencyKey.set(payload.idempotency_key, missingProviderDelta);
+        return missingProviderDelta;
+      }
+      qualityFlags.push("first_cumulative_snapshot_assumed_run_origin");
+    }
+
+    const normalized = this.withMeterDeltas(payloadWithTokenRecord({
       ...sourceSnapshot,
       previous_snapshot_event_id: previous?.usage_event_id ?? null,
-      reported_input_tokens: deltas.reported_input_tokens,
-      reported_output_tokens: deltas.reported_output_tokens,
-      reported_total_tokens: deltas.reported_total_tokens,
-      accounting_input_tokens: deltas.accounting_input_tokens,
-      accounting_output_tokens: deltas.accounting_output_tokens,
-      accounting_total_tokens: deltas.accounting_total_tokens,
-      standard_input_tokens: deltas.standard_input_tokens,
-      cache_miss_input_tokens: deltas.cache_miss_input_tokens,
-      cache_read_input_tokens: deltas.cache_read_input_tokens,
-      cache_creation_input_tokens: deltas.cache_creation_input_tokens,
-      cache_creation_5m_input_tokens: deltas.cache_creation_5m_input_tokens,
-      cache_creation_1h_input_tokens: deltas.cache_creation_1h_input_tokens,
-      reasoning_output_tokens: deltas.reasoning_output_tokens,
-      billable_input_tokens: deltas.billable_input_tokens,
-      billable_output_tokens: deltas.billable_output_tokens,
       quality_flags: Array.from(new Set(qualityFlags)),
-    });
+    }, deltas));
     this.latestSnapshotBySeries.set(seriesKey, sourceSnapshot);
     this.normalizedByIdempotencyKey.set(payload.idempotency_key, normalized);
     return normalized;

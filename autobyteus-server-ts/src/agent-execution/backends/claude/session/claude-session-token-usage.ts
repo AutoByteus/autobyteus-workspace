@@ -103,6 +103,61 @@ const resolveThinkingTokens = (
   );
 };
 
+const resolveComparableUsageTokens = (usage: Record<string, unknown>) => {
+  const inputTokens = firstNonNegativeInt(
+    usage.input_tokens,
+    usage.inputTokens,
+    usage.prompt_tokens,
+    usage.promptTokens,
+  );
+  const outputTokens = firstNonNegativeInt(
+    usage.output_tokens,
+    usage.outputTokens,
+    usage.completion_tokens,
+    usage.completionTokens,
+  );
+  return {
+    inputTokens,
+    outputTokens,
+    totalTokens: firstNonNegativeInt(usage.total_tokens, usage.totalTokens) ?? (
+      inputTokens !== null && outputTokens !== null ? inputTokens + outputTokens : null
+    ),
+    cacheCreationInputTokens: firstNonNegativeInt(
+      usage.cache_creation_input_tokens,
+      usage.cacheCreationInputTokens,
+      usage.cache_creation_tokens,
+    ),
+    cacheReadInputTokens: firstNonNegativeInt(
+      usage.cache_read_input_tokens,
+      usage.cacheReadInputTokens,
+      usage.cache_read_tokens,
+    ),
+    cacheCreation5mInputTokens: firstNonNegativeInt(
+      usage.cache_creation_5m_input_tokens,
+      usage.cacheCreation5mInputTokens,
+    ),
+    cacheCreation1hInputTokens: firstNonNegativeInt(
+      usage.cache_creation_1h_input_tokens,
+      usage.cacheCreation1hInputTokens,
+    ),
+  };
+};
+
+const hasClaudeUsageModelUsageMismatch = (
+  usage: Record<string, unknown> | null,
+  modelUsage: Record<string, unknown> | null,
+): boolean => {
+  if (!usage || !modelUsage || usage === modelUsage) return false;
+  const usageTokens = resolveComparableUsageTokens(usage);
+  const modelUsageTokens = resolveComparableUsageTokens(modelUsage);
+  return Object.keys(usageTokens).some((key) => {
+    const field = key as keyof typeof usageTokens;
+    const usageValue = usageTokens[field];
+    const modelUsageValue = modelUsageTokens[field];
+    return usageValue !== null && modelUsageValue !== null && usageValue !== modelUsageValue;
+  });
+};
+
 export const buildClaudeTokenUsageEvent = (input: {
   chunk: unknown;
   runId: string;
@@ -120,11 +175,11 @@ export const buildClaudeTokenUsageEvent = (input: {
     terminalResult.modelUsage ?? terminalResult.model_usage ?? payload.modelUsage ?? payload.model_usage,
     input.model,
   );
-  const usage = firstRecord(
+  const directUsage = firstRecord(
     terminalResult.usage,
     payload.usage,
-    modelUsageInfo.usage,
   );
+  const usage = directUsage ?? modelUsageInfo.usage;
   if (!usage) return null;
 
   const modelUsage = modelUsageInfo.usage;
@@ -196,6 +251,9 @@ export const buildClaudeTokenUsageEvent = (input: {
   if (inputTokens === null) qualityFlags.push("reported_input_tokens_missing");
   if (outputTokens === null) qualityFlags.push("reported_output_tokens_missing");
   if (totalTokens === null) qualityFlags.push("reported_total_tokens_missing");
+  if (hasClaudeUsageModelUsageMismatch(directUsage, modelUsage)) {
+    qualityFlags.push("claude_usage_model_usage_mismatch");
+  }
 
   return {
     method: ClaudeSessionEventName.TOKEN_USAGE_UPDATED,

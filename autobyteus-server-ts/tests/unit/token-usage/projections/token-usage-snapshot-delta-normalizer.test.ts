@@ -107,6 +107,124 @@ const buildNormalizer = (previous: TokenUsageUpdatedPayload | null = null) => ne
 } as never);
 
 describe('TokenUsageSnapshotDeltaNormalizer', () => {
+  it('uses provider-delta metadata as the first cumulative snapshot baseline', async () => {
+    const normalized = await buildNormalizer().normalizeAccountingDelta(buildCumulativeSnapshot({
+      reported_input_tokens: 1000,
+      reported_output_tokens: 80,
+      reported_total_tokens: 1080,
+      cache_read_input_tokens: 900,
+      cache_creation_input_tokens: 0,
+      reasoning_output_tokens: 12,
+      billable_input_tokens: 1000,
+      billable_output_tokens: 80,
+      raw_event_json: {
+        [cumulativeSnapshotSourceTokensKey]: undefined,
+        autobyteus_cumulative_snapshot_provider_delta_tokens: {
+          reported_input_tokens: 100,
+          reported_output_tokens: 8,
+          reported_total_tokens: 108,
+          accounting_input_tokens: null,
+          accounting_output_tokens: null,
+          accounting_total_tokens: null,
+          standard_input_tokens: null,
+          cache_miss_input_tokens: null,
+          cache_read_input_tokens: 90,
+          cache_creation_input_tokens: null,
+          cache_creation_5m_input_tokens: null,
+          cache_creation_1h_input_tokens: null,
+          reasoning_output_tokens: 2,
+          billable_input_tokens: null,
+          billable_output_tokens: null,
+        },
+      },
+    }));
+
+    expect(normalized.quality_flags).toContain('first_cumulative_snapshot_baselined_from_provider_delta');
+    expect(normalized.reported_input_tokens).toBe(100);
+    expect(normalized.accounting_input_tokens).toBe(100);
+    expect(normalized.standard_input_tokens).toBe(10);
+    expect(normalized.cache_read_input_tokens).toBe(90);
+    expect(normalized.accounting_output_tokens).toBe(8);
+    expect(normalized.accounting_total_tokens).toBe(108);
+    expect(normalized.reasoning_output_tokens).toBe(2);
+    expect(normalized.raw_event_json).toMatchObject({
+      [cumulativeSnapshotSourceTokensKey]: {
+        reported_input_tokens: 1000,
+        cache_read_input_tokens: 900,
+      },
+    });
+  });
+
+  it('uses cumulative movement after a previous snapshot and flags provider-delta mismatch', async () => {
+    const normalizer = buildNormalizer();
+    await normalizer.normalizeAccountingDelta(buildCumulativeSnapshot({
+      reported_input_tokens: 1000,
+      reported_output_tokens: 80,
+      reported_total_tokens: 1080,
+      cache_read_input_tokens: 900,
+      cache_creation_input_tokens: 0,
+      reasoning_output_tokens: 12,
+      billable_input_tokens: 1000,
+      billable_output_tokens: 80,
+      raw_event_json: {
+        autobyteus_cumulative_snapshot_provider_delta_tokens: {
+          reported_input_tokens: 100,
+          reported_output_tokens: 8,
+          reported_total_tokens: 108,
+          accounting_input_tokens: null,
+          accounting_output_tokens: null,
+          accounting_total_tokens: null,
+          standard_input_tokens: null,
+          cache_miss_input_tokens: null,
+          cache_read_input_tokens: 90,
+          cache_creation_input_tokens: null,
+          cache_creation_5m_input_tokens: null,
+          cache_creation_1h_input_tokens: null,
+          reasoning_output_tokens: 2,
+          billable_input_tokens: null,
+          billable_output_tokens: null,
+        },
+      },
+    }));
+
+    const normalized = await normalizer.normalizeAccountingDelta(buildCumulativeSnapshot({
+      reported_input_tokens: 1300,
+      reported_output_tokens: 100,
+      reported_total_tokens: 1400,
+      cache_read_input_tokens: 1170,
+      cache_creation_input_tokens: 0,
+      reasoning_output_tokens: 16,
+      billable_input_tokens: 1300,
+      billable_output_tokens: 100,
+      raw_event_json: {
+        autobyteus_cumulative_snapshot_provider_delta_tokens: {
+          reported_input_tokens: 50,
+          reported_output_tokens: 5,
+          reported_total_tokens: 55,
+          accounting_input_tokens: null,
+          accounting_output_tokens: null,
+          accounting_total_tokens: null,
+          standard_input_tokens: null,
+          cache_miss_input_tokens: null,
+          cache_read_input_tokens: 45,
+          cache_creation_input_tokens: null,
+          cache_creation_5m_input_tokens: null,
+          cache_creation_1h_input_tokens: null,
+          reasoning_output_tokens: 1,
+          billable_input_tokens: null,
+          billable_output_tokens: null,
+        },
+      },
+    }));
+
+    expect(normalized.quality_flags).toContain('cumulative_snapshot_provider_delta_mismatch');
+    expect(normalized.reported_input_tokens).toBe(300);
+    expect(normalized.accounting_input_tokens).toBe(300);
+    expect(normalized.cache_read_input_tokens).toBe(270);
+    expect(normalized.accounting_output_tokens).toBe(20);
+    expect(normalized.reasoning_output_tokens).toBe(4);
+  });
+
   it('delta-normalizes cumulative cost-affecting fields and keeps source cumulative fields for restarted lookups', async () => {
     const normalizer = buildNormalizer();
     await normalizer.normalizeAccountingDelta(buildCumulativeSnapshot());

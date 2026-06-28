@@ -1,0 +1,293 @@
+{
+  "probe_created_at": "2026-06-27T16:04:47.463025+00:00",
+  "database": "/Users/normy/.autobyteus/server-data/db/production.db",
+  "screenshot_matching_row": {
+    "match_predicate": "accounting_input_tokens=208212 OR cache_read_input_tokens=207744 OR standard_input_tokens=468",
+    "row": {
+      "observed_at": 1782574928041,
+      "run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "root_team_run_id": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+      "member_agent_run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "member_route_key": "delivery_engineer",
+      "model_identifier": "gpt-5.5",
+      "reported_input_tokens": 208212,
+      "accounting_input_tokens": 208212,
+      "standard_input_tokens": 468,
+      "cache_read_input_tokens": 207744,
+      "accounting_output_tokens": 331,
+      "reasoning_output_tokens": 0,
+      "latest_prompt_tokens": 208212,
+      "effective_context_window_tokens": 258400,
+      "context_window_usage_percent": 80.57739938080495,
+      "estimated_api_input_cost": 0.106212,
+      "estimated_api_standard_input_cost": 0.00234,
+      "estimated_api_cache_read_input_cost": 0.103872,
+      "estimated_api_output_cost": 0.009930000000000001,
+      "estimated_api_total_cost": 0.116142,
+      "raw_usage_json": {
+        "totalTokens": 208543,
+        "inputTokens": 208212,
+        "cachedInputTokens": 207744,
+        "outputTokens": 331,
+        "reasoningOutputTokens": 0
+      },
+      "raw_event_json": {
+        "threadId": "019f0975-13fd-70c2-8e64-7c251369c3d0",
+        "turnId": "019f09b7-4d8e-7941-bf64-ee093446b958",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 10345886,
+            "inputTokens": 10303262,
+            "cachedInputTokens": 9902208,
+            "outputTokens": 42624,
+            "reasoningOutputTokens": 9950
+          },
+          "last": {
+            "totalTokens": 208543,
+            "inputTokens": 208212,
+            "cachedInputTokens": 207744,
+            "outputTokens": 331,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      },
+      "quality_flags_json": [],
+      "observed_at_iso_utc": "2026-06-27T15:42:08.041000+00:00",
+      "cache_read_input_token_rate": 0.9977522909342401,
+      "cached_input_tokens_multiple_of_128": true
+    }
+  },
+  "all_events_for_matching_run": [
+    {
+      "observed_at": 1782570539883,
+      "run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "root_team_run_id": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+      "member_agent_run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "member_route_key": "delivery_engineer",
+      "model_identifier": "gpt-5.5",
+      "reported_input_tokens": 104663,
+      "accounting_input_tokens": 104663,
+      "standard_input_tokens": 343,
+      "cache_read_input_tokens": 104320,
+      "accounting_output_tokens": 499,
+      "reasoning_output_tokens": 146,
+      "latest_prompt_tokens": 104663,
+      "effective_context_window_tokens": 258400,
+      "context_window_usage_percent": 40.50425696594427,
+      "estimated_api_input_cost": 0.053875,
+      "estimated_api_standard_input_cost": 0.001715,
+      "estimated_api_cache_read_input_cost": 0.05216,
+      "estimated_api_output_cost": 0.01497,
+      "estimated_api_total_cost": 0.068845,
+      "raw_usage_json": {
+        "totalTokens": 105162,
+        "inputTokens": 104663,
+        "cachedInputTokens": 104320,
+        "outputTokens": 499,
+        "reasoningOutputTokens": 146
+      },
+      "raw_event_json": {
+        "threadId": "019f0975-13fd-70c2-8e64-7c251369c3d0",
+        "turnId": "019f0975-1499-7f92-bb2c-15d8ac6ab4ce",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 2635976,
+            "inputTokens": 2617060,
+            "cachedInputTokens": 2494464,
+            "outputTokens": 18916,
+            "reasoningOutputTokens": 5305
+          },
+          "last": {
+            "totalTokens": 105162,
+            "inputTokens": 104663,
+            "cachedInputTokens": 104320,
+            "outputTokens": 499,
+            "reasoningOutputTokens": 146
+          },
+          "modelContextWindow": 258400
+        }
+      },
+      "quality_flags_json": [],
+      "observed_at_iso_utc": "2026-06-27T14:28:59.883000+00:00",
+      "cache_read_input_token_rate": 0.9967228151304663,
+      "cached_input_tokens_multiple_of_128": true
+    },
+    {
+      "observed_at": 1782574404882,
+      "run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "root_team_run_id": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+      "member_agent_run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "member_route_key": "delivery_engineer",
+      "model_identifier": "gpt-5.5",
+      "reported_input_tokens": 164780,
+      "accounting_input_tokens": 164780,
+      "standard_input_tokens": 556,
+      "cache_read_input_tokens": 164224,
+      "accounting_output_tokens": 322,
+      "reasoning_output_tokens": 0,
+      "latest_prompt_tokens": 164780,
+      "effective_context_window_tokens": 258400,
+      "context_window_usage_percent": 63.76934984520124,
+      "estimated_api_input_cost": 0.08489200000000001,
+      "estimated_api_standard_input_cost": 0.00278,
+      "estimated_api_cache_read_input_cost": 0.082112,
+      "estimated_api_output_cost": 0.00966,
+      "estimated_api_total_cost": 0.09455200000000001,
+      "raw_usage_json": {
+        "totalTokens": 165102,
+        "inputTokens": 164780,
+        "cachedInputTokens": 164224,
+        "outputTokens": 322,
+        "reasoningOutputTokens": 0
+      },
+      "raw_event_json": {
+        "threadId": "019f0975-13fd-70c2-8e64-7c251369c3d0",
+        "turnId": "019f09b0-bfde-78e1-9746-97e8281f565a",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 5915686,
+            "inputTokens": 5881146,
+            "cachedInputTokens": 5593088,
+            "outputTokens": 34540,
+            "reasoningOutputTokens": 7537
+          },
+          "last": {
+            "totalTokens": 165102,
+            "inputTokens": 164780,
+            "cachedInputTokens": 164224,
+            "outputTokens": 322,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      },
+      "quality_flags_json": [],
+      "observed_at_iso_utc": "2026-06-27T15:33:24.882000+00:00",
+      "cache_read_input_token_rate": 0.9966258041024396,
+      "cached_input_tokens_multiple_of_128": true
+    },
+    {
+      "observed_at": 1782574928041,
+      "run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "root_team_run_id": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+      "member_agent_run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "member_route_key": "delivery_engineer",
+      "model_identifier": "gpt-5.5",
+      "reported_input_tokens": 208212,
+      "accounting_input_tokens": 208212,
+      "standard_input_tokens": 468,
+      "cache_read_input_tokens": 207744,
+      "accounting_output_tokens": 331,
+      "reasoning_output_tokens": 0,
+      "latest_prompt_tokens": 208212,
+      "effective_context_window_tokens": 258400,
+      "context_window_usage_percent": 80.57739938080495,
+      "estimated_api_input_cost": 0.106212,
+      "estimated_api_standard_input_cost": 0.00234,
+      "estimated_api_cache_read_input_cost": 0.103872,
+      "estimated_api_output_cost": 0.009930000000000001,
+      "estimated_api_total_cost": 0.116142,
+      "raw_usage_json": {
+        "totalTokens": 208543,
+        "inputTokens": 208212,
+        "cachedInputTokens": 207744,
+        "outputTokens": 331,
+        "reasoningOutputTokens": 0
+      },
+      "raw_event_json": {
+        "threadId": "019f0975-13fd-70c2-8e64-7c251369c3d0",
+        "turnId": "019f09b7-4d8e-7941-bf64-ee093446b958",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 10345886,
+            "inputTokens": 10303262,
+            "cachedInputTokens": 9902208,
+            "outputTokens": 42624,
+            "reasoningOutputTokens": 9950
+          },
+          "last": {
+            "totalTokens": 208543,
+            "inputTokens": 208212,
+            "cachedInputTokens": 207744,
+            "outputTokens": 331,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      },
+      "quality_flags_json": [],
+      "observed_at_iso_utc": "2026-06-27T15:42:08.041000+00:00",
+      "cache_read_input_token_rate": 0.9977522909342401,
+      "cached_input_tokens_multiple_of_128": true
+    },
+    {
+      "observed_at": 1782575822651,
+      "run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "root_team_run_id": "software_engineering_team_555cf5801eb04a6ca574023041f1af68",
+      "member_agent_run_id": "delivery_engineer_c992d76532c6433c978e6495af2d58d1",
+      "member_route_key": "delivery_engineer",
+      "model_identifier": "gpt-5.5",
+      "reported_input_tokens": 50040,
+      "accounting_input_tokens": 50040,
+      "standard_input_tokens": 504,
+      "cache_read_input_tokens": 49536,
+      "accounting_output_tokens": 358,
+      "reasoning_output_tokens": 167,
+      "latest_prompt_tokens": 50040,
+      "effective_context_window_tokens": 258400,
+      "context_window_usage_percent": 19.36532507739938,
+      "estimated_api_input_cost": 0.027288,
+      "estimated_api_standard_input_cost": 0.00252,
+      "estimated_api_cache_read_input_cost": 0.024768,
+      "estimated_api_output_cost": 0.01074,
+      "estimated_api_total_cost": 0.038028,
+      "raw_usage_json": {
+        "totalTokens": 50398,
+        "inputTokens": 50040,
+        "cachedInputTokens": 49536,
+        "outputTokens": 358,
+        "reasoningOutputTokens": 167
+      },
+      "raw_event_json": {
+        "threadId": "019f0975-13fd-70c2-8e64-7c251369c3d0",
+        "turnId": "019f09c2-66ae-70e2-99ee-f1549c38fc1c",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 15500136,
+            "inputTokens": 15434176,
+            "cachedInputTokens": 14873216,
+            "outputTokens": 65960,
+            "reasoningOutputTokens": 17804
+          },
+          "last": {
+            "totalTokens": 50398,
+            "inputTokens": 50040,
+            "cachedInputTokens": 49536,
+            "outputTokens": 358,
+            "reasoningOutputTokens": 167
+          },
+          "modelContextWindow": 258400
+        }
+      },
+      "quality_flags_json": [],
+      "observed_at_iso_utc": "2026-06-27T15:57:02.651000+00:00",
+      "cache_read_input_token_rate": 0.9899280575539569,
+      "cached_input_tokens_multiple_of_128": true
+    }
+  ],
+  "recent_codex_distribution": {
+    "sample_size": 200,
+    "min_rate": 0.028268551236749116,
+    "max_rate": 0.9995025488665873,
+    "mean_rate": 0.8867081328069947,
+    "events_rate_gte_0_99": 87,
+    "events_rate_gte_0_95": 149,
+    "cached_token_values_multiple_of_128": 200
+  },
+  "prior_probe_artifacts": [
+    "tickets/done/token-input-prompt-discrepancy-analysis/experiment-evidence/2026-06-25T17-33-27-472Z-codex-runtime-two-round.json",
+    "tickets/done/token-input-prompt-discrepancy-analysis/provider-probe-matrix.md"
+  ],
+  "conclusion": "The 99.8% cache hit rate shown in the screenshot is not fabricated by Token Meter arithmetic. It comes directly from Codex app-server raw usage for tokenUsage.last: inputTokens=208212 and cachedInputTokens=207744. Prior Codex runtime probes concluded inputTokens is gross and cachedInputTokens is a cache-read subset. High cache rates are common in recent local Codex events and cached token counts are multiples of 128, matching provider prompt-cache chunk behavior."
+}

@@ -183,15 +183,15 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   private consumeReadyTokenUsageEvents(): AgentRunEvent[] {
-    const readyUsages = this.codexThread.getReadyTurnTokenUsages();
+    const readyUsages = this.codexThread.getReadyTokenUsageUpdates();
     if (readyUsages.length === 0) {
       return [];
     }
-    const events = readyUsages.map(({ turnId, usage }): AgentRunEvent => ({
+    const events = readyUsages.map((usage): AgentRunEvent => ({
       eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
       runId: this.runId,
       payload: {
-        turn_id: turnId,
+        turn_id: usage.turnId,
         idempotency_key: usage.idempotency_key,
         runtime_kind: usage.runtime_kind,
         ingestion_kind: usage.ingestion_kind,
@@ -216,8 +216,8 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       },
       statusHint: null,
     }));
-    for (const { turnId } of readyUsages) {
-      this.codexThread.markTurnTokenUsagePersisted(turnId);
+    for (const usage of readyUsages) {
+      this.codexThread.markTokenUsageUpdatePersisted(usage.idempotency_key);
     }
     return events;
   }

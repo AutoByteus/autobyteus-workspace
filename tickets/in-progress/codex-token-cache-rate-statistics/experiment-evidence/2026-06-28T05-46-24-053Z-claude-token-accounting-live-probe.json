@@ -1,0 +1,4081 @@
+{
+  "generatedAt": "2026-06-28T05:46:24.053Z",
+  "runId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+  "llmModelIdentifier": "sonnet",
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-token-accounting-workspace-TUuBq4",
+  "rawLogDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-token-accounting-raw-events-vbpCue",
+  "counts": {
+    "rawChunkRecords": 153,
+    "resultRecords": 3,
+    "usageBearingRawRecords": 3,
+    "tokenUsageMessages": 3,
+    "ledgerRows": 3,
+    "turns": 3
+  },
+  "conclusion": {
+    "hasMultipleUsageBearingChunksPerTurn": false,
+    "usageEventsEqualTerminalResults": true,
+    "ledgerRowsEqualTokenUsageMessages": true,
+    "allTokenUsageScopes": [
+      "per_turn"
+    ],
+    "rawResultUsageDiffersFromModelUsage": false
+  },
+  "turns": [
+    {
+      "prompt": "Reply with exactly CLAUDE_PROBE_0e8ddf05 and no other words.",
+      "usageMessage": {
+        "usage_event_id": "f105d48e-01ef-4d8f-8ce4-d58b536c4bc3",
+        "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977:deepseek-v4-flash:22278:40:22318",
+        "observed_at": "2026-06-28T05:46:07.420Z",
+        "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+        "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "root_team_run_id": null,
+        "team_run_path": null,
+        "member_agent_run_id": null,
+        "member_path": null,
+        "member_route_key": null,
+        "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+        "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+        "task_agent_instance_id": null,
+        "task_agent_run_id": null,
+        "task_id": null,
+        "runtime_kind": "claude_agent_sdk",
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "ingestion_kind": "claude_sdk_result",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "base_excludes_cache",
+        "reported_input_tokens": 22278,
+        "reported_output_tokens": 40,
+        "reported_total_tokens": 22318,
+        "accounting_input_tokens": 22278,
+        "accounting_output_tokens": 40,
+        "accounting_total_tokens": 22318,
+        "standard_input_tokens": 22278,
+        "cache_miss_input_tokens": 22278,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "zero_reported",
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": 22278,
+        "billable_output_tokens": 40,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+          "price_config_id": null,
+          "model_provider": "ANTHROPIC",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 22278,
+        "meter_delta_output_tokens": 40,
+        "meter_delta_total_tokens": 22318,
+        "run_summary_after_event": null,
+        "latest_prompt_tokens": 22278,
+        "effective_context_window_tokens": 200000,
+        "context_window_usage_percent": 11.139000000000001,
+        "raw_usage_json": {
+          "input_tokens": 22278,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 40,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "raw_event_json": {
+          "type": "result",
+          "subtype": "success",
+          "is_error": false,
+          "api_error_status": null,
+          "duration_ms": 2038,
+          "duration_api_ms": 2010,
+          "ttft_ms": 1967,
+          "ttft_stream_ms": 758,
+          "time_to_request_ms": 35,
+          "num_turns": 1,
+          "result": "CLAUDE_PROBE_0e8ddf05",
+          "stop_reason": "end_turn",
+          "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+          "total_cost_usd": 0.11238999999999999,
+          "usage": {
+            "input_tokens": 22278,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "output_tokens": 40,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "modelUsage": {
+            "deepseek-v4-flash": {
+              "inputTokens": 22278,
+              "outputTokens": 40,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0,
+              "webSearchRequests": 0,
+              "costUSD": 0.11238999999999999,
+              "contextWindow": 200000,
+              "maxOutputTokens": 32000
+            }
+          },
+          "permission_denials": [],
+          "terminal_reason": "completed",
+          "fast_mode_state": "off",
+          "uuid": "066545b5-21df-44d5-81b1-5350633a704e"
+        },
+        "quality_flags": [
+          "model_identifier_differs_from_run_context"
+        ]
+      }
+    },
+    {
+      "prompt": "Use the Bash tool twice if it is available. Run only harmless commands: first printf CLAUDE_TOOL_ALPHA, then printf CLAUDE_TOOL_BETA. After using the commands, answer exactly CLAUDE_TOOL_PROBE_DONE.",
+      "usageMessage": {
+        "usage_event_id": "a4dd1872-d939-46ed-b7d6-78d954e3ca8b",
+        "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508:deepseek-v4-flash:205:219:424",
+        "observed_at": "2026-06-28T05:46:19.939Z",
+        "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+        "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "root_team_run_id": null,
+        "team_run_path": null,
+        "member_agent_run_id": null,
+        "member_path": null,
+        "member_route_key": null,
+        "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+        "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+        "task_agent_instance_id": null,
+        "task_agent_run_id": null,
+        "task_id": null,
+        "runtime_kind": "claude_agent_sdk",
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "ingestion_kind": "claude_sdk_result",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "base_excludes_cache",
+        "reported_input_tokens": 205,
+        "reported_output_tokens": 219,
+        "reported_total_tokens": 424,
+        "accounting_input_tokens": 45005,
+        "accounting_output_tokens": 219,
+        "accounting_total_tokens": 45224,
+        "standard_input_tokens": 205,
+        "cache_miss_input_tokens": 205,
+        "cache_read_input_tokens": 44800,
+        "cache_creation_input_tokens": 0,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": 45005,
+        "billable_output_tokens": 219,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+          "price_config_id": null,
+          "model_provider": "ANTHROPIC",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 45005,
+        "meter_delta_output_tokens": 219,
+        "meter_delta_total_tokens": 45224,
+        "run_summary_after_event": null,
+        "latest_prompt_tokens": 45005,
+        "effective_context_window_tokens": 200000,
+        "context_window_usage_percent": 22.5025,
+        "raw_usage_json": {
+          "input_tokens": 205,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 44800,
+          "output_tokens": 219,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "raw_event_json": {
+          "type": "result",
+          "subtype": "success",
+          "is_error": false,
+          "api_error_status": null,
+          "duration_ms": 5975,
+          "duration_api_ms": 4060,
+          "ttft_ms": 1950,
+          "ttft_stream_ms": 881,
+          "time_to_request_ms": 27,
+          "num_turns": 3,
+          "result": "CLAUDE_TOOL_PROBE_DONE",
+          "stop_reason": "end_turn",
+          "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+          "total_cost_usd": 0.028900000000000002,
+          "usage": {
+            "input_tokens": 205,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 44800,
+            "output_tokens": 219,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "modelUsage": {
+            "deepseek-v4-flash": {
+              "inputTokens": 205,
+              "outputTokens": 219,
+              "cacheReadInputTokens": 44800,
+              "cacheCreationInputTokens": 0,
+              "webSearchRequests": 0,
+              "costUSD": 0.028900000000000002,
+              "contextWindow": 200000,
+              "maxOutputTokens": 32000
+            }
+          },
+          "permission_denials": [],
+          "terminal_reason": "completed",
+          "fast_mode_state": "off",
+          "uuid": "bb221782-79c4-4df1-9adb-ff78afec794e"
+        },
+        "quality_flags": [
+          "model_identifier_differs_from_run_context"
+        ]
+      }
+    },
+    {
+      "prompt": "Now reply with exactly CLAUDE_PROBE_SECOND_bc815021 and no other words.",
+      "usageMessage": {
+        "usage_event_id": "8231982c-b52d-4149-b777-0e32871ea618",
+        "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038:deepseek-v4-flash:187:38:225",
+        "observed_at": "2026-06-28T05:46:22.032Z",
+        "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+        "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "root_team_run_id": null,
+        "team_run_path": null,
+        "member_agent_run_id": null,
+        "member_path": null,
+        "member_route_key": null,
+        "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+        "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+        "task_agent_instance_id": null,
+        "task_agent_run_id": null,
+        "task_id": null,
+        "runtime_kind": "claude_agent_sdk",
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "ingestion_kind": "claude_sdk_result",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "base_excludes_cache",
+        "reported_input_tokens": 187,
+        "reported_output_tokens": 38,
+        "reported_total_tokens": 225,
+        "accounting_input_tokens": 22715,
+        "accounting_output_tokens": 38,
+        "accounting_total_tokens": 22753,
+        "standard_input_tokens": 187,
+        "cache_miss_input_tokens": 187,
+        "cache_read_input_tokens": 22528,
+        "cache_creation_input_tokens": 0,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": 22715,
+        "billable_output_tokens": 38,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+          "price_config_id": null,
+          "model_provider": "ANTHROPIC",
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 22715,
+        "meter_delta_output_tokens": 38,
+        "meter_delta_total_tokens": 22753,
+        "run_summary_after_event": null,
+        "latest_prompt_tokens": 22715,
+        "effective_context_window_tokens": 200000,
+        "context_window_usage_percent": 11.3575,
+        "raw_usage_json": {
+          "input_tokens": 187,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 22528,
+          "output_tokens": 38,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "raw_event_json": {
+          "type": "result",
+          "subtype": "success",
+          "is_error": false,
+          "api_error_status": null,
+          "duration_ms": 1576,
+          "duration_api_ms": 1542,
+          "ttft_ms": 1420,
+          "ttft_stream_ms": 725,
+          "time_to_request_ms": 34,
+          "num_turns": 1,
+          "result": "CLAUDE_PROBE_SECOND_bc815021",
+          "stop_reason": "end_turn",
+          "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+          "total_cost_usd": 0.013149,
+          "usage": {
+            "input_tokens": 187,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 22528,
+            "output_tokens": 38,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "modelUsage": {
+            "deepseek-v4-flash": {
+              "inputTokens": 187,
+              "outputTokens": 38,
+              "cacheReadInputTokens": 22528,
+              "cacheCreationInputTokens": 0,
+              "webSearchRequests": 0,
+              "costUSD": 0.013149,
+              "contextWindow": 200000,
+              "maxOutputTokens": 32000
+            }
+          },
+          "permission_denials": [],
+          "terminal_reason": "completed",
+          "fast_mode_state": "off",
+          "uuid": "df382f23-bbb6-4c94-879b-4b88e819c918"
+        },
+        "quality_flags": [
+          "model_identifier_differs_from_run_context"
+        ]
+      }
+    }
+  ],
+  "tokenUsageMessages": [
+    {
+      "usage_event_id": "f105d48e-01ef-4d8f-8ce4-d58b536c4bc3",
+      "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977:deepseek-v4-flash:22278:40:22318",
+      "observed_at": "2026-06-28T05:46:07.420Z",
+      "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977",
+      "llm_call_id": null,
+      "call_sequence": null,
+      "root_team_run_id": null,
+      "team_run_path": null,
+      "member_agent_run_id": null,
+      "member_path": null,
+      "member_route_key": null,
+      "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+      "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+      "task_agent_instance_id": null,
+      "task_agent_run_id": null,
+      "task_id": null,
+      "runtime_kind": "claude_agent_sdk",
+      "model_provider": "ANTHROPIC",
+      "model_identifier": "deepseek-v4-flash",
+      "model_value": "deepseek-v4-flash",
+      "ingestion_kind": "claude_sdk_result",
+      "usage_scope": "per_turn",
+      "snapshot_series_key": null,
+      "previous_snapshot_event_id": null,
+      "input_token_semantic": "base_excludes_cache",
+      "reported_input_tokens": 22278,
+      "reported_output_tokens": 40,
+      "reported_total_tokens": 22318,
+      "accounting_input_tokens": 22278,
+      "accounting_output_tokens": 40,
+      "accounting_total_tokens": 22318,
+      "standard_input_tokens": 22278,
+      "cache_miss_input_tokens": 22278,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "cache_state": "zero_reported",
+      "reasoning_output_tokens": null,
+      "billable_input_tokens": 22278,
+      "billable_output_tokens": 40,
+      "cost_basis": null,
+      "currency": null,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "cached_input_read_price_per_million": null,
+      "cached_input_write_price_per_million": null,
+      "cached_input_write_5m_price_per_million": null,
+      "cached_input_write_1h_price_per_million": null,
+      "pricing_source": null,
+      "pricing_status": "missing",
+      "pricing_missing_reason": "model_not_found",
+      "pricing_snapshot_json": {
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "price_config_id": null,
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "canonical_name": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "input_price_tiers": [],
+        "pricing_status": "missing",
+        "trusted_dimensions": {
+          "input": false,
+          "output": false,
+          "cached_input_read": false,
+          "cached_input_write": false,
+          "cached_input_write_5m": false,
+          "cached_input_write_1h": false
+        },
+        "missing_reason": "model_not_found",
+        "source": null,
+        "effective_from": null,
+        "effective_to": null,
+        "version": null
+      },
+      "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+      "selected_pricing_tier_id": null,
+      "missing_price_dimensions": [
+        "model_not_found"
+      ],
+      "estimated_api_input_cost": null,
+      "estimated_api_standard_input_cost": null,
+      "estimated_api_cache_read_input_cost": null,
+      "estimated_api_cache_creation_input_cost": null,
+      "estimated_api_cache_creation_5m_input_cost": null,
+      "estimated_api_cache_creation_1h_input_cost": null,
+      "estimated_api_output_cost": null,
+      "estimated_api_reasoning_output_cost": null,
+      "estimated_api_total_cost": null,
+      "api_cost_status": "price_missing",
+      "meter_delta_input_tokens": 22278,
+      "meter_delta_output_tokens": 40,
+      "meter_delta_total_tokens": 22318,
+      "run_summary_after_event": null,
+      "latest_prompt_tokens": 22278,
+      "effective_context_window_tokens": 200000,
+      "context_window_usage_percent": 11.139000000000001,
+      "raw_usage_json": {
+        "input_tokens": 22278,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 40,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "raw_event_json": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 2038,
+        "duration_api_ms": 2010,
+        "ttft_ms": 1967,
+        "ttft_stream_ms": 758,
+        "time_to_request_ms": 35,
+        "num_turns": 1,
+        "result": "CLAUDE_PROBE_0e8ddf05",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.11238999999999999,
+        "usage": {
+          "input_tokens": 22278,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 40,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 22278,
+            "outputTokens": 40,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.11238999999999999,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "066545b5-21df-44d5-81b1-5350633a704e"
+      },
+      "quality_flags": [
+        "model_identifier_differs_from_run_context"
+      ]
+    },
+    {
+      "usage_event_id": "a4dd1872-d939-46ed-b7d6-78d954e3ca8b",
+      "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508:deepseek-v4-flash:205:219:424",
+      "observed_at": "2026-06-28T05:46:19.939Z",
+      "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508",
+      "llm_call_id": null,
+      "call_sequence": null,
+      "root_team_run_id": null,
+      "team_run_path": null,
+      "member_agent_run_id": null,
+      "member_path": null,
+      "member_route_key": null,
+      "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+      "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+      "task_agent_instance_id": null,
+      "task_agent_run_id": null,
+      "task_id": null,
+      "runtime_kind": "claude_agent_sdk",
+      "model_provider": "ANTHROPIC",
+      "model_identifier": "deepseek-v4-flash",
+      "model_value": "deepseek-v4-flash",
+      "ingestion_kind": "claude_sdk_result",
+      "usage_scope": "per_turn",
+      "snapshot_series_key": null,
+      "previous_snapshot_event_id": null,
+      "input_token_semantic": "base_excludes_cache",
+      "reported_input_tokens": 205,
+      "reported_output_tokens": 219,
+      "reported_total_tokens": 424,
+      "accounting_input_tokens": 45005,
+      "accounting_output_tokens": 219,
+      "accounting_total_tokens": 45224,
+      "standard_input_tokens": 205,
+      "cache_miss_input_tokens": 205,
+      "cache_read_input_tokens": 44800,
+      "cache_creation_input_tokens": 0,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "cache_state": "positive",
+      "reasoning_output_tokens": null,
+      "billable_input_tokens": 45005,
+      "billable_output_tokens": 219,
+      "cost_basis": null,
+      "currency": null,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "cached_input_read_price_per_million": null,
+      "cached_input_write_price_per_million": null,
+      "cached_input_write_5m_price_per_million": null,
+      "cached_input_write_1h_price_per_million": null,
+      "pricing_source": null,
+      "pricing_status": "missing",
+      "pricing_missing_reason": "model_not_found",
+      "pricing_snapshot_json": {
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "price_config_id": null,
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "canonical_name": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "input_price_tiers": [],
+        "pricing_status": "missing",
+        "trusted_dimensions": {
+          "input": false,
+          "output": false,
+          "cached_input_read": false,
+          "cached_input_write": false,
+          "cached_input_write_5m": false,
+          "cached_input_write_1h": false
+        },
+        "missing_reason": "model_not_found",
+        "source": null,
+        "effective_from": null,
+        "effective_to": null,
+        "version": null
+      },
+      "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+      "selected_pricing_tier_id": null,
+      "missing_price_dimensions": [
+        "model_not_found"
+      ],
+      "estimated_api_input_cost": null,
+      "estimated_api_standard_input_cost": null,
+      "estimated_api_cache_read_input_cost": null,
+      "estimated_api_cache_creation_input_cost": null,
+      "estimated_api_cache_creation_5m_input_cost": null,
+      "estimated_api_cache_creation_1h_input_cost": null,
+      "estimated_api_output_cost": null,
+      "estimated_api_reasoning_output_cost": null,
+      "estimated_api_total_cost": null,
+      "api_cost_status": "price_missing",
+      "meter_delta_input_tokens": 45005,
+      "meter_delta_output_tokens": 219,
+      "meter_delta_total_tokens": 45224,
+      "run_summary_after_event": null,
+      "latest_prompt_tokens": 45005,
+      "effective_context_window_tokens": 200000,
+      "context_window_usage_percent": 22.5025,
+      "raw_usage_json": {
+        "input_tokens": 205,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44800,
+        "output_tokens": 219,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "raw_event_json": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 5975,
+        "duration_api_ms": 4060,
+        "ttft_ms": 1950,
+        "ttft_stream_ms": 881,
+        "time_to_request_ms": 27,
+        "num_turns": 3,
+        "result": "CLAUDE_TOOL_PROBE_DONE",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.028900000000000002,
+        "usage": {
+          "input_tokens": 205,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 44800,
+          "output_tokens": 219,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 205,
+            "outputTokens": 219,
+            "cacheReadInputTokens": 44800,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.028900000000000002,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "bb221782-79c4-4df1-9adb-ff78afec794e"
+      },
+      "quality_flags": [
+        "model_identifier_differs_from_run_context"
+      ]
+    },
+    {
+      "usage_event_id": "8231982c-b52d-4149-b777-0e32871ea618",
+      "idempotency_key": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038:deepseek-v4-flash:187:38:225",
+      "observed_at": "2026-06-28T05:46:22.032Z",
+      "run_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turn_id": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038",
+      "llm_call_id": null,
+      "call_sequence": null,
+      "root_team_run_id": null,
+      "team_run_path": null,
+      "member_agent_run_id": null,
+      "member_path": null,
+      "member_route_key": null,
+      "agent_definition_id": "claude-token-accounting-probe-a7720a04-3da5-41ef-8821-6226b2de9708",
+      "workspace_id": "agent_ws_5f599fa4effc3176c02311ce053713787449ffa0e418a4a22a98b819ca90a251",
+      "task_agent_instance_id": null,
+      "task_agent_run_id": null,
+      "task_id": null,
+      "runtime_kind": "claude_agent_sdk",
+      "model_provider": "ANTHROPIC",
+      "model_identifier": "deepseek-v4-flash",
+      "model_value": "deepseek-v4-flash",
+      "ingestion_kind": "claude_sdk_result",
+      "usage_scope": "per_turn",
+      "snapshot_series_key": null,
+      "previous_snapshot_event_id": null,
+      "input_token_semantic": "base_excludes_cache",
+      "reported_input_tokens": 187,
+      "reported_output_tokens": 38,
+      "reported_total_tokens": 225,
+      "accounting_input_tokens": 22715,
+      "accounting_output_tokens": 38,
+      "accounting_total_tokens": 22753,
+      "standard_input_tokens": 187,
+      "cache_miss_input_tokens": 187,
+      "cache_read_input_tokens": 22528,
+      "cache_creation_input_tokens": 0,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "cache_state": "positive",
+      "reasoning_output_tokens": null,
+      "billable_input_tokens": 22715,
+      "billable_output_tokens": 38,
+      "cost_basis": null,
+      "currency": null,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "cached_input_read_price_per_million": null,
+      "cached_input_write_price_per_million": null,
+      "cached_input_write_5m_price_per_million": null,
+      "cached_input_write_1h_price_per_million": null,
+      "pricing_source": null,
+      "pricing_status": "missing",
+      "pricing_missing_reason": "model_not_found",
+      "pricing_snapshot_json": {
+        "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+        "price_config_id": null,
+        "model_provider": "ANTHROPIC",
+        "model_identifier": "deepseek-v4-flash",
+        "model_value": "deepseek-v4-flash",
+        "canonical_name": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "input_price_tiers": [],
+        "pricing_status": "missing",
+        "trusted_dimensions": {
+          "input": false,
+          "output": false,
+          "cached_input_read": false,
+          "cached_input_write": false,
+          "cached_input_write_5m": false,
+          "cached_input_write_1h": false
+        },
+        "missing_reason": "model_not_found",
+        "source": null,
+        "effective_from": null,
+        "effective_to": null,
+        "version": null
+      },
+      "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+      "selected_pricing_tier_id": null,
+      "missing_price_dimensions": [
+        "model_not_found"
+      ],
+      "estimated_api_input_cost": null,
+      "estimated_api_standard_input_cost": null,
+      "estimated_api_cache_read_input_cost": null,
+      "estimated_api_cache_creation_input_cost": null,
+      "estimated_api_cache_creation_5m_input_cost": null,
+      "estimated_api_cache_creation_1h_input_cost": null,
+      "estimated_api_output_cost": null,
+      "estimated_api_reasoning_output_cost": null,
+      "estimated_api_total_cost": null,
+      "api_cost_status": "price_missing",
+      "meter_delta_input_tokens": 22715,
+      "meter_delta_output_tokens": 38,
+      "meter_delta_total_tokens": 22753,
+      "run_summary_after_event": null,
+      "latest_prompt_tokens": 22715,
+      "effective_context_window_tokens": 200000,
+      "context_window_usage_percent": 11.3575,
+      "raw_usage_json": {
+        "input_tokens": 187,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 22528,
+        "output_tokens": 38,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "raw_event_json": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 1576,
+        "duration_api_ms": 1542,
+        "ttft_ms": 1420,
+        "ttft_stream_ms": 725,
+        "time_to_request_ms": 34,
+        "num_turns": 1,
+        "result": "CLAUDE_PROBE_SECOND_bc815021",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.013149,
+        "usage": {
+          "input_tokens": 187,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 22528,
+          "output_tokens": 38,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 187,
+            "outputTokens": 38,
+            "cacheReadInputTokens": 22528,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.013149,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "df382f23-bbb6-4c94-879b-4b88e819c918"
+      },
+      "quality_flags": [
+        "model_identifier_differs_from_run_context"
+      ]
+    }
+  ],
+  "ledgerRows": [
+    {
+      "usageEventId": "f105d48e-01ef-4d8f-8ce4-d58b536c4bc3",
+      "idempotencyKey": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977:deepseek-v4-flash:22278:40:22318",
+      "observedAt": "2026-06-28T05:46:07.420Z",
+      "runId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turnId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625564977",
+      "runtimeKind": "claude_agent_sdk",
+      "ingestionKind": "claude_sdk_result",
+      "usageScope": "per_turn",
+      "modelIdentifier": "deepseek-v4-flash",
+      "reportedInputTokens": 22278,
+      "reportedOutputTokens": 40,
+      "reportedTotalTokens": 22318,
+      "accountingInputTokens": 22278,
+      "accountingOutputTokens": 40,
+      "accountingTotalTokens": 22318,
+      "standardInputTokens": 22278,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": null,
+      "cacheCreation1hInputTokens": null,
+      "reasoningOutputTokens": null,
+      "latestPromptTokens": 22278,
+      "effectiveContextWindowTokens": 200000,
+      "contextWindowUsagePercent": 11.139,
+      "qualityFlags": [
+        "model_identifier_differs_from_run_context"
+      ],
+      "rawUsageJson": {
+        "input_tokens": 22278,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 40,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "rawEventJson": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 2038,
+        "duration_api_ms": 2010,
+        "ttft_ms": 1967,
+        "ttft_stream_ms": 758,
+        "time_to_request_ms": 35,
+        "num_turns": 1,
+        "result": "CLAUDE_PROBE_0e8ddf05",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.11238999999999999,
+        "usage": {
+          "input_tokens": 22278,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 40,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 22278,
+            "outputTokens": 40,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.11238999999999999,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "066545b5-21df-44d5-81b1-5350633a704e"
+      }
+    },
+    {
+      "usageEventId": "a4dd1872-d939-46ed-b7d6-78d954e3ca8b",
+      "idempotencyKey": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508:deepseek-v4-flash:205:219:424",
+      "observedAt": "2026-06-28T05:46:19.939Z",
+      "runId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turnId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625573508",
+      "runtimeKind": "claude_agent_sdk",
+      "ingestionKind": "claude_sdk_result",
+      "usageScope": "per_turn",
+      "modelIdentifier": "deepseek-v4-flash",
+      "reportedInputTokens": 205,
+      "reportedOutputTokens": 219,
+      "reportedTotalTokens": 424,
+      "accountingInputTokens": 45005,
+      "accountingOutputTokens": 219,
+      "accountingTotalTokens": 45224,
+      "standardInputTokens": 205,
+      "cacheReadInputTokens": 44800,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": null,
+      "cacheCreation1hInputTokens": null,
+      "reasoningOutputTokens": null,
+      "latestPromptTokens": 45005,
+      "effectiveContextWindowTokens": 200000,
+      "contextWindowUsagePercent": 22.5025,
+      "qualityFlags": [
+        "model_identifier_differs_from_run_context"
+      ],
+      "rawUsageJson": {
+        "input_tokens": 205,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44800,
+        "output_tokens": 219,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "rawEventJson": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 5975,
+        "duration_api_ms": 4060,
+        "ttft_ms": 1950,
+        "ttft_stream_ms": 881,
+        "time_to_request_ms": 27,
+        "num_turns": 3,
+        "result": "CLAUDE_TOOL_PROBE_DONE",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.028900000000000002,
+        "usage": {
+          "input_tokens": 205,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 44800,
+          "output_tokens": 219,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 205,
+            "outputTokens": 219,
+            "cacheReadInputTokens": 44800,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.028900000000000002,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "bb221782-79c4-4df1-9adb-ff78afec794e"
+      }
+    },
+    {
+      "usageEventId": "8231982c-b52d-4149-b777-0e32871ea618",
+      "idempotencyKey": "claude_sdk_usage:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:219df58b-63d5-4c33-ac7b-219d2a06ed0d:claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038:deepseek-v4-flash:187:38:225",
+      "observedAt": "2026-06-28T05:46:22.032Z",
+      "runId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+      "turnId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1:turn:1782625580038",
+      "runtimeKind": "claude_agent_sdk",
+      "ingestionKind": "claude_sdk_result",
+      "usageScope": "per_turn",
+      "modelIdentifier": "deepseek-v4-flash",
+      "reportedInputTokens": 187,
+      "reportedOutputTokens": 38,
+      "reportedTotalTokens": 225,
+      "accountingInputTokens": 22715,
+      "accountingOutputTokens": 38,
+      "accountingTotalTokens": 22753,
+      "standardInputTokens": 187,
+      "cacheReadInputTokens": 22528,
+      "cacheCreationInputTokens": 0,
+      "cacheCreation5mInputTokens": null,
+      "cacheCreation1hInputTokens": null,
+      "reasoningOutputTokens": null,
+      "latestPromptTokens": 22715,
+      "effectiveContextWindowTokens": 200000,
+      "contextWindowUsagePercent": 11.3575,
+      "qualityFlags": [
+        "model_identifier_differs_from_run_context"
+      ],
+      "rawUsageJson": {
+        "input_tokens": 187,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 22528,
+        "output_tokens": 38,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard"
+      },
+      "rawEventJson": {
+        "type": "result",
+        "subtype": "success",
+        "is_error": false,
+        "api_error_status": null,
+        "duration_ms": 1576,
+        "duration_api_ms": 1542,
+        "ttft_ms": 1420,
+        "ttft_stream_ms": 725,
+        "time_to_request_ms": 34,
+        "num_turns": 1,
+        "result": "CLAUDE_PROBE_SECOND_bc815021",
+        "stop_reason": "end_turn",
+        "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+        "total_cost_usd": 0.013149,
+        "usage": {
+          "input_tokens": 187,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 22528,
+          "output_tokens": 38,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "",
+          "iterations": [],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "deepseek-v4-flash": {
+            "inputTokens": 187,
+            "outputTokens": 38,
+            "cacheReadInputTokens": 22528,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.013149,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "uuid": "df382f23-bbb6-4c94-879b-4b88e819c918"
+      }
+    }
+  ],
+  "rawResultSummaries": [
+    {
+      "sequence": 31,
+      "eventName": "result",
+      "type": "result",
+      "subtype": "success",
+      "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+      "stop_reason": "end_turn",
+      "num_turns": 1,
+      "total_cost_usd": 0.11238999999999999,
+      "usage": {
+        "input_tokens": 22278,
+        "output_tokens": 40,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "iterations": [],
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "speed": "standard"
+      },
+      "modelUsage": {
+        "deepseek-v4-flash": {
+          "inputTokens": 22278,
+          "outputTokens": 40,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.11238999999999999,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        }
+      },
+      "modelUsageTotals": {
+        "inputTokens": 22278,
+        "outputTokens": 40,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "costUSD": 0.11238999999999999,
+        "models": [
+          "deepseek-v4-flash"
+        ]
+      },
+      "usageVsModelUsageDelta": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      }
+    },
+    {
+      "sequence": 123,
+      "eventName": "result",
+      "type": "result",
+      "subtype": "success",
+      "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+      "stop_reason": "end_turn",
+      "num_turns": 3,
+      "total_cost_usd": 0.028900000000000002,
+      "usage": {
+        "input_tokens": 205,
+        "output_tokens": 219,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 44800,
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "iterations": [],
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "speed": "standard"
+      },
+      "modelUsage": {
+        "deepseek-v4-flash": {
+          "inputTokens": 205,
+          "outputTokens": 219,
+          "cacheReadInputTokens": 44800,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.028900000000000002,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        }
+      },
+      "modelUsageTotals": {
+        "inputTokens": 205,
+        "outputTokens": 219,
+        "cacheReadInputTokens": 44800,
+        "cacheCreationInputTokens": 0,
+        "costUSD": 0.028900000000000002,
+        "models": [
+          "deepseek-v4-flash"
+        ]
+      },
+      "usageVsModelUsageDelta": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      }
+    },
+    {
+      "sequence": 153,
+      "eventName": "result",
+      "type": "result",
+      "subtype": "success",
+      "session_id": "219df58b-63d5-4c33-ac7b-219d2a06ed0d",
+      "stop_reason": "end_turn",
+      "num_turns": 1,
+      "total_cost_usd": 0.013149,
+      "usage": {
+        "input_tokens": 187,
+        "output_tokens": 38,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 22528,
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "iterations": [],
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "speed": "standard"
+      },
+      "modelUsage": {
+        "deepseek-v4-flash": {
+          "inputTokens": 187,
+          "outputTokens": 38,
+          "cacheReadInputTokens": 22528,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.013149,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        }
+      },
+      "modelUsageTotals": {
+        "inputTokens": 187,
+        "outputTokens": 38,
+        "cacheReadInputTokens": 22528,
+        "cacheCreationInputTokens": 0,
+        "costUSD": 0.013149,
+        "models": [
+          "deepseek-v4-flash"
+        ]
+      },
+      "usageVsModelUsageDelta": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      }
+    }
+  ],
+  "rawChunkIndex": [
+    {
+      "sequence": 1,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "cwd",
+        "session_id",
+        "tools",
+        "mcp_servers",
+        "model",
+        "permissionMode",
+        "slash_commands",
+        "apiKeySource",
+        "claude_code_version",
+        "output_style",
+        "agents",
+        "skills",
+        "plugins",
+        "analytics_disabled",
+        "product_feedback_disabled",
+        "uuid",
+        "memory_paths",
+        "fast_mode_state"
+      ],
+      "type": "system",
+      "subtype": "init",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 2,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 3,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 4,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 5,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 6,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 7,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 8,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 9,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 10,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 11,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 12,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 13,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 14,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 15,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 16,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 17,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 18,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 19,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 20,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 21,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 22,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 23,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 24,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 25,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 26,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 27,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 28,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 29,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 30,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 31,
+      "eventName": "result",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "is_error",
+        "api_error_status",
+        "duration_ms",
+        "duration_api_ms",
+        "ttft_ms",
+        "ttft_stream_ms",
+        "time_to_request_ms",
+        "num_turns",
+        "result",
+        "stop_reason",
+        "session_id",
+        "total_cost_usd",
+        "usage",
+        "modelUsage",
+        "permission_denials",
+        "terminal_reason",
+        "fast_mode_state",
+        "uuid"
+      ],
+      "type": "result",
+      "subtype": "success",
+      "hasUsage": true,
+      "hasModelUsage": true
+    },
+    {
+      "sequence": 32,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "cwd",
+        "session_id",
+        "tools",
+        "mcp_servers",
+        "model",
+        "permissionMode",
+        "slash_commands",
+        "apiKeySource",
+        "claude_code_version",
+        "output_style",
+        "agents",
+        "skills",
+        "plugins",
+        "analytics_disabled",
+        "product_feedback_disabled",
+        "uuid",
+        "memory_paths",
+        "fast_mode_state"
+      ],
+      "type": "system",
+      "subtype": "init",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 33,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 34,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 35,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 36,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 37,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 38,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 39,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 40,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 41,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 42,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 43,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 44,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 45,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 46,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 47,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 48,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 49,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 50,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 51,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 52,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 53,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 54,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 55,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 56,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 57,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 58,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 59,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 60,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 61,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 62,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 63,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 64,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 65,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 66,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 67,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 68,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 69,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 70,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 71,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 72,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 73,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 74,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 75,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 76,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 77,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 78,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 79,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 80,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 81,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 82,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 83,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 84,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 85,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 86,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 87,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 88,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 89,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 90,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 91,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 92,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 93,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 94,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 95,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 96,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 97,
+      "eventName": "user",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid",
+        "timestamp",
+        "tool_use_result"
+      ],
+      "type": "user",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 98,
+      "eventName": "user",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid",
+        "timestamp",
+        "tool_use_result"
+      ],
+      "type": "user",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 99,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 100,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 101,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 102,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 103,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 104,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 105,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 106,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 107,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 108,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 109,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 110,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 111,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 112,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 113,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 114,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 115,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 116,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 117,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 118,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 119,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 120,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 121,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 122,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 123,
+      "eventName": "result",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "is_error",
+        "api_error_status",
+        "duration_ms",
+        "duration_api_ms",
+        "ttft_ms",
+        "ttft_stream_ms",
+        "time_to_request_ms",
+        "num_turns",
+        "result",
+        "stop_reason",
+        "session_id",
+        "total_cost_usd",
+        "usage",
+        "modelUsage",
+        "permission_denials",
+        "terminal_reason",
+        "fast_mode_state",
+        "uuid"
+      ],
+      "type": "result",
+      "subtype": "success",
+      "hasUsage": true,
+      "hasModelUsage": true
+    },
+    {
+      "sequence": 124,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "cwd",
+        "session_id",
+        "tools",
+        "mcp_servers",
+        "model",
+        "permissionMode",
+        "slash_commands",
+        "apiKeySource",
+        "claude_code_version",
+        "output_style",
+        "agents",
+        "skills",
+        "plugins",
+        "analytics_disabled",
+        "product_feedback_disabled",
+        "uuid",
+        "memory_paths",
+        "fast_mode_state"
+      ],
+      "type": "system",
+      "subtype": "init",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 125,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 126,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 127,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 128,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 129,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 130,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 131,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 132,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 133,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 134,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 135,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 136,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 137,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 138,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 139,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 140,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 141,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 142,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 143,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 144,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 145,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 146,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 147,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 148,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 149,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 150,
+      "eventName": "system",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "estimated_tokens",
+        "estimated_tokens_delta",
+        "uuid",
+        "session_id"
+      ],
+      "type": "system",
+      "subtype": "thinking_tokens",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 151,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 152,
+      "eventName": "assistant",
+      "payloadKeys": [
+        "type",
+        "message",
+        "parent_tool_use_id",
+        "session_id",
+        "uuid"
+      ],
+      "type": "assistant",
+      "hasUsage": false,
+      "hasModelUsage": false
+    },
+    {
+      "sequence": 153,
+      "eventName": "result",
+      "payloadKeys": [
+        "type",
+        "subtype",
+        "is_error",
+        "api_error_status",
+        "duration_ms",
+        "duration_api_ms",
+        "ttft_ms",
+        "ttft_stream_ms",
+        "time_to_request_ms",
+        "num_turns",
+        "result",
+        "stop_reason",
+        "session_id",
+        "total_cost_usd",
+        "usage",
+        "modelUsage",
+        "permission_denials",
+        "terminal_reason",
+        "fast_mode_state",
+        "uuid"
+      ],
+      "type": "result",
+      "subtype": "success",
+      "hasUsage": true,
+      "hasModelUsage": true
+    }
+  ]
+}

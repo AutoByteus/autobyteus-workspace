@@ -185,6 +185,13 @@ describe("CodexAgentRunBackend", () => {
         turnId: "turn-usage-1",
         tokenUsage: {
           modelContextWindow: 128000,
+          total: {
+            totalTokens: 150,
+            inputTokens: 100,
+            cachedInputTokens: 40,
+            outputTokens: 50,
+            reasoningOutputTokens: 20,
+          },
           last: {
             totalTokens: 15,
             inputTokens: 10,
@@ -235,8 +242,8 @@ describe("CodexAgentRunBackend", () => {
             turn_id: "turn-usage-1",
             runtime_kind: "codex_app_server",
             ingestion_kind: "codex_thread_token_usage",
-            usage_scope: "per_turn",
-            idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:per_turn:10:5:15",
+            usage_scope: "cumulative_snapshot",
+            idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:cumulative_snapshot:100:40:50:20:150",
             reported_input_tokens: 10,
             reported_output_tokens: 5,
             reported_total_tokens: 15,
@@ -250,11 +257,11 @@ describe("CodexAgentRunBackend", () => {
             model_provider: "OPENAI",
             model_identifier: "gpt-5.4-mini",
             raw_usage_json: {
-              totalTokens: 15,
-              inputTokens: 10,
-              cachedInputTokens: 4,
-              outputTokens: 5,
-              reasoningOutputTokens: 2,
+              totalTokens: 150,
+              inputTokens: 100,
+              cachedInputTokens: 40,
+              outputTokens: 50,
+              reasoningOutputTokens: 20,
             },
           }),
         }),
@@ -282,9 +289,14 @@ describe("CodexAgentRunBackend", () => {
     emitThreadEvent({
       method: CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED,
       params: {
-        threadId: "thread-1",
+        threadId: "thread-late-1",
         turnId: "turn-late-usage-1",
         tokenUsage: {
+          total: {
+            totalTokens: 180,
+            inputTokens: 110,
+            outputTokens: 70,
+          },
           last: {
             totalTokens: 18,
             inputTokens: 11,
@@ -302,11 +314,12 @@ describe("CodexAgentRunBackend", () => {
         runId: "run-codex-1",
         payload: expect.objectContaining({
           turn_id: "turn-late-usage-1",
-          usage_scope: "per_turn",
-          idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-late-usage-1:per_turn:11:7:18",
+          usage_scope: "cumulative_snapshot",
+          idempotency_key: "codex_token_usage:run-codex-1:thread-late-1:turn-late-usage-1:cumulative_snapshot:110:x:70:x:180",
           reported_input_tokens: 11,
           reported_output_tokens: 7,
           reported_total_tokens: 18,
+          latest_prompt_tokens: 11,
         }),
       }),
     ]);
