@@ -184,16 +184,28 @@ frontend clones scoped child member nodes/contexts under the task-team root and
 drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
-The right-side Team tab owns delegated task visibility through its `Active Tasks`
-section instead of a center active-task strip. `TeamActiveTasksSection` and
-`TeamActiveTaskRow` derive task-agent and task-team entries from the transient
-projection nodes in `AgentTeamContext`, while `runHistoryTeamRows` filters those
-task-scoped nodes out of stable left navigation. Active task rows show the
-delegated task description, status, target, task ID, and the explicit `Agent run
-ID` or `Agent team run ID` label; task-team members are focus targets, not a
-phase/timeline dashboard. Task-agent rows keep pending approval controls when
-the runtime is waiting for tool approval. The center workspace remains the
-focused conversation/event/composer surface and must not render
+The right-side Team tab owns delegated task visibility through its `Tasks`
+section instead of a center active-task strip. `TeamOverviewPanel` owns the
+Messages/Tasks accordion state, opens Messages by default, and resets to
+Messages when the active team run changes. Messages and Tasks use the same
+left-side disclosure affordance; Tasks starts collapsed with a localized human
+count. `TeamActiveTasksSection` and `TeamActiveTaskRow` derive task-agent and
+task-team entries from the transient projection nodes in `AgentTeamContext`,
+while `runHistoryTeamRows` filters those task-scoped nodes out of stable left
+navigation. Opening Tasks shows a left navigator of target/status/description
+rows and, for the selected task, nested reference-file rows. The right pane owns
+the selected task body, waiting-for-Activity status copy, explicit generic
+`Focus` controls, task-team member focus rows, task reference previews, and a
+collapsed Technical details block for task type, task id, execution run id,
+target metadata, and raw task arguments. Primary visible Tasks UI intentionally
+hides `Task Agent` / `Task Team` badges, raw ids, duplicate right-side reference
+lists, and `Focus agent` / `Focus team` wording. Tasks is not an approval action
+surface: pending approval remains status-only here, and Activity remains the
+owner for Approve/Deny controls and approval command routing. Task reference
+files come from task-delegation event metadata and open in the Tasks right pane
+through the task-owned reference route; Messages remains message-owned and its
+content/reference UX is not routed through task identity. The center workspace
+remains the focused conversation/event/composer surface and must not render
 `TeamActiveTaskExecutionsBar` or any replacement center list.
 
 Running and awaiting-acceptance task executions must remain visible in Team →

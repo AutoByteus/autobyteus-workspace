@@ -101,9 +101,33 @@ const messages = {
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "需要审批",
   "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
-    "活跃任务",
+    "任务",
   "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
     "活跃",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular":
+    "个任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural":
+    "个任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus_agent":
+    "聚焦智能体",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus_team":
+    "聚焦团队",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus":
+    "聚焦",
+  "workspace.components.workspace.team.TeamActiveTasksSection.back_to_task":
+    "返回任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
+    "技术详情",
+  "workspace.components.workspace.team.TeamActiveTasksSection.select_task":
+    "选择一个任务进行阅读。",
+  "workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice":
+    "正在等待在 Activity 中处理用户操作。",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_kind":
+    "目标类型",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_type":
+    "任务类型",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target":
+    "目标",
   "workspace.components.workspace.team.TeamActiveTasksSection.empty":
     "暂无活跃委派任务",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
@@ -112,23 +136,14 @@ const messages = {
     "任务团队",
   "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task": "任务",
-  "workspace.components.workspace.team.TeamActiveTasksSection.status": "状态",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target": "目标",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
     "任务 ID",
   "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
     "智能体运行 ID",
   "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
     "智能体团队运行 ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_member":
-    "成员",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_team":
-    "团队",
   "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
     "任务描述不可用",
-  "workspace.components.workspace.team.TeamActiveTasksSection.open_conversation":
-    "打开会话",
   "workspace.components.workspace.team.TeamActiveTasksSection.members":
     "成员",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":

@@ -1,0 +1,19 @@
+## Static probe: old glyphs / old clamp / local section state in current Team source
+
+## Static probe: Tasks approval ownership terms in current Tasks source
+rg: autobyteus-web/utils/teamActiveTaskApprovals.ts: No such file or directory (os error 2)
+
+## Static probe: forbidden visible primary Tasks copy / duplicate reference labels in current Tasks source
+autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue:19:  taskId: string;
+autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue:31:  return `${restBaseUrl}/team-runs/${encodeURIComponent(props.teamRunId)}/task-delegations/${encodeURIComponent(props.taskId)}/references/${encodeURIComponent(props.reference.referenceId)}/content`;
+autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue:58:          <div v-if="selectedEntry && selectedReference && selectedEntry.taskId" class="h-full" data-test="active-task-reference-preview">
+autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue:61:              :task-id="selectedEntry.taskId"
+autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue:186:    { key: 'task-kind', labelKey: 'workspace.components.workspace.team.TeamActiveTasksSection.task_type', dataTest: 'active-task-task-kind', value: entry.kind },
+autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue:187:    ...(entry.taskId ? [{ key: 'task-id', labelKey: 'workspace.components.workspace.team.TeamActiveTasksSection.task_id', dataTest: 'active-task-id', value: entry.taskId }] : []),
+
+## Static probe: task reference viewer must use task-owned route, not message/team-communication route
+autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue:31:  return `${restBaseUrl}/team-runs/${encodeURIComponent(props.teamRunId)}/task-delegations/${encodeURIComponent(props.taskId)}/references/${encodeURIComponent(props.reference.referenceId)}/content`;
+autobyteus-server-ts/src/api/rest/task-delegation.ts:31:    "/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content",
+
+## Static probe: deleted approval helper path status
+OK: autobyteus-web/utils/teamActiveTaskApprovals.ts is absent

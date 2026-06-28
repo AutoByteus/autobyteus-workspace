@@ -16,6 +16,10 @@ import {
 } from "./task-delegation-record.js";
 import { getTaskExecutionKind, getTaskExecutionRunId } from "./task-execution-instance.js";
 import { getTaskDelegationTargetName } from "./task-delegation-target.js";
+import {
+  buildTaskDelegationArguments,
+  buildTaskDelegationReferenceFiles,
+} from "./task-delegation-reference-file.js";
 
 const sourcePathForRecord = (record: TaskDelegationRecord): string[] =>
   record.target.kind === "member"
@@ -40,6 +44,8 @@ export class TaskDelegationEventPublisher {
         taskLabel: record.taskLabel,
         description: record.description,
         status: record.status,
+        referenceFiles: buildTaskDelegationReferenceFiles(record),
+        taskArguments: buildTaskDelegationArguments(record),
         executionKind,
         executionRunId: getTaskExecutionRunId(record.execution),
       })),
@@ -67,6 +73,8 @@ export class TaskDelegationEventPublisher {
       description: input.record.description,
       target: input.record.target,
       delegator: input.record.delegator,
+      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
+      taskArguments: buildTaskDelegationArguments(input.record),
       execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,
@@ -102,6 +110,8 @@ export class TaskDelegationEventPublisher {
       description: input.record.description,
       target: input.record.target,
       delegator: input.record.delegator,
+      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
+      taskArguments: buildTaskDelegationArguments(input.record),
       execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,
@@ -133,6 +143,8 @@ export class TaskDelegationEventPublisher {
       description: input.record.description,
       target: input.record.target,
       delegator: input.record.delegator,
+      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
+      taskArguments: buildTaskDelegationArguments(input.record),
       execution: input.record.execution,
       previousStatus: input.previousStatus,
       status: input.record.status,

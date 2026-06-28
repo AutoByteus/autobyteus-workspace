@@ -1,0 +1,16 @@
+Round 3 Electron backend health probe
+Sun Jun 28 16:21:41 UTC 2026
+lsof 29695:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 20306 normy   27u  IPv4 0x63cc9b3246063562      0t0  TCP *:29695 (LISTEN)
+
+curl /graphql without query (expect HTTP 400 Unknown query if backend responds):
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 52
+Date: Sun, 28 Jun 2026 16:21:42 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"data":null,"errors":[{"message":"Unknown query"}]}

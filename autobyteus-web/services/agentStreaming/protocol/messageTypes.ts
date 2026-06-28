@@ -209,6 +209,17 @@ export interface TodoListUpdatePayload extends TeamStreamIdentityPayload {
   todos: TodoItem[];
 }
 
+export interface TaskDelegationReferenceFilePayload {
+  referenceId?: string;
+  reference_id?: string;
+  path: string;
+  type?: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other' | string;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+}
+
 export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
   event_type:
     | 'TASK_DELEGATION_ACTIVATED'
@@ -224,6 +235,12 @@ export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
   description?: string;
   taskDescription?: string;
   task_description?: string;
+  referenceFiles?: TaskDelegationReferenceFilePayload[];
+  reference_files?: TaskDelegationReferenceFilePayload[] | string[];
+  taskReferenceFiles?: TaskDelegationReferenceFilePayload[];
+  task_reference_files?: TaskDelegationReferenceFilePayload[] | string[];
+  taskArguments?: Record<string, any>;
+  task_arguments?: Record<string, any>;
   target_name?: string;
   targetName?: string;
   target?: Record<string, any>;

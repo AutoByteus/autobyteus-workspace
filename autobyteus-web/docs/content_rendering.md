@@ -72,6 +72,12 @@ read-only surfaces:
   route. The mobile wrapper `MobileTeamReferenceViewer.vue` uses that same
   viewer in a phone full-screen shell and disables rich HTML preview while
   preserving raw/Markdown and protected binary/object-URL preview paths.
+- `components/workspace/team/TeamReferenceFileViewer.vue` is the route-agnostic
+  Team reference preview shell used by task-delegation references. The
+  task-owned wrapper `TeamTaskReferenceViewer.vue` supplies
+  `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`,
+  shows a Back-to-task affordance, and reuses the same raw/Markdown/media/PDF,
+  CSV, and Excel `FileViewer` paths without changing message-owned reference UX.
 
 For Phone Access, protected REST resources must be loaded through the authorized
 transport/object-URL helpers so the paired mobile bearer credential is attached.

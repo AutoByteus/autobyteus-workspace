@@ -49,11 +49,18 @@ const cloneDelegatorIdentity = (
   taskTeamInstance: identity.taskTeamInstance ?? null,
 });
 
+const cloneTaskInput = (task: TaskDelegationTaskInput): TaskDelegationTaskInput => ({
+  target: { ...task.target },
+  description: task.description,
+  reference_files: [...(task.reference_files ?? [])],
+});
+
 const cloneRecord = (record: TaskDelegationRecord): TaskDelegationRecord => ({
   ...record,
   target: cloneTaskDelegationTarget(record.target),
   delegator: cloneDelegatorIdentity(record.delegator),
   referenceFiles: [...record.referenceFiles],
+  taskArguments: cloneTaskInput(record.taskArguments),
   execution: record.execution ? cloneTaskExecutionInstance(record.execution) : null,
   resultSubmissions: record.resultSubmissions.map((submission) => ({
     ...submission,
@@ -96,6 +103,7 @@ export class TaskDelegationLedger {
       target: cloneTaskDelegationTarget(input.target),
       delegator: cloneDelegatorIdentity(input.delegator),
       referenceFiles: [...(input.task.reference_files ?? [])],
+      taskArguments: cloneTaskInput(input.task),
       execution: null,
       delegatorReplyRecipientName: null,
       delegatorReplyTargetAgentRunId: null,
