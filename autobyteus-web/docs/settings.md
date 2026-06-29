@@ -196,14 +196,17 @@ navigator plus right detail pane.
 Inside that section, `TeamActiveTaskNavigator` renders each task navigator item
 in the durable order: text-only task summary, responsible agent or task-team row
 with the shared tiny `StatusDot`, indented task-team member rows with status
-dots, task-owned reference rows, and collapsed Technical details for task type,
-task id, execution run id, target metadata, and raw task arguments. Summary and
-reference clicks update only the section-local task/reference detail selection;
-they must not focus the center conversation/composer or replace it with a task
-team card. Explicit actor/member rows still emit the existing focus behavior for
-that target. `TeamActiveTaskDetailPane` renders the selected task body or the
-selected task-owned reference preview, plus the generic `Focus` control and
-waiting-for-Activity status copy.
+dots, task-owned reference rows with visible selected state, and collapsed
+Technical details for task type, task id, execution run id, target metadata, and
+raw task arguments. Summary and reference clicks update only the section-local
+task/reference detail selection; they must not focus the center
+conversation/composer or replace it with a task team card. Explicit actor/member
+rows are the only task UI controls that emit the existing focus behavior for that
+target. `TeamActiveTaskDetailPane` is content/reference-only: it renders the
+selected task body or selected task-owned reference preview and intentionally does
+not duplicate the actor/team heading, status chip, waiting notice, `Focus`
+button, actor/member roster, reference list, or Technical details in the right
+pane.
 
 The global Workspaces/run-history tree remains a workspace/run/team/member
 navigation surface only. It may reuse the shared status-dot presentation for

@@ -139,7 +139,9 @@ Rules:
   record. The Tasks UI does not parse Team Communication messages or raw
   Markdown/prose for paths.
 - The left Active Tasks navigator shows reference rows under each task's
-  responsible agent/team context, after optional task-team members. Selecting a
+  responsible agent/team context, after optional task-team members. Reference
+  rows use the shared file presentation, a visible selected state, and enough
+  spacing to read as task-owned navigation rather than raw metadata. Selecting a
   reference updates the section-local task/reference selection and switches the
   right detail pane from task body to file preview. Selecting the task summary
   clears the selected reference and shows the task body again.
@@ -206,7 +208,7 @@ flowchart LR
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
 | Team Tasks section | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Owns the Team-tab Active Tasks split layout, section-local selected task/reference state, left-pane resizing, empty state, and actor/member focus emits. |
 | Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue` | Renders compact task navigator items in the order summary, responsible agent/team, indented members, task-owned reference rows, and collapsed technical metadata. |
-| Team active-task detail pane | `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue` | Renders the selected task body or selected task-owned reference preview, plus waiting-for-Activity copy and the generic Focus control. |
+| Team active-task detail pane | `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue` | Renders only the selected task body or selected task-owned reference preview; focus controls, actor/member rows, status/waiting copy, reference rows, and Technical details stay in the left Active Tasks navigator or Activity surface. |
 | Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` for the selected right-side reference preview. |
 | Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |
 | Generic Team reference type/presentation | `autobyteus-web/types/teamReferenceFile.ts`, `autobyteus-web/utils/teamReferences/*` | Shared task-reference file model and file-type/name/icon presentation for the Tasks surface. |
