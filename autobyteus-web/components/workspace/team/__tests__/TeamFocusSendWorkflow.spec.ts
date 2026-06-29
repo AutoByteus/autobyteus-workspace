@@ -300,7 +300,7 @@ describe('Team Tasks Focus + send-message workflow', () => {
     const { wrapper, teamContextsStore, activeContextStore, sendMessageSpy } = mountWorkflow();
     await expandTasks(wrapper);
 
-    await wrapper.get('[data-test="active-task-focus-primary"]').trigger('click');
+    await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-actor-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 

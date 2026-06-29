@@ -124,7 +124,9 @@ describe('TeamActiveTaskNavigator', () => {
 
     const summary = wrapper.get('[data-test="left-active-task-summary-row"]');
     expect(summary.text()).toContain('Draft the implementation handoff');
-    expect(summary.find('span').classes()).toEqual(expect.arrayContaining(['line-clamp-2', 'whitespace-pre-line']));
+    expect(summary.classes()).toEqual(expect.arrayContaining(['text-gray-600']));
+    expect(summary.classes()).not.toContain('text-blue-700');
+    expect(summary.find('span').classes()).toEqual(expect.arrayContaining(['line-clamp-2', 'whitespace-pre-line', 'text-sm', 'leading-5']));
     expect(summary.find('span.inline-block').exists()).toBe(false);
 
     const actor = wrapper.get('[data-test="left-active-task-actor-row"]');
@@ -133,9 +135,10 @@ describe('TeamActiveTaskNavigator', () => {
     expect(actor.find('span.inline-block').classes()).toEqual(expect.arrayContaining(['h-2', 'w-2', 'rounded-full', 'bg-blue-500', 'animate-pulse']));
     expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
 
+    expect(wrapper.get('[data-test="left-active-task-references"]').text()).toContain('References');
     const reference = wrapper.get('[data-test="left-active-task-reference-row"]');
     expect(reference.text()).toContain('requirements.md');
-    expect(reference.classes()).toEqual(expect.arrayContaining(['text-indigo-700']));
+    expect(reference.classes()).toEqual(expect.arrayContaining(['text-sm', 'gap-2', 'text-blue-700']));
     await reference.trigger('click');
     expect(wrapper.emitted('select-reference')?.[0]).toEqual([{ memberRouteKey: 'team-run__worker__task_0001', referenceId: 'task-reference:0:/tmp/requirements.md' }]);
 
@@ -143,6 +146,7 @@ describe('TeamActiveTaskNavigator', () => {
     expect(details.element.tagName).toBe('DETAILS');
     expect(details.attributes('open')).toBeUndefined();
     expect(details.text()).toContain('Technical details');
+    expect(details.get('summary').classes()).toEqual(expect.arrayContaining(['text-xs', 'text-gray-500', 'hover:text-gray-700']));
     expect(wrapper.get('[data-test="active-task-id"]').text()).toBe('task_0001');
     expect(wrapper.get('[data-test="active-task-run-id"]').text()).toBe('task-agent-run-1');
     expect(wrapper.get('[data-test="active-task-technical-input"]').classes()).toEqual(expect.arrayContaining(['max-h-28', 'overflow-auto']));
@@ -167,7 +171,7 @@ describe('TeamActiveTaskNavigator', () => {
     expect(member.text()).toContain('solution_designer');
     expect(member.attributes('style')).toContain('margin-left: 12px');
     expect(member.attributes('style')).toContain('width: calc(100% - 12px)');
-    expect(member.classes()).toEqual(expect.arrayContaining(['bg-indigo-100', 'text-indigo-900']));
+    expect(member.classes()).toEqual(expect.arrayContaining(['bg-blue-100', 'text-blue-900']));
     expect(member.find('span.inline-block').classes()).toEqual(expect.arrayContaining(['bg-green-500']));
 
     await summary.trigger('click');

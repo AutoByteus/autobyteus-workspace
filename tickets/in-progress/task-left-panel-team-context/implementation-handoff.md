@@ -24,8 +24,9 @@ The implemented shape is now:
   - indented task-team member rows with tiny status dots;
   - References header and file rows;
   - collapsed Technical details metadata.
-- Right detail pane: props-driven selected task body or selected task-owned reference preview only; no roster, reference list, or technical metadata duplication.
-- Task summary and reference clicks select content only. They do not focus the center composer/subteam. Actor/member rows and the right-pane Focus button are the only active-task controls that emit member focus.
+- Right detail pane: props-driven selected task body or selected task-owned reference preview only; no actor/team header, Focus button, roster, reference list, or technical metadata duplication.
+- Task summary and reference clicks select content only. They do not focus the center composer/subteam. Actor/member rows in the left navigator are the only active-task controls that emit member focus.
+- Follow-up simplification from user feedback: the right content area now shows only task content/reference content, and reference-file rows were restyled closer to the original personal-branch row treatment for clarity.
 
 ## Key Files Or Areas
 
@@ -43,7 +44,7 @@ Modified:
   - Composes `TeamActiveTaskNavigator.vue` and `TeamActiveTaskDetailPane.vue`.
 - `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue`
   - Refactored to explicit props: selected entry, selected reference, and refresh signal.
-  - Removed global store access and entry derivation.
+  - Removed global store access, entry derivation, the team/actor name header, status chip, waiting notice, and right-side Focus button.
 - `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
   - Restored local Messages/Active Tasks section ownership and Messages-first team-run reset.
 - `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
@@ -78,6 +79,7 @@ Retained as valid presentation/projection support from the prior work:
 - `useTeamActiveTaskRightDetailActivation` no longer exists. There is no global-tree task/reference activation path.
 - `openRightPanel()` was removed from `useRightPanel.ts` because it had no valid caller after the wrong activation path was removed.
 - Shared status-dot extraction remains presentation-only. Workspaces history components use `StatusDot.vue` for status display but do not import active-task projection, navigator, detail, or selection code.
+- Left reference-file rows keep the new required navigator hierarchy but use the clearer original row scale/interactions: `text-sm`, `gap-2`, 16px icon, white hover/focus background, and selected white/indigo/shadow treatment.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -85,7 +87,7 @@ Retained as valid presentation/projection support from the prior work:
 - Reviewed root-cause classification: Boundary / ownership issue and file placement / responsibility drift.
 - Reviewed refactor decision: Refactor Needed Now.
 - Implementation matched the corrected round-3 design assessment: Yes.
-- Evidence / notes: Removed the global Workspaces-tree active-task path, restored local Team active-task split ownership, made the detail pane props-driven, and added tests that assert task summary/reference selection does not focus while actor/member controls do.
+- Evidence / notes: Removed the global Workspaces-tree active-task path, restored local Team active-task split ownership, made the detail pane props-driven/content-only, and added tests that assert task summary/reference selection does not focus while actor/member controls do.
 
 ## Legacy / Compatibility Removal Check
 
@@ -107,14 +109,15 @@ Passed:
 
 Attempted but blocked by pre-existing repository-wide issues:
 
-- `pnpm --filter autobyteus exec nuxi typecheck` failed with existing repo-wide TypeScript errors outside the changed files. A follow-up grep of the captured typecheck log found no hits for the changed active-task/history/right-panel files.
+- Earlier `pnpm --filter autobyteus exec nuxi typecheck` failed with existing repo-wide TypeScript errors outside the changed files. A follow-up grep of that captured typecheck log found no hits for the changed active-task/history/right-panel files. A later post-simplification typecheck attempt hit Node heap OOM before producing useful diagnostics, so typecheck is still not claimed as a successful check.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Browser/API-E2E should verify the active-task navigator is inside the Team Active Tasks section, not under expanded Workspaces history team rows.
 - In the Team tab, open Active Tasks and verify each task renders summary -> actor/team row -> members -> References -> file rows -> collapsed Technical details.
 - Click task summaries and reference rows and confirm only the right task detail/reference preview changes; the focused center composer/subteam should not change.
-- Click actor/team/member rows and confirm existing focus behavior still routes to the selected member/team.
+- Confirm the right task detail area starts directly with task content and does not show a duplicated team/actor title or Focus button.
+- Click actor/team/member rows in the left navigator and confirm existing focus behavior still routes to the selected member/team.
 - Click the same reference row repeatedly and confirm the right reference viewer refresh signal path still works.
 - Confirm the global Workspaces tree still renders workspace/run/team/member rows and status dots without active-task summaries, references, or technical metadata.
 

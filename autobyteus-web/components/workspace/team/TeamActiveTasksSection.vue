@@ -70,7 +70,6 @@
           :selected-entry="selectedEntry"
           :selected-reference="selectedReference"
           :reference-refresh-signal="referenceRefreshSignal"
-          @select-member="emitFocus"
         />
       </div>
     </div>

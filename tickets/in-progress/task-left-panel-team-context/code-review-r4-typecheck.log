@@ -1,0 +1,93 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+<--- Last few GCs --->
+
+[61103:0x855c00000]    47920 ms: Mark-Compact 4040.5 (4142.6) -> 4025.4 (4143.3) MB, pooled: 0 MB, 806.42 / 0.00 ms  (average mu = 0.108, current mu = 0.041) allocation failure; scavenge might not succeed
+[61103:0x855c00000]    49575 ms: Mark-Compact 4041.3 (4143.3) -> 4026.5 (4144.1) MB, pooled: 0 MB, 1615.58 / 0.00 ms  (average mu = 0.054, current mu = 0.024) allocation failure; scavenge might not succeed
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x10296f680 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 2: 0x102b4aa94 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 3: 0x102d5a0a8 v8::internal::Heap::stack() [/Users/normy/.hermes/node/bin/node]
+ 4: 0x102d58448 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/normy/.hermes/node/bin/node]
+ 5: 0x102d4ca3c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 6: 0x102d4d274 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 7: 0x102d30560 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/normy/.hermes/node/bin/node]
+ 8: 0x10314c9c0 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/normy/.hermes/node/bin/node]
+ 9: 0x10360ddf4 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/Users/normy/.hermes/node/bin/node]
+10: 0x10357bca8 Builtins_GrowFastSmiOrObjectElements [/Users/normy/.hermes/node/bin/node]
+11: 0x10f711e70
+12: 0x10e01b4e0
+13: 0x10e835cb4
+14: 0x10e89273c
+15: 0x10f3e14f4
+16: 0x10f49ca74
+17: 0x10ea6c85c
+18: 0x10ec740fc
+19: 0x10ebaf46c
+20: 0x10eb49e20
+21: 0x10f413390
+22: 0x10e394b58
+23: 0x10f7132d4
+24: 0x10f6682e0
+25: 0x10ea72990
+26: 0x10e9519b4
+27: 0x10eeccdf8
+28: 0x10e95157c
+29: 0x10f25b8c8
+30: 0x10f71bbd0
+31: 0x10f165858
+32: 0x10f1679ec
+33: 0x10f160438
+34: 0x10f509eb8
+35: 0x10f16057c
+36: 0x10e6e1d1c
+37: 0x10f723f30
+38: 0x10ece46f0
+39: 0x10e74d358
+40: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+41: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+42: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+43: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+44: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+45: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+46: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+47: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+48: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+49: 0x10df71ab8
+50: 0x10df7106c
+51: 0x10df72680
+52: 0x10df6ca70
+53: 0x10df6a578
+54: 0x10df6d4f4
+55: 0x10df6d6fc
+56: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+57: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+58: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+59: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+60: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+61: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+62: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+63: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+64: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+65: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+66: 0x103578ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+67: 0x103576c0c Builtins_JSEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+68: 0x1035768f4 Builtins_JSEntry [/Users/normy/.hermes/node/bin/node]
+69: 0x102cb1e94 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/normy/.hermes/node/bin/node]
+70: 0x102cb17f0 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [/Users/normy/.hermes/node/bin/node]
+71: 0x102b60a4c v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/normy/.hermes/node/bin/node]
+72: 0x10294965c node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) [/Users/normy/.hermes/node/bin/node]
+73: 0x102a0176c node::Realm::ExecuteBootstrapper(char const*) [/Users/normy/.hermes/node/bin/node]
+74: 0x1029270a0 node::StartExecution(node::Environment*, char const*) [/Users/normy/.hermes/node/bin/node]
+75: 0x102926ff4 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/normy/.hermes/node/bin/node]
+76: 0x102872efc node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>, std::__1::function<void (node::Environment*, v8::Local<v8::Value>, v8::Local<v8::Value>)>) [/Users/normy/.hermes/node/bin/node]
+77: 0x1029b9870 node::NodeMainInstance::Run() [/Users/normy/.hermes/node/bin/node]
+78: 0x10292a7e8 node::Start(int, char**) [/Users/normy/.hermes/node/bin/node]
+79: 0x19c41dd54 start [/usr/lib/dyld]

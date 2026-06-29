@@ -3,26 +3,25 @@
     <article
       v-for="entry in entries"
       :key="entry.node.memberRouteKey"
-      class="rounded-md border border-transparent bg-slate-50/50 py-1"
-      :class="isEntrySelected(entry) ? 'border-indigo-100 bg-indigo-50/80' : ''"
+      class="border-l-2 transition-colors"
+      :class="isEntrySelected(entry) ? 'border-blue-500 bg-blue-50' : 'border-transparent'"
       :data-test="entry.kind === 'task_team' ? 'left-task-team-context' : 'left-task-agent-context'"
     >
       <button
         type="button"
         data-test="left-active-task-summary-row"
-        class="w-full rounded px-2 py-1 text-left text-xs font-medium leading-5 transition-colors hover:bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        :class="isEntrySelected(entry) && !isReferenceSelectedForEntry(entry) ? 'text-indigo-900' : 'text-slate-800'"
+        class="w-full px-3 py-2.5 text-left text-gray-600 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
         :title="taskSummary(entry)"
         @click="$emit('select-task', entry.node.memberRouteKey)"
       >
-        <span class="line-clamp-2 whitespace-pre-line">{{ taskSummary(entry) }}</span>
+        <span class="line-clamp-2 whitespace-pre-line text-sm leading-5">{{ taskSummary(entry) }}</span>
       </button>
 
       <button
         type="button"
         data-test="left-active-task-actor-row"
-        class="flex w-full min-w-0 items-center rounded px-2 py-1 text-left text-xs transition-colors hover:bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        :class="focusedMemberRouteKey === entry.node.memberRouteKey ? 'bg-indigo-100 text-indigo-900' : 'text-slate-700'"
+        class="flex w-full min-w-0 items-center rounded px-3 py-1 text-left text-sm transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
+        :class="focusedMemberRouteKey === entry.node.memberRouteKey ? 'bg-blue-100 text-blue-900' : 'text-gray-700'"
         :title="entry.targetDisplayName"
         @click="$emit('select-member', entry.node.memberRouteKey)"
       >
@@ -43,8 +42,8 @@
           :key="member.node.memberRouteKey"
           type="button"
           data-test="left-active-task-member-row"
-          class="flex min-w-0 items-center rounded px-2 py-1 text-left text-xs transition-colors hover:bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-          :class="focusedMemberRouteKey === member.node.memberRouteKey ? 'bg-indigo-100 text-indigo-900' : 'text-slate-600'"
+          class="flex min-w-0 items-center rounded px-3 py-1 text-left text-sm transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
+          :class="focusedMemberRouteKey === member.node.memberRouteKey ? 'bg-blue-100 text-blue-900' : 'text-gray-600'"
           :style="memberRowStyle(member.depth)"
           :title="member.displayName"
           @click="$emit('select-member', member.node.memberRouteKey)"
@@ -61,21 +60,21 @@
         </button>
       </div>
 
-      <div v-if="entry.taskReferenceFiles.length" class="mt-1 space-y-0.5 px-2" data-test="left-active-task-references">
-        <p class="px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-400">References</p>
+      <div v-if="entry.taskReferenceFiles.length" class="space-y-1 px-3 pb-2 pl-9" data-test="left-active-task-references">
+        <p class="px-1 text-xs font-semibold uppercase tracking-wide text-gray-500">References</p>
         <button
           v-for="reference in entry.taskReferenceFiles"
           :key="reference.referenceId"
           type="button"
           data-test="left-active-task-reference-row"
-          class="flex w-full items-center gap-1.5 rounded px-1.5 py-1 text-left text-xs transition-colors hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-          :class="isReferenceSelected(entry, reference.referenceId) ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'"
+          class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-sm transition-colors hover:bg-white focus:outline-none focus-visible:bg-white"
+          :class="isReferenceSelected(entry, reference.referenceId) ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
           :title="reference.path"
           @click="$emit('select-reference', { memberRouteKey: entry.node.memberRouteKey, referenceId: reference.referenceId })"
         >
           <Icon
             :icon="referenceFileIcon(reference)"
-            class="h-3.5 w-3.5 shrink-0"
+            class="h-4 w-4 shrink-0"
             aria-hidden="true"
           />
           <span class="truncate">{{ referenceFileName(reference.path) }}</span>
@@ -87,7 +86,7 @@
         class="mt-1 px-2"
         data-test="left-active-task-technical-details"
       >
-        <summary class="cursor-pointer rounded px-1 py-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-400 hover:bg-white/80">
+        <summary class="cursor-pointer rounded px-1 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus-visible:bg-blue-50">
           {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.technical_details') }}
         </summary>
         <dl class="space-y-1 px-1 pb-1 text-[0.625rem] text-slate-600">
@@ -144,12 +143,6 @@ const isEntrySelected = (entry: ActiveTaskEntry): boolean => (
 
 const isReferenceSelected = (entry: ActiveTaskEntry, referenceId: string): boolean => (
   isEntrySelected(entry) && props.selectedReferenceId === referenceId
-);
-
-const isReferenceSelectedForEntry = (entry: ActiveTaskEntry): boolean => (
-  isEntrySelected(entry)
-  && Boolean(props.selectedReferenceId)
-  && entry.taskReferenceFiles.some((reference) => reference.referenceId === props.selectedReferenceId)
 );
 
 const initials = (displayName: string): string => {

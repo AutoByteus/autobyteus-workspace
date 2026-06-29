@@ -196,7 +196,8 @@ describe('TeamActiveTasksSection', () => {
     expect(wrapper.get('[data-test="left-active-task-technical-details"]').text()).toContain('Technical details');
 
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.get('[data-test="active-task-focus-primary"]').text()).toBe('Focus');
+    expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('software_engineering_team');
     expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('Task Team');
     expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="active-task-detail-pane"]').find('[data-test="left-active-task-reference-row"]').exists()).toBe(false);
@@ -256,7 +257,7 @@ describe('TeamActiveTasksSection', () => {
     window.dispatchEvent(new MouseEvent('mouseup'));
   });
 
-  it('selects task summaries for reading without focusing; explicit actor and detail controls emit focus requests', async () => {
+  it('selects task summaries for reading without focusing; explicit actor rows emit focus requests', async () => {
     const wrapper = mountSubject();
 
     await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-summary-row"]').trigger('click');
@@ -266,9 +267,7 @@ describe('TeamActiveTasksSection', () => {
 
     await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-actor-row"]').trigger('click');
     expect(wrapper.emitted('select-member')?.[0]).toEqual(['team-run__worker__task_0001']);
-
-    await wrapper.get('[data-test="active-task-focus-primary"]').trigger('click');
-    expect(wrapper.emitted('select-member')?.[1]).toEqual(['team-run__worker__task_0001']);
+    expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
   });
 
   it('emits focus only from task-team actor/member rows, not from task-team summary selection', async () => {

@@ -10,30 +10,6 @@
     </div>
 
     <div v-else-if="selectedEntry" class="h-full overflow-y-auto p-4" data-test="active-task-task-detail">
-      <div class="mb-4 flex items-start justify-between gap-3">
-        <div class="min-w-0">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="truncate text-base font-semibold text-slate-900">{{ selectedEntry.targetDisplayName }}</span>
-            <span v-if="selectedStatusLabel" class="rounded-full bg-slate-50 px-2 py-0.5 text-[0.68rem] font-medium text-slate-500 ring-1 ring-slate-100">
-              {{ selectedStatusLabel }}
-            </span>
-          </div>
-          <p v-if="isWaitingStatus(selectedEntry.statusLabel)" data-test="active-task-waiting-notice" class="mt-2 rounded-md bg-slate-50 px-2.5 py-2 text-xs text-slate-500 ring-1 ring-slate-100">
-            {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice') }}
-          </p>
-        </div>
-        <button
-          type="button"
-          data-test="active-task-focus-primary"
-          class="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-          :aria-label="`${$t('workspace.components.workspace.team.TeamActiveTasksSection.focus')} ${selectedEntry.targetDisplayName}`"
-          :title="`${$t('workspace.components.workspace.team.TeamActiveTasksSection.focus')} ${selectedEntry.targetDisplayName}`"
-          @click="$emit('select-member', selectedEntry.node.memberRouteKey)"
-        >
-          {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.focus') }}
-        </button>
-      </div>
-
       <MarkdownRenderer
         :content="selectedEntry.taskDescription || $t('workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable')"
         class="team-active-task-markdown text-[0.9375rem] leading-6 text-slate-700"
@@ -48,13 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import TeamTaskReferenceViewer from '~/components/workspace/team/TeamTaskReferenceViewer.vue';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   selectedEntry: ActiveTaskEntry | null;
   selectedReference?: TeamReferenceFile | null;
   referenceRefreshSignal?: number;
@@ -62,18 +37,4 @@ const props = withDefaults(defineProps<{
   selectedReference: null,
   referenceRefreshSignal: 0,
 });
-
-defineEmits<{
-  (e: 'select-member', memberRouteKey: string): void;
-}>();
-
-const usefulStatusLabel = (statusLabel: string | null | undefined): string | null => {
-  const normalized = statusLabel?.trim() ?? '';
-  if (!normalized) return null;
-  const key = normalized.toLowerCase();
-  if (key === 'active' || key === 'unknown') return null;
-  return normalized;
-};
-const selectedStatusLabel = computed(() => (props.selectedEntry ? usefulStatusLabel(props.selectedEntry.statusLabel) : null));
-const isWaitingStatus = (statusLabel: string): boolean => /waiting|approval|input|action/i.test(statusLabel);
 </script>
