@@ -16,8 +16,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -1054,6 +1057,7 @@ export type Mutation = {
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
   removeSkillSource: Array<SkillSource>;
+  removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
   restoreAgentRun: RestoreAgentRunResult;
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
@@ -1314,6 +1318,11 @@ export type MutationRemoveSkillSourceArgs = {
 };
 
 
+export type MutationRemoveWorkspaceArgs = {
+  input: RemoveWorkspaceInput;
+};
+
+
 export type MutationRenameFileOrFolderArgs = {
   newName: Scalars['String']['input'];
   targetPath: Scalars['String']['input'];
@@ -1507,6 +1516,7 @@ export type Query = {
   getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
   getAgentRunSelfEvolutionEligibility: GraphqlSelfEvolutionEligibility;
+  getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getGeminiSetupConfig: GeminiSetupConfig;
   getLlmProviderApiKeyConfigured: Scalars['Boolean']['output'];
@@ -1521,7 +1531,9 @@ export type Query = {
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamMemberSelfEvolutionEligibility: GraphqlSelfEvolutionEligibility;
+  getTeamMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
+  getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   health: HealthStatus;
   listAgentRunsWithMemory: AgentRunMemoryPage;
   listAgentTeamRunsWithMemory: AgentTeamRunMemoryPage;
@@ -1546,11 +1558,13 @@ export type Query = {
   skillFileTree?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
+  tokenUsageTaskStatisticsInPeriod: TokenUsageTaskStatisticsResultGraphql;
   tools: Array<ToolDefinitionDetail>;
   toolsGroupedByCategory: Array<ToolCategoryGroup>;
-  totalCostInPeriod: Scalars['Float']['output'];
+  totalCostInPeriod?: Maybe<Scalars['Float']['output']>;
   usageStatisticsInPeriod: Array<UsageStatistics>;
   workspaceMetadata: WorkspaceMetadata;
+  workspaceRunHistory: WorkspaceRunHistoryGroupObject;
   workspaces: Array<WorkspaceMetadata>;
 };
 
@@ -1626,6 +1640,11 @@ export type QueryGetAgentRunSelfEvolutionEligibilityArgs = {
 };
 
 
+export type QueryGetAgentRunTokenUsageSummaryArgs = {
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetLlmProviderApiKeyConfiguredArgs = {
   providerId: Scalars['String']['input'];
 };
@@ -1678,7 +1697,19 @@ export type QueryGetTeamMemberSelfEvolutionEligibilityArgs = {
 };
 
 
+export type QueryGetTeamMemberTokenUsageSummaryArgs = {
+  memberAgentRunId?: InputMaybe<Scalars['String']['input']>;
+  memberRouteKey?: InputMaybe<Scalars['String']['input']>;
+  teamRunId: Scalars['String']['input'];
+};
+
+
 export type QueryGetTeamRunResumeConfigArgs = {
+  teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTeamRunTokenUsageSummaryArgs = {
   teamRunId: Scalars['String']['input'];
 };
 
@@ -1762,6 +1793,12 @@ export type QuerySkillFileTreeArgs = {
 };
 
 
+export type QueryTokenUsageTaskStatisticsInPeriodArgs = {
+  endTime: Scalars['DateTime']['input'];
+  startTime: Scalars['DateTime']['input'];
+};
+
+
 export type QueryToolsArgs = {
   origin?: InputMaybe<ToolOriginEnum>;
   sourceServerId?: InputMaybe<Scalars['String']['input']>;
@@ -1789,6 +1826,12 @@ export type QueryWorkspaceMetadataArgs = {
   rootPath: Scalars['String']['input'];
 };
 
+
+export type QueryWorkspaceRunHistoryArgs = {
+  limitPerAgent?: Scalars['Int']['input'];
+  workspaceId: Scalars['String']['input'];
+};
+
 export type RawTraceFileSummary = {
   __typename?: 'RawTraceFileSummary';
   fileName: Scalars['String']['output'];
@@ -1804,6 +1847,18 @@ export type ReloadToolSchemaResult = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   tool?: Maybe<ToolDefinitionDetail>;
+};
+
+export type RemoveWorkspaceInput = {
+  workspaceId: Scalars['String']['input'];
+};
+
+export type RemoveWorkspaceResultInfo = {
+  __typename?: 'RemoveWorkspaceResultInfo';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  workspaceId: Scalars['String']['output'];
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
 export type RestoreAgentRunResult = {
@@ -2150,6 +2205,129 @@ export type TestMemoryHubConnectionInput = {
   token?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type TokenUsageCostSummaryAggregateGraphql = {
+  __typename?: 'TokenUsageCostSummaryAggregateGraphql';
+  apiCostStatus: Scalars['String']['output'];
+  billableOutputTokens: Scalars['Int']['output'];
+  cacheCreation1hInputTokens: Scalars['Int']['output'];
+  cacheCreation5mInputTokens: Scalars['Int']['output'];
+  cacheCreationInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  cacheCreationInputTokens: Scalars['Int']['output'];
+  cacheMissInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheState: Scalars['String']['output'];
+  currency?: Maybe<Scalars['String']['output']>;
+  estimatedApiCacheCreation1hInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheCreation5mInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheCreationInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheReadInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiOutputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiReasoningOutputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiStandardInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiTotalCost?: Maybe<Scalars['Float']['output']>;
+  grossInputTokens: Scalars['Int']['output'];
+  missingPriceDimensions: Array<Scalars['String']['output']>;
+  observedModelIdentifiers: Array<Scalars['String']['output']>;
+  observedModelProviders: Array<Scalars['String']['output']>;
+  observedRuntimeKinds: Array<Scalars['String']['output']>;
+  outputTokens: Scalars['Int']['output'];
+  pricingPolicyKey?: Maybe<Scalars['String']['output']>;
+  reasoningOutputTokens: Scalars['Int']['output'];
+  selectedPricingTierId?: Maybe<Scalars['String']['output']>;
+  standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  standardInputTokens: Scalars['Int']['output'];
+  totalTokens: Scalars['Int']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  usageReportCount: Scalars['Int']['output'];
+};
+
+export type TokenUsageRunSummaryGraphql = {
+  __typename?: 'TokenUsageRunSummaryGraphql';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
+  apiCostStatus: Scalars['String']['output'];
+  billableOutputTokens: Scalars['Int']['output'];
+  cacheCreation1hInputTokens: Scalars['Int']['output'];
+  cacheCreation5mInputTokens: Scalars['Int']['output'];
+  cacheCreationInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  cacheCreationInputTokens: Scalars['Int']['output'];
+  cacheMissInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheState: Scalars['String']['output'];
+  contextWindowUsagePercent?: Maybe<Scalars['Float']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  effectiveContextWindowTokens?: Maybe<Scalars['Int']['output']>;
+  estimatedApiCacheCreation1hInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheCreation5mInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheCreationInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiCacheReadInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiOutputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiReasoningOutputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiStandardInputCost?: Maybe<Scalars['Float']['output']>;
+  estimatedApiTotalCost?: Maybe<Scalars['Float']['output']>;
+  grossInputTokens: Scalars['Int']['output'];
+  latestModelIdentifier?: Maybe<Scalars['String']['output']>;
+  latestModelProvider?: Maybe<Scalars['String']['output']>;
+  latestPromptTokens?: Maybe<Scalars['Int']['output']>;
+  latestRuntimeKind?: Maybe<Scalars['String']['output']>;
+  memberAgentRunId?: Maybe<Scalars['String']['output']>;
+  memberPath?: Maybe<Array<Scalars['String']['output']>>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  missingPriceDimensions: Array<Scalars['String']['output']>;
+  observedModelIdentifiers: Array<Scalars['String']['output']>;
+  observedModelProviders: Array<Scalars['String']['output']>;
+  observedRuntimeKinds: Array<Scalars['String']['output']>;
+  outputTokens: Scalars['Int']['output'];
+  pricingPolicyKey?: Maybe<Scalars['String']['output']>;
+  reasoningOutputTokens: Scalars['Int']['output'];
+  rootTeamRunId?: Maybe<Scalars['String']['output']>;
+  runId: Scalars['String']['output'];
+  selectedPricingTierId?: Maybe<Scalars['String']['output']>;
+  standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  standardInputTokens: Scalars['Int']['output'];
+  teamRunPath?: Maybe<Array<Scalars['String']['output']>>;
+  totalTokens: Scalars['Int']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  usageReportCount: Scalars['Int']['output'];
+  workspaceId?: Maybe<Scalars['String']['output']>;
+};
+
+export type TokenUsageTaskMemberStatisticsRowGraphql = {
+  __typename?: 'TokenUsageTaskMemberStatisticsRowGraphql';
+  aggregate: TokenUsageCostSummaryAggregateGraphql;
+  memberAgentRunId?: Maybe<Scalars['String']['output']>;
+  memberName: Scalars['String']['output'];
+  memberPath: Array<Scalars['String']['output']>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  models: Array<Scalars['String']['output']>;
+  rowId: Scalars['String']['output'];
+  runtimeKinds: Array<Scalars['String']['output']>;
+};
+
+export type TokenUsageTaskStatisticsResultGraphql = {
+  __typename?: 'TokenUsageTaskStatisticsResultGraphql';
+  rows: Array<TokenUsageTaskStatisticsRowGraphql>;
+};
+
+export type TokenUsageTaskStatisticsRowGraphql = {
+  __typename?: 'TokenUsageTaskStatisticsRowGraphql';
+  aggregate: TokenUsageCostSummaryAggregateGraphql;
+  createdAt: Scalars['String']['output'];
+  createdTimeSource: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  members: Array<TokenUsageTaskMemberStatisticsRowGraphql>;
+  models: Array<Scalars['String']['output']>;
+  rootTeamRunId?: Maybe<Scalars['String']['output']>;
+  rowId: Scalars['String']['output'];
+  rowKind: Scalars['String']['output'];
+  runId?: Maybe<Scalars['String']['output']>;
+  runtimeKinds: Array<Scalars['String']['output']>;
+  summary?: Maybe<Scalars['String']['output']>;
+};
+
 export type ToolArgumentSchema = {
   __typename?: 'ToolArgumentSchema';
   parameters: Array<ToolParameterDefinition>;
@@ -2266,16 +2444,28 @@ export type UpsertExternalChannelBindingInput = {
 
 export type UsageStatistics = {
   __typename?: 'UsageStatistics';
+  aggregate: TokenUsageCostSummaryAggregateGraphql;
+  apiCostStatus: Scalars['String']['output'];
   assistantCost?: Maybe<Scalars['Float']['output']>;
   assistantTokens: Scalars['Int']['output'];
-  reasoningTokens: Scalars['Int']['output'];
-  llmModel: Scalars['String']['output'];
-  promptCost?: Maybe<Scalars['Float']['output']>;
-  reasoningCost?: Maybe<Scalars['Float']['output']>;
-  promptTokens: Scalars['Int']['output'];
-  totalCost?: Maybe<Scalars['Float']['output']>;
+  cacheCreationInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
+  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheState: Scalars['String']['output'];
   currency?: Maybe<Scalars['String']['output']>;
-  apiCostStatus: Scalars['String']['output'];
+  inputCost?: Maybe<Scalars['Float']['output']>;
+  inputTokens: Scalars['Int']['output'];
+  llmModel: Scalars['String']['output'];
+  outputCost?: Maybe<Scalars['Float']['output']>;
+  outputTokens: Scalars['Int']['output'];
+  promptCost?: Maybe<Scalars['Float']['output']>;
+  promptTokens: Scalars['Int']['output'];
+  reasoningCost?: Maybe<Scalars['Float']['output']>;
+  reasoningTokens: Scalars['Int']['output'];
+  runtimeKind: Scalars['String']['output'];
+  thinkingCost?: Maybe<Scalars['Float']['output']>;
+  thinkingTokens: Scalars['Int']['output'];
+  totalCost?: Maybe<Scalars['Float']['output']>;
 };
 
 export type WorkspaceHistoryTeamDefinitionObject = {
@@ -2820,6 +3010,13 @@ export type CreateWorkspaceMutationVariables = Exact<{
 
 export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace: { __typename: 'WorkspaceMetadata', workspaceId: string, name: string, displayName: string, config: any, workspaceRootPath: string, absolutePath?: string | null, kind: string, isTemp: boolean } };
 
+export type RemoveWorkspaceMutationVariables = Exact<{
+  input: RemoveWorkspaceInput;
+}>;
+
+
+export type RemoveWorkspaceMutation = { __typename?: 'Mutation', removeWorkspace: { __typename?: 'RemoveWorkspaceResultInfo', success: boolean, message: string, workspaceId: string, workspaceRootPath?: string | null } };
+
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3059,6 +3256,14 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 
 export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
+export type GetWorkspaceRunHistoryQueryVariables = Exact<{
+  workspaceId: Scalars['String']['input'];
+  limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -3154,13 +3359,48 @@ export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, serperApiKeyConfigured: boolean, serpapiApiKeyConfigured: boolean, googleCseApiKeyConfigured: boolean, googleCseId?: string | null, vertexAiSearchApiKeyConfigured: boolean, vertexAiSearchServingConfig?: string | null } };
 
+export type TokenUsageRunSummaryFieldsFragment = { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null };
+
+export type GetAgentRunTokenUsageSummaryQueryVariables = Exact<{
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunTokenUsageSummaryQuery = { __typename?: 'Query', getAgentRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+
+export type GetTeamRunTokenUsageSummaryQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTeamRunTokenUsageSummaryQuery = { __typename?: 'Query', getTeamRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+
+export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  memberAgentRunId?: InputMaybe<Scalars['String']['input']>;
+  memberRouteKey?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+
+export type TokenUsageCostSummaryAggregateFieldsFragment = { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> };
+
+export type GetTokenUsageTaskStatisticsInPeriodQueryVariables = Exact<{
+  startTime: Scalars['DateTime']['input'];
+  endTime: Scalars['DateTime']['input'];
+}>;
+
+
+export type GetTokenUsageTaskStatisticsInPeriodQuery = { __typename?: 'Query', tokenUsageTaskStatisticsInPeriod: { __typename?: 'TokenUsageTaskStatisticsResultGraphql', rows: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> }, members: Array<{ __typename?: 'TokenUsageTaskMemberStatisticsRowGraphql', rowId: string, memberRouteKey?: string | null, memberAgentRunId?: string | null, memberName: string, memberPath: Array<string>, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }> }> } };
+
 export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
   endTime: Scalars['DateTime']['input'];
 }>;
 
 
-export type GetUsageStatisticsInPeriodQuery = { __typename?: 'Query', usageStatisticsInPeriod: Array<{ __typename?: 'UsageStatistics', llmModel: string, promptTokens: number, assistantTokens: number, reasoningTokens: number, promptCost?: number | null, assistantCost?: number | null, reasoningCost?: number | null, totalCost?: number | null, currency?: string | null, apiCostStatus: string }> };
+export type GetUsageStatisticsInPeriodQuery = { __typename?: 'Query', usageStatisticsInPeriod: Array<{ __typename?: 'UsageStatistics', runtimeKind: string, llmModel: string, inputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheReadInputTokenRate?: number | null, cacheState: string, outputTokens: number, thinkingTokens: number, inputCost?: number | null, outputCost?: number | null, thinkingCost?: number | null, totalCost?: number | null, currency?: string | null, apiCostStatus: string, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }> };
 
 export type GetToolsQueryVariables = Exact<{
   origin?: InputMaybe<ToolOriginEnum>;
@@ -3553,6 +3793,93 @@ export const SelfEvolutionRunRecordSummaryFieldsFragmentDoc = gql`
   status
   evolverRunId
   errors
+}
+    `;
+export const TokenUsageRunSummaryFieldsFragmentDoc = gql`
+    fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
+  runId
+  rootTeamRunId
+  teamRunPath
+  memberAgentRunId
+  memberPath
+  memberRouteKey
+  agentDefinitionId
+  workspaceId
+  grossInputTokens
+  standardInputTokens
+  cacheMissInputTokens
+  cacheReadInputTokens
+  cacheCreationInputTokens
+  cacheCreation5mInputTokens
+  cacheCreation1hInputTokens
+  outputTokens
+  reasoningOutputTokens
+  billableOutputTokens
+  totalTokens
+  cacheReadInputTokenRate
+  standardInputTokenRate
+  cacheCreationInputTokenRate
+  cacheState
+  estimatedApiInputCost
+  estimatedApiStandardInputCost
+  estimatedApiCacheReadInputCost
+  estimatedApiCacheCreationInputCost
+  estimatedApiCacheCreation5mInputCost
+  estimatedApiCacheCreation1hInputCost
+  estimatedApiOutputCost
+  estimatedApiReasoningOutputCost
+  estimatedApiTotalCost
+  currency
+  apiCostStatus
+  missingPriceDimensions
+  pricingPolicyKey
+  selectedPricingTierId
+  latestPromptTokens
+  effectiveContextWindowTokens
+  contextWindowUsagePercent
+  latestModelProvider
+  latestModelIdentifier
+  latestRuntimeKind
+  usageReportCount
+  updatedAt
+}
+    `;
+export const TokenUsageCostSummaryAggregateFieldsFragmentDoc = gql`
+    fragment TokenUsageCostSummaryAggregateFields on TokenUsageCostSummaryAggregateGraphql {
+  grossInputTokens
+  standardInputTokens
+  cacheMissInputTokens
+  cacheReadInputTokens
+  cacheCreationInputTokens
+  cacheCreation5mInputTokens
+  cacheCreation1hInputTokens
+  outputTokens
+  reasoningOutputTokens
+  billableOutputTokens
+  totalTokens
+  cacheReadInputTokenRate
+  standardInputTokenRate
+  cacheCreationInputTokenRate
+  cacheState
+  estimatedApiInputCost
+  estimatedApiStandardInputCost
+  estimatedApiCacheReadInputCost
+  estimatedApiCacheCreationInputCost
+  estimatedApiCacheCreation5mInputCost
+  estimatedApiCacheCreation1hInputCost
+  estimatedApiOutputCost
+  estimatedApiReasoningOutputCost
+  estimatedApiTotalCost
+  currency
+  apiCostStatus
+  missingPriceDimensions
+  pricingPolicyKey
+  selectedPricingTierId
+  usageReportCount
+  updatedAt
+  observedRuntimeKinds
+  observedModelIdentifiers
+  observedModelProviders
 }
     `;
 export const GetAgentPackagesDocument = gql`
@@ -5678,6 +6005,38 @@ export function useCreateWorkspaceMutation(options: VueApolloComposable.UseMutat
   return VueApolloComposable.useMutation<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>(CreateWorkspaceDocument, options);
 }
 export type CreateWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>;
+export const RemoveWorkspaceDocument = gql`
+    mutation RemoveWorkspace($input: RemoveWorkspaceInput!) {
+  removeWorkspace(input: $input) {
+    success
+    message
+    workspaceId
+    workspaceRootPath
+  }
+}
+    `;
+
+/**
+ * __useRemoveWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useRemoveWorkspaceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveWorkspaceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveWorkspaceMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveWorkspaceMutation(options: VueApolloComposable.UseMutationOptions<RemoveWorkspaceMutation, RemoveWorkspaceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveWorkspaceMutation, RemoveWorkspaceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveWorkspaceMutation, RemoveWorkspaceMutationVariables>(RemoveWorkspaceDocument, options);
+}
+export type RemoveWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveWorkspaceMutation, RemoveWorkspaceMutationVariables>;
 export const GetAgentCustomizationOptionsDocument = gql`
     query GetAgentCustomizationOptions {
   availableToolNames
@@ -7189,6 +7548,79 @@ export function useListWorkspaceRunHistoryLazyQuery(variables: ListWorkspaceRunH
   return VueApolloComposable.useLazyQuery<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>(ListWorkspaceRunHistoryDocument, variables, options);
 }
 export type ListWorkspaceRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>;
+export const GetWorkspaceRunHistoryDocument = gql`
+    query GetWorkspaceRunHistory($workspaceId: String!, $limitPerAgent: Int = 6) {
+  workspaceRunHistory(workspaceId: $workspaceId, limitPerAgent: $limitPerAgent) {
+    workspaceRootPath
+    workspaceName
+    agentDefinitions {
+      agentDefinitionId
+      agentName
+      runs {
+        runId
+        summary
+        createdAt
+        archivedAt
+        terminatedAt
+        status
+        isActive
+        shouldConnectStream
+        statusSource
+      }
+    }
+    teamDefinitions {
+      teamDefinitionId
+      teamDefinitionName
+      runs {
+        teamRunId
+        teamDefinitionId
+        teamDefinitionName
+        coordinatorMemberRouteKey
+        workspaceRootPath
+        summary
+        createdAt
+        archivedAt
+        terminatedAt
+        status
+        isActive
+        memberTree
+        members {
+          memberRouteKey
+          memberName
+          memberRunId
+          status
+          runtimeKind
+          workspaceRootPath
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWorkspaceRunHistoryQuery__
+ *
+ * To run a query within a Vue component, call `useGetWorkspaceRunHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkspaceRunHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetWorkspaceRunHistoryQuery({
+ *   workspaceId: // value for 'workspaceId'
+ *   limitPerAgent: // value for 'limitPerAgent'
+ * });
+ */
+export function useGetWorkspaceRunHistoryQuery(variables: GetWorkspaceRunHistoryQueryVariables | VueCompositionApi.Ref<GetWorkspaceRunHistoryQueryVariables> | ReactiveFunction<GetWorkspaceRunHistoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>(GetWorkspaceRunHistoryDocument, variables, options);
+}
+export function useGetWorkspaceRunHistoryLazyQuery(variables?: GetWorkspaceRunHistoryQueryVariables | VueCompositionApi.Ref<GetWorkspaceRunHistoryQueryVariables> | ReactiveFunction<GetWorkspaceRunHistoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>(GetWorkspaceRunHistoryDocument, variables, options);
+}
+export type GetWorkspaceRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetWorkspaceRunHistoryQuery, GetWorkspaceRunHistoryQueryVariables>;
 export const GetRunProjectionDocument = gql`
     query GetRunProjection($runId: String!) {
   getRunProjection(runId: $runId) {
@@ -7681,22 +8113,183 @@ export function useGetSearchConfigLazyQuery(options: VueApolloComposable.UseQuer
   return VueApolloComposable.useLazyQuery<GetSearchConfigQuery, GetSearchConfigQueryVariables>(GetSearchConfigDocument, {}, options);
 }
 export type GetSearchConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSearchConfigQuery, GetSearchConfigQueryVariables>;
+export const GetAgentRunTokenUsageSummaryDocument = gql`
+    query GetAgentRunTokenUsageSummary($runId: String!) {
+  getAgentRunTokenUsageSummary(runId: $runId) {
+    ...TokenUsageRunSummaryFields
+  }
+}
+    ${TokenUsageRunSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentRunTokenUsageSummaryQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunTokenUsageSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunTokenUsageSummaryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunTokenUsageSummaryQuery({
+ *   runId: // value for 'runId'
+ * });
+ */
+export function useGetAgentRunTokenUsageSummaryQuery(variables: GetAgentRunTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetAgentRunTokenUsageSummaryQueryVariables> | ReactiveFunction<GetAgentRunTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>(GetAgentRunTokenUsageSummaryDocument, variables, options);
+}
+export function useGetAgentRunTokenUsageSummaryLazyQuery(variables?: GetAgentRunTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetAgentRunTokenUsageSummaryQueryVariables> | ReactiveFunction<GetAgentRunTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>(GetAgentRunTokenUsageSummaryDocument, variables, options);
+}
+export type GetAgentRunTokenUsageSummaryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunTokenUsageSummaryQuery, GetAgentRunTokenUsageSummaryQueryVariables>;
+export const GetTeamRunTokenUsageSummaryDocument = gql`
+    query GetTeamRunTokenUsageSummary($teamRunId: String!) {
+  getTeamRunTokenUsageSummary(teamRunId: $teamRunId) {
+    ...TokenUsageRunSummaryFields
+  }
+}
+    ${TokenUsageRunSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useGetTeamRunTokenUsageSummaryQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamRunTokenUsageSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamRunTokenUsageSummaryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamRunTokenUsageSummaryQuery({
+ *   teamRunId: // value for 'teamRunId'
+ * });
+ */
+export function useGetTeamRunTokenUsageSummaryQuery(variables: GetTeamRunTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetTeamRunTokenUsageSummaryQueryVariables> | ReactiveFunction<GetTeamRunTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>(GetTeamRunTokenUsageSummaryDocument, variables, options);
+}
+export function useGetTeamRunTokenUsageSummaryLazyQuery(variables?: GetTeamRunTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetTeamRunTokenUsageSummaryQueryVariables> | ReactiveFunction<GetTeamRunTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>(GetTeamRunTokenUsageSummaryDocument, variables, options);
+}
+export type GetTeamRunTokenUsageSummaryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamRunTokenUsageSummaryQuery, GetTeamRunTokenUsageSummaryQueryVariables>;
+export const GetTeamMemberTokenUsageSummaryDocument = gql`
+    query GetTeamMemberTokenUsageSummary($teamRunId: String!, $memberAgentRunId: String, $memberRouteKey: String) {
+  getTeamMemberTokenUsageSummary(
+    teamRunId: $teamRunId
+    memberAgentRunId: $memberAgentRunId
+    memberRouteKey: $memberRouteKey
+  ) {
+    ...TokenUsageRunSummaryFields
+  }
+}
+    ${TokenUsageRunSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useGetTeamMemberTokenUsageSummaryQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberTokenUsageSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberTokenUsageSummaryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberTokenUsageSummaryQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   memberAgentRunId: // value for 'memberAgentRunId'
+ *   memberRouteKey: // value for 'memberRouteKey'
+ * });
+ */
+export function useGetTeamMemberTokenUsageSummaryQuery(variables: GetTeamMemberTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetTeamMemberTokenUsageSummaryQueryVariables> | ReactiveFunction<GetTeamMemberTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>(GetTeamMemberTokenUsageSummaryDocument, variables, options);
+}
+export function useGetTeamMemberTokenUsageSummaryLazyQuery(variables?: GetTeamMemberTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetTeamMemberTokenUsageSummaryQueryVariables> | ReactiveFunction<GetTeamMemberTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>(GetTeamMemberTokenUsageSummaryDocument, variables, options);
+}
+export type GetTeamMemberTokenUsageSummaryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>;
+export const GetTokenUsageTaskStatisticsInPeriodDocument = gql`
+    query GetTokenUsageTaskStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
+  tokenUsageTaskStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
+    rows {
+      rowId
+      rowKind
+      runId
+      rootTeamRunId
+      displayName
+      summary
+      createdAt
+      createdTimeSource
+      models
+      runtimeKinds
+      aggregate {
+        ...TokenUsageCostSummaryAggregateFields
+      }
+      members {
+        rowId
+        memberRouteKey
+        memberAgentRunId
+        memberName
+        memberPath
+        models
+        runtimeKinds
+        aggregate {
+          ...TokenUsageCostSummaryAggregateFields
+        }
+      }
+    }
+  }
+}
+    ${TokenUsageCostSummaryAggregateFieldsFragmentDoc}`;
+
+/**
+ * __useGetTokenUsageTaskStatisticsInPeriodQuery__
+ *
+ * To run a query within a Vue component, call `useGetTokenUsageTaskStatisticsInPeriodQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTokenUsageTaskStatisticsInPeriodQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTokenUsageTaskStatisticsInPeriodQuery({
+ *   startTime: // value for 'startTime'
+ *   endTime: // value for 'endTime'
+ * });
+ */
+export function useGetTokenUsageTaskStatisticsInPeriodQuery(variables: GetTokenUsageTaskStatisticsInPeriodQueryVariables | VueCompositionApi.Ref<GetTokenUsageTaskStatisticsInPeriodQueryVariables> | ReactiveFunction<GetTokenUsageTaskStatisticsInPeriodQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>(GetTokenUsageTaskStatisticsInPeriodDocument, variables, options);
+}
+export function useGetTokenUsageTaskStatisticsInPeriodLazyQuery(variables?: GetTokenUsageTaskStatisticsInPeriodQueryVariables | VueCompositionApi.Ref<GetTokenUsageTaskStatisticsInPeriodQueryVariables> | ReactiveFunction<GetTokenUsageTaskStatisticsInPeriodQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>(GetTokenUsageTaskStatisticsInPeriodDocument, variables, options);
+}
+export type GetTokenUsageTaskStatisticsInPeriodQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTokenUsageTaskStatisticsInPeriodQuery, GetTokenUsageTaskStatisticsInPeriodQueryVariables>;
 export const GetUsageStatisticsInPeriodDocument = gql`
     query GetUsageStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
   usageStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
+    runtimeKind
     llmModel
-    promptTokens
-    assistantTokens
-    reasoningTokens
-    promptCost
-    assistantCost
-    reasoningCost
+    inputTokens
+    cacheReadInputTokens
+    cacheCreationInputTokens
+    cacheReadInputTokenRate
+    cacheState
+    outputTokens
+    thinkingTokens
+    inputCost
+    outputCost
+    thinkingCost
     totalCost
     currency
     apiCostStatus
+    aggregate {
+      ...TokenUsageCostSummaryAggregateFields
+    }
   }
 }
-    `;
+    ${TokenUsageCostSummaryAggregateFieldsFragmentDoc}`;
 
 /**
  * __useGetUsageStatisticsInPeriodQuery__

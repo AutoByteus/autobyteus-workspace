@@ -220,15 +220,34 @@ be reintroduced as compatibility writers.
 `TokenUsageStatisticsResolver` exposes ledger-backed reads:
 
 - `totalCostInPeriod(startTime, endTime)` returns nullable estimated total cost.
-- `usageStatisticsInPeriod(startTime, endTime)` groups accounting tokens and
-  nullable costs by model. This settings/statistics surface keeps the historical
-  `promptTokens` / `assistantTokens` names; do not confuse those chart field
-  names with the Token Meter's `grossInputTokens`, `latestPromptTokens`, and
-  component fields.
+- `tokenUsageTaskStatisticsInPeriod(startTime, endTime)` is the primary
+  Settings > Token Statistics projection. It returns one top-level row for each
+  standalone agent run or root team run that has ledger usage observed during
+  the selected period, with team member usage nested under the team row instead
+  of repeated as standalone rows.
+- Task-statistics rows keep repeated executions separate by concrete run/team
+  identity. Row labels come from token-usage-owned display fields captured or
+  backfilled at the ledger boundary: `teamName`, `agentName`, `runSummary`,
+  `runCreatedAt`, and `memberName`. Runtime/model/path facts continue to use
+  existing ledger fields, and Settings statistics does not add workspace or
+  roster metadata. If `runCreatedAt` is unavailable, the row falls back to the
+  first observed ledger timestamp and marks `createdTimeSource` so the frontend
+  can label it as first usage observed rather than true task creation.
+- `usageStatisticsInPeriod(startTime, endTime)` remains the secondary
+  diagnostics projection for Settings > Token Statistics By Model. It now groups
+  by runtime/model pair so the same model used through different runtimes is not
+  collapsed into one ambiguous row. Legacy display aliases such as `inputTokens`
+  / `outputTokens` are backed by the same cache-aware aggregate contract; do not
+  confuse them with the Token Meter's `latestPromptTokens`.
 - `getAgentRunTokenUsageSummary(runId)` returns a run summary.
 - `getTeamRunTokenUsageSummary(teamRunId)` returns a team aggregate.
 - `getTeamMemberTokenUsageSummary(teamRunId, memberAgentRunId?, memberRouteKey?)`
   returns focused member usage.
+
+The period filter is based on ledger `observed_at` / usage observation time.
+The MVP has no `rangeMode` argument and does not implement a "tasks created in
+period" mode. Future created-time filtering must be added explicitly rather than
+repurposing the current observed-usage period semantics.
 
 All summary token totals are computed from accounting deltas, not reported
 cumulative snapshots. Run, team, member, and statistics GraphQL shapes include
@@ -248,6 +267,17 @@ The frontend treats token usage as display-only state:
 - `TokenUsageHeaderChip` and the right-side `Token` tab render tokens, nullable
   estimated API costs, price status, model/runtime metadata, latest prompt
   context pressure, and focused-member totals;
+- Settings > Token Statistics uses `tokenUsageStatisticsStore` and the
+  historical statistics queries. It defaults to a By Task view for task/team cost
+  understanding, keeps By Model as a runtime/model diagnostics tab, and displays
+  a static `Usage during period` explanation that matches the observed-usage
+  GraphQL filter.
+- The By Task table shows task/run identity, type, runtime,
+  model(s), token totals, input/output/total cost, status, nested team members,
+  created time as the last visible column, and a cost breakdown. Team expansion
+  is usage-derived for the selected period: inactive roster members are not
+  emitted, members remain attached to their parent team row during sorting, and
+  member usage must not be double-counted as standalone top-level agent rows.
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
   `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
   `Input breakdown`, and `Pricing details`.
@@ -298,7 +328,11 @@ price, mixed-currency aggregate behavior, model-list regressions, and the
 runtime-native Codex/Claude field baseline. Frontend store/component tests cover
 live update aggregation, GraphQL hydration replacement, Token Meter hierarchy,
 cache-aware input rows, price-status labels, reasoning-output display, latest
-prompt fields, and the right-side tab label.
+prompt fields, and the right-side tab label. Settings > Token Statistics also
+has focused backend GraphQL E2E coverage plus frontend store/component coverage
+for By Task default behavior, no `rangeMode`, nested team members, first-usage
+created-time fallback, runtime/model grouping, status/cost-breakdown display,
+and By Model runtime diagnostics.
 
 ## Runtime E2E Coverage
 
@@ -337,6 +371,10 @@ design.
 - Removed provider models such as MiniMax M2.7 must not remain selectable via
   model-list GraphQL/API compatibility aliases. MiniMax M3 remains the supported
   MiniMax LLM catalog entry.
+- When token-usage GraphQL documents or schema types change, refresh the tracked
+  frontend generated artifact with `pnpm -C autobyteus-web codegen` against the
+  matching backend schema so `autobyteus-web/generated/graphql.ts` does not drift
+  from the committed queries.
 - Deterministic unit/integration/E2E coverage validates the ledger, cost,
   GraphQL, and frontend meter contracts; the environment-gated runtime E2E above
   provides live-runtime confirmation when configured runtimes are available.

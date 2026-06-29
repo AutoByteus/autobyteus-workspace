@@ -19,6 +19,8 @@ const buildEvent = (input: {
   runId: string;
   rootTeamRunId?: string | null;
   memberRouteKey?: string | null;
+  teamRunPath?: string[] | null;
+  memberPath?: string[] | null;
   observedAt: string;
   inputTokenSemantic?: TokenUsageUpdatedPayload['input_token_semantic'];
   grossInputTokens: number;
@@ -55,6 +57,11 @@ const buildEvent = (input: {
   latestPromptTokens?: number | null;
   effectiveContextWindowTokens?: number | null;
   contextWindowUsagePercent?: number | null;
+  teamName?: string | null;
+  agentName?: string | null;
+  runSummary?: string | null;
+  runCreatedAt?: string | null;
+  memberName?: string | null;
 }) => {
   createdRunIds.add(input.runId);
   if (input.rootTeamRunId) createdTeamRunIds.add(input.rootTeamRunId);
@@ -72,7 +79,9 @@ const buildEvent = (input: {
       idempotency_key: `graphql-ledger:${randomUUID()}`,
       observed_at: input.observedAt,
       root_team_run_id: input.rootTeamRunId ?? null,
+      team_run_path: input.teamRunPath ?? null,
       member_agent_run_id: input.rootTeamRunId ? input.runId : null,
+      member_path: input.memberPath ?? null,
       member_route_key: input.memberRouteKey ?? null,
       runtime_kind: input.runtimeKind ?? 'codex_app_server',
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
@@ -113,6 +122,11 @@ const buildEvent = (input: {
       latest_prompt_tokens: input.latestPromptTokens ?? null,
       effective_context_window_tokens: input.effectiveContextWindowTokens ?? null,
       context_window_usage_percent: input.contextWindowUsagePercent ?? null,
+      team_name: input.teamName ?? null,
+      agent_name: input.agentName ?? null,
+      run_summary: input.runSummary ?? null,
+      run_created_at: input.runCreatedAt ?? null,
+      member_name: input.memberName ?? null,
     },
   });
 };
@@ -484,6 +498,324 @@ describe('token usage ledger GraphQL projections', () => {
         apiCostStatus: 'mixed',
       }),
     ]));
+  });
+
+  it('returns task statistics rows and runtime/model diagnostics without double counting team members', async () => {
+    const suffix = randomUUID();
+    const olderTeamRunId = `graphql-task-team-older-${suffix}`;
+    const newerTeamRunId = `graphql-task-team-newer-${suffix}`;
+    const olderMemberRunId = `graphql-task-member-older-${suffix}`;
+    const designerMemberRunId = `graphql-task-member-designer-${suffix}`;
+    const builderMemberRunId = `graphql-task-member-builder-${suffix}`;
+    const standaloneRunId = `graphql-task-standalone-${suffix}`;
+    const start = '2041-07-01T09:55:00.000Z';
+    const end = '2041-07-01T11:30:00.000Z';
+
+    await store.appendTokenUsageEvent(buildEvent({
+      runId: olderMemberRunId,
+      rootTeamRunId: olderTeamRunId,
+      memberRouteKey: 'designer',
+      observedAt: '2041-07-01T10:00:00.000Z',
+      grossInputTokens: 20,
+      outputTokens: 5,
+      reasoningTokens: 1,
+      totalCost: null,
+      status: 'price_missing',
+      model: 'missing-price-model',
+      runtimeKind: 'codex_app_server',
+      missingPriceDimensions: ['model_pricing'],
+    }));
+    await store.appendTokenUsageEvent(buildEvent({
+      runId: standaloneRunId,
+      observedAt: '2041-07-01T10:30:00.000Z',
+      grossInputTokens: 200,
+      standardInputTokens: 140,
+      cacheReadTokens: 60,
+      outputTokens: 20,
+      reasoningTokens: 4,
+      inputCost: 2.0,
+      standardInputCost: 1.4,
+      cacheReadInputCost: 0.6,
+      outputCost: 0.2,
+      reasoningCost: 0.04,
+      totalCost: 2.2,
+      status: 'partial_price_missing',
+      model: 'gpt-shared',
+      runtimeKind: 'codex_app_server',
+      missingPriceDimensions: ['cache_creation_price'],
+      agentName: 'GraphQL Standalone Agent',
+      runSummary: 'Prototype task statistics',
+      runCreatedAt: '2041-07-01T10:20:00.000Z',
+    }));
+    await store.appendTokenUsageEvent(buildEvent({
+      runId: designerMemberRunId,
+      rootTeamRunId: newerTeamRunId,
+      memberRouteKey: 'designer',
+      teamRunPath: ['software_engineering_team'],
+      memberPath: ['planning_team', 'designer'],
+      observedAt: '2041-07-01T11:00:00.000Z',
+      grossInputTokens: 100,
+      standardInputTokens: 60,
+      cacheReadTokens: 40,
+      outputTokens: 10,
+      reasoningTokens: 2,
+      inputCost: 1.0,
+      standardInputCost: 0.8,
+      cacheReadInputCost: 0.2,
+      outputCost: 0.1,
+      reasoningCost: 0.02,
+      totalCost: 1.1,
+      status: 'estimated',
+      model: 'gpt-shared',
+      runtimeKind: 'codex_app_server',
+      teamName: 'GraphQL Engineering Team',
+      runSummary: 'Ship task statistics',
+      runCreatedAt: '2041-07-01T10:58:00.000Z',
+      memberName: 'GraphQL Designer',
+    }));
+    await store.appendTokenUsageEvent(buildEvent({
+      runId: builderMemberRunId,
+      rootTeamRunId: newerTeamRunId,
+      memberRouteKey: 'builder',
+      teamRunPath: ['software_engineering_team'],
+      memberPath: ['implementation_team', 'builder'],
+      observedAt: '2041-07-01T11:05:00.000Z',
+      grossInputTokens: 60,
+      standardInputTokens: 60,
+      outputTokens: 8,
+      reasoningTokens: 3,
+      inputCost: 0.6,
+      standardInputCost: 0.6,
+      outputCost: 0.08,
+      reasoningCost: 0.03,
+      totalCost: 0.68,
+      status: 'estimated',
+      model: 'gpt-shared',
+      runtimeKind: 'autobyteus',
+      teamName: 'GraphQL Engineering Team',
+      runSummary: 'Ship task statistics',
+      runCreatedAt: '2041-07-01T10:58:00.000Z',
+      memberName: 'GraphQL Builder',
+    }));
+
+    const query = `
+      query TokenUsageTaskStatistics($start: DateTime!, $end: DateTime!) {
+        tokenUsageTaskStatisticsInPeriod(startTime: $start, endTime: $end) {
+          rows {
+            rowId
+            rowKind
+            runId
+            rootTeamRunId
+            displayName
+            summary
+            createdAt
+            createdTimeSource
+            models
+            runtimeKinds
+            aggregate {
+              grossInputTokens
+              cacheReadInputTokens
+              cacheReadInputTokenRate
+              outputTokens
+              reasoningOutputTokens
+              estimatedApiInputCost
+              estimatedApiOutputCost
+              estimatedApiReasoningOutputCost
+              estimatedApiTotalCost
+              currency
+              apiCostStatus
+              missingPriceDimensions
+              observedRuntimeKinds
+              observedModelIdentifiers
+            }
+            members {
+              rowId
+              memberRouteKey
+              memberAgentRunId
+              memberName
+              memberPath
+              models
+              runtimeKinds
+              aggregate {
+                grossInputTokens
+                outputTokens
+                reasoningOutputTokens
+                estimatedApiTotalCost
+                apiCostStatus
+                missingPriceDimensions
+              }
+            }
+          }
+        }
+        usageStatisticsInPeriod(startTime: $start, endTime: $end) {
+          runtimeKind
+          llmModel
+          inputTokens
+          outputTokens
+          thinkingTokens
+          totalCost
+          apiCostStatus
+          aggregate {
+            grossInputTokens
+            outputTokens
+            estimatedApiTotalCost
+            apiCostStatus
+            observedRuntimeKinds
+            observedModelIdentifiers
+          }
+        }
+      }
+    `;
+
+    const result = await execGraphql<{
+      tokenUsageTaskStatisticsInPeriod: { rows: Array<Record<string, unknown> & {
+        aggregate: Record<string, unknown>;
+        members: Array<Record<string, unknown> & { aggregate: Record<string, unknown> }>;
+      }> };
+      usageStatisticsInPeriod: Array<Record<string, unknown> & { aggregate: Record<string, unknown> }>;
+    }>(query, {
+      start: new Date(start),
+      end: new Date(end),
+    });
+
+    const rows = result.tokenUsageTaskStatisticsInPeriod.rows;
+    expect(rows.map((row) => row.rowId)).toEqual([
+      `team:${newerTeamRunId}`,
+      `agent:${standaloneRunId}`,
+      `team:${olderTeamRunId}`,
+    ]);
+    expect(rows.some((row) => row.rowId === `agent:${designerMemberRunId}`)).toBe(false);
+    expect(rows.some((row) => row.rowId === `agent:${builderMemberRunId}`)).toBe(false);
+
+    const newerTeam = rows[0]!;
+    expect(newerTeam).toMatchObject({
+      rowKind: 'TEAM_RUN',
+      runId: null,
+      rootTeamRunId: newerTeamRunId,
+      displayName: 'GraphQL Engineering Team',
+      summary: 'Ship task statistics',
+      createdAt: '2041-07-01T10:58:00.000Z',
+      createdTimeSource: 'RUN_HISTORY',
+      models: ['gpt-shared'],
+      runtimeKinds: ['autobyteus', 'codex_app_server'],
+    });
+    expect(newerTeam.aggregate).toMatchObject({
+      grossInputTokens: 160,
+      cacheReadInputTokens: 40,
+      outputTokens: 18,
+      reasoningOutputTokens: 5,
+      estimatedApiInputCost: 1.6,
+      estimatedApiOutputCost: 0.18,
+      estimatedApiReasoningOutputCost: 0.05,
+      currency: 'USD',
+      apiCostStatus: 'estimated',
+      missingPriceDimensions: [],
+      observedRuntimeKinds: ['autobyteus', 'codex_app_server'],
+      observedModelIdentifiers: ['gpt-shared'],
+    });
+    expect(newerTeam.aggregate.cacheReadInputTokenRate).toBeCloseTo(40 / 160, 8);
+    expect(newerTeam.aggregate.estimatedApiTotalCost).toBeCloseTo(1.78, 10);
+    expect(newerTeam.members.map((member) => member.memberRouteKey).sort()).toEqual(['builder', 'designer']);
+    expect(newerTeam.members).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        memberRouteKey: 'designer',
+        memberAgentRunId: designerMemberRunId,
+        memberName: 'GraphQL Designer',
+        memberPath: ['planning_team', 'designer'],
+        models: ['gpt-shared'],
+        runtimeKinds: ['codex_app_server'],
+        aggregate: expect.objectContaining({
+          grossInputTokens: 100,
+          outputTokens: 10,
+          estimatedApiTotalCost: 1.1,
+          apiCostStatus: 'estimated',
+        }),
+      }),
+      expect.objectContaining({
+        memberRouteKey: 'builder',
+        memberAgentRunId: builderMemberRunId,
+        memberName: 'GraphQL Builder',
+        memberPath: ['implementation_team', 'builder'],
+        runtimeKinds: ['autobyteus'],
+        aggregate: expect.objectContaining({
+          grossInputTokens: 60,
+          outputTokens: 8,
+          estimatedApiTotalCost: 0.68,
+          apiCostStatus: 'estimated',
+        }),
+      }),
+    ]));
+
+    const standalone = rows[1]!;
+    expect(standalone).toMatchObject({
+      rowKind: 'AGENT_RUN',
+      runId: standaloneRunId,
+      rootTeamRunId: null,
+      displayName: 'GraphQL Standalone Agent',
+      summary: 'Prototype task statistics',
+      createdAt: '2041-07-01T10:20:00.000Z',
+      createdTimeSource: 'RUN_HISTORY',
+      models: ['gpt-shared'],
+      runtimeKinds: ['codex_app_server'],
+      members: [],
+    });
+    expect(standalone.aggregate).toMatchObject({
+      grossInputTokens: 200,
+      cacheReadInputTokens: 60,
+      outputTokens: 20,
+      reasoningOutputTokens: 4,
+      estimatedApiTotalCost: 2.2,
+      apiCostStatus: 'partial_price_missing',
+      missingPriceDimensions: ['cache_creation_price'],
+    });
+
+    const olderTeam = rows[2]!;
+    expect(olderTeam).toMatchObject({
+      rowKind: 'TEAM_RUN',
+      rootTeamRunId: olderTeamRunId,
+      displayName: 'Unknown team run',
+      createdAt: '2041-07-01T10:00:00.000Z',
+      createdTimeSource: 'FIRST_USAGE_OBSERVED',
+      models: ['missing-price-model'],
+      runtimeKinds: ['codex_app_server'],
+    });
+    expect(olderTeam.aggregate).toMatchObject({
+      estimatedApiTotalCost: null,
+      apiCostStatus: 'price_missing',
+      missingPriceDimensions: ['model_pricing'],
+    });
+
+    const diagnostics = result.usageStatisticsInPeriod;
+    const diagnosticKeys = diagnostics.map((row) => `${row.runtimeKind}/${row.llmModel}`).sort();
+    expect(diagnosticKeys).toEqual([
+      'autobyteus/gpt-shared',
+      'codex_app_server/gpt-shared',
+      'codex_app_server/missing-price-model',
+    ]);
+    const codexShared = diagnostics.find((row) => row.runtimeKind === 'codex_app_server' && row.llmModel === 'gpt-shared')!;
+    expect(codexShared).toMatchObject({
+      inputTokens: 300,
+      outputTokens: 30,
+      thinkingTokens: 6,
+      apiCostStatus: 'mixed',
+      aggregate: expect.objectContaining({
+        grossInputTokens: 300,
+        outputTokens: 30,
+        apiCostStatus: 'mixed',
+        observedRuntimeKinds: ['codex_app_server'],
+        observedModelIdentifiers: ['gpt-shared'],
+      }),
+    });
+    expect(codexShared.totalCost).toBeCloseTo(3.3, 10);
+    expect(codexShared.aggregate.estimatedApiTotalCost).toBeCloseTo(3.3, 10);
+    const autobyteusShared = diagnostics.find((row) => row.runtimeKind === 'autobyteus' && row.llmModel === 'gpt-shared')!;
+    expect(autobyteusShared).toMatchObject({
+      inputTokens: 60,
+      outputTokens: 8,
+      thinkingTokens: 3,
+      totalCost: 0.68,
+      apiCostStatus: 'estimated',
+    });
   });
 
 
